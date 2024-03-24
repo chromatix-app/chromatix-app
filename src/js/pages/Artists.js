@@ -2,14 +2,19 @@
 // IMPORTS
 // ======================================================================
 
-import { ListArtists } from 'js/components';
+import { ListArtists, Title } from 'js/components';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
 const Artists = () => {
-  return <ListArtists />;
+  return (
+    <main>
+      <Title>Artists</Title>
+      <ListArtists />;
+    </main>
+  );
 };
 
 // ======================================================================

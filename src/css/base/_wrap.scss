@@ -10,16 +10,29 @@
 
 .layout {
   display: grid;
+  grid-template-areas:
+    'sidebar content'
+    'controls controls';
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 1fr auto;
   height: 100vh;
   height: 100svh;
 }
 
+.layout-sidebar {
+  overflow: auto;
+  grid-area: sidebar;
+  background: var(--color-background);
+}
+
 .layout-content {
   overflow: auto;
+  grid-area: content;
   background: var(--color-background);
 }
 
 .layout-controls {
+  grid-area: controls;
 }
 
 .loading {

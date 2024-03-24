@@ -2,18 +2,29 @@
 // IMPORTS
 // ======================================================================
 
-import style from './ControlBar.module.scss';
+import { NavLink } from 'react-router-dom';
+
+import style from './SideBar.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const ControlBar = () => {
-  return <div className={style.wrap}></div>;
+const SideBar = () => {
+  return (
+    <div className={style.wrap}>
+      <NavLink className={style.link} activeClassName={style.linkActive} to="/albums">
+        Albums
+      </NavLink>
+      <NavLink className={style.link} activeClassName={style.linkActive} to="/artists">
+        Artists
+      </NavLink>
+    </div>
+  );
 };
 
 // ======================================================================
 // EXPORT
 // ======================================================================
 
-export default ControlBar;
+export default SideBar;

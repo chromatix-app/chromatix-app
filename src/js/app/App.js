@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 
-import { ControlBar } from 'js/components';
+import { ControlBar, SideBar } from 'js/components';
 import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 
 // ======================================================================
@@ -82,6 +82,9 @@ const App = () => {
     return (
       <div className={clsx('wrap')}>
         <div className={clsx('layout')}>
+          <div className="layout-sidebar">
+            <SideBar />
+          </div>
           <div className={clsx('layout-content')}>
             <BrowserRouteSwitch />
           </div>

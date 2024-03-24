@@ -1,0 +1,20 @@
+@import '../../../css/global';
+
+.wrap {
+  width: 220px;
+  min-height: 100%;
+  padding: 70px 12px 20px;
+  background: var(--color-panel-background);
+  border-right: 1px solid var(--color-border);
+}
+
+.link {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 6px;
+  margin: 0 0 5px;
+
+  &Active {
+    background: rgba(255, 255, 255, 0.05);
+  }
+}

@@ -5,6 +5,10 @@
 import store from 'js/store/store';
 import { XMLParser } from 'fast-xml-parser';
 
+// https://www.plexopedia.com/plex-media-server/api/library/music-albums-tracks/
+
+// https://ide.geeksforgeeks.org/online-html-editor/T3gdWUn4aX
+
 // ======================================================================
 // OPTIONS
 // ======================================================================
@@ -244,6 +248,7 @@ export const getAllArtists = async () => {
         )}&X-Plex-Token=${authToken}`
       : null,
     userRating: artist.userRating,
+    link: '/artists/' + artist.ratingKey,
   }));
 
   console.log(allArtists);
