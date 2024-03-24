@@ -1,0 +1,8 @@
+@import '../../../css/global';
+
+.wrap {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  padding: 30px;
+  gap: 20px 10px;
+}

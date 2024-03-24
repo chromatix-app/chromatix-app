@@ -1,0 +1,486 @@
+// ======================================================================
+// ROWS
+// ======================================================================
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0 auto;
+
+  // max-width: $grid-max-width;
+
+  // @include dev-layout;
+
+  // @include breakpoint-map($grid-max-width-breakpoints) {
+  //   max-width: map-val();
+  // }
+}
+
+@mixin rows($key: null) {
+  // breakpoint keys
+  @if $key != null {
+    $key: -#{$key};
+  }
+
+  .row#{$key}--col {
+    flex-direction: column;
+  }
+
+  .row#{$key}--align-center {
+    align-items: center;
+  }
+
+  .row#{$key}--justify-start {
+    justify-content: flex-start;
+  }
+  .row#{$key}--justify-center {
+    justify-content: center;
+  }
+  .row#{$key}--justify-between {
+    justify-content: space-between;
+  }
+  .row#{$key}--justify-end {
+    justify-content: flex-end;
+  }
+
+  .row#{$key}--page-center {
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 100%;
+  }
+  // .row#{$key}--align-start {
+  //   align-items: flex-start;
+  // }
+  // .row#{$key}--align-end {
+  //   align-items: flex-end;
+  // }
+}
+
+@include rows;
+@each $key in $grid-breakpoints {
+  $breakpoint: map-get($breakpoints, $key);
+  @media (min-width: $breakpoint) {
+    @include rows($key);
+  }
+}
+
+// ======================================================================
+// COLUMNS
+// ======================================================================
+
+.col {
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+
+  // @include dev-layout;
+
+  @include breakpoint-map($grid-padding) {
+    padding: 0 map-val();
+  }
+
+  &--no-padding-mobile {
+    @media (max-width: 767px) {
+      padding: 0;
+    }
+  }
+
+  &--center-narrow {
+    @media (min-width: 768px) {
+      max-width: 43rem;
+    }
+  }
+
+  &--center-login {
+    max-width: 33.6rem;
+    padding-top: 60px !important;
+    padding-bottom: 60px !important;
+
+    @media (min-width: 400px) {
+      width: percentage(336/364);
+      max-width: 43rem;
+    }
+
+    &--narrow {
+      @media (min-width: 400px) {
+        max-width: 40rem;
+      }
+    }
+
+    &--auto {
+      @media (min-width: 400px) {
+        flex: 0 1 auto;
+        width: auto !important;
+        max-width: 40rem;
+      }
+    }
+  }
+
+  // &--last {
+  //   padding-bottom: 40px;
+
+  //   @media (min-width: 768px) {
+  //     padding-bottom: 80px;
+  //   }
+  // }
+
+  &--legal {
+    justify-self: flex-end;
+  }
+}
+
+@mixin columns($key: null) {
+  // breakpoint keys
+  @if $key != null {
+    $key: -#{$key};
+  }
+
+  // columns + offsets
+  @for $i from 1 through $grid-cols {
+    .col#{$key}-#{$i} {
+      width: percentage($i/$grid-cols);
+    }
+    // .col#{$key}-#{$i}-half {
+    //   width: percentage(($i + 0.5) / $grid-cols);
+    // }
+    // .col .col-col#{$key}-#{$i} {
+    //   width: percentage($i/$grid-cols);
+    // }
+    // .col#{$key}-max-#{$i} {
+    //   max-width: ($grid-max-width * ($i/$grid-cols));
+    // }
+    // .col-#{$key}max-#{$i}-half {
+    //   max-width: ($grid-max-width * (($i + 0.5) / $grid-cols));
+    // }
+    // .offset#{$key}-#{$i} {
+    //   margin-left: percentage($i/$grid-cols);
+    // }
+  }
+  // .col-#{$key}a33 {
+  //   width: percentage(3.95 / $grid-cols);
+  //   margin-left: percentage(0.35 / $grid-cols);
+  // }
+  // .col-#{$key}b66 {
+  //   width: percentage(7.3 / $grid-cols);
+  // }
+  // .col-#{$key}hidden {
+  //   display: none;
+  // }
+  // .col-#{$key}visible {
+  //   display: block;
+  // }
+  // .offset-#{$key}half {
+  //   margin-left: percentage(0.5 / $grid-cols);
+  // }
+
+  // INNER CONTENT - OUTSET
+
+  .outset#{$key}-0 {
+    @include breakpoint-map-filtered($grid-breakpoints) {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  .outset#{$key}-all {
+    @include breakpoint-map-filtered($grid-breakpoints) {
+      $bpKey: map-key();
+      $bpVal: map-val();
+      $outset: map-closest-val($outsets, $bpKey);
+      margin-left: 0 - $outset;
+      margin-right: 0 - $outset;
+    }
+  }
+
+  // .outset#{$key}-p1 {
+  //   @include breakpoint-map-filtered($grid-breakpoints) {
+  //     $bpKey: map-key();
+  //     $bpVal: map-val();
+  //     margin-left: 0 - map-closest-val($grid-padding, $bpKey);
+  //     margin-right: 0 - map-closest-val($grid-padding, $bpKey);
+  //   }
+  // }
+
+  // .outset#{$key}-p2 {
+  //   @include breakpoint-map-filtered($grid-breakpoints) {
+  //     $bpKey: map-key();
+  //     $bpVal: map-val();
+  //     margin-left: 0 - (map-closest-val($grid-padding, $bpKey) * 2);
+  //     margin-right: 0 - (map-closest-val($grid-padding, $bpKey) * 2);
+  //   }
+  // }
+
+  // .outset#{$key}-left-0 {
+  //   @include breakpoint-map-filtered($grid-breakpoints) {
+  //     margin-left: 0;
+  //   }
+  // }
+
+  // .outset#{$key}-left-p2 {
+  //   @include breakpoint-map-filtered($grid-breakpoints) {
+  //     $bpKey: map-key();
+  //     $bpVal: map-val();
+  //     margin-left: 0 - (map-closest-val($grid-padding, $bpKey) * 2);
+  //   }
+  // }
+
+  // .outset#{$key}-right-0 {
+  //   @include breakpoint-map-filtered($grid-breakpoints) {
+  //     margin-right: 0;
+  //   }
+  // }
+
+  // .outset#{$key}-right-p2 {
+  //   @include breakpoint-map-filtered($grid-breakpoints) {
+  //     $bpKey: map-key();
+  //     $bpVal: map-val();
+  //     margin-right: 0 - (map-closest-val($grid-padding, $bpKey) * 2);
+  //   }
+  // }
+
+  // .inset#{$key}-right-p2 {
+  //   @include breakpoint-map-filtered($grid-breakpoints) {
+  //     $bpKey: map-key();
+  //     $bpVal: map-val();
+  //     margin-right: (map-closest-val($grid-padding, $bpKey) * 2);
+  //   }
+  // }
+}
+
+@include columns;
+@each $key in $grid-breakpoints {
+  $breakpoint: map-get($breakpoints, $key);
+  @media (min-width: $breakpoint) {
+    @include columns($key);
+  }
+}
+
+// form grid
+
+.row--form {
+  margin-left: -8px;
+  margin-right: -8px;
+
+  @media (min-width: 880px) and (max-width: 1023px), (min-width: 1100px) {
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+}
+
+.col--form {
+  padding: 0 8px;
+
+  @media (min-width: 880px) and (max-width: 1023px), (min-width: 1100px) {
+    padding: 0 10px;
+  }
+}
+
+// ======================================================================
+// GRID
+// ======================================================================
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  width: 100%;
+  max-width: $grid-max-width;
+  margin: 0 auto;
+
+  // @include dev-layout;
+
+  @include breakpoint-map($grid-padding) {
+    gap: map-val() * 2;
+    padding: 0 map-val();
+  }
+
+  &--no-padding {
+    padding: 0;
+  }
+
+  &--dash {
+    grid-template-rows: 1fr auto;
+    max-height: 90rem;
+
+    @media (max-width: 440px) {
+      row-gap: 12px;
+    }
+  }
+}
+
+// @mixin grid($key: null) {
+//   // breakpoint keys
+//   @if $key != null {
+//     $key: -#{$key};
+//   }
+
+//   .grid#{$key}--10 {
+//     grid-template-columns: repeat(10, 1fr);
+//   }
+//   .grid#{$key}--no-padding {
+//     padding: 0;
+//   }
+// }
+
+// @include grid;
+// @each $key in $grid-breakpoints {
+//   $breakpoint: map-get($breakpoints, $key);
+//   @media (min-width: $breakpoint) {
+//     @include grid($key);
+//   }
+// }
+
+// ======================================================================
+// GRID COLUMNS
+// ======================================================================
+
+.gcol {
+  grid-column-end: span 12;
+  min-height: 0;
+
+  // @include dev-layout;
+}
+
+@mixin grid_columns($key: null) {
+  // breakpoint keys
+  @if $key != null {
+    $key: -#{$key};
+  }
+  // margin loop
+  @for $i from 1 through 12 {
+    $units: null;
+    @if $i > 0 {
+      $i: #{$i};
+      $units: px;
+    }
+    .gcol#{$key}-#{$i} {
+      grid-column-end: span $i;
+    }
+    .gcol-start#{$key}-#{$i} {
+      grid-column-start: $i;
+    }
+  }
+}
+
+@include grid_columns;
+@each $key, $val in $breakpoints {
+  @media (min-width: $val) {
+    @include grid_columns($key);
+  }
+}
+
+// ======================================================================
+// SPACING - MARGINS AND PADDINGS
+// ======================================================================
+
+@mixin spacings($key: null) {
+  // breakpoint keys
+  @if $key != null {
+    $key: -#{$key};
+  }
+
+  // breaks
+  .u-br#{$key} {
+    display: block;
+  }
+  .u-no-br#{$key} {
+    display: inline;
+  }
+
+  // margins + padding
+  @for $i from 0 through 10 {
+    $units: null;
+    $i5: 5;
+    @if $i > 0 {
+      $i5: #{$i}5;
+      $i: #{$i}0;
+      $units: px;
+    }
+    .mt#{$key}-#{$i} {
+      margin-top: #{$i}#{$units};
+    }
+    .mt#{$key}-#{$i5} {
+      margin-top: #{$i5}#{$units};
+    }
+    .mb-#{$key}#{$i} {
+      margin-bottom: #{$i}#{$units};
+    }
+    .mb#{$key}-#{$i5} {
+      margin-bottom: #{$i5}#{$units};
+    }
+    // .mx-#{$key}#{$i} {
+    //   margin-left: #{$i}#{$units};
+    //   margin-right: #{$i}#{$units};
+    // }
+    // .my-#{$key}#{$i} {
+    //   margin-top: #{$i}#{$units};
+    //   margin-bottom: #{$i}#{$units};
+    // }
+    .pt-#{$key}#{$i} {
+      padding-top: #{$i}#{$units};
+    }
+    // .pb-#{$key}#{$i} {
+    //   padding-bottom: #{$i}#{$units};
+    // }
+    // .px-#{$key}#{$i} {
+    //   padding-left: #{$i}#{$units};
+    //   padding-right: #{$i}#{$units};
+    // }
+    // .py-#{$key}#{$i} {
+    //   padding-top: #{$i}#{$units};
+    //   padding-bottom: #{$i}#{$units};
+    // }
+  }
+}
+
+@include spacings;
+@each $key in $grid-breakpoints {
+  $breakpoint: map-get($breakpoints, $key);
+  @media (min-width: $breakpoint) {
+    @include spacings($key);
+  }
+}
+
+// ======================================================================
+// UTILITIES
+// ======================================================================
+
+@mixin utilities($key: null) {
+  // breakpoint keys
+  @if $key != null {
+    $key: -#{$key};
+  }
+
+  // // visibility
+  .u#{$key}-hidden {
+    display: none;
+  }
+  .u#{$key}-visible {
+    display: block;
+  }
+  // span.u#{$key}-visible {
+  //   display: inline-block;
+  // }
+
+  // order + z-index
+  @for $i from 0 through 3 {
+    .order#{$key}-#{$i} {
+      order: #{$i};
+    }
+    // .z#{$key}-#{$i} {
+    //   z-index: #{$i};
+    // }
+  }
+}
+
+@include utilities;
+@each $key in $grid-breakpoints {
+  $breakpoint: map-get($breakpoints, $key);
+  @media (min-width: $breakpoint) {
+    @include utilities($key);
+  }
+}

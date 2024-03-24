@@ -1,0 +1,14 @@
+node_modules/
+.sass-cache/
+.ftpconfig
+.DS_Store
+*.bak
+*.log
+*.map
+*.old
+*.psd
+*.scssc
+*.env
+
+build/
+dist/

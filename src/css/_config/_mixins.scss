@@ -1,0 +1,295 @@
+// ======================================================================
+// GENERAL
+// ======================================================================
+
+@mixin hidefont() {
+  font-size: 0;
+  line-height: 0;
+  text-indent: -9999px;
+}
+
+@mixin touchscroll() {
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+}
+
+@mixin noselect() {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+@mixin allowselect() {
+  -webkit-touch-callout: default;
+  -webkit-user-select: auto;
+  -khtml-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+}
+
+@mixin hide-input() {
+  position: absolute;
+  top: 0;
+  left: -9999px;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+@mixin outline-base() {
+  @media (hover: hover) {
+    outline: 2px solid var(--color-font-primary);
+    outline-offset: 2px;
+  }
+}
+
+@mixin outline-self() {
+  &:focus-visible:not(:active):not(:disabled) {
+    @media (hover: hover) {
+      outline: 2px solid var(--color-font-primary);
+      outline-offset: 2px;
+    }
+  }
+}
+
+@mixin outline-row() {
+  a:focus-visible:not(:active):not(:disabled) &,
+  button:focus-visible:not(:active):not(:disabled) & {
+    @media (hover: hover) {
+      outline: 2px solid var(--color-font-primary);
+      outline-offset: -2px;
+    }
+  }
+}
+
+@mixin outline-parent() {
+  &:has(*:focus-visible:not(:active):not(:disabled)) {
+    @media (hover: hover) {
+      outline: 2px solid var(--color-font-primary);
+      outline-offset: 2px;
+    }
+  }
+}
+
+@mixin outline-sibling() {
+  input:focus-visible:not(:active):not(:disabled) ~ & {
+    @media (hover: hover) {
+      outline: 2px solid var(--color-font-primary);
+      outline-offset: 2px;
+    }
+  }
+}
+
+@mixin outline-child() {
+  a:focus-visible:not(:active):not(:disabled) &,
+  button:focus-visible:not(:active):not(:disabled) & {
+    @media (hover: hover) {
+      outline: 2px solid var(--color-font-primary);
+      outline-offset: 2px;
+    }
+  }
+}
+
+// @mixin outline-within() {
+//   &:focus-within:focus-visible {
+//     @media (hover: hover) {
+//       outline: 2px solid var(--color-font-primary);
+//       outline-offset: 2px;
+//     }
+//   }
+// }
+
+@mixin electron-drag() {
+  -webkit-app-region: drag;
+  // background: #f00 !important;
+
+  a,
+  button,
+  input {
+    -webkit-app-region: no-drag;
+  }
+}
+@mixin electron-no-drag() {
+  -webkit-app-region: no-drag;
+}
+
+@mixin dark-theme() {
+  html[data-theme='system'] & {
+    @media (prefers-color-scheme: dark) {
+      @content;
+    }
+  }
+  :global(html.sb-dark-mode) &,
+  html[data-theme='dark'] & {
+    @content;
+  }
+}
+
+@mixin light-theme() {
+  html[data-theme='system'] & {
+    @media (prefers-color-scheme: light) {
+      @content;
+    }
+  }
+  :global(html.sb-light-mode) &,
+  html[data-theme='light'] & {
+    @content;
+  }
+}
+
+@function color-add($color1, $color2) {
+  // @return $color1 + $color2;
+
+  // because for some reason "$color1 + $color2" is being deprecated
+  @return adjust-color($color1, $red: red($color2), $green: green($color2), $blue: blue($color2));
+}
+
+@function color-subtract($color1, $color2) {
+  // @return $color1 + $color2;
+
+  // because for some reason "$color1 + $color2" is being deprecated
+  @return adjust-color($color1, $red: 0 - red($color2), $green: 0 - green($color2), $blue: 0 - blue($color2));
+}
+
+// ======================================================================
+// ARRAY MAP
+// ======================================================================
+
+// @function vh($vh) {
+//   @return calc(var(--vh, #{$vh}) * #{$vh});
+// }
+
+@function map-key() {
+  @return $map-key;
+}
+
+@function map-val($key: null) {
+  @if $key != null {
+    @return map-get(map-get($map-array, $map-key), $key);
+  } @else {
+    @return map-get($map-array, $map-key);
+  }
+}
+
+@function list-val() {
+  @return $map-val;
+}
+
+@mixin breakpoint-map($array) {
+  $map-array: $array !global;
+  @each $key, $val in $array {
+    $map-key: $key !global;
+    @if $key == 0 {
+      @content;
+    } @else {
+      @media (min-width: map-get($breakpoints,$key)) {
+        @content;
+      }
+    }
+  }
+}
+
+@mixin breakpoint-map-filtered($array, $zero: true) {
+  $map-array: $breakpoints !global;
+  @if $zero == true {
+    $map-key: 0 !global;
+    @content;
+  }
+  @each $key in $array {
+    $map-key: $key !global;
+    $breakpoint: map-get($breakpoints, $key);
+    @media (min-width: $breakpoint) {
+      @content;
+    }
+  }
+}
+
+@mixin array-map($array) {
+  $map-array: $array !global;
+  @each $key, $val in $array {
+    $map-key: $key !global;
+    @content;
+  }
+}
+
+@mixin list-map($list) {
+  @each $val in $list {
+    $map-val: $val !global;
+    @content;
+  }
+}
+
+// get the largest value from a breakpoint map
+@function map-largest-val($array) {
+  $bp-key: 0;
+  @each $key, $val in $breakpoints {
+    @if (map-has-key($array, $key)) {
+      $bp-key: $key;
+    }
+  }
+  @return map-get($array, $bp-key);
+}
+
+// get the closest value from a breakpoint map (<=)
+@function map-closest-val($array, $key) {
+  @if (map-has-key($array, $key)) {
+    @return map-get($array, $key);
+  } @else {
+    $bp-key: 0;
+    @each $key2, $val in $breakpoints {
+      @if ($key2 == $key) {
+        @return map-get($array, $bp-key);
+      }
+      @if (map-has-key($array, $key2)) {
+        $bp-key: $key2;
+      }
+    }
+  }
+  @return '';
+}
+
+// breakpoint map can be used to map values to breakpoints as follows:
+// .element {
+//   @include breakpoint-map(
+//     (
+//       0: 16px,
+//       md: 18px,
+//       lg: 20px
+//     )
+//   ) {
+//     font-size: map-val();
+//   }
+// }
+
+// array map can be used as follows:
+// @include array-map(
+//   (
+//     red: #f00,
+//     green: #0f0,
+//     blue: #00f
+//   )
+// ) {
+//   .element--#{map-key()} {
+//     background: #{map-val()};
+//   }
+// }
+
+// ======================================================================
+// IMAGE POSITION
+// ======================================================================
+
+// @mixin imgpos($parent_w, $parent_h, $w, $h, $left, $top) {
+//   width: percentage($w/$parent_w);
+//   height: percentage($h/$parent_h);
+//   left: percentage($left/$parent_w);
+//   top: percentage($top/$parent_h);
+// }
+
+@function max-width-breakpoint() {
+  @return $grid-max-width + map-get(map-largest-val($wrapper-paddings), x) +
+    map-get(map-largest-val($wrapper-paddings), x) + $sidebar-width-xl;
+}

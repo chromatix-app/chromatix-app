@@ -1,0 +1,90 @@
+// ======================================================================
+// SASS VARIABLES
+// ======================================================================
+
+// DIMENSIONS
+
+$sidebar-width-lg: 200px;
+$sidebar-width-xl: 220px;
+// $sidebar-width-xxl: 230px;
+
+$breakpoints: (
+  xxs: 375px,
+  xs: 440px,
+  sm: 580px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px,
+  xxl: 1440px,
+  xxxl: 1680px,
+  max: 1840px,
+);
+
+$wrapper-paddings: (
+  0: (
+    x: 14px,
+  ),
+  xxs: (
+    x: 18px,
+  ),
+  sm: (
+    x: 24px,
+  ),
+  md: (
+    x: 35px,
+  ),
+  xl: (
+    x: 45px,
+  ),
+  xxxl: (
+    x: 60px,
+  ),
+);
+
+$outsets: (
+  0: 14px,
+  xxs: 18px,
+  sm: 24px,
+  md: 35px,
+  xl: 45px,
+  xxxl: 60px,
+  max: 30px,
+);
+// xxl: 30px,
+// xxxl: 30px,
+
+// GRID
+
+$grid-cols: 12;
+$grid-max-width: 1500px; // 1370px; // 1440px - 35px side padding
+$grid-padding: (
+  0: 8px,
+  md: 10px,
+  // lg: 12px,
+);
+$grid-breakpoints: (xxs, xs, sm, md, lg, xl);
+
+// FONTS
+
+$font-title: -apple-system, 'SF Pro', 'Inter', Helvetica, Arial, sans-serif;
+$font-body: -apple-system, 'SF Pro', 'Inter', Helvetica, Arial, sans-serif;
+
+$font-slash: Helvetica, Arial, sans-serif;
+
+$font-weight-sidebar: 500;
+$font-weight-title: 700;
+$letter-spacing-general: 0.01em;
+$letter-spacing-label: 0.02em;
+
+$border-radius-xs: 2px;
+$border-radius-sm: 4px;
+$border-radius-md: 6px;
+$border-radius-lg: 8px;
+$border-radius-donut: 12px;
+
+$border-light-thick: 1px solid rgba(0, 0, 0, 0.15);
+
+// COLORS
+
+// $gradient-home: linear-gradient(180deg, #08131f 0%, #142941 50%, #08131f 100%);
+$gradient-home: radial-gradient(100% 50% at 50% 50%, #142941 0%, #08131f 100%);

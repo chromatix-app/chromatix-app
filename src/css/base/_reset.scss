@@ -1,0 +1,107 @@
+// ======================================================================
+// RESETS
+// ======================================================================
+
+html,
+body {
+  vertical-align: baseline;
+  min-width: 300px;
+  height: 100%;
+  overscroll-behavior: none;
+  background: var(--color-background);
+  // background: transparent;
+
+  -webkit-tap-highlight-color: transparent;
+
+  @media only screen and (max-device-width: 480px) {
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+  }
+}
+
+// react root element
+#root {
+  height: 100%;
+}
+
+// defaults for all elements
+* {
+  box-sizing: border-box;
+  vertical-align: inherit;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  outline: none;
+  transform-style: flat;
+  font: inherit;
+
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+// container elements
+article,
+blockquote,
+div,
+figcaption,
+figure,
+footer,
+header,
+main,
+nav,
+section {
+  display: block;
+  position: relative;
+}
+
+// media elements
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+img,
+video {
+  width: 100%;
+  height: auto;
+}
+a img {
+  border: none;
+  outline: none;
+}
+
+// form elements
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+*::-moz-focus-inner {
+  padding: 0;
+  border: none;
+}
+
+// button elements
+a,
+button,
+input[type='button'],
+input[type='select'] {
+  cursor: pointer;
+}
+button {
+  appearance: none;
+  background: none;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+// misc other elements
+table {
+  border-collapse: collapse;
+}

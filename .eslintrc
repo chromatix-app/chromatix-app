@@ -1,0 +1,30 @@
+{
+  "env": {
+    "browser": true,
+    "es2020": true
+  },
+  "extends": [
+    "react-app",
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:prettier/recommended"
+    // 'plugin:@typescript-eslint/recommended',
+    // 'prettier/@typescript-eslint',
+  ],
+  "plugins": ["react", "prettier"],
+  "rules": {
+    "react/prop-types": 0,
+    "react/no-unused-prop-types": 1,
+    "react/no-unescaped-entities": 0,
+    "react/react-in-jsx-scope": 0,
+    "no-unused-vars": "warn"
+  },
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+// ======================================================================
+// CSS CUSTOM PROPS
+// ======================================================================
+
+:root {
+  --color-background: #111;
+  --color-panel-background: #181818;
+  --color-border: #292929;
+  --color-text: #fff;
+
+  --safe-area-inset-top: env(safe-area-inset-top);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom);
+}

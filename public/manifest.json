@@ -1,0 +1,13 @@
+{
+  "name": "Music",
+  "short_name": "Music",
+  "lang": "en-GB",
+  "display": "standalone",
+  "orientation": "portrait",
+  "start_url": "/",
+  "scope": "/",
+  "#-icons": [
+    { "src": "/icon/icon-192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "/icon/icon-512.png", "type": "image/png", "sizes": "512x512" }
+  ]
+}

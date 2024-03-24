@@ -1,0 +1,37 @@
+// ======================================================================
+// FONTS
+// ======================================================================
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+html,
+body {
+  font-family: -apple-system, 'SF Pro', 'Inter', Helvetica, Arial, sans-serif;
+  font-size: 1.6rem;
+  line-height: 1.4;
+  font-weight: normal;
+  color: var(--color-text);
+}
+
+html {
+  font-size: 62.5%;
+
+  &[data-font-size='larger'] {
+    font-size: 77.5%;
+  }
+  &[data-font-size='large'] {
+    font-size: 72.5%;
+  }
+  &[data-font-size='medium'] {
+    font-size: 67.5%;
+  }
+  &[data-font-size='smaller'] {
+    font-size: 57.5%;
+  }
+}
+
+a {
+  font: inherit;
+  text-decoration: inherit;
+  color: inherit;
+}

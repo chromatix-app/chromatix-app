@@ -1,0 +1,55 @@
+{
+  "name": "music",
+  "version": "0.0.0",
+  "description": "",
+  "license": "UNLICENSED",
+  "private": "true",
+  "homepage": "/",
+  "scripts": {
+    "start": "REACT_APP_VERSION=$npm_package_version REACT_APP_ENV=local REACT_APP_DATE=$(date +%s) react-scripts start",
+    "start-https": "REACT_APP_VERSION=$npm_package_version REACT_APP_ENV=local REACT_APP_DATE=$(date +%s) HTTPS=true react-scripts start",
+    "build": "REACT_APP_VERSION=$npm_package_version REACT_APP_ENV=$REACT_APP_ENV REACT_APP_DATE=$(date +%s) react-scripts build"
+  },
+  "dependencies": {
+    "@rematch/core": "^2.2.0",
+    "axios": "^0.27.2",
+    "clsx": "^1.2.1",
+    "crypto-js": "^4.2.0",
+    "fast-xml-parser": "^4.3.6",
+    "moment": "^2.30.1",
+    "node-sass": "^7.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-redux": "^8.0.5",
+    "react-router-dom": "^5.3.4",
+    "react-scripts": "^5.0.1",
+    "react-textarea-autosize": "^8.5.2",
+    "react-tooltip": "^5.8.3",
+    "recharts": "^2.4.3",
+    "semver": "^7.5.4",
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.34.1",
+    "prettier": "^2.8.4",
+    "sass-resources-loader": "^2.2.5",
+    "webpack": "^5.75.0"
+  },
+  "overrides": {
+    "react-refresh": "0.11.0"
+  },
+  "browserslist": {
+    "development": [
+      "last 1 versions"
+    ],
+    "production": [
+      "last 2 versions",
+      ">0.25%",
+      "ie 11",
+      "ios 7",
+      "android 4"
+    ]
+  }
+}
