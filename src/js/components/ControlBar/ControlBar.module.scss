@@ -1,6 +1,8 @@
 @import '../../../css/global';
 
 .wrap {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   height: 100px;
   padding: 20px 30px;
   background: var(--color-panel-background);

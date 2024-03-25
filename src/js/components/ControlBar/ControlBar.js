@@ -9,7 +9,13 @@ import style from './ControlBar.module.scss';
 // ======================================================================
 
 const ControlBar = () => {
-  return <div className={style.wrap}></div>;
+  return (
+    <div className={style.wrap}>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  );
 };
 
 // ======================================================================
