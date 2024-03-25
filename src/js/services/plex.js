@@ -126,6 +126,15 @@ const checkPinStatus = async (pinId) => {
 };
 
 //
+// LOGOUT
+//
+
+export const logout = () => {
+  window.localStorage.removeItem('music-authToken');
+  store.dispatch.appModel.setLoggedOut();
+};
+
+//
 // GET USER INFO
 //
 

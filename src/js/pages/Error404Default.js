@@ -12,7 +12,7 @@ import { Title } from 'js/components';
 
 const Error404Default = () => (
   <main>
-    <Title>404 Not Found</Title>
+    <Title title="404 Not Found" />
     <NavLink to={'/'}>Home</NavLink>
   </main>
 );

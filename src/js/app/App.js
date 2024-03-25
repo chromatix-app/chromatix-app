@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 
-import { ControlBar, SideBar } from 'js/components';
+import { ControlBar, SideBar, UserStatus } from 'js/components';
 import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 
 // ======================================================================
@@ -93,6 +93,7 @@ const App = () => {
           </div>
           {/* <Blocker /> */}
         </div>
+        <UserStatus />
       </div>
     );
   }

@@ -21,7 +21,7 @@ const AlbumDetail = () => {
 
   return (
     <main>
-      <Title title={currentAlbum?.title} subtitle={currentAlbum?.artist ? 'bg ' + currentAlbum?.artist : null} />
+      <Title title={currentAlbum?.title} subtitle={currentAlbum?.artist ? 'by ' + currentAlbum?.artist : null} />
       {albumTracks?.map((track, index) => (
         <div key={index}>
           <div>{track.name}</div>

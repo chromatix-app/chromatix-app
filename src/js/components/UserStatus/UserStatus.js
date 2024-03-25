@@ -2,20 +2,24 @@
 // IMPORTS
 // ======================================================================
 
-import { Title } from 'js/components';
+import * as plex from 'js/services/plex';
+
+import style from './UserStatus.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const Error404Auth = () => (
-  <main>
-    <Title title="404 Not Found" />
-  </main>
-);
+const UserStatus = () => {
+  return (
+    <div className={style.wrap}>
+      <button onClick={plex.logout}>Logout</button>
+    </div>
+  );
+};
 
 // ======================================================================
 // EXPORT
 // ======================================================================
 
-export default Error404Auth;
+export default UserStatus;

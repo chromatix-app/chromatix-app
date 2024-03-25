@@ -1,0 +1,11 @@
+@import '../../../css/global';
+
+.wrap {
+  position: fixed;
+  top: 20px;
+  right: 40px;
+  padding: 10px;
+  background: var(--color-panel-background);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+}
