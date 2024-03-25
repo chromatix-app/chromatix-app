@@ -3,7 +3,7 @@
 .wrap {
   display: grid;
   align-items: center;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: 1fr minmax(auto, 566px) 1fr;
   height: 100px;
   padding: 9px 30px 10px;
   background: var(--color-panel-background);
@@ -119,7 +119,7 @@ button.queue {
 }
 
 .scrubSlider {
-  width: 480px;
+  width: 100%;
 }
 
 .scrubLeft,
