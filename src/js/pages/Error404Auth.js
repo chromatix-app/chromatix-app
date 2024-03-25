@@ -2,23 +2,20 @@
 // IMPORTS
 // ======================================================================
 
-import { ListAlbums, Title } from 'js/components';
+import { Title } from 'js/components';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const Albums = () => {
-  return (
-    <main>
-      <Title title="Albums" />
-      <ListAlbums />
-    </main>
-  );
-};
+const Error404Auth = () => (
+  <main>
+    <Title>404 Not Found</Title>
+  </main>
+);
 
 // ======================================================================
 // EXPORT
 // ======================================================================
 
-export default Albums;
+export default Error404Auth;

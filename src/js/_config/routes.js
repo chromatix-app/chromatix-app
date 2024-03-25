@@ -14,7 +14,7 @@ export const defaultRoutes = [
 
   // other
   {
-    component: 'Error404',
+    component: 'Error404Default',
   },
 ];
 
@@ -29,20 +29,34 @@ export const authRoutes = [
     exact: true,
     redirect: '/artists',
   },
+
+  // artists
+  {
+    path: '/artists',
+    exact: true,
+    component: 'Artists',
+  },
+  {
+    path: '/artists/:artistId',
+    exact: true,
+    component: 'ArtistDetail',
+  },
+
+  // albums
   {
     path: '/albums',
     exact: true,
     component: 'Albums',
   },
   {
-    path: '/artists',
+    path: '/albums/:albumId',
     exact: true,
-    component: 'Artists',
+    component: 'AlbumDetail',
   },
 
   // other
   {
-    component: 'Error404',
+    component: 'Error404Auth',
   },
 ];
 

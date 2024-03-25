@@ -11,7 +11,7 @@ import { ListArtists, Title } from 'js/components';
 const Artists = () => {
   return (
     <main>
-      <Title>Artists</Title>
+      <Title title="Artists" />
       <ListArtists />
     </main>
   );

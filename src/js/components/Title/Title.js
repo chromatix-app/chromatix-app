@@ -8,10 +8,11 @@ import style from './Title.module.scss';
 // COMPONENT
 // ======================================================================
 
-const Title = ({ children }) => {
+const Title = ({ title, subtitle }) => {
   return (
     <div className={style.wrap}>
-      <h1>{children}</h1>
+      {title && <h1 className={style.title}>{title}</h1>}
+      {subtitle && <h2 className={style.subtitle}>{subtitle}</h2>}
     </div>
   );
 };

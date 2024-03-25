@@ -43,14 +43,14 @@ export function init() {
 
   if (isFromPlex) {
     window.history.replaceState({}, document.title, window.location.pathname);
-    const pinId = window.localStorage.getItem('pinId');
+    const pinId = window.localStorage.getItem('music-pinId');
     if (pinId) {
       checkPinStatus(pinId);
     } else {
       store.dispatch.appModel.setLoggedOut();
     }
   } else {
-    const authToken = window.localStorage.getItem('authToken');
+    const authToken = window.localStorage.getItem('music-authToken');
     if (authToken) {
       getUserInfo();
     } else {
@@ -85,7 +85,7 @@ export const login = async () => {
   const pinCode = pinData.code;
 
   // Store the pinId in the local storage
-  window.localStorage.setItem('pinId', pinId);
+  window.localStorage.setItem('music-pinId', pinId);
 
   const authAppUrl = `https://app.plex.tv/auth#?clientID=${clientIdentifier}&code=${pinCode}&context%5Bdevice%5D%5Bproduct%5D=${encodeURIComponent(
     appName
@@ -116,8 +116,8 @@ const checkPinStatus = async (pinId) => {
 
   if (pinStatusData.authToken) {
     // Store the authToken in the local storage
-    window.localStorage.setItem('authToken', pinStatusData.authToken);
-    window.localStorage.removeItem('pinId');
+    window.localStorage.setItem('music-authToken', pinStatusData.authToken);
+    window.localStorage.removeItem('music-pinId');
     getUserInfo();
   } else {
     // If the PIN is not yet authorized, check again in a few seconds
@@ -130,7 +130,7 @@ const checkPinStatus = async (pinId) => {
 //
 
 const getUserInfo = async () => {
-  const authToken = window.localStorage.getItem('authToken');
+  const authToken = window.localStorage.getItem('music-authToken');
 
   const response = await fetch('https://plex.tv/users/account', {
     headers: {
@@ -140,7 +140,7 @@ const getUserInfo = async () => {
 
   if (!response.ok) {
     console.error('Failed to get user info:', response.statusText);
-    window.localStorage.removeItem('authToken');
+    window.localStorage.removeItem('music-authToken');
     store.dispatch.appModel.setLoggedOut();
     return;
   }
@@ -176,7 +176,7 @@ const getUserInfo = async () => {
 //
 
 // const getAllServers = async () => {
-//   const authToken = window.localStorage.getItem('authToken');
+//   const authToken = window.localStorage.getItem('music-authToken');
 
 //   // Get the list of servers
 //   const serversResponse = await fetch('https://plex.tv/pms/servers', {
@@ -210,7 +210,7 @@ const getUserInfo = async () => {
 //
 
 // const getAllLibraries = async () => {
-//   const authToken = window.localStorage.getItem('authToken');
+//   const authToken = window.localStorage.getItem('music-authToken');
 //   const serverHost = '137.220.107.107';
 //   const serverPort = '32400';
 
@@ -243,7 +243,7 @@ const getUserInfo = async () => {
 //
 
 export const getAllArtists = async () => {
-  const authToken = window.localStorage.getItem('authToken');
+  const authToken = window.localStorage.getItem('music-authToken');
 
   const response = await fetch(`${serverProtocol}${serverHost}:${serverPort}/library/sections/20/all`, {
     headers: {
@@ -279,7 +279,7 @@ export const getAllArtists = async () => {
 //
 
 export const getAllAlbums = async () => {
-  const authToken = window.localStorage.getItem('authToken');
+  const authToken = window.localStorage.getItem('music-authToken');
 
   const response = await fetch(`${serverProtocol}${serverHost}:${serverPort}/library/sections/20/all?type=9`, {
     headers: {
@@ -320,7 +320,7 @@ export const getAllAlbums = async () => {
 //
 
 export const getAlbumTracks = async () => {
-  const authToken = window.localStorage.getItem('authToken');
+  const authToken = window.localStorage.getItem('music-authToken');
 
   // get all albums for an artist
   // const ratingKey = '149255';
@@ -349,12 +349,14 @@ export const getAlbumTracks = async () => {
 
   console.log(data.MediaContainer.Metadata);
 
-  // const tracks = data.MediaContainer.Metadata.map((track) => ({
-  //   name: track.title,
-  //   artist: track.grandparentTitle,
-  //   image: `${serverProtocol}${serverHost}:${serverPort}${track.thumb}?X-Plex-Token=${authToken}`,
-  //   path: `${serverProtocol}${serverHost}:${serverPort}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
-  // }));
+  const albumTracks = data.MediaContainer.Metadata.map((track) => ({
+    name: track.title,
+    artist: track.grandparentTitle,
+    image: `${serverProtocol}${serverHost}:${serverPort}${track.thumb}?X-Plex-Token=${authToken}`,
+    path: `${serverProtocol}${serverHost}:${serverPort}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
+  }));
+
+  store.dispatch.appModel.setState({ albumTracks });
 
   // track_list = tracks;
   // loadTrack(track_index);

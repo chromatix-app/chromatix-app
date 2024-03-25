@@ -2,17 +2,24 @@
 // IMPORTS
 // ======================================================================
 
-import { ListAlbums, Title } from 'js/components';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+
+import { Title } from 'js/components';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const Albums = () => {
+const ArtistDetail = () => {
+  const { artistId } = useParams();
+
+  const allArtists = useSelector(({ appModel }) => appModel.allArtists);
+  const currentArtist = allArtists?.filter((artist) => artist.id === artistId)[0];
+
   return (
     <main>
-      <Title title="Albums" />
-      <ListAlbums />
+      <Title title={currentArtist?.title} />
     </main>
   );
 };
@@ -21,4 +28,4 @@ const Albums = () => {
 // EXPORT
 // ======================================================================
 
-export default Albums;
+export default ArtistDetail;
