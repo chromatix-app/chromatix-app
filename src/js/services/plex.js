@@ -13,9 +13,13 @@ import { XMLParser } from 'fast-xml-parser';
 // OPTIONS
 // ======================================================================
 
+const isProduction = process.env.REACT_APP_ENV === 'production';
+
 const appName = 'Alex Dev Plex App';
 const clientIdentifier = 'alex_dev_plex_app';
-const redirectUrl = 'http://localhost:3000/?plex=true';
+const redirectUrlLocal = 'http://localhost:3000?plex=true';
+const redirectUrlProd = 'https://chromatix.vercel.app?plex=true';
+const redirectUrlActual = isProduction ? redirectUrlProd : redirectUrlLocal;
 
 // ======================================================================
 // INIT
@@ -77,7 +81,7 @@ export const login = async () => {
 
   const authAppUrl = `https://app.plex.tv/auth#?clientID=${clientIdentifier}&code=${pinCode}&context%5Bdevice%5D%5Bproduct%5D=${encodeURIComponent(
     appName
-  )}&forwardUrl=${encodeURIComponent(redirectUrl)}`;
+  )}&forwardUrl=${encodeURIComponent(redirectUrlActual)}`;
 
   window.location.href = authAppUrl;
 };
