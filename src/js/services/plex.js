@@ -25,6 +25,10 @@ const serverProtocol = isProduction ? 'https://' : 'http://';
 const serverHost = '137.220.107.107';
 const serverPort = '32400';
 
+const serverArtPath = `${serverProtocol}localhost:32400`;
+
+// const serverArtPath = `${serverProtocol}${serverHost}:${serverPort}`;
+
 // ======================================================================
 // INIT
 // ======================================================================
@@ -258,7 +262,7 @@ export const getAllArtists = async () => {
     title: artist.title,
     thumb: artist.thumb
       ? `${serverProtocol}${serverHost}:${serverPort}/photo/:/transcode?width=320&height=320&url=${encodeURIComponent(
-          'http://localhost:32400' + artist.thumb
+          `${serverArtPath}${artist.thumb}`
         )}&X-Plex-Token=${authToken}`
       : null,
     userRating: artist.userRating,
@@ -295,7 +299,7 @@ export const getAllAlbums = async () => {
     artist: album.parentTitle,
     thumb: album.thumb
       ? `${serverProtocol}${serverHost}:${serverPort}/photo/:/transcode?width=320&height=320&url=${encodeURIComponent(
-          'http://localhost:32400' + album.thumb
+          `${serverArtPath}${album.thumb}`
         )}&X-Plex-Token=${authToken}`
       : null,
     userRating: album.userRating,
