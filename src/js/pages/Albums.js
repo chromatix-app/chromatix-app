@@ -12,7 +12,7 @@ const Albums = () => {
   return (
     <main>
       <Title>Albums</Title>
-      <ListAlbums />;
+      <ListAlbums />
     </main>
   );
 };

@@ -21,6 +21,10 @@ const redirectUrlLocal = 'http://localhost:3000?plex=true';
 const redirectUrlProd = 'https://chromatix.vercel.app?plex=true';
 const redirectUrlActual = isProduction ? redirectUrlProd : redirectUrlLocal;
 
+const serverProtocol = isProduction ? 'https://' : 'http://';
+const serverHost = '137.220.107.107';
+const serverPort = '32400';
+
 // ======================================================================
 // INIT
 // ======================================================================
@@ -44,7 +48,7 @@ export function init() {
   } else {
     const authToken = window.localStorage.getItem('authToken');
     if (authToken) {
-      start();
+      getUserInfo();
     } else {
       store.dispatch.appModel.setLoggedOut();
     }
@@ -110,7 +114,7 @@ const checkPinStatus = async (pinId) => {
     // Store the authToken in the local storage
     window.localStorage.setItem('authToken', pinStatusData.authToken);
     window.localStorage.removeItem('pinId');
-    start();
+    getUserInfo();
   } else {
     // If the PIN is not yet authorized, check again in a few seconds
     setTimeout(() => checkPinStatus(pinId), 5000);
@@ -120,10 +124,6 @@ const checkPinStatus = async (pinId) => {
 //
 // GET USER INFO
 //
-
-const start = () => {
-  getUserInfo();
-};
 
 const getUserInfo = async () => {
   const authToken = window.localStorage.getItem('authToken');
@@ -162,12 +162,16 @@ const getUserInfo = async () => {
   getAllArtists();
   getAllAlbums();
   getAlbumTracks();
-  // getUserServers();
-  // getLibraries();
+  // getAllServers();
+  // getAllLibraries();
   // getSampleTracks();
 };
 
-// const getUserServers = async () => {
+//
+// GET USER SERVERS
+//
+
+// const getAllServers = async () => {
 //   const authToken = window.localStorage.getItem('authToken');
 
 //   // Get the list of servers
@@ -197,12 +201,16 @@ const getUserInfo = async () => {
 //   console.log('Servers:', servers);
 // };
 
-// const getLibraries = async () => {
+//
+// GET USER LIBRARIES
+//
+
+// const getAllLibraries = async () => {
 //   const authToken = window.localStorage.getItem('authToken');
 //   const serverHost = '137.220.107.107';
 //   const serverPort = '32400';
 
-//   const response = await fetch(`http://${serverHost}:${serverPort}/library/sections`, {
+//   const response = await fetch(`${serverProtocol}${serverHost}:${serverPort}/library/sections`, {
 //     headers: {
 //       Accept: 'application/json',
 //       'Content-Type': 'application/json',
@@ -226,12 +234,14 @@ const getUserInfo = async () => {
 //   return libraries;
 // };
 
+//
+// GET ALL ARTISTS
+//
+
 export const getAllArtists = async () => {
   const authToken = window.localStorage.getItem('authToken');
-  const serverHost = '137.220.107.107';
-  const serverPort = '32400';
 
-  const response = await fetch(`http://${serverHost}:${serverPort}/library/sections/20/all`, {
+  const response = await fetch(`${serverProtocol}${serverHost}:${serverPort}/library/sections/20/all`, {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -247,7 +257,7 @@ export const getAllArtists = async () => {
     id: artist.ratingKey,
     title: artist.title,
     thumb: artist.thumb
-      ? `http://${serverHost}:${serverPort}/photo/:/transcode?width=320&height=320&url=${encodeURIComponent(
+      ? `${serverProtocol}${serverHost}:${serverPort}/photo/:/transcode?width=320&height=320&url=${encodeURIComponent(
           'http://localhost:32400' + artist.thumb
         )}&X-Plex-Token=${authToken}`
       : null,
@@ -260,12 +270,14 @@ export const getAllArtists = async () => {
   store.dispatch.appModel.setState({ allArtists });
 };
 
+//
+// GET ALL ALBUMS
+//
+
 export const getAllAlbums = async () => {
   const authToken = window.localStorage.getItem('authToken');
-  const serverHost = '137.220.107.107';
-  const serverPort = '32400';
 
-  const response = await fetch(`http://${serverHost}:${serverPort}/library/sections/20/all?type=9`, {
+  const response = await fetch(`${serverProtocol}${serverHost}:${serverPort}/library/sections/20/all?type=9`, {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -282,7 +294,7 @@ export const getAllAlbums = async () => {
     title: album.title,
     artist: album.parentTitle,
     thumb: album.thumb
-      ? `http://${serverHost}:${serverPort}/photo/:/transcode?width=320&height=320&url=${encodeURIComponent(
+      ? `${serverProtocol}${serverHost}:${serverPort}/photo/:/transcode?width=320&height=320&url=${encodeURIComponent(
           'http://localhost:32400' + album.thumb
         )}&X-Plex-Token=${authToken}`
       : null,
@@ -295,15 +307,21 @@ export const getAllAlbums = async () => {
   store.dispatch.appModel.setState({ allAlbums });
 };
 
+//
+// GET ARTIST ALBUMS
+//
+
+//
+// GET ALBUM TRACKS
+//
+
 export const getAlbumTracks = async () => {
   const authToken = window.localStorage.getItem('authToken');
-  const serverHost = '137.220.107.107';
-  const serverPort = '32400';
 
   // get all albums for an artist
   // const ratingKey = '149255';
   // const response = await fetch(
-  //   `http://${serverHost}:${serverPort}/library/sections/20/all?artist.id=${ratingKey}&type=9`,
+  //   `${serverProtocol}${serverHost}:${serverPort}/library/sections/20/all?artist.id=${ratingKey}&type=9`,
   //   {
   //     headers: {
   //       Accept: 'application/json',
@@ -315,7 +333,7 @@ export const getAlbumTracks = async () => {
 
   // get all songs for an album
   const ratingKey = '163528';
-  const response = await fetch(`http://${serverHost}:${serverPort}/library/metadata/${ratingKey}/children`, {
+  const response = await fetch(`${serverProtocol}${serverHost}:${serverPort}/library/metadata/${ratingKey}/children`, {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -330,8 +348,8 @@ export const getAlbumTracks = async () => {
   // const tracks = data.MediaContainer.Metadata.map((track) => ({
   //   name: track.title,
   //   artist: track.grandparentTitle,
-  //   image: `http://${serverHost}:${serverPort}${track.thumb}?X-Plex-Token=${authToken}`,
-  //   path: `http://${serverHost}:${serverPort}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
+  //   image: `${serverProtocol}${serverHost}:${serverPort}${track.thumb}?X-Plex-Token=${authToken}`,
+  //   path: `${serverProtocol}${serverHost}:${serverPort}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
   // }));
 
   // track_list = tracks;

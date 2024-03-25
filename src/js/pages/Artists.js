@@ -12,7 +12,7 @@ const Artists = () => {
   return (
     <main>
       <Title>Artists</Title>
-      <ListArtists />;
+      <ListArtists />
     </main>
   );
 };
