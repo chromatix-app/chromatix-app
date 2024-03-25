@@ -2,10 +2,151 @@
 
 .wrap {
   display: grid;
+  align-items: center;
   grid-template-columns: 1fr auto 1fr;
   height: 100px;
-  padding: 20px 30px;
+  padding: 9px 30px 10px;
   background: var(--color-panel-background);
   border-top: 1px solid var(--color-border);
   text-align: center;
+}
+
+// CURRENT
+
+.current {
+  display: flex;
+  align-items: center;
+  text-align: left;
+}
+
+.cover {
+  width: 60px;
+  height: 60px;
+  margin-right: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+}
+
+.text {
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.artist {
+  opacity: 0.7;
+  font-size: 12px;
+}
+
+// CONTROLS
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button.shuffle,
+button.rewind,
+button.play,
+button.pause,
+button.forward,
+button.repeat,
+button.queue,
+button.volHigh {
+  display: block;
+  width: 44px;
+  height: 44px;
+  padding: 8px;
+  margin: 0 5px;
+  background: none;
+  border: none;
+  border: 2px solid var(--color-panel-background);
+  border-radius: 50%;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+button.rewind {
+  padding: 8px 9px 8px 7px;
+}
+
+button.forward {
+  padding: 8px 7px 8px 9px;
+}
+
+button.shuffle,
+button.repeat {
+  padding: 9px;
+}
+
+button.play,
+button.pause {
+  margin: 0 12px;
+  background: var(--color-primary) !important;
+  border: 2px solid var(--color-panel-background);
+  color: var(--color-panel-background);
+}
+
+button.play {
+  padding: 10px 8px 10px 12px;
+}
+
+button.pause {
+  padding: 11px;
+}
+
+button.volHigh {
+  margin-right: 2px;
+}
+
+button.queue {
+  padding: 11px;
+  margin-right: 0;
+}
+
+// SCRUBBER
+
+.scrubber {
+  display: flex;
+  align-items: center;
+  margin: 4px auto -6px;
+}
+
+.scrubSlider {
+  width: 480px;
+}
+
+.scrubLeft,
+.scrubRight {
+  min-width: 35px;
+  padding-bottom: 1px;
+  opacity: 0.7;
+  font-size: 10px;
+  line-height: 1;
+}
+.scrubLeft {
+  margin-right: 8px;
+  text-align: right;
+}
+.scrubRight {
+  margin-left: 8px;
+  text-align: left;
+}
+
+// SECONDARY CONTROLS
+
+.secondary {
+  display: flex;
+  align-items: center;
+  margin: 0 0 0 auto;
+}
+
+.volSlider {
+  width: 120px;
 }

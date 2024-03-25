@@ -170,7 +170,7 @@ const getUserInfo = async () => {
 
   console.log(currentUser);
 
-  store.dispatch.appModel.setLoggedIn(jsonObj);
+  store.dispatch.appModel.setLoggedIn(currentUser);
 
   getAllArtists();
   getAllAlbums();

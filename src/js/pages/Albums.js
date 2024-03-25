@@ -2,6 +2,8 @@
 // IMPORTS
 // ======================================================================
 
+import { useSelector } from 'react-redux';
+
 import { ListAlbums, Title } from 'js/components';
 
 // ======================================================================
@@ -9,9 +11,11 @@ import { ListAlbums, Title } from 'js/components';
 // ======================================================================
 
 const Albums = () => {
+  const allAlbums = useSelector(({ appModel }) => appModel.allAlbums);
+
   return (
     <main>
-      <Title title="Albums" />
+      <Title title="Albums" subtitle={allAlbums?.length ? allAlbums?.length + ' Albums' : null} />
       <ListAlbums />
     </main>
   );

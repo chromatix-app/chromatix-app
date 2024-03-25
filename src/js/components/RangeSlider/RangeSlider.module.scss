@@ -1,0 +1,116 @@
+@import '../../../css/global';
+
+.wrap {
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  height: 20px;
+  z-index: 2;
+
+  input[type='range'] {
+    display: block;
+    position: relative;
+    appearance: none !important;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+
+    // annoyingly these must be duplicated, and
+    // won't work if you comma separate them
+    &::-webkit-slider-thumb {
+      display: none;
+      appearance: none !important;
+      width: 12px;
+      height: 12px;
+      background: var(--color-text);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    &::-moz-range-thumb {
+      display: none;
+      appearance: none !important;
+      width: 12px;
+      height: 12px;
+      background: var(--color-text);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    &::-ms-thumb {
+      display: none;
+      appearance: none !important;
+      width: 12px;
+      height: 12px;
+      background: var(--color-text);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    &:disabled {
+      &::-webkit-slider-thumb {
+        cursor: default;
+      }
+      &::-moz-range-thumb {
+        cursor: default;
+      }
+      &::-ms-thumb {
+        cursor: default;
+      }
+    }
+  }
+
+  &:hover,
+  &:focus {
+    input[type='range'] {
+      // annoyingly these must be duplicated, and
+      // won't work if you comma separate them
+      &::-webkit-slider-thumb {
+        display: block;
+      }
+      &::-moz-range-thumb {
+        display: block;
+      }
+      &::-ms-thumb {
+        display: block;
+      }
+    }
+  }
+}
+
+.track {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 1px;
+  right: 1px;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    bottom: 8px;
+    left: 0;
+    right: 0;
+    background: var(--color-text);
+    border-radius: 99px;
+    outline: none;
+    opacity: 0.25;
+  }
+}
+
+.fill {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  max-width: 100%;
+  background: var(--color-text);
+  border-radius: 99px;
+
+  .input:hover &,
+  .input:focus & {
+    background: var(--color-primary);
+  }
+}

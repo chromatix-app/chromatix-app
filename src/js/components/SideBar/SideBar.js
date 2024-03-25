@@ -13,6 +13,7 @@ import style from './SideBar.module.scss';
 const SideBar = () => {
   return (
     <div className={style.wrap}>
+      <div className={style.label}>Library</div>
       <NavLink className={style.link} activeClassName={style.linkActive} to="/artists">
         Artists
       </NavLink>
