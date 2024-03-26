@@ -2,9 +2,11 @@
 // IMPORTS
 // ======================================================================
 
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { ListArtists, Title } from 'js/components';
+import { CardSet, Loading, Title } from 'js/components';
+import * as plex from 'js/services/plex';
 
 // ======================================================================
 // COMPONENT
@@ -13,11 +15,16 @@ import { ListArtists, Title } from 'js/components';
 const Artists = () => {
   const allArtists = useSelector(({ appModel }) => appModel.allArtists);
 
+  useEffect(() => {
+    plex.getAllArtists();
+  }, []);
+
   return (
-    <main>
+    <>
       <Title title="Artists" subtitle={allArtists?.length ? allArtists?.length + ' Artists' : null} />
-      <ListArtists />
-    </main>
+      {!allArtists && <Loading forceVisible inline />}
+      {allArtists && <CardSet entries={allArtists} />}
+    </>
   );
 };
 

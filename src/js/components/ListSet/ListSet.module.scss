@@ -1,0 +1,78 @@
+@import '../../../css/global';
+
+.wrap {
+  width: 100%;
+  padding: 30px 40px 50px;
+  font-size: 12px;
+}
+
+.disc {
+  display: flex;
+  align-items: center;
+  padding: 8px 0 8px 17px;
+  margin-top: 30px;
+  opacity: 0.4;
+  font-weight: bold;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.discIcon {
+  width: 14px;
+  height: 14px;
+  margin-right: 34px;
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: 30px 1fr 1fr 200px 60px;
+  gap: 15px;
+  padding: 8px 19px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+
+.trackNumber {
+  opacity: 0.4;
+  font-weight: bold;
+
+  .entry:hover & {
+    opacity: 1;
+  }
+}
+
+.title {
+}
+
+.artist {
+  opacity: 0.4;
+
+  .entry:hover & {
+    opacity: 1;
+  }
+}
+
+.userRating {
+  opacity: 0.4;
+
+  .entry:hover & {
+    opacity: 1;
+  }
+}
+
+.duration {
+  opacity: 0.4;
+  text-align: right;
+
+  .entry:hover & {
+    opacity: 1;
+  }
+}

@@ -2,9 +2,11 @@
 // IMPORTS
 // ======================================================================
 
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { ListAlbums, Title } from 'js/components';
+import { CardSet, Loading, Title } from 'js/components';
+import * as plex from 'js/services/plex';
 
 // ======================================================================
 // COMPONENT
@@ -13,11 +15,16 @@ import { ListAlbums, Title } from 'js/components';
 const Albums = () => {
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums);
 
+  useEffect(() => {
+    plex.getAllAlbums();
+  }, []);
+
   return (
-    <main>
+    <>
       <Title title="Albums" subtitle={allAlbums?.length ? allAlbums?.length + ' Albums' : null} />
-      <ListAlbums />
-    </main>
+      {!allAlbums && <Loading forceVisible inline />}
+      {allAlbums && <CardSet entries={allAlbums} />}
+    </>
   );
 };
 

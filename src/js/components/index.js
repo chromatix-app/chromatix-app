@@ -1,8 +1,9 @@
 export { default as Card } from './Card/Card';
+export { default as CardSet } from './CardSet/CardSet';
 export { default as ControlBar } from './ControlBar/ControlBar';
 export { default as Icon } from './Icon/Icon';
-export { default as ListAlbums } from './ListAlbums/ListAlbums';
-export { default as ListArtists } from './ListArtists/ListArtists';
+export { default as ListSet } from './ListSet/ListSet';
+export { default as Loading } from './Loading/Loading';
 export { default as RangeSlider } from './RangeSlider/RangeSlider';
 export { default as SideBar } from './SideBar/SideBar';
 export { default as Title } from './Title/Title';

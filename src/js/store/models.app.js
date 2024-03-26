@@ -20,9 +20,16 @@ const appState = {
   currentUser: null,
 };
 
+const plexState = {
+  allAlbums: null,
+  allArtists: null,
+  allPlaylists: null,
+  allAlbumTracks: {},
+};
+
 // COMBINE ALL STATES
 
-const state = Object.assign(appState);
+const state = Object.assign(appState, plexState);
 
 // ======================================================================
 // REDUCERS
@@ -85,6 +92,20 @@ const effects = (dispatch) => ({
   login(payload, rootState) {
     console.log('%c--- login ---', 'color:#079189');
     plex.login();
+  },
+
+  storeAlbumTracks(payload, rootState) {
+    console.log('%c--- storeAlbumTracks ---', 'color:#079189');
+    const { albumId, albumTracks } = payload;
+
+    const allAlbumTracks = { ...rootState.appModel.allAlbumTracks };
+    allAlbumTracks[albumId] = albumTracks;
+
+    console.log(allAlbumTracks);
+
+    dispatch.appModel.setState({
+      allAlbumTracks,
+    });
   },
 });
 

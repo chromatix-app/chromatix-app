@@ -18,9 +18,9 @@ const ArtistDetail = () => {
   const currentArtist = allArtists?.filter((artist) => artist.id === artistId)[0];
 
   return (
-    <main>
+    <>
       <Title title={currentArtist?.title} />
-    </main>
+    </>
   );
 };
 

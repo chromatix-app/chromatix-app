@@ -30,12 +30,8 @@ const serverArtPath = `${serverProtocol}localhost:32400`;
 // const serverArtPath = `${serverProtocol}${serverHost}:${serverPort}`;
 
 // ======================================================================
-// INIT
-// ======================================================================
-
-//
 // LOAD
-//
+// ======================================================================
 
 export function init() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -59,9 +55,9 @@ export function init() {
   }
 }
 
-//
+// ======================================================================
 // LOGIN
-//
+// ======================================================================
 
 export const login = async () => {
   const pinResponse = await fetch('https://plex.tv/api/v2/pins', {
@@ -94,9 +90,9 @@ export const login = async () => {
   window.location.href = authAppUrl;
 };
 
-//
+// ======================================================================
 // LOGIN CALLBACK
-//
+// ======================================================================
 
 const checkPinStatus = async (pinId) => {
   const pinStatusResponse = await fetch(`https://plex.tv/api/v2/pins/${pinId}`, {
@@ -125,18 +121,18 @@ const checkPinStatus = async (pinId) => {
   }
 };
 
-//
+// ======================================================================
 // LOGOUT
-//
+// ======================================================================
 
 export const logout = () => {
   window.localStorage.removeItem('music-authToken');
   store.dispatch.appModel.setLoggedOut();
 };
 
-//
+// ======================================================================
 // GET USER INFO
-//
+// ======================================================================
 
 const getUserInfo = async () => {
   const authToken = window.localStorage.getItem('music-authToken');
@@ -171,18 +167,11 @@ const getUserInfo = async () => {
   console.log(currentUser);
 
   store.dispatch.appModel.setLoggedIn(currentUser);
-
-  getAllArtists();
-  getAllAlbums();
-  getAlbumTracks();
-  // getAllServers();
-  // getAllLibraries();
-  // getSampleTracks();
 };
 
-//
+// ======================================================================
 // GET USER SERVERS
-//
+// ======================================================================
 
 // const getAllServers = async () => {
 //   const authToken = window.localStorage.getItem('music-authToken');
@@ -214,9 +203,9 @@ const getUserInfo = async () => {
 //   console.log('Servers:', servers);
 // };
 
-//
+// ======================================================================
 // GET USER LIBRARIES
-//
+// ======================================================================
 
 // const getAllLibraries = async () => {
 //   const authToken = window.localStorage.getItem('music-authToken');
@@ -247,126 +236,155 @@ const getUserInfo = async () => {
 //   return libraries;
 // };
 
-//
+// ======================================================================
 // GET ALL ARTISTS
-//
+// ======================================================================
+
+let getAllArtistsRunning;
 
 export const getAllArtists = async () => {
-  const authToken = window.localStorage.getItem('music-authToken');
+  if (!getAllArtistsRunning) {
+    const prevAllArtists = store.getState().appModel.allArtists;
+    if (!prevAllArtists) {
+      getAllArtistsRunning = true;
+      const authToken = window.localStorage.getItem('music-authToken');
 
-  const response = await fetch(`${serverProtocol}${serverHost}:${serverPort}/library/sections/20/all`, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'X-Plex-Token': authToken,
-    },
-  });
+      const response = await fetch(`${serverProtocol}${serverHost}:${serverPort}/library/sections/20/all`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Plex-Token': authToken,
+        },
+      });
 
-  const data = await response.json();
+      const data = await response.json();
 
-  // console.log(data.MediaContainer.Metadata);
+      // console.log(data.MediaContainer.Metadata);
 
-  const allArtists = data.MediaContainer.Metadata.map((artist) => ({
-    id: artist.ratingKey,
-    title: artist.title,
-    thumb: artist.thumb
-      ? `${serverProtocol}${serverHost}:${serverPort}/photo/:/transcode?width=320&height=320&url=${encodeURIComponent(
-          `${serverArtPath}${artist.thumb}`
-        )}&X-Plex-Token=${authToken}`
-      : null,
-    userRating: artist.userRating,
-    link: '/artists/' + artist.ratingKey,
-  }));
+      const allArtists = data.MediaContainer.Metadata.map((artist) => ({
+        id: artist.ratingKey,
+        title: artist.title,
+        thumb: artist.thumb
+          ? `${serverProtocol}${serverHost}:${serverPort}/photo/:/transcode?width=320&height=320&url=${encodeURIComponent(
+              `${serverArtPath}${artist.thumb}`
+            )}&X-Plex-Token=${authToken}`
+          : null,
+        userRating: artist.userRating,
+        link: '/artists/' + artist.ratingKey,
+      }));
 
-  console.log(allArtists);
+      store.dispatch.appModel.setState({ allArtists });
 
-  store.dispatch.appModel.setState({ allArtists });
+      getAllArtistsRunning = false;
+    }
+  }
 };
 
-//
+// ======================================================================
 // GET ALL ALBUMS
-//
+// ======================================================================
+
+let getAllAlbumsRunning;
 
 export const getAllAlbums = async () => {
-  const authToken = window.localStorage.getItem('music-authToken');
+  if (!getAllAlbumsRunning) {
+    const prevAllAlbums = store.getState().appModel.allAlbums;
+    if (!prevAllAlbums) {
+      getAllAlbumsRunning = true;
+      const authToken = window.localStorage.getItem('music-authToken');
 
-  const response = await fetch(`${serverProtocol}${serverHost}:${serverPort}/library/sections/20/all?type=9`, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'X-Plex-Token': authToken,
-    },
-  });
+      const response = await fetch(`${serverProtocol}${serverHost}:${serverPort}/library/sections/20/all?type=9`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Plex-Token': authToken,
+        },
+      });
 
-  const data = await response.json();
+      const data = await response.json();
 
-  // console.log(data.MediaContainer.Metadata);
+      // console.log(data.MediaContainer.Metadata);
 
-  const allAlbums = data.MediaContainer.Metadata.map((album) => ({
-    id: album.ratingKey,
-    title: album.title,
-    artist: album.parentTitle,
-    thumb: album.thumb
-      ? `${serverProtocol}${serverHost}:${serverPort}/photo/:/transcode?width=320&height=320&url=${encodeURIComponent(
-          `${serverArtPath}${album.thumb}`
-        )}&X-Plex-Token=${authToken}`
-      : null,
-    userRating: album.userRating,
-    link: '/albums/' + album.ratingKey,
-  }));
+      const allAlbums = data.MediaContainer.Metadata.map((album) => ({
+        id: album.ratingKey,
+        title: album.title,
+        artist: album.parentTitle,
+        thumb: album.thumb
+          ? `${serverProtocol}${serverHost}:${serverPort}/photo/:/transcode?width=320&height=320&url=${encodeURIComponent(
+              `${serverArtPath}${album.thumb}`
+            )}&X-Plex-Token=${authToken}`
+          : null,
+        userRating: album.userRating,
+        releaseDate: album.originallyAvailableAt,
+        link: '/albums/' + album.ratingKey,
+      }));
 
-  console.log(allAlbums);
+      store.dispatch.appModel.setState({ allAlbums });
 
-  store.dispatch.appModel.setState({ allAlbums });
+      getAllAlbumsRunning = false;
+    }
+  }
 };
 
-//
+// ======================================================================
 // GET ARTIST ALBUMS
-//
+// ======================================================================
 
-//
+// get all albums for an artist
+// const ratingKey = '149255';
+// const response = await fetch(
+//   `${serverProtocol}${serverHost}:${serverPort}/library/sections/20/all?artist.id=${ratingKey}&type=9`,
+//   {
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'application/json',
+//       'X-Plex-Token': authToken,
+//     },
+//   }
+// );
+
+// ======================================================================
 // GET ALBUM TRACKS
-//
+// ======================================================================
 
-export const getAlbumTracks = async () => {
-  const authToken = window.localStorage.getItem('music-authToken');
+let getAlbumTracksRunning;
 
-  // get all albums for an artist
-  // const ratingKey = '149255';
-  // const response = await fetch(
-  //   `${serverProtocol}${serverHost}:${serverPort}/library/sections/20/all?artist.id=${ratingKey}&type=9`,
-  //   {
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'application/json',
-  //       'X-Plex-Token': authToken,
-  //     },
-  //   }
-  // );
+export const getAlbumTracks = async (albumId) => {
+  if (!getAlbumTracksRunning) {
+    const prevAlbumTracks = store.getState().appModel.allAlbumTracks[albumId];
+    if (!prevAlbumTracks) {
+      getAlbumTracksRunning = true;
+      const authToken = window.localStorage.getItem('music-authToken');
 
-  // get all songs for an album
-  const ratingKey = '163528';
-  const response = await fetch(`${serverProtocol}${serverHost}:${serverPort}/library/metadata/${ratingKey}/children`, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'X-Plex-Token': authToken,
-    },
-  });
+      const response = await fetch(
+        `${serverProtocol}${serverHost}:${serverPort}/library/metadata/${albumId}/children`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': authToken,
+          },
+        }
+      );
 
-  const data = await response.json();
+      const data = await response.json();
 
-  console.log(data.MediaContainer.Metadata);
+      // console.log(data.MediaContainer.Metadata);
 
-  const albumTracks = data.MediaContainer.Metadata.map((track) => ({
-    name: track.title,
-    artist: track.grandparentTitle,
-    image: `${serverProtocol}${serverHost}:${serverPort}${track.thumb}?X-Plex-Token=${authToken}`,
-    path: `${serverProtocol}${serverHost}:${serverPort}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
-  }));
+      const albumTracks = data.MediaContainer.Metadata.map((track) => ({
+        title: track.title,
+        artist: track.grandparentTitle,
+        trackNumber: track.index,
+        discNumber: track.parentIndex,
+        duration: track.Media[0].duration,
+        userRating: track.userRating,
+        image: `${serverProtocol}${serverHost}:${serverPort}${track.thumb}?X-Plex-Token=${authToken}`,
+        path: `${serverProtocol}${serverHost}:${serverPort}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
+      }));
 
-  store.dispatch.appModel.setState({ albumTracks });
+      store.dispatch.appModel.storeAlbumTracks({ albumId, albumTracks });
 
-  // track_list = tracks;
-  // loadTrack(track_index);
+      getAlbumTracksRunning = false;
+    }
+  }
 };

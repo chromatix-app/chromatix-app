@@ -2,23 +2,19 @@
 // IMPORTS
 // ======================================================================
 
-import { useSelector } from 'react-redux';
-
 import { Card } from 'js/components';
-import style from './ListArtists.module.scss';
+import style from './CardSet.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const ListArtists = () => {
-  const allArtists = useSelector(({ appModel }) => appModel.allArtists);
-
-  if (allArtists) {
+const CardSet = ({ entries }) => {
+  if (entries) {
     return (
       <div className={style.wrap}>
-        {allArtists.map((artist, index) => (
-          <Card key={index} {...artist} />
+        {entries.map((entry, index) => (
+          <Card key={index} {...entry} />
         ))}
       </div>
     );
@@ -29,4 +25,4 @@ const ListArtists = () => {
 // EXPORT
 // ======================================================================
 
-export default ListArtists;
+export default CardSet;

@@ -7,6 +7,7 @@ import clsx from 'clsx';
 import style from './Icon.module.scss';
 
 // custom
+import { ReactComponent as DiscIcon } from './icons/music/disc.svg';
 import { ReactComponent as FastForwardIcon } from './icons/music/fast-forward.svg';
 import { ReactComponent as GridIcon } from './icons/music/grid.svg';
 import { ReactComponent as ListIcon } from './icons/music/list.svg';
@@ -34,6 +35,7 @@ import { ReactComponent as VolXIcon } from './icons/music/vol-x.svg';
 // ======================================================================
 
 const customIcons = {
+  DiscIcon,
   FastForwardIcon,
   GridIcon,
   ListIcon,
@@ -67,6 +69,7 @@ const getIconComponent = (icon) => {
 
 export const Icon = ({ icon, cover, stroke }) => {
   const DisplayIcon = getIconComponent(icon);
+  if (!DisplayIcon) return null;
   return (
     <span
       className={clsx(style.icon, {
