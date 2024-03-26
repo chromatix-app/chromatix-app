@@ -54,6 +54,18 @@ export const authRoutes = [
     component: 'AlbumDetail',
   },
 
+  // playlists
+  {
+    path: '/playlists',
+    exact: true,
+    component: 'Playlists',
+  },
+  {
+    path: '/playlists/:playlistId',
+    exact: true,
+    component: 'PlaylistDetail',
+  },
+
   // other
   {
     component: 'Error404Auth',

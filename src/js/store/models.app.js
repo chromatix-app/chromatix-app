@@ -22,9 +22,10 @@ const appState = {
 
 const plexState = {
   allAlbums: null,
+  allAlbumTracks: {},
   allArtists: null,
   allPlaylists: null,
-  allAlbumTracks: {},
+  allPlaylistTracks: {},
 };
 
 // COMBINE ALL STATES
@@ -105,6 +106,20 @@ const effects = (dispatch) => ({
 
     dispatch.appModel.setState({
       allAlbumTracks,
+    });
+  },
+
+  storePlaylistTracks(payload, rootState) {
+    console.log('%c--- storePlaylistTracks ---', 'color:#079189');
+    const { playlistId, playlistTracks } = payload;
+
+    const allPlaylistTracks = { ...rootState.appModel.allPlaylistTracks };
+    allPlaylistTracks[playlistId] = playlistTracks;
+
+    console.log(allPlaylistTracks);
+
+    dispatch.appModel.setState({
+      allPlaylistTracks,
     });
   },
 });

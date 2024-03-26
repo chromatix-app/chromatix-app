@@ -27,6 +27,8 @@ const serverPort = '32400';
 
 const serverArtPath = `${serverProtocol}localhost:32400`;
 
+const thumbSize = 480;
+
 // const serverArtPath = `${serverProtocol}${serverHost}:${serverPort}`;
 
 // ======================================================================
@@ -261,11 +263,11 @@ export const getAllArtists = async () => {
 
       // console.log(data.MediaContainer.Metadata);
 
-      const allArtists = data.MediaContainer.Metadata.map((artist) => ({
+      const allArtists = data.MediaContainer.Metadata?.map((artist) => ({
         id: artist.ratingKey,
         title: artist.title,
         thumb: artist.thumb
-          ? `${serverProtocol}${serverHost}:${serverPort}/photo/:/transcode?width=320&height=320&url=${encodeURIComponent(
+          ? `${serverProtocol}${serverHost}:${serverPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
               `${serverArtPath}${artist.thumb}`
             )}&X-Plex-Token=${authToken}`
           : null,
@@ -305,12 +307,12 @@ export const getAllAlbums = async () => {
 
       // console.log(data.MediaContainer.Metadata);
 
-      const allAlbums = data.MediaContainer.Metadata.map((album) => ({
+      const allAlbums = data.MediaContainer.Metadata?.map((album) => ({
         id: album.ratingKey,
         title: album.title,
         artist: album.parentTitle,
         thumb: album.thumb
-          ? `${serverProtocol}${serverHost}:${serverPort}/photo/:/transcode?width=320&height=320&url=${encodeURIComponent(
+          ? `${serverProtocol}${serverHost}:${serverPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
               `${serverArtPath}${album.thumb}`
             )}&X-Plex-Token=${authToken}`
           : null,
@@ -371,7 +373,7 @@ export const getAlbumTracks = async (albumId) => {
 
       // console.log(data.MediaContainer.Metadata);
 
-      const albumTracks = data.MediaContainer.Metadata.map((track) => ({
+      const albumTracks = data.MediaContainer.Metadata?.map((track) => ({
         title: track.title,
         artist: track.grandparentTitle,
         trackNumber: track.index,
@@ -385,6 +387,93 @@ export const getAlbumTracks = async (albumId) => {
       store.dispatch.appModel.storeAlbumTracks({ albumId, albumTracks });
 
       getAlbumTracksRunning = false;
+    }
+  }
+};
+
+// ======================================================================
+// GET ALL PLAYLISTS
+// ======================================================================
+
+let getAllPlaylistsRunning;
+
+export const getAllPlaylists = async () => {
+  if (!getAllPlaylistsRunning) {
+    const prevAllPlaylists = store.getState().appModel.allPlaylists;
+    if (!prevAllPlaylists) {
+      getAllPlaylistsRunning = true;
+      const authToken = window.localStorage.getItem('music-authToken');
+
+      const response = await fetch(`${serverProtocol}${serverHost}:${serverPort}/playlists`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Plex-Token': authToken,
+        },
+      });
+
+      const data = await response.json();
+
+      // console.log(data.MediaContainer.Metadata);
+
+      const allPlaylists = data.MediaContainer.Metadata?.filter((playlist) => playlist.playlistType === 'audio') // Filter out only music playlists
+        .map((playlist) => ({
+          id: playlist.ratingKey,
+          title: playlist.title,
+          thumb: playlist.composite
+            ? `${serverProtocol}${serverHost}:${serverPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                `${serverArtPath}${playlist.composite}`
+              )}&X-Plex-Token=${authToken}`
+            : null,
+          link: '/playlists/' + playlist.ratingKey,
+        }));
+
+      store.dispatch.appModel.setState({ allPlaylists });
+
+      getAllPlaylistsRunning = false;
+    }
+  }
+};
+
+// ======================================================================
+// GET PLAYLIST TRACKS
+// ======================================================================
+
+let getPlaylistTracksRunning;
+
+export const getPlaylistTracks = async (playlistId) => {
+  if (!getPlaylistTracksRunning) {
+    const prevPlaylistTracks = store.getState().appModel.allPlaylistTracks[playlistId];
+    if (!prevPlaylistTracks) {
+      getPlaylistTracksRunning = true;
+      const authToken = window.localStorage.getItem('music-authToken');
+
+      const response = await fetch(`${serverProtocol}${serverHost}:${serverPort}/playlists/${playlistId}/items`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Plex-Token': authToken,
+        },
+      });
+
+      const data = await response.json();
+
+      // console.log(data.MediaContainer.Metadata);
+
+      const playlistTracks = data.MediaContainer.Metadata?.map((track) => ({
+        title: track.title,
+        artist: track.grandparentTitle,
+        trackNumber: track.index,
+        discNumber: track.parentIndex,
+        duration: track.duration,
+        userRating: track.userRating,
+        image: `${serverProtocol}${serverHost}:${serverPort}${track.thumb}?X-Plex-Token=${authToken}`,
+        path: `${serverProtocol}${serverHost}:${serverPort}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
+      }));
+
+      store.dispatch.appModel.storePlaylistTracks({ playlistId, playlistTracks });
+
+      getPlaylistTracksRunning = false;
     }
   }
 };
