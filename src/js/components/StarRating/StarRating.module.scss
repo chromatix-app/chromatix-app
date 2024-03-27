@@ -1,0 +1,15 @@
+@import '../../../css/global';
+
+.wrap {
+  display: flex;
+  top: 2px;
+}
+
+.star {
+  width: 14px;
+  height: 14px;
+}
+
+.star + .star {
+  margin-left: 2px;
+}

@@ -22,6 +22,9 @@ import { ReactComponent as SearchIcon } from './icons/music/search.svg';
 import { ReactComponent as ShuffleIcon } from './icons/music/shuffle.svg';
 import { ReactComponent as SkipBackIcon } from './icons/music/skip-back.svg';
 import { ReactComponent as SkipForwardIcon } from './icons/music/skip-forward.svg';
+import { ReactComponent as StarEmptyIcon } from './icons/music/star-empty.svg';
+import { ReactComponent as StarFullIcon } from './icons/music/star-full.svg';
+import { ReactComponent as StarHalfIcon } from './icons/music/star-half.svg';
 import { ReactComponent as VolDownIcon } from './icons/music/vol-down.svg';
 import { ReactComponent as VolHighIcon } from './icons/music/vol-high.svg';
 import { ReactComponent as VolLowIcon } from './icons/music/vol-low.svg';
@@ -50,6 +53,9 @@ const customIcons = {
   ShuffleIcon,
   SkipBackIcon,
   SkipForwardIcon,
+  StarEmptyIcon,
+  StarFullIcon,
+  StarHalfIcon,
   VolDownIcon,
   VolHighIcon,
   VolLowIcon,

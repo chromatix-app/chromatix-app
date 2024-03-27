@@ -5,6 +5,7 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import moment from 'moment';
 
 import { ListSet, Loading, Title } from 'js/components';
 import * as plex from 'js/services/plex';
@@ -22,6 +23,12 @@ const PlaylistDetail = () => {
   const allPlaylistTracks = useSelector(({ appModel }) => appModel.allPlaylistTracks);
   const currentPlaylistTracks = allPlaylistTracks[playlistId];
 
+  const playlistTitle = currentPlaylist?.title;
+  const playlistTracks = currentPlaylistTracks?.length;
+  const playlistDurationMilli = currentPlaylistTracks?.reduce((acc, track) => acc + track.duration, 0);
+  const playlistDurationSecs = moment.duration(playlistDurationMilli, 'milliseconds').asSeconds();
+  const playlistDurationMins = `${Math.round(playlistDurationSecs / 60)}`;
+
   useEffect(() => {
     plex.getAllPlaylists();
     plex.getPlaylistTracks(playlistId);
@@ -29,12 +36,15 @@ const PlaylistDetail = () => {
 
   return (
     <>
-      <Title
-        title={currentPlaylist?.title}
-        subtitle={currentPlaylist?.artist ? 'by ' + currentPlaylist?.artist : null}
-      />
-      {!currentPlaylistTracks && <Loading forceVisible inline />}
-      {currentPlaylistTracks && <ListSet entries={currentPlaylistTracks} />}
+      {currentPlaylist && (
+        <Title
+          title={playlistTitle}
+          subtitle={currentPlaylistTracks && playlistTracks + ' tracks'}
+          detail={currentPlaylistTracks && playlistDurationMins + ' mins'}
+        />
+      )}
+      {!(currentPlaylist && currentPlaylistTracks) && <Loading forceVisible inline />}
+      {currentPlaylist && currentPlaylistTracks && <ListSet variant="playlist" entries={currentPlaylistTracks} />}
     </>
   );
 };

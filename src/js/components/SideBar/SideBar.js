@@ -30,7 +30,7 @@ const SideBar = () => {
       <NavLink className={style.link} activeClassName={style.linkActive} to="/albums">
         Albums
       </NavLink>
-      <NavLink className={style.link} activeClassName={style.linkActive} to="/playlists">
+      <NavLink className={style.link} activeClassName={style.linkActive} to="/playlists" exact>
         Playlists
       </NavLink>
       {allPlaylists && (

@@ -27,12 +27,16 @@
 
 .entry {
   display: grid;
-  grid-template-columns: 30px 1fr 1fr 200px 60px;
+  grid-template-columns: 30px 1.3fr 1fr 0.5fr 60px;
   gap: 15px;
   padding: 8px 19px;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 8px;
+
+  .wrap.wrapPlaylist & {
+    grid-template-columns: 30px 1.3fr 1fr 1fr 0.5fr 60px;
+  }
 
   &:hover {
     background: rgba(255, 255, 255, 0.08);
@@ -60,8 +64,16 @@
   }
 }
 
-.userRating {
+.album {
   opacity: 0.4;
+
+  .entry:hover & {
+    opacity: 1;
+  }
+}
+
+.userRating {
+  opacity: 0.3;
 
   .entry:hover & {
     opacity: 1;

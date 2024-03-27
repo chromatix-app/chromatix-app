@@ -389,6 +389,7 @@ export const getAlbumTracks = async (albumId) => {
       const albumTracks = data.MediaContainer.Metadata?.map((track) => ({
         title: track.title,
         artist: track.grandparentTitle,
+        album: track.parentTitle,
         trackNumber: track.index,
         discNumber: track.parentIndex,
         duration: track.Media[0].duration,
@@ -479,6 +480,7 @@ export const getPlaylistTracks = async (playlistId) => {
       const playlistTracks = data.MediaContainer.Metadata?.map((track) => ({
         title: track.title,
         artist: track.grandparentTitle,
+        album: track.parentTitle,
         trackNumber: track.index,
         discNumber: track.parentIndex,
         duration: track.duration,

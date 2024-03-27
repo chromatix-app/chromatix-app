@@ -4,6 +4,8 @@
 
 import { NavLink } from 'react-router-dom';
 
+import { StarRating } from 'js/components';
+
 import style from './Card.module.scss';
 
 // ======================================================================
@@ -19,7 +21,11 @@ const Card = ({ thumb, title, artist, userRating, link }) => {
       <div className={style.body}>
         {title && <div className={style.title}>{title}</div>}
         {artist && <div className={style.subtitle}>{artist}</div>}
-        {userRating && <div className={style.title}>{userRating}</div>}
+        {userRating && (
+          <div className={style.rating}>
+            <StarRating rating={userRating} />
+          </div>
+        )}
       </div>
     </Component>
   );

@@ -36,10 +36,21 @@
 }
 
 .title {
+  overflow: hidden;
   font-size: 12px;
   font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .subtitle {
+  overflow: hidden;
   opacity: 0.6;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rating {
+  margin-top: 5px;
+  opacity: 0.23;
 }

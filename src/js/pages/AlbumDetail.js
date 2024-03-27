@@ -23,7 +23,13 @@ const AlbumDetail = () => {
   const allAlbumTracks = useSelector(({ appModel }) => appModel.allAlbumTracks);
   const currentAlbumTracks = allAlbumTracks[albumId];
 
-  const releaseYear = currentAlbum?.releaseDate ? moment(currentAlbum?.releaseDate).format('YYYY') : null;
+  const albumTitle = currentAlbum?.title;
+  const albumArtist = currentAlbum?.artist;
+  const albumRelease = currentAlbum?.releaseDate ? moment(currentAlbum?.releaseDate).format('YYYY') : null;
+  const albumTracks = currentAlbumTracks?.length;
+  const albumDurationMilli = currentAlbumTracks?.reduce((acc, track) => acc + track.duration, 0);
+  const albumDurationSecs = moment.duration(albumDurationMilli, 'milliseconds').asSeconds();
+  const albumDurationMins = `${Math.round(albumDurationSecs / 60)}`;
 
   useEffect(() => {
     plex.getAllAlbums();
@@ -32,22 +38,17 @@ const AlbumDetail = () => {
 
   return (
     <>
-      <Title
-        title={currentAlbum?.title}
-        subtitle={
-          currentAlbum?.artist
-            ? 'by ' +
-              currentAlbum?.artist +
-              ' • ' +
-              releaseYear +
-              ' • ' +
-              currentAlbumTracks?.length +
-              ' tracks • duration'
-            : null
-        }
-      />
-      {!currentAlbumTracks && <Loading forceVisible inline />}
-      {currentAlbumTracks && <ListSet entries={currentAlbumTracks} />}
+      {currentAlbum && (
+        <Title
+          title={albumTitle}
+          subtitle={albumArtist && albumArtist}
+          detail={currentAlbumTracks && albumRelease + ' • ' + albumTracks + ' tracks • ' + albumDurationMins + ' mins'}
+        />
+      )}
+      <>
+        {!(currentAlbum && currentAlbumTracks) && <Loading forceVisible inline />}
+        {currentAlbum && currentAlbumTracks && <ListSet variant="album" entries={currentAlbumTracks} />}
+      </>
     </>
   );
 };
