@@ -21,6 +21,8 @@ const appState = {
 };
 
 const plexState = {
+  allServers: null,
+  allLibraries: null,
   allAlbums: null,
   allAlbumTracks: {},
   allArtists: null,

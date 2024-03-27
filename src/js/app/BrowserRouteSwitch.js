@@ -2,11 +2,11 @@
 // IMPORTS
 // ======================================================================
 
-// import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
 import { defaultRoutes, authRoutes } from 'js/_config/routes';
+import BrowserRouteValidate from 'js/app/BrowserRouteValidate';
 import * as pages from 'js/pages';
 
 // ======================================================================
@@ -27,7 +27,13 @@ const renderRoutes = (routes) => {
                 route.redirect ? (
                   <Redirect to={route.redirect} />
                 ) : (
-                  <>{ActualComponent && <ActualComponent {...props} />}</>
+                  <>
+                    {ActualComponent && (
+                      <BrowserRouteValidate {...route} {...props}>
+                        <ActualComponent {...props} />
+                      </BrowserRouteValidate>
+                    )}
+                  </>
                 )
               }
             />
@@ -49,14 +55,6 @@ const BrowserRouteSwitch = () => {
     return renderRoutes(defaultRoutes);
   }
 };
-
-// ======================================================================
-// PROPTYPES
-// ======================================================================
-
-// BrowserRouteSwitch.propTypes = {
-//   loggedIn: PropTypes.bool.isRequired,
-// };
 
 // ======================================================================
 // EXPORT

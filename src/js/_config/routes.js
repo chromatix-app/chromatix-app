@@ -29,6 +29,11 @@ export const authRoutes = [
     exact: true,
     redirect: '/artists',
   },
+  {
+    path: '/servers',
+    exact: true,
+    component: 'Servers',
+  },
 
   // artists
   {

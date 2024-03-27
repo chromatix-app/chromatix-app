@@ -3,7 +3,7 @@
 // ======================================================================
 
 import { init } from '@rematch/core';
-// import sha3 from 'crypto-js/sha3';
+import sha3 from 'crypto-js/sha3';
 
 import { appModel } from 'js/store/models.app';
 import { persistentModel } from 'js/store/models.persistent';
@@ -49,16 +49,16 @@ const saveData = () => {
 // save relevant store data to localstorage
 
 const doSaveData = () => {
-  // const loggedIn = store.getState().appModel.loggedIn;
-  // localStorage.setItem(config.persistentStoreId, JSON.stringify(store.getState().persistentModel));
-  // if (loggedIn) {
-  //   const userName = store.getState().appModel.currentUserInfo.username;
-  //   if (userName) {
-  //     const userHash = sha3('music' + userName, { outputLength: 224 }).toString();
-  //     const sessionKey = config.sessionStoreId + '-' + userHash;
-  //     localStorage.setItem(sessionKey, JSON.stringify(store.getState().sessionModel));
-  //   }
-  // }
+  const loggedIn = store.getState().appModel.loggedIn;
+  localStorage.setItem(config.persistentStoreId, JSON.stringify(store.getState().persistentModel));
+  if (loggedIn) {
+    const userName = store.getState().appModel.currentUser.id;
+    if (userName) {
+      const userHash = sha3('music' + userName, { outputLength: 224 }).toString();
+      const sessionKey = config.sessionStoreId + '-' + userHash;
+      localStorage.setItem(sessionKey, JSON.stringify(store.getState().sessionModel));
+    }
+  }
 };
 
 // ======================================================================

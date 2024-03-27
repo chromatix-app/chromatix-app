@@ -21,15 +21,13 @@ const redirectUrlLocal = 'http://localhost:3000?plex=true';
 const redirectUrlProd = 'https://chromatix.vercel.app?plex=true';
 const redirectUrlActual = isProduction ? redirectUrlProd : redirectUrlLocal;
 
-const serverProtocol = isProduction ? 'https://' : 'http://';
-const serverHost = '137.220.107.107';
-const serverPort = '32400';
-
-const serverArtPath = `${serverProtocol}localhost:32400`;
+const plexServerProtocol = isProduction ? 'https://' : 'http://';
+const plexServerHost = '137.220.107.107';
+const plexServerPort = '32400';
+const plexServerArtPath = `${plexServerProtocol}localhost:32400`;
+const plexLibraryId = '20';
 
 const thumbSize = 480;
-
-// const serverArtPath = `${serverProtocol}${serverHost}:${serverPort}`;
 
 // ======================================================================
 // LOAD
@@ -49,6 +47,7 @@ export function init() {
     }
   } else {
     const authToken = window.localStorage.getItem('music-authToken');
+
     if (authToken) {
       getUserInfo();
     } else {
@@ -118,8 +117,8 @@ const checkPinStatus = async (pinId) => {
     window.localStorage.removeItem('music-pinId');
     getUserInfo();
   } else {
-    // If the PIN is not yet authorized, check again in a few seconds
-    setTimeout(() => checkPinStatus(pinId), 5000);
+    // If the PIN is not yet authorized, check again in a second
+    setTimeout(() => checkPinStatus(pinId), 1000);
   }
 };
 
@@ -175,35 +174,43 @@ const getUserInfo = async () => {
 // GET USER SERVERS
 // ======================================================================
 
-// const getAllServers = async () => {
-//   const authToken = window.localStorage.getItem('music-authToken');
+let getUserServersRunning;
 
-//   // Get the list of servers
-//   const serversResponse = await fetch('https://plex.tv/pms/servers', {
-//     headers: {
-//       Accept: 'application/json',
-//       'Content-Type': 'application/json',
-//       'X-Plex-Token': authToken,
-//     },
-//   });
+export const getAllServers = async () => {
+  if (!getUserServersRunning) {
+    const prevAllServers = store.getState().appModel.allServers;
+    if (!prevAllServers) {
+      getUserServersRunning = true;
+      const authToken = window.localStorage.getItem('music-authToken');
 
-//   if (!serversResponse.ok) {
-//     console.error('Failed to get servers:', serversResponse.statusText);
-//     return;
-//   }
+      const response = await fetch('https://plex.tv/pms/servers', {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Plex-Token': authToken,
+        },
+      });
 
-//   const parser = new DOMParser();
-//   const serversData = await serversResponse.text();
-//   const serversDoc = parser.parseFromString(serversData, 'text/xml');
+      const data = await response.text();
 
-//   const servers = Array.from(serversDoc.getElementsByTagName('Server')).map((server) => ({
-//     name: server.getAttribute('name'),
-//     host: server.getAttribute('host'),
-//     port: server.getAttribute('port'),
-//   }));
+      // parse the XML response
+      const parser = new DOMParser();
+      const parsedData = parser.parseFromString(data, 'text/xml');
 
-//   console.log('Servers:', servers);
-// };
+      const allServers = Array.from(parsedData.getElementsByTagName('Server')).map((server) => ({
+        name: server.getAttribute('name'),
+        host: server.getAttribute('host'),
+        port: server.getAttribute('port'),
+      }));
+
+      console.log(allServers);
+
+      store.dispatch.appModel.setState({ allServers });
+
+      getUserServersRunning = false;
+    }
+  }
+};
 
 // ======================================================================
 // GET USER LIBRARIES
@@ -211,10 +218,10 @@ const getUserInfo = async () => {
 
 // const getAllLibraries = async () => {
 //   const authToken = window.localStorage.getItem('music-authToken');
-//   const serverHost = '137.220.107.107';
-//   const serverPort = '32400';
+//   const plexServerHost = '137.220.107.107';
+//   const plexServerPort = '32400';
 
-//   const response = await fetch(`${serverProtocol}${serverHost}:${serverPort}/library/sections`, {
+//   const response = await fetch(`${plexServerProtocol}${plexServerHost}:${plexServerPort}/library/sections`, {
 //     headers: {
 //       Accept: 'application/json',
 //       'Content-Type': 'application/json',
@@ -251,13 +258,16 @@ export const getAllArtists = async () => {
       getAllArtistsRunning = true;
       const authToken = window.localStorage.getItem('music-authToken');
 
-      const response = await fetch(`${serverProtocol}${serverHost}:${serverPort}/library/sections/20/all`, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
+      const response = await fetch(
+        `${plexServerProtocol}${plexServerHost}:${plexServerPort}/library/sections/${plexLibraryId}/all`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': authToken,
+          },
+        }
+      );
 
       const data = await response.json();
 
@@ -267,8 +277,8 @@ export const getAllArtists = async () => {
         id: artist.ratingKey,
         title: artist.title,
         thumb: artist.thumb
-          ? `${serverProtocol}${serverHost}:${serverPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-              `${serverArtPath}${artist.thumb}`
+          ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+              `${plexServerArtPath}${artist.thumb}`
             )}&X-Plex-Token=${authToken}`
           : null,
         userRating: artist.userRating,
@@ -295,13 +305,16 @@ export const getAllAlbums = async () => {
       getAllAlbumsRunning = true;
       const authToken = window.localStorage.getItem('music-authToken');
 
-      const response = await fetch(`${serverProtocol}${serverHost}:${serverPort}/library/sections/20/all?type=9`, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
+      const response = await fetch(
+        `${plexServerProtocol}${plexServerHost}:${plexServerPort}/library/sections/${plexLibraryId}/all?type=9`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': authToken,
+          },
+        }
+      );
 
       const data = await response.json();
 
@@ -312,8 +325,8 @@ export const getAllAlbums = async () => {
         title: album.title,
         artist: album.parentTitle,
         thumb: album.thumb
-          ? `${serverProtocol}${serverHost}:${serverPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-              `${serverArtPath}${album.thumb}`
+          ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+              `${plexServerArtPath}${album.thumb}`
             )}&X-Plex-Token=${authToken}`
           : null,
         userRating: album.userRating,
@@ -335,7 +348,7 @@ export const getAllAlbums = async () => {
 // get all albums for an artist
 // const ratingKey = '149255';
 // const response = await fetch(
-//   `${serverProtocol}${serverHost}:${serverPort}/library/sections/20/all?artist.id=${ratingKey}&type=9`,
+//   `${plexServerProtocol}${plexServerHost}:${plexServerPort}/library/sections/${plexLibraryId}/all?artist.id=${ratingKey}&type=9`,
 //   {
 //     headers: {
 //       Accept: 'application/json',
@@ -359,7 +372,7 @@ export const getAlbumTracks = async (albumId) => {
       const authToken = window.localStorage.getItem('music-authToken');
 
       const response = await fetch(
-        `${serverProtocol}${serverHost}:${serverPort}/library/metadata/${albumId}/children`,
+        `${plexServerProtocol}${plexServerHost}:${plexServerPort}/library/metadata/${albumId}/children`,
         {
           headers: {
             Accept: 'application/json',
@@ -380,8 +393,8 @@ export const getAlbumTracks = async (albumId) => {
         discNumber: track.parentIndex,
         duration: track.Media[0].duration,
         userRating: track.userRating,
-        image: `${serverProtocol}${serverHost}:${serverPort}${track.thumb}?X-Plex-Token=${authToken}`,
-        path: `${serverProtocol}${serverHost}:${serverPort}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
+        image: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.thumb}?X-Plex-Token=${authToken}`,
+        path: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
       }));
 
       store.dispatch.appModel.storeAlbumTracks({ albumId, albumTracks });
@@ -404,7 +417,7 @@ export const getAllPlaylists = async () => {
       getAllPlaylistsRunning = true;
       const authToken = window.localStorage.getItem('music-authToken');
 
-      const response = await fetch(`${serverProtocol}${serverHost}:${serverPort}/playlists`, {
+      const response = await fetch(`${plexServerProtocol}${plexServerHost}:${plexServerPort}/playlists`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -421,8 +434,8 @@ export const getAllPlaylists = async () => {
           id: playlist.ratingKey,
           title: playlist.title,
           thumb: playlist.composite
-            ? `${serverProtocol}${serverHost}:${serverPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                `${serverArtPath}${playlist.composite}`
+            ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                `${plexServerArtPath}${playlist.composite}`
               )}&X-Plex-Token=${authToken}`
             : null,
           link: '/playlists/' + playlist.ratingKey,
@@ -448,13 +461,16 @@ export const getPlaylistTracks = async (playlistId) => {
       getPlaylistTracksRunning = true;
       const authToken = window.localStorage.getItem('music-authToken');
 
-      const response = await fetch(`${serverProtocol}${serverHost}:${serverPort}/playlists/${playlistId}/items`, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
+      const response = await fetch(
+        `${plexServerProtocol}${plexServerHost}:${plexServerPort}/playlists/${playlistId}/items`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': authToken,
+          },
+        }
+      );
 
       const data = await response.json();
 
@@ -467,8 +483,8 @@ export const getPlaylistTracks = async (playlistId) => {
         discNumber: track.parentIndex,
         duration: track.duration,
         userRating: track.userRating,
-        image: `${serverProtocol}${serverHost}:${serverPort}${track.thumb}?X-Plex-Token=${authToken}`,
-        path: `${serverProtocol}${serverHost}:${serverPort}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
+        image: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.thumb}?X-Plex-Token=${authToken}`,
+        path: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
       }));
 
       store.dispatch.appModel.storePlaylistTracks({ playlistId, playlistTracks });

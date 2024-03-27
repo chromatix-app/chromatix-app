@@ -3,8 +3,8 @@ const config = {
   globalStore: true,
 
   // localstorage
-  persistentStoreId: 'rsk-persist-v1',
-  sessionStoreId: 'rsk-session-v1',
+  persistentStoreId: 'chromatix-persist-v1',
+  sessionStoreId: 'chromatix-session-v1',
 };
 
 const exports = { ...config };
