@@ -53,7 +53,7 @@ const App = () => {
         console.log(history.location.pathname);
         // scroll the page to the top
         window.scrollTo(0, 0);
-        document.getElementById('content').scrollTo(0, 0);
+        document.getElementById('content')?.scrollTo(0, 0);
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [history]

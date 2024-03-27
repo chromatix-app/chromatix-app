@@ -13,8 +13,8 @@
   grid-template-areas:
     'sidebar content'
     'controls controls';
-  grid-template-columns: auto 1fr;
   grid-template-rows: 1fr auto;
+  grid-template-columns: auto 1fr;
   height: 100vh;
   height: 100svh;
 }
@@ -47,4 +47,13 @@
   background-size: 30px auto;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.wrap-middle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  height: 100svh;
+  padding-bottom: 10vh;
 }

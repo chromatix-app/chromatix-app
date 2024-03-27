@@ -1,0 +1,68 @@
+@import '../../../css/global';
+
+.wrap {
+}
+
+// BUTTON
+
+.btn {
+  display: block;
+  appearance: none;
+  width: 100%;
+  max-width: 260px;
+  padding: 15px 16px;
+  margin: 0;
+  background: var(--color-primary);
+  border-radius: 10px;
+
+  font-size: 16px;
+  line-height: 1.2;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  color: var(--color-background);
+
+  @include outline-self;
+
+  &:disabled {
+    cursor: default;
+    cursor: not-allowed;
+  }
+
+  :global(.text-center) & {
+    margin: 0 auto;
+  }
+
+  // loading / submitting
+
+  &.loading {
+    background-image: url(../../../images/loading-white.gif);
+    background-image: url(../../../images/loading-white.png);
+    background-size: 32px 32px;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+
+    color: rgba(0, 0, 0, 0) !important;
+  }
+
+  // centering
+
+  :global(.u-center-all) & {
+    margin-inline: auto;
+  }
+  :global(.u-center-mobile) & {
+    @media (max-width: 1023px) {
+      margin-inline: auto;
+    }
+  }
+  :global(.u-center-tablet-desktop) & {
+    @media (min-width: 768px) {
+      margin-inline: auto;
+    }
+  }
+  :global(.u-center-desktop) & {
+    @media (min-width: 1024px) {
+      margin-inline: auto;
+    }
+  }
+}

@@ -2,18 +2,19 @@
 // IMPORTS
 // ======================================================================
 
-import { NavLink } from 'react-router-dom';
-
-import { Title } from 'js/components';
+import { Button, Title } from 'js/components';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
 const Error404Default = () => (
-  <main>
-    <Title title="404 Not Found" />
-    <NavLink to={'/'}>Home</NavLink>
+  <main className="wrap-middle text-center">
+    <div>
+      <Title title="404 Not Found" />
+      <div className="mt-20"></div>
+      <Button to={'/'}>Home</Button>
+    </div>
   </main>
 );
 

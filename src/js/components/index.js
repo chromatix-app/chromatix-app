@@ -1,3 +1,4 @@
+export { default as Button } from './Button/Button';
 export { default as Card } from './Card/Card';
 export { default as CardSet } from './CardSet/CardSet';
 export { default as ControlBar } from './ControlBar/ControlBar';

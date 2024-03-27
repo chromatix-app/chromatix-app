@@ -34,7 +34,17 @@ const AlbumDetail = () => {
     <>
       <Title
         title={currentAlbum?.title}
-        subtitle={currentAlbum?.artist ? 'by ' + currentAlbum?.artist + ' • ' + releaseYear : null}
+        subtitle={
+          currentAlbum?.artist
+            ? 'by ' +
+              currentAlbum?.artist +
+              ' • ' +
+              releaseYear +
+              ' • ' +
+              currentAlbumTracks?.length +
+              ' tracks • duration'
+            : null
+        }
       />
       {!currentAlbumTracks && <Loading forceVisible inline />}
       {currentAlbumTracks && <ListSet entries={currentAlbumTracks} />}

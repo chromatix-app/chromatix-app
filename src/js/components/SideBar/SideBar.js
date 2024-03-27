@@ -2,7 +2,11 @@
 // IMPORTS
 // ======================================================================
 
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+
+import * as plex from 'js/services/plex';
 
 import style from './SideBar.module.scss';
 
@@ -11,6 +15,12 @@ import style from './SideBar.module.scss';
 // ======================================================================
 
 const SideBar = () => {
+  const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
+
+  useEffect(() => {
+    plex.getAllPlaylists();
+  }, []);
+
   return (
     <div className={style.wrap}>
       <div className={style.label}>Library</div>
@@ -23,6 +33,21 @@ const SideBar = () => {
       <NavLink className={style.link} activeClassName={style.linkActive} to="/playlists">
         Playlists
       </NavLink>
+      {allPlaylists && (
+        <>
+          <div className={style.label}>Playlists</div>
+          {allPlaylists.map((playlist) => (
+            <NavLink
+              key={playlist.id}
+              className={style.link}
+              activeClassName={style.linkActive}
+              to={`/playlists/${playlist.id}`}
+            >
+              {playlist.title}
+            </NavLink>
+          ))}
+        </>
+      )}
     </div>
   );
 };
