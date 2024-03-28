@@ -18,7 +18,7 @@ const isProduction = process.env.REACT_APP_ENV === 'production';
 const appName = 'Alex Dev Plex App';
 const clientIdentifier = 'alex_dev_plex_app';
 const redirectUrlLocal = 'http://localhost:3000?plex=true';
-const redirectUrlProd = 'https://chromatix.vercel.app?plex=true';
+const redirectUrlProd = 'https://chromatix.app?plex=true';
 const redirectUrlActual = isProduction ? redirectUrlProd : redirectUrlLocal;
 
 const plexServerProtocol = isProduction ? 'https://' : 'http://';
