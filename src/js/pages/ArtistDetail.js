@@ -52,8 +52,12 @@ const ArtistDetail = () => {
       {!(currentArtist && currentArtistAlbums && currentArtistRelated) && <Loading forceVisible inline />}
       {currentArtist && currentArtistAlbums && currentArtistRelated && (
         <>
-          <TitleSection title="Albums" />
-          <CardSet entries={currentArtistAlbums} />
+          {currentArtistAlbums.length > 0 && (
+            <>
+              <TitleSection title="Albums" />
+              <CardSet entries={currentArtistAlbums} />
+            </>
+          )}
           {currentArtistRelated &&
             currentArtistRelated.map((entry, index) => (
               <React.Fragment key={index}>

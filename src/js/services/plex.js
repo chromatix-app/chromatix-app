@@ -297,19 +297,20 @@ export const getAllArtists = async () => {
 
       console.log(data.MediaContainer.Metadata);
 
-      const allArtists = data.MediaContainer.Metadata?.map((artist) => ({
-        id: artist.ratingKey,
-        title: artist.title,
-        country: artist?.Country?.[0]?.tag,
-        genre: artist?.Genre?.[0]?.tag,
-        thumb: artist.thumb
-          ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-              `${plexServerArtPath}${artist.thumb}`
-            )}&X-Plex-Token=${authToken}`
-          : null,
-        userRating: artist.userRating,
-        link: '/artists/' + artist.ratingKey,
-      }));
+      const allArtists =
+        data.MediaContainer.Metadata?.map((artist) => ({
+          id: artist.ratingKey,
+          title: artist.title,
+          country: artist?.Country?.[0]?.tag,
+          genre: artist?.Genre?.[0]?.tag,
+          thumb: artist.thumb
+            ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                `${plexServerArtPath}${artist.thumb}`
+              )}&X-Plex-Token=${authToken}`
+            : null,
+          userRating: artist.userRating,
+          link: '/artists/' + artist.ratingKey,
+        })) || [];
 
       // console.log(allArtists);
 
@@ -349,19 +350,20 @@ export const getAllArtistAlbums = async (artistId) => {
 
       // console.log(data.MediaContainer.Metadata);
 
-      const artistAlbums = data.MediaContainer.Metadata?.map((album) => ({
-        id: album.ratingKey,
-        title: album.title,
-        artist: album.parentTitle,
-        thumb: album.thumb
-          ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-              `${plexServerArtPath}${album.thumb}`
-            )}&X-Plex-Token=${authToken}`
-          : null,
-        userRating: album.userRating,
-        releaseDate: album.originallyAvailableAt,
-        link: '/albums/' + album.ratingKey,
-      }));
+      const artistAlbums =
+        data.MediaContainer.Metadata?.map((album) => ({
+          id: album.ratingKey,
+          title: album.title,
+          artist: album.parentTitle,
+          thumb: album.thumb
+            ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                `${plexServerArtPath}${album.thumb}`
+              )}&X-Plex-Token=${authToken}`
+            : null,
+          userRating: album.userRating,
+          releaseDate: album.originallyAvailableAt,
+          link: '/albums/' + album.ratingKey,
+        })) || [];
 
       // console.log(artistAlbums);
 
@@ -400,8 +402,8 @@ export const getAllArtistRelated = async (artistId) => {
 
       // console.log(data.MediaContainer.Hub);
 
-      const artistRelated = data.MediaContainer.Hub?.filter((hub) => hub.type === 'album' && hub.Metadata).map(
-        (hub) => ({
+      const artistRelated =
+        data.MediaContainer.Hub?.filter((hub) => hub.type === 'album' && hub.Metadata).map((hub) => ({
           title: hub.title,
           related: hub.Metadata.map((album) => ({
             id: album.ratingKey,
@@ -416,8 +418,7 @@ export const getAllArtistRelated = async (artistId) => {
             releaseDate: album.originallyAvailableAt,
             link: '/albums/' + album.ratingKey,
           })),
-        })
-      );
+        })) || [];
 
       // console.log(artistRelated);
 
@@ -456,20 +457,21 @@ export const getAllAlbums = async () => {
 
       // console.log(data.MediaContainer.Metadata);
 
-      const allAlbums = data.MediaContainer.Metadata?.map((album) => ({
-        id: album.ratingKey,
-        title: album.title,
-        artist: album.parentTitle,
-        artistId: album.parentRatingKey,
-        thumb: album.thumb
-          ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-              `${plexServerArtPath}${album.thumb}`
-            )}&X-Plex-Token=${authToken}`
-          : null,
-        userRating: album.userRating,
-        releaseDate: album.originallyAvailableAt,
-        link: '/albums/' + album.ratingKey,
-      }));
+      const allAlbums =
+        data.MediaContainer.Metadata?.map((album) => ({
+          id: album.ratingKey,
+          title: album.title,
+          artist: album.parentTitle,
+          artistId: album.parentRatingKey,
+          thumb: album.thumb
+            ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                `${plexServerArtPath}${album.thumb}`
+              )}&X-Plex-Token=${authToken}`
+            : null,
+          userRating: album.userRating,
+          releaseDate: album.originallyAvailableAt,
+          link: '/albums/' + album.ratingKey,
+        })) || [];
 
       // console.log(allAlbums);
 
@@ -508,20 +510,21 @@ export const getAlbumTracks = async (albumId) => {
 
       // console.log(data.MediaContainer.Metadata);
 
-      const albumTracks = data.MediaContainer.Metadata?.map((track) => ({
-        title: track.title,
-        artist: track.grandparentTitle,
-        album: track.parentTitle,
-        trackNumber: track.index,
-        discNumber: track.parentIndex,
-        duration: track.Media[0].duration,
-        userRating: track.userRating,
-        image: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.thumb}?X-Plex-Token=${authToken}`,
-        path: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
+      const albumTracks =
+        data.MediaContainer.Metadata?.map((track) => ({
+          title: track.title,
+          artist: track.grandparentTitle,
+          album: track.parentTitle,
+          trackNumber: track.index,
+          discNumber: track.parentIndex,
+          duration: track.Media[0].duration,
+          userRating: track.userRating,
+          image: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.thumb}?X-Plex-Token=${authToken}`,
+          path: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
 
-        // determine if an album is a normal album, single, live album or compilation
-        // albumType: track.parentTitle,
-      }));
+          // determine if an album is a normal album, single, live album or compilation
+          // albumType: track.parentTitle,
+        })) || [];
 
       // console.log(albumTracks);
 
@@ -557,17 +560,18 @@ export const getAllPlaylists = async () => {
 
       // console.log(data.MediaContainer.Metadata);
 
-      const allPlaylists = data.MediaContainer.Metadata?.filter((playlist) => playlist.playlistType === 'audio') // Filter out only music playlists
-        .map((playlist) => ({
-          id: playlist.ratingKey,
-          title: playlist.title,
-          thumb: playlist.composite
-            ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                `${plexServerArtPath}${playlist.composite}`
-              )}&X-Plex-Token=${authToken}`
-            : null,
-          link: '/playlists/' + playlist.ratingKey,
-        }));
+      const allPlaylists =
+        data.MediaContainer.Metadata?.filter((playlist) => playlist.playlistType === 'audio') // Filter out only music playlists
+          .map((playlist) => ({
+            id: playlist.ratingKey,
+            title: playlist.title,
+            thumb: playlist.composite
+              ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                  `${plexServerArtPath}${playlist.composite}`
+                )}&X-Plex-Token=${authToken}`
+              : null,
+            link: '/playlists/' + playlist.ratingKey,
+          })) || [];
 
       // console.log(allPlaylists);
 
@@ -606,17 +610,18 @@ export const getPlaylistTracks = async (playlistId) => {
 
       // console.log(data.MediaContainer.Metadata);
 
-      const playlistTracks = data.MediaContainer.Metadata?.map((track) => ({
-        title: track.title,
-        artist: track.grandparentTitle,
-        album: track.parentTitle,
-        trackNumber: track.index,
-        discNumber: track.parentIndex,
-        duration: track.duration,
-        userRating: track.userRating,
-        image: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.thumb}?X-Plex-Token=${authToken}`,
-        path: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
-      }));
+      const playlistTracks =
+        data.MediaContainer.Metadata?.map((track) => ({
+          title: track.title,
+          artist: track.grandparentTitle,
+          album: track.parentTitle,
+          trackNumber: track.index,
+          discNumber: track.parentIndex,
+          duration: track.duration,
+          userRating: track.userRating,
+          image: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.thumb}?X-Plex-Token=${authToken}`,
+          path: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
+        })) || [];
 
       // console.log(playlistTracks);
 
