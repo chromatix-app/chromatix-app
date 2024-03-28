@@ -50,6 +50,11 @@ const ListSet = ({ entries, variant }) => {
 
               <div className={style.entry}>
                 <div className={style.trackNumber}>{trackNumber}</div>
+                {variant === 'playlist' && entry.thumb && (
+                  <div className={style.thumb}>
+                    <img src={entry.thumb} alt={entry.title} />
+                  </div>
+                )}
                 <div className={style.title}>{entry.title}</div>
                 <div className={style.artist}>{entry.artist}</div>
                 {variant === 'playlist' && <div className={style.album}>{entry.album}</div>}

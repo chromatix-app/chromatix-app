@@ -519,8 +519,11 @@ export const getAlbumTracks = async (albumId) => {
           discNumber: track.parentIndex,
           duration: track.Media[0].duration,
           userRating: track.userRating,
-          image: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.thumb}?X-Plex-Token=${authToken}`,
-          path: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
+          thumb: track.thumb
+            ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                `${plexServerArtPath}${track.thumb}`
+              )}&X-Plex-Token=${authToken}`
+            : null,
 
           // determine if an album is a normal album, single, live album or compilation
           // albumType: track.parentTitle,
@@ -619,8 +622,11 @@ export const getPlaylistTracks = async (playlistId) => {
           discNumber: track.parentIndex,
           duration: track.duration,
           userRating: track.userRating,
-          image: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.thumb}?X-Plex-Token=${authToken}`,
-          path: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
+          thumb: track.thumb
+            ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                `${plexServerArtPath}${track.thumb}`
+              )}&X-Plex-Token=${authToken}`
+            : null,
         })) || [];
 
       // console.log(playlistTracks);
