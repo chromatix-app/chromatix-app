@@ -12,7 +12,7 @@ import style from './Card.module.scss';
 // COMPONENT
 // ======================================================================
 
-const Card = ({ thumb, title, artist, userRating, link }) => {
+const Card = ({ thumb, title, artist, userRating, link, totalTracks }) => {
   const Component = link ? NavLink : 'div';
 
   return (
@@ -21,6 +21,7 @@ const Card = ({ thumb, title, artist, userRating, link }) => {
       <div className={style.body}>
         {title && <div className={style.title}>{title}</div>}
         {artist && <div className={style.subtitle}>{artist}</div>}
+        {totalTracks && <div className={style.subtitle}>{totalTracks + ' tracks'}</div>}
         {userRating && (
           <div className={style.rating}>
             <StarRating rating={userRating} />

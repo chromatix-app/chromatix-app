@@ -551,30 +551,33 @@ export const getAllPlaylists = async () => {
       getAllPlaylistsRunning = true;
       const authToken = window.localStorage.getItem('music-authToken');
 
-      const response = await fetch(`${plexServerProtocol}${plexServerHost}:${plexServerPort}/playlists`, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
+      const response = await fetch(
+        `${plexServerProtocol}${plexServerHost}:${plexServerPort}/playlists?playlistType=audio`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': authToken,
+          },
+        }
+      );
 
       const data = await response.json();
 
-      // console.log(data.MediaContainer.Metadata);
+      console.log(data.MediaContainer.Metadata);
 
       const allPlaylists =
-        data.MediaContainer.Metadata?.filter((playlist) => playlist.playlistType === 'audio') // Filter out only music playlists
-          .map((playlist) => ({
-            id: playlist.ratingKey,
-            title: playlist.title,
-            link: '/playlists/' + playlist.ratingKey,
-            thumb: playlist.composite
-              ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                  `${plexServerArtPath}${playlist.composite}`
-                )}&X-Plex-Token=${authToken}`
-              : null,
-          })) || [];
+        data.MediaContainer.Metadata?.map((playlist) => ({
+          id: playlist.ratingKey,
+          title: playlist.title,
+          link: '/playlists/' + playlist.ratingKey,
+          totalTracks: playlist.leafCount,
+          thumb: playlist.composite
+            ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                `${plexServerArtPath}${playlist.composite}`
+              )}&X-Plex-Token=${authToken}`
+            : null,
+        })) || [];
 
       // console.log(allPlaylists);
 
