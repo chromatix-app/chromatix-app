@@ -9,4 +9,5 @@ export { default as RangeSlider } from './RangeSlider/RangeSlider';
 export { default as SideBar } from './SideBar/SideBar';
 export { default as StarRating } from './StarRating/StarRating';
 export { default as Title } from './Title/Title';
+export { default as TitleSection } from './TitleSection/TitleSection';
 export { default as UserStatus } from './UserStatus/UserStatus';

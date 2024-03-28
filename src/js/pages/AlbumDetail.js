@@ -45,10 +45,8 @@ const AlbumDetail = () => {
           detail={currentAlbumTracks && albumRelease + ' • ' + albumTracks + ' tracks • ' + albumDurationMins + ' mins'}
         />
       )}
-      <>
-        {!(currentAlbum && currentAlbumTracks) && <Loading forceVisible inline />}
-        {currentAlbum && currentAlbumTracks && <ListSet variant="album" entries={currentAlbumTracks} />}
-      </>
+      {!(currentAlbum && currentAlbumTracks) && <Loading forceVisible inline />}
+      {currentAlbum && currentAlbumTracks && <ListSet variant="album" entries={currentAlbumTracks} />}
     </>
   );
 };

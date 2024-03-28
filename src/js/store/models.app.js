@@ -23,9 +23,11 @@ const appState = {
 const plexState = {
   allServers: null,
   allLibraries: null,
+  allArtists: null,
+  allArtistAlbums: {},
+  allArtistRelated: {},
   allAlbums: null,
   allAlbumTracks: {},
-  allArtists: null,
   allPlaylists: null,
   allPlaylistTracks: {},
 };
@@ -95,6 +97,34 @@ const effects = (dispatch) => ({
   login(payload, rootState) {
     console.log('%c--- login ---', 'color:#079189');
     plex.login();
+  },
+
+  storeArtistAlbums(payload, rootState) {
+    console.log('%c--- storeArtistAlbums ---', 'color:#079189');
+    const { artistId, artistAlbums } = payload;
+
+    const allArtistAlbums = { ...rootState.appModel.allArtistAlbums };
+    allArtistAlbums[artistId] = artistAlbums;
+
+    console.log(allArtistAlbums);
+
+    dispatch.appModel.setState({
+      allArtistAlbums,
+    });
+  },
+
+  storeArtistRelated(payload, rootState) {
+    console.log('%c--- storeArtistRelated ---', 'color:#079189');
+    const { artistId, artistRelated } = payload;
+
+    const allArtistRelated = { ...rootState.appModel.allArtistRelated };
+    allArtistRelated[artistId] = artistRelated;
+
+    console.log(allArtistRelated);
+
+    dispatch.appModel.setState({
+      allArtistRelated,
+    });
   },
 
   storeAlbumTracks(payload, rootState) {

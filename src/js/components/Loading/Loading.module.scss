@@ -2,6 +2,7 @@
 
 .loader {
   position: fixed;
+  pointer-events: none;
   top: 0;
   bottom: 0;
   left: 0;
@@ -9,7 +10,7 @@
   background-image: url(../../../images/loading-grey.gif);
   background-image: url(../../../images/loading-grey.png);
   background-size: 32px 32px;
-  background-position: 50% calc(50% - 5vh);
+  background-position: 50% calc(50% - 3vh);
   background-repeat: no-repeat;
   opacity: 0;
   animation: fade-in 1s 0.5s forwards;

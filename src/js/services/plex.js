@@ -9,6 +9,30 @@ import { XMLParser } from 'fast-xml-parser';
 
 // https://ide.geeksforgeeks.org/online-html-editor/T3gdWUn4aX
 
+// Artist Albums
+// https://192-168-1-201.6b3f9dff67f64b3aab29466ce77a1194.plex.direct:32400/library/sections/20/all
+// ?album.subformat!=Compilation,Live
+// &artist.id=158100
+// &group=title
+// &limit=100
+// &ratingCount%3E=1
+// &resolveTags=1
+// &sort=ratingCount:desc
+// &type=10
+
+// Artist Related
+// https://192-168-1-201.6b3f9dff67f64b3aab29466ce77a1194.plex.direct:32400/library/metadata/158100/related
+// ?includeAugmentations=1
+// &includeExternalMetadata=1
+// &includeMeta=1
+
+// Artist Nearest
+// https://192-168-1-201.6b3f9dff67f64b3aab29466ce77a1194.plex.direct:32400/library/metadata/158100/nearest
+// ?limit=30
+// &maxDistance=0.25
+// &excludeParentID=-1
+// &includeMeta=1
+
 // ======================================================================
 // OPTIONS
 // ======================================================================
@@ -271,11 +295,13 @@ export const getAllArtists = async () => {
 
       const data = await response.json();
 
-      // console.log(data.MediaContainer.Metadata);
+      console.log(data.MediaContainer.Metadata);
 
       const allArtists = data.MediaContainer.Metadata?.map((artist) => ({
         id: artist.ratingKey,
         title: artist.title,
+        country: artist?.Country?.[0]?.tag,
+        genre: artist?.Genre?.[0]?.tag,
         thumb: artist.thumb
           ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
               `${plexServerArtPath}${artist.thumb}`
@@ -285,9 +311,119 @@ export const getAllArtists = async () => {
         link: '/artists/' + artist.ratingKey,
       }));
 
+      // console.log(allArtists);
+
       store.dispatch.appModel.setState({ allArtists });
 
       getAllArtistsRunning = false;
+    }
+  }
+};
+
+// ======================================================================
+// GET ARTIST ALBUMS
+// ======================================================================
+
+let getAllArtistAlbumsRunning;
+
+export const getAllArtistAlbums = async (artistId) => {
+  if (!getAllArtistAlbumsRunning) {
+    const prevAllAlbums = store.getState().appModel.allArtistAlbums[artistId];
+    if (!prevAllAlbums) {
+      getAllArtistAlbumsRunning = true;
+      const authToken = window.localStorage.getItem('music-authToken');
+
+      const response = await fetch(
+        // `${plexServerProtocol}${plexServerHost}:${plexServerPort}/library/sections/${plexLibraryId}/all?artist.id=${artistId}&type=9&album.subformat!=Compilation,Live`,
+        `${plexServerProtocol}${plexServerHost}:${plexServerPort}/library/metadata/${artistId}/children?excludeAllLeaves=1`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': authToken,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      // console.log(data.MediaContainer.Metadata);
+
+      const artistAlbums = data.MediaContainer.Metadata?.map((album) => ({
+        id: album.ratingKey,
+        title: album.title,
+        artist: album.parentTitle,
+        thumb: album.thumb
+          ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+              `${plexServerArtPath}${album.thumb}`
+            )}&X-Plex-Token=${authToken}`
+          : null,
+        userRating: album.userRating,
+        releaseDate: album.originallyAvailableAt,
+        link: '/albums/' + album.ratingKey,
+      }));
+
+      // console.log(artistAlbums);
+
+      store.dispatch.appModel.storeArtistAlbums({ artistId, artistAlbums });
+
+      getAllArtistAlbumsRunning = false;
+    }
+  }
+};
+
+// ======================================================================
+// GET ARTIST RELATED
+// ======================================================================
+
+let getAllArtistRelatedRunning;
+
+export const getAllArtistRelated = async (artistId) => {
+  if (!getAllArtistRelatedRunning) {
+    const prevAllRelated = store.getState().appModel.allArtistRelated[artistId];
+    if (!prevAllRelated) {
+      getAllArtistRelatedRunning = true;
+      const authToken = window.localStorage.getItem('music-authToken');
+
+      const response = await fetch(
+        `${plexServerProtocol}${plexServerHost}:${plexServerPort}/library/metadata/${artistId}/related?includeAugmentations=1&includeExternalMetadata=1&includeMeta=1`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': authToken,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      // console.log(data.MediaContainer.Hub);
+
+      const artistRelated = data.MediaContainer.Hub?.filter((hub) => hub.type === 'album' && hub.Metadata).map(
+        (hub) => ({
+          title: hub.title,
+          related: hub.Metadata.map((album) => ({
+            id: album.ratingKey,
+            title: album.title,
+            artist: album.parentTitle,
+            thumb: album.thumb
+              ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                  `${plexServerArtPath}${album.thumb}`
+                )}&X-Plex-Token=${authToken}`
+              : null,
+            userRating: album.userRating,
+            releaseDate: album.originallyAvailableAt,
+            link: '/albums/' + album.ratingKey,
+          })),
+        })
+      );
+
+      // console.log(artistRelated);
+
+      store.dispatch.appModel.storeArtistRelated({ artistId, artistRelated });
+
+      getAllArtistRelatedRunning = false;
     }
   }
 };
@@ -324,6 +460,7 @@ export const getAllAlbums = async () => {
         id: album.ratingKey,
         title: album.title,
         artist: album.parentTitle,
+        artistId: album.parentRatingKey,
         thumb: album.thumb
           ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
               `${plexServerArtPath}${album.thumb}`
@@ -334,29 +471,14 @@ export const getAllAlbums = async () => {
         link: '/albums/' + album.ratingKey,
       }));
 
+      // console.log(allAlbums);
+
       store.dispatch.appModel.setState({ allAlbums });
 
       getAllAlbumsRunning = false;
     }
   }
 };
-
-// ======================================================================
-// GET ARTIST ALBUMS
-// ======================================================================
-
-// get all albums for an artist
-// const ratingKey = '149255';
-// const response = await fetch(
-//   `${plexServerProtocol}${plexServerHost}:${plexServerPort}/library/sections/${plexLibraryId}/all?artist.id=${ratingKey}&type=9`,
-//   {
-//     headers: {
-//       Accept: 'application/json',
-//       'Content-Type': 'application/json',
-//       'X-Plex-Token': authToken,
-//     },
-//   }
-// );
 
 // ======================================================================
 // GET ALBUM TRACKS
@@ -396,7 +518,12 @@ export const getAlbumTracks = async (albumId) => {
         userRating: track.userRating,
         image: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.thumb}?X-Plex-Token=${authToken}`,
         path: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
+
+        // determine if an album is a normal album, single, live album or compilation
+        // albumType: track.parentTitle,
       }));
+
+      // console.log(albumTracks);
 
       store.dispatch.appModel.storeAlbumTracks({ albumId, albumTracks });
 
@@ -441,6 +568,8 @@ export const getAllPlaylists = async () => {
             : null,
           link: '/playlists/' + playlist.ratingKey,
         }));
+
+      // console.log(allPlaylists);
 
       store.dispatch.appModel.setState({ allPlaylists });
 
@@ -488,6 +617,8 @@ export const getPlaylistTracks = async (playlistId) => {
         image: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.thumb}?X-Plex-Token=${authToken}`,
         path: `${plexServerProtocol}${plexServerHost}:${plexServerPort}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
       }));
+
+      // console.log(playlistTracks);
 
       store.dispatch.appModel.storePlaylistTracks({ playlistId, playlistTracks });
 
