@@ -11,10 +11,12 @@ import { ReactComponent as DiscIcon } from './icons/music/disc.svg';
 import { ReactComponent as FastForwardIcon } from './icons/music/fast-forward.svg';
 import { ReactComponent as GridIcon } from './icons/music/grid.svg';
 import { ReactComponent as ListIcon } from './icons/music/list.svg';
+import { ReactComponent as NextIcon } from './icons/music/next.svg';
 import { ReactComponent as PauseIcon } from './icons/music/pause.svg';
 import { ReactComponent as PauseFilledIcon } from './icons/music/pause-filled.svg';
 import { ReactComponent as PlayIcon } from './icons/music/play.svg';
 import { ReactComponent as PlayFilledIcon } from './icons/music/play-filled.svg';
+import { ReactComponent as PreviousIcon } from './icons/music/previous.svg';
 import { ReactComponent as QueueIcon } from './icons/music/queue.svg';
 import { ReactComponent as RepeatIcon } from './icons/music/repeat.svg';
 import { ReactComponent as RewindIcon } from './icons/music/rewind.svg';
@@ -42,10 +44,12 @@ const customIcons = {
   FastForwardIcon,
   GridIcon,
   ListIcon,
+  NextIcon,
   PauseIcon,
   PauseFilledIcon,
   PlayIcon,
   PlayFilledIcon,
+  PreviousIcon,
   QueueIcon,
   RepeatIcon,
   RewindIcon,

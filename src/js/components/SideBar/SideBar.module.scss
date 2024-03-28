@@ -3,9 +3,28 @@
 .wrap {
   width: 220px;
   min-height: 100%;
-  padding: 70px 12px 20px;
+  padding: 40px 12px 20px;
   background: var(--color-panel-background);
   border-right: 1px solid var(--color-border);
+}
+
+.nav {
+  display: flex;
+  position: absolute;
+  top: 4px;
+  right: -4px;
+  width: 80px;
+  height: 50px;
+}
+
+.prev,
+.next {
+  width: 50%;
+  height: 100%;
+  padding: 17px 7px 17px 17px;
+}
+.next {
+  padding: 17px 17px 17px 7px;
 }
 
 .label {
@@ -13,10 +32,6 @@
   opacity: 0.5;
   font-size: 11px;
   font-weight: 700;
-
-  &:first-child {
-    padding-top: 0;
-  }
 }
 
 .link {

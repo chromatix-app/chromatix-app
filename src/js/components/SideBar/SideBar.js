@@ -4,8 +4,9 @@
 
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 
+import { Icon } from 'js/components';
 import * as plex from 'js/services/plex';
 
 import style from './SideBar.module.scss';
@@ -15,6 +16,8 @@ import style from './SideBar.module.scss';
 // ======================================================================
 
 const SideBar = () => {
+  const history = useHistory();
+
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
 
   useEffect(() => {
@@ -23,6 +26,14 @@ const SideBar = () => {
 
   return (
     <div className={style.wrap}>
+      <div className={style.nav}>
+        <button className={style.prev} onClick={() => history.goBack()}>
+          <Icon icon="PreviousIcon" cover stroke />
+        </button>
+        <button className={style.next} onClick={() => history.goForward()}>
+          <Icon icon="NextIcon" cover stroke />
+        </button>
+      </div>
       <div className={style.label}>Library</div>
       <NavLink className={style.link} activeClassName={style.linkActive} to="/artists">
         Artists
