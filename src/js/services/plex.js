@@ -303,13 +303,13 @@ export const getAllArtists = async () => {
           title: artist.title,
           country: artist?.Country?.[0]?.tag,
           genre: artist?.Genre?.[0]?.tag,
+          userRating: artist.userRating,
+          link: '/artists/' + artist.ratingKey,
           thumb: artist.thumb
             ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
                 `${plexServerArtPath}${artist.thumb}`
               )}&X-Plex-Token=${authToken}`
             : null,
-          userRating: artist.userRating,
-          link: '/artists/' + artist.ratingKey,
         })) || [];
 
       // console.log(allArtists);
@@ -355,14 +355,14 @@ export const getAllArtistAlbums = async (artistId) => {
           id: album.ratingKey,
           title: album.title,
           artist: album.parentTitle,
+          userRating: album.userRating,
+          releaseDate: album.originallyAvailableAt,
+          link: '/albums/' + album.ratingKey,
           thumb: album.thumb
             ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
                 `${plexServerArtPath}${album.thumb}`
               )}&X-Plex-Token=${authToken}`
             : null,
-          userRating: album.userRating,
-          releaseDate: album.originallyAvailableAt,
-          link: '/albums/' + album.ratingKey,
         })) || [];
 
       // console.log(artistAlbums);
@@ -409,14 +409,14 @@ export const getAllArtistRelated = async (artistId) => {
             id: album.ratingKey,
             title: album.title,
             artist: album.parentTitle,
+            userRating: album.userRating,
+            releaseDate: album.originallyAvailableAt,
+            link: '/albums/' + album.ratingKey,
             thumb: album.thumb
               ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
                   `${plexServerArtPath}${album.thumb}`
                 )}&X-Plex-Token=${authToken}`
               : null,
-            userRating: album.userRating,
-            releaseDate: album.originallyAvailableAt,
-            link: '/albums/' + album.ratingKey,
           })),
         })) || [];
 
@@ -463,14 +463,14 @@ export const getAllAlbums = async () => {
           title: album.title,
           artist: album.parentTitle,
           artistId: album.parentRatingKey,
+          userRating: album.userRating,
+          releaseDate: album.originallyAvailableAt,
+          link: '/albums/' + album.ratingKey,
           thumb: album.thumb
             ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
                 `${plexServerArtPath}${album.thumb}`
               )}&X-Plex-Token=${authToken}`
             : null,
-          userRating: album.userRating,
-          releaseDate: album.originallyAvailableAt,
-          link: '/albums/' + album.ratingKey,
         })) || [];
 
       // console.log(allAlbums);
@@ -568,12 +568,12 @@ export const getAllPlaylists = async () => {
           .map((playlist) => ({
             id: playlist.ratingKey,
             title: playlist.title,
+            link: '/playlists/' + playlist.ratingKey,
             thumb: playlist.composite
               ? `${plexServerProtocol}${plexServerHost}:${plexServerPort}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
                   `${plexServerArtPath}${playlist.composite}`
                 )}&X-Plex-Token=${authToken}`
               : null,
-            link: '/playlists/' + playlist.ratingKey,
           })) || [];
 
       // console.log(allPlaylists);

@@ -23,6 +23,7 @@ const PlaylistDetail = () => {
   const allPlaylistTracks = useSelector(({ appModel }) => appModel.allPlaylistTracks);
   const currentPlaylistTracks = allPlaylistTracks[playlistId];
 
+  const playlistThumb = currentPlaylist?.thumb;
   const playlistTitle = currentPlaylist?.title;
   const playlistTracks = currentPlaylistTracks?.length;
   const playlistDurationMilli = currentPlaylistTracks?.reduce((acc, track) => acc + track.duration, 0);
@@ -38,6 +39,7 @@ const PlaylistDetail = () => {
     <>
       {currentPlaylist && (
         <Title
+          thumb={playlistThumb}
           title={playlistTitle}
           subtitle={currentPlaylistTracks && playlistTracks + ' tracks'}
           detail={currentPlaylistTracks && playlistDurationMins + ' mins'}

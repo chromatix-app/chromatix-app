@@ -25,6 +25,7 @@ const ArtistDetail = () => {
   const allArtistRelated = useSelector(({ appModel }) => appModel.allArtistRelated);
   const currentArtistRelated = allArtistRelated[artistId];
 
+  const artistThumb = currentArtist?.thumb;
   const artistName = currentArtist?.title;
   const artistAlbums = currentArtistAlbums?.length || 0;
   const artistRelated = currentArtistRelated?.reduce((acc, entry) => acc + entry.related.length, 0) || 0;
@@ -42,6 +43,7 @@ const ArtistDetail = () => {
     <>
       {currentArtist && (
         <Title
+          thumb={artistThumb}
           title={artistName}
           subtitle={
             currentArtistAlbums && currentArtistRelated && artistReleases + ' Release' + (artistReleases > 1 ? 's' : '')

@@ -23,6 +23,7 @@ const AlbumDetail = () => {
   const allAlbumTracks = useSelector(({ appModel }) => appModel.allAlbumTracks);
   const currentAlbumTracks = allAlbumTracks[albumId];
 
+  const albumThumb = currentAlbum?.thumb;
   const albumTitle = currentAlbum?.title;
   const albumArtist = currentAlbum?.artist;
   const albumRelease = currentAlbum?.releaseDate ? moment(currentAlbum?.releaseDate).format('YYYY') : null;
@@ -40,6 +41,7 @@ const AlbumDetail = () => {
     <>
       {currentAlbum && (
         <Title
+          thumb={albumThumb}
           title={albumTitle}
           subtitle={albumArtist && albumArtist}
           detail={currentAlbumTracks && albumRelease + ' • ' + albumTracks + ' tracks • ' + albumDurationMins + ' mins'}
