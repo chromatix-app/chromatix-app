@@ -7,10 +7,13 @@ import clsx from 'clsx';
 import style from './Icon.module.scss';
 
 // custom
+import { ReactComponent as CheckCircleIcon } from './icons/music/check-circle.svg';
+import { ReactComponent as CogIcon } from './icons/music/cog.svg';
 import { ReactComponent as DiscIcon } from './icons/music/disc.svg';
 import { ReactComponent as FastForwardIcon } from './icons/music/fast-forward.svg';
 import { ReactComponent as GridIcon } from './icons/music/grid.svg';
 import { ReactComponent as ListIcon } from './icons/music/list.svg';
+import { ReactComponent as LogoutIcon } from './icons/music/logout.svg';
 import { ReactComponent as MusicNoteIcon } from './icons/music/music-note.svg';
 import { ReactComponent as NextIcon } from './icons/music/next.svg';
 import { ReactComponent as PauseIcon } from './icons/music/pause.svg';
@@ -42,10 +45,13 @@ import { ReactComponent as VolXIcon } from './icons/music/vol-x.svg';
 // ======================================================================
 
 const customIcons = {
+  CheckCircleIcon,
+  CogIcon,
   DiscIcon,
   FastForwardIcon,
   GridIcon,
   ListIcon,
+  LogoutIcon,
   MusicNoteIcon,
   NextIcon,
   PauseIcon,

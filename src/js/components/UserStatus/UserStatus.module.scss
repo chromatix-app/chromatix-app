@@ -85,10 +85,11 @@
 }
 
 .button {
-  display: block;
+  display: flex;
   position: relative;
+  align-items: center;
   width: 100%;
-  padding: 10px 40px 10px 15px;
+  padding: 10px 80px 10px 15px;
   background: var(--color-panel-background);
   border: 1px solid var(--color-border);
   text-align: left;
@@ -102,6 +103,10 @@
     border-bottom-right-radius: 9px;
   }
 
+  &.buttonLibrary {
+    padding-left: 30px;
+  }
+
   &:hover {
     background: var(--color-hover);
   }
@@ -111,13 +116,45 @@
   border-top: none;
 }
 
-.icon {
-  // display: none;
+.iconBefore {
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin-right: 10px;
+  opacity: 0.4;
+}
+
+.iconAfter {
+  display: block;
   position: absolute;
   top: 50%;
   right: 15px;
+  width: 14px;
+  height: 14px;
+  opacity: 0.4;
+  transform: translateY(-50%);
+}
+
+.iconArrow {
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 16px;
   width: 10px;
   height: 10px;
   opacity: 0.4;
   transform: translateY(-50%);
+}
+
+.iconCurrent {
+  opacity: 1;
+  color: var(--color-primary);
+}
+
+.iconHover {
+  visibility: hidden;
+
+  .button:hover & {
+    visibility: visible;
+  }
 }
