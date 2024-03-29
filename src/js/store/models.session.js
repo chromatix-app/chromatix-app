@@ -48,8 +48,8 @@ const reducers = {
 
   refreshCurrentServer(rootState, payload) {
     console.log('%c--- refreshCurrentServer ---', 'color:#91074A');
-    const currentServerToken = rootState.currentServer ? rootState.currentServer.accessToken : null;
-    const refreshedServer = payload.find((server) => server.accessToken === currentServerToken);
+    const currentServerToken = rootState.currentServer ? rootState.currentServer.serverId : null;
+    const refreshedServer = payload.find((server) => server.serverId === currentServerToken);
     // TODO: what if refreshedServer is null?
     return {
       ...rootState,
@@ -114,10 +114,10 @@ const effects = (dispatch) => ({
   switchCurrentServer(payload, rootState) {
     console.log('%c--- switchCurrentServer ---', 'color:#91074A');
     const currentServer = rootState.sessionModel.currentServer;
-    const currentServerId = currentServer ? currentServer.accessToken : null;
+    const currentServerId = currentServer ? currentServer.serverId : null;
     if (currentServerId !== payload) {
       // TODO
-      // const newServer = rootState.appModel.allServers.find((server) => server.accessToken === payload);
+      // const newServer = rootState.appModel.allServers.find((server) => server.serverId === payload);
       // // TODO: what if currentServer is null?
       // dispatch.sessionModel.setSessionState({
       //   currentServer: newServer,

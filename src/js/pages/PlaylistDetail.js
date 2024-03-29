@@ -46,7 +46,9 @@ const PlaylistDetail = () => {
         />
       )}
       {!(currentPlaylist && currentPlaylistTracks) && <Loading forceVisible inline />}
-      {currentPlaylist && currentPlaylistTracks && <ListSet variant="playlist" entries={currentPlaylistTracks} />}
+      {currentPlaylist && currentPlaylistTracks && (
+        <ListSet variant="playlist" playlistId={playlistId} entries={currentPlaylistTracks} />
+      )}
     </>
   );
 };

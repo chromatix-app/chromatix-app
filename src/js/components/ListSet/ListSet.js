@@ -5,6 +5,7 @@
 import React from 'react';
 import moment from 'moment';
 import clsx from 'clsx';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Icon, StarRating } from 'js/components';
 
@@ -14,7 +15,15 @@ import style from './ListSet.module.scss';
 // COMPONENT
 // ======================================================================
 
-const ListSet = ({ entries, variant }) => {
+const ListSet = ({ variant, albumId, playlistId, entries }) => {
+  const dispatch = useDispatch();
+
+  const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
+  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
+
+  const currentServerId = currentServer?.serverId;
+  const currentLibraryId = currentLibrary?.libraryId;
+
   const totalDiscs =
     variant === 'album'
       ? entries.reduce((acc, entry) => {
@@ -48,7 +57,21 @@ const ListSet = ({ entries, variant }) => {
                 </div>
               )}
 
-              <div className={style.entry}>
+              <div
+                className={style.entry}
+                onDoubleClick={() => {
+                  dispatch.appModel.playTrack({
+                    variant: variant,
+                    serverId: currentServerId,
+                    libraryId: currentLibraryId,
+                    albumId,
+                    playlistId,
+                    index: index,
+                    trackList: entries,
+                    trackCount: entries.length,
+                  });
+                }}
+              >
                 <div className={style.trackNumber}>{trackNumber}</div>
                 {variant === 'playlist' && entry.thumb && (
                   <div className={style.thumb}>

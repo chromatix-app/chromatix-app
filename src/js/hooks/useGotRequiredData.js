@@ -9,7 +9,7 @@ const useGotRequiredData = () => {
 
   const gotRequiredData = allServers && (allLibraries || !currentLibrary) ? true : false;
 
-  console.log(gotRequiredData, allServers, allLibraries, currentServer?.accessToken, currentLibrary?.libraryId);
+  console.log(gotRequiredData, allServers, allLibraries, currentServer?.serverId, currentLibrary?.libraryId);
 
   return gotRequiredData;
 };

@@ -239,6 +239,7 @@ export const getAllServers = async () => {
         for (let i = 0; i < server.attributes.length; i++) {
           serverObj[server.attributes[i].name] = server.attributes[i].value;
         }
+        serverObj.serverId = serverObj.machineIdentifier;
         serverObj.serverBaseUrl = `${serverObj.scheme}://${serverObj.address}:${serverObj.port}`;
         serverObj.serverArtUrl = `${serverObj.scheme}://localhost:${serverObj.port}`;
         return serverObj;

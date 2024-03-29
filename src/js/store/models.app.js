@@ -119,6 +119,11 @@ const effects = (dispatch) => ({
     plex.getAllPlaylists();
   },
 
+  playTrack(payload, rootState) {
+    console.log('%c--- playTrack ---', 'color:#079189');
+    console.log(payload);
+  },
+
   storeArtistAlbums(payload, rootState) {
     console.log('%c--- storeArtistAlbums ---', 'color:#079189');
     const { artistId, artistAlbums } = payload;

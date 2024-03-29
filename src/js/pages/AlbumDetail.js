@@ -48,7 +48,7 @@ const AlbumDetail = () => {
         />
       )}
       {!(currentAlbum && currentAlbumTracks) && <Loading forceVisible inline />}
-      {currentAlbum && currentAlbumTracks && <ListSet variant="album" entries={currentAlbumTracks} />}
+      {currentAlbum && currentAlbumTracks && <ListSet variant="album" albumId={albumId} entries={currentAlbumTracks} />}
     </>
   );
 };

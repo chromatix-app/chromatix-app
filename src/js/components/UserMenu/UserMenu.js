@@ -56,11 +56,11 @@ const UserMenu = () => {
               <>
                 {allServers &&
                   allServers.map((server) => (
-                    <React.Fragment key={server.accessToken}>
+                    <React.Fragment key={server.serverId}>
                       <button
                         className={clsx(style.button, style.buttonServer)}
                         onClick={() => {
-                          dispatch.sessionModel.switchCurrentServer(server.accessToken);
+                          dispatch.sessionModel.switchCurrentServer(server.serverId);
                           toggleMenu();
                         }}
                       >
@@ -73,7 +73,7 @@ const UserMenu = () => {
                         </span>
                       </button>
 
-                      {server.accessToken === currentServer.accessToken &&
+                      {server.serverId === currentServer.serverId &&
                         allLibraries &&
                         allLibraries.map((library) => {
                           const isCurrentLibrary = library.libraryId === currentLibrary.libraryId;
