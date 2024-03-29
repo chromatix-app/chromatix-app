@@ -3,6 +3,7 @@
 // ======================================================================
 
 import { useSelector } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 
 import * as plex from 'js/services/plex';
 
@@ -17,7 +18,15 @@ const UserStatus = () => {
 
   return (
     <div className={style.wrap}>
-      <button onClick={plex.logout}>{currentUser.title} &nbsp;&nbsp;|&nbsp;&nbsp; Logout</button>
+      <div className={style.entry}>{currentUser.title}</div>
+      <span className={style.divider}>|</span>
+      <NavLink className={style.entry} to={'/settings'}>
+        Settings
+      </NavLink>
+      <span className={style.divider}>|</span>
+      <button className={style.entry} onClick={plex.logout}>
+        Logout
+      </button>
     </div>
   );
 };

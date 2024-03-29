@@ -295,7 +295,7 @@ export const getAllArtists = async () => {
 
       const data = await response.json();
 
-      console.log(data.MediaContainer.Metadata);
+      // console.log(data.MediaContainer.Metadata);
 
       const allArtists =
         data.MediaContainer.Metadata?.map((artist) => ({
@@ -564,7 +564,7 @@ export const getAllPlaylists = async () => {
 
       const data = await response.json();
 
-      console.log(data.MediaContainer.Metadata);
+      // console.log(data.MediaContainer.Metadata);
 
       const allPlaylists =
         data.MediaContainer.Metadata?.map((playlist) => ({

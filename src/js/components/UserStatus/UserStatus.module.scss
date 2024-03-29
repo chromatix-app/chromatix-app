@@ -1,15 +1,18 @@
 @import '../../../css/global';
 
 .wrap {
+  display: flex;
   position: fixed;
+  align-items: center;
   top: 20px;
   right: 40px;
+  padding: 0 5px;
   background: var(--color-panel-background);
   border: 1px solid var(--color-border);
   border-radius: 6px;
   font-size: 12px;
+}
 
-  button {
-    padding: 14px 20px;
-  }
+.entry {
+  padding: 14px 12px;
 }

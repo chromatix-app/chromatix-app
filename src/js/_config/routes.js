@@ -71,6 +71,13 @@ export const authRoutes = [
     component: 'PlaylistDetail',
   },
 
+  // settings
+  {
+    path: '/settings',
+    exact: true,
+    component: 'Settings',
+  },
+
   // other
   {
     component: 'Error404Auth',

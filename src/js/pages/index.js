@@ -8,3 +8,4 @@ export { default as Login } from './Login';
 export { default as Playlists } from './Playlists';
 export { default as PlaylistDetail } from './PlaylistDetail';
 export { default as Servers } from './Servers';
+export { default as Settings } from './Settings';
