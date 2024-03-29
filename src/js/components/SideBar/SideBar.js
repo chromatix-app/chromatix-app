@@ -44,7 +44,7 @@ const SideBar = () => {
       <NavLink className={style.link} activeClassName={style.linkActive} to="/playlists" exact>
         Playlists
       </NavLink>
-      {allPlaylists && (
+      {allPlaylists && allPlaylists.length > 0 && (
         <>
           <div className={style.label}>Playlists</div>
           {allPlaylists.map((playlist) => (

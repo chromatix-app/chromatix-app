@@ -17,11 +17,14 @@ const appState = {
 const userState = {
   loggedIn: false,
   currentUser: null,
+  allServers: null,
 };
 
-const plexState = {
-  allServers: null,
+const plexServerState = {
   allLibraries: null,
+};
+
+const plexLibraryState = {
   allArtists: null,
   allArtistAlbums: {},
   allArtistRelated: {},
@@ -31,7 +34,7 @@ const plexState = {
   allPlaylistTracks: {},
 };
 
-const state = Object.assign(appState, userState, plexState);
+const state = Object.assign(appState, userState, plexServerState, plexLibraryState);
 
 // ======================================================================
 // REDUCERS
@@ -101,8 +104,19 @@ const effects = (dispatch) => ({
     dispatch.appModel.setAppState({
       inited: true,
       ...userState,
+      ...plexServerState,
+      ...plexLibraryState,
     });
     dispatch.sessionModel.refresh();
+  },
+
+  clearPlexLibraryState(payload, rootState) {
+    console.log('%c--- clearPlexLibraryState ---', 'color:#079189');
+    dispatch.appModel.setAppState({
+      ...plexLibraryState,
+    });
+    rootState.appModel.history.push('/');
+    plex.getAllPlaylists();
   },
 
   storeArtistAlbums(payload, rootState) {

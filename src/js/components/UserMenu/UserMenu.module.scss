@@ -152,9 +152,9 @@
 }
 
 .iconHover {
-  visibility: hidden;
+  display: none;
 
   .button:hover & {
-    visibility: visible;
+    display: block;
   }
 }

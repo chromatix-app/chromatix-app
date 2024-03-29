@@ -21,7 +21,7 @@ const Artists = () => {
 
   return (
     <>
-      <TitleBlock title="Artists" subtitle={allArtists?.length ? allArtists?.length + ' Artists' : null} />
+      <TitleBlock title="Artists" subtitle={allArtists ? allArtists?.length + ' Artists' : null} />
       {!allArtists && <Loading forceVisible inline />}
       {allArtists && <CardSet entries={allArtists} />}
     </>

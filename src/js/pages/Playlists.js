@@ -21,7 +21,7 @@ const Playlists = () => {
 
   return (
     <>
-      <TitleBlock title="Playlists" subtitle={allPlaylists?.length ? allPlaylists?.length + ' Playlists' : null} />
+      <TitleBlock title="Playlists" subtitle={allPlaylists ? allPlaylists?.length + ' Playlists' : null} />
       {!allPlaylists && <Loading forceVisible inline />}
       {allPlaylists && <CardSet entries={allPlaylists} />}
     </>

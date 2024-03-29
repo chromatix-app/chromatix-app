@@ -49,6 +49,7 @@ const saveData = () => {
 // save relevant store data to localstorage
 
 const doSaveData = () => {
+  // console.log('%cSAVE DATA', 'color:#1fb800');
   const loggedIn = store.getState().appModel.loggedIn;
   localStorage.setItem(config.persistentStoreId, JSON.stringify(store.getState().persistentModel));
   if (loggedIn) {

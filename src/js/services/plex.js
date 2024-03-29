@@ -33,6 +33,15 @@ import { XMLParser } from 'fast-xml-parser';
 // &excludeParentID=-1
 // &includeMeta=1
 
+// Playlists
+// type: 15
+// sectionID: 20
+// playlistType: audio
+// includeCollections: 1
+// includeExternalMedia: 1
+// includeAdvanced: 1
+// includeMeta: 1
+
 // ======================================================================
 // OPTIONS
 // ======================================================================
@@ -584,8 +593,9 @@ export const getAllPlaylists = async () => {
       getAllPlaylistsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const { libraryId } = store.getState().sessionModel.currentLibrary;
 
-      const response = await fetch(`${serverBaseUrl}/playlists?playlistType=audio`, {
+      const response = await fetch(`${serverBaseUrl}/playlists?playlistType=audio&sectionID=${libraryId}`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -595,7 +605,7 @@ export const getAllPlaylists = async () => {
 
       const data = await response.json();
 
-      // console.log(data.MediaContainer.Metadata);
+      console.log(data.MediaContainer.Metadata);
 
       const allPlaylists =
         data.MediaContainer.Metadata?.map((playlist) => {

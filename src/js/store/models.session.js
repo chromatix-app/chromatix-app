@@ -59,8 +59,8 @@ const reducers = {
 
   refreshCurrentLibrary(rootState, payload) {
     console.log('%c--- refreshCurrentLibrary ---', 'color:#91074A');
-    const currentLibraryToken = rootState.currentLibrary ? rootState.currentLibrary.accessToken : null;
-    const refreshedLibrary = payload.find((library) => library.accessToken === currentLibraryToken);
+    const currentLibraryToken = rootState.currentLibrary ? rootState.currentLibrary.libraryId : null;
+    const refreshedLibrary = payload.find((library) => library.libraryId === currentLibraryToken);
     // TODO: what if refreshedLibrary is null?
     return {
       ...rootState,
@@ -109,6 +109,35 @@ const effects = (dispatch) => ({
     dispatch.sessionModel.setSessionState({
       ...localStorageState,
     });
+  },
+
+  switchCurrentServer(payload, rootState) {
+    console.log('%c--- switchCurrentServer ---', 'color:#91074A');
+    const currentServer = rootState.sessionModel.currentServer;
+    const currentServerId = currentServer ? currentServer.accessToken : null;
+    if (currentServerId !== payload) {
+      // TODO
+      // const newServer = rootState.appModel.allServers.find((server) => server.accessToken === payload);
+      // // TODO: what if currentServer is null?
+      // dispatch.sessionModel.setSessionState({
+      //   currentServer: newServer,
+      // });
+      // dispatch.appModel.clearPlexLibraryState();
+    }
+  },
+
+  switchCurrentLibrary(payload, rootState) {
+    console.log('%c--- switchCurrentLibrary ---', 'color:#91074A');
+    const currentLibrary = rootState.sessionModel.currentLibrary;
+    const currentLibraryId = currentLibrary ? currentLibrary.libraryId : null;
+    if (currentLibraryId !== payload) {
+      const newLibrary = rootState.appModel.allLibraries.find((library) => library.libraryId === payload);
+      // TODO: what if currentLibrary is null?
+      dispatch.sessionModel.setSessionState({
+        currentLibrary: newLibrary,
+      });
+      dispatch.appModel.clearPlexLibraryState();
+    }
   },
 });
 

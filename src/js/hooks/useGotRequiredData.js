@@ -4,11 +4,12 @@ const useGotRequiredData = () => {
   const allServers = useSelector(({ appModel }) => appModel.allServers);
   const allLibraries = useSelector(({ appModel }) => appModel.allLibraries);
 
+  const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
 
   const gotRequiredData = allServers && (allLibraries || !currentLibrary) ? true : false;
 
-  console.log(gotRequiredData);
+  console.log(gotRequiredData, allServers, allLibraries, currentServer?.accessToken, currentLibrary?.libraryId);
 
   return gotRequiredData;
 };

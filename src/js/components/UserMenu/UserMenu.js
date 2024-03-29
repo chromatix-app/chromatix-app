@@ -4,7 +4,6 @@
 
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 
 import { Icon } from 'js/components';
@@ -58,7 +57,13 @@ const UserMenu = () => {
                 {allServers &&
                   allServers.map((server) => (
                     <React.Fragment key={server.accessToken}>
-                      <NavLink className={clsx(style.button, style.buttonServer)} to={'/'}>
+                      <button
+                        className={clsx(style.button, style.buttonServer)}
+                        onClick={() => {
+                          dispatch.sessionModel.switchCurrentServer(server.accessToken);
+                          toggleMenu();
+                        }}
+                      >
                         <span className={style.iconBefore}>
                           <Icon icon="ServerIcon" cover stroke />
                         </span>
@@ -66,17 +71,20 @@ const UserMenu = () => {
                         <span className={clsx(style.iconArrow, style.iconHover)}>
                           <Icon icon="NextIcon" cover stroke />
                         </span>
-                      </NavLink>
+                      </button>
 
                       {server.accessToken === currentServer.accessToken &&
                         allLibraries &&
                         allLibraries.map((library) => {
                           const isCurrentLibrary = library.libraryId === currentLibrary.libraryId;
                           return (
-                            <NavLink
+                            <button
                               key={library.libraryId}
                               className={clsx(style.button, style.buttonLibrary)}
-                              to={'/'}
+                              onClick={() => {
+                                dispatch.sessionModel.switchCurrentLibrary(library.libraryId);
+                                toggleMenu();
+                              }}
                             >
                               <span className={style.iconBefore}>
                                 <Icon icon="MusicNoteIcon" cover stroke />
@@ -92,13 +100,13 @@ const UserMenu = () => {
                                   <Icon icon="CheckCircleIcon" cover stroke />
                                 </span>
                               )}
-                            </NavLink>
+                            </button>
                           );
                         })}
                     </React.Fragment>
                   ))}
 
-                <NavLink
+                {/* <NavLink
                   className={style.button}
                   to={'/settings'}
                   onClick={() => {
@@ -112,7 +120,7 @@ const UserMenu = () => {
                   <span className={clsx(style.iconArrow, style.iconHover)}>
                     <Icon icon="NextIcon" cover stroke />
                   </span>
-                </NavLink>
+                </NavLink> */}
               </>
             )}
 
