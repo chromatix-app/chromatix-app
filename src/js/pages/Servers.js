@@ -5,7 +5,7 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Loading, Title } from 'js/components';
+import { Loading, TitleBlock } from 'js/components';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
@@ -24,7 +24,7 @@ const Servers = () => {
 
   return (
     <>
-      <Title title="Servers" subtitle={allServers?.length ? allServers?.length + ' Servers' : null} />
+      <TitleBlock title="Servers" subtitle={allServers?.length ? allServers?.length + ' Servers' : null} />
       {!allServers && <Loading forceVisible inline />}
       {allServers &&
         allServers.map((server, index) => (

@@ -2,24 +2,18 @@
 // IMPORTS
 // ======================================================================
 
-import { Button, TitleBasic } from 'js/components';
+import style from './TitleBasic.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const Error404Default = () => (
-  <main className="wrap-middle text-center">
-    <div>
-      <TitleBasic title="404 Not Found" />
-      <div className="mt-20"></div>
-      <Button to={'/'}>Home</Button>
-    </div>
-  </main>
-);
+const TitleBasic = ({ title }) => {
+  return <div className={style.wrap}>{title && <h1 className={style.title}>{title}</h1>}</div>;
+};
 
 // ======================================================================
 // EXPORT
 // ======================================================================
 
-export default Error404Default;
+export default TitleBasic;

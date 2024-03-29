@@ -5,7 +5,7 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { CardSet, Loading, Title } from 'js/components';
+import { CardSet, Loading, TitleBlock } from 'js/components';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
@@ -21,7 +21,7 @@ const Artists = () => {
 
   return (
     <>
-      <Title title="Artists" subtitle={allArtists?.length ? allArtists?.length + ' Artists' : null} />
+      <TitleBlock title="Artists" subtitle={allArtists?.length ? allArtists?.length + ' Artists' : null} />
       {!allArtists && <Loading forceVisible inline />}
       {allArtists && <CardSet entries={allArtists} />}
     </>

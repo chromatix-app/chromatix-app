@@ -6,7 +6,7 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { CardSet, Loading, Title, TitleSection } from 'js/components';
+import { CardSet, Loading, TitleBlock, TitleSection } from 'js/components';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
@@ -42,7 +42,7 @@ const ArtistDetail = () => {
   return (
     <>
       {currentArtist && (
-        <Title
+        <TitleBlock
           thumb={artistThumb}
           title={artistName}
           subtitle={

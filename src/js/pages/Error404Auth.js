@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { Title } from 'js/components';
+import { TitleBlock } from 'js/components';
 
 // ======================================================================
 // COMPONENT
@@ -10,7 +10,7 @@ import { Title } from 'js/components';
 
 const Error404Auth = () => (
   <main>
-    <Title title="404 Not Found" />
+    <TitleBlock title="404 Not Found" />
   </main>
 );
 

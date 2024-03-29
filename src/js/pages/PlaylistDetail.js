@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import moment from 'moment';
 
-import { ListSet, Loading, Title } from 'js/components';
+import { ListSet, Loading, TitleBlock } from 'js/components';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
@@ -38,7 +38,7 @@ const PlaylistDetail = () => {
   return (
     <>
       {currentPlaylist && (
-        <Title
+        <TitleBlock
           thumb={playlistThumb}
           title={playlistTitle}
           subtitle={currentPlaylistTracks && playlistTracks + ' tracks'}

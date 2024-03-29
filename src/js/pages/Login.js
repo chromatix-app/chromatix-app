@@ -4,7 +4,7 @@
 
 import { useDispatch } from 'react-redux';
 
-import { Button, Title } from 'js/components';
+import { Button, TitleBasic } from 'js/components';
 
 // ======================================================================
 // COMPONENT
@@ -16,7 +16,7 @@ const Login = () => {
   return (
     <main className="wrap-middle text-center">
       <div>
-        <Title title="Chromatix" />
+        <TitleBasic title="Chromatix" />
         <div className="mt-20"></div>
         <Button
           onClick={() => {
