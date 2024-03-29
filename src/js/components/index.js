@@ -12,4 +12,4 @@ export { default as StarRating } from './StarRating/StarRating';
 export { default as TitleBasic } from './TitleBasic/TitleBasic';
 export { default as TitleBlock } from './TitleBlock/TitleBlock';
 export { default as TitleSection } from './TitleSection/TitleSection';
-export { default as UserStatus } from './UserStatus/UserStatus';
+export { default as UserMenu } from './UserMenu/UserMenu';

@@ -9,13 +9,13 @@ import clsx from 'clsx';
 
 import { Icon } from 'js/components';
 
-import style from './UserStatus.module.scss';
+import style from './UserMenu.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const UserStatus = () => {
+const UserMenu = () => {
   const dispatch = useDispatch();
 
   const [showMenu, setShowMenu] = useState(false);
@@ -142,4 +142,4 @@ const UserStatus = () => {
 // EXPORT
 // ======================================================================
 
-export default UserStatus;
+export default UserMenu;

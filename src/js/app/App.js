@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 
-import { ControlBar, SideBar, UserStatus } from 'js/components';
+import { ControlBar, SideBar, UserMenu } from 'js/components';
 import { useGotRequiredData } from 'js/hooks';
 import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 
@@ -91,7 +91,7 @@ const App = () => {
       return (
         <div className={clsx('wrap')}>
           <BrowserRouteSwitch />
-          <UserStatus />
+          <UserMenu />
           {/* <Blocker /> */}
         </div>
       );
@@ -110,7 +110,7 @@ const App = () => {
             </div>
             {/* <Blocker /> */}
           </div>
-          <UserStatus />
+          <UserMenu />
         </div>
       );
     }
