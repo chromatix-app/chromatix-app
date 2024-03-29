@@ -12,8 +12,8 @@ import style from './ListServers.module.scss';
 // COMPONENT
 // ======================================================================
 
-const isProduction = process.env.REACT_APP_ENV === 'production';
-const plexServerProtocol = isProduction ? 'https://' : 'http://';
+// const isProduction = process.env.REACT_APP_ENV === 'production';
+// const plexServerProtocol = isProduction ? 'https://' : 'http://';
 
 const ListServers = ({ entries, variant }) => {
   const dispatch = useDispatch();
@@ -36,10 +36,10 @@ const ListServers = ({ entries, variant }) => {
                 </div>
                 <div>
                   <div className={style.title}>{entry.name}</div>
-                  <div className={style.url}>
+                  {/* <div className={style.url}>
                     {plexServerProtocol}
                     {entry.host}:{entry.port}
-                  </div>
+                  </div> */}
                 </div>
               </button>
             );

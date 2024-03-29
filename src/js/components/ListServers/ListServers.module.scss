@@ -7,11 +7,13 @@
 .entry {
   display: flex;
   align-items: center;
+  width: 100vh;
+  max-width: 300px;
   min-width: 100%;
-  padding: 10px 20px;
+  padding: 12px 30px;
   margin: 0 0 5px;
   background: transparent;
-  border: 1px solid transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   text-align: left;
 
@@ -28,7 +30,7 @@
 }
 
 .title {
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .url {

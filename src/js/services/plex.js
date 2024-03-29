@@ -278,6 +278,11 @@ export const getAllLibraries = async () => {
       // add a libraryId to each library
       allLibraries.forEach((library) => {
         library.libraryId = library.key;
+        // library.thumb = library.composite
+        //   ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+        //       `${serverArtUrl}${library.composite}`
+        //     )}&X-Plex-Token=${authToken}`
+        //   : null;
       });
 
       console.log(allLibraries);
