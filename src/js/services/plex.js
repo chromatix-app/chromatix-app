@@ -580,6 +580,7 @@ export const getAllPlaylists = async () => {
   if (!getAllPlaylistsRunning) {
     const prevAllPlaylists = store.getState().appModel.allPlaylists;
     if (!prevAllPlaylists) {
+      console.log('%c--- plex - getAllPlaylists ---', 'color:#f9743b;');
       getAllPlaylistsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
@@ -597,19 +598,22 @@ export const getAllPlaylists = async () => {
       // console.log(data.MediaContainer.Metadata);
 
       const allPlaylists =
-        data.MediaContainer.Metadata?.map((playlist) => ({
-          id: playlist.ratingKey,
-          title: playlist.title,
-          link: '/playlists/' + playlist.ratingKey,
-          totalTracks: playlist.leafCount,
-          thumb: playlist.composite
-            ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                `${serverArtUrl}${playlist.composite}`
-              )}&X-Plex-Token=${authToken}`
-            : null,
-        })) || [];
+        data.MediaContainer.Metadata?.map((playlist) => {
+          const playlistThumb = playlist.thumb ? playlist.thumb : playlist.composite ? playlist.composite : null;
+          return {
+            id: playlist.ratingKey,
+            title: playlist.title,
+            link: '/playlists/' + playlist.ratingKey,
+            totalTracks: playlist.leafCount,
+            thumb: playlistThumb
+              ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                  `${serverArtUrl}${playlistThumb}`
+                )}&X-Plex-Token=${authToken}`
+              : null,
+          };
+        }) || [];
 
-      // console.log(allPlaylists);
+      console.log('allPlaylists', allPlaylists);
 
       store.dispatch.appModel.setAppState({ allPlaylists });
 
