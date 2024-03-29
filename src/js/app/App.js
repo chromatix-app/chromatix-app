@@ -21,6 +21,7 @@ const isProduction = process.env.REACT_APP_ENV === 'production';
 const App = () => {
   const inited = useSelector(({ appModel }) => appModel.inited);
   const loggedIn = useSelector(({ appModel }) => appModel.loggedIn);
+  const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
 
   const debugConsole = useSelector(({ persistentModel }) => persistentModel.debugConsole);
 
@@ -82,23 +83,33 @@ const App = () => {
 
   // logged in
   else {
-    return (
-      <div className={clsx('wrap')}>
-        <div className={clsx('layout')}>
-          <div className="layout-sidebar">
-            <SideBar />
-          </div>
-          <div id="content" className={clsx('layout-content')}>
-            <BrowserRouteSwitch />
-          </div>
-          <div className={clsx('layout-controls')}>
-            <ControlBar />
-          </div>
+    if (!currentServer) {
+      return (
+        <div className={clsx('wrap')}>
+          <BrowserRouteSwitch />
+          <UserStatus />
           {/* <Blocker /> */}
         </div>
-        <UserStatus />
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div className={clsx('wrap')}>
+          <div className={clsx('layout')}>
+            <div className="layout-sidebar">
+              <SideBar />
+            </div>
+            <div id="content" className={clsx('layout-content')}>
+              <BrowserRouteSwitch />
+            </div>
+            <div className={clsx('layout-controls')}>
+              <ControlBar />
+            </div>
+            {/* <Blocker /> */}
+          </div>
+          <UserStatus />
+        </div>
+      );
+    }
   }
 };
 

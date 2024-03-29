@@ -18,13 +18,7 @@ const Login = () => {
       <div>
         <TitleBasic title="Chromatix" />
         <div className="mt-20"></div>
-        <Button
-          onClick={() => {
-            dispatch.appModel.login();
-          }}
-        >
-          Login with Plex
-        </Button>
+        <Button onClick={dispatch.appModel.doLogin}>Login with Plex</Button>
       </div>
     </main>
   );

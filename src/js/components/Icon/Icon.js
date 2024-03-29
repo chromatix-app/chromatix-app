@@ -11,6 +11,7 @@ import { ReactComponent as DiscIcon } from './icons/music/disc.svg';
 import { ReactComponent as FastForwardIcon } from './icons/music/fast-forward.svg';
 import { ReactComponent as GridIcon } from './icons/music/grid.svg';
 import { ReactComponent as ListIcon } from './icons/music/list.svg';
+import { ReactComponent as MusicNoteIcon } from './icons/music/music-note.svg';
 import { ReactComponent as NextIcon } from './icons/music/next.svg';
 import { ReactComponent as PauseIcon } from './icons/music/pause.svg';
 import { ReactComponent as PauseFilledIcon } from './icons/music/pause-filled.svg';
@@ -21,6 +22,7 @@ import { ReactComponent as QueueIcon } from './icons/music/queue.svg';
 import { ReactComponent as RepeatIcon } from './icons/music/repeat.svg';
 import { ReactComponent as RewindIcon } from './icons/music/rewind.svg';
 import { ReactComponent as SearchIcon } from './icons/music/search.svg';
+import { ReactComponent as ServerIcon } from './icons/music/server.svg';
 import { ReactComponent as ShuffleIcon } from './icons/music/shuffle.svg';
 import { ReactComponent as SkipBackIcon } from './icons/music/skip-back.svg';
 import { ReactComponent as SkipForwardIcon } from './icons/music/skip-forward.svg';
@@ -44,6 +46,7 @@ const customIcons = {
   FastForwardIcon,
   GridIcon,
   ListIcon,
+  MusicNoteIcon,
   NextIcon,
   PauseIcon,
   PauseFilledIcon,
@@ -54,6 +57,7 @@ const customIcons = {
   RepeatIcon,
   RewindIcon,
   SearchIcon,
+  ServerIcon,
   ShuffleIcon,
   SkipBackIcon,
   SkipForwardIcon,

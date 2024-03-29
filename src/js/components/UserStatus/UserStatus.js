@@ -2,10 +2,8 @@
 // IMPORTS
 // ======================================================================
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-
-import * as plex from 'js/services/plex';
 
 import style from './UserStatus.module.scss';
 
@@ -14,6 +12,8 @@ import style from './UserStatus.module.scss';
 // ======================================================================
 
 const UserStatus = () => {
+  const dispatch = useDispatch();
+
   const currentUser = useSelector(({ appModel }) => appModel.currentUser);
 
   return (
@@ -24,7 +24,7 @@ const UserStatus = () => {
         Settings
       </NavLink>
       <span className={style.divider}>|</span>
-      <button className={style.entry} onClick={plex.logout}>
+      <button className={style.entry} onClick={dispatch.appModel.doLogout}>
         Logout
       </button>
     </div>

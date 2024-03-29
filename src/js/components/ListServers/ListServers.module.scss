@@ -1,0 +1,37 @@
+@import '../../../css/global';
+
+.wrap {
+  padding: 0 30px 50px;
+}
+
+.entry {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  margin: 0 0 5px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  text-align: left;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+
+.icon {
+  width: 28px;
+  height: 28px;
+  margin-right: 20px;
+}
+
+.title {
+  font-size: 16px;
+}
+
+.url {
+  margin: 2px 0 0;
+  opacity: 0.4;
+  font-size: 12px;
+}

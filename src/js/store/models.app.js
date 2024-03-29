@@ -15,7 +15,9 @@ const appState = {
   inited: false,
   standalone: false,
   history: null,
+};
 
+const userState = {
   loggedIn: false,
   currentUser: null,
 };
@@ -34,14 +36,14 @@ const plexState = {
 
 // COMBINE ALL STATES
 
-const state = Object.assign(appState, plexState);
+const state = Object.assign(appState, userState, plexState);
 
 // ======================================================================
 // REDUCERS
 // ======================================================================
 
 const reducers = {
-  setState(rootState, payload) {
+  setAppState(rootState, payload) {
     // console.log('%c--- setState ---', 'color:#079189');
     return { ...rootState, ...payload };
   },
@@ -53,24 +55,6 @@ const reducers = {
   // hideLoader(rootState) {
   //   return { ...rootState, loaderVisible: false };
   // },
-
-  setLoggedIn(rootState, payload) {
-    console.log('%c--- setLoggedIn ---', 'color:#079189');
-    return {
-      ...rootState,
-      inited: true,
-      loggedIn: true,
-      currentUser: payload,
-    };
-  },
-
-  setLoggedOut(rootState) {
-    console.log('%c--- setLoggedOut ---', 'color:#079189');
-    return {
-      inited: true,
-      loggedIn: false,
-    };
-  },
 };
 
 // ======================================================================
@@ -82,21 +66,46 @@ const effects = (dispatch) => ({
     console.log('%c--- init ---', 'color:#079189');
     // detect if browser is standalone (i.e. a web app)
     if ('standalone' in window.navigator && !!window.navigator.standalone) {
-      dispatch.appModel.setState({
+      dispatch.appModel.setAppState({
         standalone: true,
       });
     }
     // save history for reference within models
-    dispatch.appModel.setState({
+    dispatch.appModel.setAppState({
       history: payload.history,
     });
     // initialise plex
     plex.init();
   },
 
-  login(payload, rootState) {
+  doLogin(payload, rootState) {
     console.log('%c--- login ---', 'color:#079189');
     plex.login();
+  },
+
+  doLogout(payload, rootState) {
+    console.log('%c--- logout ---', 'color:#079189');
+    plex.logout();
+    rootState.appModel.history.replace('/');
+  },
+
+  setLoggedIn(payload, rootState) {
+    console.log('%c--- setLoggedIn ---', 'color:#079189');
+    dispatch.appModel.setAppState({
+      inited: true,
+      loggedIn: true,
+      currentUser: payload,
+    });
+    dispatch.sessionModel.refresh();
+  },
+
+  setLoggedOut(payload, rootState) {
+    console.log('%c--- setLoggedOut ---', 'color:#079189');
+    dispatch.appModel.setAppState({
+      inited: true,
+      ...userState,
+    });
+    dispatch.sessionModel.refresh();
   },
 
   storeArtistAlbums(payload, rootState) {
@@ -108,7 +117,7 @@ const effects = (dispatch) => ({
 
     console.log(allArtistAlbums);
 
-    dispatch.appModel.setState({
+    dispatch.appModel.setAppState({
       allArtistAlbums,
     });
   },
@@ -122,7 +131,7 @@ const effects = (dispatch) => ({
 
     console.log(allArtistRelated);
 
-    dispatch.appModel.setState({
+    dispatch.appModel.setAppState({
       allArtistRelated,
     });
   },
@@ -136,7 +145,7 @@ const effects = (dispatch) => ({
 
     console.log(allAlbumTracks);
 
-    dispatch.appModel.setState({
+    dispatch.appModel.setAppState({
       allAlbumTracks,
     });
   },
@@ -150,7 +159,7 @@ const effects = (dispatch) => ({
 
     console.log(allPlaylistTracks);
 
-    dispatch.appModel.setState({
+    dispatch.appModel.setAppState({
       allPlaylistTracks,
     });
   },

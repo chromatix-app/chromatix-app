@@ -13,9 +13,9 @@ import config from 'js/_config/config';
 // Anything to be saved in localstorage for use on reload
 
 const persistentState = {
-  debugConsole: false,
-  invitation: null,
-  persistentEmail: null,
+  // debugConsole: false,
+  // invitation: null,
+  // persistentEmail: null,
 };
 
 // GET PERSISTENT STATE

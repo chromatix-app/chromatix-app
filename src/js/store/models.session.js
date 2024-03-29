@@ -2,9 +2,9 @@
 // IMPORTS
 // ======================================================================
 
-// import sha3 from 'crypto-js/sha3';
+import sha3 from 'crypto-js/sha3';
 
-// import config from 'js/_config/config';
+import config from 'js/_config/config';
 // import * as utils from 'js/utils';
 
 // ======================================================================
@@ -15,6 +15,9 @@
 // Anything related to the session to be saved in localstorage for use on reload
 
 const sessionState = {
+  currentServer: null,
+  currentLibrary: null,
+
   backgroundColor: '#111',
 };
 
@@ -44,13 +47,13 @@ const reducers = {
     return { ...rootState, ...payload };
   },
 
-  // setProject(rootState, payload) {
-  //   console.log('%c--- setProject - ' + payload + ' ---', 'color:#91074A');
-  //   return {
-  //     ...rootState,
-  //     currentProjectId: payload,
-  //   };
-  // },
+  setCurrentServer(rootState, payload) {
+    console.log('%c--- setProject - ' + payload + ' ---', 'color:#91074A');
+    return {
+      ...rootState,
+      currentServer: payload,
+    };
+  },
 
   // setSortTasks(rootState, payload) {
   //   let sortTasksKey = payload;
@@ -75,25 +78,25 @@ const reducers = {
 // ======================================================================
 
 const effects = (dispatch) => ({
-  // refresh(payload, rootState) {
-  //   console.log('%c--- refresh ---', 'color:#91074A');
-  //   let localStorageState = { ...sessionState };
-  //   // attempt to retrieve the current user's session state from local storage
-  //   const loggedIn = rootState.appModel.loggedIn;
-  //   if (loggedIn) {
-  //     const userName = rootState.appModel.currentUser.id;
-  //     const userHash = sha3('music' + userName, { outputLength: 224 }).toString();
-  //     const sessionKey = config.sessionStoreId + '-' + userHash;
-  //     try {
-  //       localStorageState = localStorage.getItem(sessionKey) ? JSON.parse(localStorage.getItem(sessionKey)) : {};
-  //     } catch (e) {
-  //       // browser does not support local storage, or local storage item does not exist
-  //     }
-  //   }
-  //   dispatch.sessionModel.setSessionState({
-  //     ...localStorageState,
-  //   });
-  // },
+  refresh(payload, rootState) {
+    console.log('%c--- refresh ---', 'color:#91074A');
+    let localStorageState = { ...sessionState };
+    // attempt to retrieve the current user's session state from local storage
+    const loggedIn = rootState.appModel.loggedIn;
+    if (loggedIn) {
+      const userName = rootState.appModel.currentUser.id;
+      const userHash = sha3('music' + userName, { outputLength: 224 }).toString();
+      const sessionKey = config.sessionStoreId + '-' + userHash;
+      try {
+        localStorageState = localStorage.getItem(sessionKey) ? JSON.parse(localStorage.getItem(sessionKey)) : {};
+      } catch (e) {
+        // browser does not support local storage, or local storage item does not exist
+      }
+    }
+    dispatch.sessionModel.setSessionState({
+      ...localStorageState,
+    });
+  },
 });
 
 // ======================================================================
