@@ -34,7 +34,18 @@ const plexLibraryState = {
   allPlaylistTracks: {},
 };
 
-const state = Object.assign(appState, userState, plexServerState, plexLibraryState);
+const playerState = {
+  playerVariant: null,
+  playerServerId: null,
+  playerLibraryId: null,
+  playerAlbumId: null,
+  playerPlaylistId: null,
+  playerIndex: null,
+  playerTrackList: null,
+  playerTrackCount: null,
+};
+
+const state = Object.assign(appState, userState, plexServerState, plexLibraryState, playerState);
 
 // ======================================================================
 // REDUCERS
@@ -106,6 +117,7 @@ const effects = (dispatch) => ({
       ...userState,
       ...plexServerState,
       ...plexLibraryState,
+      ...playerState,
     });
     dispatch.sessionModel.refresh();
   },

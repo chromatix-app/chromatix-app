@@ -61,14 +61,14 @@ const ListSet = ({ variant, albumId, playlistId, entries }) => {
                 className={style.entry}
                 onDoubleClick={() => {
                   dispatch.appModel.playTrack({
-                    variant: variant,
-                    serverId: currentServerId,
-                    libraryId: currentLibraryId,
-                    albumId,
-                    playlistId,
-                    index: index,
-                    trackList: entries,
-                    trackCount: entries.length,
+                    playerVariant: variant,
+                    playerServerId: currentServerId,
+                    playerLibraryId: currentLibraryId,
+                    playerAlbumId: albumId,
+                    playerPlaylistId: playlistId,
+                    playerIndex: index,
+                    playerTrackList: entries,
+                    playerTrackCount: entries.length,
                   });
                 }}
               >
