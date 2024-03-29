@@ -92,6 +92,8 @@ const effects = (dispatch) => ({
       currentUser: payload,
     });
     dispatch.sessionModel.refresh();
+    plex.getAllServers();
+    plex.getAllLibraries();
   },
 
   setLoggedOut(payload, rootState) {

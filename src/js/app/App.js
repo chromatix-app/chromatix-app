@@ -9,6 +9,7 @@ import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 
 import { ControlBar, SideBar, UserStatus } from 'js/components';
+import { useGotRequiredData } from 'js/hooks';
 import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 
 // ======================================================================
@@ -25,6 +26,8 @@ const App = () => {
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
 
   const debugConsole = useSelector(({ persistentModel }) => persistentModel.debugConsole);
+
+  const gotRequiredData = useGotRequiredData();
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -64,7 +67,7 @@ const App = () => {
   );
 
   // loading
-  if (!inited) {
+  if (!inited || (loggedIn && !gotRequiredData)) {
     return (
       <div className={clsx('wrap')}>
         <div className="loading"></div>

@@ -188,7 +188,7 @@ const getUserInfo = async () => {
     username: jsonObj['username'],
   };
 
-  // console.log(currentUser);
+  console.log('currentUser', currentUser);
 
   store.dispatch.appModel.setLoggedIn(currentUser);
 };
@@ -203,6 +203,7 @@ export const getAllServers = async () => {
   if (!getUserServersRunning) {
     const prevAllServers = store.getState().appModel.allServers;
     if (!prevAllServers) {
+      console.log('%c--- plex - getAllServers ---', 'color:#f9743b;');
       getUserServersRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
 
@@ -234,9 +235,10 @@ export const getAllServers = async () => {
         return serverObj;
       });
 
-      // console.log(allServers);
+      console.log('allServers', allServers);
 
       store.dispatch.appModel.setAppState({ allServers });
+      store.dispatch.sessionModel.refreshCurrentServer(allServers);
 
       getUserServersRunning = false;
     }
@@ -253,43 +255,49 @@ export const getAllLibraries = async () => {
   if (!getUserLibrariesRunning) {
     const prevAllLibraries = store.getState().appModel.allLibraries;
     if (!prevAllLibraries) {
-      getUserLibrariesRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
-      const { serverBaseUrl } = store.getState().sessionModel.currentServer;
+      const currentServer = store.getState().sessionModel.currentServer;
 
-      const response = await fetch(`${serverBaseUrl}/library/sections`, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
+      if (currentServer) {
+        console.log('%c--- plex - getAllLibraries ---', 'color:#f9743b;');
+        getUserLibrariesRunning = true;
+        const authToken = window.localStorage.getItem('chromatix-auth-token');
+        const { serverBaseUrl } = currentServer;
 
-      if (!response.ok) {
-        // TODO
+        const response = await fetch(`${serverBaseUrl}/library/sections`, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': authToken,
+          },
+        });
+
+        if (!response.ok) {
+          // TODO
+        }
+
+        const data = await response.json();
+
+        // console.log(data.MediaContainer.Directory);
+
+        const allLibraries = data.MediaContainer.Directory.filter((library) => library.type === 'artist');
+
+        // add a libraryId to each library
+        allLibraries.forEach((library) => {
+          library.libraryId = library.key;
+          // library.thumb = library.composite
+          //   ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+          //       `${serverArtUrl}${library.composite}`
+          //     )}&X-Plex-Token=${authToken}`
+          //   : null;
+        });
+
+        console.log('allLibraries', allLibraries);
+
+        store.dispatch.appModel.setAppState({ allLibraries });
+        store.dispatch.sessionModel.refreshCurrentLibrary(allLibraries);
+
+        getUserLibrariesRunning = false;
       }
-
-      const data = await response.json();
-
-      // console.log(data.MediaContainer.Directory);
-
-      const allLibraries = data.MediaContainer.Directory.filter((library) => library.type === 'artist');
-
-      // add a libraryId to each library
-      allLibraries.forEach((library) => {
-        library.libraryId = library.key;
-        // library.thumb = library.composite
-        //   ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-        //       `${serverArtUrl}${library.composite}`
-        //     )}&X-Plex-Token=${authToken}`
-        //   : null;
-      });
-
-      console.log(allLibraries);
-
-      store.dispatch.appModel.setAppState({ allLibraries });
-
-      getUserLibrariesRunning = false;
     }
   }
 };
