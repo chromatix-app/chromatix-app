@@ -11,29 +11,12 @@ import config from 'js/_config/config';
 // STATE
 // ======================================================================
 
-// SESSION STATE
-// Anything related to the session to be saved in localstorage for use on reload
-
 const sessionState = {
   currentServer: null,
   currentLibrary: null,
 
   backgroundColor: '#111',
 };
-
-// GET PERSISTENT STATE
-// Using localstorage
-
-// let localStorageState = {};
-// try {
-//   localStorageState = localStorage.getItem(config.sessionStoreId)
-//     ? JSON.parse(localStorage.getItem(config.sessionStoreId))
-//     : {};
-// } catch (e) {
-//   // browser does not support local storage, or local storage item does not exist
-// }
-
-// COMBINE ALL STATES
 
 const state = Object.assign(sessionState);
 
@@ -48,10 +31,18 @@ const reducers = {
   },
 
   setCurrentServer(rootState, payload) {
-    console.log('%c--- setProject - ' + payload + ' ---', 'color:#91074A');
+    console.log('%c--- setCurrentServer - ' + payload + ' ---', 'color:#91074A');
     return {
       ...rootState,
       currentServer: payload,
+    };
+  },
+
+  setCurrentLibrary(rootState, payload) {
+    console.log('%c--- setCurrentLibrary - ' + payload + ' ---', 'color:#91074A');
+    return {
+      ...rootState,
+      currentLibrary: payload,
     };
   },
 

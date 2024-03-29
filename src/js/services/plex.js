@@ -46,8 +46,6 @@ const redirectUrlLocal = 'http://localhost:3000?plex=true';
 const redirectUrlProd = 'https://chromatix.app?plex=true';
 const redirectUrlActual = isProduction ? redirectUrlProd : redirectUrlLocal;
 
-const plexLibraryId = '20';
-
 const thumbSize = 480;
 
 // ======================================================================
@@ -216,6 +214,10 @@ export const getAllServers = async () => {
         },
       });
 
+      if (!response.ok) {
+        // TODO
+      }
+
       const data = await response.text();
 
       // parse the XML response
@@ -245,32 +247,47 @@ export const getAllServers = async () => {
 // GET USER LIBRARIES
 // ======================================================================
 
-// const getAllLibraries = async () => {
-//   const authToken = window.localStorage.getItem('chromatix-auth-token');
+let getUserLibrariesRunning;
 
-//   const response = await fetch(`${plexServerBaseUrl}/library/sections`, {
-//     headers: {
-//       Accept: 'application/json',
-//       'Content-Type': 'application/json',
-//       'X-Plex-Token': authToken,
-//     },
-//   });
+export const getAllLibraries = async () => {
+  if (!getUserLibrariesRunning) {
+    const prevAllLibraries = store.getState().appModel.allLibraries;
+    if (!prevAllLibraries) {
+      getUserLibrariesRunning = true;
+      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const { serverBaseUrl } = store.getState().sessionModel.currentServer;
 
-//   if (!response.ok) {
-//     console.error('Failed to get libraries:', response.statusText);
-//     return;
-//   }
+      const response = await fetch(`${serverBaseUrl}/library/sections`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Plex-Token': authToken,
+        },
+      });
 
-//   const data = await response.json();
-//   const libraries = data.MediaContainer.Directory.map((library) => ({
-//     key: library.key,
-//     type: library.type,
-//     title: library.title,
-//   }));
+      if (!response.ok) {
+        // TODO
+      }
 
-//   console.log('Libraries:', libraries);
-//   return libraries;
-// };
+      const data = await response.json();
+
+      // console.log(data.MediaContainer.Directory);
+
+      const allLibraries = data.MediaContainer.Directory.filter((library) => library.type === 'artist');
+
+      // add a libraryId to each library
+      allLibraries.forEach((library) => {
+        library.libraryId = library.key;
+      });
+
+      console.log(allLibraries);
+
+      store.dispatch.appModel.setAppState({ allLibraries });
+
+      getUserLibrariesRunning = false;
+    }
+  }
+};
 
 // ======================================================================
 // GET ALL ARTISTS
@@ -285,8 +302,9 @@ export const getAllArtists = async () => {
       getAllArtistsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const { libraryId } = store.getState().sessionModel.currentLibrary;
 
-      const response = await fetch(`${serverBaseUrl}/library/sections/${plexLibraryId}/all`, {
+      const response = await fetch(`${serverBaseUrl}/library/sections/${libraryId}/all`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -335,9 +353,10 @@ export const getAllArtistAlbums = async (artistId) => {
       getAllArtistAlbumsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
+      // const {libraryId} = store.getState().sessionModel.currentLibrary;
 
       const response = await fetch(
-        // `${serverBaseUrl}/library/sections/${plexLibraryId}/all?artist.id=${artistId}&type=9&album.subformat!=Compilation,Live`,
+        // `${serverBaseUrl}/library/sections/${libraryId}/all?artist.id=${artistId}&type=9&album.subformat!=Compilation,Live`,
         `${serverBaseUrl}/library/metadata/${artistId}/children?excludeAllLeaves=1`,
         {
           headers: {
@@ -445,8 +464,9 @@ export const getAllAlbums = async () => {
       getAllAlbumsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const { libraryId } = store.getState().sessionModel.currentLibrary;
 
-      const response = await fetch(`${serverBaseUrl}/library/sections/${plexLibraryId}/all?type=9`, {
+      const response = await fetch(`${serverBaseUrl}/library/sections/${libraryId}/all?type=9`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',

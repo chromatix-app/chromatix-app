@@ -12,21 +12,21 @@ import * as plex from 'js/services/plex';
 // COMPONENT
 // ======================================================================
 
-const Servers = () => {
-  const allServers = useSelector(({ appModel }) => appModel.allServers);
+const Libraries = () => {
+  const allLibraries = useSelector(({ appModel }) => appModel.allLibraries);
 
   useEffect(() => {
-    plex.getAllServers();
+    plex.getAllLibraries();
   }, []);
 
   return (
     <main className="wrap-middle text-center">
       <div>
-        {!allServers && <Loading forceVisible inline />}
-        {allServers && (
+        {!allLibraries && <Loading forceVisible inline />}
+        {allLibraries && (
           <>
-            <TitleBasic title="Servers" />
-            <ListServers variant="servers" entries={allServers} />
+            <TitleBasic title="Libraries" />
+            <ListServers variant="libraries" entries={allLibraries} />
           </>
         )}
       </div>
@@ -38,4 +38,4 @@ const Servers = () => {
 // EXPORT
 // ======================================================================
 
-export default Servers;
+export default Libraries;

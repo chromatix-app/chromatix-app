@@ -7,10 +7,12 @@
   bottom: 0;
   left: 0;
   right: 0;
+  min-width: 32px;
+  min-height: 32px;
   background-image: url(../../../images/loading-grey.gif);
   background-image: url(../../../images/loading-grey.png);
   background-size: 32px 32px;
-  background-position: 50% calc(50% - 3vh);
+  background-position: 50% 45%;
   background-repeat: no-repeat;
   opacity: 0;
   animation: fade-in 1s 0.5s forwards;

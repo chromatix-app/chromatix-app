@@ -8,9 +8,6 @@ import * as plex from 'js/services/plex';
 // STATE
 // ======================================================================
 
-// APP STATE
-// General state unrelated to any user or API data
-
 const appState = {
   inited: false,
   standalone: false,
@@ -34,8 +31,6 @@ const plexState = {
   allPlaylistTracks: {},
 };
 
-// COMBINE ALL STATES
-
 const state = Object.assign(appState, userState, plexState);
 
 // ======================================================================
@@ -44,7 +39,7 @@ const state = Object.assign(appState, userState, plexState);
 
 const reducers = {
   setAppState(rootState, payload) {
-    // console.log('%c--- setState ---', 'color:#079189');
+    // console.log('%c--- setAppState ---', 'color:#079189');
     return { ...rootState, ...payload };
   },
 

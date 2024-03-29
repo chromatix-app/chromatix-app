@@ -34,6 +34,11 @@ export const authRoutes = [
     exact: true,
     component: 'Servers',
   },
+  {
+    path: '/libraries',
+    exact: true,
+    component: 'Libraries',
+  },
 
   // artists
   {

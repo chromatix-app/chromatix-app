@@ -14,6 +14,7 @@ const BrowserRouteValidate = ({ children }) => {
 
   const loggedIn = useSelector(({ appModel }) => appModel.loggedIn);
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
+  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
 
   if (loggedIn) {
     // no server set
@@ -23,8 +24,20 @@ const BrowserRouteValidate = ({ children }) => {
     }
 
     // server set
-    if (currentServer && path === '/servers') {
+    else if (currentServer && path === '/servers') {
       console.log(222);
+      return <Redirect to="/" />;
+    }
+
+    // no library set
+    else if (currentServer && !currentLibrary && path !== '/libraries') {
+      console.log(333);
+      return <Redirect to="/libraries" />;
+    }
+
+    // library set
+    else if (currentLibrary && path === '/libraries') {
+      console.log(444);
       return <Redirect to="/" />;
     }
   }

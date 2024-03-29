@@ -22,6 +22,7 @@ const App = () => {
   const inited = useSelector(({ appModel }) => appModel.inited);
   const loggedIn = useSelector(({ appModel }) => appModel.loggedIn);
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
+  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
 
   const debugConsole = useSelector(({ persistentModel }) => persistentModel.debugConsole);
 
@@ -83,7 +84,7 @@ const App = () => {
 
   // logged in
   else {
-    if (!currentServer) {
+    if (!currentServer || !currentLibrary) {
       return (
         <div className={clsx('wrap')}>
           <BrowserRouteSwitch />
