@@ -17,7 +17,7 @@ const ArtistDetail = () => {
   const { artistId } = useParams();
 
   const allArtists = useSelector(({ appModel }) => appModel.allArtists);
-  const currentArtist = allArtists?.filter((artist) => artist.id === artistId)[0];
+  const currentArtist = allArtists?.filter((artist) => artist.artistId === artistId)[0];
 
   const allArtistAlbums = useSelector(({ appModel }) => appModel.allArtistAlbums);
   const currentArtistAlbums = allArtistAlbums[artistId];

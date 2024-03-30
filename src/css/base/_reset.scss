@@ -13,6 +13,8 @@ body {
 
   -webkit-tap-highlight-color: transparent;
 
+  @include noselect;
+
   @media only screen and (max-device-width: 480px) {
     -webkit-text-size-adjust: none;
     text-size-adjust: none;

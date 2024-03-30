@@ -49,10 +49,10 @@ const SideBar = () => {
           <div className={style.label}>Playlists</div>
           {allPlaylists.map((playlist) => (
             <NavLink
-              key={playlist.id}
+              key={playlist.playlistId}
               className={style.link}
               activeClassName={style.linkActive}
-              to={`/playlists/${playlist.id}`}
+              to={`/playlists/${playlist.playlistId}`}
             >
               {playlist.title}
             </NavLink>

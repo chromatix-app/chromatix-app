@@ -190,8 +190,8 @@ const getUserInfo = async () => {
   // console.log(jsonObj);
 
   const currentUser = {
+    userId: jsonObj['@_id'],
     email: jsonObj['email'],
-    id: jsonObj['@_id'],
     thumb: jsonObj['@_thumb'],
     title: jsonObj['@_title'],
     username: jsonObj['username'],
@@ -341,7 +341,7 @@ export const getAllArtists = async () => {
 
       const allArtists =
         data.MediaContainer.Metadata?.map((artist) => ({
-          id: artist.ratingKey,
+          artistId: artist.ratingKey,
           title: artist.title,
           country: artist?.Country?.[0]?.tag,
           genre: artist?.Genre?.[0]?.tag,
@@ -396,7 +396,7 @@ export const getAllArtistAlbums = async (artistId) => {
 
       const artistAlbums =
         data.MediaContainer.Metadata?.map((album) => ({
-          id: album.ratingKey,
+          albumId: album.ratingKey,
           title: album.title,
           artist: album.parentTitle,
           userRating: album.userRating,
@@ -451,7 +451,7 @@ export const getAllArtistRelated = async (artistId) => {
         data.MediaContainer.Hub?.filter((hub) => hub.type === 'album' && hub.Metadata).map((hub) => ({
           title: hub.title,
           related: hub.Metadata.map((album) => ({
-            id: album.ratingKey,
+            albumId: album.ratingKey,
             title: album.title,
             artist: album.parentTitle,
             userRating: album.userRating,
@@ -503,7 +503,7 @@ export const getAllAlbums = async () => {
 
       const allAlbums =
         data.MediaContainer.Metadata?.map((album) => ({
-          id: album.ratingKey,
+          albumId: album.ratingKey,
           title: album.title,
           artist: album.parentTitle,
           artistId: album.parentRatingKey,
@@ -554,6 +554,7 @@ export const getAlbumTracks = async (albumId) => {
 
       const albumTracks =
         data.MediaContainer.Metadata?.map((track) => ({
+          trackId: track.ratingKey,
           title: track.title,
           artist: track.grandparentTitle,
           album: track.parentTitle,
@@ -612,7 +613,7 @@ export const getAllPlaylists = async () => {
         data.MediaContainer.Metadata?.map((playlist) => {
           const playlistThumb = playlist.thumb ? playlist.thumb : playlist.composite ? playlist.composite : null;
           return {
-            id: playlist.ratingKey,
+            playlistId: playlist.ratingKey,
             title: playlist.title,
             link: '/playlists/' + playlist.ratingKey,
             totalTracks: playlist.leafCount,
@@ -661,6 +662,7 @@ export const getPlaylistTracks = async (playlistId) => {
 
       const playlistTracks =
         data.MediaContainer.Metadata?.map((track) => ({
+          trackId: track.ratingKey,
           title: track.title,
           artist: track.grandparentTitle,
           album: track.parentTitle,

@@ -97,7 +97,7 @@ const effects = (dispatch) => ({
     // attempt to retrieve the current user's session state from local storage
     const loggedIn = rootState.appModel.loggedIn;
     if (loggedIn) {
-      const userName = rootState.appModel.currentUser.id;
+      const userName = rootState.appModel.currentUser.userId;
       const userHash = sha3('music' + userName, { outputLength: 224 }).toString();
       const sessionKey = config.sessionStoreId + '-' + userHash;
       try {

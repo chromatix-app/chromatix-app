@@ -53,7 +53,7 @@ const doSaveData = () => {
   const loggedIn = store.getState().appModel.loggedIn;
   localStorage.setItem(config.persistentStoreId, JSON.stringify(store.getState().persistentModel));
   if (loggedIn) {
-    const userName = store.getState().appModel.currentUser.id;
+    const userName = store.getState().appModel.currentUser.userId;
     if (userName) {
       const userHash = sha3('music' + userName, { outputLength: 224 }).toString();
       const sessionKey = config.sessionStoreId + '-' + userHash;

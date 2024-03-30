@@ -3,11 +3,11 @@
 // ======================================================================
 
 import React from 'react';
-import moment from 'moment';
 import clsx from 'clsx';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Icon, StarRating } from 'js/components';
+import { durationToStringShort } from 'js/utils';
 
 import style from './ListSet.module.scss';
 
@@ -17,6 +17,14 @@ import style from './ListSet.module.scss';
 
 const ListSet = ({ variant, albumId, playlistId, entries }) => {
   const dispatch = useDispatch();
+
+  const playerVariant = useSelector(({ appModel }) => appModel.playerVariant);
+  const playerAlbumId = useSelector(({ appModel }) => appModel.playerAlbumId);
+  const playerPlaylistId = useSelector(({ appModel }) => appModel.playerPlaylistId);
+  const playerTrackList = useSelector(({ appModel }) => appModel.playerTrackList);
+  const playerTrackIndex = useSelector(({ appModel }) => appModel.playerTrackIndex);
+
+  const trackDetail = playerTrackList?.[playerTrackIndex];
 
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
@@ -37,14 +45,16 @@ const ListSet = ({ variant, albumId, playlistId, entries }) => {
     return (
       <div className={clsx(style.wrap, style['wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1)])}>
         {entries.map((entry, index) => {
-          const duration = `${Math.floor(moment.duration(entry.duration, 'milliseconds').asMinutes())}:${String(
-            moment.duration(entry.duration, 'milliseconds').seconds()
-          ).padStart(2, '0')}`;
-
           const trackNumber = variant === 'playlist' ? index + 1 : entry.trackNumber;
 
           const showDisc = totalDiscs > 1 && currentDisc !== entry.discNumber;
           currentDisc = entry.discNumber;
+
+          const isCurrentlyPlaying =
+            playerVariant === variant &&
+            playerAlbumId === albumId &&
+            playerPlaylistId === playlistId &&
+            trackDetail.trackId === entry.trackId;
 
           return (
             <React.Fragment key={index}>
@@ -66,13 +76,18 @@ const ListSet = ({ variant, albumId, playlistId, entries }) => {
                     playerLibraryId: currentLibraryId,
                     playerAlbumId: albumId,
                     playerPlaylistId: playlistId,
-                    playerIndex: index,
                     playerTrackList: entries,
                     playerTrackCount: entries.length,
+                    playerTrackIndex: index,
                   });
                 }}
               >
-                <div className={style.trackNumber}>{trackNumber}</div>
+                {isCurrentlyPlaying && (
+                  <div className={style.playingIcon}>
+                    <Icon icon="VolHighIcon" cover stroke />
+                  </div>
+                )}
+                {!isCurrentlyPlaying && <div className={style.trackNumber}>{trackNumber}</div>}
                 {variant === 'playlist' && entry.thumb && (
                   <div className={style.thumb}>
                     <img src={entry.thumb} alt={entry.title} />
@@ -82,7 +97,7 @@ const ListSet = ({ variant, albumId, playlistId, entries }) => {
                 <div className={style.artist}>{entry.artist}</div>
                 {variant === 'playlist' && <div className={style.album}>{entry.album}</div>}
                 <div className={style.userRating}>{entry.userRating && <StarRating rating={entry.userRating} />}</div>
-                <div className={style.duration}>{duration}</div>
+                <div className={style.duration}>{durationToStringShort(entry.duration)}</div>
               </div>
             </React.Fragment>
           );

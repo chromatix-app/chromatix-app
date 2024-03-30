@@ -40,9 +40,9 @@ const playerState = {
   playerLibraryId: null,
   playerAlbumId: null,
   playerPlaylistId: null,
-  playerIndex: null,
   playerTrackList: null,
   playerTrackCount: null,
+  playerTrackIndex: null,
 };
 
 const state = Object.assign(appState, userState, plexServerState, plexLibraryState, playerState);
@@ -134,6 +134,9 @@ const effects = (dispatch) => ({
   playTrack(payload, rootState) {
     console.log('%c--- playTrack ---', 'color:#079189');
     console.log(payload);
+    dispatch.appModel.setAppState({
+      ...payload,
+    });
   },
 
   storeArtistAlbums(payload, rootState) {
