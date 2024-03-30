@@ -17,6 +17,8 @@ const ControlBar = () => {
   const dispatch = useDispatch();
 
   const playerPlaying = useSelector(({ appModel }) => appModel.playerPlaying);
+  const playerVolume = useSelector(({ appModel }) => appModel.playerVolume);
+  const playerMuted = useSelector(({ appModel }) => appModel.playerMuted);
 
   // const playingVariant = useSelector(({ appModel }) => appModel.playingVariant);
   // const playingServerId =  useSelector(({ appModel }) => appModel.playingServerId);
@@ -29,6 +31,8 @@ const ControlBar = () => {
 
   const trackDetail = playingTrackList?.[playingTrackIndex];
   const isDisabled = !trackDetail ? true : false;
+
+  const volIcon = playerMuted || playerVolume <= 0 ? 'VolXIcon' : playerVolume < 50 ? 'VolLowIcon' : 'VolHighIcon';
 
   return (
     <div className={style.wrap}>
@@ -81,11 +85,11 @@ const ControlBar = () => {
         {/* <button className={style.queue}>
           <Icon icon="QueueIcon" cover stroke />
         </button> */}
-        <button className={style.volHigh}>
-          <Icon icon="VolHighIcon" cover stroke />
+        <button className={style.volHigh} onClick={dispatch.appModel.playerMuteToggle}>
+          <Icon icon={volIcon} cover stroke />
         </button>
         <div className={style.volSlider}>
-          <RangeSlider />
+          <RangeSlider value={playerMuted ? 0 : playerVolume} handleChange={dispatch.appModel.playerVolumeSet} />
         </div>
       </div>
     </div>

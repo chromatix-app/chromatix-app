@@ -16,6 +16,7 @@ const appState = {
   playerElement: null,
   playerPlaying: false,
   playerVolume: 100,
+  playerMuted: false,
 };
 
 const userState = {
@@ -192,6 +193,9 @@ const effects = (dispatch) => ({
   playerInit(payload, rootState) {
     // console.log('%c--- playerInit ---', 'color:#079189');
     const playerElement = document.createElement('audio');
+    const playerVolume = rootState.appModel.playerVolume / 100;
+    const playerMuted = rootState.appModel.playerMuted;
+    playerElement.volume = playerMuted ? 0 : playerVolume;
     dispatch.appModel.setAppState({
       playerElement,
     });
@@ -278,6 +282,51 @@ const effects = (dispatch) => ({
       });
       dispatch.appModel.playerLoadIndex(null);
     }
+  },
+
+  playerVolumeSet(payload, rootState) {
+    // console.log('%c--- playerVolumeSet ---', 'color:#079189');
+    dispatch.appModel.setAppState({
+      playerVolume: payload,
+      playerMuted: false,
+    });
+    const playerElement = rootState.appModel.playerElement;
+    playerElement.volume = payload / 100;
+  },
+
+  playerMuteToggle(payload, rootState) {
+    // console.log('%c--- playerMuteToggle ---', 'color:#079189');
+    const playerVolume = rootState.appModel.playerVolume;
+    const playerMuted = rootState.appModel.playerMuted;
+    let newVolume;
+    let newMuted;
+    // if muted and volume is 0, unmute and set volume to 100
+    if (playerMuted && playerVolume === 0) {
+      newVolume = 75;
+      newMuted = false;
+    }
+    // if muted and volume is not 0, unmute
+    else if (playerMuted) {
+      newVolume = playerVolume;
+      newMuted = false;
+    }
+    // if not muted and volume is 0, unmute and set volume to 100
+    else if (!playerMuted && playerVolume === 0) {
+      newVolume = 75;
+      newMuted = false;
+    }
+    // if not muted and volume is not 0, mute
+    else {
+      newVolume = playerVolume;
+      newMuted = true;
+    }
+    // save state
+    dispatch.appModel.setAppState({
+      playerVolume: newVolume,
+      playerMuted: newMuted,
+    });
+    const playerElement = rootState.appModel.playerElement;
+    playerElement.volume = newMuted ? 0 : newVolume / 100;
   },
 });
 
