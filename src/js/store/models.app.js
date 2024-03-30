@@ -216,7 +216,7 @@ const effects = (dispatch) => ({
     const playerElement = rootState.appModel.playerElement;
     playerElement.src = payload.playingTrackList[payload.playingTrackIndex].src;
     playerElement.load();
-    playerElement.play();
+    playerElement.play().catch((error) => null);
   },
 
   playerLoadIndex(payload, rootState) {
@@ -226,7 +226,7 @@ const effects = (dispatch) => ({
     if (payload || payload === 0) {
       playerElement.src = playingTrackList[payload].src;
       playerElement.load();
-      playerElement.play();
+      playerElement.play().catch((error) => null);
     }
     // handle null payload - load first track and stop playing
     else if (payload === null) {
@@ -241,7 +241,7 @@ const effects = (dispatch) => ({
       playerPlaying: true,
     });
     const playerElement = rootState.appModel.playerElement;
-    playerElement.play();
+    playerElement.play().catch((error) => null);
   },
 
   playerPause(payload, rootState) {

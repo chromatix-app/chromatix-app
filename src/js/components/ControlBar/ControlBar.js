@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Icon, RangeSlider } from 'js/components';
+import { useKeyboardControls } from 'js/hooks';
 import { durationToStringShort } from 'js/utils';
 
 import style from './ControlBar.module.scss';
@@ -43,6 +44,12 @@ const ControlBar = () => {
 
   const trackProgressCurrent = trackProgress / 1000;
   const trackProgressTotal = trackDetail?.duration ? trackDetail?.duration / 1000 : 0;
+
+  useKeyboardControls({
+    prev: () => dispatch.appModel.playerPrev(),
+    next: () => dispatch.appModel.playerNext(),
+    playPause: () => (playerPlaying ? dispatch.appModel.playerPause() : dispatch.appModel.playerPlay()),
+  });
 
   // handle progress change
   const handleProgressChange = (value) => {
