@@ -17,6 +17,7 @@ const appState = {
   playerPlaying: false,
   playerVolume: 100,
   playerMuted: false,
+  playerInteractionCount: 0,
 };
 
 const userState = {
@@ -199,6 +200,10 @@ const effects = (dispatch) => ({
     dispatch.appModel.setAppState({
       playerElement,
     });
+    // play next track when current track ends
+    playerElement.addEventListener('ended', () => {
+      dispatch.appModel.playerNext();
+    });
   },
 
   playerLoadList(payload, rootState) {
@@ -259,6 +264,9 @@ const effects = (dispatch) => ({
     }
     // handle first track - start it again
     else {
+      dispatch.appModel.setAppState({
+        playerInteractionCount: rootState.appModel.playerInteractionCount + 1,
+      });
       dispatch.appModel.playerLoadIndex(0);
     }
   },

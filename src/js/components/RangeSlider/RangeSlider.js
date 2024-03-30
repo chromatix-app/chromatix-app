@@ -2,9 +2,8 @@
 // IMPORTS
 // ======================================================================
 
+import { debounce } from 'lodash';
 import clsx from 'clsx';
-
-// import { useDebounce } from 'js/hooks';
 
 import style from './RangeSlider.module.scss';
 
@@ -12,7 +11,11 @@ import style from './RangeSlider.module.scss';
 // RENDER
 // ======================================================================
 
-export const RangeSlider = ({ min = 0, max = 100, step = 1, value, handleChange }) => {
+export const RangeSlider = ({ min = 0, max = 100, step = 1, value, handleChange, handleMouseDown, handleMouseUp }) => {
+  const widthPercent = ((value - min) / (max - min)) * 100;
+
+  const debouncedHandleChange = debounce(handleChange, 10);
+
   return (
     <div className={style.wrap}>
       <div className={clsx(style.input)}>
@@ -20,7 +23,7 @@ export const RangeSlider = ({ min = 0, max = 100, step = 1, value, handleChange 
           <div
             className={style.fill}
             style={{
-              width: value + '%',
+              width: widthPercent + '%',
             }}
           ></div>
         </div>
@@ -30,7 +33,9 @@ export const RangeSlider = ({ min = 0, max = 100, step = 1, value, handleChange 
           max={max}
           step={step}
           value={value}
-          onChange={(e) => handleChange(parseFloat(e.target.value))}
+          onChange={(e) => debouncedHandleChange(parseFloat(e.target.value))}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
         />
       </div>
     </div>
