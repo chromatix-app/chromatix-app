@@ -77,7 +77,12 @@ button.volHigh {
   border-radius: 50%;
   cursor: pointer;
 
-  &:hover {
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  &:not(:disabled):hover {
     background: rgba(255, 255, 255, 0.05);
   }
 }
@@ -101,6 +106,11 @@ button.pause {
   background: var(--color-primary) !important;
   border: 2px solid var(--color-panel-background);
   color: var(--color-panel-background);
+
+  &:disabled {
+    background: var(--color-text) !important;
+    opacity: 0.3;
+  }
 }
 
 button.play {

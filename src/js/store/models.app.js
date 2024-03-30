@@ -12,6 +12,10 @@ const appState = {
   inited: false,
   standalone: false,
   history: null,
+
+  playerElement: null,
+  playerPlaying: false,
+  playerVolume: 100,
 };
 
 const userState = {
@@ -34,18 +38,18 @@ const plexLibraryState = {
   allPlaylistTracks: {},
 };
 
-const playerState = {
-  playerVariant: null,
-  playerServerId: null,
-  playerLibraryId: null,
-  playerAlbumId: null,
-  playerPlaylistId: null,
-  playerTrackList: null,
-  playerTrackCount: null,
-  playerTrackIndex: null,
+const playingState = {
+  playingVariant: null,
+  playingServerId: null,
+  playingLibraryId: null,
+  playingAlbumId: null,
+  playingPlaylistId: null,
+  playingTrackList: null,
+  playingTrackCount: null,
+  playingTrackIndex: null,
 };
 
-const state = Object.assign(appState, userState, plexServerState, plexLibraryState, playerState);
+const state = Object.assign(appState, userState, plexServerState, plexLibraryState, playingState);
 
 // ======================================================================
 // REDUCERS
@@ -85,7 +89,13 @@ const effects = (dispatch) => ({
     });
     // initialise plex
     plex.init();
+    // initialise player
+    dispatch.appModel.playerInit();
   },
+
+  //
+  // AUTH
+  //
 
   doLogin(payload, rootState) {
     console.log('%c--- login ---', 'color:#079189');
@@ -117,10 +127,14 @@ const effects = (dispatch) => ({
       ...userState,
       ...plexServerState,
       ...plexLibraryState,
-      ...playerState,
+      ...playingState,
     });
     dispatch.sessionModel.refresh();
   },
+
+  //
+  // PLEX
+  //
 
   clearPlexLibraryState(payload, rootState) {
     console.log('%c--- clearPlexLibraryState ---', 'color:#079189');
@@ -131,23 +145,11 @@ const effects = (dispatch) => ({
     plex.getAllPlaylists();
   },
 
-  playTrack(payload, rootState) {
-    console.log('%c--- playTrack ---', 'color:#079189');
-    console.log(payload);
-    dispatch.appModel.setAppState({
-      ...payload,
-    });
-  },
-
   storeArtistAlbums(payload, rootState) {
     console.log('%c--- storeArtistAlbums ---', 'color:#079189');
     const { artistId, artistAlbums } = payload;
-
     const allArtistAlbums = { ...rootState.appModel.allArtistAlbums };
     allArtistAlbums[artistId] = artistAlbums;
-
-    console.log(allArtistAlbums);
-
     dispatch.appModel.setAppState({
       allArtistAlbums,
     });
@@ -156,12 +158,8 @@ const effects = (dispatch) => ({
   storeArtistRelated(payload, rootState) {
     console.log('%c--- storeArtistRelated ---', 'color:#079189');
     const { artistId, artistRelated } = payload;
-
     const allArtistRelated = { ...rootState.appModel.allArtistRelated };
     allArtistRelated[artistId] = artistRelated;
-
-    console.log(allArtistRelated);
-
     dispatch.appModel.setAppState({
       allArtistRelated,
     });
@@ -170,12 +168,8 @@ const effects = (dispatch) => ({
   storeAlbumTracks(payload, rootState) {
     console.log('%c--- storeAlbumTracks ---', 'color:#079189');
     const { albumId, albumTracks } = payload;
-
     const allAlbumTracks = { ...rootState.appModel.allAlbumTracks };
     allAlbumTracks[albumId] = albumTracks;
-
-    console.log(allAlbumTracks);
-
     dispatch.appModel.setAppState({
       allAlbumTracks,
     });
@@ -184,15 +178,106 @@ const effects = (dispatch) => ({
   storePlaylistTracks(payload, rootState) {
     console.log('%c--- storePlaylistTracks ---', 'color:#079189');
     const { playlistId, playlistTracks } = payload;
-
     const allPlaylistTracks = { ...rootState.appModel.allPlaylistTracks };
     allPlaylistTracks[playlistId] = playlistTracks;
-
-    console.log(allPlaylistTracks);
-
     dispatch.appModel.setAppState({
       allPlaylistTracks,
     });
+  },
+
+  //
+  // PLAYER
+  //
+
+  playerInit(payload, rootState) {
+    // console.log('%c--- playerInit ---', 'color:#079189');
+    const playerElement = document.createElement('audio');
+    dispatch.appModel.setAppState({
+      playerElement,
+    });
+  },
+
+  playerLoadList(payload, rootState) {
+    // console.log('%c--- playerLoadList ---', 'color:#079189');
+    dispatch.appModel.setAppState({
+      playerPlaying: true,
+      ...payload,
+    });
+    // start playing
+    const playerElement = rootState.appModel.playerElement;
+    playerElement.src = payload.playingTrackList[payload.playingTrackIndex].src;
+    playerElement.load();
+    playerElement.play();
+  },
+
+  playerLoadIndex(payload, rootState) {
+    // console.log('%c--- playerLoadIndex ---', 'color:#079189');
+    const playerElement = rootState.appModel.playerElement;
+    const playingTrackList = rootState.appModel.playingTrackList;
+    if (payload || payload === 0) {
+      playerElement.src = playingTrackList[payload].src;
+      playerElement.load();
+      playerElement.play();
+    }
+    // handle null payload - load first track and stop playing
+    else if (payload === null) {
+      playerElement.src = playingTrackList[0].src;
+      playerElement.load();
+    }
+  },
+
+  playerPlay(payload, rootState) {
+    // console.log('%c--- playerPlay ---', 'color:#079189');
+    dispatch.appModel.setAppState({
+      playerPlaying: true,
+    });
+    const playerElement = rootState.appModel.playerElement;
+    playerElement.play();
+  },
+
+  playerPause(payload, rootState) {
+    // console.log('%c--- playerPause ---', 'color:#079189');
+    dispatch.appModel.setAppState({
+      playerPlaying: false,
+    });
+    const playerElement = rootState.appModel.playerElement;
+    playerElement.pause();
+  },
+
+  playerPrev(payload, rootState) {
+    // console.log('%c--- playerPrev ---', 'color:#079189');
+    const playingTrackIndex = rootState.appModel.playingTrackIndex;
+    if (playingTrackIndex > 0) {
+      dispatch.appModel.setAppState({
+        playingTrackIndex: playingTrackIndex - 1,
+      });
+      dispatch.appModel.playerLoadIndex(playingTrackIndex - 1);
+    }
+    // handle first track - start it again
+    else {
+      dispatch.appModel.playerLoadIndex(0);
+    }
+  },
+
+  playerNext(payload, rootState) {
+    // console.log('%c--- playerNext ---', 'color:#079189');
+    const playingTrackIndex = rootState.appModel.playingTrackIndex;
+    const playingTrackCount = rootState.appModel.playingTrackCount;
+    if (playingTrackIndex < playingTrackCount - 1) {
+      dispatch.appModel.setAppState({
+        playerPlaying: true,
+        playingTrackIndex: playingTrackIndex + 1,
+      });
+      dispatch.appModel.playerLoadIndex(playingTrackIndex + 1);
+    }
+    // handle last track - loop back to first track and stop playing
+    else {
+      dispatch.appModel.setAppState({
+        playerPlaying: false,
+        playingTrackIndex: 0,
+      });
+      dispatch.appModel.playerLoadIndex(null);
+    }
   },
 });
 

@@ -197,7 +197,7 @@ const getUserInfo = async () => {
     username: jsonObj['username'],
   };
 
-  console.log('currentUser', currentUser);
+  // console.log('currentUser', currentUser);
 
   store.dispatch.appModel.setLoggedIn(currentUser);
 };
@@ -245,7 +245,7 @@ export const getAllServers = async () => {
         return serverObj;
       });
 
-      console.log('allServers', allServers);
+      // console.log('allServers', allServers);
 
       store.dispatch.appModel.setAppState({ allServers });
       store.dispatch.sessionModel.refreshCurrentServer(allServers);
@@ -301,7 +301,7 @@ export const getAllLibraries = async () => {
           //   : null;
         });
 
-        console.log('allLibraries', allLibraries);
+        // console.log('allLibraries', allLibraries);
 
         store.dispatch.appModel.setAppState({ allLibraries });
         store.dispatch.sessionModel.refreshCurrentLibrary(allLibraries);
@@ -354,7 +354,7 @@ export const getAllArtists = async () => {
             : null,
         })) || [];
 
-      // console.log(allArtists);
+      // console.log('allArtists', allArtists);
 
       store.dispatch.appModel.setAppState({ allArtists });
 
@@ -409,7 +409,7 @@ export const getAllArtistAlbums = async (artistId) => {
             : null,
         })) || [];
 
-      // console.log(artistAlbums);
+      // console.log('artistAlbums', artistAlbums);
 
       store.dispatch.appModel.storeArtistAlbums({ artistId, artistAlbums });
 
@@ -465,7 +465,7 @@ export const getAllArtistRelated = async (artistId) => {
           })),
         })) || [];
 
-      // console.log(artistRelated);
+      // console.log('artistRelated', artistRelated);
 
       store.dispatch.appModel.storeArtistRelated({ artistId, artistRelated });
 
@@ -517,7 +517,7 @@ export const getAllAlbums = async () => {
             : null,
         })) || [];
 
-      // console.log(allAlbums);
+      // console.log('allAlbums', allAlbums);
 
       store.dispatch.appModel.setAppState({ allAlbums });
 
@@ -567,12 +567,13 @@ export const getAlbumTracks = async (albumId) => {
                 `${serverArtUrl}${track.thumb}`
               )}&X-Plex-Token=${authToken}`
             : null,
+          src: `${serverBaseUrl}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
 
           // determine if an album is a normal album, single, live album or compilation
           // albumType: track.parentTitle,
         })) || [];
 
-      // console.log(albumTracks);
+      // console.log('albumTracks', albumTracks);
 
       store.dispatch.appModel.storeAlbumTracks({ albumId, albumTracks });
 
@@ -607,7 +608,7 @@ export const getAllPlaylists = async () => {
 
       const data = await response.json();
 
-      console.log(data.MediaContainer.Metadata);
+      // console.log(data.MediaContainer.Metadata);
 
       const allPlaylists =
         data.MediaContainer.Metadata?.map((playlist) => {
@@ -625,7 +626,7 @@ export const getAllPlaylists = async () => {
           };
         }) || [];
 
-      console.log('allPlaylists', allPlaylists);
+      // console.log('allPlaylists', allPlaylists);
 
       store.dispatch.appModel.setAppState({ allPlaylists });
 
@@ -675,6 +676,7 @@ export const getPlaylistTracks = async (playlistId) => {
                 `${serverArtUrl}${track.thumb}`
               )}&X-Plex-Token=${authToken}`
             : null,
+          src: `${serverBaseUrl}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
         })) || [];
 
       // console.log(playlistTracks);

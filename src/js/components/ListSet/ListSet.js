@@ -18,13 +18,13 @@ import style from './ListSet.module.scss';
 const ListSet = ({ variant, albumId, playlistId, entries }) => {
   const dispatch = useDispatch();
 
-  const playerVariant = useSelector(({ appModel }) => appModel.playerVariant);
-  const playerAlbumId = useSelector(({ appModel }) => appModel.playerAlbumId);
-  const playerPlaylistId = useSelector(({ appModel }) => appModel.playerPlaylistId);
-  const playerTrackList = useSelector(({ appModel }) => appModel.playerTrackList);
-  const playerTrackIndex = useSelector(({ appModel }) => appModel.playerTrackIndex);
+  const playingVariant = useSelector(({ appModel }) => appModel.playingVariant);
+  const playingAlbumId = useSelector(({ appModel }) => appModel.playingAlbumId);
+  const playingPlaylistId = useSelector(({ appModel }) => appModel.playingPlaylistId);
+  const playingTrackList = useSelector(({ appModel }) => appModel.playingTrackList);
+  const playingTrackIndex = useSelector(({ appModel }) => appModel.playingTrackIndex);
 
-  const trackDetail = playerTrackList?.[playerTrackIndex];
+  const trackDetail = playingTrackList?.[playingTrackIndex];
 
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
@@ -51,9 +51,9 @@ const ListSet = ({ variant, albumId, playlistId, entries }) => {
           currentDisc = entry.discNumber;
 
           const isCurrentlyPlaying =
-            playerVariant === variant &&
-            playerAlbumId === albumId &&
-            playerPlaylistId === playlistId &&
+            playingVariant === variant &&
+            playingAlbumId === albumId &&
+            playingPlaylistId === playlistId &&
             trackDetail.trackId === entry.trackId;
 
           return (
@@ -70,15 +70,15 @@ const ListSet = ({ variant, albumId, playlistId, entries }) => {
               <div
                 className={style.entry}
                 onDoubleClick={() => {
-                  dispatch.appModel.playTrack({
-                    playerVariant: variant,
-                    playerServerId: currentServerId,
-                    playerLibraryId: currentLibraryId,
-                    playerAlbumId: albumId,
-                    playerPlaylistId: playlistId,
-                    playerTrackList: entries,
-                    playerTrackCount: entries.length,
-                    playerTrackIndex: index,
+                  dispatch.appModel.playerLoadList({
+                    playingVariant: variant,
+                    playingServerId: currentServerId,
+                    playingLibraryId: currentLibraryId,
+                    playingAlbumId: albumId,
+                    playingPlaylistId: playlistId,
+                    playingTrackList: entries,
+                    playingTrackCount: entries.length,
+                    playingTrackIndex: index,
                   });
                 }}
               >
