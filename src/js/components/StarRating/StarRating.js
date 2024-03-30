@@ -13,17 +13,17 @@ import style from './StarRating.module.scss';
 // ======================================================================
 
 const StarRating = ({ rating }) => {
-  // based on a rating from 0-10, render a 5 star rating using the StarFullIcon, StarHalfIcon, and StarEmptyIcon components
-
   const stars = [];
+  const halfRating = rating / 2;
+
   for (let i = 0; i < 5; i++) {
-    if (rating >= i + 1) {
+    if (halfRating >= i + 1) {
       stars.push(
         <div className={style.star} key={i}>
           <Icon icon="StarFullIcon" cover />
         </div>
       );
-    } else if (rating > i) {
+    } else if (halfRating > i && halfRating < i + 1) {
       stars.push(
         <div className={style.star} key={i}>
           <Icon icon="StarHalfIcon" cover />
