@@ -5,32 +5,26 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { ListServers, Loading, TitleBasic } from 'js/components';
+import { CardSet, Loading, TitleHeading } from 'js/components';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const Libraries = () => {
-  const allLibraries = useSelector(({ appModel }) => appModel.allLibraries);
+const PlaylistList = () => {
+  const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
 
   useEffect(() => {
-    plex.getAllLibraries();
+    plex.getAllPlaylists();
   }, []);
 
   return (
-    <main className="wrap-middle text-center">
-      <div>
-        {!allLibraries && <Loading forceVisible inline />}
-        {allLibraries && (
-          <>
-            <TitleBasic title="Libraries" />
-            <ListServers variant="libraries" entries={allLibraries} />
-          </>
-        )}
-      </div>
-    </main>
+    <>
+      <TitleHeading title="Playlists" subtitle={allPlaylists ? allPlaylists?.length + ' Playlists' : null} />
+      {!allPlaylists && <Loading forceVisible inline />}
+      {allPlaylists && <CardSet entries={allPlaylists} />}
+    </>
   );
 };
 
@@ -38,4 +32,4 @@ const Libraries = () => {
 // EXPORT
 // ======================================================================
 
-export default Libraries;
+export default PlaylistList;

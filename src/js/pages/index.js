@@ -1,12 +1,12 @@
-export { default as Albums } from './Albums';
 export { default as AlbumDetail } from './AlbumDetail';
-export { default as Artists } from './Artists';
+export { default as AlbumList } from './AlbumList';
 export { default as ArtistDetail } from './ArtistDetail';
+export { default as ArtistList } from './ArtistList';
 export { default as Error404Auth } from './Error404Auth';
 export { default as Error404Default } from './Error404Default';
-export { default as Libraries } from './Libraries';
+export { default as LibraryList } from './LibraryList';
 export { default as Login } from './Login';
-export { default as Playlists } from './Playlists';
 export { default as PlaylistDetail } from './PlaylistDetail';
-export { default as Servers } from './Servers';
+export { default as PlaylistList } from './PlaylistList';
+export { default as ServerList } from './ServerList';
 export { default as Settings } from './Settings';

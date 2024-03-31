@@ -12,18 +12,18 @@ import * as plex from 'js/services/plex';
 // COMPONENT
 // ======================================================================
 
-const Playlists = () => {
-  const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
+const ArtistList = () => {
+  const allArtists = useSelector(({ appModel }) => appModel.allArtists);
 
   useEffect(() => {
-    plex.getAllPlaylists();
+    plex.getAllArtists();
   }, []);
 
   return (
     <>
-      <TitleHeading title="Playlists" subtitle={allPlaylists ? allPlaylists?.length + ' Playlists' : null} />
-      {!allPlaylists && <Loading forceVisible inline />}
-      {allPlaylists && <CardSet entries={allPlaylists} />}
+      <TitleHeading title="Artists" subtitle={allArtists ? allArtists?.length + ' Artists' : null} />
+      {!allArtists && <Loading forceVisible inline />}
+      {allArtists && <CardSet entries={allArtists} />}
     </>
   );
 };
@@ -32,4 +32,4 @@ const Playlists = () => {
 // EXPORT
 // ======================================================================
 
-export default Playlists;
+export default ArtistList;

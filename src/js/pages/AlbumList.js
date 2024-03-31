@@ -12,7 +12,7 @@ import * as plex from 'js/services/plex';
 // COMPONENT
 // ======================================================================
 
-const Albums = () => {
+const AlbumList = () => {
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums);
 
   useEffect(() => {
@@ -32,4 +32,4 @@ const Albums = () => {
 // EXPORT
 // ======================================================================
 
-export default Albums;
+export default AlbumList;

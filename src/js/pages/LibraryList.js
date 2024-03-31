@@ -5,26 +5,32 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { CardSet, Loading, TitleHeading } from 'js/components';
+import { ListServers, Loading, TitleBasic } from 'js/components';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const Artists = () => {
-  const allArtists = useSelector(({ appModel }) => appModel.allArtists);
+const LibraryList = () => {
+  const allLibraries = useSelector(({ appModel }) => appModel.allLibraries);
 
   useEffect(() => {
-    plex.getAllArtists();
+    plex.getAllLibraries();
   }, []);
 
   return (
-    <>
-      <TitleHeading title="Artists" subtitle={allArtists ? allArtists?.length + ' Artists' : null} />
-      {!allArtists && <Loading forceVisible inline />}
-      {allArtists && <CardSet entries={allArtists} />}
-    </>
+    <main className="wrap-middle text-center">
+      <div>
+        {!allLibraries && <Loading forceVisible inline />}
+        {allLibraries && (
+          <>
+            <TitleBasic title="Libraries" />
+            <ListServers variant="libraries" entries={allLibraries} />
+          </>
+        )}
+      </div>
+    </main>
   );
 };
 
@@ -32,4 +38,4 @@ const Artists = () => {
 // EXPORT
 // ======================================================================
 
-export default Artists;
+export default LibraryList;

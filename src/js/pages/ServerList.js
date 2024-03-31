@@ -12,7 +12,7 @@ import * as plex from 'js/services/plex';
 // COMPONENT
 // ======================================================================
 
-const Servers = () => {
+const ServerList = () => {
   const allServers = useSelector(({ appModel }) => appModel.allServers);
 
   useEffect(() => {
@@ -38,4 +38,4 @@ const Servers = () => {
 // EXPORT
 // ======================================================================
 
-export default Servers;
+export default ServerList;
