@@ -11,6 +11,7 @@ const useKeyboardControls = (controls) => {
           controls.next();
           break;
         case ' ':
+          event.preventDefault();
           controls.playPause();
           break;
         default:

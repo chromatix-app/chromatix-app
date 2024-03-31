@@ -217,6 +217,9 @@ const effects = (dispatch) => ({
     playerElement.src = payload.playingTrackList[payload.playingTrackIndex].src;
     playerElement.load();
     playerElement.play().catch((error) => null);
+    dispatch.appModel.setAppState({
+      playerInteractionCount: rootState.appModel.playerInteractionCount + 1,
+    });
   },
 
   playerLoadIndex(payload, rootState) {
@@ -253,21 +256,29 @@ const effects = (dispatch) => ({
     playerElement.pause();
   },
 
+  playerRestart(payload, rootState) {
+    // console.log('%c--- playerRestart ---', 'color:#079189');
+    const playerElement = rootState.appModel.playerElement;
+    playerElement.currentTime = 0;
+    dispatch.appModel.setAppState({
+      playerInteractionCount: rootState.appModel.playerInteractionCount + 1,
+    });
+  },
+
   playerPrev(payload, rootState) {
     // console.log('%c--- playerPrev ---', 'color:#079189');
+    const playerElement = rootState.appModel.playerElement;
     const playingTrackIndex = rootState.appModel.playingTrackIndex;
-    if (playingTrackIndex > 0) {
+    // go to previous track, if available
+    if (playingTrackIndex > 0 && playerElement.currentTime <= 5) {
       dispatch.appModel.setAppState({
         playingTrackIndex: playingTrackIndex - 1,
       });
       dispatch.appModel.playerLoadIndex(playingTrackIndex - 1);
     }
-    // handle first track - start it again
+    // restart the current track
     else {
-      dispatch.appModel.setAppState({
-        playerInteractionCount: rootState.appModel.playerInteractionCount + 1,
-      });
-      dispatch.appModel.playerLoadIndex(0);
+      dispatch.appModel.playerRestart();
     }
   },
 

@@ -46,9 +46,9 @@ const ControlBar = () => {
   const trackProgressTotal = trackDetail?.duration ? trackDetail?.duration / 1000 : 0;
 
   useKeyboardControls({
-    prev: () => dispatch.appModel.playerPrev(),
-    next: () => dispatch.appModel.playerNext(),
-    playPause: () => (playerPlaying ? dispatch.appModel.playerPause() : dispatch.appModel.playerPlay()),
+    prev: () => !isDisabled && dispatch.appModel.playerPrev(),
+    next: () => !isDisabled && dispatch.appModel.playerNext(),
+    playPause: () => (!isDisabled && !playerPlaying ? dispatch.appModel.playerPlay() : dispatch.appModel.playerPause()),
   });
 
   // handle progress change

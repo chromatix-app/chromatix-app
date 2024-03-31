@@ -676,6 +676,7 @@ export const getAllPlaylists = async () => {
             title: playlist.title,
             link: '/playlists/' + playlist.ratingKey,
             totalTracks: playlist.leafCount,
+            duration: playlist.duration,
             thumb: playlistThumb
               ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
                   `${serverArtUrl}${playlistThumb}`

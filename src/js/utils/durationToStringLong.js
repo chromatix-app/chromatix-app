@@ -3,8 +3,16 @@ import moment from 'moment';
 const durationToStringLong = (durationMillisecs) => {
   const duration = moment.duration(durationMillisecs, 'milliseconds');
   const days = Math.floor(duration.asDays());
-  const hours = Math.floor(duration.asHours()) - days * 24;
-  const minutes = Math.floor(duration.asMinutes()) - (days * 24 * 60 + hours * 60);
+  let hours = Math.floor(duration.asHours()) - days * 24;
+  let minutes = Math.floor(duration.asMinutes()) - (days * 24 * 60 + hours * 60);
+
+  if (days > 0) {
+    // If there are any minutes, round to the closest hour
+    if (minutes >= 30) {
+      hours += 1;
+    }
+    minutes = 0; // Omit minutes from the string
+  }
 
   let result = '';
   if (days > 0) {

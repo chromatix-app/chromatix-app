@@ -18,6 +18,8 @@ import style from './ListSet.module.scss';
 const ListSet = ({ variant, albumId, playlistId, entries }) => {
   const dispatch = useDispatch();
 
+  const playerPlaying = useSelector(({ appModel }) => appModel.playerPlaying);
+
   const playingVariant = useSelector(({ appModel }) => appModel.playingVariant);
   const playingAlbumId = useSelector(({ appModel }) => appModel.playingAlbumId);
   const playingPlaylistId = useSelector(({ appModel }) => appModel.playingPlaylistId);
@@ -56,6 +58,23 @@ const ListSet = ({ variant, albumId, playlistId, entries }) => {
             playingPlaylistId === playlistId &&
             trackDetail.trackId === entry.trackId;
 
+          const doPlay = (restart) => {
+            if (restart) {
+              dispatch.appModel.playerLoadList({
+                playingVariant: variant,
+                playingServerId: currentServerId,
+                playingLibraryId: currentLibraryId,
+                playingAlbumId: albumId,
+                playingPlaylistId: playlistId,
+                playingTrackList: entries,
+                playingTrackCount: entries.length,
+                playingTrackIndex: index,
+              });
+            } else {
+              dispatch.appModel.playerPlay();
+            }
+          };
+
           return (
             <React.Fragment key={index}>
               {showDisc && (
@@ -68,26 +87,41 @@ const ListSet = ({ variant, albumId, playlistId, entries }) => {
               )}
 
               <div
-                className={style.entry}
+                className={clsx(style.entry, {
+                  [style.entryPlaying]: isCurrentlyPlaying,
+                })}
                 onDoubleClick={() => {
-                  dispatch.appModel.playerLoadList({
-                    playingVariant: variant,
-                    playingServerId: currentServerId,
-                    playingLibraryId: currentLibraryId,
-                    playingAlbumId: albumId,
-                    playingPlaylistId: playlistId,
-                    playingTrackList: entries,
-                    playingTrackCount: entries.length,
-                    playingTrackIndex: index,
-                  });
+                  doPlay(true);
                 }}
               >
+                {!isCurrentlyPlaying && (
+                  <div className={style.trackNumber}>
+                    <span>{trackNumber}</span>
+                  </div>
+                )}
+
                 {isCurrentlyPlaying && (
                   <div className={style.playingIcon}>
                     <Icon icon="VolHighIcon" cover stroke />
                   </div>
                 )}
-                {!isCurrentlyPlaying && <div className={style.trackNumber}>{trackNumber}</div>}
+
+                {!(isCurrentlyPlaying && playerPlaying) && (
+                  <div
+                    className={style.playIcon}
+                    onClick={() => {
+                      doPlay(!isCurrentlyPlaying);
+                    }}
+                  >
+                    <Icon icon="PlayFilledIcon" cover />
+                  </div>
+                )}
+                {isCurrentlyPlaying && playerPlaying && (
+                  <div className={style.pauseIcon} onClick={dispatch.appModel.playerPause}>
+                    <Icon icon="PauseFilledIcon" cover />
+                  </div>
+                )}
+
                 {variant === 'playlist' && entry.thumb && (
                   <div className={style.thumb}>
                     <img src={entry.thumb} alt={entry.title} />
