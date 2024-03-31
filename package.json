@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@rematch/core": "^2.2.0",
-    "axios": "^0.27.2",
-    "clsx": "^1.2.1",
+    "axios": "^1.6.8",
+    "clsx": "^2.1.0",
     "crypto-js": "^4.2.0",
     "fast-xml-parser": "^4.3.6",
     "moment": "^2.30.1",
