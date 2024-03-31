@@ -22,6 +22,11 @@
   width: 50%;
   height: 100%;
   padding: 17px 7px 17px 17px;
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
 }
 .next {
   padding: 17px 17px 17px 7px;

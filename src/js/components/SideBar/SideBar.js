@@ -20,6 +20,9 @@ const SideBar = () => {
 
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
 
+  const canGoBack = history.length > 1;
+  const canGoForward = history.index < history.length - 1;
+
   useEffect(() => {
     plex.getAllPlaylists();
   }, []);
@@ -27,10 +30,10 @@ const SideBar = () => {
   return (
     <div className={style.wrap}>
       <div className={style.nav}>
-        <button className={style.prev} onClick={() => history.goBack()}>
+        <button className={style.prev} disabled={!canGoBack} onClick={() => history.goBack()}>
           <Icon icon="PreviousIcon" cover stroke />
         </button>
-        <button className={style.next} onClick={() => history.goForward()}>
+        <button className={style.next} disabled={!canGoForward} onClick={() => history.goForward()}>
           <Icon icon="NextIcon" cover stroke />
         </button>
       </div>
