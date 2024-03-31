@@ -49,48 +49,75 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
   if (entries) {
     return (
       <div className={clsx(style.wrap, style['wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1)])}>
-        {entries.map((entry, index) => {
-          const trackNumber = variant === 'playlist' ? index + 1 : entry.trackNumber;
+        {variant === 'album' && (
+          <div className={style.header}>
+            <div>
+              <span className={style.minCenter}>#</span>
+            </div>
+            <div>Title</div>
+            <div>Artist</div>
+            <div>Rating</div>
+            <div>Duration</div>
+          </div>
+        )}
 
-          const showDisc = totalDiscs > 1 && currentDisc !== entry.discNumber;
-          currentDisc = entry.discNumber;
+        {variant === 'playlist' && (
+          <div className={style.header}>
+            <div>
+              <span className={style.minCenter}>#</span>
+            </div>
+            <div>Title</div>
+            <div></div>
+            <div>Artist</div>
+            <div>Album</div>
+            <div>Duration</div>
+          </div>
+        )}
 
-          const isCurrentlyPlaying =
-            playingVariant === variant &&
-            playingAlbumId === albumId &&
-            playingPlaylistId === playlistId &&
-            trackDetail.trackId === entry.trackId;
+        <div className={style.entries}>
+          {entries.map((entry, index) => {
+            const trackNumber = variant === 'playlist' ? index + 1 : entry.trackNumber;
 
-          const doPlay = (restart) => {
-            if (restart) {
-              dispatch.appModel.playerLoadList({
-                playingVariant: variant,
-                playingServerId: currentServerId,
-                playingLibraryId: currentLibraryId,
-                playingAlbumId: albumId,
-                playingPlaylistId: playlistId,
-                playingTrackList: entries,
-                playingTrackCount: entries.length,
-                playingTrackIndex: index,
-              });
-            } else {
-              dispatch.appModel.playerPlay();
-            }
-          };
+            const showDisc = totalDiscs > 1 && currentDisc !== entry.discNumber;
+            currentDisc = entry.discNumber;
 
-          return (
-            <ListEntry
-              key={index}
-              entry={entry}
-              trackNumber={trackNumber}
-              showDisc={showDisc}
-              isCurrentlyPlaying={isCurrentlyPlaying}
-              playerPlaying={playerPlaying}
-              doPlay={doPlay}
-              variant={variant}
-            />
-          );
-        })}
+            const isCurrentlyPlaying =
+              playingVariant === variant &&
+              playingAlbumId === albumId &&
+              playingPlaylistId === playlistId &&
+              trackDetail.trackId === entry.trackId;
+
+            const doPlay = (restart) => {
+              if (restart) {
+                dispatch.appModel.playerLoadList({
+                  playingVariant: variant,
+                  playingServerId: currentServerId,
+                  playingLibraryId: currentLibraryId,
+                  playingAlbumId: albumId,
+                  playingPlaylistId: playlistId,
+                  playingTrackList: entries,
+                  playingTrackCount: entries.length,
+                  playingTrackIndex: index,
+                });
+              } else {
+                dispatch.appModel.playerPlay();
+              }
+            };
+
+            return (
+              <ListEntry
+                key={index}
+                entry={entry}
+                trackNumber={trackNumber}
+                showDisc={showDisc}
+                isCurrentlyPlaying={isCurrentlyPlaying}
+                playerPlaying={playerPlaying}
+                doPlay={doPlay}
+                variant={variant}
+              />
+            );
+          })}
+        </div>
       </div>
     );
   }
@@ -120,7 +147,7 @@ const ListEntry = React.memo(({ entry, trackNumber, showDisc, isCurrentlyPlaying
       >
         {!isCurrentlyPlaying && (
           <div className={style.trackNumber}>
-            <span>{trackNumber}</span>
+            <span className={style.minCenter}>{trackNumber}</span>
           </div>
         )}
 

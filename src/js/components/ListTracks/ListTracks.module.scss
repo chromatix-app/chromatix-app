@@ -6,6 +6,65 @@
   font-size: 12px;
 }
 
+.header,
+.entry {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 30px 1.3fr 1fr 0.5fr 60px;
+  gap: 15px;
+
+  .wrap.wrapPlaylist & {
+    grid-template-columns: 30px 41px 1.3fr 1fr 1fr 0.5fr 60px;
+  }
+}
+
+.header {
+  padding: 0 20px 8px;
+  margin: 0 0 20px;
+  font-weight: bold;
+
+  > * {
+    opacity: 0.5;
+  }
+
+  > *:last-child {
+    text-align: right;
+  }
+
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+    right: 10px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.entry {
+  padding: 10px 19px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+
+  .wrap.wrapPlaylist & {
+    padding: 6px 19px;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  a {
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
 .disc {
   display: flex;
   align-items: center;
@@ -26,33 +85,6 @@
   margin-right: 26px;
 }
 
-.entry {
-  display: grid;
-  align-items: center;
-  grid-template-columns: 30px 1.3fr 1fr 0.5fr 60px;
-  gap: 15px;
-  padding: 10px 19px;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 8px;
-
-  .wrap.wrapPlaylist & {
-    grid-template-columns: 30px 41px 1.3fr 1fr 1fr 0.5fr 60px;
-    padding: 6px 19px;
-  }
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  a {
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-}
-
 .trackNumber {
   opacity: 0.5;
   font-weight: bold;
@@ -60,12 +92,12 @@
   .entry:hover & {
     display: none;
   }
+}
 
-  span {
-    display: inline-block;
-    min-width: 18px;
-    text-align: center;
-  }
+span.minCenter {
+  display: inline-block;
+  min-width: 18px;
+  text-align: center;
 }
 
 .playingIcon {
