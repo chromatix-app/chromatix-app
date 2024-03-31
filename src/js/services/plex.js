@@ -2,8 +2,8 @@
 // IMPORTS
 // ======================================================================
 
-import store from 'js/store/store';
 import { XMLParser } from 'fast-xml-parser';
+import store from 'js/store/store';
 
 // https://www.plexopedia.com/plex-media-server/api/library/chromatix-albums-tracks/
 
@@ -48,10 +48,13 @@ import { XMLParser } from 'fast-xml-parser';
 
 const isProduction = process.env.REACT_APP_ENV === 'production';
 
-const appName = 'Alex Dev Plex App';
-const clientIdentifier = 'alex_dev_plex_app';
+const appName = 'Chromatix';
+const clientIdentifier = 'chromatix.app';
+const clientIcon = 'https://chromatix.app/icon/icon-512.png';
 
-const redirectUrlLocal = 'http://localhost:3000?plex=true';
+const currentProtocol = window.location.protocol + '//';
+
+const redirectUrlLocal = currentProtocol + 'localhost:3000?plex=true';
 const redirectUrlProd = 'https://chromatix.app?plex=true';
 const redirectUrlActual = isProduction ? redirectUrlProd : redirectUrlLocal;
 
@@ -97,6 +100,7 @@ export const login = async () => {
       'Content-Type': 'application/json',
       'X-Plex-Product': appName,
       'X-Plex-Client-Identifier': clientIdentifier,
+      'X-Plex-Device-Icon': clientIcon,
     },
     body: JSON.stringify({ strong: true }),
   });
@@ -206,21 +210,76 @@ const getUserInfo = async () => {
 // GET USER SERVERS
 // ======================================================================
 
+// let getUserServersRunning;
+
+// export const getAllServers = async () => {
+//   if (!getUserServersRunning) {
+//     const prevAllServers = store.getState().appModel.allServers;
+//     if (!prevAllServers) {
+//       console.log('%c--- plex - getAllServers ---', 'color:#f9743b;');
+//       getUserServersRunning = true;
+//       const authToken = window.localStorage.getItem('chromatix-auth-token');
+
+//       const response = await fetch('https://plex.tv/pms/servers?includeHttps=1', {
+//         headers: {
+//           Accept: 'application/json',
+//           'Content-Type': 'application/json',
+//           'X-Plex-Token': authToken,
+//         },
+//       });
+
+//       if (!response.ok) {
+//         // TODO
+//       }
+
+//       const data = await response.text();
+
+//       // parse the XML response
+//       const parser = new DOMParser();
+//       const parsedData = parser.parseFromString(data, 'text/xml');
+
+//       const allServers = Array.from(parsedData.getElementsByTagName('Server')).map((server) => {
+//         const serverObj = {};
+//         for (let i = 0; i < server.attributes.length; i++) {
+//           serverObj[server.attributes[i].name] = server.attributes[i].value;
+//         }
+//         serverObj.serverId = serverObj.machineIdentifier;
+//         serverObj.serverBaseUrl = `${serverObj.scheme}://${serverObj.address}:${serverObj.port}`;
+//         serverObj.serverArtUrl = `${serverObj.scheme}://localhost:${serverObj.port}`;
+//         return serverObj;
+//       });
+
+//       console.log('allServers', allServers);
+
+//       store.dispatch.appModel.setAppState({ allServers });
+//       store.dispatch.sessionModel.refreshCurrentServer(allServers);
+
+//       getUserServersRunning = false;
+
+//     }
+//   }
+// };
+
+// ======================================================================
+// GET USER SERVERS
+// ======================================================================
+
 let getUserServersRunning;
 
 export const getAllServers = async () => {
   if (!getUserServersRunning) {
-    const prevAllServers = store.getState().appModel.allServers;
-    if (!prevAllServers) {
+    const prevAllResources = store.getState().appModel.allServers;
+    if (!prevAllResources) {
       console.log('%c--- plex - getAllServers ---', 'color:#f9743b;');
       getUserServersRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
 
-      const response = await fetch('https://plex.tv/pms/servers', {
+      const response = await fetch('https://plex.tv/api/v2/resources?includeHttps=1', {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
           'X-Plex-Token': authToken,
+          'X-Plex-Client-Identifier': 'chromatix.app',
         },
       });
 
@@ -228,22 +287,21 @@ export const getAllServers = async () => {
         // TODO
       }
 
-      const data = await response.text();
+      const data = await response.json();
 
-      // parse the XML response
-      const parser = new DOMParser();
-      const parsedData = parser.parseFromString(data, 'text/xml');
+      // console.log(data);
 
-      const allServers = Array.from(parsedData.getElementsByTagName('Server')).map((server) => {
-        const serverObj = {};
-        for (let i = 0; i < server.attributes.length; i++) {
-          serverObj[server.attributes[i].name] = server.attributes[i].value;
-        }
-        serverObj.serverId = serverObj.machineIdentifier;
-        serverObj.serverBaseUrl = `${serverObj.scheme}://${serverObj.address}:${serverObj.port}`;
-        serverObj.serverArtUrl = `${serverObj.scheme}://localhost:${serverObj.port}`;
-        return serverObj;
-      });
+      const allServers = data
+        .filter((resource) => resource.provides === 'server')
+        .map((resource) => {
+          const connectionLocal = resource.connections.filter((connection) => connection.local);
+          const connectionRemote = resource.connections.filter((connection) => !connection.local);
+          delete resource.connections;
+          resource.serverId = resource.clientIdentifier;
+          resource.serverBaseUrl = connectionRemote[0].uri;
+          resource.serverArtUrl = `${connectionLocal[0].protocol}://localhost:${connectionLocal[0].port}`;
+          return resource;
+        });
 
       // console.log('allServers', allServers);
 
