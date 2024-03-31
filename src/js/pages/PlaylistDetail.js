@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { ListSet, Loading, TitleHeading } from 'js/components';
+import { ListTracks, Loading, TitleHeading } from 'js/components';
 import { durationToStringLong } from 'js/utils';
 import * as plex from 'js/services/plex';
 
@@ -46,7 +46,7 @@ const PlaylistDetail = () => {
       )}
       {!(currentPlaylist && currentPlaylistTracks) && <Loading forceVisible inline />}
       {currentPlaylist && currentPlaylistTracks && (
-        <ListSet variant="playlist" playlistId={playlistId} entries={currentPlaylistTracks} />
+        <ListTracks variant="playlist" playlistId={playlistId} entries={currentPlaylistTracks} />
       )}
     </>
   );

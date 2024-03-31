@@ -5,7 +5,7 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { CardSet, Loading, TitleHeading } from 'js/components';
+import { ListCards, Loading, TitleHeading } from 'js/components';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
@@ -23,7 +23,7 @@ const AlbumList = () => {
     <>
       <TitleHeading title="Albums" subtitle={allAlbums ? allAlbums?.length + ' Albums' : null} />
       {!allAlbums && <Loading forceVisible inline />}
-      {allAlbums && <CardSet entries={allAlbums} />}
+      {allAlbums && <ListCards entries={allAlbums} />}
     </>
   );
 };

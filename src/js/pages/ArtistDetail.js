@@ -6,7 +6,7 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { CardSet, Loading, TitleHeading, TitleSection } from 'js/components';
+import { ListCards, Loading, TitleHeading, TitleSection } from 'js/components';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
@@ -61,14 +61,14 @@ const ArtistDetail = () => {
           {currentArtistAlbums.length > 0 && (
             <>
               <TitleSection title="Albums" />
-              <CardSet entries={currentArtistAlbums} />
+              <ListCards entries={currentArtistAlbums} />
             </>
           )}
           {currentArtistRelated &&
             currentArtistRelated.map((entry, index) => (
               <React.Fragment key={index}>
                 <TitleSection title={entry.title} />
-                <CardSet entries={entry.related} />
+                <ListCards entries={entry.related} />
               </React.Fragment>
             ))}
         </>

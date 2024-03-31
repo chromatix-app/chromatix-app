@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { NavLink, useParams } from 'react-router-dom';
 import moment from 'moment';
 
-import { ListSet, Loading, TitleHeading } from 'js/components';
+import { ListTracks, Loading, TitleHeading } from 'js/components';
 import { durationToStringLong } from 'js/utils';
 import * as plex from 'js/services/plex';
 
@@ -52,7 +52,9 @@ const AlbumDetail = () => {
         />
       )}
       {!(currentAlbum && currentAlbumTracks) && <Loading forceVisible inline />}
-      {currentAlbum && currentAlbumTracks && <ListSet variant="album" albumId={albumId} entries={currentAlbumTracks} />}
+      {currentAlbum && currentAlbumTracks && (
+        <ListTracks variant="album" albumId={albumId} entries={currentAlbumTracks} />
+      )}
     </>
   );
 };
