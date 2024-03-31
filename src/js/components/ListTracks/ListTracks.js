@@ -70,6 +70,7 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
             <div></div>
             <div>Artist</div>
             <div>Album</div>
+            <div></div>
             <div>Duration</div>
           </div>
         )}
