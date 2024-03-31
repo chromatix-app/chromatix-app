@@ -3,8 +3,9 @@
 // ======================================================================
 
 import React from 'react';
-import clsx from 'clsx';
 import { useDispatch, useSelector } from 'react-redux';
+import { NavLink } from 'react-router-dom';
+import clsx from 'clsx';
 
 import { Icon, StarRating } from 'js/components';
 import { durationToStringShort } from 'js/utils';
@@ -128,8 +129,14 @@ const ListSet = ({ variant, albumId, playlistId, entries }) => {
                   </div>
                 )}
                 <div className={style.title}>{entry.title}</div>
-                <div className={style.artist}>{entry.artist}</div>
-                {variant === 'playlist' && <div className={style.album}>{entry.album}</div>}
+                <div className={style.artist}>
+                  <NavLink to={entry.artistLink}>{entry.artist}</NavLink>
+                </div>
+                {variant === 'playlist' && (
+                  <div className={style.album}>
+                    <NavLink to={entry.albumLink}>{entry.album} </NavLink>
+                  </div>
+                )}
                 <div className={style.userRating}>{entry.userRating && <StarRating rating={entry.userRating} />}</div>
                 <div className={style.duration}>{durationToStringShort(entry.duration)}</div>
               </div>

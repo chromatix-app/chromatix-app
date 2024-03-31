@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { TitleBlock } from 'js/components';
+import { TitleHeading } from 'js/components';
 
 // ======================================================================
 // COMPONENT
@@ -11,7 +11,7 @@ import { TitleBlock } from 'js/components';
 const Artists = () => {
   return (
     <>
-      <TitleBlock title="Settings" />
+      <TitleHeading title="Settings" />
     </>
   );
 };

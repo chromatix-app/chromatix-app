@@ -5,10 +5,17 @@
   background: transparent;
   border: 1px solid transparent;
   border-radius: 13px;
+  cursor: pointer;
 
   &:hover {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  a {
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 
@@ -46,12 +53,12 @@
 
 .subtitle {
   overflow: hidden;
-  opacity: 0.6;
+  opacity: 0.5;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .rating {
   margin-top: 5px;
-  opacity: 0.23;
+  opacity: 0.3;
 }

@@ -4,13 +4,13 @@
 
 import clsx from 'clsx';
 
-import style from './TitleBlock.module.scss';
+import style from './TitleHeading.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const TitleBlock = ({ title, subtitle, detail, thumb }) => {
+const TitleHeading = ({ title, subtitle, detail, thumb }) => {
   const titleSize = title.length <= 30 ? 'large' : title.length <= 40 ? 'medium' : 'small';
 
   return (
@@ -33,4 +33,4 @@ const TitleBlock = ({ title, subtitle, detail, thumb }) => {
 // EXPORT
 // ======================================================================
 
-export default TitleBlock;
+export default TitleHeading;

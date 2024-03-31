@@ -6,7 +6,7 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { CardSet, Loading, TitleBlock, TitleSection } from 'js/components';
+import { CardSet, Loading, TitleHeading, TitleSection } from 'js/components';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
@@ -42,13 +42,17 @@ const ArtistDetail = () => {
   return (
     <>
       {currentArtist && (
-        <TitleBlock
+        <TitleHeading
           thumb={artistThumb}
           title={artistName}
           subtitle={
-            currentArtistAlbums && currentArtistRelated && artistReleases + ' Release' + (artistReleases > 1 ? 's' : '')
+            currentArtistAlbums && currentArtistRelated ? (
+              artistReleases + ' Release' + (artistReleases > 1 ? 's' : '')
+            ) : (
+              <>&nbsp;</>
+            )
           }
-          detail={currentArtistAlbums && currentArtistRelated && artistCountry + ' • ' + artistGenre}
+          detail={currentArtistAlbums && currentArtistRelated ? artistCountry + ' • ' + artistGenre : <>&nbsp;</>}
         />
       )}
       {!(currentArtist && currentArtistAlbums && currentArtistRelated) && <Loading forceVisible inline />}

@@ -4,6 +4,12 @@
   display: flex;
   align-items: center;
   padding: 55px 40px 40px;
+
+  a {
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 .thumb {
@@ -52,7 +58,7 @@
 
 .subtitle {
   margin-top: 8px;
-  opacity: 0.4;
+  opacity: 0.5;
   font-size: 14px;
   font-weight: bold;
 
@@ -63,6 +69,6 @@
 
 .detail {
   margin-top: 6px;
-  opacity: 0.4;
+  opacity: 0.5;
   font-size: 12px;
 }

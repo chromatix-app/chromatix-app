@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { ListSet, Loading, TitleBlock } from 'js/components';
+import { ListSet, Loading, TitleHeading } from 'js/components';
 import { durationToStringLong } from 'js/utils';
 import * as plex from 'js/services/plex';
 
@@ -37,11 +37,11 @@ const PlaylistDetail = () => {
   return (
     <>
       {currentPlaylist && (
-        <TitleBlock
+        <TitleHeading
           thumb={playlistThumb}
           title={playlistTitle}
-          subtitle={currentPlaylistTracks && playlistTracks + ' tracks'}
-          detail={currentPlaylistTracks && playlistDurationString}
+          subtitle={currentPlaylistTracks ? playlistTracks + ' tracks' : <>&nbsp;</>}
+          detail={currentPlaylistTracks ? playlistDurationString : <>&nbsp;</>}
         />
       )}
       {!(currentPlaylist && currentPlaylistTracks) && <Loading forceVisible inline />}

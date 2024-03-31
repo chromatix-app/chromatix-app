@@ -10,6 +10,6 @@ export { default as RangeSlider } from './RangeSlider/RangeSlider';
 export { default as SideBar } from './SideBar/SideBar';
 export { default as StarRating } from './StarRating/StarRating';
 export { default as TitleBasic } from './TitleBasic/TitleBasic';
-export { default as TitleBlock } from './TitleBlock/TitleBlock';
+export { default as TitleHeading } from './TitleHeading/TitleHeading';
 export { default as TitleSection } from './TitleSection/TitleSection';
 export { default as UserMenu } from './UserMenu/UserMenu';

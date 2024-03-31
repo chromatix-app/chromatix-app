@@ -4,10 +4,10 @@
 
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import moment from 'moment';
 
-import { ListSet, Loading, TitleBlock } from 'js/components';
+import { ListSet, Loading, TitleHeading } from 'js/components';
 import { durationToStringLong } from 'js/utils';
 import * as plex from 'js/services/plex';
 
@@ -32,6 +32,8 @@ const AlbumDetail = () => {
   const albumDurationMillisecs = currentAlbumTracks?.reduce((acc, track) => acc + track.duration, 0);
   const albumDurationString = durationToStringLong(albumDurationMillisecs);
 
+  const artistLink = currentAlbum?.artistLink;
+
   useEffect(() => {
     plex.getAllAlbums();
     plex.getAlbumTracks(albumId);
@@ -40,11 +42,13 @@ const AlbumDetail = () => {
   return (
     <>
       {currentAlbum && (
-        <TitleBlock
+        <TitleHeading
           thumb={albumThumb}
           title={albumTitle}
-          subtitle={albumArtist && albumArtist}
-          detail={currentAlbumTracks && albumRelease + ' • ' + albumTracks + ' tracks • ' + albumDurationString}
+          subtitle={albumArtist && <NavLink to={artistLink}>{albumArtist}</NavLink>}
+          detail={
+            currentAlbumTracks ? albumRelease + ' • ' + albumTracks + ' tracks • ' + albumDurationString : <>&nbsp;</>
+          }
         />
       )}
       {!(currentAlbum && currentAlbumTracks) && <Loading forceVisible inline />}
