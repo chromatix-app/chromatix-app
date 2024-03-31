@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
@@ -35,12 +35,14 @@ const ListSet = ({ variant, albumId, playlistId, entries }) => {
   const currentServerId = currentServer?.serverId;
   const currentLibraryId = currentLibrary?.libraryId;
 
-  const totalDiscs =
-    variant === 'album'
-      ? entries.reduce((acc, entry) => {
-          return Math.max(acc, entry.discNumber);
-        }, 0)
-      : 1;
+  const totalDiscs = useMemo(() => {
+    if (variant === 'album') {
+      return entries.reduce((acc, entry) => {
+        return Math.max(acc, entry.discNumber);
+      }, 0);
+    }
+    return 1;
+  }, [variant, entries]);
 
   let currentDisc = 0;
 
@@ -77,76 +79,93 @@ const ListSet = ({ variant, albumId, playlistId, entries }) => {
           };
 
           return (
-            <React.Fragment key={index}>
-              {showDisc && (
-                <div className={style.disc}>
-                  <div className={style.discIcon}>
-                    <Icon icon="DiscIcon" cover stroke />
-                  </div>
-                  <div className={style.discNumber}>Disc {entry.discNumber}</div>
-                </div>
-              )}
-
-              <div
-                className={clsx(style.entry, {
-                  [style.entryPlaying]: isCurrentlyPlaying,
-                })}
-                onDoubleClick={() => {
-                  doPlay(true);
-                }}
-              >
-                {!isCurrentlyPlaying && (
-                  <div className={style.trackNumber}>
-                    <span>{trackNumber}</span>
-                  </div>
-                )}
-
-                {isCurrentlyPlaying && (
-                  <div className={style.playingIcon}>
-                    <Icon icon="VolHighIcon" cover stroke />
-                  </div>
-                )}
-
-                {!(isCurrentlyPlaying && playerPlaying) && (
-                  <div
-                    className={style.playIcon}
-                    onClick={() => {
-                      doPlay(!isCurrentlyPlaying);
-                    }}
-                  >
-                    <Icon icon="PlayFilledIcon" cover />
-                  </div>
-                )}
-                {isCurrentlyPlaying && playerPlaying && (
-                  <div className={style.pauseIcon} onClick={dispatch.appModel.playerPause}>
-                    <Icon icon="PauseFilledIcon" cover />
-                  </div>
-                )}
-
-                {variant === 'playlist' && entry.thumb && (
-                  <div className={style.thumb}>
-                    <img src={entry.thumb} alt={entry.title} />
-                  </div>
-                )}
-                <div className={style.title}>{entry.title}</div>
-                <div className={style.artist}>
-                  <NavLink to={entry.artistLink}>{entry.artist}</NavLink>
-                </div>
-                {variant === 'playlist' && (
-                  <div className={style.album}>
-                    <NavLink to={entry.albumLink}>{entry.album} </NavLink>
-                  </div>
-                )}
-                <div className={style.userRating}>{entry.userRating && <StarRating rating={entry.userRating} />}</div>
-                <div className={style.duration}>{durationToStringShort(entry.duration)}</div>
-              </div>
-            </React.Fragment>
+            <ListEntry
+              key={index}
+              entry={entry}
+              trackNumber={trackNumber}
+              showDisc={showDisc}
+              isCurrentlyPlaying={isCurrentlyPlaying}
+              playerPlaying={playerPlaying}
+              doPlay={doPlay}
+              variant={variant}
+            />
           );
         })}
       </div>
     );
   }
 };
+
+const ListEntry = React.memo(({ entry, trackNumber, showDisc, isCurrentlyPlaying, playerPlaying, doPlay, variant }) => {
+  const dispatch = useDispatch();
+
+  return (
+    <>
+      {showDisc && (
+        <div className={style.disc}>
+          <div className={style.discIcon}>
+            <Icon icon="DiscIcon" cover stroke />
+          </div>
+          <div className={style.discNumber}>Disc {entry.discNumber}</div>
+        </div>
+      )}
+
+      <div
+        className={clsx(style.entry, {
+          [style.entryPlaying]: isCurrentlyPlaying,
+        })}
+        onDoubleClick={() => {
+          doPlay(true);
+        }}
+      >
+        {!isCurrentlyPlaying && (
+          <div className={style.trackNumber}>
+            <span>{trackNumber}</span>
+          </div>
+        )}
+
+        {isCurrentlyPlaying && (
+          <div className={style.playingIcon}>
+            <Icon icon="VolHighIcon" cover stroke />
+          </div>
+        )}
+
+        {!(isCurrentlyPlaying && playerPlaying) && (
+          <div
+            className={style.playIcon}
+            onClick={() => {
+              doPlay(!isCurrentlyPlaying);
+            }}
+          >
+            <Icon icon="PlayFilledIcon" cover />
+          </div>
+        )}
+        {isCurrentlyPlaying && playerPlaying && (
+          <div className={style.pauseIcon} onClick={dispatch.appModel.playerPause}>
+            <Icon icon="PauseFilledIcon" cover />
+          </div>
+        )}
+
+        {variant === 'playlist' && entry.thumb && (
+          <div className={style.thumb}>
+            <img src={entry.thumb} alt={entry.title} />
+          </div>
+        )}
+        <div className={style.title}>{entry.title}</div>
+        <div className={style.artist}>
+          <NavLink to={entry.artistLink}>{entry.artist}</NavLink>
+        </div>
+        {variant === 'playlist' && (
+          <div className={style.album}>
+            <NavLink to={entry.albumLink}>{entry.album} </NavLink>
+          </div>
+        )}
+        <div className={style.userRating}>{entry.userRating && <StarRating rating={entry.userRating} />}</div>
+        <div className={style.duration}>{durationToStringShort(entry.duration)}</div>
+      </div>
+    </>
+  );
+});
 
 // ======================================================================
 // EXPORT

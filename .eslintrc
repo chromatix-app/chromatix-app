@@ -13,11 +13,12 @@
   ],
   "plugins": ["react", "prettier"],
   "rules": {
-    "react/prop-types": 0,
-    "react/no-unused-prop-types": 1,
+    "no-unused-vars": "warn",
+    "react/display-name": 0,
     "react/no-unescaped-entities": 0,
-    "react/react-in-jsx-scope": 0,
-    "no-unused-vars": "warn"
+    "react/no-unused-prop-types": 1,
+    "react/prop-types": 0,
+    "react/react-in-jsx-scope": 0
   },
   "parserOptions": {
     "sourceType": "module"
