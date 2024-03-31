@@ -4,6 +4,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 
 import { Icon, RangeSlider } from 'js/components';
 import { useKeyboardControls } from 'js/hooks';
@@ -28,14 +29,16 @@ const ControlBar = () => {
   const playerMuted = useSelector(({ appModel }) => appModel.playerMuted);
   const playerInteractionCount = useSelector(({ appModel }) => appModel.playerInteractionCount);
 
-  // const playingVariant = useSelector(({ appModel }) => appModel.playingVariant);
+  const playingVariant = useSelector(({ appModel }) => appModel.playingVariant);
   // const playingServerId =  useSelector(({ appModel }) => appModel.playingServerId);
   // const playingLibraryId =  useSelector(({ appModel }) => appModel.playingLibraryId);
-  // const playingAlbumId =  useSelector(({ appModel }) => appModel.playingAlbumId);
-  // const playingPlaylistId =  useSelector(({ appModel }) => appModel.playingPlaylistId);
+  const playingAlbumId = useSelector(({ appModel }) => appModel.playingAlbumId);
+  const playingPlaylistId = useSelector(({ appModel }) => appModel.playingPlaylistId);
   const playingTrackList = useSelector(({ appModel }) => appModel.playingTrackList);
   // const playingTrackCount =  useSelector(({ appModel }) => appModel.playingTrackCount);
   const playingTrackIndex = useSelector(({ appModel }) => appModel.playingTrackIndex);
+
+  const playingLink = playingVariant === 'album' ? `/albums/${playingAlbumId}` : `/playlists/${playingPlaylistId}`;
 
   const trackDetail = playingTrackList?.[playingTrackIndex];
   const isDisabled = !trackDetail ? true : false;
@@ -45,6 +48,7 @@ const ControlBar = () => {
   const trackProgressCurrent = trackProgress / 1000;
   const trackProgressTotal = trackDetail?.duration ? trackDetail?.duration / 1000 : 0;
 
+  // handle keyboard controls
   useKeyboardControls({
     prev: () => !isDisabled && dispatch.appModel.playerPrev(),
     next: () => !isDisabled && dispatch.appModel.playerNext(),
@@ -88,11 +92,21 @@ const ControlBar = () => {
     <div className={style.wrap}>
       <div className={style.current}>
         <div className={style.cover}>
-          {trackDetail && trackDetail.thumb && <img src={trackDetail.thumb} alt={trackDetail.title} />}
+          {trackDetail && trackDetail.thumb && (
+            <NavLink className={style.cover} to={playingLink}>
+              <img src={trackDetail.thumb} alt={trackDetail.title} />
+            </NavLink>
+          )}
         </div>
         <div className={style.text}>
-          <div className={style.title}>{trackDetail?.title}</div>
-          <div className={style.artist}>{trackDetail?.artist}</div>
+          {trackDetail && (
+            <>
+              <div className={style.title}>{trackDetail.title}</div>
+              <NavLink className={style.artist} to={trackDetail.artistLink}>
+                {trackDetail.artist}
+              </NavLink>
+            </>
+          )}
         </div>
       </div>
 
@@ -131,6 +145,7 @@ const ControlBar = () => {
               handleChange={handleProgressChange}
               handleMouseDown={handleProgressMouseDown}
               handleMouseUp={handleProgressMouseUp}
+              isDisabled={isDisabled}
             />
           </div>
           <div className={style.scrubRight}>{!isDisabled && durationToStringShort(trackDetail?.duration)}</div>

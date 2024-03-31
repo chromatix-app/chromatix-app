@@ -9,7 +9,7 @@
 .disc {
   display: flex;
   align-items: center;
-  padding: 10px 16px;
+  padding: 11px 20px;
   margin-top: 30px;
   opacity: 0.5;
   font-weight: bold;
@@ -20,9 +20,10 @@
 }
 
 .discIcon {
-  width: 14px;
+  width: 18px;
   height: 14px;
-  margin-right: 34px;
+  padding: 0 2px;
+  margin-right: 26px;
 }
 
 .entry {
