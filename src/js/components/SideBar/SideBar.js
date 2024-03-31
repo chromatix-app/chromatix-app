@@ -4,9 +4,10 @@
 
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { NavLink, useHistory } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import { Icon } from 'js/components';
+import { useNavigationHistory } from 'js/hooks';
 import * as plex from 'js/services/plex';
 
 import style from './SideBar.module.scss';
@@ -16,12 +17,9 @@ import style from './SideBar.module.scss';
 // ======================================================================
 
 const SideBar = () => {
-  const history = useHistory();
+  const { canGoBack, canGoForward, goBack, goForward } = useNavigationHistory();
 
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
-
-  const canGoBack = history.length > 1;
-  const canGoForward = history.index < history.length - 1;
 
   useEffect(() => {
     plex.getAllPlaylists();
@@ -30,10 +28,10 @@ const SideBar = () => {
   return (
     <div className={style.wrap}>
       <div className={style.nav}>
-        <button className={style.prev} disabled={!canGoBack} onClick={() => history.goBack()}>
+        <button className={style.prev} disabled={!canGoBack} onClick={goBack}>
           <Icon icon="PreviousIcon" cover stroke />
         </button>
-        <button className={style.next} disabled={!canGoForward} onClick={() => history.goForward()}>
+        <button className={style.next} disabled={!canGoForward} onClick={goForward}>
           <Icon icon="NextIcon" cover stroke />
         </button>
       </div>
