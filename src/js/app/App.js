@@ -9,7 +9,7 @@ import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 
 import { ControlBar, SideBar, UserMenu } from 'js/components';
-import { useGotRequiredData } from 'js/hooks';
+import { useGotRequiredData, useScrollRestoration } from 'js/hooks';
 import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 
 // ======================================================================
@@ -33,6 +33,8 @@ const App = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
+  useScrollRestoration();
+
   // disable console logs
   useEffect(() => {
     if (isProduction && !debugConsole) {
@@ -51,21 +53,6 @@ const App = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // handle route changes
-  useEffect(
-    () =>
-      history.listen((location, action) => {
-        console.log(history.location.pathname);
-        // scroll the page to the top
-        if (action !== 'POP') {
-          window.scrollTo(0, 0);
-          document.getElementById('content')?.scrollTo(0, 0);
-        }
-      }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [history]
-  );
 
   // loading
   if (!inited || (loggedIn && !gotRequiredData)) {
