@@ -14,15 +14,20 @@
 .entry {
   display: grid;
   align-items: center;
-  grid-template-columns: 30px 1.3fr 1fr 0.5fr 60px;
+  grid-template-columns: 30px 1.3fr 1fr 60px;
   gap: 13px;
 
   @media (min-width: 1024px) {
+    grid-template-columns: 30px 1.3fr 1fr 0.5fr 60px;
     gap: 15px;
   }
 
   .wrap.wrapPlaylist & {
-    grid-template-columns: 30px 41px 1.3fr 1fr 1fr 0.5fr 60px;
+    grid-template-columns: 30px 41px 1.3fr 1fr 1fr 60px;
+
+    @media (min-width: 1024px) {
+      grid-template-columns: 30px 41px 1.3fr 1fr 1fr 0.5fr 60px;
+    }
   }
 }
 
@@ -55,14 +60,22 @@
   }
 }
 
+.headerRating {
+  display: none;
+
+  @media (min-width: 1024px) {
+    display: block;
+  }
+}
+
 .entry {
-  padding: 10px 19px;
+  padding: 10px 14px;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 8px;
 
   @media (min-width: 1024px) {
-    padding: 10px 14px;
+    padding: 10px 19px;
   }
 
   .wrap.wrapPlaylist & {
@@ -88,10 +101,14 @@
 .disc {
   display: flex;
   align-items: center;
-  padding: 11px 20px;
+  padding: 11px 15px;
   margin-top: 30px;
   opacity: 0.5;
   font-weight: bold;
+
+  @media (min-width: 1024px) {
+    padding: 11px 20px;
+  }
 
   &:first-child {
     margin-top: 0;
@@ -102,7 +119,11 @@
   width: 18px;
   height: 14px;
   padding: 0 2px;
-  margin-right: 26px;
+  margin-right: 24px;
+
+  @media (min-width: 1024px) {
+    margin-right: 26px;
+  }
 }
 
 .trackNumber {
@@ -163,13 +184,20 @@ span.minCenter {
 }
 
 .title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
   .entry.entryPlaying & {
     color: var(--color-primary);
   }
 }
 
 .artist {
+  overflow: hidden;
   opacity: 0.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   .entry:hover & {
     opacity: 1;
@@ -177,7 +205,10 @@ span.minCenter {
 }
 
 .album {
+  overflow: hidden;
   opacity: 0.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   .entry:hover & {
     opacity: 1;
@@ -185,7 +216,12 @@ span.minCenter {
 }
 
 .userRating {
+  display: none;
   opacity: 0.3;
+
+  @media (min-width: 1024px) {
+    display: block;
+  }
 
   .entry:hover & {
     opacity: 1;

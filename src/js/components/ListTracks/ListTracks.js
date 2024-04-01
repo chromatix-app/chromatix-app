@@ -56,7 +56,7 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
             </div>
             <div>Title</div>
             <div>Artist</div>
-            <div>Rating</div>
+            <div className={style.headerRating}>Rating</div>
             <div>Duration</div>
           </div>
         )}
@@ -70,7 +70,7 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
             <div></div>
             <div>Artist</div>
             <div>Album</div>
-            <div></div>
+            <div className={style.headerRating}></div>
             <div>Duration</div>
           </div>
         )}
