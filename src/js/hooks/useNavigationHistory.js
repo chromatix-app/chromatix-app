@@ -35,14 +35,14 @@ const useNavigationHistory = () => {
         // setDirection('forwards');
         setLength(length + 1);
         // add the new location to the historyStack
-        setHistoryStack([...historyStack, location.pathname]);
+        setHistoryStack([...historyStack, location.key]);
         // clear the futureStack because it is not possible to go forward from here
         setFutureStack([]);
       }
       // if action is POP we could be going forwards or backwards
       else if (action === 'POP') {
         // determine if we are going forwards or backwards
-        if (futureStack.length > 0 && futureStack[futureStack.length - 1] === location.pathname) {
+        if (futureStack.length > 0 && futureStack[futureStack.length - 1] === location.key) {
           // setDirection('forwards');
           // if we are going forwards, pop the futureStack and push it onto the historyStack
           setHistoryStack([...historyStack, futureStack.pop()]);
