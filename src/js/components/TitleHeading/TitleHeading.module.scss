@@ -163,15 +163,18 @@
 }
 
 .stickyContent {
+  display: flex;
+  align-items: center;
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  padding: 32px 30px;
+  height: 91px;
+  padding: 20px 30px;
   background: var(--color-background);
 
   @media (min-width: 1024px) {
-    padding: 32px 40px;
+    padding: 20px 40px;
   }
 }
 
@@ -181,7 +184,7 @@
   opacity: 0;
   transition: opacity 0.3s;
   font-size: 26px;
-  line-height: 1;
+  line-height: 1.2;
   font-weight: bold;
   text-overflow: ellipsis;
   white-space: nowrap;
