@@ -11,7 +11,7 @@ import style from './TitleHeading.module.scss';
 // ======================================================================
 
 const TitleHeading = ({ title, subtitle, detail, thumb }) => {
-  const titleSize = title.length <= 30 ? 'large' : title.length <= 40 ? 'medium' : 'small';
+  const titleSize = title.length <= 10 ? 'xl' : title.length <= 30 ? 'lg' : title.length <= 40 ? 'md' : 'sm';
 
   return (
     <div className={style.wrap}>

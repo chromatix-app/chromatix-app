@@ -2,9 +2,20 @@
 
 .wrap {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  padding: 0 30px 50px;
+  overflow: hidden;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 20px 10px;
+  padding: 0 20px 50px;
+
+  @media (min-width: 820px) {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+  @media (min-width: 1024px) {
+    padding: 0 30px 50px;
+  }
+  @media (min-width: 1080px) {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
 }
 
 .card {
@@ -59,6 +70,7 @@
 }
 
 .subtitle {
+  display: block;
   overflow: hidden;
   opacity: 0.5;
   text-overflow: ellipsis;

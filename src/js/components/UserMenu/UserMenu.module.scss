@@ -24,13 +24,16 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  // min-width: 150px;
-  padding: 6px 6px 6px 15px;
+  padding: 6px;
   margin: 0 0 0 auto;
   background: var(--color-panel-background);
   border: 1px solid var(--color-border);
   border-radius: 9px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+
+  @media (min-width: 1024px) {
+    padding: 6px 6px 6px 15px;
+  }
 
   &:hover {
     background: var(--color-hover);
@@ -38,8 +41,13 @@
 }
 
 .content {
+  display: none;
   font-weight: 500;
   text-align: right;
+
+  @media (min-width: 1024px) {
+    display: block;
+  }
 }
 
 .library {
@@ -57,9 +65,12 @@
   overflow: hidden;
   width: 40px;
   height: 40px;
-  margin-left: 12px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
+
+  @media (min-width: 1024px) {
+    margin-left: 12px;
+  }
 
   img {
     position: absolute;

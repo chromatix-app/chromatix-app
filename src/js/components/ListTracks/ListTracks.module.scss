@@ -2,8 +2,12 @@
 
 .wrap {
   width: 100%;
-  padding: 0 30px 50px;
+  padding: 0 20px 50px;
   font-size: 12px;
+
+  @media (min-width: 1024px) {
+    padding: 0 30px 50px;
+  }
 }
 
 .header,
@@ -11,7 +15,11 @@
   display: grid;
   align-items: center;
   grid-template-columns: 30px 1.3fr 1fr 0.5fr 60px;
-  gap: 15px;
+  gap: 13px;
+
+  @media (min-width: 1024px) {
+    gap: 15px;
+  }
 
   .wrap.wrapPlaylist & {
     grid-template-columns: 30px 41px 1.3fr 1fr 1fr 0.5fr 60px;
@@ -19,9 +27,13 @@
 }
 
 .header {
-  padding: 0 20px 8px;
+  padding: 0 15px 8px;
   margin: 0 0 20px;
   font-weight: bold;
+
+  @media (min-width: 1024px) {
+    padding: 0 20px 8px;
+  }
 
   > * {
     opacity: 0.5;
@@ -49,8 +61,16 @@
   border: 1px solid transparent;
   border-radius: 8px;
 
+  @media (min-width: 1024px) {
+    padding: 10px 14px;
+  }
+
   .wrap.wrapPlaylist & {
-    padding: 6px 19px;
+    padding: 6px 14px;
+
+    @media (min-width: 1024px) {
+      padding: 6px 19px;
+    }
   }
 
   &:hover {

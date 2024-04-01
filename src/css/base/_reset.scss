@@ -5,10 +5,10 @@
 html,
 body {
   vertical-align: baseline;
-  min-width: 300px;
+  min-width: 720px;
   height: 100%;
-  overscroll-behavior: none;
   background: var(--color-background);
+  overscroll-behavior: none;
   // background: transparent;
 
   -webkit-tap-highlight-color: transparent;
