@@ -395,10 +395,11 @@ export const getAllArtists = async () => {
 
       const data = await response.json();
 
-      // console.log(data.MediaContainer.Metadata);
+      console.log(data.MediaContainer.Metadata);
 
       const allArtists =
         data.MediaContainer.Metadata?.map((artist) => ({
+          libraryId: libraryId,
           artistId: artist.ratingKey,
           title: artist.title,
           country: artist?.Country?.[0]?.tag,
@@ -417,6 +418,58 @@ export const getAllArtists = async () => {
       store.dispatch.appModel.setAppState({ allArtists });
 
       getAllArtistsRunning = false;
+    }
+  }
+};
+
+// ======================================================================
+// GET ARTIST DETAIL
+// ======================================================================
+
+let getArtistDetailsRunning;
+
+export const getArtistDetails = async (libraryId, artistId) => {
+  if (!getArtistDetailsRunning) {
+    const prevArtistDetails = store.getState().appModel.allArtists?.find((artist) => artist.artistId === artistId);
+    console.log('prevArtistDetails', prevArtistDetails);
+    if (!prevArtistDetails) {
+      getArtistDetailsRunning = true;
+      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
+
+      const response = await fetch(`${serverBaseUrl}/library/metadata/${artistId}`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Plex-Token': authToken,
+        },
+      });
+
+      const data = await response.json();
+
+      // console.log(data.MediaContainer.Metadata);
+
+      const artist = data.MediaContainer.Metadata[0];
+      const artistDetails = {
+        libraryId: libraryId,
+        artistId: artist.ratingKey,
+        title: artist.title,
+        country: artist?.Country?.[0]?.tag,
+        genre: artist?.Genre?.[0]?.tag,
+        userRating: artist.userRating,
+        link: '/artists/' + libraryId + '/' + artist.ratingKey,
+        thumb: artist.thumb
+          ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+              `${serverArtUrl}${artist.thumb}`
+            )}&X-Plex-Token=${authToken}`
+          : null,
+      };
+
+      // console.log('artistDetails', artistDetails);
+
+      store.dispatch.appModel.storeArtistDetails(artistDetails);
+
+      getArtistDetailsRunning = false;
     }
   }
 };

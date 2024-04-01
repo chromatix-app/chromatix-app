@@ -39,6 +39,13 @@ const ArtistDetail = () => {
     plex.getAllArtistRelated(libraryId, artistId);
   }, [artistId, libraryId]);
 
+  useEffect(() => {
+    if (allArtists && !currentArtist) {
+      plex.getArtistDetails(libraryId, artistId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allArtists, currentArtist]);
+
   return (
     <>
       {currentArtist && (

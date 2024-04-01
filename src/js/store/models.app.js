@@ -147,6 +147,20 @@ const effects = (dispatch) => ({
     plex.getAllPlaylists();
   },
 
+  storeArtistDetails(payload, rootState) {
+    console.log('%c--- storeArtistDetails ---', 'color:#079189');
+    const allArtists = [...rootState.appModel.allArtists];
+    const artistIndex = allArtists.findIndex((artist) => artist.artistId === payload.artistId);
+    if (artistIndex === -1) {
+      allArtists.push(payload);
+    } else {
+      allArtists[artistIndex] = payload;
+    }
+    dispatch.appModel.setAppState({
+      allArtists,
+    });
+  },
+
   storeArtistAlbums(payload, rootState) {
     console.log('%c--- storeArtistAlbums ---', 'color:#079189');
     const { libraryId, artistId, artistAlbums } = payload;
