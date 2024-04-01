@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { NavLink, useParams } from 'react-router-dom';
 import moment from 'moment';
 
-import { ListTracks, Loading, TitleHeading } from 'js/components';
+import { ListTracks, Loading, StarRating, TitleHeading } from 'js/components';
 import { durationToStringLong } from 'js/utils';
 import * as plex from 'js/services/plex';
 
@@ -31,6 +31,7 @@ const AlbumDetail = () => {
   const albumTracks = currentAlbumTracks?.length;
   const albumDurationMillisecs = currentAlbumTracks?.reduce((acc, track) => acc + track.duration, 0);
   const albumDurationString = durationToStringLong(albumDurationMillisecs);
+  const albumRating = currentAlbum?.userRating;
 
   const artistLink = currentAlbum?.artistLink;
 
@@ -54,7 +55,14 @@ const AlbumDetail = () => {
           title={albumTitle}
           subtitle={albumArtist && <NavLink to={artistLink}>{albumArtist}</NavLink>}
           detail={
-            currentAlbumTracks ? albumRelease + ' • ' + albumTracks + ' tracks • ' + albumDurationString : <>&nbsp;</>
+            currentAlbumTracks ? (
+              <>
+                {albumRelease} • {albumTracks} tracks • {albumDurationString}{' '}
+                <StarRating rating={albumRating} size={13} inline />
+              </>
+            ) : (
+              <>&nbsp;</>
+            )
           }
         />
       )}

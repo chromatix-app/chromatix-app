@@ -431,7 +431,6 @@ let getArtistDetailsRunning;
 export const getArtistDetails = async (libraryId, artistId) => {
   if (!getArtistDetailsRunning) {
     const prevArtistDetails = store.getState().appModel.allArtists?.find((artist) => artist.artistId === artistId);
-    console.log('prevArtistDetails', prevArtistDetails);
     if (!prevArtistDetails) {
       getArtistDetailsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
@@ -447,7 +446,7 @@ export const getArtistDetails = async (libraryId, artistId) => {
 
       const data = await response.json();
 
-      // console.log(data.MediaContainer.Metadata);
+      console.log(data.MediaContainer.Metadata);
 
       const artist = data.MediaContainer.Metadata[0];
       const artistDetails = {

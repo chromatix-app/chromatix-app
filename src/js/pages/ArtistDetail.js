@@ -6,7 +6,7 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { ListCards, Loading, TitleHeading, TitleSection } from 'js/components';
+import { ListCards, Loading, StarRating, TitleHeading, TitleSection } from 'js/components';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
@@ -32,6 +32,7 @@ const ArtistDetail = () => {
   const artistReleases = artistAlbums + artistRelated;
   const artistCountry = currentArtist?.country;
   const artistGenre = currentArtist?.genre;
+  const artistRating = currentArtist?.userRating;
 
   useEffect(() => {
     plex.getAllArtists();
@@ -59,7 +60,15 @@ const ArtistDetail = () => {
               <>&nbsp;</>
             )
           }
-          detail={currentArtistAlbums && currentArtistRelated ? artistCountry + ' • ' + artistGenre : <>&nbsp;</>}
+          detail={
+            currentArtistAlbums && currentArtistRelated ? (
+              <>
+                {artistCountry} • {artistGenre} <StarRating rating={artistRating} size={13} inline />
+              </>
+            ) : (
+              <>&nbsp;</>
+            )
+          }
         />
       )}
       {!(currentArtist && currentArtistAlbums && currentArtistRelated) && <Loading forceVisible inline />}
