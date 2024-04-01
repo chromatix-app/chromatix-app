@@ -21,11 +21,11 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
 
   const playerPlaying = useSelector(({ appModel }) => appModel.playerPlaying);
 
-  const playingVariant = useSelector(({ appModel }) => appModel.playingVariant);
-  const playingAlbumId = useSelector(({ appModel }) => appModel.playingAlbumId);
-  const playingPlaylistId = useSelector(({ appModel }) => appModel.playingPlaylistId);
-  const playingTrackList = useSelector(({ appModel }) => appModel.playingTrackList);
-  const playingTrackIndex = useSelector(({ appModel }) => appModel.playingTrackIndex);
+  const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
+  const playingAlbumId = useSelector(({ sessionModel }) => sessionModel.playingAlbumId);
+  const playingPlaylistId = useSelector(({ sessionModel }) => sessionModel.playingPlaylistId);
+  const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
+  const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
 
   const trackDetail = playingTrackList?.[playingTrackIndex];
 
@@ -84,8 +84,8 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
 
             const isCurrentlyPlaying =
               playingVariant === variant &&
-              playingAlbumId === albumId &&
-              playingPlaylistId === playlistId &&
+              (playingAlbumId === albumId || (!playingAlbumId && !albumId)) &&
+              (playingPlaylistId === playlistId || (!playingPlaylistId && !playlistId)) &&
               trackDetail.trackId === entry.trackId;
 
             const doPlay = (restart) => {

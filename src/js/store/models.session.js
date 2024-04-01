@@ -18,7 +18,18 @@ const sessionState = {
   backgroundColor: '#111',
 };
 
-const state = Object.assign(sessionState);
+const playingState = {
+  playingVariant: null,
+  playingServerId: null,
+  playingLibraryId: null,
+  playingAlbumId: null,
+  playingPlaylistId: null,
+  playingTrackList: null,
+  playingTrackCount: null,
+  playingTrackIndex: null,
+};
+
+const state = Object.assign(sessionState, playingState);
 
 // ======================================================================
 // REDUCERS
@@ -91,8 +102,8 @@ const reducers = {
 // ======================================================================
 
 const effects = (dispatch) => ({
-  refresh(payload, rootState) {
-    console.log('%c--- refresh ---', 'color:#91074A');
+  loadLocalStorage(payload, rootState) {
+    console.log('%c--- loadLocalStorage ---', 'color:#91074A');
     let localStorageState = { ...sessionState };
     // attempt to retrieve the current user's session state from local storage
     const loggedIn = rootState.appModel.loggedIn;
@@ -108,6 +119,14 @@ const effects = (dispatch) => ({
     }
     dispatch.sessionModel.setSessionState({
       ...localStorageState,
+    });
+  },
+
+  setLoggedOut(payload, rootState) {
+    console.log('%c--- setLoggedOut ---', 'color:#91074A');
+    dispatch.sessionModel.setSessionState({
+      ...sessionState,
+      ...playingState,
     });
   },
 

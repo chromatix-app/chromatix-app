@@ -23,22 +23,27 @@ const ControlBar = () => {
 
   const [trackProgress, setTrackProgress] = useState(0);
 
+  const libraryId = useSelector(({ sessionModel }) => sessionModel.currentLibrary?.libraryId);
+
   const playerElement = useSelector(({ appModel }) => appModel.playerElement);
   const playerPlaying = useSelector(({ appModel }) => appModel.playerPlaying);
   const playerVolume = useSelector(({ appModel }) => appModel.playerVolume);
   const playerMuted = useSelector(({ appModel }) => appModel.playerMuted);
   const playerInteractionCount = useSelector(({ appModel }) => appModel.playerInteractionCount);
 
-  const playingVariant = useSelector(({ appModel }) => appModel.playingVariant);
-  // const playingServerId =  useSelector(({ appModel }) => appModel.playingServerId);
-  // const playingLibraryId =  useSelector(({ appModel }) => appModel.playingLibraryId);
-  const playingAlbumId = useSelector(({ appModel }) => appModel.playingAlbumId);
-  const playingPlaylistId = useSelector(({ appModel }) => appModel.playingPlaylistId);
-  const playingTrackList = useSelector(({ appModel }) => appModel.playingTrackList);
-  // const playingTrackCount =  useSelector(({ appModel }) => appModel.playingTrackCount);
-  const playingTrackIndex = useSelector(({ appModel }) => appModel.playingTrackIndex);
+  const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
+  // const playingServerId =  useSelector(({ sessionModel }) => sessionModel.playingServerId);
+  // const playingLibraryId =  useSelector(({ sessionModel }) => sessionModel.playingLibraryId);
+  const playingAlbumId = useSelector(({ sessionModel }) => sessionModel.playingAlbumId);
+  const playingPlaylistId = useSelector(({ sessionModel }) => sessionModel.playingPlaylistId);
+  const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
+  // const playingTrackCount =  useSelector(({ sessionModel }) => sessionModel.playingTrackCount);
+  const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
 
-  const playingLink = playingVariant === 'album' ? `/albums/${playingAlbumId}` : `/playlists/${playingPlaylistId}`;
+  const playingLink =
+    playingVariant === 'album'
+      ? `/albums/${libraryId}/${playingAlbumId}`
+      : `/playlists/${libraryId}/${playingPlaylistId}`;
 
   const trackDetail = playingTrackList?.[playingTrackIndex];
   const isDisabled = !trackDetail ? true : false;

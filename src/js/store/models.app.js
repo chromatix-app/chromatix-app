@@ -40,18 +40,7 @@ const plexLibraryState = {
   allPlaylistTracks: {},
 };
 
-const playingState = {
-  playingVariant: null,
-  playingServerId: null,
-  playingLibraryId: null,
-  playingAlbumId: null,
-  playingPlaylistId: null,
-  playingTrackList: null,
-  playingTrackCount: null,
-  playingTrackIndex: null,
-};
-
-const state = Object.assign(appState, userState, plexServerState, plexLibraryState, playingState);
+const state = Object.assign(appState, userState, plexServerState, plexLibraryState);
 
 // ======================================================================
 // REDUCERS
@@ -89,10 +78,10 @@ const effects = (dispatch) => ({
     dispatch.appModel.setAppState({
       history: payload.history,
     });
-    // initialise plex
-    plex.init();
     // initialise player
     dispatch.appModel.playerInit();
+    // initialise plex
+    plex.init();
   },
 
   //
@@ -117,7 +106,8 @@ const effects = (dispatch) => ({
       loggedIn: true,
       currentUser: payload,
     });
-    dispatch.sessionModel.refresh();
+    dispatch.sessionModel.loadLocalStorage();
+    dispatch.appModel.playerRefresh();
     plex.getAllServers();
     plex.getAllLibraries();
   },
@@ -129,9 +119,9 @@ const effects = (dispatch) => ({
       ...userState,
       ...plexServerState,
       ...plexLibraryState,
-      ...playingState,
     });
-    dispatch.sessionModel.refresh();
+    dispatch.appModel.playerUnload();
+    dispatch.sessionModel.setLoggedOut();
   },
 
   //
@@ -234,10 +224,31 @@ const effects = (dispatch) => ({
     });
   },
 
+  playerUnload(payload, rootState) {
+    console.log('%c--- playerUnload ---', 'color:#079189');
+    const playerElement = rootState.appModel.playerElement;
+    playerElement.pause();
+    playerElement.src = '';
+    playerElement.load();
+    dispatch.appModel.setAppState({
+      playerPlaying: false,
+    });
+  },
+
+  playerRefresh(payload, rootState) {
+    console.log('%c--- playerRefresh ---', 'color:#079189');
+    const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+    if (playingTrackIndex || playingTrackIndex === 0) {
+      dispatch.appModel.playerLoadIndex({ index: playingTrackIndex, play: false });
+    }
+  },
+
   playerLoadList(payload, rootState) {
     // console.log('%c--- playerLoadList ---', 'color:#079189');
     dispatch.appModel.setAppState({
       playerPlaying: true,
+    });
+    dispatch.sessionModel.setSessionState({
       ...payload,
     });
     // start playing
@@ -253,35 +264,33 @@ const effects = (dispatch) => ({
   playerLoadIndex(payload, rootState) {
     // console.log('%c--- playerLoadIndex ---', 'color:#079189');
     const playerElement = rootState.appModel.playerElement;
-    const playingTrackList = rootState.appModel.playingTrackList;
-    if (payload || payload === 0) {
-      playerElement.src = playingTrackList[payload].src;
+    const playingTrackList = rootState.sessionModel.playingTrackList;
+    const { index, play } = payload;
+    if (index || index === 0) {
+      playerElement.src = playingTrackList[index].src;
       playerElement.load();
-      playerElement.play().catch((error) => null);
-    }
-    // handle null payload - load first track and stop playing
-    else if (payload === null) {
-      playerElement.src = playingTrackList[0].src;
-      playerElement.load();
+      if (play) {
+        playerElement.play().catch((error) => null);
+      }
     }
   },
 
   playerPlay(payload, rootState) {
     // console.log('%c--- playerPlay ---', 'color:#079189');
+    const playerElement = rootState.appModel.playerElement;
+    playerElement.play().catch((error) => null);
     dispatch.appModel.setAppState({
       playerPlaying: true,
     });
-    const playerElement = rootState.appModel.playerElement;
-    playerElement.play().catch((error) => null);
   },
 
   playerPause(payload, rootState) {
     // console.log('%c--- playerPause ---', 'color:#079189');
+    const playerElement = rootState.appModel.playerElement;
+    playerElement.pause();
     dispatch.appModel.setAppState({
       playerPlaying: false,
     });
-    const playerElement = rootState.appModel.playerElement;
-    playerElement.pause();
   },
 
   playerRestart(payload, rootState) {
@@ -296,13 +305,13 @@ const effects = (dispatch) => ({
   playerPrev(payload, rootState) {
     // console.log('%c--- playerPrev ---', 'color:#079189');
     const playerElement = rootState.appModel.playerElement;
-    const playingTrackIndex = rootState.appModel.playingTrackIndex;
+    const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
     // go to previous track, if available
     if (playingTrackIndex > 0 && playerElement.currentTime <= 5) {
-      dispatch.appModel.setAppState({
+      dispatch.sessionModel.setSessionState({
         playingTrackIndex: playingTrackIndex - 1,
       });
-      dispatch.appModel.playerLoadIndex(playingTrackIndex - 1);
+      dispatch.appModel.playerLoadIndex({ index: playingTrackIndex - 1, play: true });
     }
     // restart the current track
     else {
@@ -312,22 +321,26 @@ const effects = (dispatch) => ({
 
   playerNext(payload, rootState) {
     // console.log('%c--- playerNext ---', 'color:#079189');
-    const playingTrackIndex = rootState.appModel.playingTrackIndex;
-    const playingTrackCount = rootState.appModel.playingTrackCount;
+    const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+    const playingTrackCount = rootState.sessionModel.playingTrackCount;
     if (playingTrackIndex < playingTrackCount - 1) {
       dispatch.appModel.setAppState({
         playerPlaying: true,
+      });
+      dispatch.sessionModel.setSessionState({
         playingTrackIndex: playingTrackIndex + 1,
       });
-      dispatch.appModel.playerLoadIndex(playingTrackIndex + 1);
+      dispatch.appModel.playerLoadIndex({ index: playingTrackIndex + 1, play: true });
     }
     // handle last track - loop back to first track and stop playing
     else {
       dispatch.appModel.setAppState({
         playerPlaying: false,
+      });
+      dispatch.sessionModel.setSessionState({
         playingTrackIndex: 0,
       });
-      dispatch.appModel.playerLoadIndex(null);
+      dispatch.appModel.playerLoadIndex({ index: 0, play: false });
     }
   },
 
