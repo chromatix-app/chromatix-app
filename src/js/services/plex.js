@@ -395,7 +395,7 @@ export const getAllArtists = async () => {
 
       const data = await response.json();
 
-      console.log(data.MediaContainer.Metadata);
+      // console.log(data.MediaContainer.Metadata);
 
       const allArtists =
         data.MediaContainer.Metadata?.map((artist) => ({
@@ -446,7 +446,7 @@ export const getArtistDetails = async (libraryId, artistId) => {
 
       const data = await response.json();
 
-      console.log(data.MediaContainer.Metadata);
+      // console.log(data.MediaContainer.Metadata);
 
       const artist = data.MediaContainer.Metadata[0];
       const artistDetails = {
@@ -505,6 +505,7 @@ export const getAllArtistAlbums = async (libraryId, artistId) => {
 
       const artistAlbums =
         data.MediaContainer.Metadata?.map((album) => ({
+          libraryId: libraryId,
           albumId: album.ratingKey,
           title: album.title,
           artist: album.parentTitle,
@@ -562,6 +563,7 @@ export const getAllArtistRelated = async (libraryId, artistId) => {
         data.MediaContainer.Hub?.filter((hub) => hub.type === 'album' && hub.Metadata).map((hub) => ({
           title: hub.title,
           related: hub.Metadata.map((album) => ({
+            libraryId: libraryId,
             albumId: album.ratingKey,
             title: album.title,
             artist: album.parentTitle,
@@ -616,6 +618,7 @@ export const getAllAlbums = async () => {
 
       const allAlbums =
         data.MediaContainer.Metadata?.map((album) => ({
+          libraryId: libraryId,
           albumId: album.ratingKey,
           title: album.title,
           artist: album.parentTitle,
@@ -668,6 +671,7 @@ export const getAlbumDetails = async (libraryId, albumId) => {
 
       const album = data.MediaContainer.Metadata[0];
       const albumDetails = {
+        libraryId: libraryId,
         albumId: album.ratingKey,
         title: album.title,
         artist: album.parentTitle,
@@ -720,6 +724,7 @@ export const getAlbumTracks = async (libraryId, albumId) => {
 
       const albumTracks =
         data.MediaContainer.Metadata?.map((track) => ({
+          libraryId: track.librarySectionID,
           trackId: track.ratingKey,
           title: track.title,
           artist: track.grandparentTitle,
@@ -832,6 +837,7 @@ export const getPlaylistTracks = async (libraryId, playlistId) => {
 
       const playlistTracks =
         data.MediaContainer.Metadata?.map((track) => ({
+          libraryId: track.librarySectionID,
           trackId: track.ratingKey,
           title: track.title,
           artist: track.grandparentTitle,

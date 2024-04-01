@@ -13,7 +13,12 @@ import * as plex from 'js/services/plex';
 // ======================================================================
 
 const ArtistList = () => {
-  const allArtists = useSelector(({ appModel }) => appModel.allArtists);
+  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
+  const currentLibraryId = currentLibrary?.libraryId;
+
+  const allArtists = useSelector(({ appModel }) => appModel.allArtists)?.filter(
+    (artist) => artist.libraryId === currentLibraryId
+  );
 
   useEffect(() => {
     plex.getAllArtists();

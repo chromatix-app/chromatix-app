@@ -13,7 +13,12 @@ import * as plex from 'js/services/plex';
 // ======================================================================
 
 const AlbumList = () => {
-  const allAlbums = useSelector(({ appModel }) => appModel.allAlbums);
+  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
+  const currentLibraryId = currentLibrary?.libraryId;
+
+  const allAlbums = useSelector(({ appModel }) => appModel.allAlbums)?.filter(
+    (album) => album.libraryId === currentLibraryId
+  );
 
   useEffect(() => {
     plex.getAllAlbums();
