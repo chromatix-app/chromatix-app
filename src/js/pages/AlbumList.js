@@ -26,7 +26,10 @@ const AlbumList = () => {
 
   return (
     <>
-      <TitleHeading title="Albums" subtitle={allAlbums ? allAlbums?.length + ' Albums' : null} />
+      <TitleHeading
+        title="Albums"
+        subtitle={allAlbums ? allAlbums?.length + ' Album' + (allAlbums?.length !== 1 && 's') : null}
+      />
       {!allAlbums && <Loading forceVisible inline />}
       {allAlbums && <ListCards entries={allAlbums} />}
     </>

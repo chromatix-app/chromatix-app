@@ -5,6 +5,15 @@ const durationToStringLong = (durationMillisecs) => {
   const days = Math.floor(duration.asDays());
   let hours = Math.floor(duration.asHours()) - days * 24;
   let minutes = Math.floor(duration.asMinutes()) - (days * 24 * 60 + hours * 60);
+  let seconds = Math.floor(duration.asSeconds()) - (days * 24 * 60 * 60 + hours * 60 * 60 + minutes * 60);
+
+  if (hours > 0) {
+    // If there are any seconds, round to the closest minute
+    if (seconds >= 30) {
+      minutes += 1;
+    }
+    seconds = 0; // Omit seconds from the string
+  }
 
   if (days > 0) {
     // If there are any minutes, round to the closest hour
@@ -22,7 +31,10 @@ const durationToStringLong = (durationMillisecs) => {
     result += `${hours} hour${hours > 1 ? 's' : ''} `;
   }
   if (minutes > 0) {
-    result += `${minutes} min${minutes > 1 ? 's' : ''}`;
+    result += `${minutes} min${minutes > 1 ? 's' : ''} `;
+  }
+  if (seconds > 0) {
+    result += `${seconds} sec${seconds > 1 ? 's' : ''}`;
   }
   return result.trim();
 };

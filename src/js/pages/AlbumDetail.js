@@ -57,8 +57,8 @@ const AlbumDetail = () => {
           detail={
             currentAlbumTracks ? (
               <>
-                {albumRelease} • {albumTracks} tracks • {albumDurationString}{' '}
-                <StarRating rating={albumRating} size={13} inline />
+                {albumRelease} • {albumTracks} track{albumTracks !== 1 && 's'} • {albumDurationString}{' '}
+                {albumRating && <StarRating rating={albumRating} size={13} inline />}
               </>
             ) : (
               <>&nbsp;</>

@@ -63,7 +63,7 @@ const ArtistDetail = () => {
           detail={
             currentArtistAlbums && currentArtistRelated ? (
               <>
-                {artistCountry} • {artistGenre} <StarRating rating={artistRating} size={13} inline />
+                {artistCountry} • {artistGenre} {artistRating && <StarRating rating={artistRating} size={13} inline />}
               </>
             ) : (
               <>&nbsp;</>
