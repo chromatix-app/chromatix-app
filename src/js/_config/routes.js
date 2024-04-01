@@ -47,7 +47,12 @@ export const authRoutes = [
     component: 'ArtistList',
   },
   {
-    path: '/artists/:artistId',
+    path: '/artists/:libraryId',
+    exact: true,
+    redirect: '/artists',
+  },
+  {
+    path: '/artists/:libraryId/:artistId',
     exact: true,
     component: 'ArtistDetail',
   },
@@ -59,7 +64,12 @@ export const authRoutes = [
     component: 'AlbumList',
   },
   {
-    path: '/albums/:albumId',
+    path: '/albums/:libraryId',
+    exact: true,
+    redirect: '/albums',
+  },
+  {
+    path: '/albums/:libraryId/:albumId',
     exact: true,
     component: 'AlbumDetail',
   },
@@ -71,7 +81,12 @@ export const authRoutes = [
     component: 'PlaylistList',
   },
   {
-    path: '/playlists/:playlistId',
+    path: '/playlists/:libraryId',
+    exact: true,
+    redirect: '/playlists',
+  },
+  {
+    path: '/playlists/:libraryId/:playlistId',
     exact: true,
     component: 'PlaylistDetail',
   },

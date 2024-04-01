@@ -53,7 +53,7 @@ const SideBar = () => {
               key={playlist.playlistId}
               className={style.link}
               activeClassName={style.linkActive}
-              to={`/playlists/${playlist.playlistId}`}
+              to={playlist.link}
             >
               {playlist.title}
             </NavLink>

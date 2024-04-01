@@ -404,7 +404,7 @@ export const getAllArtists = async () => {
           country: artist?.Country?.[0]?.tag,
           genre: artist?.Genre?.[0]?.tag,
           userRating: artist.userRating,
-          link: '/artists/' + artist.ratingKey,
+          link: '/artists/' + libraryId + '/' + artist.ratingKey,
           thumb: artist.thumb
             ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
                 `${serverArtUrl}${artist.thumb}`
@@ -434,7 +434,7 @@ export const getAllArtistAlbums = async (artistId) => {
       getAllArtistAlbumsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
-      // const {libraryId} = store.getState().sessionModel.currentLibrary;
+      const { libraryId } = store.getState().sessionModel.currentLibrary;
 
       const response = await fetch(
         // `${serverBaseUrl}/library/sections/${libraryId}/all?artist.id=${artistId}&type=9&album.subformat!=Compilation,Live`,
@@ -458,10 +458,10 @@ export const getAllArtistAlbums = async (artistId) => {
           title: album.title,
           artist: album.parentTitle,
           artistId: album.parentRatingKey,
-          artistLink: '/artists/' + album.parentRatingKey,
+          artistLink: '/artists/' + libraryId + '/' + album.parentRatingKey,
           userRating: album.userRating,
           releaseDate: album.originallyAvailableAt,
-          link: '/albums/' + album.ratingKey,
+          link: '/albums/' + libraryId + '/' + album.ratingKey,
           thumb: album.thumb
             ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
                 `${serverArtUrl}${album.thumb}`
@@ -491,6 +491,7 @@ export const getAllArtistRelated = async (artistId) => {
       getAllArtistRelatedRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const { libraryId } = store.getState().sessionModel.currentLibrary;
 
       const response = await fetch(
         `${serverBaseUrl}/library/metadata/${artistId}/related?includeAugmentations=1&includeExternalMetadata=1&includeMeta=1`,
@@ -515,10 +516,10 @@ export const getAllArtistRelated = async (artistId) => {
             title: album.title,
             artist: album.parentTitle,
             artistId: album.parentRatingKey,
-            artistLink: '/artists/' + album.parentRatingKey,
+            artistLink: '/artists/' + libraryId + '/' + album.parentRatingKey,
             userRating: album.userRating,
             releaseDate: album.originallyAvailableAt,
-            link: '/albums/' + album.ratingKey,
+            link: '/albums/' + libraryId + '/' + album.ratingKey,
             thumb: album.thumb
               ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
                   `${serverArtUrl}${album.thumb}`
@@ -569,10 +570,10 @@ export const getAllAlbums = async () => {
           title: album.title,
           artist: album.parentTitle,
           artistId: album.parentRatingKey,
-          artistLink: '/artists/' + album.parentRatingKey,
+          artistLink: '/artists/' + libraryId + '/' + album.parentRatingKey,
           userRating: album.userRating,
           releaseDate: album.originallyAvailableAt,
-          link: '/albums/' + album.ratingKey,
+          link: '/albums/' + libraryId + '/' + album.ratingKey,
           thumb: album.thumb
             ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
                 `${serverArtUrl}${album.thumb}`
@@ -620,9 +621,9 @@ export const getAlbumTracks = async (albumId) => {
           trackId: track.ratingKey,
           title: track.title,
           artist: track.grandparentTitle,
-          artistLink: '/artists/' + track.grandparentRatingKey,
+          artistLink: '/artists/' + track.librarySectionID + '/' + track.grandparentRatingKey,
           album: track.parentTitle,
-          albumLink: '/albums/' + track.parentRatingKey,
+          albumLink: '/albums/' + track.librarySectionID + '/' + track.parentRatingKey,
           trackNumber: track.index,
           discNumber: track.parentIndex,
           duration: track.Media[0].duration,
@@ -681,7 +682,7 @@ export const getAllPlaylists = async () => {
           return {
             playlistId: playlist.ratingKey,
             title: playlist.title,
-            link: '/playlists/' + playlist.ratingKey,
+            link: '/playlists/' + libraryId + '/' + playlist.ratingKey,
             totalTracks: playlist.leafCount,
             duration: playlist.duration,
             thumb: playlistThumb
@@ -732,9 +733,9 @@ export const getPlaylistTracks = async (playlistId) => {
           trackId: track.ratingKey,
           title: track.title,
           artist: track.grandparentTitle,
-          artistLink: '/artists/' + track.grandparentRatingKey,
+          artistLink: '/artists/' + track.librarySectionID + '/' + track.grandparentRatingKey,
           album: track.parentTitle,
-          albumLink: '/albums/' + track.parentRatingKey,
+          albumLink: '/albums/' + track.librarySectionID + '/' + track.parentRatingKey,
           trackNumber: track.index,
           discNumber: track.parentIndex,
           duration: track.duration,
