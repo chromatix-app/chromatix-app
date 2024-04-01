@@ -427,14 +427,13 @@ export const getAllArtists = async () => {
 
 let getAllArtistAlbumsRunning;
 
-export const getAllArtistAlbums = async (artistId) => {
+export const getAllArtistAlbums = async (libraryId, artistId) => {
   if (!getAllArtistAlbumsRunning) {
     const prevAllAlbums = store.getState().appModel.allArtistAlbums[artistId];
     if (!prevAllAlbums) {
       getAllArtistAlbumsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
-      const { libraryId } = store.getState().sessionModel.currentLibrary;
 
       const response = await fetch(
         // `${serverBaseUrl}/library/sections/${libraryId}/all?artist.id=${artistId}&type=9&album.subformat!=Compilation,Live`,
@@ -471,7 +470,7 @@ export const getAllArtistAlbums = async (artistId) => {
 
       // console.log('artistAlbums', artistAlbums);
 
-      store.dispatch.appModel.storeArtistAlbums({ artistId, artistAlbums });
+      store.dispatch.appModel.storeArtistAlbums({ libraryId, artistId, artistAlbums });
 
       getAllArtistAlbumsRunning = false;
     }
@@ -484,14 +483,13 @@ export const getAllArtistAlbums = async (artistId) => {
 
 let getAllArtistRelatedRunning;
 
-export const getAllArtistRelated = async (artistId) => {
+export const getAllArtistRelated = async (libraryId, artistId) => {
   if (!getAllArtistRelatedRunning) {
     const prevAllRelated = store.getState().appModel.allArtistRelated[artistId];
     if (!prevAllRelated) {
       getAllArtistRelatedRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
-      const { libraryId } = store.getState().sessionModel.currentLibrary;
 
       const response = await fetch(
         `${serverBaseUrl}/library/metadata/${artistId}/related?includeAugmentations=1&includeExternalMetadata=1&includeMeta=1`,
@@ -530,7 +528,7 @@ export const getAllArtistRelated = async (artistId) => {
 
       // console.log('artistRelated', artistRelated);
 
-      store.dispatch.appModel.storeArtistRelated({ artistId, artistRelated });
+      store.dispatch.appModel.storeArtistRelated({ libraryId, artistId, artistRelated });
 
       getAllArtistRelatedRunning = false;
     }
@@ -596,7 +594,7 @@ export const getAllAlbums = async () => {
 
 let getAlbumTracksRunning;
 
-export const getAlbumTracks = async (albumId) => {
+export const getAlbumTracks = async (libraryId, albumId) => {
   if (!getAlbumTracksRunning) {
     const prevAlbumTracks = store.getState().appModel.allAlbumTracks[albumId];
     if (!prevAlbumTracks) {
@@ -641,7 +639,7 @@ export const getAlbumTracks = async (albumId) => {
 
       // console.log('albumTracks', albumTracks);
 
-      store.dispatch.appModel.storeAlbumTracks({ albumId, albumTracks });
+      store.dispatch.appModel.storeAlbumTracks({ libraryId, albumId, albumTracks });
 
       getAlbumTracksRunning = false;
     }
@@ -708,7 +706,7 @@ export const getAllPlaylists = async () => {
 
 let getPlaylistTracksRunning;
 
-export const getPlaylistTracks = async (playlistId) => {
+export const getPlaylistTracks = async (libraryId, playlistId) => {
   if (!getPlaylistTracksRunning) {
     const prevPlaylistTracks = store.getState().appModel.allPlaylistTracks[playlistId];
     if (!prevPlaylistTracks) {
@@ -750,7 +748,7 @@ export const getPlaylistTracks = async (playlistId) => {
 
       // console.log(playlistTracks);
 
-      store.dispatch.appModel.storePlaylistTracks({ playlistId, playlistTracks });
+      store.dispatch.appModel.storePlaylistTracks({ libraryId, playlistId, playlistTracks });
 
       getPlaylistTracksRunning = false;
     }

@@ -16,13 +16,13 @@ import * as plex from 'js/services/plex';
 // ======================================================================
 
 const AlbumDetail = () => {
-  const { albumId } = useParams();
+  const { albumId, libraryId } = useParams();
 
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums);
   const currentAlbum = allAlbums?.filter((album) => album.albumId === albumId)[0];
 
   const allAlbumTracks = useSelector(({ appModel }) => appModel.allAlbumTracks);
-  const currentAlbumTracks = allAlbumTracks[albumId];
+  const currentAlbumTracks = allAlbumTracks[libraryId + '-' + albumId];
 
   const albumThumb = currentAlbum?.thumb;
   const albumTitle = currentAlbum?.title;
@@ -36,8 +36,8 @@ const AlbumDetail = () => {
 
   useEffect(() => {
     plex.getAllAlbums();
-    plex.getAlbumTracks(albumId);
-  }, [albumId]);
+    plex.getAlbumTracks(libraryId, albumId);
+  }, [albumId, libraryId]);
 
   return (
     <>

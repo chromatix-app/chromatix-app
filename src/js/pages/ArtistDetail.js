@@ -14,16 +14,16 @@ import * as plex from 'js/services/plex';
 // ======================================================================
 
 const ArtistDetail = () => {
-  const { artistId } = useParams();
+  const { artistId, libraryId } = useParams();
 
   const allArtists = useSelector(({ appModel }) => appModel.allArtists);
   const currentArtist = allArtists?.filter((artist) => artist.artistId === artistId)[0];
 
   const allArtistAlbums = useSelector(({ appModel }) => appModel.allArtistAlbums);
-  const currentArtistAlbums = allArtistAlbums[artistId];
+  const currentArtistAlbums = allArtistAlbums[libraryId + '-' + artistId];
 
   const allArtistRelated = useSelector(({ appModel }) => appModel.allArtistRelated);
-  const currentArtistRelated = allArtistRelated[artistId];
+  const currentArtistRelated = allArtistRelated[libraryId + '-' + artistId];
 
   const artistThumb = currentArtist?.thumb;
   const artistName = currentArtist?.title;
@@ -35,9 +35,9 @@ const ArtistDetail = () => {
 
   useEffect(() => {
     plex.getAllArtists();
-    plex.getAllArtistAlbums(artistId);
-    plex.getAllArtistRelated(artistId);
-  }, [artistId]);
+    plex.getAllArtistAlbums(libraryId, artistId);
+    plex.getAllArtistRelated(libraryId, artistId);
+  }, [artistId, libraryId]);
 
   return (
     <>

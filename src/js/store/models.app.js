@@ -149,9 +149,9 @@ const effects = (dispatch) => ({
 
   storeArtistAlbums(payload, rootState) {
     console.log('%c--- storeArtistAlbums ---', 'color:#079189');
-    const { artistId, artistAlbums } = payload;
+    const { libraryId, artistId, artistAlbums } = payload;
     const allArtistAlbums = { ...rootState.appModel.allArtistAlbums };
-    allArtistAlbums[artistId] = artistAlbums;
+    allArtistAlbums[libraryId + '-' + artistId] = artistAlbums;
     dispatch.appModel.setAppState({
       allArtistAlbums,
     });
@@ -159,9 +159,9 @@ const effects = (dispatch) => ({
 
   storeArtistRelated(payload, rootState) {
     console.log('%c--- storeArtistRelated ---', 'color:#079189');
-    const { artistId, artistRelated } = payload;
+    const { libraryId, artistId, artistRelated } = payload;
     const allArtistRelated = { ...rootState.appModel.allArtistRelated };
-    allArtistRelated[artistId] = artistRelated;
+    allArtistRelated[libraryId + '-' + artistId] = artistRelated;
     dispatch.appModel.setAppState({
       allArtistRelated,
     });
@@ -169,9 +169,9 @@ const effects = (dispatch) => ({
 
   storeAlbumTracks(payload, rootState) {
     console.log('%c--- storeAlbumTracks ---', 'color:#079189');
-    const { albumId, albumTracks } = payload;
+    const { libraryId, albumId, albumTracks } = payload;
     const allAlbumTracks = { ...rootState.appModel.allAlbumTracks };
-    allAlbumTracks[albumId] = albumTracks;
+    allAlbumTracks[libraryId + '-' + albumId] = albumTracks;
     dispatch.appModel.setAppState({
       allAlbumTracks,
     });
@@ -179,9 +179,9 @@ const effects = (dispatch) => ({
 
   storePlaylistTracks(payload, rootState) {
     console.log('%c--- storePlaylistTracks ---', 'color:#079189');
-    const { playlistId, playlistTracks } = payload;
+    const { libraryId, playlistId, playlistTracks } = payload;
     const allPlaylistTracks = { ...rootState.appModel.allPlaylistTracks };
-    allPlaylistTracks[playlistId] = playlistTracks;
+    allPlaylistTracks[libraryId + '-' + playlistId] = playlistTracks;
     dispatch.appModel.setAppState({
       allPlaylistTracks,
     });

@@ -15,13 +15,13 @@ import * as plex from 'js/services/plex';
 // ======================================================================
 
 const PlaylistDetail = () => {
-  const { playlistId } = useParams();
+  const { libraryId, playlistId } = useParams();
 
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
   const currentPlaylist = allPlaylists?.filter((playlist) => playlist.playlistId === playlistId)[0];
 
   const allPlaylistTracks = useSelector(({ appModel }) => appModel.allPlaylistTracks);
-  const currentPlaylistTracks = allPlaylistTracks[playlistId];
+  const currentPlaylistTracks = allPlaylistTracks[libraryId + '-' + playlistId];
 
   const playlistThumb = currentPlaylist?.thumb;
   const playlistTitle = currentPlaylist?.title;
@@ -31,8 +31,8 @@ const PlaylistDetail = () => {
 
   useEffect(() => {
     plex.getAllPlaylists();
-    plex.getPlaylistTracks(playlistId);
-  }, [playlistId]);
+    plex.getPlaylistTracks(libraryId, playlistId);
+  }, [libraryId, playlistId]);
 
   return (
     <>
