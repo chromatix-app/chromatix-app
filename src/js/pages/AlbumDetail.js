@@ -39,6 +39,13 @@ const AlbumDetail = () => {
     plex.getAlbumTracks(libraryId, albumId);
   }, [albumId, libraryId]);
 
+  useEffect(() => {
+    if (allAlbums && !currentAlbum) {
+      plex.getAlbumDetails(libraryId, albumId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allAlbums, currentAlbum]);
+
   return (
     <>
       {currentAlbum && (

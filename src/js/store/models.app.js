@@ -181,6 +181,20 @@ const effects = (dispatch) => ({
     });
   },
 
+  storeAlbumDetails(payload, rootState) {
+    console.log('%c--- storeAlbumDetails ---', 'color:#079189');
+    const allAlbums = [...rootState.appModel.allAlbums];
+    const albumIndex = allAlbums.findIndex((album) => album.albumId === payload.albumId);
+    if (albumIndex === -1) {
+      allAlbums.push(payload);
+    } else {
+      allAlbums[albumIndex] = payload;
+    }
+    dispatch.appModel.setAppState({
+      allAlbums,
+    });
+  },
+
   storeAlbumTracks(payload, rootState) {
     console.log('%c--- storeAlbumTracks ---', 'color:#079189');
     const { libraryId, albumId, albumTracks } = payload;

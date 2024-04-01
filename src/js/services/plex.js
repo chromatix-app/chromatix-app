@@ -423,7 +423,7 @@ export const getAllArtists = async () => {
 };
 
 // ======================================================================
-// GET ARTIST DETAIL
+// GET ARTIST DETAILS
 // ======================================================================
 
 let getArtistDetailsRunning;
@@ -482,7 +482,7 @@ let getAllArtistAlbumsRunning;
 
 export const getAllArtistAlbums = async (libraryId, artistId) => {
   if (!getAllArtistAlbumsRunning) {
-    const prevAllAlbums = store.getState().appModel.allArtistAlbums[artistId];
+    const prevAllAlbums = store.getState().appModel.allArtistAlbums[libraryId + '-' + artistId];
     if (!prevAllAlbums) {
       getAllArtistAlbumsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
@@ -538,7 +538,7 @@ let getAllArtistRelatedRunning;
 
 export const getAllArtistRelated = async (libraryId, artistId) => {
   if (!getAllArtistRelatedRunning) {
-    const prevAllRelated = store.getState().appModel.allArtistRelated[artistId];
+    const prevAllRelated = store.getState().appModel.allArtistRelated[libraryId + '-' + artistId];
     if (!prevAllRelated) {
       getAllArtistRelatedRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
@@ -642,6 +642,58 @@ export const getAllAlbums = async () => {
 };
 
 // ======================================================================
+// GET ALBUM DETAILS
+// ======================================================================
+
+let getAlbumDetailsRunning;
+
+export const getAlbumDetails = async (libraryId, albumId) => {
+  if (!getAlbumDetailsRunning) {
+    const prevAlbumDetails = store.getState().appModel.allAlbums?.find((album) => album.albumId === albumId);
+    if (!prevAlbumDetails) {
+      getAlbumDetailsRunning = true;
+      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
+
+      const response = await fetch(`${serverBaseUrl}/library/metadata/${albumId}`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Plex-Token': authToken,
+        },
+      });
+
+      const data = await response.json();
+
+      // console.log(data.MediaContainer.Metadata);
+
+      const album = data.MediaContainer.Metadata[0];
+      const albumDetails = {
+        albumId: album.ratingKey,
+        title: album.title,
+        artist: album.parentTitle,
+        artistId: album.parentRatingKey,
+        artistLink: '/artists/' + album.librarySectionID + '/' + album.parentRatingKey,
+        userRating: album.userRating,
+        releaseDate: album.originallyAvailableAt,
+        link: '/albums/' + album.librarySectionID + '/' + album.ratingKey,
+        thumb: album.thumb
+          ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+              `${serverArtUrl}${album.thumb}`
+            )}&X-Plex-Token=${authToken}`
+          : null,
+      };
+
+      // console.log('albumDetails', albumDetails);
+
+      store.dispatch.appModel.storeAlbumDetails(albumDetails);
+
+      getAlbumDetailsRunning = false;
+    }
+  }
+};
+
+// ======================================================================
 // GET ALBUM TRACKS
 // ======================================================================
 
@@ -649,7 +701,7 @@ let getAlbumTracksRunning;
 
 export const getAlbumTracks = async (libraryId, albumId) => {
   if (!getAlbumTracksRunning) {
-    const prevAlbumTracks = store.getState().appModel.allAlbumTracks[albumId];
+    const prevAlbumTracks = store.getState().appModel.allAlbumTracks[libraryId + '-' + albumId];
     if (!prevAlbumTracks) {
       getAlbumTracksRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
@@ -761,7 +813,7 @@ let getPlaylistTracksRunning;
 
 export const getPlaylistTracks = async (libraryId, playlistId) => {
   if (!getPlaylistTracksRunning) {
-    const prevPlaylistTracks = store.getState().appModel.allPlaylistTracks[playlistId];
+    const prevPlaylistTracks = store.getState().appModel.allPlaylistTracks[libraryId + '-' + playlistId];
     if (!prevPlaylistTracks) {
       getPlaylistTracksRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
