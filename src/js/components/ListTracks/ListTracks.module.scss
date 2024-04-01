@@ -32,12 +32,12 @@
 }
 
 .header {
-  // position: sticky;
-  // top: 90px;
+  position: sticky;
+  top: 90px;
   padding: 0 20px 8px;
   margin: 0 -5px 20px;
   background: var(--color-background);
-  z-index: 2;
+  z-index: 3;
   font-weight: bold;
 
   @media (min-width: 1024px) {
