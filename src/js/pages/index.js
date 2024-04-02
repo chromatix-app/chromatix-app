@@ -4,6 +4,7 @@ export { default as ArtistDetail } from './ArtistDetail';
 export { default as ArtistList } from './ArtistList';
 export { default as Error404Auth } from './Error404Auth';
 export { default as Error404Default } from './Error404Default';
+export { default as ErrorPlex } from './ErrorPlex';
 export { default as LibraryList } from './LibraryList';
 export { default as Login } from './Login';
 export { default as PlaylistDetail } from './PlaylistDetail';

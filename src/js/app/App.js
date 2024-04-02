@@ -10,6 +10,7 @@ import clsx from 'clsx';
 
 import { ControlBar, SideBar, UserMenu } from 'js/components';
 import { useGotRequiredData, useScrollRestoration } from 'js/hooks';
+import { ErrorPlex } from 'js/pages';
 import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 
 // ======================================================================
@@ -22,6 +23,7 @@ const isProduction = process.env.REACT_APP_ENV === 'production';
 const App = () => {
   const inited = useSelector(({ appModel }) => appModel.inited);
   const loggedIn = useSelector(({ appModel }) => appModel.loggedIn);
+  const plexError = useSelector(({ appModel }) => appModel.plexError);
 
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
@@ -54,10 +56,19 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // loading
-  if (!inited || (loggedIn && !gotRequiredData)) {
+  // plex error
+  if (plexError) {
     return (
-      <div className={clsx('wrap')}>
+      <div className="wrap">
+        <ErrorPlex />
+      </div>
+    );
+  }
+
+  // loading
+  else if (!inited || (loggedIn && !gotRequiredData)) {
+    return (
+      <div className="wrap">
         <div className="loading"></div>
       </div>
     );
@@ -66,7 +77,7 @@ const App = () => {
   // logged out
   else if (!loggedIn) {
     return (
-      <div className={clsx('wrap')}>
+      <div className="wrap">
         <BrowserRouteSwitch />
         {/* <Blocker /> */}
       </div>
@@ -77,7 +88,7 @@ const App = () => {
   else {
     if (!currentServer || !currentLibrary) {
       return (
-        <div className={clsx('wrap')}>
+        <div className="wrap wrap--auth">
           <BrowserRouteSwitch />
           <UserMenu />
           {/* <Blocker /> */}
@@ -85,7 +96,7 @@ const App = () => {
       );
     } else {
       return (
-        <div className={clsx('wrap')}>
+        <div className="wrap wrap--auth">
           <div className={clsx('layout')}>
             <div className="layout-sidebar">
               <SideBar />

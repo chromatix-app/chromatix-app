@@ -6,6 +6,10 @@
   display: grid;
   height: 100vh;
   height: 100svh;
+
+  &--auth {
+    min-width: 720px;
+  }
 }
 
 .layout {

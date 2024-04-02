@@ -13,6 +13,8 @@ const appState = {
   standalone: false,
   history: null,
 
+  plexError: false,
+
   playerElement: null,
   playerPlaying: false,
   playerVolume: 100,

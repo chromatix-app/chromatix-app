@@ -210,60 +210,6 @@ const getUserInfo = async () => {
 // GET USER SERVERS
 // ======================================================================
 
-// let getUserServersRunning;
-
-// export const getAllServers = async () => {
-//   if (!getUserServersRunning) {
-//     const prevAllServers = store.getState().appModel.allServers;
-//     if (!prevAllServers) {
-//       console.log('%c--- plex - getAllServers ---', 'color:#f9743b;');
-//       getUserServersRunning = true;
-//       const authToken = window.localStorage.getItem('chromatix-auth-token');
-
-//       const response = await fetch('https://plex.tv/pms/servers?includeHttps=1', {
-//         headers: {
-//           Accept: 'application/json',
-//           'Content-Type': 'application/json',
-//           'X-Plex-Token': authToken,
-//         },
-//       });
-
-//       if (!response.ok) {
-//         // TODO
-//       }
-
-//       const data = await response.text();
-
-//       // parse the XML response
-//       const parser = new DOMParser();
-//       const parsedData = parser.parseFromString(data, 'text/xml');
-
-//       const allServers = Array.from(parsedData.getElementsByTagName('Server')).map((server) => {
-//         const serverObj = {};
-//         for (let i = 0; i < server.attributes.length; i++) {
-//           serverObj[server.attributes[i].name] = server.attributes[i].value;
-//         }
-//         serverObj.serverId = serverObj.machineIdentifier;
-//         serverObj.serverBaseUrl = `${serverObj.scheme}://${serverObj.address}:${serverObj.port}`;
-//         serverObj.serverArtUrl = `${serverObj.scheme}://localhost:${serverObj.port}`;
-//         return serverObj;
-//       });
-
-//       console.log('allServers', allServers);
-
-//       store.dispatch.appModel.setAppState({ allServers });
-//       store.dispatch.sessionModel.refreshCurrentServer(allServers);
-
-//       getUserServersRunning = false;
-
-//     }
-//   }
-// };
-
-// ======================================================================
-// GET USER SERVERS
-// ======================================================================
-
 let getUserServersRunning;
 
 export const getAllServers = async () => {
@@ -331,38 +277,38 @@ export const getAllLibraries = async () => {
         const authToken = window.localStorage.getItem('chromatix-auth-token');
         const { serverBaseUrl } = currentServer;
 
-        const response = await fetch(`${serverBaseUrl}/library/sections`, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': authToken,
-          },
-        });
+        try {
+          const response = await fetch(`${serverBaseUrl}/library/sections`, {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              'X-Plex-Token': authToken,
+            },
+          });
 
-        if (!response.ok) {
-          // TODO
+          const data = await response.json();
+
+          // console.log(data.MediaContainer.Directory);
+
+          const allLibraries = data.MediaContainer.Directory.filter((library) => library.type === 'artist');
+
+          // add a libraryId to each library
+          allLibraries.forEach((library) => {
+            library.libraryId = library.key;
+            // library.thumb = library.composite
+            //   ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+            //       `${serverArtUrl}${library.composite}`
+            //     )}&X-Plex-Token=${authToken}`
+            //   : null;
+          });
+
+          // console.log('allLibraries', allLibraries);
+
+          store.dispatch.appModel.setAppState({ allLibraries });
+          store.dispatch.sessionModel.refreshCurrentLibrary(allLibraries);
+        } catch (error) {
+          store.dispatch.appModel.setAppState({ plexError: true });
         }
-
-        const data = await response.json();
-
-        // console.log(data.MediaContainer.Directory);
-
-        const allLibraries = data.MediaContainer.Directory.filter((library) => library.type === 'artist');
-
-        // add a libraryId to each library
-        allLibraries.forEach((library) => {
-          library.libraryId = library.key;
-          // library.thumb = library.composite
-          //   ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-          //       `${serverArtUrl}${library.composite}`
-          //     )}&X-Plex-Token=${authToken}`
-          //   : null;
-        });
-
-        // console.log('allLibraries', allLibraries);
-
-        store.dispatch.appModel.setAppState({ allLibraries });
-        store.dispatch.sessionModel.refreshCurrentLibrary(allLibraries);
 
         getUserLibrariesRunning = false;
       }
