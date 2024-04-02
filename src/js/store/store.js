@@ -42,22 +42,38 @@ const saveDataInterval = 100;
 const saveData = () => {
   clearTimeout(saveDataTimeout);
   saveDataTimeout = setTimeout(function () {
-    doSaveData();
+    savePersistentData();
+    saveSessionData();
   }, saveDataInterval);
 };
 
-// save relevant store data to localstorage
+// actually save the data
 
-const doSaveData = () => {
-  // console.log('%cSAVE DATA', 'color:#1fb800');
+let persistentString = null;
+let sessionString = null;
+
+const savePersistentData = () => {
+  const newPersistentString = JSON.stringify(store.getState().persistentModel);
+  if (newPersistentString !== persistentString) {
+    console.log('%cSAVE PERSISTENT DATA', 'color:#1fb800');
+    persistentString = newPersistentString;
+    localStorage.setItem(config.persistentStoreId, persistentString);
+  }
+};
+
+const saveSessionData = () => {
   const loggedIn = store.getState().appModel.loggedIn;
-  localStorage.setItem(config.persistentStoreId, JSON.stringify(store.getState().persistentModel));
   if (loggedIn) {
     const userName = store.getState().appModel.currentUser.userId;
     if (userName) {
-      const userHash = sha3('music' + userName, { outputLength: 224 }).toString();
-      const sessionKey = config.sessionStoreId + '-' + userHash;
-      localStorage.setItem(sessionKey, JSON.stringify(store.getState().sessionModel));
+      const newSessionString = JSON.stringify(store.getState().sessionModel);
+      if (newSessionString !== sessionString) {
+        console.log('%cSAVE SESSION DATA', 'color:#1fb800');
+        sessionString = newSessionString;
+        const userHash = sha3('music' + userName, { outputLength: 224 }).toString();
+        const sessionKey = config.sessionStoreId + '-' + userHash;
+        localStorage.setItem(sessionKey, sessionString);
+      }
     }
   }
 };
