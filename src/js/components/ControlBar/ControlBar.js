@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
@@ -24,23 +24,22 @@ const ControlBar = () => {
   const intervalRef = useRef(null);
   const mouseDownRef = useRef(false);
 
-  const playerElement = useSelector(({ appModel }) => appModel.playerElement);
-  const playerPlaying = useSelector(({ appModel }) => appModel.playerPlaying);
-  const playerVolume = useSelector(({ appModel }) => appModel.playerVolume);
-  const playerMuted = useSelector(({ appModel }) => appModel.playerMuted);
-  const playerInteractionCount = useSelector(({ appModel }) => appModel.playerInteractionCount);
+  const { playerElement, playerPlaying, playerVolume, playerMuted, playerInteractionCount } = useSelector(
+    ({ appModel }) => appModel
+  );
 
-  const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
-  // const playingServerId =  useSelector(({ sessionModel }) => sessionModel.playingServerId);
-  const playingLibraryId = useSelector(({ sessionModel }) => sessionModel.playingLibraryId);
-  const playingAlbumId = useSelector(({ sessionModel }) => sessionModel.playingAlbumId);
-  const playingPlaylistId = useSelector(({ sessionModel }) => sessionModel.playingPlaylistId);
-  const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
-  // const playingTrackCount =  useSelector(({ sessionModel }) => sessionModel.playingTrackCount);
-  const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
-  const playingTrackProgress = useSelector(({ sessionModel }) => sessionModel.playingTrackProgress);
+  const {
+    playingVariant,
+    // playingServerId,
+    playingLibraryId,
+    playingAlbumId,
+    playingPlaylistId,
+    playingTrackList,
+    // playingTrackCount,
+    playingTrackIndex,
+  } = useSelector(({ sessionModel }) => sessionModel);
 
-  const [trackProgress, setTrackProgress] = useState(playingTrackProgress);
+  const [trackProgress, setTrackProgress] = useState(playerElement?.currentTime * 1000 || 0);
 
   const playingLink =
     playingVariant === 'album'
@@ -56,17 +55,26 @@ const ControlBar = () => {
   const trackProgressTotal = trackDetail?.duration ? trackDetail?.duration / 1000 : 0;
 
   // handle keyboard controls
-  useKeyboardControls({
-    prev: () => !isDisabled && dispatch.appModel.playerPrev(),
-    next: () => !isDisabled && dispatch.appModel.playerNext(),
-    playPause: () => (!isDisabled && !playerPlaying ? dispatch.appModel.playerPlay() : dispatch.appModel.playerPause()),
-  });
+  const keyboardControls = useMemo(
+    () => ({
+      prev: () => !isDisabled && dispatch.appModel.playerPrev(),
+      next: () => !isDisabled && dispatch.appModel.playerNext(),
+      playPause: () =>
+        !isDisabled && !playerPlaying ? dispatch.appModel.playerPlay() : dispatch.appModel.playerPause(),
+    }),
+    [dispatch, isDisabled, playerPlaying]
+  );
+
+  useKeyboardControls(keyboardControls);
 
   // handle progress change
-  const handleProgressChange = (value) => {
-    setTrackProgress(value * 1000);
-    dispatch.sessionModel.setPlayingTrackProgress(value * 1000);
-  };
+  const handleProgressChange = useCallback(
+    (value) => {
+      setTrackProgress(value * 1000);
+      dispatch.sessionModel.setPlayingTrackProgress(value * 1000);
+    },
+    [dispatch]
+  );
 
   const handleProgressMouseDown = () => {
     mouseDownRef.current = true;
