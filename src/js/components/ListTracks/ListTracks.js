@@ -99,6 +99,7 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
                   playingTrackList: entries,
                   playingTrackCount: entries.length,
                   playingTrackIndex: index,
+                  playingTrackProgress: 0,
                 });
               } else {
                 dispatch.appModel.playerPlay();

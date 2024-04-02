@@ -254,8 +254,9 @@ const effects = (dispatch) => ({
   playerRefresh(payload, rootState) {
     console.log('%c--- playerRefresh ---', 'color:#079189');
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+    const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
     if (playingTrackIndex || playingTrackIndex === 0) {
-      dispatch.appModel.playerLoadIndex({ index: playingTrackIndex, play: false });
+      dispatch.appModel.playerLoadIndex({ index: playingTrackIndex, play: false, progress: playingTrackProgress });
     }
   },
 
@@ -281,10 +282,13 @@ const effects = (dispatch) => ({
     // console.log('%c--- playerLoadIndex ---', 'color:#079189');
     const playerElement = rootState.appModel.playerElement;
     const playingTrackList = rootState.sessionModel.playingTrackList;
-    const { index, play } = payload;
+    const { index, play, progress } = payload;
     if (index || index === 0) {
       playerElement.src = playingTrackList[index].src;
       playerElement.load();
+      if (progress) {
+        playerElement.currentTime = progress / 1000;
+      }
       if (play) {
         playerElement.play().catch((error) => null);
       }

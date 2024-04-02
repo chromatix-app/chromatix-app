@@ -27,6 +27,7 @@ const playingState = {
   playingTrackList: null,
   playingTrackCount: null,
   playingTrackIndex: null,
+  playingTrackProgress: 0,
 };
 
 const state = Object.assign(sessionState, playingState);
@@ -76,6 +77,14 @@ const reducers = {
     return {
       ...rootState,
       currentLibrary: refreshedLibrary ? refreshedLibrary : null,
+    };
+  },
+
+  setPlayingTrackProgress(rootState, payload) {
+    // console.log('%c--- setPlayingTrackProgress ---', 'color:#91074A');
+    return {
+      ...rootState,
+      playingTrackProgress: payload,
     };
   },
 

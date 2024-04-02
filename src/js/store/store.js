@@ -55,7 +55,7 @@ let sessionString = null;
 const savePersistentData = () => {
   const newPersistentString = JSON.stringify(store.getState().persistentModel);
   if (newPersistentString !== persistentString) {
-    console.log('%cSAVE PERSISTENT DATA', 'color:#1fb800');
+    // console.log('%cSAVE PERSISTENT DATA', 'color:#1fb800');
     persistentString = newPersistentString;
     localStorage.setItem(config.persistentStoreId, persistentString);
   }
@@ -68,7 +68,7 @@ const saveSessionData = () => {
     if (userName) {
       const newSessionString = JSON.stringify(store.getState().sessionModel);
       if (newSessionString !== sessionString) {
-        console.log('%cSAVE SESSION DATA', 'color:#1fb800');
+        // console.log('%cSAVE SESSION DATA', 'color:#1fb800');
         sessionString = newSessionString;
         const userHash = sha3('music' + userName, { outputLength: 224 }).toString();
         const sessionKey = config.sessionStoreId + '-' + userHash;

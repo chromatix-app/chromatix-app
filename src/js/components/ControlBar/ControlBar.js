@@ -18,10 +18,11 @@ import style from './ControlBar.module.scss';
 
 const ControlBar = () => {
   const dispatch = useDispatch();
+
+  const counterRef = useRef(0);
+  const didMountRef = useRef(false);
   const intervalRef = useRef(null);
   const mouseDownRef = useRef(false);
-
-  const [trackProgress, setTrackProgress] = useState(0);
 
   const playerElement = useSelector(({ appModel }) => appModel.playerElement);
   const playerPlaying = useSelector(({ appModel }) => appModel.playerPlaying);
@@ -37,6 +38,9 @@ const ControlBar = () => {
   const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
   // const playingTrackCount =  useSelector(({ sessionModel }) => sessionModel.playingTrackCount);
   const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
+  const playingTrackProgress = useSelector(({ sessionModel }) => sessionModel.playingTrackProgress);
+
+  const [trackProgress, setTrackProgress] = useState(playingTrackProgress);
 
   const playingLink =
     playingVariant === 'album'
@@ -61,6 +65,7 @@ const ControlBar = () => {
   // handle progress change
   const handleProgressChange = (value) => {
     setTrackProgress(value * 1000);
+    dispatch.sessionModel.setPlayingTrackProgress(value * 1000);
   };
 
   const handleProgressMouseDown = () => {
@@ -73,13 +78,25 @@ const ControlBar = () => {
   };
 
   // handle track progress
+  const updateTrackProgress = (playerElement, mouseDownRef, counterRef, setTrackProgress, dispatch) => {
+    if (!mouseDownRef.current) {
+      const newTrackProgress = Math.round(playerElement.currentTime) * 1000;
+      setTrackProgress(newTrackProgress);
+      // only update redux every 5 seconds
+      counterRef.current += 1;
+      if (counterRef.current === 5) {
+        dispatch.sessionModel.setPlayingTrackProgress(newTrackProgress);
+        counterRef.current = 0;
+      }
+    }
+  };
+
+  // whilst track is playing, update track progress every second
   useEffect(() => {
     if (playerElement) {
       clearInterval(intervalRef.current);
       intervalRef.current = setInterval(() => {
-        if (!mouseDownRef.current) {
-          setTrackProgress(Math.round(playerElement.currentTime) * 1000);
-        }
+        updateTrackProgress(playerElement, mouseDownRef, counterRef, setTrackProgress, dispatch);
       }, 1000);
     }
     return () => clearInterval(intervalRef.current);
@@ -88,7 +105,8 @@ const ControlBar = () => {
 
   // if a new track is selected, reset track progress
   useEffect(() => {
-    setTrackProgress(0);
+    if (didMountRef.current) setTrackProgress(0);
+    else didMountRef.current = true;
   }, [playingTrackIndex, playerInteractionCount]);
 
   return (
