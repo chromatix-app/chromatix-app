@@ -733,6 +733,7 @@ export const getAllPlaylists = async () => {
         data.MediaContainer.Metadata?.map((playlist) => {
           const playlistThumb = playlist.thumb ? playlist.thumb : playlist.composite ? playlist.composite : null;
           return {
+            libraryId: libraryId,
             playlistId: playlist.ratingKey,
             title: playlist.title,
             link: '/playlists/' + libraryId + '/' + playlist.ratingKey,
@@ -751,6 +752,59 @@ export const getAllPlaylists = async () => {
       store.dispatch.appModel.setAppState({ allPlaylists });
 
       getAllPlaylistsRunning = false;
+    }
+  }
+};
+
+// ======================================================================
+// GET PLAYLIST DETAILS
+// ======================================================================
+
+let getPlaylistDetailsRunning;
+
+export const getPlaylistDetails = async (libraryId, playlistId) => {
+  if (!getPlaylistDetailsRunning) {
+    const prevPlaylistDetails = store
+      .getState()
+      .appModel.allPlaylists?.find((playlist) => playlist.playlistId === playlistId);
+    if (!prevPlaylistDetails) {
+      getPlaylistDetailsRunning = true;
+      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
+
+      const response = await fetch(`${serverBaseUrl}/playlists/${playlistId}`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Plex-Token': authToken,
+        },
+      });
+
+      const data = await response.json();
+
+      // console.log(data.MediaContainer.Metadata);
+
+      const playlist = data.MediaContainer.Metadata[0];
+      const playlistThumb = playlist.thumb ? playlist.thumb : playlist.composite ? playlist.composite : null;
+      const playlistDetails = {
+        libraryId: libraryId,
+        playlistId: playlist.ratingKey,
+        title: playlist.title,
+        link: '/playlists/' + libraryId + '/' + playlist.ratingKey,
+        totalTracks: playlist.leafCount,
+        duration: playlist.duration,
+        thumb: playlistThumb
+          ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+              `${serverArtUrl}${playlistThumb}`
+            )}&X-Plex-Token=${authToken}`
+          : null,
+      };
+
+      console.log('playlistDetails', playlistDetails);
+
+      store.dispatch.appModel.storePlaylistDetails(playlistDetails);
+
+      getPlaylistDetailsRunning = false;
     }
   }
 };

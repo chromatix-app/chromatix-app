@@ -19,7 +19,12 @@ import style from './SideBar.module.scss';
 const SideBar = () => {
   const { canGoBack, canGoForward, goBack, goForward } = useNavigationHistory();
 
-  const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
+  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
+  const currentLibraryId = currentLibrary?.libraryId;
+
+  const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists)?.filter(
+    (playlist) => playlist.libraryId === currentLibraryId
+  );
 
   useEffect(() => {
     plex.getAllPlaylists();

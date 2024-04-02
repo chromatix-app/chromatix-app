@@ -23,8 +23,6 @@ const ControlBar = () => {
 
   const [trackProgress, setTrackProgress] = useState(0);
 
-  const libraryId = useSelector(({ sessionModel }) => sessionModel.currentLibrary?.libraryId);
-
   const playerElement = useSelector(({ appModel }) => appModel.playerElement);
   const playerPlaying = useSelector(({ appModel }) => appModel.playerPlaying);
   const playerVolume = useSelector(({ appModel }) => appModel.playerVolume);
@@ -33,7 +31,7 @@ const ControlBar = () => {
 
   const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
   // const playingServerId =  useSelector(({ sessionModel }) => sessionModel.playingServerId);
-  // const playingLibraryId =  useSelector(({ sessionModel }) => sessionModel.playingLibraryId);
+  const playingLibraryId = useSelector(({ sessionModel }) => sessionModel.playingLibraryId);
   const playingAlbumId = useSelector(({ sessionModel }) => sessionModel.playingAlbumId);
   const playingPlaylistId = useSelector(({ sessionModel }) => sessionModel.playingPlaylistId);
   const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
@@ -42,8 +40,8 @@ const ControlBar = () => {
 
   const playingLink =
     playingVariant === 'album'
-      ? `/albums/${libraryId}/${playingAlbumId}`
-      : `/playlists/${libraryId}/${playingPlaylistId}`;
+      ? `/albums/${playingLibraryId}/${playingAlbumId}`
+      : `/playlists/${playingLibraryId}/${playingPlaylistId}`;
 
   const trackDetail = playingTrackList?.[playingTrackIndex];
   const isDisabled = !trackDetail ? true : false;

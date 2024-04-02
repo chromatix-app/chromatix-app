@@ -197,6 +197,20 @@ const effects = (dispatch) => ({
     });
   },
 
+  storePlaylistDetails(payload, rootState) {
+    console.log('%c--- storePlaylistDetails ---', 'color:#079189');
+    const allPlaylists = [...rootState.appModel.allPlaylists];
+    const playlistIndex = allPlaylists.findIndex((playlist) => playlist.playlistId === payload.playlistId);
+    if (playlistIndex === -1) {
+      allPlaylists.push(payload);
+    } else {
+      allPlaylists[playlistIndex] = payload;
+    }
+    dispatch.appModel.setAppState({
+      allPlaylists,
+    });
+  },
+
   storePlaylistTracks(payload, rootState) {
     console.log('%c--- storePlaylistTracks ---', 'color:#079189');
     const { libraryId, playlistId, playlistTracks } = payload;

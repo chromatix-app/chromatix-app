@@ -34,6 +34,13 @@ const PlaylistDetail = () => {
     plex.getPlaylistTracks(libraryId, playlistId);
   }, [libraryId, playlistId]);
 
+  useEffect(() => {
+    if (allPlaylists && !currentPlaylist) {
+      plex.getPlaylistDetails(libraryId, playlistId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allPlaylists, currentPlaylist]);
+
   return (
     <>
       {currentPlaylist && (
