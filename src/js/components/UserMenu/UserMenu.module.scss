@@ -87,7 +87,10 @@
 //
 
 .menu {
+  overflow-y: auto;
   min-width: 100%;
+  max-height: calc(100vh - 95px);
+  max-height: calc(100svh - 95px);
   margin: 5px 0 0 auto;
   border-radius: 9px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
