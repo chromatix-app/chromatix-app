@@ -5,6 +5,7 @@ export { default as ListCards } from './ListCards/ListCards';
 export { default as ListServers } from './ListServers/ListServers';
 export { default as ListTracks } from './ListTracks/ListTracks';
 export { default as Loading } from './Loading/Loading';
+export { default as PageHome } from './PageHome/PageHome';
 export { default as RangeSlider } from './RangeSlider/RangeSlider';
 export { default as SideBar } from './SideBar/SideBar';
 export { default as StarRating } from './StarRating/StarRating';

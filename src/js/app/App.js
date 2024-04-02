@@ -75,7 +75,7 @@ const App = () => {
   // logged out
   else if (!loggedIn) {
     return (
-      <div className="wrap">
+      <div className="wrap wrap--home">
         <BrowserRouteSwitch />
         {/* <Blocker /> */}
       </div>

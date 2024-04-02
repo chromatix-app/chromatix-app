@@ -1,0 +1,27 @@
+.wrap {
+  max-width: 550px;
+  padding: 30px 20px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 50px;
+  line-height: 1;
+  font-weight: bold;
+
+  @media (min-width: 390px) {
+    font-size: 60px;
+  }
+}
+
+.hr {
+  width: 150px;
+  height: 2px;
+  margin: 0 auto;
+  background: #fff;
+  opacity: 0.2;
+}
+
+.body {
+  font-size: 19px;
+}

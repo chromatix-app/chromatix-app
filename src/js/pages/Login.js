@@ -2,24 +2,16 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch } from 'react-redux';
-
-import { Button, TitleBasic } from 'js/components';
+import { PageHome } from 'js/components';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
 const Login = () => {
-  const dispatch = useDispatch();
-
   return (
     <main className="wrap-middle text-center">
-      <div>
-        <TitleBasic title="Chromatix" />
-        <div className="mt-20"></div>
-        <Button onClick={dispatch.appModel.doLogin}>Login with Plex</Button>
-      </div>
+      <PageHome />
     </main>
   );
 };
