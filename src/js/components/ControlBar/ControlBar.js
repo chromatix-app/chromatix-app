@@ -122,7 +122,13 @@ const ControlBar = () => {
       <div className={style.current}>
         <div className={style.cover}>
           {trackDetail && trackDetail.thumb && (
-            <NavLink className={style.cover} to={playingLink}>
+            <NavLink
+              className={style.cover}
+              to={playingLink}
+              onClick={() => {
+                dispatch.appModel.setAppState({ scrollToPlaying: true });
+              }}
+            >
               <img src={trackDetail.thumb} alt={trackDetail.title} />
             </NavLink>
           )}

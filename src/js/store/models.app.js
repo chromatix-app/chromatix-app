@@ -14,6 +14,7 @@ const appState = {
   history: null,
 
   plexError: false,
+  scrollToPlaying: false,
 
   playerElement: null,
   playerPlaying: false,
