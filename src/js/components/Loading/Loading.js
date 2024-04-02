@@ -2,7 +2,6 @@
 // IMPORTS
 // ======================================================================
 
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 
@@ -20,17 +19,6 @@ export const Loading = ({ forceVisible, inline, route }) => {
   } else {
     return null;
   }
-};
-
-// ======================================================================
-// PROPTYPES
-// ======================================================================
-
-Loading.propTypes = {
-  forceVisible: PropTypes.bool,
-  inline: PropTypes.bool,
-  route: PropTypes.bool,
-  // loaderVisible: PropTypes.bool.isRequired,
 };
 
 // ======================================================================

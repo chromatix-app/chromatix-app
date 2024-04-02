@@ -3,10 +3,8 @@
 // ======================================================================
 
 import { useEffect } from 'react';
-// import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import clsx from 'clsx';
 
 import { ControlBar, SideBar, UserMenu } from 'js/components';
 import { useGotRequiredData, useScrollRestoration } from 'js/hooks';
@@ -97,14 +95,14 @@ const App = () => {
     } else {
       return (
         <div className="wrap wrap--auth">
-          <div className={clsx('layout')}>
+          <div className="layout">
             <div className="layout-sidebar">
               <SideBar />
             </div>
-            <div id="content" className={clsx('layout-content')}>
+            <div id="content" className="layout-content">
               <BrowserRouteSwitch />
             </div>
-            <div className={clsx('layout-controls')}>
+            <div className="layout-controls">
               <ControlBar />
             </div>
             {/* <Blocker /> */}
