@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@rematch/core": "^2.2.0",
+    "@vercel/analytics": "^1.2.2",
     "axios": "^1.6.8",
     "clsx": "^2.1.0",
     "crypto-js": "^4.2.0",

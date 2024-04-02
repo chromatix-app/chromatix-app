@@ -5,6 +5,7 @@
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import moment from 'moment';
 
 import App from 'js/app/App';
@@ -40,6 +41,7 @@ root.render(
   <Provider store={store}>
     <BrowserRouter>
       <App />
+      <Analytics />
     </BrowserRouter>
   </Provider>
 );
