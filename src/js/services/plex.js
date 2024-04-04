@@ -192,7 +192,6 @@ const getUserInfo = async () => {
   console.log('%c--- plex - getUserInfo ---', 'color:#f9743b;');
   try {
     const authToken = window.localStorage.getItem('chromatix-auth-token');
-
     const response = await fetch('https://plex.tv/users/account', {
       headers: {
         'X-Plex-Token': authToken,
@@ -243,41 +242,49 @@ export const getAllServers = async () => {
     if (!prevAllResources) {
       console.log('%c--- plex - getAllServers ---', 'color:#f9743b;');
       getUserServersRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
 
-      const response = await fetch('https://plex.tv/api/v2/resources?includeHttps=1', {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-          'X-Plex-Client-Identifier': 'chromatix.app',
-        },
-      });
-
-      if (!response.ok) {
-        // TODO
-      }
-
-      const data = await response.json();
-
-      // console.log(data);
-
-      const allServers = data
-        .filter((resource) => resource.provides === 'server')
-        .map((resource) => {
-          const connectionLocal = resource.connections.filter((connection) => connection.local);
-          const connectionRemote = resource.connections.filter((connection) => !connection.local);
-          delete resource.connections;
-          resource.serverId = resource.clientIdentifier;
-          resource.serverBaseUrl = connectionRemote[0].uri;
-          resource.serverArtUrl = `${connectionLocal[0].protocol}://localhost:${connectionLocal[0].port}`;
-          return resource;
+      try {
+        const authToken = window.localStorage.getItem('chromatix-auth-token');
+        const response = await fetch('https://plex.tv/api/v2/resources?includeHttps=1', {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': authToken,
+            'X-Plex-Client-Identifier': 'chromatix.app',
+          },
         });
 
-      // console.log('allServers', allServers);
+        // error handling
+        if (!response.ok) {
+          console.error('Failed to get user servers:', response.statusText);
+          store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
+          return;
+        }
 
-      store.dispatch.appModel.setAppState({ allServers });
-      store.dispatch.sessionModel.refreshCurrentServer(allServers);
+        const data = await response.json();
+
+        // console.log(data);
+
+        const allServers = data
+          .filter((resource) => resource.provides === 'server')
+          .map((resource) => {
+            const connectionLocal = resource.connections.filter((connection) => connection.local);
+            const connectionRemote = resource.connections.filter((connection) => !connection.local);
+            delete resource.connections;
+            resource.serverId = resource.clientIdentifier;
+            resource.serverBaseUrl = connectionRemote[0].uri;
+            resource.serverArtUrl = `${connectionLocal[0].protocol}://localhost:${connectionLocal[0].port}`;
+            return resource;
+          });
+
+        // console.log('allServers', allServers);
+
+        store.dispatch.appModel.setAppState({ allServers });
+        store.dispatch.sessionModel.refreshCurrentServer(allServers);
+      } catch (e) {
+        // error handling
+        store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
+      }
 
       getUserServersRunning = false;
     }
@@ -295,14 +302,13 @@ export const getAllLibraries = async () => {
     const prevAllLibraries = store.getState().appModel.allLibraries;
     if (!prevAllLibraries) {
       const currentServer = store.getState().sessionModel.currentServer;
-
       if (currentServer) {
         console.log('%c--- plex - getAllLibraries ---', 'color:#f9743b;');
         getUserLibrariesRunning = true;
-        const authToken = window.localStorage.getItem('chromatix-auth-token');
-        const { serverBaseUrl } = currentServer;
 
         try {
+          const authToken = window.localStorage.getItem('chromatix-auth-token');
+          const { serverBaseUrl } = currentServer;
           const response = await fetch(`${serverBaseUrl}/library/sections`, {
             headers: {
               Accept: 'application/json',
@@ -317,7 +323,6 @@ export const getAllLibraries = async () => {
 
           const allLibraries = data.MediaContainer.Directory.filter((library) => library.type === 'artist');
 
-          // add a libraryId to each library
           allLibraries.forEach((library) => {
             library.libraryId = library.key;
             // library.thumb = library.composite
@@ -331,7 +336,8 @@ export const getAllLibraries = async () => {
 
           store.dispatch.appModel.setAppState({ allLibraries });
           store.dispatch.sessionModel.refreshCurrentLibrary(allLibraries);
-        } catch (error) {
+        } catch (e) {
+          // error handling
           store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
         }
 
