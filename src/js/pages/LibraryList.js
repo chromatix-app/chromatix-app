@@ -29,9 +29,7 @@ const LibraryList = () => {
           <>
             <TitleBasic title={allLibraries.length > 0 ? 'Libraries' : 'No Libraries Available'} />
             <ListServers variant="libraries" entries={allLibraries} />
-            {allLibraries.length < 1 && (
-              <Button onClick={dispatch.sessionModel.unsetCurrentServer}>Back to Servers</Button>
-            )}
+            <Button onClick={dispatch.sessionModel.unsetCurrentServer}>Back to Servers</Button>
           </>
         )}
       </div>

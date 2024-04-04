@@ -15,6 +15,8 @@ const appState = {
 
   plexErrorGeneral: false,
   plexErrorLogin: false,
+  plexErrorServer: false,
+
   scrollToPlaying: false,
 
   playerElement: null,
@@ -147,6 +149,15 @@ const effects = (dispatch) => ({
     } else {
       window.location.reload();
     }
+  },
+
+  clearPlexServerState(payload, rootState) {
+    console.log('%c--- clearPlexServerState ---', 'color:#079189');
+    dispatch.appModel.setAppState({
+      ...plexServerState,
+      ...plexLibraryState,
+    });
+    dispatch.appModel.playerUnload();
   },
 
   clearPlexLibraryState(payload, rootState) {

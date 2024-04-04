@@ -2,6 +2,7 @@
 // IMPORTS
 // ======================================================================
 
+import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
 import store from 'js/store/store';
 
@@ -306,9 +307,10 @@ export const getAllLibraries = async () => {
         getUserLibrariesRunning = true;
 
         try {
-          const authToken = window.localStorage.getItem('chromatix-auth-token');
           const { serverBaseUrl } = currentServer;
-          const response = await fetch(`${serverBaseUrl}/library/sections`, {
+          const authToken = window.localStorage.getItem('chromatix-auth-token');
+          const response = await axios.get(`${serverBaseUrl}/library/sections`, {
+            timeout: 5000, // 5 seconds
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
@@ -316,7 +318,7 @@ export const getAllLibraries = async () => {
             },
           });
 
-          const data = await response.json();
+          const data = response.data;
 
           // console.log(data.MediaContainer.Directory);
 
@@ -337,7 +339,12 @@ export const getAllLibraries = async () => {
           store.dispatch.sessionModel.refreshCurrentLibrary(allLibraries);
         } catch (e) {
           // error handling
-          store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
+          if (e.code === 'ECONNABORTED') {
+            console.error('Request timed out');
+            store.dispatch.sessionModel.unsetCurrentServer();
+          } else {
+            store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
+          }
         }
 
         getUserLibrariesRunning = false;
@@ -463,17 +470,13 @@ export const getAllArtistAlbums = async (libraryId, artistId) => {
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
 
-      const response = await fetch(
-        // `${serverBaseUrl}/library/sections/${libraryId}/all?artist.id=${artistId}&type=9&album.subformat!=Compilation,Live`,
-        `${serverBaseUrl}/library/metadata/${artistId}/children?excludeAllLeaves=1`,
-        {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': authToken,
-          },
-        }
-      );
+      const response = await fetch(`${serverBaseUrl}/library/metadata/${artistId}/children?excludeAllLeaves=1`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Plex-Token': authToken,
+        },
+      });
 
       const data = await response.json();
 

@@ -60,16 +60,6 @@ const reducers = {
     };
   },
 
-  unsetCurrentServer(rootState, payload) {
-    console.log('%c--- unsetCurrentServer ---', 'color:#91074A');
-    return {
-      ...rootState,
-      currentServer: null,
-      currentLibrary: null,
-      ...playingState,
-    };
-  },
-
   refreshCurrentServer(rootState, payload) {
     console.log('%c--- refreshCurrentServer ---', 'color:#91074A');
     const currentServerToken = rootState.currentServer ? rootState.currentServer.serverId : null;
@@ -158,18 +148,31 @@ const effects = (dispatch) => ({
     });
   },
 
+  unsetCurrentServer(rootState, payload) {
+    console.log('%c--- unsetCurrentServer ---', 'color:#91074A');
+    dispatch.sessionModel.setSessionState({
+      currentServer: null,
+      currentLibrary: null,
+      ...playingState,
+    });
+    dispatch.appModel.clearPlexServerState();
+  },
+
   switchCurrentServer(payload, rootState) {
     console.log('%c--- switchCurrentServer ---', 'color:#91074A');
     const currentServer = rootState.sessionModel.currentServer;
     const currentServerId = currentServer ? currentServer.serverId : null;
     if (currentServerId !== payload) {
       // TODO
-      // const newServer = rootState.appModel.allServers.find((server) => server.serverId === payload);
-      // // TODO: what if currentServer is null?
-      // dispatch.sessionModel.setSessionState({
-      //   currentServer: newServer,
-      // });
-      // dispatch.appModel.clearPlexLibraryState();
+      const newServer = rootState.appModel.allServers.find((server) => server.serverId === payload);
+      // TODO: what if currentServer is null?
+      dispatch.sessionModel.setSessionState({
+        ...rootState,
+        currentServer: newServer,
+        currentLibrary: null,
+        ...playingState,
+      });
+      dispatch.appModel.clearPlexServerState();
     }
   },
 
