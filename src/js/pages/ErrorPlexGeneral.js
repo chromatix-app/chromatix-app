@@ -8,7 +8,7 @@ import { TitleBasic } from 'js/components';
 // COMPONENT
 // ======================================================================
 
-const Error404Plex = () => (
+const ErrorPlexGeneral = () => (
   <main className="wrap-middle text-center">
     <div>
       <TitleBasic title="Oops!" />
@@ -24,4 +24,4 @@ const Error404Plex = () => (
 // EXPORT
 // ======================================================================
 
-export default Error404Plex;
+export default ErrorPlexGeneral;

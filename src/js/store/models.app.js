@@ -13,7 +13,8 @@ const appState = {
   standalone: false,
   history: null,
 
-  plexError: false,
+  plexErrorGeneral: false,
+  plexErrorLogin: false,
   scrollToPlaying: false,
 
   playerElement: null,
@@ -130,6 +131,24 @@ const effects = (dispatch) => ({
   //
   // PLEX
   //
+
+  plexErrorLogin(payload, rootState) {
+    // console.log('%c--- plexErrorLogin ---', 'color:#079189');
+    dispatch.appModel.setAppState({
+      plexErrorLogin: true,
+    });
+  },
+
+  dismissPlexErrorLogin(payload, rootState) {
+    // console.log('%c--- dismissPlexErrorLogin ---', 'color:#079189');
+    if (rootState.appModel.isInited) {
+      dispatch.appModel.setAppState({
+        plexErrorLogin: false,
+      });
+    } else {
+      window.location.reload();
+    }
+  },
 
   clearPlexLibraryState(payload, rootState) {
     console.log('%c--- clearPlexLibraryState ---', 'color:#079189');

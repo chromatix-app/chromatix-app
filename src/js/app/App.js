@@ -8,7 +8,7 @@ import { useHistory } from 'react-router-dom';
 
 import { ControlBar, SideBar, UserMenu } from 'js/components';
 import { useGotRequiredData, useScrollRestoration } from 'js/hooks';
-import { ErrorPlex } from 'js/pages';
+import { ErrorPlexGeneral, ErrorPlexLogin } from 'js/pages';
 import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 
 // ======================================================================
@@ -21,7 +21,8 @@ const isProduction = process.env.REACT_APP_ENV === 'production';
 const App = () => {
   const inited = useSelector(({ appModel }) => appModel.inited);
   const loggedIn = useSelector(({ appModel }) => appModel.loggedIn);
-  const plexError = useSelector(({ appModel }) => appModel.plexError);
+  const plexErrorGeneral = useSelector(({ appModel }) => appModel.plexErrorGeneral);
+  const plexErrorLogin = useSelector(({ appModel }) => appModel.plexErrorLogin);
 
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
@@ -54,11 +55,17 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // plex error
-  if (plexError) {
+  // plex errors
+  if (plexErrorLogin) {
     return (
       <div className="wrap">
-        <ErrorPlex />
+        <ErrorPlexLogin />
+      </div>
+    );
+  } else if (plexErrorGeneral) {
+    return (
+      <div className="wrap">
+        <ErrorPlexGeneral />
       </div>
     );
   }

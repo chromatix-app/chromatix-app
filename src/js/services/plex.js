@@ -54,8 +54,8 @@ const clientIcon = 'https://chromatix.app/icon/icon-512.png';
 
 const currentProtocol = window.location.protocol + '//';
 
-const redirectUrlLocal = currentProtocol + 'localhost:3000?plex=true';
-const redirectUrlProd = 'https://chromatix.app?plex=true';
+const redirectUrlLocal = currentProtocol + 'localhost:3000?plex-login=true';
+const redirectUrlProd = 'https://chromatix.app?plex-login=true';
 const redirectUrlActual = isProduction ? redirectUrlProd : redirectUrlLocal;
 
 const thumbSize = 480;
@@ -66,9 +66,9 @@ const thumbSize = 480;
 
 export function init() {
   const urlParams = new URLSearchParams(window.location.search);
-  const isFromPlex = urlParams.get('plex');
+  const isPlexLogin = urlParams.get('plex-login');
 
-  if (isFromPlex) {
+  if (isPlexLogin) {
     window.history.replaceState({}, document.title, window.location.pathname);
     const pinId = window.localStorage.getItem('chromatix-pin-id');
     if (pinId) {
@@ -93,35 +93,43 @@ export function init() {
 
 export const login = async () => {
   console.log('%c--- plex - login ---', 'color:#f9743b;');
-  const pinResponse = await fetch('https://plex.tv/api/v2/pins', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'X-Plex-Product': appName,
-      'X-Plex-Client-Identifier': clientIdentifier,
-      'X-Plex-Device-Icon': clientIcon,
-    },
-    body: JSON.stringify({ strong: true }),
-  });
+  try {
+    const pinResponse = await fetch('https://plex.tv/api/v2/pins', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Plex-Product': appName,
+        'X-Plex-Client-Identifier': clientIdentifier,
+        'X-Plex-Device-Icon': clientIcon,
+      },
+      body: JSON.stringify({ strong: true }),
+    });
 
-  if (!pinResponse.ok) {
-    console.error('Failed to generate PIN:', pinResponse.statusText);
-    return;
+    // error handling
+    if (!pinResponse.ok) {
+      console.error('Failed to generate PIN:', pinResponse.statusText);
+      store.dispatch.appModel.plexErrorLogin();
+      return;
+    }
+
+    // parse the response
+    const pinData = await pinResponse.json();
+    const pinId = pinData.id;
+    const pinCode = pinData.code;
+
+    // store the pinId in the local storage
+    window.localStorage.setItem('chromatix-pin-id', pinId);
+
+    // redirect to the Plex login page
+    const authAppUrl = `https://app.plex.tv/auth#?clientID=${clientIdentifier}&code=${pinCode}&context%5Bdevice%5D%5Bproduct%5D=${encodeURIComponent(
+      appName
+    )}&forwardUrl=${encodeURIComponent(redirectUrlActual)}`;
+    window.location.href = authAppUrl;
+  } catch (e) {
+    // error handling
+    store.dispatch.appModel.plexErrorLogin();
   }
-
-  const pinData = await pinResponse.json();
-  const pinId = pinData.id;
-  const pinCode = pinData.code;
-
-  // Store the pinId in the local storage
-  window.localStorage.setItem('chromatix-pin-id', pinId);
-
-  const authAppUrl = `https://app.plex.tv/auth#?clientID=${clientIdentifier}&code=${pinCode}&context%5Bdevice%5D%5Bproduct%5D=${encodeURIComponent(
-    appName
-  )}&forwardUrl=${encodeURIComponent(redirectUrlActual)}`;
-
-  window.location.href = authAppUrl;
 };
 
 // ======================================================================
@@ -130,29 +138,39 @@ export const login = async () => {
 
 const checkPinStatus = async (pinId) => {
   console.log('%c--- plex - checkPinStatus ---', 'color:#f9743b;');
-  const pinStatusResponse = await fetch(`https://plex.tv/api/v2/pins/${pinId}`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      'X-Plex-Client-Identifier': clientIdentifier,
-    },
-  });
+  try {
+    const pinStatusResponse = await fetch(`https://plex.tv/api/v2/pins/${pinId}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'X-Plex-Client-Identifier': clientIdentifier,
+      },
+    });
 
-  if (!pinStatusResponse.ok) {
-    console.error('Failed to check PIN status:', pinStatusResponse.statusText);
-    return;
-  }
+    // error handling
+    if (!pinStatusResponse.ok) {
+      console.error('Failed to check PIN status:', pinStatusResponse.statusText);
+      store.dispatch.appModel.plexErrorLogin();
+      return;
+    }
 
-  const pinStatusData = await pinStatusResponse.json();
+    // parse the response
+    const pinStatusData = await pinStatusResponse.json();
 
-  if (pinStatusData.authToken) {
-    // Store the authToken in the local storage
-    window.localStorage.setItem('chromatix-auth-token', pinStatusData.authToken);
-    window.localStorage.removeItem('chromatix-pin-id');
-    getUserInfo();
-  } else {
-    // If the PIN is not yet authorized, check again in a second
-    setTimeout(() => checkPinStatus(pinId), 1000);
+    // if valid, store the authToken in the local storage
+    if (pinStatusData.authToken) {
+      window.localStorage.setItem('chromatix-auth-token', pinStatusData.authToken);
+      window.localStorage.removeItem('chromatix-pin-id');
+      getUserInfo();
+    }
+
+    // if the PIN is not yet authorized, check again in a second
+    else {
+      setTimeout(() => checkPinStatus(pinId), 1000);
+    }
+  } catch (e) {
+    // error handling
+    store.dispatch.appModel.plexErrorLogin();
   }
 };
 
@@ -172,38 +190,45 @@ export const logout = () => {
 
 const getUserInfo = async () => {
   console.log('%c--- plex - getUserInfo ---', 'color:#f9743b;');
-  const authToken = window.localStorage.getItem('chromatix-auth-token');
+  try {
+    const authToken = window.localStorage.getItem('chromatix-auth-token');
 
-  const response = await fetch('https://plex.tv/users/account', {
-    headers: {
-      'X-Plex-Token': authToken,
-    },
-  });
+    const response = await fetch('https://plex.tv/users/account', {
+      headers: {
+        'X-Plex-Token': authToken,
+      },
+    });
 
-  if (!response.ok) {
-    console.error('Failed to get user info:', response.statusText);
-    window.localStorage.removeItem('chromatix-auth-token');
-    store.dispatch.appModel.setLoggedOut();
-    return;
+    // error handling
+    if (!response.ok) {
+      console.error('Failed to get user info:', response.statusText);
+      window.localStorage.removeItem('chromatix-auth-token');
+      store.dispatch.appModel.setLoggedOut();
+      return;
+    }
+
+    // parse the response
+    const data = await response.text();
+    const parser = new XMLParser({ ignoreAttributes: false });
+    const jsonObj = parser.parse(data).user;
+
+    // console.log(jsonObj);
+
+    const currentUser = {
+      userId: jsonObj['@_id'],
+      email: jsonObj['email'],
+      thumb: jsonObj['@_thumb'],
+      title: jsonObj['@_title'],
+      username: jsonObj['username'],
+    };
+
+    // console.log('currentUser', currentUser);
+
+    store.dispatch.appModel.setLoggedIn(currentUser);
+  } catch (e) {
+    // error handling
+    store.dispatch.appModel.plexErrorLogin();
   }
-
-  const data = await response.text();
-  const parser = new XMLParser({ ignoreAttributes: false });
-  const jsonObj = parser.parse(data).user;
-
-  // console.log(jsonObj);
-
-  const currentUser = {
-    userId: jsonObj['@_id'],
-    email: jsonObj['email'],
-    thumb: jsonObj['@_thumb'],
-    title: jsonObj['@_title'],
-    username: jsonObj['username'],
-  };
-
-  // console.log('currentUser', currentUser);
-
-  store.dispatch.appModel.setLoggedIn(currentUser);
 };
 
 // ======================================================================
@@ -307,7 +332,7 @@ export const getAllLibraries = async () => {
           store.dispatch.appModel.setAppState({ allLibraries });
           store.dispatch.sessionModel.refreshCurrentLibrary(allLibraries);
         } catch (error) {
-          store.dispatch.appModel.setAppState({ plexError: true });
+          store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
         }
 
         getUserLibrariesRunning = false;
