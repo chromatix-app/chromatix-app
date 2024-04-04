@@ -25,7 +25,7 @@ const ServerList = () => {
         {!allServers && <Loading forceVisible inline />}
         {allServers && (
           <>
-            <TitleBasic title="Servers" />
+            <TitleBasic title={allServers.length > 0 ? 'Servers' : 'No Servers Available'} />
             <ListServers variant="servers" entries={allServers} />
           </>
         )}

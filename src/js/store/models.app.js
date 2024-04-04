@@ -113,7 +113,6 @@ const effects = (dispatch) => ({
     dispatch.sessionModel.loadLocalStorage();
     dispatch.appModel.playerRefresh();
     plex.getAllServers();
-    plex.getAllLibraries();
   },
 
   setLoggedOut(payload, rootState) {
@@ -157,6 +156,23 @@ const effects = (dispatch) => ({
     });
     rootState.appModel.history.push('/');
     plex.getAllPlaylists();
+  },
+
+  storeAllServers(payload, rootState) {
+    // console.log('%c--- storeAllServers ---', 'color:#079189');
+    dispatch.appModel.setAppState({
+      allServers: payload,
+    });
+    dispatch.sessionModel.refreshCurrentServer(payload);
+    plex.getAllLibraries();
+  },
+
+  storeAllLibraries(payload, rootState) {
+    // console.log('%c--- storeAllLibraries ---', 'color:#079189');
+    dispatch.appModel.setAppState({
+      allLibraries: payload,
+    });
+    dispatch.sessionModel.refreshCurrentLibrary(payload);
   },
 
   storeArtistDetails(payload, rootState) {

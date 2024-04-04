@@ -279,8 +279,7 @@ export const getAllServers = async () => {
 
         // console.log('allServers', allServers);
 
-        store.dispatch.appModel.setAppState({ allServers });
-        store.dispatch.sessionModel.refreshCurrentServer(allServers);
+        store.dispatch.appModel.storeAllServers(allServers);
       } catch (e) {
         // error handling
         store.dispatch.appModel.setAppState({ plexErrorGeneral: true });

@@ -47,6 +47,8 @@ const reducers = {
     return {
       ...rootState,
       currentServer: payload,
+      currentLibrary: null,
+      ...playingState,
     };
   },
 
@@ -58,22 +60,39 @@ const reducers = {
     };
   },
 
+  unsetCurrentServer(rootState, payload) {
+    console.log('%c--- unsetCurrentServer ---', 'color:#91074A');
+    return {
+      ...rootState,
+      currentServer: null,
+      currentLibrary: null,
+      ...playingState,
+    };
+  },
+
   refreshCurrentServer(rootState, payload) {
     console.log('%c--- refreshCurrentServer ---', 'color:#91074A');
     const currentServerToken = rootState.currentServer ? rootState.currentServer.serverId : null;
-    const refreshedServer = payload.find((server) => server.serverId === currentServerToken);
-    // TODO: what if refreshedServer is null?
-    return {
-      ...rootState,
-      currentServer: refreshedServer ? refreshedServer : null,
-    };
+    const refreshedServer = payload?.find((server) => server.serverId === currentServerToken);
+    if (refreshedServer) {
+      return {
+        ...rootState,
+        currentServer: refreshedServer,
+      };
+    } else {
+      return {
+        ...rootState,
+        currentServer: null,
+        currentLibrary: null,
+        ...playingState,
+      };
+    }
   },
 
   refreshCurrentLibrary(rootState, payload) {
     console.log('%c--- refreshCurrentLibrary ---', 'color:#91074A');
     const currentLibraryToken = rootState.currentLibrary ? rootState.currentLibrary.libraryId : null;
-    const refreshedLibrary = payload.find((library) => library.libraryId === currentLibraryToken);
-    // TODO: what if refreshedLibrary is null?
+    const refreshedLibrary = payload?.find((library) => library.libraryId === currentLibraryToken);
     return {
       ...rootState,
       currentLibrary: refreshedLibrary ? refreshedLibrary : null,

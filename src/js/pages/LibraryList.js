@@ -3,9 +3,9 @@
 // ======================================================================
 
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { ListServers, Loading, TitleBasic } from 'js/components';
+import { Button, ListServers, Loading, TitleBasic } from 'js/components';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
@@ -13,6 +13,8 @@ import * as plex from 'js/services/plex';
 // ======================================================================
 
 const LibraryList = () => {
+  const dispatch = useDispatch();
+
   const allLibraries = useSelector(({ appModel }) => appModel.allLibraries);
 
   useEffect(() => {
@@ -25,8 +27,11 @@ const LibraryList = () => {
         {!allLibraries && <Loading forceVisible inline />}
         {allLibraries && (
           <>
-            <TitleBasic title="Libraries" />
+            <TitleBasic title={allLibraries.length > 0 ? 'Libraries' : 'No Libraries Available'} />
             <ListServers variant="libraries" entries={allLibraries} />
+            {allLibraries.length < 1 && (
+              <Button onClick={dispatch.sessionModel.unsetCurrentServer}>Back to Servers</Button>
+            )}
           </>
         )}
       </div>
