@@ -1,0 +1,670 @@
+{
+  "MediaContainer": {
+    "size": 35,
+    "allowSync": true,
+    "art": "/:/resources/artist-fanart.jpg",
+    "identifier": "com.plexapp.plugins.library",
+    "librarySectionID": 20,
+    "librarySectionTitle": "Music",
+    "librarySectionUUID": "41dfa6d2-d4af-4d35-b33a-7dc297d59ab8",
+    "mediaTagPrefix": "/system/bundle/media/flags/",
+    "mediaTagVersion": 1710471686,
+    "nocache": true,
+    "thumb": "/:/resources/artist.png",
+    "title1": "Music",
+    "title2": "All Artists",
+    "viewGroup": "artist",
+    "viewMode": 65592,
+    "Metadata": [
+      {
+        "ratingKey": "150119",
+        "key": "/library/metadata/150119/children",
+        "guid": "plex://artist/5d07bf6f403c640290754735",
+        "type": "artist",
+        "title": "Adele",
+        "summary": "",
+        "index": 1,
+        "userRating": 8.0,
+        "thumb": "/api/images/adele.jpg",
+        "art": "/library/metadata/150119/art/1711743523",
+        "addedAt": 1522416674,
+        "updatedAt": 1711743523,
+        "Genre": [
+          {
+            "tag": "Pop/Rock"
+          },
+          {
+            "tag": "International"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "Finland"
+          }
+        ]
+      },
+      {
+        "ratingKey": "158345",
+        "key": "/library/metadata/158345/children",
+        "guid": "plex://artist/5d07bbfc403c6402904a631f",
+        "type": "artist",
+        "title": "Aerosmith",
+        "summary": "",
+        "index": 1,
+        "userRating": 10.0,
+        "lastViewedAt": 1694710452,
+        "lastRatedAt": 1711311847,
+        "thumb": "/api/images/aerosmith.jpg",
+        "art": "/library/metadata/158345/art/1711743423",
+        "addedAt": 1615651435,
+        "updatedAt": 1711743423,
+        "Genre": [
+          {
+            "tag": "Pop/Rock"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "United States of America"
+          }
+        ]
+      },
+      {
+        "ratingKey": "149255",
+        "key": "/library/metadata/149255/children",
+        "guid": "plex://artist/5d07bc1b403c6402904bc787",
+        "type": "artist",
+        "title": "Alter Bridge",
+        "summary": "",
+        "index": 1,
+        "userRating": 10.0,
+        "viewCount": 7,
+        "skipCount": 7,
+        "lastViewedAt": 1711581275,
+        "lastRatedAt": 1711986780,
+        "thumb": "/api/images/alter-bridge.jpg",
+        "art": "/library/metadata/149255/art/1711947108",
+        "addedAt": 1503082062,
+        "updatedAt": 1711947108,
+        "Genre": [
+          {
+            "tag": "Pop/Rock"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "United States of America"
+          }
+        ]
+      },
+      {
+        "ratingKey": "149255",
+        "key": "/library/metadata/149255/children",
+        "guid": "plex://artist/5d07bc1b403c6402904bc787",
+        "type": "artist",
+        "title": "Amy Winehouse",
+        "summary": "",
+        "index": 1,
+        "userRating": 10.0,
+        "viewCount": 7,
+        "skipCount": 7,
+        "lastViewedAt": 1711581275,
+        "lastRatedAt": 1711986780,
+        "thumb": "/api/images/amy-winehouse.jpg",
+        "art": "/library/metadata/149255/art/1711947108",
+        "addedAt": 1503082062,
+        "updatedAt": 1711947108,
+        "Genre": [
+          {
+            "tag": "Pop/Rock"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "United States of America"
+          }
+        ]
+      },
+      {
+        "ratingKey": "149255",
+        "key": "/library/metadata/149255/children",
+        "guid": "plex://artist/5d07bc1b403c6402904bc787",
+        "type": "artist",
+        "title": "Anastacia",
+        "summary": "",
+        "index": 1,
+        "userRating": 8.0,
+        "viewCount": 7,
+        "skipCount": 7,
+        "lastViewedAt": 1711581275,
+        "lastRatedAt": 1711986780,
+        "thumb": "/api/images/anastacia.jpg",
+        "art": "/library/metadata/149255/art/1711947108",
+        "addedAt": 1503082062,
+        "updatedAt": 1711947108,
+        "Genre": [
+          {
+            "tag": "Pop/Rock"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "United States of America"
+          }
+        ]
+      },
+      {
+        "ratingKey": "149255",
+        "key": "/library/metadata/149255/children",
+        "guid": "plex://artist/5d07bc1b403c6402904bc787",
+        "type": "artist",
+        "title": "Apocalyptica",
+        "summary": "",
+        "index": 1,
+        "userRating": 9.0,
+        "viewCount": 7,
+        "skipCount": 7,
+        "lastViewedAt": 1711581275,
+        "lastRatedAt": 1711986780,
+        "thumb": "/api/images/apocalyptica.jpg",
+        "art": "/library/metadata/149255/art/1711947108",
+        "addedAt": 1503082062,
+        "updatedAt": 1711947108,
+        "Genre": [
+          {
+            "tag": "Pop/Rock"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "United States of America"
+          }
+        ]
+      },
+      {
+        "ratingKey": "149255",
+        "key": "/library/metadata/149255/children",
+        "guid": "plex://artist/5d07bc1b403c6402904bc787",
+        "type": "artist",
+        "title": "Arctic Monkeys",
+        "summary": "",
+        "index": 1,
+        "userRating": 8.0,
+        "viewCount": 7,
+        "skipCount": 7,
+        "lastViewedAt": 1711581275,
+        "lastRatedAt": 1711986780,
+        "thumb": "/api/images/arctic-monkeys.jpg",
+        "art": "/library/metadata/149255/art/1711947108",
+        "addedAt": 1503082062,
+        "updatedAt": 1711947108,
+        "Genre": [
+          {
+            "tag": "Pop/Rock"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "United States of America"
+          }
+        ]
+      },
+      {
+        "ratingKey": "149255",
+        "key": "/library/metadata/149255/children",
+        "guid": "plex://artist/5d07bc1b403c6402904bc787",
+        "type": "artist",
+        "title": "Avenged Sevenfold",
+        "summary": "",
+        "index": 1,
+        "userRating": 8.0,
+        "viewCount": 7,
+        "skipCount": 7,
+        "lastViewedAt": 1711581275,
+        "lastRatedAt": 1711986780,
+        "thumb": "/api/images/avenged-sevenfold.jpg",
+        "art": "/library/metadata/149255/art/1711947108",
+        "addedAt": 1503082062,
+        "updatedAt": 1711947108,
+        "Genre": [
+          {
+            "tag": "Pop/Rock"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "United States of America"
+          }
+        ]
+      },
+      {
+        "ratingKey": "159659",
+        "key": "/library/metadata/159659/children",
+        "guid": "plex://artist/5d07bcb5403c64029053e4de",
+        "type": "artist",
+        "title": "Billie Eilish",
+        "summary": "",
+        "index": 1,
+        "userRating": 8.0,
+        "viewCount": 14,
+        "skipCount": 3,
+        "lastViewedAt": 1628798938,
+        "thumb": "/api/images/billie-eilish.jpg",
+        "art": "/library/metadata/159659/art/1711947125",
+        "addedAt": 1643799785,
+        "updatedAt": 1711947125,
+        "Genre": [
+          {
+            "tag": "Pop/Rock"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "Netherlands"
+          }
+        ]
+      },
+      {
+        "ratingKey": "157730",
+        "key": "/library/metadata/157730/children",
+        "guid": "plex://artist/5d07bc43403c6402904dfd84",
+        "type": "artist",
+        "title": "Billy Talent",
+        "summary": "",
+        "index": 1,
+        "userRating": 7.0,
+        "viewCount": 7,
+        "skipCount": 1,
+        "lastViewedAt": 1669981446,
+        "thumb": "/api/images/billy-talent.jpg",
+        "addedAt": 1615651387,
+        "updatedAt": 1711743625,
+        "Genre": [
+          {
+            "tag": "Comedy/Spoken"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "United Kingdom"
+          }
+        ]
+      },
+      {
+        "ratingKey": "158318",
+        "key": "/library/metadata/158318/children",
+        "guid": "plex://artist/5d07bc06403c6402904acd95",
+        "type": "artist",
+        "title": "Black Sabbath",
+        "summary": "",
+        "index": 1,
+        "userRating": 7.0,
+        "thumb": "/api/images/black-sabbath.jpg",
+        "addedAt": 1615651432,
+        "updatedAt": 1711947126,
+        "Genre": [
+          {
+            "tag": "Pop/Rock"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "Finland"
+          }
+        ]
+      },
+      {
+        "ratingKey": "158720",
+        "key": "/library/metadata/158720/children",
+        "guid": "plex://artist/5d07bd36403c6402905b31dc",
+        "type": "artist",
+        "title": "Bob Dylan",
+        "summary": "",
+        "index": 1,
+        "userRating": 10.0,
+        "thumb": "/api/images/bob-dylan.jpg",
+        "art": "/library/metadata/158720/art/1709871333",
+        "addedAt": 1615651459,
+        "updatedAt": 1709871333,
+        "Genre": [
+          {
+            "tag": "Pop/Rock"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "United States of America"
+          }
+        ]
+      },
+      {
+        "ratingKey": "158753",
+        "key": "/library/metadata/158753/children",
+        "guid": "plex://artist/5d07bcdb403c64029055f714",
+        "type": "artist",
+        "title": "Bon Jovi",
+        "summary": "",
+        "index": 1,
+        "userRating": 8.0,
+        "skipCount": 1,
+        "thumb": "/api/images/bon-jovi.jpg",
+        "addedAt": 1615651461,
+        "updatedAt": 1711947137,
+        "Genre": [
+          {
+            "tag": "Pop/Rock"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "United States of America"
+          }
+        ]
+      },
+      {
+        "ratingKey": "157090",
+        "key": "/library/metadata/157090/children",
+        "guid": "plex://artist/5d07bc23403c6402904c3766",
+        "type": "artist",
+        "title": "Christina Aguilera",
+        "summary": "",
+        "index": 1,
+        "userRating": 9.0,
+        "viewCount": 106,
+        "skipCount": 12,
+        "lastViewedAt": 1614889176,
+        "thumb": "/api/images/christina-aguilera.jpg",
+        "art": "/library/metadata/157090/art/1711947131",
+        "addedAt": 1615651341,
+        "updatedAt": 1711947131,
+        "Genre": [
+          {
+            "tag": "Pop/Rock"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "Netherlands"
+          }
+        ]
+      },
+      {
+        "ratingKey": "157090",
+        "key": "/library/metadata/157090/children",
+        "guid": "plex://artist/5d07bc23403c6402904c3766",
+        "type": "artist",
+        "title": "The Cranberries",
+        "summary": "",
+        "index": 1,
+        "userRating": 9.0,
+        "viewCount": 106,
+        "skipCount": 12,
+        "lastViewedAt": 1614889176,
+        "thumb": "/api/images/the-cranberries.jpg",
+        "art": "/library/metadata/157090/art/1711947131",
+        "addedAt": 1615651341,
+        "updatedAt": 1711947131,
+        "Genre": [
+          {
+            "tag": "Pop/Rock"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "Netherlands"
+          }
+        ]
+      },
+      {
+        "ratingKey": "157090",
+        "key": "/library/metadata/157090/children",
+        "guid": "plex://artist/5d07bc23403c6402904c3766",
+        "type": "artist",
+        "title": "Doja Cat",
+        "summary": "",
+        "index": 1,
+        "userRating": 9.0,
+        "viewCount": 106,
+        "skipCount": 12,
+        "lastViewedAt": 1614889176,
+        "thumb": "/api/images/doja-cat.jpg",
+        "art": "/library/metadata/157090/art/1711947131",
+        "addedAt": 1615651341,
+        "updatedAt": 1711947131,
+        "Genre": [
+          {
+            "tag": "Pop/Rock"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "Netherlands"
+          }
+        ]
+      },
+      {
+        "ratingKey": "157090",
+        "key": "/library/metadata/157090/children",
+        "guid": "plex://artist/5d07bc23403c6402904c3766",
+        "type": "artist",
+        "title": "Dua Lipa",
+        "summary": "",
+        "index": 1,
+        "userRating": 9.0,
+        "viewCount": 106,
+        "skipCount": 12,
+        "lastViewedAt": 1614889176,
+        "thumb": "/api/images/dua-lipa.jpg",
+        "art": "/library/metadata/157090/art/1711947131",
+        "addedAt": 1615651341,
+        "updatedAt": 1711947131,
+        "Genre": [
+          {
+            "tag": "Pop/Rock"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "Netherlands"
+          }
+        ]
+      },
+      {
+        "ratingKey": "157090",
+        "key": "/library/metadata/157090/children",
+        "guid": "plex://artist/5d07bc23403c6402904c3766",
+        "type": "artist",
+        "title": "Ed Sheeran",
+        "summary": "",
+        "index": 1,
+        "userRating": 7.0,
+        "viewCount": 106,
+        "skipCount": 12,
+        "lastViewedAt": 1614889176,
+        "thumb": "/api/images/ed-sheeran.jpg",
+        "art": "/library/metadata/157090/art/1711947131",
+        "addedAt": 1615651341,
+        "updatedAt": 1711947131,
+        "Genre": [
+          {
+            "tag": "Pop/Rock"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "Netherlands"
+          }
+        ]
+      },
+      {
+        "ratingKey": "157090",
+        "key": "/library/metadata/157090/children",
+        "guid": "plex://artist/5d07bc23403c6402904c3766",
+        "type": "artist",
+        "title": "Eminem",
+        "summary": "",
+        "index": 1,
+        "userRating": 9.0,
+        "viewCount": 106,
+        "skipCount": 12,
+        "lastViewedAt": 1614889176,
+        "thumb": "/api/images/eminem.jpg",
+        "art": "/library/metadata/157090/art/1711947131",
+        "addedAt": 1615651341,
+        "updatedAt": 1711947131,
+        "Genre": [
+          {
+            "tag": "Pop/Rock"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "Netherlands"
+          }
+        ]
+      },
+      {
+        "ratingKey": "158868",
+        "key": "/library/metadata/158868/children",
+        "guid": "plex://artist/5d07bc14403c6402904b7c84",
+        "type": "artist",
+        "title": "Evanescence",
+        "summary": "",
+        "index": 1,
+        "userRating": 10.0,
+        "viewCount": 23,
+        "skipCount": 4,
+        "lastViewedAt": 1620415849,
+        "thumb": "/api/images/evanescence.jpg",
+        "art": "/library/metadata/158868/art/1711947139",
+        "addedAt": 1615651468,
+        "updatedAt": 1711947139,
+        "Genre": [
+          {
+            "tag": "Pop/Rock"
+          }
+        ],
+        "Country": [
+          {
+            "tag": "United States of America"
+          }
+        ]
+      },
+
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+
+      [],
+      [],
+      [],
+      []
+    ]
+  }
+}

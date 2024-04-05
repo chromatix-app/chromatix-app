@@ -49,6 +49,8 @@ import store from 'js/store/store';
 
 const isProduction = process.env.REACT_APP_ENV === 'production';
 
+const mockData = isProduction ? false : false;
+
 const appName = 'Chromatix';
 const clientIdentifier = 'chromatix.app';
 const clientIcon = 'https://chromatix.app/icon/icon-512.png';
@@ -368,7 +370,11 @@ export const getAllArtists = async () => {
       const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
-      const response = await fetch(`${serverBaseUrl}/library/sections/${libraryId}/all`, {
+      const mockUrl = '/api/artists.json';
+      const prodUrl = `${serverBaseUrl}/library/sections/${libraryId}/all`;
+      const actualUrl = mockData ? mockUrl : prodUrl;
+
+      const response = await fetch(actualUrl, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -390,9 +396,11 @@ export const getAllArtists = async () => {
           userRating: artist.userRating,
           link: '/artists/' + libraryId + '/' + artist.ratingKey,
           thumb: artist.thumb
-            ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                `${serverArtUrl}${artist.thumb}`
-              )}&X-Plex-Token=${authToken}`
+            ? mockData
+              ? artist.thumb
+              : `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                  `${serverArtUrl}${artist.thumb}`
+                )}&X-Plex-Token=${authToken}`
             : null,
         })) || [];
 
@@ -750,7 +758,11 @@ export const getAllPlaylists = async () => {
       const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
-      const response = await fetch(`${serverBaseUrl}/playlists?playlistType=audio&sectionID=${libraryId}`, {
+      const mockUrl = '/api/playlists.json';
+      const prodUrl = `${serverBaseUrl}/playlists?playlistType=audio&sectionID=${libraryId}`;
+      const actualUrl = mockData ? mockUrl : prodUrl;
+
+      const response = await fetch(actualUrl, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -773,9 +785,11 @@ export const getAllPlaylists = async () => {
             totalTracks: playlist.leafCount,
             duration: playlist.duration,
             thumb: playlistThumb
-              ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                  `${serverArtUrl}${playlistThumb}`
-                )}&X-Plex-Token=${authToken}`
+              ? mockData
+                ? playlistThumb
+                : `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                    `${serverArtUrl}${playlistThumb}`
+                  )}&X-Plex-Token=${authToken}`
               : null,
           };
         }) || [];
