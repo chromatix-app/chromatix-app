@@ -1,15 +1,63 @@
 .wrap {
-  max-width: 550px;
-  padding: 30px 20px;
+  padding: 80px 15px 50px;
+  z-index: 2;
+  text-align: center;
+
+  @media (min-width: 768px) {
+    padding: 100px 15px 50px;
+  }
+  @media (min-width: 1024px) {
+    padding: 150px 20px 90px;
+
+    @media (max-height: 900px) {
+      padding-top: 120px;
+    }
+    @media (max-height: 800px) {
+      padding-top: 100px;
+    }
+  }
+}
+
+//
+// INTRO
+//
+
+.intro {
+  max-width: 480px;
   margin: 0 auto;
 }
 
+.badge {
+  display: inline-block;
+  min-width: 140px;
+  padding: 6px 15px;
+  background: rgba(44, 44, 44, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 99px;
+
+  font-size: 13px;
+  line-height: 1;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #767676;
+
+  @media (min-width: 1024px) {
+    min-width: 180px;
+    padding: 8px 20px;
+    font-size: 14px;
+  }
+}
+
 .title {
-  font-size: 50px;
+  font-size: 48px;
   line-height: 1;
   font-weight: bold;
 
   @media (min-width: 390px) {
+    font-size: 56px;
+  }
+  @media (min-width: 1024px) {
     font-size: 60px;
   }
 }
@@ -23,5 +71,82 @@
 }
 
 .body {
-  font-size: 19px;
+  max-width: 90%;
+  margin: 0 auto;
+  font-size: 17px;
+  text-wrap: balance;
+
+  @media (min-width: 1024px) {
+    max-width: none;
+    font-size: 19px;
+  }
+}
+
+//
+// IMAGE
+//
+
+.image {
+  overflow: hidden;
+  width: 100%;
+  max-width: 460px;
+  margin: 100px auto;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.35);
+
+  @media (min-width: 768px) {
+    width: 80vw;
+    max-width: none;
+    margin: 115px auto;
+    border-radius: 8px;
+  }
+  @media (min-width: 1024px) {
+    max-width: 1200px;
+    margin: 135px auto;
+    border-radius: 12px;
+
+    @media (max-height: 900px) {
+      margin: 120px auto;
+    }
+    @media (max-height: 800px) {
+      margin: 110px auto;
+    }
+  }
+}
+
+// FOOTER
+
+.border {
+  max-width: 1280px;
+  height: 1px;
+  margin: 100px auto 50px;
+  background: rgba(255, 255, 255, 0.15);
+
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.15) 20%,
+    rgba(255, 255, 255, 0.15) 80%,
+    rgba(255, 255, 255, 0) 100%
+  );
+
+  @media (min-width: 768px) {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.15) 40%,
+      rgba(255, 255, 255, 0.15) 60%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+
+  @media (min-width: 1024px) {
+    margin: 140px auto 90px;
+  }
+}
+
+.legal {
+  font-size: 12px;
+  color: #555;
 }

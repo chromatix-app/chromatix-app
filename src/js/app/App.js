@@ -55,6 +55,15 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // toggle class on html if logged in
+  useEffect(() => {
+    if (loggedIn) {
+      document.documentElement.classList.add('logged-in');
+    } else {
+      document.documentElement.classList.remove('logged-in');
+    }
+  }, [loggedIn]);
+
   // plex errors
   if (plexErrorLogin) {
     return (
@@ -93,7 +102,7 @@ const App = () => {
   else {
     if (!currentServer || !currentLibrary) {
       return (
-        <div className="wrap wrap--auth">
+        <div className="wrap">
           <BrowserRouteSwitch />
           <UserMenu />
           {/* <Blocker /> */}
@@ -101,7 +110,7 @@ const App = () => {
       );
     } else {
       return (
-        <div className="wrap wrap--auth">
+        <div className="wrap">
           <div className="layout">
             <div className="layout-sidebar">
               <SideBar />

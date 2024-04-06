@@ -9,11 +9,7 @@ import { PageHome } from 'js/components';
 // ======================================================================
 
 const Login = () => {
-  return (
-    <main className="wrap-middle text-center">
-      <PageHome />
-    </main>
-  );
+  return <PageHome />;
 };
 
 // ======================================================================

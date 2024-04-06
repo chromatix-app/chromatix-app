@@ -9,14 +9,14 @@
   display: block;
   appearance: none;
   width: 100%;
-  max-width: 260px;
+  max-width: 220px;
   padding: 17px 16px;
   margin: 0;
   background: var(--color-primary);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
+  border-radius: 12px;
 
-  font-size: 17px;
+  font-size: 18px;
   line-height: 1.2;
   font-weight: 600;
   text-align: center;
@@ -24,6 +24,10 @@
   color: var(--color-background);
 
   @include outline-self;
+
+  @media (min-width: 1024px) {
+    max-width: 260px;
+  }
 
   &:disabled {
     cursor: default;

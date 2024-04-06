@@ -6,7 +6,6 @@
 
 html,
 body {
-  font-family: -apple-system, 'SF Pro', 'Inter', Helvetica, Arial, sans-serif;
   font-size: 1.6rem;
   line-height: 1.4;
   font-weight: normal;
@@ -14,7 +13,12 @@ body {
 }
 
 html {
+  font-family: 'GeographWeb', -apple-system, 'SF Pro', 'Inter', Helvetica, Arial, sans-serif;
   font-size: 62.5%;
+
+  &.logged-in {
+    font-family: -apple-system, 'SF Pro', 'Inter', Helvetica, Arial, sans-serif;
+  }
 
   &[data-font-size='larger'] {
     font-size: 77.5%;
