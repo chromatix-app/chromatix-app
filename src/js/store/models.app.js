@@ -5,6 +5,12 @@
 import * as plex from 'js/services/plex';
 
 // ======================================================================
+// OPTIONS
+// ======================================================================
+
+const maxDataLength = 5;
+
+// ======================================================================
 // STATE
 // ======================================================================
 
@@ -192,6 +198,11 @@ const effects = (dispatch) => ({
     const allArtists = [...rootState.appModel.allArtists];
     const artistIndex = allArtists.findIndex((artist) => artist.artistId === payload.artistId);
     if (artistIndex === -1) {
+      // limit recent entries
+      if (allArtists.length >= maxDataLength) {
+        allArtists.shift();
+      }
+      // add the new entry and save
       allArtists.push(payload);
     } else {
       allArtists[artistIndex] = payload;
@@ -205,6 +216,12 @@ const effects = (dispatch) => ({
     console.log('%c--- storeArtistAlbums ---', 'color:#079189');
     const { libraryId, artistId, artistAlbums } = payload;
     const allArtistAlbums = { ...rootState.appModel.allArtistAlbums };
+    // limit recent entries
+    const keys = Object.keys(allArtistAlbums);
+    if (keys.length >= maxDataLength) {
+      delete allArtistAlbums[keys[0]];
+    }
+    // add the new entry and save
     allArtistAlbums[libraryId + '-' + artistId] = artistAlbums;
     dispatch.appModel.setAppState({
       allArtistAlbums,
@@ -215,6 +232,12 @@ const effects = (dispatch) => ({
     console.log('%c--- storeArtistRelated ---', 'color:#079189');
     const { libraryId, artistId, artistRelated } = payload;
     const allArtistRelated = { ...rootState.appModel.allArtistRelated };
+    // limit recent entries
+    const keys = Object.keys(allArtistRelated);
+    if (keys.length >= maxDataLength) {
+      delete allArtistRelated[keys[0]];
+    }
+    // add the new entry and save
     allArtistRelated[libraryId + '-' + artistId] = artistRelated;
     dispatch.appModel.setAppState({
       allArtistRelated,
@@ -226,6 +249,11 @@ const effects = (dispatch) => ({
     const allAlbums = [...rootState.appModel.allAlbums];
     const albumIndex = allAlbums.findIndex((album) => album.albumId === payload.albumId);
     if (albumIndex === -1) {
+      // limit recent entries
+      if (allAlbums.length >= maxDataLength) {
+        allAlbums.shift();
+      }
+      // add the new entry and save
       allAlbums.push(payload);
     } else {
       allAlbums[albumIndex] = payload;
@@ -239,6 +267,12 @@ const effects = (dispatch) => ({
     console.log('%c--- storeAlbumTracks ---', 'color:#079189');
     const { libraryId, albumId, albumTracks } = payload;
     const allAlbumTracks = { ...rootState.appModel.allAlbumTracks };
+    // limit recent entries
+    const keys = Object.keys(allAlbumTracks);
+    if (keys.length >= maxDataLength) {
+      delete allAlbumTracks[keys[0]];
+    }
+    // add the new entry and save
     allAlbumTracks[libraryId + '-' + albumId] = albumTracks;
     dispatch.appModel.setAppState({
       allAlbumTracks,
@@ -250,6 +284,11 @@ const effects = (dispatch) => ({
     const allPlaylists = [...rootState.appModel.allPlaylists];
     const playlistIndex = allPlaylists.findIndex((playlist) => playlist.playlistId === payload.playlistId);
     if (playlistIndex === -1) {
+      // limit recent entries
+      if (allPlaylists.length >= maxDataLength) {
+        allPlaylists.shift();
+      }
+      // add the new entry and save
       allPlaylists.push(payload);
     } else {
       allPlaylists[playlistIndex] = payload;
@@ -263,6 +302,12 @@ const effects = (dispatch) => ({
     console.log('%c--- storePlaylistTracks ---', 'color:#079189');
     const { libraryId, playlistId, playlistTracks } = payload;
     const allPlaylistTracks = { ...rootState.appModel.allPlaylistTracks };
+    // limit recent entries
+    const keys = Object.keys(allPlaylistTracks);
+    if (keys.length >= maxDataLength) {
+      delete allPlaylistTracks[keys[0]];
+    }
+    // add the new entry and save
     allPlaylistTracks[libraryId + '-' + playlistId] = playlistTracks;
     dispatch.appModel.setAppState({
       allPlaylistTracks,
