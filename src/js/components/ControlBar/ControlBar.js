@@ -24,9 +24,8 @@ const ControlBar = () => {
   const intervalRef = useRef(null);
   const mouseDownRef = useRef(false);
 
-  const { playerElement, playerPlaying, playerVolume, playerMuted, playerInteractionCount } = useSelector(
-    ({ appModel }) => appModel
-  );
+  const { playerElement, playerLoading, playerPlaying, playerVolume, playerMuted, playerInteractionCount } =
+    useSelector(({ appModel }) => appModel);
 
   const {
     playingVariant,
@@ -160,7 +159,8 @@ const ControlBar = () => {
           )}
           {playerPlaying && (
             <button className={style.pause} onClick={dispatch.appModel.playerPause}>
-              <Icon icon="PauseFilledIcon" cover />
+              {!playerLoading && <Icon icon="PauseFilledIcon" cover />}
+              {playerLoading && <div className={style.loading}></div>}
             </button>
           )}
           <button className={style.forward} onClick={dispatch.appModel.playerNext} disabled={isDisabled}>

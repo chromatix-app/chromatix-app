@@ -20,6 +20,7 @@ const appState = {
   scrollToPlaying: false,
 
   playerElement: null,
+  playerLoading: false,
   playerPlaying: false,
   playerVolume: 100,
   playerMuted: false,
@@ -277,14 +278,37 @@ const effects = (dispatch) => ({
     const playerElement = document.createElement('audio');
     const playerVolume = rootState.appModel.playerVolume / 100;
     const playerMuted = rootState.appModel.playerMuted;
+    let loadstartTimeoutId = null;
     playerElement.volume = playerMuted ? 0 : playerVolume;
     dispatch.appModel.setAppState({
       playerElement,
+    });
+    // load events
+    playerElement.addEventListener('loadstart', () => {
+      console.log('loadstart');
+      clearTimeout(loadstartTimeoutId);
+      loadstartTimeoutId = setTimeout(() => {
+        dispatch.appModel.playerSetLoading(true);
+      }, 1000);
+    });
+    playerElement.addEventListener('canplay', () => {
+      console.log('canplay');
+      clearTimeout(loadstartTimeoutId);
+      dispatch.appModel.playerSetLoading(false);
     });
     // play next track when current track ends
     playerElement.addEventListener('ended', () => {
       dispatch.appModel.playerNext();
     });
+  },
+
+  playerSetLoading(payload, rootState) {
+    const playerLoading = rootState.appModel.playerLoading;
+    if (playerLoading !== payload) {
+      dispatch.appModel.setAppState({
+        playerLoading: payload,
+      });
+    }
   },
 
   playerUnload(payload, rootState) {
