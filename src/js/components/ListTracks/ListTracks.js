@@ -191,7 +191,7 @@ const ListEntry = React.memo(({ entry, trackNumber, showDisc, isCurrentlyPlaying
 
         {variant === 'playlist' && entry.thumb && (
           <div className={style.thumb}>
-            <img src={entry.thumb} alt={entry.title} />
+            <img src={entry.thumb} alt={entry.title} loading="lazy" />
           </div>
         )}
         <div className={style.title}>{entry.title}</div>

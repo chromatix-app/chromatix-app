@@ -47,7 +47,7 @@ const ListEntry = React.memo(({ thumb, title, artist, artistLink, duration, user
 
   return (
     <div className={style.card} onClick={handleCardClick}>
-      <div className={style.thumb}>{thumb && <img src={thumb} alt={title} />}</div>
+      <div className={style.thumb}>{thumb && <img src={thumb} alt={title} loading="lazy" />}</div>
       <div className={style.body}>
         {title && <div className={style.title}>{title}</div>}
 

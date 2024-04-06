@@ -285,14 +285,14 @@ const effects = (dispatch) => ({
     });
     // load events
     playerElement.addEventListener('loadstart', () => {
-      console.log('loadstart');
+      // console.log('loadstart');
       clearTimeout(loadstartTimeoutId);
       loadstartTimeoutId = setTimeout(() => {
         dispatch.appModel.playerSetLoading(true);
       }, 1000);
     });
     playerElement.addEventListener('canplay', () => {
-      console.log('canplay');
+      // console.log('canplay');
       clearTimeout(loadstartTimeoutId);
       dispatch.appModel.playerSetLoading(false);
     });
