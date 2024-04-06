@@ -13,13 +13,13 @@
   padding: 12px 30px;
   margin: 0 0 5px;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-opacity-01);
   border-radius: 8px;
   text-align: left;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: var(--color-opacity-01);
+    border: 1px solid var(--color-opacity-005);
   }
 }
 

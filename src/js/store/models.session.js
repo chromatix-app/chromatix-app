@@ -15,7 +15,9 @@ const sessionState = {
   currentServer: null,
   currentLibrary: null,
 
-  backgroundColor: '#111',
+  colorBackground: '#111',
+  colorText: '#fff',
+  colorPrimary: '#f7277a',
 };
 
 const playingState = {

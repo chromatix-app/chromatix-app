@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { ControlBar, SideBar, UserMenu } from 'js/components';
-import { useGotRequiredData, useScrollRestoration } from 'js/hooks';
+import { useColorTheme, useGotRequiredData, useScrollRestoration } from 'js/hooks';
 import { ErrorPlexGeneral, ErrorPlexLogin } from 'js/pages';
 import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 
@@ -34,6 +34,7 @@ const App = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
+  useColorTheme();
   useScrollRestoration();
 
   // disable console logs

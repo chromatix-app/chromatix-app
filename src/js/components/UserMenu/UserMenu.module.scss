@@ -29,7 +29,7 @@
   background: var(--color-panel-background);
   border: 1px solid var(--color-border);
   border-radius: 9px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 10px var(--color-shadow);
 
   @media (min-width: 1024px) {
     padding: 6px 6px 6px 15px;
@@ -65,7 +65,7 @@
   overflow: hidden;
   width: 40px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-opacity-01);
   border-radius: 4px;
 
   @media (min-width: 1024px) {
@@ -93,7 +93,7 @@
   max-height: calc(100svh - 95px);
   margin: 5px 0 0 auto;
   border-radius: 9px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 10px var(--color-shadow);
   font-size: 12px;
   text-align: left;
 }

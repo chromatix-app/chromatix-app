@@ -62,11 +62,11 @@
 
   &:hover,
   &:focus {
-    background: rgba(255, 255, 255, 0.025);
+    background: var(--color-opacity-0025);
   }
 
   &Active {
-    background: rgba(255, 255, 255, 0.05) !important;
+    background: var(--color-opacity-005) !important;
     font-weight: 500;
     color: var(--color-primary);
   }
