@@ -1,4 +1,8 @@
 User-agent: *
 Disallow: /
 Allow: /$
+Allow: /icon
+Allow: /images
+Allow: /manifest.json
+Allow: /robots.txt
 Allow: /sitemap.xml
