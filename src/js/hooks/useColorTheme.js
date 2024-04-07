@@ -8,12 +8,11 @@ function useColorTheme() {
   const defaultTheme = 'chromatix';
 
   const currentTheme = useSelector(({ sessionModel }) => sessionModel.currentTheme);
-
   const actualTheme = themes[currentTheme] ? currentTheme : defaultTheme;
 
-  const currentColorBackground = useSelector(({ sessionModel }) => sessionModel.colorBackground);
-  const currentColorText = useSelector(({ sessionModel }) => sessionModel.colorText);
-  const currentColorPrimary = useSelector(({ sessionModel }) => sessionModel.colorPrimary);
+  const currentColorBackground = useSelector(({ sessionModel }) => sessionModel.currentColorBackground);
+  const currentColorText = useSelector(({ sessionModel }) => sessionModel.currentColorText);
+  const currentColorPrimary = useSelector(({ sessionModel }) => sessionModel.currentColorPrimary);
 
   const colorBackground = currentTheme === 'custom' ? currentColorBackground : themes[actualTheme].background;
   const colorText = currentTheme === 'custom' ? currentColorText : themes[actualTheme].text;

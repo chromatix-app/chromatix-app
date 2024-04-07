@@ -18,7 +18,7 @@ export const Settings = () => {
   return (
     <div className={style.wrap}>
       <div className={style.entry}>
-        <div className={style.title}>Theme</div>
+        <div className={style.title}>Colour theme</div>
         <ThemeSettings />
       </div>
     </div>
@@ -27,7 +27,11 @@ export const Settings = () => {
 
 const ThemeSettings = () => {
   const dispatch = useDispatch();
+
   const currentTheme = useSelector(({ sessionModel }) => sessionModel.currentTheme);
+  const currentColorBackground = useSelector(({ sessionModel }) => sessionModel.currentColorBackground);
+  const currentColorText = useSelector(({ sessionModel }) => sessionModel.currentColorText);
+  const currentColorPrimary = useSelector(({ sessionModel }) => sessionModel.currentColorPrimary);
 
   const groupedThemes = Object.entries(themes).reduce((groups, [themeName, themeDetails]) => {
     const group = themeDetails.group;
@@ -62,6 +66,61 @@ const ThemeSettings = () => {
           ))}
         </div>
       ))}
+
+      <div className={style.themes}>
+        <button
+          className={clsx(style.theme, {
+            [style.themeCurrent]: currentTheme === 'custom',
+          })}
+          onClick={() => {
+            dispatch.sessionModel.setTheme('custom');
+          }}
+        >
+          <div className={style.themeBackground}>
+            <div className={style.icon}>
+              <Icon icon="PencilIcon" cover stroke />
+            </div>
+          </div>
+        </button>
+
+        {currentTheme === 'custom' && (
+          <div className={style.custom}>
+            <div className={style.customField}>
+              <div className={style.customLabel}>Background:</div>
+              <input
+                type="color"
+                className={style.customInput}
+                value={currentColorBackground}
+                onChange={(e) => {
+                  dispatch.sessionModel.setColorBackground(e.target.value);
+                }}
+              />
+            </div>
+            <div className={style.customField}>
+              <div className={style.customLabel}>Text:</div>
+              <input
+                type="color"
+                className={style.customInput}
+                value={currentColorText}
+                onChange={(e) => {
+                  dispatch.sessionModel.setColorText(e.target.value);
+                }}
+              />
+            </div>
+            <div className={style.customField}>
+              <div className={style.customLabel}>Highlight:</div>
+              <input
+                type="color"
+                className={style.customInput}
+                value={currentColorPrimary}
+                onChange={(e) => {
+                  dispatch.sessionModel.setColorPrimary(e.target.value);
+                }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
     </>
   );
 };

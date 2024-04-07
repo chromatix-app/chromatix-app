@@ -20,6 +20,7 @@
 
 .themes {
   display: flex;
+  align-items: center;
 }
 
 .theme {
@@ -63,4 +64,26 @@
   right: 10px;
   width: 20px;
   height: 20px;
+}
+
+.custom {
+  display: flex;
+  margin: 0 0 15px 10px;
+}
+
+.customField {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.customLabel {
+  display: inline-block;
+  margin-right: 5px;
+  font-size: 14px;
+}
+
+.customInput {
+  width: 60px;
+  height: 30px;
 }

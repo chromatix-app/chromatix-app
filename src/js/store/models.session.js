@@ -45,13 +45,41 @@ const reducers = {
     return { ...rootState, ...payload };
   },
 
+  //
+  // THEME
+  //
+
   setTheme(rootState, payload) {
-    console.log('%c--- setTheme ---', 'color:#91074A');
     return {
       ...rootState,
       currentTheme: payload,
     };
   },
+
+  setColorBackground(rootState, payload) {
+    return {
+      ...rootState,
+      currentColorBackground: payload,
+    };
+  },
+
+  setColorText(rootState, payload) {
+    return {
+      ...rootState,
+      currentColorText: payload,
+    };
+  },
+
+  setColorPrimary(rootState, payload) {
+    return {
+      ...rootState,
+      currentColorPrimary: payload,
+    };
+  },
+
+  //
+  // SERVER & LIBRARY
+  //
 
   setCurrentServer(rootState, payload) {
     console.log('%c--- setCurrentServer ---', 'color:#91074A');
