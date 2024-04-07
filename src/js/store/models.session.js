@@ -16,8 +16,8 @@ const sessionState = {
   currentLibrary: null,
 
   currentTheme: 'black-pink',
-  currentColorBackground: '#111',
-  currentColorText: '#fff',
+  currentColorBackground: '#111111',
+  currentColorText: '#ffffff',
   currentColorPrimary: '#f7277a',
 };
 
