@@ -193,6 +193,7 @@ span.minCenter {
   white-space: nowrap;
 
   .entry.entryPlaying & {
+    font-weight: 500;
     color: var(--color-primary);
   }
 }

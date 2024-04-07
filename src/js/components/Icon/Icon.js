@@ -18,6 +18,7 @@ import { ReactComponent as MusicNoteIcon } from './icons/music/music-note.svg';
 import { ReactComponent as NextIcon } from './icons/music/next.svg';
 import { ReactComponent as PauseIcon } from './icons/music/pause.svg';
 import { ReactComponent as PauseFilledIcon } from './icons/music/pause-filled.svg';
+import { ReactComponent as PencilIcon } from './icons/music/pencil.svg';
 import { ReactComponent as PlayIcon } from './icons/music/play.svg';
 import { ReactComponent as PlayFilledIcon } from './icons/music/play-filled.svg';
 import { ReactComponent as PreviousIcon } from './icons/music/previous.svg';
@@ -56,6 +57,7 @@ const customIcons = {
   NextIcon,
   PauseIcon,
   PauseFilledIcon,
+  PencilIcon,
   PlayIcon,
   PlayFilledIcon,
   PreviousIcon,

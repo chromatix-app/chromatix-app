@@ -15,9 +15,10 @@ const sessionState = {
   currentServer: null,
   currentLibrary: null,
 
-  colorBackground: '#111',
-  colorText: '#fff',
-  colorPrimary: '#f7277a',
+  currentTheme: 'black-pink',
+  currentColorBackground: '#111',
+  currentColorText: '#fff',
+  currentColorPrimary: '#f7277a',
 };
 
 const playingState = {
@@ -42,6 +43,14 @@ const reducers = {
   setSessionState(rootState, payload) {
     console.log('%c--- setSessionState ---', 'color:#91074A');
     return { ...rootState, ...payload };
+  },
+
+  setTheme(rootState, payload) {
+    console.log('%c--- setTheme ---', 'color:#91074A');
+    return {
+      ...rootState,
+      currentTheme: payload,
+    };
   },
 
   setCurrentServer(rootState, payload) {

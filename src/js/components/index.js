@@ -7,6 +7,7 @@ export { default as ListTracks } from './ListTracks/ListTracks';
 export { default as Loading } from './Loading/Loading';
 export { default as PageHome } from './PageHome/PageHome';
 export { default as RangeSlider } from './RangeSlider/RangeSlider';
+export { default as Settings } from './Settings/Settings';
 export { default as SideBar } from './SideBar/SideBar';
 export { default as StarRating } from './StarRating/StarRating';
 export { default as TitleBasic } from './TitleBasic/TitleBasic';

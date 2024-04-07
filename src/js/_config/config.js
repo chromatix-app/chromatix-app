@@ -1,4 +1,4 @@
-const config = {
+export const config = {
   // dev - make store accessible in window object
   globalStore: true,
 

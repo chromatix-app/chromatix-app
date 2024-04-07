@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { TitleHeading } from 'js/components';
+import { Settings, TitleHeading } from 'js/components';
 
 // ======================================================================
 // COMPONENT
@@ -12,6 +12,7 @@ const Artists = () => {
   return (
     <>
       <TitleHeading title="Settings" />
+      <Settings />
     </>
   );
 };

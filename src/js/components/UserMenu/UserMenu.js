@@ -4,6 +4,7 @@
 
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 
 import { Icon } from 'js/components';
@@ -106,7 +107,7 @@ const UserMenu = () => {
                     </React.Fragment>
                   ))}
 
-                {/* <NavLink
+                <NavLink
                   className={style.button}
                   to={'/settings'}
                   onClick={() => {
@@ -120,7 +121,7 @@ const UserMenu = () => {
                   <span className={clsx(style.iconArrow, style.iconHover)}>
                     <Icon icon="NextIcon" cover stroke />
                   </span>
-                </NavLink> */}
+                </NavLink>
               </>
             )}
 

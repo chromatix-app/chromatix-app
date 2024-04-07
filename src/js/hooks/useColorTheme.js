@@ -1,16 +1,23 @@
 import { useEffect } from 'react';
-// import { useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import chroma from 'chroma-js';
 
-function useColorTheme() {
-  // const colorBackground = useSelector(({ sessionModel }) => sessionModel.colorBackground);
-  // const colorText = useSelector(({ sessionModel }) => sessionModel.colorText);
-  // const colorPrimary = useSelector(({ sessionModel }) => sessionModel.colorPrimary);
+import { themes } from 'js/_config/themes';
 
-  const colorBackground = '#111';
-  const colorText = '#ffffff';
-  const colorPrimary = '#f7277a';
-  // const colorPrimary = '#e5a00d';
+function useColorTheme() {
+  const defaultTheme = 'chromatix';
+
+  const currentTheme = useSelector(({ sessionModel }) => sessionModel.currentTheme);
+
+  const actualTheme = themes[currentTheme] ? currentTheme : defaultTheme;
+
+  const currentColorBackground = useSelector(({ sessionModel }) => sessionModel.colorBackground);
+  const currentColorText = useSelector(({ sessionModel }) => sessionModel.colorText);
+  const currentColorPrimary = useSelector(({ sessionModel }) => sessionModel.colorPrimary);
+
+  const colorBackground = currentTheme === 'custom' ? currentColorBackground : themes[actualTheme].background;
+  const colorText = currentTheme === 'custom' ? currentColorText : themes[actualTheme].text;
+  const colorPrimary = currentTheme === 'custom' ? currentColorPrimary : themes[actualTheme].primary;
 
   const isLightTheme = chroma(colorBackground).luminance() > 0.5;
 
