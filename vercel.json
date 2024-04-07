@@ -1,0 +1,7 @@
+{
+  "github": {
+    "ignore": {
+      "branches": ["!main", "!staging"]
+    }
+  }
+}
