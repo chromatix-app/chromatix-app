@@ -6,7 +6,7 @@ html,
 body {
   vertical-align: baseline;
   height: 100%;
-  background: var(--color-background);
+  background: $color-background;
   // background: transparent;
 
   -webkit-tap-highlight-color: transparent;
@@ -22,6 +22,7 @@ body {
 html.logged-in,
 html.logged-in body {
   min-width: 720px;
+  background: var(--color-background);
   overscroll-behavior: none;
 }
 
