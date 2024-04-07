@@ -56,8 +56,9 @@ const clientIdentifier = 'chromatix.app';
 const clientIcon = 'https://chromatix.app/icon/icon-512.png';
 
 const currentProtocol = window.location.protocol + '//';
+const currentHost = window.location.host;
 
-const redirectUrlLocal = currentProtocol + 'localhost:3000?plex-login=true';
+const redirectUrlLocal = currentProtocol + currentHost + '?plex-login=true';
 const redirectUrlProd = 'https://chromatix.app?plex-login=true';
 const redirectUrlActual = isProduction ? redirectUrlProd : redirectUrlLocal;
 
@@ -229,6 +230,7 @@ const getUserInfo = async () => {
     store.dispatch.appModel.setLoggedIn(currentUser);
   } catch (e) {
     // error handling
+    console.error('Failed to get user info:', e);
     store.dispatch.appModel.plexErrorLogin();
   }
 };
@@ -248,7 +250,7 @@ export const getAllServers = async () => {
 
       try {
         const authToken = window.localStorage.getItem('chromatix-auth-token');
-        const response = await fetch('https://plex.tv/api/v2/resources?includeHttps=1', {
+        const response = await fetch('https://plex.tv/api/v2/resources?includeHttps=1&includeRelay=1&includeIPv6=1', {
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
@@ -271,12 +273,21 @@ export const getAllServers = async () => {
         const allServers = data
           .filter((resource) => resource.provides === 'server')
           .map((resource) => {
+            resource.connections.push(resource.connections.shift());
+            resource.connections.push(resource.connections.shift());
+            resource.connections.push(resource.connections.shift());
+
             const connectionLocal = resource.connections.filter((connection) => connection.local);
-            const connectionRemote = resource.connections.filter((connection) => !connection.local);
+            const connectionUrls = resource.connections.map((connection) => connection.uri);
             delete resource.connections;
             resource.serverId = resource.clientIdentifier;
-            resource.serverBaseUrlCurrent = connectionRemote[0].uri;
-            resource.serverArtUrl = `${connectionLocal[0].protocol}://localhost:${connectionLocal[0].port}`;
+            resource.serverBaseUrls = connectionUrls;
+            resource.serverBaseUrlCurrent = connectionUrls[0];
+            resource.serverBaseUrlIndex = 0;
+            resource.serverBaseUrlTotal = connectionUrls.length;
+            resource.serverArtUrl = connectionLocal?.[0]
+              ? `${connectionLocal[0].protocol}://localhost:${connectionLocal[0].port}`
+              : null;
             return resource;
           });
 
@@ -285,6 +296,7 @@ export const getAllServers = async () => {
         store.dispatch.appModel.storeAllServers(allServers);
       } catch (e) {
         // error handling
+        console.error('Failed to get user servers:', e);
         store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
       }
 
@@ -308,8 +320,10 @@ export const getAllLibraries = async () => {
         console.log('%c--- plex - getAllLibraries ---', 'color:#f9743b;');
         getUserLibrariesRunning = true;
 
+        // we need to cycle through the serverBaseUrls to find the first one that works
+        const { serverBaseUrls, serverBaseUrlCurrent, serverBaseUrlIndex, serverBaseUrlTotal } = currentServer;
+
         try {
-          const { serverBaseUrlCurrent } = currentServer;
           const authToken = window.localStorage.getItem('chromatix-auth-token');
           const response = await axios.get(`${serverBaseUrlCurrent}/library/sections`, {
             timeout: 5000, // 5 seconds
@@ -337,15 +351,29 @@ export const getAllLibraries = async () => {
 
           // console.log('allLibraries', allLibraries);
 
-          store.dispatch.appModel.setAppState({ allLibraries });
           store.dispatch.sessionModel.refreshCurrentLibrary(allLibraries);
+          store.dispatch.appModel.setAppState({ allLibraries });
         } catch (e) {
           // error handling
-          if (e.code === 'ECONNABORTED') {
-            console.error('Request timed out');
-            store.dispatch.sessionModel.unsetCurrentServer();
+          console.error('Failed to get user libraries:', e);
+          // let's make sure we've tried every connection url before giving up
+          if (serverBaseUrlIndex < serverBaseUrlTotal - 1) {
+            // retry the request with the next connection url
+            console.log('TRY NEXT BASE URL');
+            store.dispatch.sessionModel.setServerIndex({
+              serverBaseUrlCurrent: serverBaseUrls[serverBaseUrlIndex + 1],
+              serverBaseUrlIndex: serverBaseUrlIndex + 1,
+            });
+            getUserLibrariesRunning = false;
+            getAllLibraries();
           } else {
-            store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
+            // default error handling
+            if (e.code === 'ECONNABORTED') {
+              console.error('Request timed out');
+              store.dispatch.sessionModel.unsetCurrentServer();
+            } else {
+              store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
+            }
           }
         }
 

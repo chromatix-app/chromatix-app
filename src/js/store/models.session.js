@@ -91,6 +91,22 @@ const reducers = {
     };
   },
 
+  setServerIndex(rootState, payload) {
+    // console.log('%c--- setServerIndex ---', 'color:#0f60b7');
+    const currentServer = rootState.currentServer;
+    const { serverBaseUrlCurrent, serverBaseUrlIndex } = payload;
+    // update the currentServer object with the new serverBaseUrl
+    const updatedServer = {
+      ...currentServer,
+      serverBaseUrlCurrent,
+      serverBaseUrlIndex,
+    };
+    return {
+      ...rootState,
+      currentServer: updatedServer,
+    };
+  },
+
   setCurrentLibrary(rootState, payload) {
     console.log('%c--- setCurrentLibrary ---', 'color:#0f60b7');
     return {
