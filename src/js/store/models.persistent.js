@@ -3,7 +3,7 @@
 // ======================================================================
 
 import config from 'js/_config/config';
-// import * as utils from 'js/utils';
+import { pageWasReloaded } from 'js/utils';
 
 // ======================================================================
 // STATE
@@ -12,10 +12,10 @@ import config from 'js/_config/config';
 // PERSISTENT STATE
 // Anything to be saved in localstorage for use on reload
 
-const persistentState = {
-  // debugConsole: false,
-  // invitation: null,
-  // persistentEmail: null,
+const historyState = {
+  historyLength: 0,
+  historyStack: [],
+  futureStack: [],
 };
 
 // GET PERSISTENT STATE
@@ -32,7 +32,9 @@ try {
 
 // COMBINE ALL STATES
 
-const state = Object.assign(persistentState, localStorageState);
+console.log(historyState);
+
+const state = Object.assign({}, historyState, localStorageState);
 
 // ======================================================================
 // REDUCERS
@@ -44,41 +46,26 @@ const reducers = {
     return { ...rootState, ...payload };
   },
 
-  // setInviteId(rootState, payload) {
-  //   console.log('%c--- setInviteId - ' + payload + ' ---', 'color:#91074A');
-  //   if (payload === null) {
-  //     return {
-  //       ...rootState,
-  //       invitation: null,
-  //     };
-  //   } else {
-  //     return {
-  //       ...rootState,
-  //       invitation: {
-  //         id: payload,
-  //         time: new Date().getTime(),
-  //       },
-  //     };
-  //   }
-  // },
+  setHistoryLength(rootState, payload) {
+    return {
+      ...rootState,
+      historyLength: payload,
+    };
+  },
 
-  // setPersistentEmail(rootState, payload) {
-  //   console.log('%c--- setPersistentEmail - ' + payload + ' ---', 'color:#91074A');
-  //   if (payload === null) {
-  //     return {
-  //       ...rootState,
-  //       persistentEmail: null,
-  //     };
-  //   } else {
-  //     return {
-  //       ...rootState,
-  //       persistentEmail: {
-  //         email: payload,
-  //         time: new Date().getTime(),
-  //       },
-  //     };
-  //   }
-  // },
+  setHistoryStack(rootState, payload) {
+    return {
+      ...rootState,
+      historyStack: payload,
+    };
+  },
+
+  setFutureStack(rootState, payload) {
+    return {
+      ...rootState,
+      futureStack: payload,
+    };
+  },
 };
 
 // ======================================================================
@@ -86,38 +73,16 @@ const reducers = {
 // ======================================================================
 
 const effects = (dispatch) => ({
-  // loginChecks(payload, rootState) {
-  //   console.log('%c--- loginChecks ---', 'color:#91074A');
-  //   // clear user email if it exists
-  //   const persistentEmail = rootState.persistentModel.persistentEmail;
-  //   if (persistentEmail) {
-  //     dispatch.persistentModel.setPersistentEmail(null);
-  //   }
-  // },
-  // getPersistentEmail(payload, rootState) {
-  //   const emailIsExpired = (persistentEmail) => {
-  //     const threeMinutes = 1000 * 60 * 3;
-  //     const savedTime = persistentEmail.time;
-  //     const nowTime = new Date().getTime();
-  //     const difference = nowTime - savedTime;
-  //     return difference > threeMinutes;
-  //   };
-  //   // get email
-  //   const persistentEmail = rootState.persistentModel.persistentEmail;
-  //   // check if email is expired
-  //   if (persistentEmail) {
-  //     if (emailIsExpired(persistentEmail)) {
-  //       // clear email
-  //       dispatch.persistentModel.setPersistentEmail(null);
-  //       return null;
-  //     } else {
-  //       // refresh expiration and return email
-  //       dispatch.persistentModel.setPersistentEmail(persistentEmail.email);
-  //       return persistentEmail.email;
-  //     }
-  //   }
-  //   return null;
-  // },
+  init(payload, rootState) {
+    console.log('%c--- init ---', 'color:#057811');
+
+    if (!pageWasReloaded()) {
+      console.log('CLEARING LOCAL STORAGE');
+      dispatch.persistentModel.setPersistentState({
+        ...historyState,
+      });
+    }
+  },
 });
 
 // ======================================================================

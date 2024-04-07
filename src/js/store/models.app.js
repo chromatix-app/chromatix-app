@@ -53,7 +53,7 @@ const plexLibraryState = {
   allPlaylistTracks: {},
 };
 
-const state = Object.assign(appState, userState, plexServerState, plexLibraryState);
+const state = Object.assign({}, appState, userState, plexServerState, plexLibraryState);
 
 // ======================================================================
 // REDUCERS
@@ -93,6 +93,8 @@ const effects = (dispatch) => ({
     });
     // initialise player
     dispatch.appModel.playerInit();
+    // initialise persistent state
+    dispatch.persistentModel.init();
     // initialise plex
     plex.init();
   },
