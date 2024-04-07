@@ -275,6 +275,7 @@ export const getAllServers = async () => {
           .map((resource) => {
             resource.connections.push(resource.connections.shift());
             resource.connections.push(resource.connections.shift());
+
             resource.connections.push(resource.connections.shift());
 
             const connectionLocal = resource.connections.filter((connection) => connection.local);
