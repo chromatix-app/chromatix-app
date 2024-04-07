@@ -275,7 +275,7 @@ export const getAllServers = async () => {
             const connectionRemote = resource.connections.filter((connection) => !connection.local);
             delete resource.connections;
             resource.serverId = resource.clientIdentifier;
-            resource.serverBaseUrl = connectionRemote[0].uri;
+            resource.serverBaseUrlCurrent = connectionRemote[0].uri;
             resource.serverArtUrl = `${connectionLocal[0].protocol}://localhost:${connectionLocal[0].port}`;
             return resource;
           });
@@ -309,9 +309,9 @@ export const getAllLibraries = async () => {
         getUserLibrariesRunning = true;
 
         try {
-          const { serverBaseUrl } = currentServer;
+          const { serverBaseUrlCurrent } = currentServer;
           const authToken = window.localStorage.getItem('chromatix-auth-token');
-          const response = await axios.get(`${serverBaseUrl}/library/sections`, {
+          const response = await axios.get(`${serverBaseUrlCurrent}/library/sections`, {
             timeout: 5000, // 5 seconds
             headers: {
               Accept: 'application/json',
@@ -329,7 +329,7 @@ export const getAllLibraries = async () => {
           allLibraries.forEach((library) => {
             library.libraryId = library.key;
             // library.thumb = library.composite
-            //   ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+            //   ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
             //       `${serverArtUrl}${library.composite}`
             //     )}&X-Plex-Token=${authToken}`
             //   : null;
@@ -367,11 +367,11 @@ export const getAllArtists = async () => {
     if (!prevAllArtists) {
       getAllArtistsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
-      const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
       const mockUrl = '/api/artists.json';
-      const prodUrl = `${serverBaseUrl}/library/sections/${libraryId}/all`;
+      const prodUrl = `${serverBaseUrlCurrent}/library/sections/${libraryId}/all`;
       const actualUrl = mockData ? mockUrl : prodUrl;
 
       const response = await fetch(actualUrl, {
@@ -398,7 +398,7 @@ export const getAllArtists = async () => {
           thumb: artist.thumb
             ? mockData
               ? artist.thumb
-              : `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+              : `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
                   `${serverArtUrl}${artist.thumb}`
                 )}&X-Plex-Token=${authToken}`
             : null,
@@ -425,9 +425,9 @@ export const getArtistDetails = async (libraryId, artistId) => {
     if (!prevArtistDetails) {
       getArtistDetailsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
-      const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
 
-      const response = await fetch(`${serverBaseUrl}/library/metadata/${artistId}`, {
+      const response = await fetch(`${serverBaseUrlCurrent}/library/metadata/${artistId}`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -449,7 +449,7 @@ export const getArtistDetails = async (libraryId, artistId) => {
         userRating: artist.userRating,
         link: '/artists/' + libraryId + '/' + artist.ratingKey,
         thumb: artist.thumb
-          ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+          ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
               `${serverArtUrl}${artist.thumb}`
             )}&X-Plex-Token=${authToken}`
           : null,
@@ -476,9 +476,9 @@ export const getAllArtistAlbums = async (libraryId, artistId) => {
     if (!prevAllAlbums) {
       getAllArtistAlbumsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
-      const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
 
-      const response = await fetch(`${serverBaseUrl}/library/metadata/${artistId}/children?excludeAllLeaves=1`, {
+      const response = await fetch(`${serverBaseUrlCurrent}/library/metadata/${artistId}/children?excludeAllLeaves=1`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -502,7 +502,7 @@ export const getAllArtistAlbums = async (libraryId, artistId) => {
           releaseDate: album.originallyAvailableAt,
           link: '/albums/' + libraryId + '/' + album.ratingKey,
           thumb: album.thumb
-            ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+            ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
                 `${serverArtUrl}${album.thumb}`
               )}&X-Plex-Token=${authToken}`
             : null,
@@ -529,10 +529,10 @@ export const getAllArtistRelated = async (libraryId, artistId) => {
     if (!prevAllRelated) {
       getAllArtistRelatedRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
-      const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
 
       const response = await fetch(
-        `${serverBaseUrl}/library/metadata/${artistId}/related?includeAugmentations=1&includeExternalMetadata=1&includeMeta=1`,
+        `${serverBaseUrlCurrent}/library/metadata/${artistId}/related?includeAugmentations=1&includeExternalMetadata=1&includeMeta=1`,
         {
           headers: {
             Accept: 'application/json',
@@ -560,7 +560,7 @@ export const getAllArtistRelated = async (libraryId, artistId) => {
             releaseDate: album.originallyAvailableAt,
             link: '/albums/' + libraryId + '/' + album.ratingKey,
             thumb: album.thumb
-              ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+              ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
                   `${serverArtUrl}${album.thumb}`
                 )}&X-Plex-Token=${authToken}`
               : null,
@@ -588,10 +588,10 @@ export const getAllAlbums = async () => {
     if (!prevAllAlbums) {
       getAllAlbumsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
-      const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
-      const response = await fetch(`${serverBaseUrl}/library/sections/${libraryId}/all?type=9`, {
+      const response = await fetch(`${serverBaseUrlCurrent}/library/sections/${libraryId}/all?type=9`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -615,7 +615,7 @@ export const getAllAlbums = async () => {
           releaseDate: album.originallyAvailableAt,
           link: '/albums/' + libraryId + '/' + album.ratingKey,
           thumb: album.thumb
-            ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+            ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
                 `${serverArtUrl}${album.thumb}`
               )}&X-Plex-Token=${authToken}`
             : null,
@@ -642,9 +642,9 @@ export const getAlbumDetails = async (libraryId, albumId) => {
     if (!prevAlbumDetails) {
       getAlbumDetailsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
-      const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
 
-      const response = await fetch(`${serverBaseUrl}/library/metadata/${albumId}`, {
+      const response = await fetch(`${serverBaseUrlCurrent}/library/metadata/${albumId}`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -668,7 +668,7 @@ export const getAlbumDetails = async (libraryId, albumId) => {
         releaseDate: album.originallyAvailableAt,
         link: '/albums/' + album.librarySectionID + '/' + album.ratingKey,
         thumb: album.thumb
-          ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+          ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
               `${serverArtUrl}${album.thumb}`
             )}&X-Plex-Token=${authToken}`
           : null,
@@ -695,9 +695,9 @@ export const getAlbumTracks = async (libraryId, albumId) => {
     if (!prevAlbumTracks) {
       getAlbumTracksRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
-      const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
 
-      const response = await fetch(`${serverBaseUrl}/library/metadata/${albumId}/children`, {
+      const response = await fetch(`${serverBaseUrlCurrent}/library/metadata/${albumId}/children`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -723,11 +723,11 @@ export const getAlbumTracks = async (libraryId, albumId) => {
           duration: track.Media[0].duration,
           userRating: track.userRating,
           thumb: track.thumb
-            ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+            ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
                 `${serverArtUrl}${track.thumb}`
               )}&X-Plex-Token=${authToken}`
             : null,
-          src: `${serverBaseUrl}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
+          src: `${serverBaseUrlCurrent}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
 
           // determine if an album is a normal album, single, live album or compilation
           // albumType: track.parentTitle,
@@ -755,11 +755,11 @@ export const getAllPlaylists = async () => {
       console.log('%c--- plex - getAllPlaylists ---', 'color:#f9743b;');
       getAllPlaylistsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
-      const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
       const mockUrl = '/api/playlists.json';
-      const prodUrl = `${serverBaseUrl}/playlists?playlistType=audio&sectionID=${libraryId}`;
+      const prodUrl = `${serverBaseUrlCurrent}/playlists?playlistType=audio&sectionID=${libraryId}`;
       const actualUrl = mockData ? mockUrl : prodUrl;
 
       const response = await fetch(actualUrl, {
@@ -787,7 +787,7 @@ export const getAllPlaylists = async () => {
             thumb: playlistThumb
               ? mockData
                 ? playlistThumb
-                : `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                : `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
                     `${serverArtUrl}${playlistThumb}`
                   )}&X-Plex-Token=${authToken}`
               : null,
@@ -817,9 +817,9 @@ export const getPlaylistDetails = async (libraryId, playlistId) => {
     if (!prevPlaylistDetails) {
       getPlaylistDetailsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
-      const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
 
-      const response = await fetch(`${serverBaseUrl}/playlists/${playlistId}`, {
+      const response = await fetch(`${serverBaseUrlCurrent}/playlists/${playlistId}`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -841,7 +841,7 @@ export const getPlaylistDetails = async (libraryId, playlistId) => {
         totalTracks: playlist.leafCount,
         duration: playlist.duration,
         thumb: playlistThumb
-          ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+          ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
               `${serverArtUrl}${playlistThumb}`
             )}&X-Plex-Token=${authToken}`
           : null,
@@ -868,9 +868,9 @@ export const getPlaylistTracks = async (libraryId, playlistId) => {
     if (!prevPlaylistTracks) {
       getPlaylistTracksRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
-      const { serverBaseUrl, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
 
-      const response = await fetch(`${serverBaseUrl}/playlists/${playlistId}/items`, {
+      const response = await fetch(`${serverBaseUrlCurrent}/playlists/${playlistId}/items`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -896,11 +896,11 @@ export const getPlaylistTracks = async (libraryId, playlistId) => {
           duration: track.duration,
           userRating: track.userRating,
           thumb: track.thumb
-            ? `${serverBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+            ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
                 `${serverArtUrl}${track.thumb}`
               )}&X-Plex-Token=${authToken}`
             : null,
-          src: `${serverBaseUrl}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
+          src: `${serverBaseUrlCurrent}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
         })) || [];
 
       // console.log(playlistTracks);
