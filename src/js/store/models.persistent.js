@@ -42,7 +42,7 @@ const state = Object.assign({}, historyState, localStorageState);
 
 const reducers = {
   setPersistentState(rootState, payload) {
-    console.log('%c--- setPersistentState ---', 'color:#91074A');
+    console.log('%c--- setPersistentState ---', 'color:#439c08');
     return { ...rootState, ...payload };
   },
 
@@ -66,6 +66,13 @@ const reducers = {
       futureStack: payload,
     };
   },
+
+  clearHistoryState(rootState) {
+    return {
+      ...rootState,
+      ...historyState,
+    };
+  },
 };
 
 // ======================================================================
@@ -74,13 +81,10 @@ const reducers = {
 
 const effects = (dispatch) => ({
   init(payload, rootState) {
-    console.log('%c--- init ---', 'color:#057811');
+    console.log('%c--- init ---', 'color:#439c08');
 
     if (!pageWasReloaded()) {
-      console.log('CLEARING LOCAL STORAGE');
-      dispatch.persistentModel.setPersistentState({
-        ...historyState,
-      });
+      dispatch.persistentModel.clearHistoryState();
     }
   },
 });

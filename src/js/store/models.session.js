@@ -41,7 +41,7 @@ const state = Object.assign({}, sessionState, playingState);
 
 const reducers = {
   setSessionState(rootState, payload) {
-    console.log('%c--- setSessionState ---', 'color:#0d59aa');
+    console.log('%c--- setSessionState ---', 'color:#0f60b7');
     return { ...rootState, ...payload };
   },
 
@@ -82,7 +82,7 @@ const reducers = {
   //
 
   setCurrentServer(rootState, payload) {
-    console.log('%c--- setCurrentServer ---', 'color:#0d59aa');
+    console.log('%c--- setCurrentServer ---', 'color:#0f60b7');
     return {
       ...rootState,
       currentServer: payload,
@@ -92,7 +92,7 @@ const reducers = {
   },
 
   setCurrentLibrary(rootState, payload) {
-    console.log('%c--- setCurrentLibrary ---', 'color:#0d59aa');
+    console.log('%c--- setCurrentLibrary ---', 'color:#0f60b7');
     return {
       ...rootState,
       currentLibrary: payload,
@@ -100,7 +100,7 @@ const reducers = {
   },
 
   refreshCurrentServer(rootState, payload) {
-    console.log('%c--- refreshCurrentServer ---', 'color:#0d59aa');
+    console.log('%c--- refreshCurrentServer ---', 'color:#0f60b7');
     const currentServerToken = rootState.currentServer ? rootState.currentServer.serverId : null;
     const refreshedServer = payload?.find((server) => server.serverId === currentServerToken);
     if (refreshedServer) {
@@ -119,7 +119,7 @@ const reducers = {
   },
 
   refreshCurrentLibrary(rootState, payload) {
-    console.log('%c--- refreshCurrentLibrary ---', 'color:#0d59aa');
+    console.log('%c--- refreshCurrentLibrary ---', 'color:#0f60b7');
     const currentLibraryToken = rootState.currentLibrary ? rootState.currentLibrary.libraryId : null;
     const refreshedLibrary = payload?.find((library) => library.libraryId === currentLibraryToken);
     return {
@@ -129,7 +129,7 @@ const reducers = {
   },
 
   setPlayingTrackProgress(rootState, payload) {
-    // console.log('%c--- setPlayingTrackProgress ---', 'color:#0d59aa');
+    // console.log('%c--- setPlayingTrackProgress ---', 'color:#0f60b7');
     return {
       ...rootState,
       playingTrackProgress: payload,
@@ -160,7 +160,7 @@ const reducers = {
 
 const effects = (dispatch) => ({
   loadLocalStorage(payload, rootState) {
-    console.log('%c--- loadLocalStorage ---', 'color:#0d59aa');
+    console.log('%c--- loadLocalStorage ---', 'color:#0f60b7');
     let localStorageState = { ...sessionState };
     // attempt to retrieve the current user's session state from local storage
     const loggedIn = rootState.appModel.loggedIn;
@@ -180,7 +180,7 @@ const effects = (dispatch) => ({
   },
 
   setLoggedOut(payload, rootState) {
-    console.log('%c--- setLoggedOut ---', 'color:#0d59aa');
+    console.log('%c--- setLoggedOut ---', 'color:#0f60b7');
     dispatch.sessionModel.setSessionState({
       ...sessionState,
       ...playingState,
@@ -188,7 +188,7 @@ const effects = (dispatch) => ({
   },
 
   unsetCurrentServer(rootState, payload) {
-    console.log('%c--- unsetCurrentServer ---', 'color:#0d59aa');
+    console.log('%c--- unsetCurrentServer ---', 'color:#0f60b7');
     dispatch.sessionModel.setSessionState({
       currentServer: null,
       currentLibrary: null,
@@ -198,7 +198,7 @@ const effects = (dispatch) => ({
   },
 
   switchCurrentServer(payload, rootState) {
-    console.log('%c--- switchCurrentServer ---', 'color:#0d59aa');
+    console.log('%c--- switchCurrentServer ---', 'color:#0f60b7');
     const currentServer = rootState.sessionModel.currentServer;
     const currentServerId = currentServer ? currentServer.serverId : null;
     if (currentServerId !== payload) {
@@ -212,11 +212,12 @@ const effects = (dispatch) => ({
         ...playingState,
       });
       dispatch.appModel.clearPlexServerState();
+      dispatch.persistentModel.clearHistoryState();
     }
   },
 
   switchCurrentLibrary(payload, rootState) {
-    console.log('%c--- switchCurrentLibrary ---', 'color:#0d59aa');
+    console.log('%c--- switchCurrentLibrary ---', 'color:#0f60b7');
     const currentLibrary = rootState.sessionModel.currentLibrary;
     const currentLibraryId = currentLibrary ? currentLibrary.libraryId : null;
     if (currentLibraryId !== payload) {
@@ -226,6 +227,7 @@ const effects = (dispatch) => ({
         currentLibrary: newLibrary,
       });
       dispatch.appModel.clearPlexLibraryState();
+      dispatch.persistentModel.clearHistoryState();
     }
   },
 });

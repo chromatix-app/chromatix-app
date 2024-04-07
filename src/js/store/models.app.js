@@ -61,7 +61,7 @@ const state = Object.assign({}, appState, userState, plexServerState, plexLibrar
 
 const reducers = {
   setAppState(rootState, payload) {
-    // console.log('%c--- setAppState ---', 'color:#079189');
+    // console.log('%c--- setAppState ---', 'color:#07a098');
     return { ...rootState, ...payload };
   },
 
@@ -80,7 +80,7 @@ const reducers = {
 
 const effects = (dispatch) => ({
   init(payload, rootState) {
-    console.log('%c--- init ---', 'color:#079189');
+    console.log('%c--- init ---', 'color:#07a098');
     // detect if browser is standalone (i.e. a web app)
     if ('standalone' in window.navigator && !!window.navigator.standalone) {
       dispatch.appModel.setAppState({
@@ -104,18 +104,18 @@ const effects = (dispatch) => ({
   //
 
   doLogin(payload, rootState) {
-    console.log('%c--- login ---', 'color:#079189');
+    console.log('%c--- login ---', 'color:#07a098');
     plex.login();
   },
 
   doLogout(payload, rootState) {
-    console.log('%c--- logout ---', 'color:#079189');
+    console.log('%c--- logout ---', 'color:#07a098');
     plex.logout();
     rootState.appModel.history.replace('/');
   },
 
   setLoggedIn(payload, rootState) {
-    console.log('%c--- setLoggedIn ---', 'color:#079189');
+    console.log('%c--- setLoggedIn ---', 'color:#07a098');
     dispatch.appModel.setAppState({
       inited: true,
       loggedIn: true,
@@ -127,7 +127,7 @@ const effects = (dispatch) => ({
   },
 
   setLoggedOut(payload, rootState) {
-    console.log('%c--- setLoggedOut ---', 'color:#079189');
+    console.log('%c--- setLoggedOut ---', 'color:#07a098');
     dispatch.appModel.setAppState({
       inited: true,
       ...userState,
@@ -143,14 +143,14 @@ const effects = (dispatch) => ({
   //
 
   plexErrorLogin(payload, rootState) {
-    // console.log('%c--- plexErrorLogin ---', 'color:#079189');
+    // console.log('%c--- plexErrorLogin ---', 'color:#07a098');
     dispatch.appModel.setAppState({
       plexErrorLogin: true,
     });
   },
 
   dismissPlexErrorLogin(payload, rootState) {
-    // console.log('%c--- dismissPlexErrorLogin ---', 'color:#079189');
+    // console.log('%c--- dismissPlexErrorLogin ---', 'color:#07a098');
     if (rootState.appModel.isInited) {
       dispatch.appModel.setAppState({
         plexErrorLogin: false,
@@ -161,7 +161,7 @@ const effects = (dispatch) => ({
   },
 
   clearPlexServerState(payload, rootState) {
-    console.log('%c--- clearPlexServerState ---', 'color:#079189');
+    console.log('%c--- clearPlexServerState ---', 'color:#07a098');
     dispatch.appModel.setAppState({
       ...plexServerState,
       ...plexLibraryState,
@@ -170,7 +170,7 @@ const effects = (dispatch) => ({
   },
 
   clearPlexLibraryState(payload, rootState) {
-    console.log('%c--- clearPlexLibraryState ---', 'color:#079189');
+    console.log('%c--- clearPlexLibraryState ---', 'color:#07a098');
     dispatch.appModel.setAppState({
       ...plexLibraryState,
     });
@@ -179,7 +179,7 @@ const effects = (dispatch) => ({
   },
 
   storeAllServers(payload, rootState) {
-    // console.log('%c--- storeAllServers ---', 'color:#079189');
+    // console.log('%c--- storeAllServers ---', 'color:#07a098');
     dispatch.appModel.setAppState({
       allServers: payload,
     });
@@ -188,7 +188,7 @@ const effects = (dispatch) => ({
   },
 
   storeAllLibraries(payload, rootState) {
-    // console.log('%c--- storeAllLibraries ---', 'color:#079189');
+    // console.log('%c--- storeAllLibraries ---', 'color:#07a098');
     dispatch.appModel.setAppState({
       allLibraries: payload,
     });
@@ -196,7 +196,7 @@ const effects = (dispatch) => ({
   },
 
   storeArtistDetails(payload, rootState) {
-    console.log('%c--- storeArtistDetails ---', 'color:#079189');
+    console.log('%c--- storeArtistDetails ---', 'color:#07a098');
     const allArtists = [...rootState.appModel.allArtists];
     const artistIndex = allArtists.findIndex((artist) => artist.artistId === payload.artistId);
     if (artistIndex === -1) {
@@ -215,7 +215,7 @@ const effects = (dispatch) => ({
   },
 
   storeArtistAlbums(payload, rootState) {
-    console.log('%c--- storeArtistAlbums ---', 'color:#079189');
+    console.log('%c--- storeArtistAlbums ---', 'color:#07a098');
     const { libraryId, artistId, artistAlbums } = payload;
     const allArtistAlbums = { ...rootState.appModel.allArtistAlbums };
     // limit recent entries
@@ -231,7 +231,7 @@ const effects = (dispatch) => ({
   },
 
   storeArtistRelated(payload, rootState) {
-    console.log('%c--- storeArtistRelated ---', 'color:#079189');
+    console.log('%c--- storeArtistRelated ---', 'color:#07a098');
     const { libraryId, artistId, artistRelated } = payload;
     const allArtistRelated = { ...rootState.appModel.allArtistRelated };
     // limit recent entries
@@ -247,7 +247,7 @@ const effects = (dispatch) => ({
   },
 
   storeAlbumDetails(payload, rootState) {
-    console.log('%c--- storeAlbumDetails ---', 'color:#079189');
+    console.log('%c--- storeAlbumDetails ---', 'color:#07a098');
     const allAlbums = [...rootState.appModel.allAlbums];
     const albumIndex = allAlbums.findIndex((album) => album.albumId === payload.albumId);
     if (albumIndex === -1) {
@@ -266,7 +266,7 @@ const effects = (dispatch) => ({
   },
 
   storeAlbumTracks(payload, rootState) {
-    console.log('%c--- storeAlbumTracks ---', 'color:#079189');
+    console.log('%c--- storeAlbumTracks ---', 'color:#07a098');
     const { libraryId, albumId, albumTracks } = payload;
     const allAlbumTracks = { ...rootState.appModel.allAlbumTracks };
     // limit recent entries
@@ -282,7 +282,7 @@ const effects = (dispatch) => ({
   },
 
   storePlaylistDetails(payload, rootState) {
-    console.log('%c--- storePlaylistDetails ---', 'color:#079189');
+    console.log('%c--- storePlaylistDetails ---', 'color:#07a098');
     const allPlaylists = [...rootState.appModel.allPlaylists];
     const playlistIndex = allPlaylists.findIndex((playlist) => playlist.playlistId === payload.playlistId);
     if (playlistIndex === -1) {
@@ -301,7 +301,7 @@ const effects = (dispatch) => ({
   },
 
   storePlaylistTracks(payload, rootState) {
-    console.log('%c--- storePlaylistTracks ---', 'color:#079189');
+    console.log('%c--- storePlaylistTracks ---', 'color:#07a098');
     const { libraryId, playlistId, playlistTracks } = payload;
     const allPlaylistTracks = { ...rootState.appModel.allPlaylistTracks };
     // limit recent entries
@@ -321,7 +321,7 @@ const effects = (dispatch) => ({
   //
 
   playerInit(payload, rootState) {
-    // console.log('%c--- playerInit ---', 'color:#079189');
+    // console.log('%c--- playerInit ---', 'color:#07a098');
     const playerElement = document.createElement('audio');
     const playerVolume = rootState.appModel.playerVolume / 100;
     const playerMuted = rootState.appModel.playerMuted;
@@ -359,7 +359,7 @@ const effects = (dispatch) => ({
   },
 
   playerUnload(payload, rootState) {
-    console.log('%c--- playerUnload ---', 'color:#079189');
+    console.log('%c--- playerUnload ---', 'color:#07a098');
     const playerElement = rootState.appModel.playerElement;
     playerElement.pause();
     playerElement.src = '';
@@ -370,7 +370,7 @@ const effects = (dispatch) => ({
   },
 
   playerRefresh(payload, rootState) {
-    console.log('%c--- playerRefresh ---', 'color:#079189');
+    console.log('%c--- playerRefresh ---', 'color:#07a098');
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
     const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
     if (playingTrackIndex || playingTrackIndex === 0) {
@@ -379,7 +379,7 @@ const effects = (dispatch) => ({
   },
 
   playerLoadList(payload, rootState) {
-    // console.log('%c--- playerLoadList ---', 'color:#079189');
+    // console.log('%c--- playerLoadList ---', 'color:#07a098');
     dispatch.appModel.setAppState({
       playerPlaying: true,
     });
@@ -397,7 +397,7 @@ const effects = (dispatch) => ({
   },
 
   playerLoadIndex(payload, rootState) {
-    // console.log('%c--- playerLoadIndex ---', 'color:#079189');
+    // console.log('%c--- playerLoadIndex ---', 'color:#07a098');
     const playerElement = rootState.appModel.playerElement;
     const playingTrackList = rootState.sessionModel.playingTrackList;
     const { index, play, progress } = payload;
@@ -414,7 +414,7 @@ const effects = (dispatch) => ({
   },
 
   playerPlay(payload, rootState) {
-    // console.log('%c--- playerPlay ---', 'color:#079189');
+    // console.log('%c--- playerPlay ---', 'color:#07a098');
     const playerElement = rootState.appModel.playerElement;
     playerElement.play().catch((error) => null);
     dispatch.appModel.setAppState({
@@ -423,7 +423,7 @@ const effects = (dispatch) => ({
   },
 
   playerPause(payload, rootState) {
-    // console.log('%c--- playerPause ---', 'color:#079189');
+    // console.log('%c--- playerPause ---', 'color:#07a098');
     const playerElement = rootState.appModel.playerElement;
     playerElement.pause();
     dispatch.appModel.setAppState({
@@ -432,7 +432,7 @@ const effects = (dispatch) => ({
   },
 
   playerRestart(payload, rootState) {
-    // console.log('%c--- playerRestart ---', 'color:#079189');
+    // console.log('%c--- playerRestart ---', 'color:#07a098');
     const playerElement = rootState.appModel.playerElement;
     playerElement.currentTime = 0;
     dispatch.appModel.setAppState({
@@ -441,7 +441,7 @@ const effects = (dispatch) => ({
   },
 
   playerPrev(payload, rootState) {
-    // console.log('%c--- playerPrev ---', 'color:#079189');
+    // console.log('%c--- playerPrev ---', 'color:#07a098');
     const playerElement = rootState.appModel.playerElement;
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
     // go to previous track, if available
@@ -458,7 +458,7 @@ const effects = (dispatch) => ({
   },
 
   playerNext(payload, rootState) {
-    // console.log('%c--- playerNext ---', 'color:#079189');
+    // console.log('%c--- playerNext ---', 'color:#07a098');
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
     const playingTrackCount = rootState.sessionModel.playingTrackCount;
     if (playingTrackIndex < playingTrackCount - 1) {
@@ -483,7 +483,7 @@ const effects = (dispatch) => ({
   },
 
   playerVolumeSet(payload, rootState) {
-    // console.log('%c--- playerVolumeSet ---', 'color:#079189');
+    // console.log('%c--- playerVolumeSet ---', 'color:#07a098');
     dispatch.appModel.setAppState({
       playerVolume: payload,
       playerMuted: false,
@@ -493,7 +493,7 @@ const effects = (dispatch) => ({
   },
 
   playerMuteToggle(payload, rootState) {
-    // console.log('%c--- playerMuteToggle ---', 'color:#079189');
+    // console.log('%c--- playerMuteToggle ---', 'color:#07a098');
     const playerVolume = rootState.appModel.playerVolume;
     const playerMuted = rootState.appModel.playerMuted;
     let newVolume;
