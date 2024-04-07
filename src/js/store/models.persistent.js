@@ -32,8 +32,6 @@ try {
 
 // COMBINE ALL STATES
 
-console.log(historyState);
-
 const state = Object.assign({}, historyState, localStorageState);
 
 // ======================================================================
