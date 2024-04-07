@@ -18,7 +18,7 @@ export const Settings = () => {
   return (
     <div className={style.wrap}>
       <div className={style.entry}>
-        <div className={style.title}>Colour theme</div>
+        <div className={style.title}>Theme</div>
         <ThemeSettings />
       </div>
     </div>
