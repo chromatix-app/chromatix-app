@@ -97,12 +97,22 @@ export const authRoutes = [
     exact: true,
     component: 'ArtistCollectionList',
   },
+  {
+    path: '/artist-collections/:libraryId/:collectionId',
+    exact: true,
+    component: 'CollectionDetail',
+  },
 
   // album collections
   {
     path: '/album-collections',
     exact: true,
     component: 'AlbumCollectionList',
+  },
+  {
+    path: '/album-collections/:libraryId/:collectionId',
+    exact: true,
+    component: 'CollectionDetail',
   },
 
   // settings

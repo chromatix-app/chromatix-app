@@ -52,6 +52,7 @@ const plexLibraryState = {
   allPlaylists: null,
   allPlaylistTracks: {},
   allCollections: null,
+  allCollectionItems: {},
 };
 
 const state = Object.assign({}, appState, userState, plexServerState, plexLibraryState);
@@ -314,6 +315,22 @@ const effects = (dispatch) => ({
     allPlaylistTracks[libraryId + '-' + playlistId] = playlistTracks;
     dispatch.appModel.setAppState({
       allPlaylistTracks,
+    });
+  },
+
+  storeCollectionItems(payload, rootState) {
+    console.log('%c--- storeCollectionItems ---', 'color:#07a098');
+    const { libraryId, collectionId, collectionItems } = payload;
+    const allCollectionItems = { ...rootState.appModel.allCollectionItems };
+    // limit recent entries
+    const keys = Object.keys(allCollectionItems);
+    if (keys.length >= maxDataLength) {
+      delete allCollectionItems[keys[0]];
+    }
+    // add the new entry and save
+    allCollectionItems[libraryId + '-' + collectionId] = collectionItems;
+    dispatch.appModel.setAppState({
+      allCollectionItems,
     });
   },
 

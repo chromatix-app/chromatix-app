@@ -29,9 +29,11 @@ const ArtistCollectionList = () => {
       <TitleHeading
         title="Artist Collections"
         subtitle={
-          allCollections
-            ? allCollections?.length + ' Artist Collection' + (allCollections?.length !== 1 ? 's' : '')
-            : null
+          allCollections ? (
+            allCollections?.length + ' Artist Collection' + (allCollections?.length !== 1 ? 's' : '')
+          ) : (
+            <>&nbsp;</>
+          )
         }
       />
       {!allCollections && <Loading forceVisible inline />}

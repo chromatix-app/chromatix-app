@@ -606,64 +606,6 @@ export const getAllArtistRelated = async (libraryId, artistId) => {
 };
 
 // ======================================================================
-// GET ALL ARTIST COLLECTIONS
-// ======================================================================
-
-let getAllCollectionsRunning;
-
-export const getAllCollections = async () => {
-  if (!getAllCollectionsRunning) {
-    const prevAllCollections = store.getState().appModel.allCollections;
-    if (!prevAllCollections) {
-      console.log('%c--- plex - getAllCollections ---', 'color:#f9743b;');
-      getAllCollectionsRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
-      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
-      const { libraryId } = store.getState().sessionModel.currentLibrary;
-
-      const response = await fetch(`${serverBaseUrlCurrent}/library/sections/${libraryId}/collections`, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
-
-      const data = await response.json();
-
-      console.log(data.MediaContainer.Metadata);
-
-      const allCollections =
-        data.MediaContainer.Metadata?.filter(
-          (collection) => collection.subtype === 'artist' || collection.subtype === 'album'
-        ).map((collection) => ({
-          libraryId: libraryId,
-          collectionId: collection.ratingKey,
-          title: collection.title,
-          userRating: collection.userRating,
-          link:
-            (collection.subtype === 'artist' ? '/artist-collections/' : '/album-collections/') +
-            libraryId +
-            '/' +
-            collection.ratingKey,
-          type: collection.subtype,
-          thumb: collection.thumb
-            ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                `${serverArtUrl}${collection.thumb}`
-              )}&X-Plex-Token=${authToken}`
-            : null,
-        })) || [];
-
-      console.log('allCollections', allCollections);
-
-      store.dispatch.appModel.setAppState({ allCollections });
-
-      getAllCollectionsRunning = false;
-    }
-  }
-};
-
-// ======================================================================
 // GET ALL ALBUMS
 // ======================================================================
 
@@ -995,6 +937,146 @@ export const getPlaylistTracks = async (libraryId, playlistId) => {
       store.dispatch.appModel.storePlaylistTracks({ libraryId, playlistId, playlistTracks });
 
       getPlaylistTracksRunning = false;
+    }
+  }
+};
+
+// ======================================================================
+// GET ALL COLLECTIONS
+// ======================================================================
+
+let getAllCollectionsRunning;
+
+export const getAllCollections = async () => {
+  if (!getAllCollectionsRunning) {
+    const prevAllCollections = store.getState().appModel.allCollections;
+    if (!prevAllCollections) {
+      console.log('%c--- plex - getAllCollections ---', 'color:#f9743b;');
+      getAllCollectionsRunning = true;
+      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const { libraryId } = store.getState().sessionModel.currentLibrary;
+
+      const response = await fetch(`${serverBaseUrlCurrent}/library/sections/${libraryId}/collections`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Plex-Token': authToken,
+        },
+      });
+
+      const data = await response.json();
+
+      // console.log(data.MediaContainer.Metadata);
+
+      const allCollections =
+        data.MediaContainer.Metadata?.filter(
+          (collection) => collection.subtype === 'artist' || collection.subtype === 'album'
+        ).map((collection) => {
+          const collectionThumb = collection.thumb
+            ? collection.thumb
+            : collection.composite
+            ? collection.composite
+            : null;
+          return {
+            libraryId: libraryId,
+            collectionId: collection.ratingKey,
+            title: collection.title,
+            userRating: collection.userRating,
+            type: collection.subtype,
+            link:
+              (collection.subtype === 'artist' ? '/artist-collections/' : '/album-collections/') +
+              libraryId +
+              '/' +
+              collection.ratingKey,
+            thumb: collectionThumb
+              ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                  `${serverArtUrl}${collectionThumb}`
+                )}&X-Plex-Token=${authToken}`
+              : null,
+          };
+        }) || [];
+
+      // console.log('allCollections', allCollections);
+
+      store.dispatch.appModel.setAppState({ allCollections });
+
+      getAllCollectionsRunning = false;
+    }
+  }
+};
+
+// ======================================================================
+// GET COLLECTION ITEMS
+// ======================================================================
+
+let getCollectionItemsRunning;
+
+export const getCollectionItems = async (libraryId, collectionId, collectionType) => {
+  if (!getCollectionItemsRunning) {
+    const prevCollectionItems = store.getState().appModel.allCollectionItems[libraryId + '-' + collectionId];
+    if (!prevCollectionItems) {
+      getCollectionItemsRunning = true;
+      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+
+      const response = await fetch(`${serverBaseUrlCurrent}/library/collections/${collectionId}/children`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Plex-Token': authToken,
+        },
+      });
+
+      const data = await response.json();
+
+      console.log(data.MediaContainer.Metadata);
+
+      let collectionItems;
+
+      if (collectionType === 'artist') {
+        collectionItems =
+          data.MediaContainer.Metadata?.map((artist) => ({
+            libraryId: libraryId,
+            artistId: artist.ratingKey,
+            title: artist.title,
+            country: artist?.Country?.[0]?.tag,
+            genre: artist?.Genre?.[0]?.tag,
+            userRating: artist.userRating,
+            link: '/artists/' + libraryId + '/' + artist.ratingKey,
+            thumb: artist.thumb
+              ? mockData
+                ? artist.thumb
+                : `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                    `${serverArtUrl}${artist.thumb}`
+                  )}&X-Plex-Token=${authToken}`
+              : null,
+          })) || [];
+      } else if (collectionType === 'album') {
+        collectionItems =
+          data.MediaContainer.Metadata?.map((album) => ({
+            libraryId: libraryId,
+            albumId: album.ratingKey,
+            title: album.title,
+            artist: album.parentTitle,
+            artistId: album.parentRatingKey,
+            artistLink: '/artists/' + libraryId + '/' + album.parentRatingKey,
+            userRating: album.userRating,
+            releaseDate: album.originallyAvailableAt,
+            link: '/albums/' + libraryId + '/' + album.ratingKey,
+            thumb: album.thumb
+              ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                  `${serverArtUrl}${album.thumb}`
+                )}&X-Plex-Token=${authToken}`
+              : null,
+          })) || [];
+      }
+
+      console.log('collectionItems', collectionType, collectionItems);
+
+      store.dispatch.appModel.storeCollectionItems({ libraryId, collectionId, collectionItems });
+
+      getCollectionItemsRunning = false;
     }
   }
 };
