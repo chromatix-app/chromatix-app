@@ -28,7 +28,7 @@ const ArtistList = () => {
     <>
       <TitleHeading
         title="Artists"
-        subtitle={allArtists ? allArtists?.length + ' Artist' + (allArtists?.length !== 1 && 's') : null}
+        subtitle={allArtists ? allArtists?.length + ' Artist' + (allArtists?.length !== 1 ? 's' : '') : null}
       />
       {!allArtists && <Loading forceVisible inline />}
       {allArtists && <ListCards entries={allArtists} />}

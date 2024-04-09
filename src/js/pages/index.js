@@ -1,5 +1,7 @@
+export { default as AlbumCollectionList } from './AlbumCollectionList';
 export { default as AlbumDetail } from './AlbumDetail';
 export { default as AlbumList } from './AlbumList';
+export { default as ArtistCollectionList } from './ArtistCollectionList';
 export { default as ArtistDetail } from './ArtistDetail';
 export { default as ArtistList } from './ArtistList';
 export { default as Error404Auth } from './Error404Auth';

@@ -91,6 +91,20 @@ export const authRoutes = [
     component: 'PlaylistDetail',
   },
 
+  // artist collections
+  {
+    path: '/artist-collections',
+    exact: true,
+    component: 'ArtistCollectionList',
+  },
+
+  // album collections
+  {
+    path: '/album-collections',
+    exact: true,
+    component: 'AlbumCollectionList',
+  },
+
   // settings
   {
     path: '/settings',

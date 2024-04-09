@@ -51,6 +51,7 @@ const plexLibraryState = {
   allAlbumTracks: {},
   allPlaylists: null,
   allPlaylistTracks: {},
+  allCollections: null,
 };
 
 const state = Object.assign({}, appState, userState, plexServerState, plexLibraryState);

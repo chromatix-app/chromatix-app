@@ -606,6 +606,64 @@ export const getAllArtistRelated = async (libraryId, artistId) => {
 };
 
 // ======================================================================
+// GET ALL ARTIST COLLECTIONS
+// ======================================================================
+
+let getAllCollectionsRunning;
+
+export const getAllCollections = async () => {
+  if (!getAllCollectionsRunning) {
+    const prevAllCollections = store.getState().appModel.allCollections;
+    if (!prevAllCollections) {
+      console.log('%c--- plex - getAllCollections ---', 'color:#f9743b;');
+      getAllCollectionsRunning = true;
+      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const { libraryId } = store.getState().sessionModel.currentLibrary;
+
+      const response = await fetch(`${serverBaseUrlCurrent}/library/sections/${libraryId}/collections`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Plex-Token': authToken,
+        },
+      });
+
+      const data = await response.json();
+
+      console.log(data.MediaContainer.Metadata);
+
+      const allCollections =
+        data.MediaContainer.Metadata?.filter(
+          (collection) => collection.subtype === 'artist' || collection.subtype === 'album'
+        ).map((collection) => ({
+          libraryId: libraryId,
+          collectionId: collection.ratingKey,
+          title: collection.title,
+          userRating: collection.userRating,
+          link:
+            (collection.subtype === 'artist' ? '/artist-collections/' : '/album-collections/') +
+            libraryId +
+            '/' +
+            collection.ratingKey,
+          type: collection.subtype,
+          thumb: collection.thumb
+            ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                `${serverArtUrl}${collection.thumb}`
+              )}&X-Plex-Token=${authToken}`
+            : null,
+        })) || [];
+
+      console.log('allCollections', allCollections);
+
+      store.dispatch.appModel.setAppState({ allCollections });
+
+      getAllCollectionsRunning = false;
+    }
+  }
+};
+
+// ======================================================================
 // GET ALL ALBUMS
 // ======================================================================
 
