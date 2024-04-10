@@ -273,10 +273,7 @@ export const getAllServers = async () => {
         const allServers = data
           .filter((resource) => resource.provides === 'server')
           .map((resource) => {
-            resource.connections.push(resource.connections.shift());
-            resource.connections.push(resource.connections.shift());
-
-            resource.connections.push(resource.connections.shift());
+            // resource.connections.push(resource.connections.shift());
 
             const connectionLocal = resource.connections.filter((connection) => connection.local);
             const connectionUrls = resource.connections.map((connection) => connection.uri);
