@@ -115,6 +115,20 @@ export const authRoutes = [
     component: 'CollectionDetail',
   },
 
+  // artist genres
+  {
+    path: '/artist-genres',
+    exact: true,
+    component: 'ArtistGenreList',
+  },
+
+  // album genres
+  {
+    path: '/album-genres',
+    exact: true,
+    component: 'AlbumGenreList',
+  },
+
   // settings
   {
     path: '/settings',

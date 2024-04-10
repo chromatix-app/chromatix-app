@@ -1080,3 +1080,93 @@ export const getCollectionItems = async (libraryId, collectionId, collectionType
     }
   }
 };
+
+// ======================================================================
+// GET ALL ARTIST GENRES
+// ======================================================================
+
+let getAllArtistGenresRunning;
+
+export const getAllArtistGenres = async (type) => {
+  if (!getAllArtistGenresRunning) {
+    const prevAllGenres = store.getState().appModel.allArtistGenres;
+    if (!prevAllGenres) {
+      console.log('%c--- plex - getAllArtistGenres ---', 'color:#f9743b;');
+      getAllArtistGenresRunning = true;
+      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
+      const { libraryId } = store.getState().sessionModel.currentLibrary;
+
+      const response = await fetch(`${serverBaseUrlCurrent}/library/sections/${libraryId}/genre?type=8`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Plex-Token': authToken,
+        },
+      });
+
+      const data = await response.json();
+
+      // console.log(data.MediaContainer.Directory);
+
+      const allArtistGenres =
+        data.MediaContainer.Directory?.map((genre) => ({
+          libraryId: libraryId,
+          genreId: genre.key,
+          title: genre.title,
+          link: 'artist-genres/' + libraryId + '/' + genre.ratingKey,
+        })) || [];
+
+      // console.log('allArtistGenres', allArtistGenres);
+
+      store.dispatch.appModel.setAppState({ allArtistGenres });
+
+      getAllArtistGenresRunning = false;
+    }
+  }
+};
+
+// ======================================================================
+// GET ALL ALBUM GENRES
+// ======================================================================
+
+let getAllAlbumGenresRunning;
+
+export const getAllAlbumGenres = async (type) => {
+  if (!getAllAlbumGenresRunning) {
+    const prevAllGenres = store.getState().appModel.allAlbumGenres;
+    if (!prevAllGenres) {
+      console.log('%c--- plex - getAllAlbumGenres ---', 'color:#f9743b;');
+      getAllAlbumGenresRunning = true;
+      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
+      const { libraryId } = store.getState().sessionModel.currentLibrary;
+
+      const response = await fetch(`${serverBaseUrlCurrent}/library/sections/${libraryId}/genre?type=9`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Plex-Token': authToken,
+        },
+      });
+
+      const data = await response.json();
+
+      // console.log(data.MediaContainer.Directory);
+
+      const allAlbumGenres =
+        data.MediaContainer.Directory?.map((genre) => ({
+          libraryId: libraryId,
+          genreId: genre.key,
+          title: genre.title,
+          link: 'album-genres/' + libraryId + '/' + genre.ratingKey,
+        })) || [];
+
+      // console.log('allAlbumGenres', allAlbumGenres);
+
+      store.dispatch.appModel.setAppState({ allAlbumGenres });
+
+      getAllAlbumGenresRunning = false;
+    }
+  }
+};

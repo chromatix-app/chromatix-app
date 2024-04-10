@@ -56,6 +56,12 @@ const SideBar = () => {
       <NavLink className={style.link} activeClassName={style.linkActive} to="/album-collections">
         Album Collections
       </NavLink>
+      <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-genres">
+        Artist Genres
+      </NavLink>
+      <NavLink className={style.link} activeClassName={style.linkActive} to="/album-genres">
+        Album Genres
+      </NavLink>
       {allPlaylists && allPlaylists.length > 0 && (
         <>
           <div className={style.label}>Playlists</div>

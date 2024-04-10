@@ -44,15 +44,22 @@ const plexServerState = {
 };
 
 const plexLibraryState = {
+  // artists
   allArtists: null,
   allArtistAlbums: {},
   allArtistRelated: {},
+  // albums
   allAlbums: null,
   allAlbumTracks: {},
+  // playlists
   allPlaylists: null,
   allPlaylistTracks: {},
+  // collections
   allCollections: null,
   allCollectionItems: {},
+  // genres
+  allArtistGenres: null,
+  allAlbumGenres: null,
 };
 
 const state = Object.assign({}, appState, userState, plexServerState, plexLibraryState);
