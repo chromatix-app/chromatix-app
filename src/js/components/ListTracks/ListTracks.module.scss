@@ -22,7 +22,7 @@
     gap: 15px;
   }
 
-  .wrap.wrapPlaylist & {
+  .wrap.wrapPlaylists & {
     grid-template-columns: 30px 41px 1.3fr 1fr 1fr 60px;
 
     @media (min-width: 1024px) {
@@ -82,7 +82,7 @@
     padding: 10px 19px;
   }
 
-  .wrap.wrapPlaylist & {
+  .wrap.wrapPlaylists & {
     padding: 6px 14px;
 
     @media (min-width: 1024px) {

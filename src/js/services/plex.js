@@ -400,7 +400,7 @@ export const getAllArtists = async () => {
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
       const mockUrl = '/api/artists.json';
-      const prodUrl = `${serverBaseUrlCurrent}/library/sections/${libraryId}/all`;
+      const prodUrl = `${serverBaseUrlCurrent}/library/sections/${libraryId}/all?type=8`;
       const actualUrl = mockData ? mockUrl : prodUrl;
 
       const response = await fetch(actualUrl, {
@@ -1114,7 +1114,7 @@ export const getAllArtistGenres = async (type) => {
           libraryId: libraryId,
           genreId: genre.key,
           title: genre.title,
-          link: 'artist-genres/' + libraryId + '/' + genre.ratingKey,
+          link: 'artist-genres/' + libraryId + '/' + genre.key,
         })) || [];
 
       // console.log('allArtistGenres', allArtistGenres);
@@ -1122,6 +1122,60 @@ export const getAllArtistGenres = async (type) => {
       store.dispatch.appModel.setAppState({ allArtistGenres });
 
       getAllArtistGenresRunning = false;
+    }
+  }
+};
+
+// ======================================================================
+// GET ARTIST GENRE ITEMS
+// ======================================================================
+
+let getArtistGenreItemsRunning;
+
+export const getArtistGenreItems = async (libraryId, genreId) => {
+  if (!getArtistGenreItemsRunning) {
+    const prevGenreItems = store.getState().appModel.allArtistGenreItems[libraryId + '-' + genreId];
+    if (!prevGenreItems) {
+      getArtistGenreItemsRunning = true;
+      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+
+      const response = await fetch(
+        `${serverBaseUrlCurrent}/library/sections/${libraryId}/all?type=8&genre=${genreId}`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': authToken,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      // console.log(data.MediaContainer.Metadata);
+
+      const artistGenreItems =
+        data.MediaContainer.Metadata?.map((artist) => ({
+          libraryId: libraryId,
+          artistId: artist.ratingKey,
+          title: artist.title,
+          country: artist?.Country?.[0]?.tag,
+          genre: artist?.Genre?.[0]?.tag,
+          userRating: artist.userRating,
+          link: '/artists/' + libraryId + '/' + artist.ratingKey,
+          thumb: artist.thumb
+            ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                `${serverArtUrl}${artist.thumb}`
+              )}&X-Plex-Token=${authToken}`
+            : null,
+        })) || [];
+
+      // console.log('artistGenreItems', artistGenreItems);
+
+      store.dispatch.appModel.storeArtistGenreItems({ libraryId, genreId, artistGenreItems });
+
+      getArtistGenreItemsRunning = false;
     }
   }
 };
@@ -1159,7 +1213,7 @@ export const getAllAlbumGenres = async (type) => {
           libraryId: libraryId,
           genreId: genre.key,
           title: genre.title,
-          link: 'album-genres/' + libraryId + '/' + genre.ratingKey,
+          link: 'album-genres/' + libraryId + '/' + genre.key,
         })) || [];
 
       // console.log('allAlbumGenres', allAlbumGenres);
@@ -1167,6 +1221,62 @@ export const getAllAlbumGenres = async (type) => {
       store.dispatch.appModel.setAppState({ allAlbumGenres });
 
       getAllAlbumGenresRunning = false;
+    }
+  }
+};
+
+// ======================================================================
+// GET ALBUM GENRE ITEMS
+// ======================================================================
+
+let getAlbumGenreItemsRunning;
+
+export const getAlbumGenreItems = async (libraryId, genreId) => {
+  if (!getAlbumGenreItemsRunning) {
+    const prevGenreItems = store.getState().appModel.allAlbumGenreItems[libraryId + '-' + genreId];
+    if (!prevGenreItems) {
+      getAlbumGenreItemsRunning = true;
+      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+
+      const response = await fetch(
+        `${serverBaseUrlCurrent}/library/sections/${libraryId}/all?type=9&genre=${genreId}`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': authToken,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      // console.log(data.MediaContainer.Metadata);
+
+      const albumGenreItems =
+        data.MediaContainer.Metadata?.map((album) => ({
+          libraryId: libraryId,
+          albumId: album.ratingKey,
+          title: album.title,
+          artist: album.parentTitle,
+          artistId: album.parentRatingKey,
+          artistLink: '/artists/' + libraryId + '/' + album.parentRatingKey,
+          userRating: album.userRating,
+          releaseDate: album.originallyAvailableAt,
+          link: '/albums/' + libraryId + '/' + album.ratingKey,
+          thumb: album.thumb
+            ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                `${serverArtUrl}${album.thumb}`
+              )}&X-Plex-Token=${authToken}`
+            : null,
+        })) || [];
+
+      // console.log('albumGenreItems', albumGenreItems);
+
+      store.dispatch.appModel.storeAlbumGenreItems({ libraryId, genreId, albumGenreItems });
+
+      getAlbumGenreItemsRunning = false;
     }
   }
 };

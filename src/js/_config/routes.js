@@ -121,12 +121,22 @@ export const authRoutes = [
     exact: true,
     component: 'ArtistGenreList',
   },
+  {
+    path: '/artist-genres/:libraryId/:genreId',
+    exact: true,
+    component: 'ArtistGenreDetail',
+  },
 
   // album genres
   {
     path: '/album-genres',
     exact: true,
     component: 'AlbumGenreList',
+  },
+  {
+    path: '/album-genres/:libraryId/:genreId',
+    exact: true,
+    component: 'AlbumGenreDetail',
   },
 
   // settings

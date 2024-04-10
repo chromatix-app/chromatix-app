@@ -46,6 +46,11 @@
   // outline: 1px solid var(--color-opacity-01);
   border-radius: 6px;
 
+  .wrap.wrapGenres & {
+    padding: 0 0 60%;
+    background: var(--color-primary);
+  }
+
   img {
     position: absolute;
     top: 0;
@@ -54,6 +59,15 @@
     height: 100%;
     object-fit: cover;
   }
+}
+
+.icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 32px;
+  height: 32px;
+  transform: translate(-50%, -50%);
 }
 
 .body {

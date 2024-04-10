@@ -37,7 +37,7 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
   const currentLibraryId = currentLibrary?.libraryId;
 
   const totalDiscs = useMemo(() => {
-    if (variant === 'album') {
+    if (variant === 'albums') {
       return entries.reduce((acc, entry) => {
         return Math.max(acc, entry.discNumber);
       }, 0);
@@ -62,7 +62,7 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
   if (entries) {
     return (
       <div className={clsx(style.wrap, style['wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1)])}>
-        {variant === 'album' && (
+        {variant === 'albums' && (
           <div className={style.header}>
             <div>
               <span className={style.minCenter}>#</span>
@@ -74,7 +74,7 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
           </div>
         )}
 
-        {variant === 'playlist' && (
+        {variant === 'playlists' && (
           <div className={style.header}>
             <div>
               <span className={style.minCenter}>#</span>
@@ -83,14 +83,14 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
             <div></div>
             <div>Artist</div>
             <div>Album</div>
-            <div className={style.headerRating}></div>
+            <div className={style.headerRating}>Rating</div>
             <div>Duration</div>
           </div>
         )}
 
         <div className={style.entries}>
           {entries.map((entry, index) => {
-            const trackNumber = variant === 'playlist' ? index + 1 : entry.trackNumber;
+            const trackNumber = variant === 'playlists' ? index + 1 : entry.trackNumber;
 
             const showDisc = totalDiscs > 1 && currentDisc !== entry.discNumber;
             currentDisc = entry.discNumber;
@@ -189,21 +189,26 @@ const ListEntry = React.memo(({ entry, trackNumber, showDisc, isCurrentlyPlaying
           </div>
         )}
 
-        {variant === 'playlist' && entry.thumb && (
+        {variant === 'playlists' && entry.thumb && (
           <div className={style.thumb}>
             <img src={entry.thumb} alt={entry.title} loading="lazy" />
           </div>
         )}
+
         <div className={style.title}>{entry.title}</div>
+
         <div className={style.artist}>
           <NavLink to={entry.artistLink}>{entry.artist}</NavLink>
         </div>
-        {variant === 'playlist' && (
+
+        {variant === 'playlists' && (
           <div className={style.album}>
             <NavLink to={entry.albumLink}>{entry.album} </NavLink>
           </div>
         )}
+
         <div className={style.userRating}>{entry.userRating && <StarRating rating={entry.userRating} />}</div>
+
         <div className={style.duration}>{durationToStringShort(entry.duration)}</div>
       </div>
     </>

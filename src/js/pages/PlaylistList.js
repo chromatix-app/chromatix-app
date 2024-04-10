@@ -28,7 +28,7 @@ const PlaylistList = () => {
     <>
       <TitleHeading title="Playlists" subtitle={allPlaylists ? allPlaylists?.length + ' Playlists' : null} />
       {!allPlaylists && <Loading forceVisible inline />}
-      {allPlaylists && <ListCards entries={allPlaylists} />}
+      {allPlaylists && <ListCards variant="playlists" entries={allPlaylists} />}
     </>
   );
 };

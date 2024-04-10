@@ -32,7 +32,7 @@ const ArtistGenreList = () => {
         }
       />
       {!allArtistGenres && <Loading forceVisible inline />}
-      {allArtistGenres && <ListCards entries={allArtistGenres} />}
+      {allArtistGenres && <ListCards variant="genres" entries={allArtistGenres} />}
     </>
   );
 };

@@ -77,14 +77,14 @@ const ArtistDetail = () => {
           {currentArtistAlbums.length > 0 && (
             <>
               <TitleSection title="Albums" />
-              <ListCards entries={currentArtistAlbums} />
+              <ListCards variant="albums" entries={currentArtistAlbums} />
             </>
           )}
           {currentArtistRelated &&
             currentArtistRelated.map((entry, index) => (
               <React.Fragment key={index}>
                 <TitleSection title={entry.title} />
-                <ListCards entries={entry.related} />
+                <ListCards variant="albums" entries={entry.related} />
               </React.Fragment>
             ))}
         </>

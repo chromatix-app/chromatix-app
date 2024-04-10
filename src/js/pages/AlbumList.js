@@ -31,7 +31,7 @@ const AlbumList = () => {
         subtitle={allAlbums ? allAlbums?.length + ' Album' + (allAlbums?.length !== 1 ? 's' : '') : null}
       />
       {!allAlbums && <Loading forceVisible inline />}
-      {allAlbums && <ListCards entries={allAlbums} />}
+      {allAlbums && <ListCards variant="albums" entries={allAlbums} />}
     </>
   );
 };

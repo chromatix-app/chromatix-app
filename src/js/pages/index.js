@@ -1,9 +1,11 @@
 export { default as AlbumCollectionList } from './AlbumCollectionList';
 export { default as AlbumDetail } from './AlbumDetail';
+export { default as AlbumGenreDetail } from './AlbumGenreDetail';
 export { default as AlbumGenreList } from './AlbumGenreList';
 export { default as AlbumList } from './AlbumList';
 export { default as ArtistCollectionList } from './ArtistCollectionList';
 export { default as ArtistDetail } from './ArtistDetail';
+export { default as ArtistGenreDetail } from './ArtistGenreDetail';
 export { default as ArtistGenreList } from './ArtistGenreList';
 export { default as ArtistList } from './ArtistList';
 export { default as CollectionDetail } from './CollectionDetail';

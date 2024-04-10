@@ -68,7 +68,7 @@ const AlbumDetail = () => {
       )}
       {!(currentAlbum && currentAlbumTracks) && <Loading forceVisible inline />}
       {currentAlbum && currentAlbumTracks && (
-        <ListTracks variant="album" albumId={albumId} entries={currentAlbumTracks} />
+        <ListTracks variant="albums" albumId={albumId} entries={currentAlbumTracks} />
       )}
     </>
   );

@@ -27,6 +27,8 @@ const CollectionDetail = () => {
   const collectionTitle = currentCollection?.title;
   const collectionRating = currentCollection?.userRating;
 
+  const collectionTypeCapitalized = collectionType?.charAt(0).toUpperCase() + collectionType?.slice(1);
+
   useEffect(() => {
     plex.getAllCollections();
     if (collectionType) {
@@ -43,7 +45,10 @@ const CollectionDetail = () => {
           detail={collectionRating && <StarRating rating={collectionRating} size={13} inline />}
           subtitle={
             currentCollectionItems ? (
-              currentCollectionItems?.length + ' Album' + (currentCollectionItems?.length !== 1 ? 's' : '')
+              currentCollectionItems?.length +
+              ' ' +
+              collectionTypeCapitalized +
+              (currentCollectionItems?.length !== 1 ? 's' : '')
             ) : (
               <>&nbsp;</>
             )
@@ -51,7 +56,9 @@ const CollectionDetail = () => {
         />
       )}
       {!(currentCollection && currentCollectionItems) && <Loading forceVisible inline />}
-      {currentCollection && currentCollectionItems && <ListCards entries={currentCollectionItems} />}
+      {currentCollection && currentCollectionItems && (
+        <ListCards variant={collectionType + 's'} entries={currentCollectionItems} />
+      )}
     </>
   );
 };

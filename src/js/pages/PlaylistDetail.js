@@ -53,7 +53,7 @@ const PlaylistDetail = () => {
       )}
       {!(currentPlaylist && currentPlaylistTracks) && <Loading forceVisible inline />}
       {currentPlaylist && currentPlaylistTracks && (
-        <ListTracks variant="playlist" playlistId={playlistId} entries={currentPlaylistTracks} />
+        <ListTracks variant="playlists" playlistId={playlistId} entries={currentPlaylistTracks} />
       )}
     </>
   );

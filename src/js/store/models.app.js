@@ -59,7 +59,9 @@ const plexLibraryState = {
   allCollectionItems: {},
   // genres
   allArtistGenres: null,
+  allArtistGenreItems: {},
   allAlbumGenres: null,
+  allAlbumGenreItems: {},
 };
 
 const state = Object.assign({}, appState, userState, plexServerState, plexLibraryState);
@@ -204,6 +206,10 @@ const effects = (dispatch) => ({
     dispatch.sessionModel.refreshCurrentLibrary(payload);
   },
 
+  //
+  // PLEX - ARTISTS
+  //
+
   storeArtistDetails(payload, rootState) {
     console.log('%c--- storeArtistDetails ---', 'color:#07a098');
     const allArtists = [...rootState.appModel.allArtists];
@@ -255,6 +261,10 @@ const effects = (dispatch) => ({
     });
   },
 
+  //
+  // PLEX - ALBUMS
+  //
+
   storeAlbumDetails(payload, rootState) {
     console.log('%c--- storeAlbumDetails ---', 'color:#07a098');
     const allAlbums = [...rootState.appModel.allAlbums];
@@ -289,6 +299,10 @@ const effects = (dispatch) => ({
       allAlbumTracks,
     });
   },
+
+  //
+  // PLEX - PLAYLISTS
+  //
 
   storePlaylistDetails(payload, rootState) {
     console.log('%c--- storePlaylistDetails ---', 'color:#07a098');
@@ -325,6 +339,10 @@ const effects = (dispatch) => ({
     });
   },
 
+  //
+  // PLEX - COLLECTIONS
+  //
+
   storeCollectionItems(payload, rootState) {
     console.log('%c--- storeCollectionItems ---', 'color:#07a098');
     const { libraryId, collectionId, collectionItems } = payload;
@@ -338,6 +356,42 @@ const effects = (dispatch) => ({
     allCollectionItems[libraryId + '-' + collectionId] = collectionItems;
     dispatch.appModel.setAppState({
       allCollectionItems,
+    });
+  },
+
+  //
+  // PLEX - GENRES
+  //
+
+  storeArtistGenreItems(payload, rootState) {
+    console.log('%c--- storeArtistGenreItems ---', 'color:#07a098');
+    const { libraryId, genreId, artistGenreItems } = payload;
+    const allArtistGenreItems = { ...rootState.appModel.allArtistGenreItems };
+    // limit recent entries
+    const keys = Object.keys(allArtistGenreItems);
+    if (keys.length >= maxDataLength) {
+      delete allArtistGenreItems[keys[0]];
+    }
+    // add the new entry and save
+    allArtistGenreItems[libraryId + '-' + genreId] = artistGenreItems;
+    dispatch.appModel.setAppState({
+      allArtistGenreItems,
+    });
+  },
+
+  storeAlbumGenreItems(payload, rootState) {
+    console.log('%c--- storeAlbumGenreItems ---', 'color:#07a098');
+    const { libraryId, genreId, albumGenreItems } = payload;
+    const allAlbumGenreItems = { ...rootState.appModel.allAlbumGenreItems };
+    // limit recent entries
+    const keys = Object.keys(allAlbumGenreItems);
+    if (keys.length >= maxDataLength) {
+      delete allAlbumGenreItems[keys[0]];
+    }
+    // add the new entry and save
+    allAlbumGenreItems[libraryId + '-' + genreId] = albumGenreItems;
+    dispatch.appModel.setAppState({
+      allAlbumGenreItems,
     });
   },
 
