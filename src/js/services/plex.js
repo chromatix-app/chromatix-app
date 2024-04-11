@@ -446,17 +446,8 @@ export const getAllArtists = async () => {
 
       const mockEndpoint = '/api/artists.json';
       const prodEndpoint = endpointConfig.artist.getAllArtists(serverBaseUrlCurrent, libraryId);
-      const actualEndpoint = mockData ? mockEndpoint : prodEndpoint;
-
-      const response = await fetch(actualEndpoint, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
-
-      const data = await response.json();
+      const endpoint = mockData ? mockEndpoint : prodEndpoint;
+      const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
@@ -488,16 +479,7 @@ export const getArtistDetails = async (libraryId, artistId) => {
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.artist.getDetails(serverBaseUrlCurrent, artistId);
-
-      const response = await fetch(endpoint, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
-
-      const data = await response.json();
+      const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
@@ -527,16 +509,7 @@ export const getAllArtistAlbums = async (libraryId, artistId) => {
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.artist.getAllAlbums(serverBaseUrlCurrent, artistId);
-
-      const response = await fetch(endpoint, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
-
-      const data = await response.json();
+      const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
@@ -568,16 +541,7 @@ export const getAllArtistRelated = async (libraryId, artistId) => {
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.artist.getAllRelated(serverBaseUrlCurrent, artistId);
-
-      const response = await fetch(endpoint, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
-
-      const data = await response.json();
+      const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Hub);
 
@@ -613,16 +577,7 @@ export const getAllAlbums = async () => {
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
       const endpoint = endpointConfig.album.getAllAlbums(serverBaseUrlCurrent, libraryId);
-
-      const response = await fetch(endpoint, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
-
-      const data = await response.json();
+      const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
@@ -654,16 +609,7 @@ export const getAlbumDetails = async (libraryId, albumId) => {
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.album.getDetails(serverBaseUrlCurrent, albumId);
-
-      const response = await fetch(endpoint, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
-
-      const data = await response.json();
+      const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
@@ -693,16 +639,7 @@ export const getAlbumTracks = async (libraryId, albumId) => {
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.album.getTracks(serverBaseUrlCurrent, albumId);
-
-      const response = await fetch(endpoint, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
-
-      const data = await response.json();
+      const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
@@ -738,17 +675,8 @@ export const getAllPlaylists = async () => {
 
       const mockEndpoint = '/api/playlists.json';
       const prodEndpoint = endpointConfig.playlist.getAllPlaylists(serverBaseUrlCurrent, libraryId);
-      const actualEndpoint = mockData ? mockEndpoint : prodEndpoint;
-
-      const response = await fetch(actualEndpoint, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
-
-      const data = await response.json();
+      const endpoint = mockData ? mockEndpoint : prodEndpoint;
+      const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
@@ -782,16 +710,7 @@ export const getPlaylistDetails = async (libraryId, playlistId) => {
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.playlist.getDetails(serverBaseUrlCurrent, playlistId);
-
-      const response = await fetch(endpoint, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
-
-      const data = await response.json();
+      const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
@@ -821,16 +740,7 @@ export const getPlaylistTracks = async (libraryId, playlistId) => {
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.playlist.getTracks(serverBaseUrlCurrent, playlistId);
-
-      const response = await fetch(endpoint, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
-
-      const data = await response.json();
+      const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
@@ -864,16 +774,7 @@ export const getAllCollections = async () => {
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
       const endpoint = endpointConfig.collection.getAllCollections(serverBaseUrlCurrent, libraryId);
-
-      const response = await fetch(endpoint, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
-
-      const data = await response.json();
+      const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
@@ -907,16 +808,7 @@ export const getCollectionItems = async (libraryId, collectionId, collectionType
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.collection.getItems(serverBaseUrlCurrent, collectionId);
-
-      const response = await fetch(endpoint, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
-
-      const data = await response.json();
+      const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
@@ -959,16 +851,7 @@ export const getAllArtistGenres = async (type) => {
       const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
       const endpoint = endpointConfig.genres.getAllArtistGenres(serverBaseUrlCurrent, libraryId);
-
-      const response = await fetch(endpoint, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
-
-      const data = await response.json();
+      const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Directory);
 
@@ -998,16 +881,7 @@ export const getArtistGenreItems = async (libraryId, genreId) => {
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.genres.getArtistGenreItems(serverBaseUrlCurrent, libraryId, genreId);
-
-      const response = await fetch(endpoint, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
-
-      const data = await response.json();
+      const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
@@ -1041,16 +915,7 @@ export const getAllAlbumGenres = async (type) => {
       const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
       const endpoint = endpointConfig.genres.getAllAlbumGenres(serverBaseUrlCurrent, libraryId);
-
-      const response = await fetch(endpoint, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
-
-      const data = await response.json();
+      const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Directory);
 
@@ -1080,16 +945,7 @@ export const getAlbumGenreItems = async (libraryId, genreId) => {
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.genres.getAlbumGenreItems(serverBaseUrlCurrent, libraryId, genreId);
-
-      const response = await fetch(endpoint, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Plex-Token': authToken,
-        },
-      });
-
-      const data = await response.json();
+      const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
@@ -1106,6 +962,23 @@ export const getAlbumGenreItems = async (libraryId, genreId) => {
     }
   }
 };
+
+// ======================================================================
+// FETCH DATA
+// ======================================================================
+
+async function fetchData(endpoint, authToken) {
+  const response = await fetch(endpoint, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'X-Plex-Token': authToken,
+    },
+  });
+
+  const data = await response.json();
+  return data;
+}
 
 // ======================================================================
 // TRANSPOSE PLEX DATA
