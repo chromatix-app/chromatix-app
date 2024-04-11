@@ -413,22 +413,9 @@ export const getAllArtists = async () => {
       // console.log(data.MediaContainer.Metadata);
 
       const allArtists =
-        data.MediaContainer.Metadata?.map((artist) => ({
-          libraryId: libraryId,
-          artistId: artist.ratingKey,
-          title: artist.title,
-          country: artist?.Country?.[0]?.tag,
-          genre: artist?.Genre?.[0]?.tag,
-          userRating: artist.userRating,
-          link: '/artists/' + libraryId + '/' + artist.ratingKey,
-          thumb: artist.thumb
-            ? mockData
-              ? artist.thumb
-              : `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                  `${serverArtUrl}${artist.thumb}`
-                )}&X-Plex-Token=${authToken}`
-            : null,
-        })) || [];
+        data.MediaContainer.Metadata?.map((artist) =>
+          transposeArtistData(artist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+        ) || [];
 
       // console.log('allArtists', allArtists);
 
@@ -466,20 +453,7 @@ export const getArtistDetails = async (libraryId, artistId) => {
       // console.log(data.MediaContainer.Metadata);
 
       const artist = data.MediaContainer.Metadata[0];
-      const artistDetails = {
-        libraryId: libraryId,
-        artistId: artist.ratingKey,
-        title: artist.title,
-        country: artist?.Country?.[0]?.tag,
-        genre: artist?.Genre?.[0]?.tag,
-        userRating: artist.userRating,
-        link: '/artists/' + libraryId + '/' + artist.ratingKey,
-        thumb: artist.thumb
-          ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-              `${serverArtUrl}${artist.thumb}`
-            )}&X-Plex-Token=${authToken}`
-          : null,
-      };
+      const artistDetails = transposeArtistData(artist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken);
 
       // console.log('artistDetails', artistDetails);
 
@@ -517,22 +491,9 @@ export const getAllArtistAlbums = async (libraryId, artistId) => {
       // console.log(data.MediaContainer.Metadata);
 
       const artistAlbums =
-        data.MediaContainer.Metadata?.map((album) => ({
-          libraryId: libraryId,
-          albumId: album.ratingKey,
-          title: album.title,
-          artist: album.parentTitle,
-          artistId: album.parentRatingKey,
-          artistLink: '/artists/' + libraryId + '/' + album.parentRatingKey,
-          userRating: album.userRating,
-          releaseDate: album.originallyAvailableAt,
-          link: '/albums/' + libraryId + '/' + album.ratingKey,
-          thumb: album.thumb
-            ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                `${serverArtUrl}${album.thumb}`
-              )}&X-Plex-Token=${authToken}`
-            : null,
-        })) || [];
+        data.MediaContainer.Metadata?.map((album) =>
+          transposeAlbumData(album, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+        ) || [];
 
       // console.log('artistAlbums', artistAlbums);
 
@@ -575,22 +536,9 @@ export const getAllArtistRelated = async (libraryId, artistId) => {
       const artistRelated =
         data.MediaContainer.Hub?.filter((hub) => hub.type === 'album' && hub.Metadata).map((hub) => ({
           title: hub.title,
-          related: hub.Metadata.map((album) => ({
-            libraryId: libraryId,
-            albumId: album.ratingKey,
-            title: album.title,
-            artist: album.parentTitle,
-            artistId: album.parentRatingKey,
-            artistLink: '/artists/' + libraryId + '/' + album.parentRatingKey,
-            userRating: album.userRating,
-            releaseDate: album.originallyAvailableAt,
-            link: '/albums/' + libraryId + '/' + album.ratingKey,
-            thumb: album.thumb
-              ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                  `${serverArtUrl}${album.thumb}`
-                )}&X-Plex-Token=${authToken}`
-              : null,
-          })),
+          related: hub.Metadata.map((album) =>
+            transposeAlbumData(album, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+          ),
         })) || [];
 
       // console.log('artistRelated', artistRelated);
@@ -630,22 +578,9 @@ export const getAllAlbums = async () => {
       // console.log(data.MediaContainer.Metadata);
 
       const allAlbums =
-        data.MediaContainer.Metadata?.map((album) => ({
-          libraryId: libraryId,
-          albumId: album.ratingKey,
-          title: album.title,
-          artist: album.parentTitle,
-          artistId: album.parentRatingKey,
-          artistLink: '/artists/' + libraryId + '/' + album.parentRatingKey,
-          userRating: album.userRating,
-          releaseDate: album.originallyAvailableAt,
-          link: '/albums/' + libraryId + '/' + album.ratingKey,
-          thumb: album.thumb
-            ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                `${serverArtUrl}${album.thumb}`
-              )}&X-Plex-Token=${authToken}`
-            : null,
-        })) || [];
+        data.MediaContainer.Metadata?.map((album) =>
+          transposeAlbumData(album, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+        ) || [];
 
       // console.log('allAlbums', allAlbums);
 
@@ -683,22 +618,7 @@ export const getAlbumDetails = async (libraryId, albumId) => {
       // console.log(data.MediaContainer.Metadata);
 
       const album = data.MediaContainer.Metadata[0];
-      const albumDetails = {
-        libraryId: libraryId,
-        albumId: album.ratingKey,
-        title: album.title,
-        artist: album.parentTitle,
-        artistId: album.parentRatingKey,
-        artistLink: '/artists/' + album.librarySectionID + '/' + album.parentRatingKey,
-        userRating: album.userRating,
-        releaseDate: album.originallyAvailableAt,
-        link: '/albums/' + album.librarySectionID + '/' + album.ratingKey,
-        thumb: album.thumb
-          ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-              `${serverArtUrl}${album.thumb}`
-            )}&X-Plex-Token=${authToken}`
-          : null,
-      };
+      const albumDetails = transposeAlbumData(album, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken);
 
       // console.log('albumDetails', albumDetails);
 
@@ -736,28 +656,9 @@ export const getAlbumTracks = async (libraryId, albumId) => {
       // console.log(data.MediaContainer.Metadata);
 
       const albumTracks =
-        data.MediaContainer.Metadata?.map((track) => ({
-          libraryId: track.librarySectionID,
-          trackId: track.ratingKey,
-          title: track.title,
-          artist: track.grandparentTitle,
-          artistLink: '/artists/' + track.librarySectionID + '/' + track.grandparentRatingKey,
-          album: track.parentTitle,
-          albumLink: '/albums/' + track.librarySectionID + '/' + track.parentRatingKey,
-          trackNumber: track.index,
-          discNumber: track.parentIndex,
-          duration: track.Media[0].duration,
-          userRating: track.userRating,
-          thumb: track.thumb
-            ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                `${serverArtUrl}${track.thumb}`
-              )}&X-Plex-Token=${authToken}`
-            : null,
-          src: `${serverBaseUrlCurrent}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
-
-          // determine if an album is a normal album, single, live album or compilation
-          // albumType: track.parentTitle,
-        })) || [];
+        data.MediaContainer.Metadata?.map((track) =>
+          transposeTrackData(track, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+        ) || [];
 
       // console.log('albumTracks', albumTracks);
 
@@ -801,24 +702,9 @@ export const getAllPlaylists = async () => {
       // console.log(data.MediaContainer.Metadata);
 
       const allPlaylists =
-        data.MediaContainer.Metadata?.map((playlist) => {
-          const playlistThumb = playlist.thumb ? playlist.thumb : playlist.composite ? playlist.composite : null;
-          return {
-            libraryId: libraryId,
-            playlistId: playlist.ratingKey,
-            title: playlist.title,
-            link: '/playlists/' + libraryId + '/' + playlist.ratingKey,
-            totalTracks: playlist.leafCount,
-            duration: playlist.duration,
-            thumb: playlistThumb
-              ? mockData
-                ? playlistThumb
-                : `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                    `${serverArtUrl}${playlistThumb}`
-                  )}&X-Plex-Token=${authToken}`
-              : null,
-          };
-        }) || [];
+        data.MediaContainer.Metadata?.map((playlist) =>
+          transposePlaylistData(playlist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+        ) || [];
 
       // console.log('allPlaylists', allPlaylists);
 
@@ -858,22 +744,9 @@ export const getPlaylistDetails = async (libraryId, playlistId) => {
       // console.log(data.MediaContainer.Metadata);
 
       const playlist = data.MediaContainer.Metadata[0];
-      const playlistThumb = playlist.thumb ? playlist.thumb : playlist.composite ? playlist.composite : null;
-      const playlistDetails = {
-        libraryId: libraryId,
-        playlistId: playlist.ratingKey,
-        title: playlist.title,
-        link: '/playlists/' + libraryId + '/' + playlist.ratingKey,
-        totalTracks: playlist.leafCount,
-        duration: playlist.duration,
-        thumb: playlistThumb
-          ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-              `${serverArtUrl}${playlistThumb}`
-            )}&X-Plex-Token=${authToken}`
-          : null,
-      };
+      const playlistDetails = transposePlaylistData(playlist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken);
 
-      console.log('playlistDetails', playlistDetails);
+      // console.log('playlistDetails', playlistDetails);
 
       store.dispatch.appModel.storePlaylistDetails(playlistDetails);
 
@@ -909,25 +782,9 @@ export const getPlaylistTracks = async (libraryId, playlistId) => {
       // console.log(data.MediaContainer.Metadata);
 
       const playlistTracks =
-        data.MediaContainer.Metadata?.map((track) => ({
-          libraryId: track.librarySectionID,
-          trackId: track.ratingKey,
-          title: track.title,
-          artist: track.grandparentTitle,
-          artistLink: '/artists/' + track.librarySectionID + '/' + track.grandparentRatingKey,
-          album: track.parentTitle,
-          albumLink: '/albums/' + track.librarySectionID + '/' + track.parentRatingKey,
-          trackNumber: track.index,
-          discNumber: track.parentIndex,
-          duration: track.duration,
-          userRating: track.userRating,
-          thumb: track.thumb
-            ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                `${serverArtUrl}${track.thumb}`
-              )}&X-Plex-Token=${authToken}`
-            : null,
-          src: `${serverBaseUrlCurrent}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
-        })) || [];
+        data.MediaContainer.Metadata?.map((track) =>
+          transposeTrackData(track, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+        ) || [];
 
       // console.log(playlistTracks);
 
@@ -969,30 +826,9 @@ export const getAllCollections = async () => {
       const allCollections =
         data.MediaContainer.Metadata?.filter(
           (collection) => collection.subtype === 'artist' || collection.subtype === 'album'
-        ).map((collection) => {
-          const collectionThumb = collection.thumb
-            ? collection.thumb
-            : collection.composite
-            ? collection.composite
-            : null;
-          return {
-            libraryId: libraryId,
-            collectionId: collection.ratingKey,
-            title: collection.title,
-            userRating: collection.userRating,
-            type: collection.subtype,
-            link:
-              (collection.subtype === 'artist' ? '/artist-collections/' : '/album-collections/') +
-              libraryId +
-              '/' +
-              collection.ratingKey,
-            thumb: collectionThumb
-              ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                  `${serverArtUrl}${collectionThumb}`
-                )}&X-Plex-Token=${authToken}`
-              : null,
-          };
-        }) || [];
+        ).map((collection) =>
+          transposeCollectionData(collection, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+        ) || [];
 
       // console.log('allCollections', allCollections);
 
@@ -1033,40 +869,14 @@ export const getCollectionItems = async (libraryId, collectionId, collectionType
 
       if (collectionType === 'artist') {
         collectionItems =
-          data.MediaContainer.Metadata?.map((artist) => ({
-            libraryId: libraryId,
-            artistId: artist.ratingKey,
-            title: artist.title,
-            country: artist?.Country?.[0]?.tag,
-            genre: artist?.Genre?.[0]?.tag,
-            userRating: artist.userRating,
-            link: '/artists/' + libraryId + '/' + artist.ratingKey,
-            thumb: artist.thumb
-              ? mockData
-                ? artist.thumb
-                : `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                    `${serverArtUrl}${artist.thumb}`
-                  )}&X-Plex-Token=${authToken}`
-              : null,
-          })) || [];
+          data.MediaContainer.Metadata?.map((artist) =>
+            transposeArtistData(artist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+          ) || [];
       } else if (collectionType === 'album') {
         collectionItems =
-          data.MediaContainer.Metadata?.map((album) => ({
-            libraryId: libraryId,
-            albumId: album.ratingKey,
-            title: album.title,
-            artist: album.parentTitle,
-            artistId: album.parentRatingKey,
-            artistLink: '/artists/' + libraryId + '/' + album.parentRatingKey,
-            userRating: album.userRating,
-            releaseDate: album.originallyAvailableAt,
-            link: '/albums/' + libraryId + '/' + album.ratingKey,
-            thumb: album.thumb
-              ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                  `${serverArtUrl}${album.thumb}`
-                )}&X-Plex-Token=${authToken}`
-              : null,
-          })) || [];
+          data.MediaContainer.Metadata?.map((album) =>
+            transposeAlbumData(album, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+          ) || [];
       }
 
       console.log('collectionItems', collectionType, collectionItems);
@@ -1107,12 +917,7 @@ export const getAllArtistGenres = async (type) => {
       // console.log(data.MediaContainer.Directory);
 
       const allArtistGenres =
-        data.MediaContainer.Directory?.map((genre) => ({
-          libraryId: libraryId,
-          genreId: genre.key,
-          title: genre.title,
-          link: 'artist-genres/' + libraryId + '/' + genre.key,
-        })) || [];
+        data.MediaContainer.Directory?.map((genre) => transposeGenreData('artist', genre, libraryId)) || [];
 
       // console.log('allArtistGenres', allArtistGenres);
 
@@ -1153,20 +958,9 @@ export const getArtistGenreItems = async (libraryId, genreId) => {
       // console.log(data.MediaContainer.Metadata);
 
       const artistGenreItems =
-        data.MediaContainer.Metadata?.map((artist) => ({
-          libraryId: libraryId,
-          artistId: artist.ratingKey,
-          title: artist.title,
-          country: artist?.Country?.[0]?.tag,
-          genre: artist?.Genre?.[0]?.tag,
-          userRating: artist.userRating,
-          link: '/artists/' + libraryId + '/' + artist.ratingKey,
-          thumb: artist.thumb
-            ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                `${serverArtUrl}${artist.thumb}`
-              )}&X-Plex-Token=${authToken}`
-            : null,
-        })) || [];
+        data.MediaContainer.Metadata?.map((artist) =>
+          transposeArtistData(artist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+        ) || [];
 
       // console.log('artistGenreItems', artistGenreItems);
 
@@ -1206,12 +1000,7 @@ export const getAllAlbumGenres = async (type) => {
       // console.log(data.MediaContainer.Directory);
 
       const allAlbumGenres =
-        data.MediaContainer.Directory?.map((genre) => ({
-          libraryId: libraryId,
-          genreId: genre.key,
-          title: genre.title,
-          link: 'album-genres/' + libraryId + '/' + genre.key,
-        })) || [];
+        data.MediaContainer.Directory?.map((genre) => transposeGenreData('album', genre, libraryId)) || [];
 
       // console.log('allAlbumGenres', allAlbumGenres);
 
@@ -1252,22 +1041,9 @@ export const getAlbumGenreItems = async (libraryId, genreId) => {
       // console.log(data.MediaContainer.Metadata);
 
       const albumGenreItems =
-        data.MediaContainer.Metadata?.map((album) => ({
-          libraryId: libraryId,
-          albumId: album.ratingKey,
-          title: album.title,
-          artist: album.parentTitle,
-          artistId: album.parentRatingKey,
-          artistLink: '/artists/' + libraryId + '/' + album.parentRatingKey,
-          userRating: album.userRating,
-          releaseDate: album.originallyAvailableAt,
-          link: '/albums/' + libraryId + '/' + album.ratingKey,
-          thumb: album.thumb
-            ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                `${serverArtUrl}${album.thumb}`
-              )}&X-Plex-Token=${authToken}`
-            : null,
-        })) || [];
+        data.MediaContainer.Metadata?.map((album) =>
+          transposeAlbumData(album, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+        ) || [];
 
       // console.log('albumGenreItems', albumGenreItems);
 
@@ -1276,4 +1052,124 @@ export const getAlbumGenreItems = async (libraryId, genreId) => {
       getAlbumGenreItemsRunning = false;
     }
   }
+};
+
+// ======================================================================
+// TRANSPOSE PLEX DATA
+// ======================================================================
+
+/*
+We are transposing the Plex data to a format that is easier to work with in the app,
+and doing some additional processing and validation.
+*/
+
+const transposeArtistData = (artist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken) => {
+  return {
+    libraryId: libraryId,
+    artistId: artist.ratingKey,
+    title: artist.title,
+    country: artist?.Country?.[0]?.tag,
+    genre: artist?.Genre?.[0]?.tag,
+    userRating: artist.userRating,
+    link: '/artists/' + libraryId + '/' + artist.ratingKey,
+    thumb: artist.thumb
+      ? mockData
+        ? artist.thumb
+        : `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+            `${serverArtUrl}${artist.thumb}`
+          )}&X-Plex-Token=${authToken}`
+      : null,
+  };
+};
+
+const transposeAlbumData = (album, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken) => {
+  return {
+    libraryId: libraryId,
+    albumId: album.ratingKey,
+    title: album.title,
+    artist: album.parentTitle,
+    artistId: album.parentRatingKey,
+    artistLink: '/artists/' + libraryId + '/' + album.parentRatingKey,
+    userRating: album.userRating,
+    releaseDate: album.originallyAvailableAt,
+    link: '/albums/' + libraryId + '/' + album.ratingKey,
+    thumb: album.thumb
+      ? mockData
+        ? album.thumb
+        : `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+            `${serverArtUrl}${album.thumb}`
+          )}&X-Plex-Token=${authToken}`
+      : null,
+  };
+};
+
+const transposePlaylistData = (playlist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken) => {
+  const playlistThumb = playlist.thumb ? playlist.thumb : playlist.composite ? playlist.composite : null;
+  return {
+    libraryId: libraryId,
+    playlistId: playlist.ratingKey,
+    title: playlist.title,
+    link: '/playlists/' + libraryId + '/' + playlist.ratingKey,
+    totalTracks: playlist.leafCount,
+    duration: playlist.duration,
+    thumb: playlistThumb
+      ? mockData
+        ? playlistThumb
+        : `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+            `${serverArtUrl}${playlistThumb}`
+          )}&X-Plex-Token=${authToken}`
+      : null,
+  };
+};
+
+const transposeTrackData = (track, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken) => {
+  return {
+    libraryId: track.librarySectionID,
+    trackId: track.ratingKey,
+    title: track.title,
+    artist: track.grandparentTitle,
+    artistLink: '/artists/' + track.librarySectionID + '/' + track.grandparentRatingKey,
+    album: track.parentTitle,
+    albumLink: '/albums/' + track.librarySectionID + '/' + track.parentRatingKey,
+    trackNumber: track.index,
+    discNumber: track.parentIndex,
+    duration: track.Media[0].duration,
+    userRating: track.userRating,
+    thumb: track.thumb
+      ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+          `${serverArtUrl}${track.thumb}`
+        )}&X-Plex-Token=${authToken}`
+      : null,
+    src: `${serverBaseUrlCurrent}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
+  };
+};
+
+const transposeCollectionData = (collection, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken) => {
+  const collectionThumb = collection.thumb ? collection.thumb : collection.composite ? collection.composite : null;
+  return {
+    libraryId: libraryId,
+    collectionId: collection.ratingKey,
+    title: collection.title,
+    userRating: collection.userRating,
+    type: collection.subtype,
+    link:
+      (collection.subtype === 'artist' ? '/artist-collections/' : '/album-collections/') +
+      libraryId +
+      '/' +
+      collection.ratingKey,
+    thumb: collectionThumb
+      ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+          `${serverArtUrl}${collectionThumb}`
+        )}&X-Plex-Token=${authToken}`
+      : null,
+  };
+};
+
+const transposeGenreData = (type, genre, libraryId) => {
+  return {
+    libraryId: libraryId,
+    genreId: genre.key,
+    title: genre.title,
+    link: '/' + type + '-genres/' + libraryId + '/' + genre.key,
+  };
 };
