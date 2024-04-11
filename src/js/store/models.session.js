@@ -19,6 +19,15 @@ const sessionState = {
   currentColorBackground: '#111111',
   currentColorText: '#ffffff',
   currentColorPrimary: '#f7277a',
+
+  menuShowArtists: true,
+  menuShowAlbums: true,
+  menuShowPlaylists: true,
+  menuShowArtistCollections: true,
+  menuShowAlbumCollections: true,
+  menuShowArtistGenres: true,
+  menuShowAlbumGenres: true,
+  menuShowAllPlaylists: true,
 };
 
 const playingState = {

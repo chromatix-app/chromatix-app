@@ -9,6 +9,11 @@
 }
 
 .entry {
+  font-size: 14px;
+
+  + .entry {
+    margin-top: 30px;
+  }
 }
 
 .title {
@@ -17,6 +22,10 @@
   font-size: 14px;
   font-weight: bold;
 }
+
+//
+// THEME
+//
 
 .themes {
   display: flex;
@@ -86,4 +95,27 @@
 .customInput {
   width: 60px;
   height: 30px;
+}
+
+//
+// MENU
+//
+
+.menu {
+}
+
+.menuEntry {
+  + .menuEntry {
+    margin-top: 4px;
+  }
+
+  label {
+    display: inline-flex;
+    margin: 0 auto 0 0;
+    align-items: center;
+  }
+
+  input[type='checkbox'] {
+    margin: 0 10px 0 0;
+  }
 }

@@ -19,7 +19,18 @@ import style from './SideBar.module.scss';
 const SideBar = () => {
   const { canGoBack, canGoForward, goBack, goForward } = useNavigationHistory();
 
-  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
+  const {
+    currentLibrary,
+    menuShowArtists,
+    menuShowAlbums,
+    menuShowPlaylists,
+    menuShowArtistCollections,
+    menuShowAlbumCollections,
+    menuShowArtistGenres,
+    menuShowAlbumGenres,
+    menuShowAllPlaylists,
+  } = useSelector(({ sessionModel }) => sessionModel);
+
   const currentLibraryId = currentLibrary?.libraryId;
 
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists)?.filter(
@@ -41,28 +52,42 @@ const SideBar = () => {
         </button>
       </div>
       <div className={style.label}>Library</div>
-      <NavLink className={style.link} activeClassName={style.linkActive} to="/artists">
-        Artists
-      </NavLink>
-      <NavLink className={style.link} activeClassName={style.linkActive} to="/albums">
-        Albums
-      </NavLink>
-      <NavLink className={style.link} activeClassName={style.linkActive} to="/playlists" exact>
-        Playlists
-      </NavLink>
-      <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-collections">
-        Artist Collections
-      </NavLink>
-      <NavLink className={style.link} activeClassName={style.linkActive} to="/album-collections">
-        Album Collections
-      </NavLink>
-      <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-genres">
-        Artist Genres
-      </NavLink>
-      <NavLink className={style.link} activeClassName={style.linkActive} to="/album-genres">
-        Album Genres
-      </NavLink>
-      {allPlaylists && allPlaylists.length > 0 && (
+      {menuShowArtists && (
+        <NavLink className={style.link} activeClassName={style.linkActive} to="/artists">
+          Artists
+        </NavLink>
+      )}
+      {menuShowAlbums && (
+        <NavLink className={style.link} activeClassName={style.linkActive} to="/albums">
+          Albums
+        </NavLink>
+      )}
+      {menuShowPlaylists && (
+        <NavLink className={style.link} activeClassName={style.linkActive} to="/playlists" exact>
+          Playlists
+        </NavLink>
+      )}
+      {menuShowArtistCollections && (
+        <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-collections">
+          Artist Collections
+        </NavLink>
+      )}
+      {menuShowAlbumCollections && (
+        <NavLink className={style.link} activeClassName={style.linkActive} to="/album-collections">
+          Album Collections
+        </NavLink>
+      )}
+      {menuShowArtistGenres && (
+        <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-genres">
+          Artist Genres
+        </NavLink>
+      )}
+      {menuShowAlbumGenres && (
+        <NavLink className={style.link} activeClassName={style.linkActive} to="/album-genres">
+          Album Genres
+        </NavLink>
+      )}
+      {menuShowAllPlaylists && allPlaylists && allPlaylists.length > 0 && (
         <>
           <div className={style.label}>Playlists</div>
           {allPlaylists.map((playlist) => (

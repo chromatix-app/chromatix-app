@@ -21,9 +21,17 @@ export const Settings = () => {
         <div className={style.title}>Theme</div>
         <ThemeSettings />
       </div>
+      <div className={style.entry}>
+        <div className={style.title}>Customise Menu</div>
+        <MenuSettings />
+      </div>
     </div>
   );
 };
+
+//
+// THEME
+//
 
 const ThemeSettings = () => {
   const dispatch = useDispatch();
@@ -122,6 +130,53 @@ const ThemeSettings = () => {
         )}
       </div>
     </>
+  );
+};
+
+//
+// MENU
+//
+
+const MenuSettings = () => {
+  const dispatch = useDispatch();
+
+  const {
+    menuShowArtists,
+    menuShowAlbums,
+    menuShowPlaylists,
+    menuShowArtistCollections,
+    menuShowAlbumCollections,
+    menuShowArtistGenres,
+    menuShowAlbumGenres,
+    menuShowAllPlaylists,
+  } = useSelector(({ sessionModel }) => sessionModel);
+
+  const menuItems = [
+    { key: 'menuShowArtists', label: 'Artists', state: menuShowArtists },
+    { key: 'menuShowAlbums', label: 'Albums', state: menuShowAlbums },
+    { key: 'menuShowPlaylists', label: 'Playlists', state: menuShowPlaylists },
+    { key: 'menuShowArtistCollections', label: 'Artist Collections', state: menuShowArtistCollections },
+    { key: 'menuShowAlbumCollections', label: 'Album Collections', state: menuShowAlbumCollections },
+    { key: 'menuShowArtistGenres', label: 'Artist Genres', state: menuShowArtistGenres },
+    { key: 'menuShowAlbumGenres', label: 'Album Genres', state: menuShowAlbumGenres },
+    { key: 'menuShowAllPlaylists', label: 'All Playlists', state: menuShowAllPlaylists },
+  ];
+
+  return (
+    <div className={style.menu}>
+      {menuItems.map(({ key, label, state }) => (
+        <div key={key} className={style.menuEntry}>
+          <label>
+            <input
+              type="checkbox"
+              checked={state}
+              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
+            />
+            <div>{label}</div>
+          </label>
+        </div>
+      ))}
+    </div>
   );
 };
 
