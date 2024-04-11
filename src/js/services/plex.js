@@ -64,6 +64,49 @@ const redirectUrlActual = isProduction ? redirectUrlProd : redirectUrlLocal;
 
 const thumbSize = 480;
 
+const endpointConfig = {
+  auth: {
+    login: () => 'https://plex.tv/api/v2/pins',
+    pinStatus: (pinId) => `https://plex.tv/api/v2/pins/${pinId}`,
+  },
+  user: {
+    getUserInfo: () => 'https://plex.tv/users/account',
+    getAllServers: () => 'https://plex.tv/api/v2/resources?includeHttps=1&includeRelay=1&includeIPv6=1',
+  },
+  server: {
+    getAllLibraries: (base) => `${base}/library/sections`,
+  },
+  artist: {
+    getAllArtists: (base, libraryId) => `${base}/library/sections/${libraryId}/all?type=8`,
+    getDetails: (base, artistId) => `${base}/library/metadata/${artistId}`,
+    getAllAlbums: (base, artistId) => `${base}/library/metadata/${artistId}/children?excludeAllLeaves=1`,
+    getAllRelated: (base, artistId) =>
+      `${base}/library/metadata/${artistId}/related?includeAugmentations=1&includeExternalMetadata=1&includeMeta=1`,
+  },
+  album: {
+    getAllAlbums: (base, libraryId) => `${base}/library/sections/${libraryId}/all?type=9`,
+    getDetails: (base, albumId) => `${base}/library/metadata/${albumId}`,
+    getTracks: (base, albumId) => `${base}/library/metadata/${albumId}/children`,
+  },
+  playlist: {
+    getAllPlaylists: (base, libraryId) => `${base}/playlists?playlistType=audio&sectionID=${libraryId}`,
+    getDetails: (base, playlistId) => `${base}/playlists/${playlistId}`,
+    getTracks: (base, playlistId) => `${base}/playlists/${playlistId}/items`,
+  },
+  collection: {
+    getAllCollections: (base, libraryId) => `${base}/library/sections/${libraryId}/collections`,
+    getItems: (base, collectionId) => `${base}/library/collections/${collectionId}/children`,
+  },
+  genres: {
+    getAllArtistGenres: (base, libraryId) => `${base}/library/sections/${libraryId}/genre?type=8`,
+    getArtistGenreItems: (base, libraryId, genreId) =>
+      `${base}/library/sections/${libraryId}/all?type=8&genre=${genreId}`,
+    getAllAlbumGenres: (base, libraryId) => `${base}/library/sections/${libraryId}/genre?type=9`,
+    getAlbumGenreItems: (base, libraryId, genreId) =>
+      `${base}/library/sections/${libraryId}/all?type=9&genre=${genreId}`,
+  },
+};
+
 // ======================================================================
 // LOAD
 // ======================================================================
@@ -98,7 +141,8 @@ export function init() {
 export const login = async () => {
   console.log('%c--- plex - login ---', 'color:#f9743b;');
   try {
-    const pinResponse = await fetch('https://plex.tv/api/v2/pins', {
+    const endpoint = endpointConfig.auth.login();
+    const pinResponse = await fetch(endpoint, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -143,7 +187,8 @@ export const login = async () => {
 const checkPinStatus = async (pinId) => {
   console.log('%c--- plex - checkPinStatus ---', 'color:#f9743b;');
   try {
-    const pinStatusResponse = await fetch(`https://plex.tv/api/v2/pins/${pinId}`, {
+    const endpoint = endpointConfig.auth.pinStatus(pinId);
+    const pinStatusResponse = await fetch(endpoint, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -196,7 +241,8 @@ const getUserInfo = async () => {
   console.log('%c--- plex - getUserInfo ---', 'color:#f9743b;');
   try {
     const authToken = window.localStorage.getItem('chromatix-auth-token');
-    const response = await fetch('https://plex.tv/users/account', {
+    const endpoint = endpointConfig.user.getUserInfo();
+    const response = await fetch(endpoint, {
       headers: {
         'X-Plex-Token': authToken,
       },
@@ -250,7 +296,8 @@ export const getAllServers = async () => {
 
       try {
         const authToken = window.localStorage.getItem('chromatix-auth-token');
-        const response = await fetch('https://plex.tv/api/v2/resources?includeHttps=1&includeRelay=1&includeIPv6=1', {
+        const endpoint = endpointConfig.user.getAllServers();
+        const response = await fetch(endpoint, {
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
@@ -323,7 +370,8 @@ export const getAllLibraries = async () => {
 
         try {
           const authToken = window.localStorage.getItem('chromatix-auth-token');
-          const response = await axios.get(`${serverBaseUrlCurrent}/library/sections`, {
+          const endpoint = endpointConfig.server.getAllLibraries(serverBaseUrlCurrent);
+          const response = await axios.get(endpoint, {
             timeout: 5000, // 5 seconds
             headers: {
               Accept: 'application/json',
@@ -396,11 +444,11 @@ export const getAllArtists = async () => {
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
-      const mockUrl = '/api/artists.json';
-      const prodUrl = `${serverBaseUrlCurrent}/library/sections/${libraryId}/all?type=8`;
-      const actualUrl = mockData ? mockUrl : prodUrl;
+      const mockEndpoint = '/api/artists.json';
+      const prodEndpoint = endpointConfig.artist.getAllArtists(serverBaseUrlCurrent, libraryId);
+      const actualEndpoint = mockData ? mockEndpoint : prodEndpoint;
 
-      const response = await fetch(actualUrl, {
+      const response = await fetch(actualEndpoint, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -439,8 +487,9 @@ export const getArtistDetails = async (libraryId, artistId) => {
       getArtistDetailsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.artist.getDetails(serverBaseUrlCurrent, artistId);
 
-      const response = await fetch(`${serverBaseUrlCurrent}/library/metadata/${artistId}`, {
+      const response = await fetch(endpoint, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -477,8 +526,9 @@ export const getAllArtistAlbums = async (libraryId, artistId) => {
       getAllArtistAlbumsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.artist.getAllAlbums(serverBaseUrlCurrent, artistId);
 
-      const response = await fetch(`${serverBaseUrlCurrent}/library/metadata/${artistId}/children?excludeAllLeaves=1`, {
+      const response = await fetch(endpoint, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -517,17 +567,15 @@ export const getAllArtistRelated = async (libraryId, artistId) => {
       getAllArtistRelatedRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.artist.getAllRelated(serverBaseUrlCurrent, artistId);
 
-      const response = await fetch(
-        `${serverBaseUrlCurrent}/library/metadata/${artistId}/related?includeAugmentations=1&includeExternalMetadata=1&includeMeta=1`,
-        {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': authToken,
-          },
-        }
-      );
+      const response = await fetch(endpoint, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Plex-Token': authToken,
+        },
+      });
 
       const data = await response.json();
 
@@ -564,8 +612,9 @@ export const getAllAlbums = async () => {
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
+      const endpoint = endpointConfig.album.getAllAlbums(serverBaseUrlCurrent, libraryId);
 
-      const response = await fetch(`${serverBaseUrlCurrent}/library/sections/${libraryId}/all?type=9`, {
+      const response = await fetch(endpoint, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -604,8 +653,9 @@ export const getAlbumDetails = async (libraryId, albumId) => {
       getAlbumDetailsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.album.getDetails(serverBaseUrlCurrent, albumId);
 
-      const response = await fetch(`${serverBaseUrlCurrent}/library/metadata/${albumId}`, {
+      const response = await fetch(endpoint, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -642,8 +692,9 @@ export const getAlbumTracks = async (libraryId, albumId) => {
       getAlbumTracksRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.album.getTracks(serverBaseUrlCurrent, albumId);
 
-      const response = await fetch(`${serverBaseUrlCurrent}/library/metadata/${albumId}/children`, {
+      const response = await fetch(endpoint, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -685,11 +736,11 @@ export const getAllPlaylists = async () => {
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
-      const mockUrl = '/api/playlists.json';
-      const prodUrl = `${serverBaseUrlCurrent}/playlists?playlistType=audio&sectionID=${libraryId}`;
-      const actualUrl = mockData ? mockUrl : prodUrl;
+      const mockEndpoint = '/api/playlists.json';
+      const prodEndpoint = endpointConfig.playlist.getAllPlaylists(serverBaseUrlCurrent, libraryId);
+      const actualEndpoint = mockData ? mockEndpoint : prodEndpoint;
 
-      const response = await fetch(actualUrl, {
+      const response = await fetch(actualEndpoint, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -730,8 +781,9 @@ export const getPlaylistDetails = async (libraryId, playlistId) => {
       getPlaylistDetailsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.playlist.getDetails(serverBaseUrlCurrent, playlistId);
 
-      const response = await fetch(`${serverBaseUrlCurrent}/playlists/${playlistId}`, {
+      const response = await fetch(endpoint, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -768,8 +820,9 @@ export const getPlaylistTracks = async (libraryId, playlistId) => {
       getPlaylistTracksRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.playlist.getTracks(serverBaseUrlCurrent, playlistId);
 
-      const response = await fetch(`${serverBaseUrlCurrent}/playlists/${playlistId}/items`, {
+      const response = await fetch(endpoint, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -810,8 +863,9 @@ export const getAllCollections = async () => {
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
+      const endpoint = endpointConfig.collection.getAllCollections(serverBaseUrlCurrent, libraryId);
 
-      const response = await fetch(`${serverBaseUrlCurrent}/library/sections/${libraryId}/collections`, {
+      const response = await fetch(endpoint, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -852,8 +906,9 @@ export const getCollectionItems = async (libraryId, collectionId, collectionType
       getCollectionItemsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.collection.getItems(serverBaseUrlCurrent, collectionId);
 
-      const response = await fetch(`${serverBaseUrlCurrent}/library/collections/${collectionId}/children`, {
+      const response = await fetch(endpoint, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -863,7 +918,7 @@ export const getCollectionItems = async (libraryId, collectionId, collectionType
 
       const data = await response.json();
 
-      console.log(data.MediaContainer.Metadata);
+      // console.log(data.MediaContainer.Metadata);
 
       let collectionItems;
 
@@ -879,7 +934,7 @@ export const getCollectionItems = async (libraryId, collectionId, collectionType
           ) || [];
       }
 
-      console.log('collectionItems', collectionType, collectionItems);
+      // console.log('collectionItems', collectionType, collectionItems);
 
       store.dispatch.appModel.storeCollectionItems({ libraryId, collectionId, collectionItems });
 
@@ -903,8 +958,9 @@ export const getAllArtistGenres = async (type) => {
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
+      const endpoint = endpointConfig.genres.getAllArtistGenres(serverBaseUrlCurrent, libraryId);
 
-      const response = await fetch(`${serverBaseUrlCurrent}/library/sections/${libraryId}/genre?type=8`, {
+      const response = await fetch(endpoint, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -941,17 +997,15 @@ export const getArtistGenreItems = async (libraryId, genreId) => {
       getArtistGenreItemsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.genres.getArtistGenreItems(serverBaseUrlCurrent, libraryId, genreId);
 
-      const response = await fetch(
-        `${serverBaseUrlCurrent}/library/sections/${libraryId}/all?type=8&genre=${genreId}`,
-        {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': authToken,
-          },
-        }
-      );
+      const response = await fetch(endpoint, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Plex-Token': authToken,
+        },
+      });
 
       const data = await response.json();
 
@@ -986,8 +1040,9 @@ export const getAllAlbumGenres = async (type) => {
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
+      const endpoint = endpointConfig.genres.getAllAlbumGenres(serverBaseUrlCurrent, libraryId);
 
-      const response = await fetch(`${serverBaseUrlCurrent}/library/sections/${libraryId}/genre?type=9`, {
+      const response = await fetch(endpoint, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -1024,17 +1079,15 @@ export const getAlbumGenreItems = async (libraryId, genreId) => {
       getAlbumGenreItemsRunning = true;
       const authToken = window.localStorage.getItem('chromatix-auth-token');
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.genres.getAlbumGenreItems(serverBaseUrlCurrent, libraryId, genreId);
 
-      const response = await fetch(
-        `${serverBaseUrlCurrent}/library/sections/${libraryId}/all?type=9&genre=${genreId}`,
-        {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': authToken,
-          },
-        }
-      );
+      const response = await fetch(endpoint, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Plex-Token': authToken,
+        },
+      });
 
       const data = await response.json();
 
