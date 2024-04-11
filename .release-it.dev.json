@@ -1,0 +1,17 @@
+{
+  "git": {
+    "requireCleanWorkingDir": true
+  },
+  "npm": {
+    "publish": false
+  },
+  "hooks": {
+    "before:init": [
+      "echo !!! Have you updated the changelog? !!!",
+      "git checkout staging",
+      "git pull",
+      "git merge develop"
+    ],
+    "after:release": ["git checkout develop"]
+  }
+}

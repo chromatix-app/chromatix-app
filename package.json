@@ -8,7 +8,8 @@
   "scripts": {
     "start": "REACT_APP_VERSION=$npm_package_version REACT_APP_ENV=local REACT_APP_DATE=$(date +%s) react-scripts start",
     "start-https": "REACT_APP_VERSION=$npm_package_version REACT_APP_ENV=local REACT_APP_DATE=$(date +%s) HTTPS=true react-scripts start",
-    "build": "REACT_APP_VERSION=$npm_package_version REACT_APP_ENV=$REACT_APP_ENV REACT_APP_DATE=$(date +%s) react-scripts build"
+    "build": "REACT_APP_VERSION=$npm_package_version REACT_APP_ENV=$REACT_APP_ENV REACT_APP_DATE=$(date +%s) react-scripts build",
+    "release:dev": "release-it --preReleaseId=beta --config .release-it.dev.json"
   },
   "dependencies": {
     "@rematch/core": "^2.2.0",
@@ -32,6 +33,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.34.1",
     "prettier": "^2.8.8",
+    "release-it": "^17.1.1",
     "sass-resources-loader": "^2.2.5",
     "webpack": "^5.91.0"
   },
