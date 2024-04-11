@@ -4,6 +4,7 @@
 
 import React, { useCallback } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 
 import { Icon, StarRating } from 'js/components';
@@ -31,6 +32,8 @@ const ListEntry = React.memo(
   ({ thumb, title, artist, artistLink, duration, userRating, link, totalTracks, variant }) => {
     const history = useHistory();
 
+    const { optionGridEllipsis, optionGridRatings } = useSelector(({ sessionModel }) => sessionModel);
+
     const handleCardClick = useCallback(
       (event) => {
         if (link) {
@@ -57,21 +60,29 @@ const ListEntry = React.memo(
           )}
         </div>
         <div className={style.body}>
-          {title && <div className={style.title}>{title}</div>}
+          {title && <div className={clsx(style.title, { 'text-trim': optionGridEllipsis })}>{title}</div>}
 
-          {artist && !artistLink && <div className={style.subtitle}>{artist}</div>}
+          {artist && !artistLink && (
+            <div className={clsx(style.subtitle, { 'text-trim': optionGridEllipsis })}>{artist}</div>
+          )}
+
           {artist && artistLink && (
-            <NavLink className={style.subtitle} to={artistLink} onClick={handleLinkClick}>
+            <NavLink
+              className={clsx(style.subtitle, { 'text-trim': optionGridEllipsis })}
+              to={artistLink}
+              onClick={handleLinkClick}
+            >
               {artist}
             </NavLink>
           )}
 
           {totalTracks && <div className={style.subtitle}>{totalTracks + ' tracks'}</div>}
+
           {duration && <div className={style.subtitle}>{durationToStringLong(duration)}</div>}
 
           {/* {albumRelease && <div className={style.subtitle}>{albumRelease}</div>} */}
 
-          {userRating && (
+          {optionGridRatings && userRating && (
             <div className={style.rating}>
               <StarRating rating={userRating} />
             </div>

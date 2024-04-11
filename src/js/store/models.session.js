@@ -16,7 +16,7 @@ const sessionState = {
   currentLibrary: null,
 
   currentTheme: 'black-pink',
-  currentColorBackground: '#111111',
+  currentColorBackground: '#021C27',
   currentColorText: '#ffffff',
   currentColorPrimary: '#f7277a',
 
@@ -28,6 +28,9 @@ const sessionState = {
   menuShowArtistGenres: true,
   menuShowAlbumGenres: true,
   menuShowAllPlaylists: true,
+
+  optionGridEllipsis: true,
+  optionGridRatings: true,
 };
 
 const playingState = {

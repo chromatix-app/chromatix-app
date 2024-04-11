@@ -77,19 +77,13 @@
 }
 
 .title {
-  overflow: hidden;
   font-size: 12px;
   font-weight: 500;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .subtitle {
   display: block;
-  overflow: hidden;
   opacity: 0.5;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .rating {

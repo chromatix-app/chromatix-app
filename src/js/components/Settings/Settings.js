@@ -22,6 +22,10 @@ export const Settings = () => {
         <ThemeSettings />
       </div>
       <div className={style.entry}>
+        <div className={style.title}>Options</div>
+        <OptionSettings />
+      </div>
+      <div className={style.entry}>
         <div className={style.title}>Customise Menu</div>
         <MenuSettings />
       </div>
@@ -130,6 +134,38 @@ const ThemeSettings = () => {
         )}
       </div>
     </>
+  );
+};
+
+//
+// OPTIONS
+//
+
+const OptionSettings = () => {
+  const dispatch = useDispatch();
+
+  const { optionGridEllipsis, optionGridRatings } = useSelector(({ sessionModel }) => sessionModel);
+
+  const menuItems = [
+    { key: 'optionGridEllipsis', label: 'Trim titles to one line in grid view', state: optionGridEllipsis },
+    { key: 'optionGridRatings', label: 'Show star ratings in grid view', state: optionGridRatings },
+  ];
+
+  return (
+    <div className={style.menu}>
+      {menuItems.map(({ key, label, state }) => (
+        <div key={key} className={style.menuEntry}>
+          <label>
+            <input
+              type="checkbox"
+              checked={state}
+              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
+            />
+            <div>{label}</div>
+          </label>
+        </div>
+      ))}
+    </div>
   );
 };
 
