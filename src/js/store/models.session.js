@@ -27,6 +27,9 @@ const sessionState = {
   menuShowAlbumCollections: true,
   menuShowArtistGenres: true,
   menuShowAlbumGenres: true,
+  menuShowArtistStyles: true,
+  menuShowAlbumStyles: true,
+
   menuShowAllPlaylists: true,
 
   optionGridEllipsis: true,

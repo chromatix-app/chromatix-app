@@ -105,6 +105,14 @@ const endpointConfig = {
     getAlbumGenreItems: (base, libraryId, genreId) =>
       `${base}/library/sections/${libraryId}/all?type=9&genre=${genreId}`,
   },
+  styles: {
+    getAllArtistStyles: (base, libraryId) => `${base}/library/sections/${libraryId}/style?type=8`,
+    getArtistStyleItems: (base, libraryId, styleId) =>
+      `${base}/library/sections/${libraryId}/all?type=8&style=${styleId}`,
+    getAllAlbumStyles: (base, libraryId) => `${base}/library/sections/${libraryId}/style?type=9`,
+    getAlbumStyleItems: (base, libraryId, styleId) =>
+      `${base}/library/sections/${libraryId}/all?type=9&style=${styleId}`,
+  },
 };
 
 // ======================================================================
@@ -964,6 +972,134 @@ export const getAlbumGenreItems = async (libraryId, genreId) => {
 };
 
 // ======================================================================
+// GET ALL ARTIST STYLES
+// ======================================================================
+
+let getAllArtistStylesRunning;
+
+export const getAllArtistStyles = async (type) => {
+  if (!getAllArtistStylesRunning) {
+    const prevAllStyles = store.getState().appModel.allArtistStyles;
+    if (!prevAllStyles) {
+      console.log('%c--- plex - getAllArtistStyles ---', 'color:#f9743b;');
+      getAllArtistStylesRunning = true;
+      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
+      const { libraryId } = store.getState().sessionModel.currentLibrary;
+      const endpoint = endpointConfig.styles.getAllArtistStyles(serverBaseUrlCurrent, libraryId);
+      const data = await fetchData(endpoint, authToken);
+
+      // console.log(data.MediaContainer.Directory);
+
+      const allArtistStyles =
+        data.MediaContainer.Directory?.map((style) => transposeStyleData('artist', style, libraryId)) || [];
+
+      // console.log('allArtistStyles', allArtistStyles);
+
+      store.dispatch.appModel.setAppState({ allArtistStyles });
+
+      getAllArtistStylesRunning = false;
+    }
+  }
+};
+
+// ======================================================================
+// GET ARTIST STYLE ITEMS
+// ======================================================================
+
+let getArtistStyleItemsRunning;
+
+export const getArtistStyleItems = async (libraryId, styleId) => {
+  if (!getArtistStyleItemsRunning) {
+    const prevStyleItems = store.getState().appModel.allArtistStyleItems[libraryId + '-' + styleId];
+    if (!prevStyleItems) {
+      getArtistStyleItemsRunning = true;
+      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.styles.getArtistStyleItems(serverBaseUrlCurrent, libraryId, styleId);
+      const data = await fetchData(endpoint, authToken);
+
+      // console.log(data.MediaContainer.Metadata);
+
+      const artistStyleItems =
+        data.MediaContainer.Metadata?.map((artist) =>
+          transposeArtistData(artist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+        ) || [];
+
+      // console.log('artistStyleItems', artistStyleItems);
+
+      store.dispatch.appModel.storeArtistStyleItems({ libraryId, styleId, artistStyleItems });
+
+      getArtistStyleItemsRunning = false;
+    }
+  }
+};
+
+// ======================================================================
+// GET ALL ALBUM STYLES
+// ======================================================================
+
+let getAllAlbumStylesRunning;
+
+export const getAllAlbumStyles = async (type) => {
+  if (!getAllAlbumStylesRunning) {
+    const prevAllStyles = store.getState().appModel.allAlbumStyles;
+    if (!prevAllStyles) {
+      console.log('%c--- plex - getAllAlbumStyles ---', 'color:#f9743b;');
+      getAllAlbumStylesRunning = true;
+      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
+      const { libraryId } = store.getState().sessionModel.currentLibrary;
+      const endpoint = endpointConfig.styles.getAllAlbumStyles(serverBaseUrlCurrent, libraryId);
+      const data = await fetchData(endpoint, authToken);
+
+      // console.log(data.MediaContainer.Directory);
+
+      const allAlbumStyles =
+        data.MediaContainer.Directory?.map((style) => transposeStyleData('album', style, libraryId)) || [];
+
+      // console.log('allAlbumStyles', allAlbumStyles);
+
+      store.dispatch.appModel.setAppState({ allAlbumStyles });
+
+      getAllAlbumStylesRunning = false;
+    }
+  }
+};
+
+// ======================================================================
+// GET ALBUM STYLE ITEMS
+// ======================================================================
+
+let getAlbumStyleItemsRunning;
+
+export const getAlbumStyleItems = async (libraryId, styleId) => {
+  if (!getAlbumStyleItemsRunning) {
+    const prevStyleItems = store.getState().appModel.allAlbumStyleItems[libraryId + '-' + styleId];
+    if (!prevStyleItems) {
+      getAlbumStyleItemsRunning = true;
+      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.styles.getAlbumStyleItems(serverBaseUrlCurrent, libraryId, styleId);
+      const data = await fetchData(endpoint, authToken);
+
+      // console.log(data.MediaContainer.Metadata);
+
+      const albumStyleItems =
+        data.MediaContainer.Metadata?.map((album) =>
+          transposeAlbumData(album, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+        ) || [];
+
+      // console.log('albumStyleItems', albumStyleItems);
+
+      store.dispatch.appModel.storeAlbumStyleItems({ libraryId, styleId, albumStyleItems });
+
+      getAlbumStyleItemsRunning = false;
+    }
+  }
+};
+
+// ======================================================================
 // FETCH DATA
 // ======================================================================
 
@@ -1095,7 +1231,16 @@ const transposeGenreData = (type, genre, libraryId) => {
   return {
     libraryId: libraryId,
     genreId: genre.key,
-    title: genre.title,
+    title: genre.title.replace(/\//g, ' & '),
     link: '/' + type + '-genres/' + libraryId + '/' + genre.key,
+  };
+};
+
+const transposeStyleData = (type, style, libraryId) => {
+  return {
+    libraryId: libraryId,
+    styleId: style.key,
+    title: style.title.replace(/\//g, ' & '),
+    link: '/' + type + '-styles/' + libraryId + '/' + style.key,
   };
 };

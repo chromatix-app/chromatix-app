@@ -62,6 +62,11 @@ const plexLibraryState = {
   allArtistGenreItems: {},
   allAlbumGenres: null,
   allAlbumGenreItems: {},
+  // styles
+  allArtistStyles: null,
+  allArtistStyleItems: {},
+  allAlbumStyles: null,
+  allAlbumStyleItems: {},
 };
 
 const state = Object.assign({}, appState, userState, plexServerState, plexLibraryState);
@@ -392,6 +397,42 @@ const effects = (dispatch) => ({
     allAlbumGenreItems[libraryId + '-' + genreId] = albumGenreItems;
     dispatch.appModel.setAppState({
       allAlbumGenreItems,
+    });
+  },
+
+  //
+  // PLEX - STYLES
+  //
+
+  storeArtistStyleItems(payload, rootState) {
+    console.log('%c--- storeArtistStyleItems ---', 'color:#07a098');
+    const { libraryId, styleId, artistStyleItems } = payload;
+    const allArtistStyleItems = { ...rootState.appModel.allArtistStyleItems };
+    // limit recent entries
+    const keys = Object.keys(allArtistStyleItems);
+    if (keys.length >= maxDataLength) {
+      delete allArtistStyleItems[keys[0]];
+    }
+    // add the new entry and save
+    allArtistStyleItems[libraryId + '-' + styleId] = artistStyleItems;
+    dispatch.appModel.setAppState({
+      allArtistStyleItems,
+    });
+  },
+
+  storeAlbumStyleItems(payload, rootState) {
+    console.log('%c--- storeAlbumStyleItems ---', 'color:#07a098');
+    const { libraryId, styleId, albumStyleItems } = payload;
+    const allAlbumStyleItems = { ...rootState.appModel.allAlbumStyleItems };
+    // limit recent entries
+    const keys = Object.keys(allAlbumStyleItems);
+    if (keys.length >= maxDataLength) {
+      delete allAlbumStyleItems[keys[0]];
+    }
+    // add the new entry and save
+    allAlbumStyleItems[libraryId + '-' + styleId] = albumStyleItems;
+    dispatch.appModel.setAppState({
+      allAlbumStyleItems,
     });
   },
 

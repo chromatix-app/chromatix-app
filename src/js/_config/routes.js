@@ -139,6 +139,30 @@ export const authRoutes = [
     component: 'AlbumGenreDetail',
   },
 
+  // artist styles
+  {
+    path: '/artist-styles',
+    exact: true,
+    component: 'ArtistStyleList',
+  },
+  {
+    path: '/artist-styles/:libraryId/:styleId',
+    exact: true,
+    component: 'ArtistStyleDetail',
+  },
+
+  // album styles
+  {
+    path: '/album-styles',
+    exact: true,
+    component: 'AlbumStyleList',
+  },
+  {
+    path: '/album-styles/:libraryId/:styleId',
+    exact: true,
+    component: 'AlbumStyleDetail',
+  },
+
   // settings
   {
     path: '/settings',
