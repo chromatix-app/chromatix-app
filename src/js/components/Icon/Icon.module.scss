@@ -46,4 +46,10 @@
       stroke: currentColor;
     }
   }
+
+  &StrokeWidth2 {
+    path {
+      stroke-width: 1.3;
+    }
+  }
 }
