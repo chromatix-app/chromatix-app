@@ -53,12 +53,14 @@ const ListEntry = React.memo(
       <div className={style.card} onClick={handleCardClick}>
         <div className={style.thumb}>
           {thumb && <img src={thumb} alt={title} loading="lazy" />}
-          {variant === 'genres' && (
+
+          {(variant === 'genres' || variant === 'styles') && (
             <div className={style.icon}>
               <Icon icon="MusicNoteIcon" cover stroke />
             </div>
           )}
         </div>
+
         <div className={style.body}>
           {title && <div className={clsx(style.title, { 'text-trim': optionGridEllipsis })}>{title}</div>}
 

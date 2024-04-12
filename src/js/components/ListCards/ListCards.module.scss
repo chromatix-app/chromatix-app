@@ -46,9 +46,11 @@
   // outline: 1px solid var(--color-opacity-01);
   border-radius: 6px;
 
-  .wrap.wrapGenres & {
+  .wrap.wrapGenres &,
+  .wrap.wrapStyles & {
     padding: 0 0 60%;
     background: var(--color-primary);
+    background: linear-gradient(to bottom, var(--color-primary) 0%, var(--color-background) 400%);
     color: var(--color-background);
   }
 
