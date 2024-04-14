@@ -54,7 +54,7 @@ const ListEntry = React.memo(
         <div className={style.thumb}>
           {thumb && <img src={thumb} alt={title} loading="lazy" />}
 
-          {(variant === 'genres' || variant === 'styles') && (
+          {(variant === 'genres' || variant === 'styles' || variant === 'moods') && (
             <div className={style.icon}>
               <Icon icon="MusicNoteIcon" cover stroke strokeWidth={2} />
             </div>

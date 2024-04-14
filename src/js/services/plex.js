@@ -113,6 +113,12 @@ const endpointConfig = {
     getAlbumStyleItems: (base, libraryId, styleId) =>
       `${base}/library/sections/${libraryId}/all?type=9&style=${styleId}`,
   },
+  moods: {
+    getAllArtistMoods: (base, libraryId) => `${base}/library/sections/${libraryId}/mood?type=8`,
+    getArtistMoodItems: (base, libraryId, moodId) => `${base}/library/sections/${libraryId}/all?type=8&mood=${moodId}`,
+    getAllAlbumMoods: (base, libraryId) => `${base}/library/sections/${libraryId}/mood?type=9`,
+    getAlbumMoodItems: (base, libraryId, moodId) => `${base}/library/sections/${libraryId}/all?type=9&mood=${moodId}`,
+  },
 };
 
 // ======================================================================
@@ -1100,6 +1106,134 @@ export const getAlbumStyleItems = async (libraryId, styleId) => {
 };
 
 // ======================================================================
+// GET ALL ARTIST MOODS
+// ======================================================================
+
+let getAllArtistMoodsRunning;
+
+export const getAllArtistMoods = async (type) => {
+  if (!getAllArtistMoodsRunning) {
+    const prevAllMoods = store.getState().appModel.allArtistMoods;
+    if (!prevAllMoods) {
+      console.log('%c--- plex - getAllArtistMoods ---', 'color:#f9743b;');
+      getAllArtistMoodsRunning = true;
+      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
+      const { libraryId } = store.getState().sessionModel.currentLibrary;
+      const endpoint = endpointConfig.moods.getAllArtistMoods(serverBaseUrlCurrent, libraryId);
+      const data = await fetchData(endpoint, authToken);
+
+      // console.log(data.MediaContainer.Directory);
+
+      const allArtistMoods =
+        data.MediaContainer.Directory?.map((mood) => transposeMoodData('artist', mood, libraryId)) || [];
+
+      // console.log('allArtistMoods', allArtistMoods);
+
+      store.dispatch.appModel.setAppState({ allArtistMoods });
+
+      getAllArtistMoodsRunning = false;
+    }
+  }
+};
+
+// ======================================================================
+// GET ARTIST MOOD ITEMS
+// ======================================================================
+
+let getArtistMoodItemsRunning;
+
+export const getArtistMoodItems = async (libraryId, moodId) => {
+  if (!getArtistMoodItemsRunning) {
+    const prevMoodItems = store.getState().appModel.allArtistMoodItems[libraryId + '-' + moodId];
+    if (!prevMoodItems) {
+      getArtistMoodItemsRunning = true;
+      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.moods.getArtistMoodItems(serverBaseUrlCurrent, libraryId, moodId);
+      const data = await fetchData(endpoint, authToken);
+
+      // console.log(data.MediaContainer.Metadata);
+
+      const artistMoodItems =
+        data.MediaContainer.Metadata?.map((artist) =>
+          transposeArtistData(artist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+        ) || [];
+
+      // console.log('artistMoodItems', artistMoodItems);
+
+      store.dispatch.appModel.storeArtistMoodItems({ libraryId, moodId, artistMoodItems });
+
+      getArtistMoodItemsRunning = false;
+    }
+  }
+};
+
+// ======================================================================
+// GET ALL ALBUM MOODS
+// ======================================================================
+
+let getAllAlbumMoodsRunning;
+
+export const getAllAlbumMoods = async (type) => {
+  if (!getAllAlbumMoodsRunning) {
+    const prevAllMoods = store.getState().appModel.allAlbumMoods;
+    if (!prevAllMoods) {
+      console.log('%c--- plex - getAllAlbumMoods ---', 'color:#f9743b;');
+      getAllAlbumMoodsRunning = true;
+      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
+      const { libraryId } = store.getState().sessionModel.currentLibrary;
+      const endpoint = endpointConfig.moods.getAllAlbumMoods(serverBaseUrlCurrent, libraryId);
+      const data = await fetchData(endpoint, authToken);
+
+      // console.log(data.MediaContainer.Directory);
+
+      const allAlbumMoods =
+        data.MediaContainer.Directory?.map((mood) => transposeMoodData('album', mood, libraryId)) || [];
+
+      // console.log('allAlbumMoods', allAlbumMoods);
+
+      store.dispatch.appModel.setAppState({ allAlbumMoods });
+
+      getAllAlbumMoodsRunning = false;
+    }
+  }
+};
+
+// ======================================================================
+// GET ALBUM MOOD ITEMS
+// ======================================================================
+
+let getAlbumMoodItemsRunning;
+
+export const getAlbumMoodItems = async (libraryId, moodId) => {
+  if (!getAlbumMoodItemsRunning) {
+    const prevMoodItems = store.getState().appModel.allAlbumMoodItems[libraryId + '-' + moodId];
+    if (!prevMoodItems) {
+      getAlbumMoodItemsRunning = true;
+      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.moods.getAlbumMoodItems(serverBaseUrlCurrent, libraryId, moodId);
+      const data = await fetchData(endpoint, authToken);
+
+      // console.log(data.MediaContainer.Metadata);
+
+      const albumMoodItems =
+        data.MediaContainer.Metadata?.map((album) =>
+          transposeAlbumData(album, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+        ) || [];
+
+      // console.log('albumMoodItems', albumMoodItems);
+
+      store.dispatch.appModel.storeAlbumMoodItems({ libraryId, moodId, albumMoodItems });
+
+      getAlbumMoodItemsRunning = false;
+    }
+  }
+};
+
+// ======================================================================
 // FETCH DATA
 // ======================================================================
 
@@ -1242,5 +1376,14 @@ const transposeStyleData = (type, style, libraryId) => {
     styleId: style.key,
     title: style.title.replace(/\//g, ' & '),
     link: '/' + type + '-styles/' + libraryId + '/' + style.key,
+  };
+};
+
+const transposeMoodData = (type, mood, libraryId) => {
+  return {
+    libraryId: libraryId,
+    moodId: mood.key,
+    title: mood.title.replace(/\//g, ' & '),
+    link: '/' + type + '-moods/' + libraryId + '/' + mood.key,
   };
 };

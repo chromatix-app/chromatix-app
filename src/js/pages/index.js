@@ -9,6 +9,8 @@ export { default as ArtistGenreList } from './ArtistGenreList';
 export { default as ArtistGenreDetail } from './ArtistGenreDetail';
 export { default as ArtistStyleList } from './ArtistStyleList';
 export { default as ArtistStyleDetail } from './ArtistStyleDetail';
+export { default as ArtistMoodList } from './ArtistMoodList';
+export { default as ArtistMoodDetail } from './ArtistMoodDetail';
 
 export { default as AlbumList } from './AlbumList';
 export { default as AlbumDetail } from './AlbumDetail';
@@ -17,6 +19,8 @@ export { default as AlbumGenreList } from './AlbumGenreList';
 export { default as AlbumGenreDetail } from './AlbumGenreDetail';
 export { default as AlbumStyleList } from './AlbumStyleList';
 export { default as AlbumStyleDetail } from './AlbumStyleDetail';
+export { default as AlbumMoodList } from './AlbumMoodList';
+export { default as AlbumMoodDetail } from './AlbumMoodDetail';
 
 export { default as PlaylistList } from './PlaylistList';
 export { default as PlaylistDetail } from './PlaylistDetail';

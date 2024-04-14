@@ -67,6 +67,11 @@ const plexLibraryState = {
   allArtistStyleItems: {},
   allAlbumStyles: null,
   allAlbumStyleItems: {},
+  // moods
+  allArtistMoods: null,
+  allArtistMoodItems: {},
+  allAlbumMoods: null,
+  allAlbumMoodItems: {},
 };
 
 const state = Object.assign({}, appState, userState, plexServerState, plexLibraryState);
@@ -433,6 +438,42 @@ const effects = (dispatch) => ({
     allAlbumStyleItems[libraryId + '-' + styleId] = albumStyleItems;
     dispatch.appModel.setAppState({
       allAlbumStyleItems,
+    });
+  },
+
+  //
+  // PLEX - MOODS
+  //
+
+  storeArtistMoodItems(payload, rootState) {
+    console.log('%c--- storeArtistMoodItems ---', 'color:#07a098');
+    const { libraryId, moodId, artistMoodItems } = payload;
+    const allArtistMoodItems = { ...rootState.appModel.allArtistMoodItems };
+    // limit recent entries
+    const keys = Object.keys(allArtistMoodItems);
+    if (keys.length >= maxDataLength) {
+      delete allArtistMoodItems[keys[0]];
+    }
+    // add the new entry and save
+    allArtistMoodItems[libraryId + '-' + moodId] = artistMoodItems;
+    dispatch.appModel.setAppState({
+      allArtistMoodItems,
+    });
+  },
+
+  storeAlbumMoodItems(payload, rootState) {
+    console.log('%c--- storeAlbumMoodItems ---', 'color:#07a098');
+    const { libraryId, moodId, albumMoodItems } = payload;
+    const allAlbumMoodItems = { ...rootState.appModel.allAlbumMoodItems };
+    // limit recent entries
+    const keys = Object.keys(allAlbumMoodItems);
+    if (keys.length >= maxDataLength) {
+      delete allAlbumMoodItems[keys[0]];
+    }
+    // add the new entry and save
+    allAlbumMoodItems[libraryId + '-' + moodId] = albumMoodItems;
+    dispatch.appModel.setAppState({
+      allAlbumMoodItems,
     });
   },
 

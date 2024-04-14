@@ -163,6 +163,30 @@ export const authRoutes = [
     component: 'AlbumStyleDetail',
   },
 
+  // artist moods
+  {
+    path: '/artist-moods',
+    exact: true,
+    component: 'ArtistMoodList',
+  },
+  {
+    path: '/artist-moods/:libraryId/:moodId',
+    exact: true,
+    component: 'ArtistMoodDetail',
+  },
+
+  // album moods
+  {
+    path: '/album-moods',
+    exact: true,
+    component: 'AlbumMoodList',
+  },
+  {
+    path: '/album-moods/:libraryId/:moodId',
+    exact: true,
+    component: 'AlbumMoodDetail',
+  },
+
   // settings
   {
     path: '/settings',
