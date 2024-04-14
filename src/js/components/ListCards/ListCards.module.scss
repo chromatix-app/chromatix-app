@@ -47,7 +47,8 @@
   border-radius: 6px;
 
   .wrap.wrapGenres &,
-  .wrap.wrapStyles & {
+  .wrap.wrapStyles &,
+  .wrap.wrapMoods & {
     padding: 0 0 60%;
     background: var(--color-primary);
     background: linear-gradient(to bottom, var(--color-primary) 0%, var(--color-background) 400%);

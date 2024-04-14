@@ -30,6 +30,8 @@ const SideBar = () => {
     menuShowAlbumGenres,
     menuShowArtistStyles,
     menuShowAlbumStyles,
+    menuShowArtistMoods,
+    menuShowAlbumMoods,
     menuShowAllPlaylists,
   } = useSelector(({ sessionModel }) => sessionModel);
 
@@ -97,6 +99,16 @@ const SideBar = () => {
       {menuShowAlbumStyles && (
         <NavLink className={style.link} activeClassName={style.linkActive} to="/album-styles">
           Album Styles
+        </NavLink>
+      )}
+      {menuShowArtistMoods && (
+        <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-moods">
+          Artist Moods
+        </NavLink>
+      )}
+      {menuShowAlbumMoods && (
+        <NavLink className={style.link} activeClassName={style.linkActive} to="/album-moods">
+          Album Moods
         </NavLink>
       )}
       {menuShowAllPlaylists && allPlaylists && allPlaylists.length > 0 && (

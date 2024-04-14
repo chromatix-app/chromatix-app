@@ -29,6 +29,8 @@ const sessionState = {
   menuShowAlbumGenres: true,
   menuShowArtistStyles: true,
   menuShowAlbumStyles: true,
+  menuShowArtistMoods: true,
+  menuShowAlbumMoods: true,
 
   menuShowAllPlaylists: true,
 

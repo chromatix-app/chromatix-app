@@ -186,6 +186,8 @@ const MenuSettings = () => {
     menuShowAlbumGenres,
     menuShowArtistStyles,
     menuShowAlbumStyles,
+    menuShowArtistMoods,
+    menuShowAlbumMoods,
     menuShowAllPlaylists,
   } = useSelector(({ sessionModel }) => sessionModel);
 
@@ -199,6 +201,8 @@ const MenuSettings = () => {
     { key: 'menuShowAlbumGenres', label: 'Album Genres', state: menuShowAlbumGenres },
     { key: 'menuShowArtistStyles', label: 'Artist Styles', state: menuShowArtistStyles },
     { key: 'menuShowAlbumStyles', label: 'Album Styles', state: menuShowAlbumStyles },
+    { key: 'menuShowArtistMoods', label: 'Artist Moods', state: menuShowArtistMoods },
+    { key: 'menuShowAlbumMoods', label: 'Album Moods', state: menuShowAlbumMoods },
     { key: 'menuShowAllPlaylists', label: 'All Playlists', state: menuShowAllPlaylists },
   ];
 
