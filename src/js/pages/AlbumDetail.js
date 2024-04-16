@@ -64,6 +64,7 @@ const AlbumDetail = () => {
               <>&nbsp;</>
             )
           }
+          // handlePlay={currentAlbumTracks ? () => {} : null}
         />
       )}
       {!(currentAlbum && currentAlbumTracks) && <Loading forceVisible inline />}
