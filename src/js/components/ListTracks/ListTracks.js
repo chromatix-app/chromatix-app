@@ -30,12 +30,6 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
 
   const trackDetail = playingTrackList?.[playingTrackIndex];
 
-  const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
-  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
-
-  const currentServerId = currentServer?.serverId;
-  const currentLibraryId = currentLibrary?.libraryId;
-
   const totalDiscs = useMemo(() => {
     if (variant === 'albums') {
       return entries.reduce((acc, entry) => {
@@ -103,16 +97,11 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
 
             const doPlay = (restart) => {
               if (restart) {
-                dispatch.appModel.playerLoadList({
+                dispatch.appModel.playerLoadTrackItem({
                   playingVariant: variant,
-                  playingServerId: currentServerId,
-                  playingLibraryId: currentLibraryId,
                   playingAlbumId: albumId,
                   playingPlaylistId: playlistId,
-                  playingTrackList: entries,
-                  playingTrackCount: entries.length,
                   playingTrackIndex: index,
-                  playingTrackProgress: 0,
                 });
               } else {
                 dispatch.appModel.playerPlay();

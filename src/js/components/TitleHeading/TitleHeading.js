@@ -5,6 +5,7 @@
 import { useRef } from 'react';
 import clsx from 'clsx';
 
+import { Icon } from 'js/components';
 import { useNearTop } from 'js/hooks';
 
 import style from './TitleHeading.module.scss';
@@ -13,7 +14,7 @@ import style from './TitleHeading.module.scss';
 // COMPONENT
 // ======================================================================
 
-const TitleHeading = ({ title, subtitle, detail, thumb }) => {
+const TitleHeading = ({ title, subtitle, detail, thumb, handlePlay }) => {
   const triggerRef = useRef(null);
   const isNearTop = useNearTop(triggerRef, 90);
 
@@ -34,6 +35,16 @@ const TitleHeading = ({ title, subtitle, detail, thumb }) => {
           {title && <h1 className={clsx(style.title, style[titleSize])}>{title}</h1>}
           {subtitle && <h2 className={style.subtitle}>{subtitle}</h2>}
           {detail && <div className={style.detail}>{detail}</div>}
+          {handlePlay && (
+            <div>
+              <button className={style.playButton} onClick={handlePlay}>
+                <span className={style.playIcon}>
+                  <Icon icon="PlayFilledIcon" cover />
+                </span>
+                <span className={style.playText}>Play</span>
+              </button>
+            </div>
+          )}
         </div>
         <div ref={triggerRef} className={style.stickyTrigger}></div>
       </div>

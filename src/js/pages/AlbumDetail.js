@@ -3,7 +3,7 @@
 // ======================================================================
 
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useParams } from 'react-router-dom';
 import moment from 'moment';
 
@@ -17,6 +17,8 @@ import * as plex from 'js/services/plex';
 
 const AlbumDetail = () => {
   const { albumId, libraryId } = useParams();
+
+  const dispatch = useDispatch();
 
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums);
   const currentAlbum = allAlbums?.filter((album) => album.albumId === albumId)[0];
@@ -34,6 +36,10 @@ const AlbumDetail = () => {
   const albumRating = currentAlbum?.userRating;
 
   const artistLink = currentAlbum?.artistLink;
+
+  const doPlay = () => {
+    dispatch.appModel.playerLoadAlbum({ albumId });
+  };
 
   useEffect(() => {
     plex.getAllAlbums();
@@ -64,6 +70,7 @@ const AlbumDetail = () => {
               <>&nbsp;</>
             )
           }
+          handlePlay={currentAlbumTracks ? doPlay : null}
         />
       )}
       {!(currentAlbum && currentAlbumTracks) && <Loading forceVisible inline />}
