@@ -3,7 +3,7 @@
 // ======================================================================
 
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { ListTracks, Loading, TitleHeading } from 'js/components';
@@ -17,6 +17,8 @@ import * as plex from 'js/services/plex';
 const PlaylistDetail = () => {
   const { libraryId, playlistId } = useParams();
 
+  const dispatch = useDispatch();
+
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
   const currentPlaylist = allPlaylists?.filter((playlist) => playlist.playlistId === playlistId)[0];
 
@@ -28,6 +30,10 @@ const PlaylistDetail = () => {
   const playlistTracks = currentPlaylistTracks?.length;
   const playlistDurationMillisecs = currentPlaylistTracks?.reduce((acc, track) => acc + track.duration, 0);
   const playlistDurationString = durationToStringLong(playlistDurationMillisecs);
+
+  const doPlay = () => {
+    dispatch.appModel.playerLoadPlaylist({ playlistId });
+  };
 
   useEffect(() => {
     plex.getAllPlaylists();
@@ -49,6 +55,7 @@ const PlaylistDetail = () => {
           title={playlistTitle}
           subtitle={currentPlaylistTracks ? playlistTracks + ' tracks' : <>&nbsp;</>}
           detail={currentPlaylistTracks ? playlistDurationString : <>&nbsp;</>}
+          handlePlay={currentPlaylistTracks ? doPlay : null}
         />
       )}
       {!(currentPlaylist && currentPlaylistTracks) && <Loading forceVisible inline />}

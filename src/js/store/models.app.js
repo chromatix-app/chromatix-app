@@ -539,8 +539,57 @@ const effects = (dispatch) => ({
     }
   },
 
-  playerLoadList(payload, rootState) {
-    // console.log('%c--- playerLoadList ---', 'color:#07a098');
+  playerLoadTrackItem(payload, rootState) {
+    const { playingVariant, playingAlbumId, playingPlaylistId, playingTrackIndex } = payload;
+    if (playingVariant === 'albums') {
+      dispatch.appModel.playerLoadAlbum({ albumId: playingAlbumId, trackIndex: playingTrackIndex });
+    } else if (playingVariant === 'playlists') {
+      dispatch.appModel.playerLoadPlaylist({ playlistId: playingPlaylistId, trackIndex: playingTrackIndex });
+    }
+  },
+
+  playerLoadAlbum(payload, rootState) {
+    const { albumId, trackIndex = 0 } = payload;
+
+    const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
+    const allAlbumTracks = rootState.appModel.allAlbumTracks;
+    const currentAlbumTracks = allAlbumTracks[libraryId + '-' + albumId];
+
+    dispatch.appModel.playerLoadTrackList({
+      playingVariant: 'albums',
+      playingServerId: rootState.sessionModel.currentServer?.serverId,
+      playingLibraryId: rootState.sessionModel.currentLibrary?.libraryId,
+      playingAlbumId: albumId,
+      playingPlaylistId: null,
+      playingTrackIndex: trackIndex,
+      playingTrackList: currentAlbumTracks,
+      playingTrackCount: currentAlbumTracks.length,
+      playingTrackProgress: 0,
+    });
+  },
+
+  playerLoadPlaylist(payload, rootState) {
+    const { playlistId, trackIndex = 0 } = payload;
+
+    const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
+    const allPlaylistTracks = rootState.appModel.allPlaylistTracks;
+    const currentPlaylistTracks = allPlaylistTracks[libraryId + '-' + playlistId];
+
+    dispatch.appModel.playerLoadTrackList({
+      playingVariant: 'playlists',
+      playingServerId: rootState.sessionModel.currentServer?.serverId,
+      playingLibraryId: rootState.sessionModel.currentLibrary?.libraryId,
+      playingAlbumId: null,
+      playingPlaylistId: playlistId,
+      playingTrackIndex: trackIndex,
+      playingTrackList: currentPlaylistTracks,
+      playingTrackCount: currentPlaylistTracks.length,
+      playingTrackProgress: 0,
+    });
+  },
+
+  playerLoadTrackList(payload, rootState) {
+    // console.log('%c--- playerLoadTrackList ---', 'color:#07a098');
     dispatch.appModel.setAppState({
       playerPlaying: true,
     });
