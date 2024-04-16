@@ -25,7 +25,7 @@ const ControlBar = () => {
     useSelector(({ sessionModel }) => sessionModel);
 
   const playingLink =
-    playingVariant === 'album'
+    playingVariant === 'albums'
       ? `/albums/${playingLibraryId}/${playingAlbumId}`
       : `/playlists/${playingLibraryId}/${playingPlaylistId}`;
 
