@@ -74,6 +74,36 @@
   transform: translate(-50%, -50%);
 }
 
+.playButton {
+  display: block;
+  position: absolute;
+  pointer-events: none;
+  bottom: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  padding: 11px 9px 11px 13px;
+  background: var(--color-primary);
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all ease-in-out 0.25s;
+  color: var(--color-panel-background);
+  cursor: pointer;
+
+  .card:hover & {
+    pointer-events: all;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .card:hover &:hover {
+    transform: translateY(0) scale(1.1);
+  }
+}
+
 .body {
   padding: 10px 2px 2px;
   font-size: 11px;

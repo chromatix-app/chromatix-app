@@ -4,7 +4,7 @@
 
 import React, { useCallback } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import clsx from 'clsx';
 
 import { Icon, StarRating } from 'js/components';
@@ -29,8 +29,9 @@ const ListCards = ({ entries, variant }) => {
 };
 
 const ListEntry = React.memo(
-  ({ thumb, title, artist, artistLink, duration, userRating, link, totalTracks, variant }) => {
+  ({ thumb, title, albumId, artist, artistLink, playlistId, duration, userRating, link, totalTracks, variant }) => {
     const history = useHistory();
+    const dispatch = useDispatch();
 
     const { optionGridEllipsis, optionGridRatings } = useSelector(({ sessionModel }) => sessionModel);
 
@@ -47,6 +48,18 @@ const ListEntry = React.memo(
       event.stopPropagation();
     }, []);
 
+    const handlePlay = useCallback(
+      (event) => {
+        event.stopPropagation();
+        if (variant === 'albums') {
+          dispatch.appModel.playerLoadAlbum({ albumId });
+        } else if (variant === 'playlists') {
+          dispatch.appModel.playerLoadPlaylist({ playlistId });
+        }
+      },
+      [variant, albumId, playlistId, dispatch]
+    );
+
     // const albumRelease = releaseDate ? moment(releaseDate).format('YYYY') : null;
 
     return (
@@ -58,6 +71,12 @@ const ListEntry = React.memo(
             <div className={style.icon}>
               <Icon icon="MusicNoteIcon" cover stroke strokeWidth={2} />
             </div>
+          )}
+
+          {(variant === 'albums' || variant === 'playlists') && (
+            <button className={style.playButton} onClick={handlePlay}>
+              <Icon icon="PlayFilledIcon" cover />
+            </button>
           )}
         </div>
 
