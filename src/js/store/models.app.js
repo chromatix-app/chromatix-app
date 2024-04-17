@@ -548,12 +548,18 @@ const effects = (dispatch) => ({
     }
   },
 
-  playerLoadAlbum(payload, rootState) {
+  async playerLoadAlbum(payload, rootState) {
     const { albumId, trackIndex = 0 } = payload;
 
     const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
     const allAlbumTracks = rootState.appModel.allAlbumTracks;
     const currentAlbumTracks = allAlbumTracks[libraryId + '-' + albumId];
+
+    if (!currentAlbumTracks) {
+      await plex.getAlbumTracks(libraryId, albumId);
+      dispatch.appModel.playerLoadAlbum({ albumId, trackIndex });
+      return;
+    }
 
     dispatch.appModel.playerLoadTrackList({
       playingVariant: 'albums',
@@ -568,12 +574,18 @@ const effects = (dispatch) => ({
     });
   },
 
-  playerLoadPlaylist(payload, rootState) {
+  async playerLoadPlaylist(payload, rootState) {
     const { playlistId, trackIndex = 0 } = payload;
 
     const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
     const allPlaylistTracks = rootState.appModel.allPlaylistTracks;
     const currentPlaylistTracks = allPlaylistTracks[libraryId + '-' + playlistId];
+
+    if (!currentPlaylistTracks) {
+      await plex.getPlaylistTracks(libraryId, playlistId);
+      dispatch.appModel.playerLoadPlaylist({ playlistId, trackIndex });
+      return;
+    }
 
     dispatch.appModel.playerLoadTrackList({
       playingVariant: 'playlists',
