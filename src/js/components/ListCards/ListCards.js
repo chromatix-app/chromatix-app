@@ -17,19 +17,51 @@ import style from './ListCards.module.scss';
 // ======================================================================
 
 const ListCards = ({ entries, variant }) => {
+  const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
+  const playingAlbumId = useSelector(({ sessionModel }) => sessionModel.playingAlbumId);
+  const playingPlaylistId = useSelector(({ sessionModel }) => sessionModel.playingPlaylistId);
+  const playerPlaying = useSelector(({ appModel }) => appModel.playerPlaying);
+
   if (entries) {
     return (
       <div className={clsx(style.wrap, style['wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1)])}>
-        {entries.map((entry, index) => (
-          <ListEntry key={index} variant={variant} {...entry} />
-        ))}
+        {entries.map((entry, index) => {
+          const isCurrentlyLoaded =
+            playingVariant === variant &&
+            (playingAlbumId === entry.albumId || (!playingAlbumId && !entry.albumId)) &&
+            (playingPlaylistId === entry.playlistId || (!playingPlaylistId && !entry.playlistId));
+
+          return (
+            <ListEntry
+              key={index}
+              variant={variant}
+              isCurrentlyLoaded={isCurrentlyLoaded}
+              isCurrentlyPlaying={playerPlaying}
+              {...entry}
+            />
+          );
+        })}
       </div>
     );
   }
 };
 
 const ListEntry = React.memo(
-  ({ thumb, title, albumId, artist, artistLink, playlistId, duration, userRating, link, totalTracks, variant }) => {
+  ({
+    thumb,
+    title,
+    albumId,
+    artist,
+    artistLink,
+    playlistId,
+    duration,
+    userRating,
+    link,
+    totalTracks,
+    variant,
+    isCurrentlyLoaded,
+    isCurrentlyPlaying,
+  }) => {
     const history = useHistory();
     const dispatch = useDispatch();
 
@@ -51,19 +83,31 @@ const ListEntry = React.memo(
     const handlePlay = useCallback(
       (event) => {
         event.stopPropagation();
-        if (variant === 'albums') {
-          dispatch.appModel.playerLoadAlbum({ albumId });
-        } else if (variant === 'playlists') {
-          dispatch.appModel.playerLoadPlaylist({ playlistId });
+        if (isCurrentlyLoaded) {
+          dispatch.appModel.playerPlay();
+        } else {
+          if (variant === 'albums') {
+            dispatch.appModel.playerLoadAlbum({ albumId });
+          } else if (variant === 'playlists') {
+            dispatch.appModel.playerLoadPlaylist({ playlistId });
+          }
         }
       },
-      [variant, albumId, playlistId, dispatch]
+      [variant, albumId, playlistId, isCurrentlyLoaded, dispatch]
+    );
+
+    const handlePause = useCallback(
+      (event) => {
+        event.stopPropagation();
+        dispatch.appModel.playerPause();
+      },
+      [dispatch]
     );
 
     // const albumRelease = releaseDate ? moment(releaseDate).format('YYYY') : null;
 
     return (
-      <div className={style.card} onClick={handleCardClick}>
+      <div className={clsx(style.card, { [style.cardCurrent]: isCurrentlyLoaded })} onClick={handleCardClick}>
         <div className={style.thumb}>
           {thumb && <img src={thumb} alt={title} loading="lazy" />}
 
@@ -74,9 +118,18 @@ const ListEntry = React.memo(
           )}
 
           {(variant === 'albums' || variant === 'playlists') && (
-            <button className={style.playButton} onClick={handlePlay}>
-              <Icon icon="PlayFilledIcon" cover />
-            </button>
+            <div className={style.controlButtonWrap}>
+              {isCurrentlyLoaded && isCurrentlyPlaying && (
+                <button className={style.pauseButton} onClick={handlePause}>
+                  <Icon icon="PauseFilledIcon" cover />
+                </button>
+              )}
+              {!(isCurrentlyLoaded && isCurrentlyPlaying) && (
+                <button className={style.playButton} onClick={handlePlay}>
+                  <Icon icon="PlayFilledIcon" cover />
+                </button>
+              )}
+            </div>
           )}
         </div>
 
