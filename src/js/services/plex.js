@@ -6,43 +6,6 @@ import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
 import store from 'js/store/store';
 
-// https://www.plexopedia.com/plex-media-server/api/library/chromatix-albums-tracks/
-
-// https://ide.geeksforgeeks.org/online-html-editor/T3gdWUn4aX
-
-// Artist Albums
-// https://192-168-1-201.6b3f9dff67f64b3aab29466ce77a1194.plex.direct:32400/library/sections/20/all
-// ?album.subformat!=Compilation,Live
-// &artist.id=158100
-// &group=title
-// &limit=100
-// &ratingCount%3E=1
-// &resolveTags=1
-// &sort=ratingCount:desc
-// &type=10
-
-// Artist Related
-// https://192-168-1-201.6b3f9dff67f64b3aab29466ce77a1194.plex.direct:32400/library/metadata/158100/related
-// ?includeAugmentations=1
-// &includeExternalMetadata=1
-// &includeMeta=1
-
-// Artist Nearest
-// https://192-168-1-201.6b3f9dff67f64b3aab29466ce77a1194.plex.direct:32400/library/metadata/158100/nearest
-// ?limit=30
-// &maxDistance=0.25
-// &excludeParentID=-1
-// &includeMeta=1
-
-// Playlists
-// type: 15
-// sectionID: 20
-// playlistType: audio
-// includeCollections: 1
-// includeExternalMedia: 1
-// includeAdvanced: 1
-// includeMeta: 1
-
 // ======================================================================
 // OPTIONS
 // ======================================================================
@@ -60,7 +23,7 @@ const currentHost = window.location.host;
 
 const redirectUrlLocal = currentProtocol + currentHost + '?plex-login=true';
 const redirectUrlProd = 'https://chromatix.app?plex-login=true';
-const redirectUrlActual = isProduction ? redirectUrlProd : redirectUrlLocal;
+const redirectUrl = isProduction ? redirectUrlProd : redirectUrlLocal;
 
 const thumbSize = 480;
 
@@ -71,9 +34,11 @@ const endpointConfig = {
   },
   user: {
     getUserInfo: () => 'https://plex.tv/users/account',
-    getAllServers: () => 'https://plex.tv/api/v2/resources?includeHttps=1&includeRelay=1&includeIPv6=1',
   },
   server: {
+    getAllServers: () => 'https://plex.tv/api/v2/resources?includeHttps=1&includeRelay=1&includeIPv6=1',
+  },
+  library: {
     getAllLibraries: (base) => `${base}/library/sections`,
   },
   artist: {
@@ -125,7 +90,7 @@ const endpointConfig = {
 // LOAD
 // ======================================================================
 
-export function init() {
+export const init = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const isPlexLogin = urlParams.get('plex-login');
 
@@ -139,14 +104,13 @@ export function init() {
     }
   } else {
     const authToken = window.localStorage.getItem('chromatix-auth-token');
-
     if (authToken) {
       getUserInfo();
     } else {
       store.dispatch.appModel.setLoggedOut();
     }
   }
-}
+};
 
 // ======================================================================
 // LOGIN
@@ -186,7 +150,7 @@ export const login = async () => {
     // redirect to the Plex login page
     const authAppUrl = `https://app.plex.tv/auth#?clientID=${clientIdentifier}&code=${pinCode}&context%5Bdevice%5D%5Bproduct%5D=${encodeURIComponent(
       appName
-    )}&forwardUrl=${encodeURIComponent(redirectUrlActual)}`;
+    )}&forwardUrl=${encodeURIComponent(redirectUrl)}`;
     window.location.href = authAppUrl;
   } catch (e) {
     // error handling
@@ -310,7 +274,7 @@ export const getAllServers = async () => {
 
       try {
         const authToken = window.localStorage.getItem('chromatix-auth-token');
-        const endpoint = endpointConfig.user.getAllServers();
+        const endpoint = endpointConfig.server.getAllServers();
         const response = await fetch(endpoint, {
           headers: {
             Accept: 'application/json',
@@ -384,7 +348,7 @@ export const getAllLibraries = async () => {
 
         try {
           const authToken = window.localStorage.getItem('chromatix-auth-token');
-          const endpoint = endpointConfig.server.getAllLibraries(serverBaseUrlCurrent);
+          const endpoint = endpointConfig.library.getAllLibraries(serverBaseUrlCurrent);
           const response = await axios.get(endpoint, {
             timeout: 5000, // 5 seconds
             headers: {
