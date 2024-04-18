@@ -3,6 +3,7 @@
 // ======================================================================
 
 import axios from 'axios';
+import CryptoJS from 'crypto-js';
 import { XMLParser } from 'fast-xml-parser';
 
 // ======================================================================
@@ -10,6 +11,8 @@ import { XMLParser } from 'fast-xml-parser';
 // ======================================================================
 
 const isProduction = process.env.REACT_APP_ENV === 'production';
+
+const secretKey = 'your_secret_key_here';
 
 const appName = 'Chromatix';
 const clientIdentifier = 'chromatix.app';
@@ -42,6 +45,26 @@ const endpointConfig = {
 };
 
 // ======================================================================
+// ENCRYPTED LOCAL STORAGE HELPER FUNCTIONS
+// ======================================================================
+
+export const setLocalStorage = (key, value) => {
+  const stringValue = String(value);
+  const encryptedValue = CryptoJS.AES.encrypt(stringValue, secretKey).toString();
+  window.localStorage.setItem(key, encryptedValue);
+};
+
+export const getLocalStorage = (key) => {
+  const encryptedValue = window.localStorage.getItem(key);
+  if (encryptedValue) {
+    const bytes = CryptoJS.AES.decrypt(encryptedValue, secretKey);
+    const decryptedValue = bytes.toString(CryptoJS.enc.Utf8);
+    return decryptedValue;
+  }
+  return null;
+};
+
+// ======================================================================
 // INITIALISE
 // ======================================================================
 
@@ -58,7 +81,7 @@ const endpointConfig = {
 //       store.dispatch.appModel.setLoggedOut();
 //     }
 //   } else {
-//     const authToken = window.localStorage.getItem(storageTokenKey);
+//     const authToken = getLocalStorage(storageTokenKey);
 //     if (authToken) {
 //       getUserInfo();
 //     } else {
@@ -95,7 +118,7 @@ export const login = () => {
           const pinCode = pinData.code;
 
           // store the pinId in the local storage
-          window.localStorage.setItem(storagePinKey, pinId);
+          setLocalStorage(storagePinKey, pinId);
 
           // redirect to the Plex login page
           const authAppUrl = `https://app.plex.tv/auth#?clientID=${clientIdentifier}&code=${pinCode}&context%5Bdevice%5D%5Bproduct%5D=${encodeURIComponent(
@@ -137,7 +160,7 @@ export const checkPlexPinStatus = (pinId, retryCount = 0) => {
 
           // if valid, store the authToken in the local storage
           if (pinStatusData.authToken) {
-            window.localStorage.setItem(storageTokenKey, pinStatusData.authToken);
+            setLocalStorage(storageTokenKey, pinStatusData.authToken);
             window.localStorage.removeItem(storagePinKey);
             resolve();
           }
@@ -177,7 +200,7 @@ export const logout = () => {
 export const getUserInfo = () => {
   return new Promise((resolve, reject) => {
     try {
-      const authToken = window.localStorage.getItem(storageTokenKey);
+      const authToken = getLocalStorage(storageTokenKey);
       const endpoint = endpointConfig.user.getUserInfo();
       axios
         .get(endpoint, {
@@ -216,7 +239,7 @@ export const getUserInfo = () => {
 //       getUserServersRunning = true;
 
 //       try {
-//         const authToken = window.localStorage.getItem(storageTokenKey);
+//         const authToken = getLocalStorage(storageTokenKey);
 //         const endpoint = endpointConfig.server.getAllServers();
 //         const response = await fetch(endpoint, {
 //           headers: {
@@ -290,7 +313,7 @@ export const getUserInfo = () => {
 //         const { serverBaseUrls, serverBaseUrlCurrent, serverBaseUrlIndex, serverBaseUrlTotal } = currentServer;
 
 //         try {
-//           const authToken = window.localStorage.getItem(storageTokenKey);
+//           const authToken = getLocalStorage(storageTokenKey);
 //           const endpoint = endpointConfig.library.getAllLibraries(serverBaseUrlCurrent);
 //           const response = await axios.get(endpoint, {
 //             timeout: 5000, // 5 seconds
