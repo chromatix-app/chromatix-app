@@ -4,6 +4,7 @@
 
 import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
+
 import store from 'js/store/store';
 
 // ======================================================================
@@ -13,10 +14,14 @@ import store from 'js/store/store';
 const isProduction = process.env.REACT_APP_ENV === 'production';
 
 const mockData = isProduction ? false : false;
+const thumbSize = 480;
 
 const appName = 'Chromatix';
 const clientIdentifier = 'chromatix.app';
 const clientIcon = 'https://chromatix.app/icon/icon-512.png';
+
+const storagePinKey = 'chromatix-pin-id';
+const storageTokenKey = 'chromatix-auth-token';
 
 const currentProtocol = window.location.protocol + '//';
 const currentHost = window.location.host;
@@ -24,8 +29,6 @@ const currentHost = window.location.host;
 const redirectUrlLocal = currentProtocol + currentHost + '?plex-login=true';
 const redirectUrlProd = 'https://chromatix.app?plex-login=true';
 const redirectUrl = isProduction ? redirectUrlProd : redirectUrlLocal;
-
-const thumbSize = 480;
 
 const endpointConfig = {
   auth: {
@@ -96,14 +99,14 @@ export const init = () => {
 
   if (isPlexLogin) {
     window.history.replaceState({}, document.title, window.location.pathname);
-    const pinId = window.localStorage.getItem('chromatix-pin-id');
+    const pinId = window.localStorage.getItem(storagePinKey);
     if (pinId) {
       checkPinStatus(pinId);
     } else {
       store.dispatch.appModel.setLoggedOut();
     }
   } else {
-    const authToken = window.localStorage.getItem('chromatix-auth-token');
+    const authToken = window.localStorage.getItem(storageTokenKey);
     if (authToken) {
       getUserInfo();
     } else {
@@ -145,7 +148,7 @@ export const login = async () => {
     const pinCode = pinData.code;
 
     // store the pinId in the local storage
-    window.localStorage.setItem('chromatix-pin-id', pinId);
+    window.localStorage.setItem(storagePinKey, pinId);
 
     // redirect to the Plex login page
     const authAppUrl = `https://app.plex.tv/auth#?clientID=${clientIdentifier}&code=${pinCode}&context%5Bdevice%5D%5Bproduct%5D=${encodeURIComponent(
@@ -186,8 +189,8 @@ const checkPinStatus = async (pinId) => {
 
     // if valid, store the authToken in the local storage
     if (pinStatusData.authToken) {
-      window.localStorage.setItem('chromatix-auth-token', pinStatusData.authToken);
-      window.localStorage.removeItem('chromatix-pin-id');
+      window.localStorage.setItem(storageTokenKey, pinStatusData.authToken);
+      window.localStorage.removeItem(storagePinKey);
       getUserInfo();
     }
 
@@ -207,7 +210,7 @@ const checkPinStatus = async (pinId) => {
 
 export const logout = () => {
   console.log('%c--- plex - logout ---', 'color:#f9743b;');
-  window.localStorage.removeItem('chromatix-auth-token');
+  window.localStorage.removeItem(storageTokenKey);
   store.dispatch.appModel.setLoggedOut();
 };
 
@@ -218,7 +221,7 @@ export const logout = () => {
 const getUserInfo = async () => {
   console.log('%c--- plex - getUserInfo ---', 'color:#f9743b;');
   try {
-    const authToken = window.localStorage.getItem('chromatix-auth-token');
+    const authToken = window.localStorage.getItem(storageTokenKey);
     const endpoint = endpointConfig.user.getUserInfo();
     const response = await fetch(endpoint, {
       headers: {
@@ -229,7 +232,7 @@ const getUserInfo = async () => {
     // error handling
     if (!response.ok) {
       console.error('Failed to get user info:', response.statusText);
-      window.localStorage.removeItem('chromatix-auth-token');
+      window.localStorage.removeItem(storageTokenKey);
       store.dispatch.appModel.setLoggedOut();
       return;
     }
@@ -273,7 +276,7 @@ export const getAllServers = async () => {
       getUserServersRunning = true;
 
       try {
-        const authToken = window.localStorage.getItem('chromatix-auth-token');
+        const authToken = window.localStorage.getItem(storageTokenKey);
         const endpoint = endpointConfig.server.getAllServers();
         const response = await fetch(endpoint, {
           headers: {
@@ -347,7 +350,7 @@ export const getAllLibraries = async () => {
         const { serverBaseUrls, serverBaseUrlCurrent, serverBaseUrlIndex, serverBaseUrlTotal } = currentServer;
 
         try {
-          const authToken = window.localStorage.getItem('chromatix-auth-token');
+          const authToken = window.localStorage.getItem(storageTokenKey);
           const endpoint = endpointConfig.library.getAllLibraries(serverBaseUrlCurrent);
           const response = await axios.get(endpoint, {
             timeout: 5000, // 5 seconds
@@ -418,7 +421,7 @@ export const getAllArtists = async () => {
     const prevAllArtists = store.getState().appModel.allArtists;
     if (!prevAllArtists) {
       getAllArtistsRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
@@ -454,7 +457,7 @@ export const getArtistDetails = async (libraryId, artistId) => {
     const prevArtistDetails = store.getState().appModel.allArtists?.find((artist) => artist.artistId === artistId);
     if (!prevArtistDetails) {
       getArtistDetailsRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.artist.getDetails(serverBaseUrlCurrent, artistId);
       const data = await fetchData(endpoint, authToken);
@@ -484,7 +487,7 @@ export const getAllArtistAlbums = async (libraryId, artistId) => {
     const prevAllAlbums = store.getState().appModel.allArtistAlbums[libraryId + '-' + artistId];
     if (!prevAllAlbums) {
       getAllArtistAlbumsRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.artist.getAllAlbums(serverBaseUrlCurrent, artistId);
       const data = await fetchData(endpoint, authToken);
@@ -516,7 +519,7 @@ export const getAllArtistRelated = async (libraryId, artistId) => {
     const prevAllRelated = store.getState().appModel.allArtistRelated[libraryId + '-' + artistId];
     if (!prevAllRelated) {
       getAllArtistRelatedRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.artist.getAllRelated(serverBaseUrlCurrent, artistId);
       const data = await fetchData(endpoint, authToken);
@@ -551,7 +554,7 @@ export const getAllAlbums = async () => {
     const prevAllAlbums = store.getState().appModel.allAlbums;
     if (!prevAllAlbums) {
       getAllAlbumsRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
       const endpoint = endpointConfig.album.getAllAlbums(serverBaseUrlCurrent, libraryId);
@@ -584,7 +587,7 @@ export const getAlbumDetails = async (libraryId, albumId) => {
     const prevAlbumDetails = store.getState().appModel.allAlbums?.find((album) => album.albumId === albumId);
     if (!prevAlbumDetails) {
       getAlbumDetailsRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.album.getDetails(serverBaseUrlCurrent, albumId);
       const data = await fetchData(endpoint, authToken);
@@ -614,7 +617,7 @@ export const getAlbumTracks = async (libraryId, albumId) => {
     const prevAlbumTracks = store.getState().appModel.allAlbumTracks[libraryId + '-' + albumId];
     if (!prevAlbumTracks) {
       getAlbumTracksRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.album.getTracks(serverBaseUrlCurrent, albumId);
       const data = await fetchData(endpoint, authToken);
@@ -647,7 +650,7 @@ export const getAllPlaylists = async () => {
     if (!prevAllPlaylists) {
       console.log('%c--- plex - getAllPlaylists ---', 'color:#f9743b;');
       getAllPlaylistsRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
@@ -685,7 +688,7 @@ export const getPlaylistDetails = async (libraryId, playlistId) => {
       .appModel.allPlaylists?.find((playlist) => playlist.playlistId === playlistId);
     if (!prevPlaylistDetails) {
       getPlaylistDetailsRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.playlist.getDetails(serverBaseUrlCurrent, playlistId);
       const data = await fetchData(endpoint, authToken);
@@ -715,7 +718,7 @@ export const getPlaylistTracks = async (libraryId, playlistId) => {
     const prevPlaylistTracks = store.getState().appModel.allPlaylistTracks[libraryId + '-' + playlistId];
     if (!prevPlaylistTracks) {
       getPlaylistTracksRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.playlist.getTracks(serverBaseUrlCurrent, playlistId);
       const data = await fetchData(endpoint, authToken);
@@ -748,7 +751,7 @@ export const getAllCollections = async () => {
     if (!prevAllCollections) {
       console.log('%c--- plex - getAllCollections ---', 'color:#f9743b;');
       getAllCollectionsRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
       const endpoint = endpointConfig.collection.getAllCollections(serverBaseUrlCurrent, libraryId);
@@ -783,7 +786,7 @@ export const getCollectionItems = async (libraryId, collectionId, collectionType
     const prevCollectionItems = store.getState().appModel.allCollectionItems[libraryId + '-' + collectionId];
     if (!prevCollectionItems) {
       getCollectionItemsRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.collection.getItems(serverBaseUrlCurrent, collectionId);
       const data = await fetchData(endpoint, authToken);
@@ -825,7 +828,7 @@ export const getAllArtistGenres = async (type) => {
     if (!prevAllGenres) {
       console.log('%c--- plex - getAllArtistGenres ---', 'color:#f9743b;');
       getAllArtistGenresRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
       const endpoint = endpointConfig.genres.getAllArtistGenres(serverBaseUrlCurrent, libraryId);
@@ -856,7 +859,7 @@ export const getArtistGenreItems = async (libraryId, genreId) => {
     const prevGenreItems = store.getState().appModel.allArtistGenreItems[libraryId + '-' + genreId];
     if (!prevGenreItems) {
       getArtistGenreItemsRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.genres.getArtistGenreItems(serverBaseUrlCurrent, libraryId, genreId);
       const data = await fetchData(endpoint, authToken);
@@ -889,7 +892,7 @@ export const getAllAlbumGenres = async (type) => {
     if (!prevAllGenres) {
       console.log('%c--- plex - getAllAlbumGenres ---', 'color:#f9743b;');
       getAllAlbumGenresRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
       const endpoint = endpointConfig.genres.getAllAlbumGenres(serverBaseUrlCurrent, libraryId);
@@ -920,7 +923,7 @@ export const getAlbumGenreItems = async (libraryId, genreId) => {
     const prevGenreItems = store.getState().appModel.allAlbumGenreItems[libraryId + '-' + genreId];
     if (!prevGenreItems) {
       getAlbumGenreItemsRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.genres.getAlbumGenreItems(serverBaseUrlCurrent, libraryId, genreId);
       const data = await fetchData(endpoint, authToken);
@@ -953,7 +956,7 @@ export const getAllArtistStyles = async (type) => {
     if (!prevAllStyles) {
       console.log('%c--- plex - getAllArtistStyles ---', 'color:#f9743b;');
       getAllArtistStylesRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
       const endpoint = endpointConfig.styles.getAllArtistStyles(serverBaseUrlCurrent, libraryId);
@@ -984,7 +987,7 @@ export const getArtistStyleItems = async (libraryId, styleId) => {
     const prevStyleItems = store.getState().appModel.allArtistStyleItems[libraryId + '-' + styleId];
     if (!prevStyleItems) {
       getArtistStyleItemsRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.styles.getArtistStyleItems(serverBaseUrlCurrent, libraryId, styleId);
       const data = await fetchData(endpoint, authToken);
@@ -1017,7 +1020,7 @@ export const getAllAlbumStyles = async (type) => {
     if (!prevAllStyles) {
       console.log('%c--- plex - getAllAlbumStyles ---', 'color:#f9743b;');
       getAllAlbumStylesRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
       const endpoint = endpointConfig.styles.getAllAlbumStyles(serverBaseUrlCurrent, libraryId);
@@ -1048,7 +1051,7 @@ export const getAlbumStyleItems = async (libraryId, styleId) => {
     const prevStyleItems = store.getState().appModel.allAlbumStyleItems[libraryId + '-' + styleId];
     if (!prevStyleItems) {
       getAlbumStyleItemsRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.styles.getAlbumStyleItems(serverBaseUrlCurrent, libraryId, styleId);
       const data = await fetchData(endpoint, authToken);
@@ -1081,7 +1084,7 @@ export const getAllArtistMoods = async (type) => {
     if (!prevAllMoods) {
       console.log('%c--- plex - getAllArtistMoods ---', 'color:#f9743b;');
       getAllArtistMoodsRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
       const endpoint = endpointConfig.moods.getAllArtistMoods(serverBaseUrlCurrent, libraryId);
@@ -1112,7 +1115,7 @@ export const getArtistMoodItems = async (libraryId, moodId) => {
     const prevMoodItems = store.getState().appModel.allArtistMoodItems[libraryId + '-' + moodId];
     if (!prevMoodItems) {
       getArtistMoodItemsRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.moods.getArtistMoodItems(serverBaseUrlCurrent, libraryId, moodId);
       const data = await fetchData(endpoint, authToken);
@@ -1145,7 +1148,7 @@ export const getAllAlbumMoods = async (type) => {
     if (!prevAllMoods) {
       console.log('%c--- plex - getAllAlbumMoods ---', 'color:#f9743b;');
       getAllAlbumMoodsRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
       const endpoint = endpointConfig.moods.getAllAlbumMoods(serverBaseUrlCurrent, libraryId);
@@ -1176,7 +1179,7 @@ export const getAlbumMoodItems = async (libraryId, moodId) => {
     const prevMoodItems = store.getState().appModel.allAlbumMoodItems[libraryId + '-' + moodId];
     if (!prevMoodItems) {
       getAlbumMoodItemsRunning = true;
-      const authToken = window.localStorage.getItem('chromatix-auth-token');
+      const authToken = window.localStorage.getItem(storageTokenKey);
       const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
       const endpoint = endpointConfig.moods.getAlbumMoodItems(serverBaseUrlCurrent, libraryId, moodId);
       const data = await fetchData(endpoint, authToken);
