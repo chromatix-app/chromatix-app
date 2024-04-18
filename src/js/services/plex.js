@@ -145,7 +145,11 @@ export const getAllServers = async () => {
 
       try {
         const authToken = plexTools.getLocalStorage(storageTokenKey);
-        const endpoint = endpointConfig.server.getAllServers();
+
+        const mockEndpoint = '/api/servers.json';
+        const prodEndpoint = endpointConfig.server.getAllServers();
+        const endpoint = mockData ? mockEndpoint : prodEndpoint;
+
         const response = await fetch(endpoint, {
           headers: {
             Accept: 'application/json',
