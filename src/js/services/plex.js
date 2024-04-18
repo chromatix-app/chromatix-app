@@ -3,8 +3,8 @@
 // ======================================================================
 
 import axios from 'axios';
-import { XMLParser } from 'fast-xml-parser';
 
+import * as plexTools from 'js/services/plexTools';
 import store from 'js/store/store';
 
 // ======================================================================
@@ -16,19 +16,15 @@ const isProduction = process.env.REACT_APP_ENV === 'production';
 const mockData = isProduction ? false : false;
 const thumbSize = 480;
 
-const appName = 'Chromatix';
-const clientIdentifier = 'chromatix.app';
-const clientIcon = 'https://chromatix.app/icon/icon-512.png';
-
 const storagePinKey = 'chromatix-pin-id';
 const storageTokenKey = 'chromatix-auth-token';
 
-const currentProtocol = window.location.protocol + '//';
-const currentHost = window.location.host;
+// const currentProtocol = window.location.protocol + '//';
+// const currentHost = window.location.host;
 
-const redirectUrlLocal = currentProtocol + currentHost + '?plex-login=true';
-const redirectUrlProd = 'https://chromatix.app?plex-login=true';
-const redirectUrl = isProduction ? redirectUrlProd : redirectUrlLocal;
+// const redirectUrlLocal = currentProtocol + currentHost + '?plex-login=true';
+// const redirectUrlProd = 'https://chromatix.app?plex-login=true';
+// const redirectUrl = isProduction ? redirectUrlProd : redirectUrlLocal;
 
 const endpointConfig = {
   auth: {
@@ -101,7 +97,7 @@ export const init = () => {
     window.history.replaceState({}, document.title, window.location.pathname);
     const pinId = window.localStorage.getItem(storagePinKey);
     if (pinId) {
-      checkPinStatus(pinId);
+      checkPlexPinStatus(pinId);
     } else {
       store.dispatch.appModel.setLoggedOut();
     }
@@ -121,87 +117,27 @@ export const init = () => {
 
 export const login = async () => {
   console.log('%c--- plex - login ---', 'color:#f9743b;');
-  try {
-    const endpoint = endpointConfig.auth.login();
-    const pinResponse = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-Plex-Product': appName,
-        'X-Plex-Client-Identifier': clientIdentifier,
-        'X-Plex-Device-Icon': clientIcon,
-      },
-      body: JSON.stringify({ strong: true }),
-    });
-
-    // error handling
-    if (!pinResponse.ok) {
-      console.error('Failed to generate PIN:', pinResponse.statusText);
-      store.dispatch.appModel.plexErrorLogin();
-      return;
-    }
-
-    // parse the response
-    const pinData = await pinResponse.json();
-    const pinId = pinData.id;
-    const pinCode = pinData.code;
-
-    // store the pinId in the local storage
-    window.localStorage.setItem(storagePinKey, pinId);
-
-    // redirect to the Plex login page
-    const authAppUrl = `https://app.plex.tv/auth#?clientID=${clientIdentifier}&code=${pinCode}&context%5Bdevice%5D%5Bproduct%5D=${encodeURIComponent(
-      appName
-    )}&forwardUrl=${encodeURIComponent(redirectUrl)}`;
-    window.location.href = authAppUrl;
-  } catch (e) {
-    // error handling
+  plexTools.login().catch((e) => {
+    console.error('Failed to login:', e);
     store.dispatch.appModel.plexErrorLogin();
-  }
+  });
 };
 
 // ======================================================================
-// LOGIN CALLBACK
+// CHECK PLEX PIN STATUS
 // ======================================================================
 
-const checkPinStatus = async (pinId) => {
-  console.log('%c--- plex - checkPinStatus ---', 'color:#f9743b;');
-  try {
-    const endpoint = endpointConfig.auth.pinStatus(pinId);
-    const pinStatusResponse = await fetch(endpoint, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'X-Plex-Client-Identifier': clientIdentifier,
-      },
-    });
-
-    // error handling
-    if (!pinStatusResponse.ok) {
-      console.error('Failed to check PIN status:', pinStatusResponse.statusText);
-      store.dispatch.appModel.plexErrorLogin();
-      return;
-    }
-
-    // parse the response
-    const pinStatusData = await pinStatusResponse.json();
-
-    // if valid, store the authToken in the local storage
-    if (pinStatusData.authToken) {
-      window.localStorage.setItem(storageTokenKey, pinStatusData.authToken);
-      window.localStorage.removeItem(storagePinKey);
+const checkPlexPinStatus = (pinId) => {
+  console.log('%c--- plex - checkPlexPinStatus ---', 'color:#f9743b;');
+  plexTools
+    .checkPlexPinStatus(pinId)
+    .then(() => {
       getUserInfo();
-    }
-
-    // if the PIN is not yet authorized, check again in a second
-    else {
-      setTimeout(() => checkPinStatus(pinId), 1000);
-    }
-  } catch (e) {
-    // error handling
-    store.dispatch.appModel.plexErrorLogin();
-  }
+    })
+    .catch((e) => {
+      console.error('Failed to authorize PIN:', e);
+      store.dispatch.appModel.plexErrorLogin();
+    });
 };
 
 // ======================================================================
@@ -210,7 +146,7 @@ const checkPinStatus = async (pinId) => {
 
 export const logout = () => {
   console.log('%c--- plex - logout ---', 'color:#f9743b;');
-  window.localStorage.removeItem(storageTokenKey);
+  plexTools.logout();
   store.dispatch.appModel.setLoggedOut();
 };
 
@@ -218,48 +154,24 @@ export const logout = () => {
 // GET USER INFO
 // ======================================================================
 
-const getUserInfo = async () => {
+const getUserInfo = () => {
   console.log('%c--- plex - getUserInfo ---', 'color:#f9743b;');
-  try {
-    const authToken = window.localStorage.getItem(storageTokenKey);
-    const endpoint = endpointConfig.user.getUserInfo();
-    const response = await fetch(endpoint, {
-      headers: {
-        'X-Plex-Token': authToken,
-      },
+  plexTools
+    .getUserInfo()
+    .then((res) => {
+      const currentUser = {
+        userId: res['@_id'],
+        email: res['email'],
+        thumb: res['@_thumb'],
+        title: res['@_title'],
+        username: res['username'],
+      };
+      store.dispatch.appModel.setLoggedIn(currentUser);
+    })
+    .catch((e) => {
+      console.error('Failed to get user info:', e);
+      store.dispatch.appModel.plexErrorLogin();
     });
-
-    // error handling
-    if (!response.ok) {
-      console.error('Failed to get user info:', response.statusText);
-      window.localStorage.removeItem(storageTokenKey);
-      store.dispatch.appModel.setLoggedOut();
-      return;
-    }
-
-    // parse the response
-    const data = await response.text();
-    const parser = new XMLParser({ ignoreAttributes: false });
-    const jsonObj = parser.parse(data).user;
-
-    // console.log(jsonObj);
-
-    const currentUser = {
-      userId: jsonObj['@_id'],
-      email: jsonObj['email'],
-      thumb: jsonObj['@_thumb'],
-      title: jsonObj['@_title'],
-      username: jsonObj['username'],
-    };
-
-    // console.log('currentUser', currentUser);
-
-    store.dispatch.appModel.setLoggedIn(currentUser);
-  } catch (e) {
-    // error handling
-    console.error('Failed to get user info:', e);
-    store.dispatch.appModel.plexErrorLogin();
-  }
 };
 
 // ======================================================================
