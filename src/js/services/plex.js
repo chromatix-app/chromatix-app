@@ -16,17 +16,9 @@ const isProduction = process.env.REACT_APP_ENV === 'production';
 const mockData = isProduction ? false : false;
 const thumbSize = 480;
 
-const storagePinKey = 'chromatix-pin-id';
 const storageTokenKey = 'chromatix-auth-token';
 
 const endpointConfig = {
-  auth: {
-    login: () => 'https://plex.tv/api/v2/pins',
-    pinStatus: (pinId) => `https://plex.tv/api/v2/pins/${pinId}`,
-  },
-  user: {
-    getUserInfo: () => 'https://plex.tv/users/account',
-  },
   server: {
     getAllServers: () => 'https://plex.tv/api/v2/resources?includeHttps=1&includeRelay=1&includeIPv6=1',
   },
@@ -83,25 +75,15 @@ const endpointConfig = {
 // ======================================================================
 
 export const init = () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const isPlexLogin = urlParams.get('plex-login');
-
-  if (isPlexLogin) {
-    window.history.replaceState({}, document.title, window.location.pathname);
-    const pinId = plexTools.getLocalStorage(storagePinKey);
-    if (pinId) {
-      checkPlexPinStatus(pinId);
-    } else {
-      store.dispatch.appModel.setLoggedOut();
-    }
-  } else {
-    const authToken = plexTools.getLocalStorage(storageTokenKey);
-    if (authToken) {
+  console.log('%c--- plex - init ---', 'color:#f9743b;');
+  plexTools
+    .init()
+    .then(() => {
       getUserInfo();
-    } else {
+    })
+    .catch((e) => {
       store.dispatch.appModel.setLoggedOut();
-    }
-  }
+    });
 };
 
 // ======================================================================
@@ -111,26 +93,8 @@ export const init = () => {
 export const login = async () => {
   console.log('%c--- plex - login ---', 'color:#f9743b;');
   plexTools.login().catch((e) => {
-    console.error('Failed to login:', e);
     store.dispatch.appModel.plexErrorLogin();
   });
-};
-
-// ======================================================================
-// CHECK PLEX PIN STATUS
-// ======================================================================
-
-const checkPlexPinStatus = (pinId) => {
-  console.log('%c--- plex - checkPlexPinStatus ---', 'color:#f9743b;');
-  plexTools
-    .checkPlexPinStatus(pinId)
-    .then(() => {
-      getUserInfo();
-    })
-    .catch((e) => {
-      console.error('Failed to authorize PIN:', e);
-      store.dispatch.appModel.plexErrorLogin();
-    });
 };
 
 // ======================================================================
@@ -162,7 +126,6 @@ const getUserInfo = () => {
       store.dispatch.appModel.setLoggedIn(currentUser);
     })
     .catch((e) => {
-      console.error('Failed to get user info:', e);
       store.dispatch.appModel.plexErrorLogin();
     });
 };

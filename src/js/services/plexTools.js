@@ -10,23 +10,18 @@ import { XMLParser } from 'fast-xml-parser';
 // OPTIONS
 // ======================================================================
 
-const isProduction = process.env.REACT_APP_ENV === 'production';
-
 const secretKey = 'your_secret_key_here';
 
 const appName = 'Chromatix';
 const clientIdentifier = 'chromatix.app';
-const clientIcon = 'https://chromatix.app/icon/icon-512.png'; // doesn't seem to work
+const clientIcon = 'https://chromatix.app/icon/icon-512.png';
 
 const storagePinKey = 'chromatix-pin-id';
 const storageTokenKey = 'chromatix-auth-token';
 
-const currentProtocol = window.location.protocol + '//';
-const currentHost = window.location.host;
-
-const redirectUrlLocal = currentProtocol + currentHost + '?plex-login=true';
-const redirectUrlProd = 'https://chromatix.app?plex-login=true';
-const redirectUrl = isProduction ? redirectUrlProd : redirectUrlLocal;
+const redirectPath = window.location.origin;
+const redirectQuery = 'plex-login';
+const redirectUrl = `${redirectPath}?${redirectQuery}=true`;
 
 const endpointConfig = {
   auth: {
@@ -68,27 +63,33 @@ export const getLocalStorage = (key) => {
 // INITIALISE
 // ======================================================================
 
-// export const init = () => {
-//   const urlParams = new URLSearchParams(window.location.search);
-//   const isPlexLogin = urlParams.get('plex-login');
-
-//   if (isPlexLogin) {
-//     window.history.replaceState({}, document.title, window.location.pathname);
-//     const pinId = window.localStorage.getItem(storagePinKey);
-//     if (pinId) {
-//       checkPlexPinStatus(pinId);
-//     } else {
-//       store.dispatch.appModel.setLoggedOut();
-//     }
-//   } else {
-//     const authToken = getLocalStorage(storageTokenKey);
-//     if (authToken) {
-//       getUserInfo();
-//     } else {
-//       store.dispatch.appModel.setLoggedOut();
-//     }
-//   }
-// };
+export const init = () => {
+  return new Promise((resolve, reject) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const isPlexLoginRedirect = urlParams.get(redirectQuery);
+    // if the URL contains our redirect query param, we need to check the PIN status
+    if (isPlexLoginRedirect) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+      const pinId = getLocalStorage(storagePinKey);
+      if (pinId) {
+        checkPlexPinStatus(pinId).then(resolve).catch(reject);
+      } else {
+        console.error('No pin ID found');
+        reject('No pin ID found');
+      }
+    }
+    // otherwise, check if the user is already logged in
+    else {
+      const authToken = getLocalStorage(storageTokenKey);
+      if (authToken) {
+        resolve();
+      } else {
+        console.error('No auth token found');
+        reject('No auth token found');
+      }
+    }
+  });
+};
 
 // ======================================================================
 // LOGIN
@@ -108,7 +109,7 @@ export const login = () => {
               'Content-Type': 'application/json',
               'X-Plex-Product': appName,
               'X-Plex-Client-Identifier': clientIdentifier,
-              'X-Plex-Device-Icon': clientIcon,
+              'X-Plex-Device-Icon': clientIcon, // NOTE: this doesn't seem to work
             },
           }
         )
