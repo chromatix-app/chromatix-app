@@ -60,17 +60,6 @@
         "relay": true,
         "IPv6": false
       }
-    ],
-    "serverId": "addfc761febdf1c572f520c1ab60ef33817d509a",
-    "serverBaseUrls": [
-      "https://192-168-1-201.6b3f9dff67f64b3aab29466ce77a1194.plex.direct:32400",
-      "https://2a01-4b00-8a37-6b00-042e-47cd-d9cf-c5ef.6b3f9dff67f64b3aab29466ce77a1194.plex.direct:32400",
-      "https://137-220-107-107.6b3f9dff67f64b3aab29466ce77a1194.plex.direct:32400",
-      "https://178-79-149-70.6b3f9dff67f64b3aab29466ce77a1194.plex.direct:8443"
-    ],
-    "serverBaseUrlCurrent": "https://192-168-1-201.6b3f9dff67f64b3aab29466ce77a1194.plex.direct:32400",
-    "serverBaseUrlIndex": 0,
-    "serverBaseUrlTotal": 4,
-    "serverArtUrl": "https://localhost:32400"
+    ]
   }
 ]

@@ -34,14 +34,16 @@ const endpointConfig = {
   server: {
     getAllServers: () => 'https://plex.tv/api/v2/resources?includeHttps=1&includeRelay=1&includeIPv6=1',
   },
-  // library: {
-  //   getAllLibraries: (base) => `${base}/library/sections`,
-  // },
+  library: {
+    getAllLibraries: (base) => `${base}/library/sections`,
+  },
 };
 
 // ======================================================================
-// ENCRYPTED LOCAL STORAGE HELPER FUNCTIONS
+// HELPER FUNCTIONS
 // ======================================================================
+
+// SET AND GET ENCRYPTED LOCAL STORAGE
 
 export const setLocalStorage = (key, value) => {
   const stringValue = String(value);
@@ -58,6 +60,28 @@ export const getLocalStorage = (key) => {
   }
   return null;
 };
+
+// A CUSTOM PROMISE FUNCTION THAT WAIST FOR THE FIRST RESOLVED PROMISE
+// (i.e. something in between Promise.race and Promise.allSettled)
+
+function raceToSuccess(promises) {
+  return new Promise((resolve, reject) => {
+    let count = promises.length;
+    promises.forEach((promise) => {
+      (function () {
+        promise
+          .then(resolve) // if a promise resolves, resolve the main promise
+          .catch(() => {
+            count--; // if a promise rejects, decrease the count
+            if (count === 0) {
+              // if all promises have rejected, reject the main promise
+              reject(new Error('All promises were rejected'));
+            }
+          });
+      })();
+    });
+  });
+}
 
 // ======================================================================
 // INITIALISE
@@ -153,6 +177,7 @@ export const checkPlexPinStatus = (pinId, retryCount = 0) => {
         .get(endpoint, {
           headers: {
             Accept: 'application/json',
+            'Content-Type': 'application/json',
             'X-Plex-Client-Identifier': clientIdentifier,
           },
         })
@@ -245,9 +270,8 @@ export const getAllServers = () => {
           },
         })
         .then((response) => {
-          const data = response.data;
-          const allServers = data.filter((resource) => resource.provides === 'server');
-          resolve(allServers);
+          const data = response?.data?.filter((resource) => resource.provides === 'server');
+          resolve(data);
         })
         .catch((e) => {
           console.error('Failed to get user servers:', e);
@@ -302,93 +326,38 @@ export const getFastestServerConnection = (server) => {
   });
 
   // return the first connection that responds
-  return Promise.race(requests)
-    .then((activeConnection) => {
-      console.log(111);
-      console.log(activeConnection.uri);
-      return activeConnection;
-    })
-    .catch((error) => {
-      console.error('All connections failed:', error);
-      return null;
-    });
+  return raceToSuccess(requests).then((activeConnection) => {
+    return activeConnection;
+  });
 };
 
-// // ======================================================================
-// // GET USER LIBRARIES
-// // ======================================================================
+// ======================================================================
+// GET USER LIBRARIES
+// ======================================================================
 
-// let getUserLibrariesRunning;
-
-// export const getAllLibraries = async () => {
-//   if (!getUserLibrariesRunning) {
-//     const prevAllLibraries = store.getState().appModel.allLibraries;
-//     if (!prevAllLibraries) {
-//       const currentServer = store.getState().sessionModel.currentServer;
-//       if (currentServer) {
-//         console.log('%c--- plex - getAllLibraries ---', 'color:#f9743b;');
-//         getUserLibrariesRunning = true;
-
-//         // we need to cycle through the serverBaseUrls to find the first one that works
-//         const { serverBaseUrls, serverBaseUrlCurrent, serverBaseUrlIndex, serverBaseUrlTotal } = currentServer;
-
-//         try {
-//           const authToken = getLocalStorage(storageTokenKey);
-//           const endpoint = endpointConfig.library.getAllLibraries(serverBaseUrlCurrent);
-//           const response = await axios.get(endpoint, {
-//             timeout: 5000, // 5 seconds
-//             headers: {
-//               Accept: 'application/json',
-//               'Content-Type': 'application/json',
-//               'X-Plex-Token': authToken,
-//             },
-//           });
-
-//           const data = response.data;
-
-//           // console.log(data.MediaContainer.Directory);
-
-//           const allLibraries = data.MediaContainer.Directory.filter((library) => library.type === 'artist');
-
-//           allLibraries.forEach((library) => {
-//             library.libraryId = library.key;
-//             // library.thumb = library.composite
-//             //   ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-//             //       `${serverArtUrl}${library.composite}`
-//             //     )}&X-Plex-Token=${authToken}`
-//             //   : null;
-//           });
-
-//           // console.log('allLibraries', allLibraries);
-
-//           store.dispatch.sessionModel.refreshCurrentLibrary(allLibraries);
-//           store.dispatch.appModel.setAppState({ allLibraries });
-//         } catch (e) {
-//           // error handling
-//           console.error('Failed to get user libraries:', e);
-//           // let's make sure we've tried every connection url before giving up
-//           if (serverBaseUrlIndex < serverBaseUrlTotal - 1) {
-//             // retry the request with the next connection url
-//             console.log('TRY NEXT BASE URL');
-//             store.dispatch.sessionModel.setServerIndex({
-//               serverBaseUrlCurrent: serverBaseUrls[serverBaseUrlIndex + 1],
-//               serverBaseUrlIndex: serverBaseUrlIndex + 1,
-//             });
-//             getUserLibrariesRunning = false;
-//             getAllLibraries();
-//           } else {
-//             // default error handling
-//             if (e.code === 'ECONNABORTED') {
-//               console.error('Request timed out');
-//               store.dispatch.sessionModel.unsetCurrentServer();
-//             } else {
-//               store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
-//             }
-//           }
-//         }
-
-//         getUserLibrariesRunning = false;
-//       }
-//     }
-//   }
-// };
+export const getAllLibraries = (baseUrl) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const authToken = getLocalStorage(storageTokenKey);
+      const endpoint = endpointConfig.library.getAllLibraries(baseUrl);
+      axios
+        .get(endpoint, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': authToken,
+          },
+        })
+        .then((response) => {
+          resolve(response?.data?.MediaContainer.Directory);
+        })
+        .catch((error) => {
+          console.error('Failed to get user libraries:', error);
+          reject(error);
+        });
+    } catch (e) {
+      console.error('Failed to get all libraries:', e);
+      reject('Failed to get all libraries: ' + e);
+    }
+  });
+};

@@ -2,8 +2,6 @@
 // IMPORTS
 // ======================================================================
 
-import axios from 'axios';
-
 import * as plexTools from 'js/services/plexTools';
 import store from 'js/store/store';
 
@@ -147,26 +145,10 @@ export const getAllServers = () => {
         .getAllServers()
         .then((res) => {
           // transpose server data
-          const allServers = res.map((resource, index) => {
-            // const connectionLocal = resource.connections.filter((connection) => connection.local);
-            const connectionUrls = resource.connections.map((connection) => connection.uri);
-            // delete resource.connections;
-            resource.serverId = resource.clientIdentifier;
-            resource.serverBaseUrls = connectionUrls;
-            resource.serverBaseUrlCurrent = connectionUrls[0];
-            resource.serverBaseUrlIndex = 0;
-            resource.serverBaseUrlTotal = connectionUrls.length;
-            resource.serverArtUrl = '';
-            // connectionLocal?.[0]
-            //   ? `${connectionLocal[0].protocol}://localhost:${connectionLocal[0].port}`
-            //   : null;
-
-            // if (index === 0) {
-            //   plexTools.getFastestServerConnection(resource);
-            //   // plexTools.getFastestArtworkUrl(resource);
-            // }
-
-            return resource;
+          const allServers = res.map((server) => {
+            server.serverId = server.clientIdentifier;
+            server.serverArtUrl = '';
+            return server;
           });
           store.dispatch.appModel.storeAllServers(allServers);
         })
@@ -194,66 +176,44 @@ export const getAllLibraries = async () => {
       if (currentServer) {
         console.log('%c--- plex - getAllLibraries ---', 'color:#f9743b;');
         getUserLibrariesRunning = true;
-
-        // we need to cycle through the serverBaseUrls to find the first one that works
-        const { serverBaseUrls, serverBaseUrlCurrent, serverBaseUrlIndex, serverBaseUrlTotal } = currentServer;
-
+        let plexBaseUrl;
         try {
-          const authToken = plexTools.getLocalStorage(storageTokenKey);
-          const endpoint = endpointConfig.library.getAllLibraries(serverBaseUrlCurrent);
-          const response = await axios.get(endpoint, {
-            timeout: 5000, // 5 seconds
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-              'X-Plex-Token': authToken,
-            },
+          await plexTools.getFastestServerConnection(currentServer).then((res) => {
+            plexBaseUrl = res.uri;
+            store.dispatch.appModel.setAppState({ plexBaseUrl });
           });
-
-          const data = response.data;
-
-          // console.log(data.MediaContainer.Directory);
-
-          const allLibraries = data.MediaContainer.Directory.filter((library) => library.type === 'artist');
-
-          allLibraries.forEach((library) => {
-            library.libraryId = library.key;
-            // library.thumb = library.composite
-            //   ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-            //       `${serverArtUrl}${library.composite}`
-            //     )}&X-Plex-Token=${authToken}`
-            //   : null;
-          });
-
-          // console.log('allLibraries', allLibraries);
-
-          store.dispatch.sessionModel.refreshCurrentLibrary(allLibraries);
-          store.dispatch.appModel.setAppState({ allLibraries });
         } catch (e) {
-          // error handling
-          console.error('Failed to get user libraries:', e);
-          // let's make sure we've tried every connection url before giving up
-          if (serverBaseUrlIndex < serverBaseUrlTotal - 1) {
-            // retry the request with the next connection url
-            console.log('TRY NEXT BASE URL');
-            store.dispatch.sessionModel.setServerIndex({
-              serverBaseUrlCurrent: serverBaseUrls[serverBaseUrlIndex + 1],
-              serverBaseUrlIndex: serverBaseUrlIndex + 1,
-            });
-            getUserLibrariesRunning = false;
-            getAllLibraries();
-          } else {
-            // default error handling
-            if (e.code === 'ECONNABORTED') {
-              console.error('Request timed out');
-              store.dispatch.sessionModel.unsetCurrentServer();
-            } else {
-              store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
-            }
-          }
+          store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
+          return;
         }
 
-        getUserLibrariesRunning = false;
+        plexTools
+          .getAllLibraries(plexBaseUrl)
+          .then((res) => {
+            // transpose library data
+            const allLibraries = res
+              .filter((library) => library.type === 'artist')
+              .map((library) => {
+                library.libraryId = library.key;
+                // library.thumb = library.composite
+                //   ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+                //       `${serverArtUrl}${library.composite}`
+                //     )}&X-Plex-Token=${authToken}`
+                //   : null;
+                return library;
+              });
+
+            // console.log('allLibraries', allLibraries);
+
+            store.dispatch.sessionModel.refreshCurrentLibrary(allLibraries);
+            store.dispatch.appModel.setAppState({ allLibraries });
+          })
+          .catch((e) => {
+            store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
+          })
+          .finally(() => {
+            getUserLibrariesRunning = false;
+          });
       }
     }
   }
@@ -271,11 +231,12 @@ export const getAllArtists = async () => {
     if (!prevAllArtists) {
       getAllArtistsRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const { serverArtUrl } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
       const mockEndpoint = '/api/artists.json';
-      const prodEndpoint = endpointConfig.artist.getAllArtists(serverBaseUrlCurrent, libraryId);
+      const prodEndpoint = endpointConfig.artist.getAllArtists(plexBaseUrl, libraryId);
       const endpoint = mockData ? mockEndpoint : prodEndpoint;
       const data = await fetchData(endpoint, authToken);
 
@@ -283,7 +244,7 @@ export const getAllArtists = async () => {
 
       const allArtists =
         data.MediaContainer.Metadata?.map((artist) =>
-          transposeArtistData(artist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+          transposeArtistData(artist, libraryId, plexBaseUrl, serverArtUrl, authToken)
         ) || [];
 
       // console.log('allArtists', allArtists);
@@ -307,14 +268,15 @@ export const getArtistDetails = async (libraryId, artistId) => {
     if (!prevArtistDetails) {
       getArtistDetailsRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
-      const endpoint = endpointConfig.artist.getDetails(serverBaseUrlCurrent, artistId);
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const { serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.artist.getDetails(plexBaseUrl, artistId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
       const artist = data.MediaContainer.Metadata[0];
-      const artistDetails = transposeArtistData(artist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken);
+      const artistDetails = transposeArtistData(artist, libraryId, plexBaseUrl, serverArtUrl, authToken);
 
       // console.log('artistDetails', artistDetails);
 
@@ -337,15 +299,16 @@ export const getAllArtistAlbums = async (libraryId, artistId) => {
     if (!prevAllAlbums) {
       getAllArtistAlbumsRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
-      const endpoint = endpointConfig.artist.getAllAlbums(serverBaseUrlCurrent, artistId);
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const { serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.artist.getAllAlbums(plexBaseUrl, artistId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
       const artistAlbums =
         data.MediaContainer.Metadata?.map((album) =>
-          transposeAlbumData(album, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+          transposeAlbumData(album, libraryId, plexBaseUrl, serverArtUrl, authToken)
         ) || [];
 
       // console.log('artistAlbums', artistAlbums);
@@ -369,8 +332,9 @@ export const getAllArtistRelated = async (libraryId, artistId) => {
     if (!prevAllRelated) {
       getAllArtistRelatedRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
-      const endpoint = endpointConfig.artist.getAllRelated(serverBaseUrlCurrent, artistId);
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const { serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.artist.getAllRelated(plexBaseUrl, artistId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Hub);
@@ -379,7 +343,7 @@ export const getAllArtistRelated = async (libraryId, artistId) => {
         data.MediaContainer.Hub?.filter((hub) => hub.type === 'album' && hub.Metadata).map((hub) => ({
           title: hub.title,
           related: hub.Metadata.map((album) =>
-            transposeAlbumData(album, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+            transposeAlbumData(album, libraryId, plexBaseUrl, serverArtUrl, authToken)
           ),
         })) || [];
 
@@ -404,16 +368,17 @@ export const getAllAlbums = async () => {
     if (!prevAllAlbums) {
       getAllAlbumsRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const { serverArtUrl } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
-      const endpoint = endpointConfig.album.getAllAlbums(serverBaseUrlCurrent, libraryId);
+      const endpoint = endpointConfig.album.getAllAlbums(plexBaseUrl, libraryId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
       const allAlbums =
         data.MediaContainer.Metadata?.map((album) =>
-          transposeAlbumData(album, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+          transposeAlbumData(album, libraryId, plexBaseUrl, serverArtUrl, authToken)
         ) || [];
 
       // console.log('allAlbums', allAlbums);
@@ -437,14 +402,15 @@ export const getAlbumDetails = async (libraryId, albumId) => {
     if (!prevAlbumDetails) {
       getAlbumDetailsRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
-      const endpoint = endpointConfig.album.getDetails(serverBaseUrlCurrent, albumId);
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const { serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.album.getDetails(plexBaseUrl, albumId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
       const album = data.MediaContainer.Metadata[0];
-      const albumDetails = transposeAlbumData(album, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken);
+      const albumDetails = transposeAlbumData(album, libraryId, plexBaseUrl, serverArtUrl, authToken);
 
       // console.log('albumDetails', albumDetails);
 
@@ -467,15 +433,16 @@ export const getAlbumTracks = async (libraryId, albumId) => {
     if (!prevAlbumTracks) {
       getAlbumTracksRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
-      const endpoint = endpointConfig.album.getTracks(serverBaseUrlCurrent, albumId);
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const { serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.album.getTracks(plexBaseUrl, albumId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
       const albumTracks =
         data.MediaContainer.Metadata?.map((track) =>
-          transposeTrackData(track, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+          transposeTrackData(track, libraryId, plexBaseUrl, serverArtUrl, authToken)
         ) || [];
 
       // console.log('albumTracks', albumTracks);
@@ -500,11 +467,12 @@ export const getAllPlaylists = async () => {
       console.log('%c--- plex - getAllPlaylists ---', 'color:#f9743b;');
       getAllPlaylistsRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const { serverArtUrl } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
       const mockEndpoint = '/api/playlists.json';
-      const prodEndpoint = endpointConfig.playlist.getAllPlaylists(serverBaseUrlCurrent, libraryId);
+      const prodEndpoint = endpointConfig.playlist.getAllPlaylists(plexBaseUrl, libraryId);
       const endpoint = mockData ? mockEndpoint : prodEndpoint;
       const data = await fetchData(endpoint, authToken);
 
@@ -512,7 +480,7 @@ export const getAllPlaylists = async () => {
 
       const allPlaylists =
         data.MediaContainer.Metadata?.map((playlist) =>
-          transposePlaylistData(playlist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+          transposePlaylistData(playlist, libraryId, plexBaseUrl, serverArtUrl, authToken)
         ) || [];
 
       // console.log('allPlaylists', allPlaylists);
@@ -538,14 +506,15 @@ export const getPlaylistDetails = async (libraryId, playlistId) => {
     if (!prevPlaylistDetails) {
       getPlaylistDetailsRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
-      const endpoint = endpointConfig.playlist.getDetails(serverBaseUrlCurrent, playlistId);
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const { serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.playlist.getDetails(plexBaseUrl, playlistId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
       const playlist = data.MediaContainer.Metadata[0];
-      const playlistDetails = transposePlaylistData(playlist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken);
+      const playlistDetails = transposePlaylistData(playlist, libraryId, plexBaseUrl, serverArtUrl, authToken);
 
       // console.log('playlistDetails', playlistDetails);
 
@@ -568,15 +537,16 @@ export const getPlaylistTracks = async (libraryId, playlistId) => {
     if (!prevPlaylistTracks) {
       getPlaylistTracksRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
-      const endpoint = endpointConfig.playlist.getTracks(serverBaseUrlCurrent, playlistId);
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const { serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.playlist.getTracks(plexBaseUrl, playlistId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
       const playlistTracks =
         data.MediaContainer.Metadata?.map((track) =>
-          transposeTrackData(track, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+          transposeTrackData(track, libraryId, plexBaseUrl, serverArtUrl, authToken)
         ) || [];
 
       // console.log(playlistTracks);
@@ -601,9 +571,10 @@ export const getAllCollections = async () => {
       console.log('%c--- plex - getAllCollections ---', 'color:#f9743b;');
       getAllCollectionsRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const { serverArtUrl } = store.getState().sessionModel.currentServer;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
-      const endpoint = endpointConfig.collection.getAllCollections(serverBaseUrlCurrent, libraryId);
+      const endpoint = endpointConfig.collection.getAllCollections(plexBaseUrl, libraryId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
@@ -611,9 +582,8 @@ export const getAllCollections = async () => {
       const allCollections =
         data.MediaContainer.Metadata?.filter(
           (collection) => collection.subtype === 'artist' || collection.subtype === 'album'
-        ).map((collection) =>
-          transposeCollectionData(collection, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
-        ) || [];
+        ).map((collection) => transposeCollectionData(collection, libraryId, plexBaseUrl, serverArtUrl, authToken)) ||
+        [];
 
       // console.log('allCollections', allCollections);
 
@@ -636,8 +606,9 @@ export const getCollectionItems = async (libraryId, collectionId, collectionType
     if (!prevCollectionItems) {
       getCollectionItemsRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
-      const endpoint = endpointConfig.collection.getItems(serverBaseUrlCurrent, collectionId);
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const { serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.collection.getItems(plexBaseUrl, collectionId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
@@ -647,12 +618,12 @@ export const getCollectionItems = async (libraryId, collectionId, collectionType
       if (collectionType === 'artist') {
         collectionItems =
           data.MediaContainer.Metadata?.map((artist) =>
-            transposeArtistData(artist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+            transposeArtistData(artist, libraryId, plexBaseUrl, serverArtUrl, authToken)
           ) || [];
       } else if (collectionType === 'album') {
         collectionItems =
           data.MediaContainer.Metadata?.map((album) =>
-            transposeAlbumData(album, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+            transposeAlbumData(album, libraryId, plexBaseUrl, serverArtUrl, authToken)
           ) || [];
       }
 
@@ -678,9 +649,9 @@ export const getAllArtistGenres = async (type) => {
       console.log('%c--- plex - getAllArtistGenres ---', 'color:#f9743b;');
       getAllArtistGenresRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
-      const endpoint = endpointConfig.genres.getAllArtistGenres(serverBaseUrlCurrent, libraryId);
+      const endpoint = endpointConfig.genres.getAllArtistGenres(plexBaseUrl, libraryId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Directory);
@@ -709,15 +680,16 @@ export const getArtistGenreItems = async (libraryId, genreId) => {
     if (!prevGenreItems) {
       getArtistGenreItemsRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
-      const endpoint = endpointConfig.genres.getArtistGenreItems(serverBaseUrlCurrent, libraryId, genreId);
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const { serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.genres.getArtistGenreItems(plexBaseUrl, libraryId, genreId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
       const artistGenreItems =
         data.MediaContainer.Metadata?.map((artist) =>
-          transposeArtistData(artist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+          transposeArtistData(artist, libraryId, plexBaseUrl, serverArtUrl, authToken)
         ) || [];
 
       // console.log('artistGenreItems', artistGenreItems);
@@ -742,9 +714,9 @@ export const getAllAlbumGenres = async (type) => {
       console.log('%c--- plex - getAllAlbumGenres ---', 'color:#f9743b;');
       getAllAlbumGenresRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
-      const endpoint = endpointConfig.genres.getAllAlbumGenres(serverBaseUrlCurrent, libraryId);
+      const endpoint = endpointConfig.genres.getAllAlbumGenres(plexBaseUrl, libraryId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Directory);
@@ -773,15 +745,16 @@ export const getAlbumGenreItems = async (libraryId, genreId) => {
     if (!prevGenreItems) {
       getAlbumGenreItemsRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
-      const endpoint = endpointConfig.genres.getAlbumGenreItems(serverBaseUrlCurrent, libraryId, genreId);
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const { serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.genres.getAlbumGenreItems(plexBaseUrl, libraryId, genreId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
       const albumGenreItems =
         data.MediaContainer.Metadata?.map((album) =>
-          transposeAlbumData(album, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+          transposeAlbumData(album, libraryId, plexBaseUrl, serverArtUrl, authToken)
         ) || [];
 
       // console.log('albumGenreItems', albumGenreItems);
@@ -806,9 +779,9 @@ export const getAllArtistStyles = async (type) => {
       console.log('%c--- plex - getAllArtistStyles ---', 'color:#f9743b;');
       getAllArtistStylesRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
-      const endpoint = endpointConfig.styles.getAllArtistStyles(serverBaseUrlCurrent, libraryId);
+      const endpoint = endpointConfig.styles.getAllArtistStyles(plexBaseUrl, libraryId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Directory);
@@ -837,15 +810,16 @@ export const getArtistStyleItems = async (libraryId, styleId) => {
     if (!prevStyleItems) {
       getArtistStyleItemsRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
-      const endpoint = endpointConfig.styles.getArtistStyleItems(serverBaseUrlCurrent, libraryId, styleId);
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const { serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.styles.getArtistStyleItems(plexBaseUrl, libraryId, styleId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
       const artistStyleItems =
         data.MediaContainer.Metadata?.map((artist) =>
-          transposeArtistData(artist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+          transposeArtistData(artist, libraryId, plexBaseUrl, serverArtUrl, authToken)
         ) || [];
 
       // console.log('artistStyleItems', artistStyleItems);
@@ -870,9 +844,9 @@ export const getAllAlbumStyles = async (type) => {
       console.log('%c--- plex - getAllAlbumStyles ---', 'color:#f9743b;');
       getAllAlbumStylesRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
-      const endpoint = endpointConfig.styles.getAllAlbumStyles(serverBaseUrlCurrent, libraryId);
+      const endpoint = endpointConfig.styles.getAllAlbumStyles(plexBaseUrl, libraryId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Directory);
@@ -901,15 +875,16 @@ export const getAlbumStyleItems = async (libraryId, styleId) => {
     if (!prevStyleItems) {
       getAlbumStyleItemsRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
-      const endpoint = endpointConfig.styles.getAlbumStyleItems(serverBaseUrlCurrent, libraryId, styleId);
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const { serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.styles.getAlbumStyleItems(plexBaseUrl, libraryId, styleId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
       const albumStyleItems =
         data.MediaContainer.Metadata?.map((album) =>
-          transposeAlbumData(album, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+          transposeAlbumData(album, libraryId, plexBaseUrl, serverArtUrl, authToken)
         ) || [];
 
       // console.log('albumStyleItems', albumStyleItems);
@@ -934,9 +909,9 @@ export const getAllArtistMoods = async (type) => {
       console.log('%c--- plex - getAllArtistMoods ---', 'color:#f9743b;');
       getAllArtistMoodsRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
-      const endpoint = endpointConfig.moods.getAllArtistMoods(serverBaseUrlCurrent, libraryId);
+      const endpoint = endpointConfig.moods.getAllArtistMoods(plexBaseUrl, libraryId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Directory);
@@ -965,15 +940,16 @@ export const getArtistMoodItems = async (libraryId, moodId) => {
     if (!prevMoodItems) {
       getArtistMoodItemsRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
-      const endpoint = endpointConfig.moods.getArtistMoodItems(serverBaseUrlCurrent, libraryId, moodId);
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const { serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.moods.getArtistMoodItems(plexBaseUrl, libraryId, moodId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
       const artistMoodItems =
         data.MediaContainer.Metadata?.map((artist) =>
-          transposeArtistData(artist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+          transposeArtistData(artist, libraryId, plexBaseUrl, serverArtUrl, authToken)
         ) || [];
 
       // console.log('artistMoodItems', artistMoodItems);
@@ -998,9 +974,9 @@ export const getAllAlbumMoods = async (type) => {
       console.log('%c--- plex - getAllAlbumMoods ---', 'color:#f9743b;');
       getAllAlbumMoodsRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent } = store.getState().sessionModel.currentServer;
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
-      const endpoint = endpointConfig.moods.getAllAlbumMoods(serverBaseUrlCurrent, libraryId);
+      const endpoint = endpointConfig.moods.getAllAlbumMoods(plexBaseUrl, libraryId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Directory);
@@ -1029,15 +1005,16 @@ export const getAlbumMoodItems = async (libraryId, moodId) => {
     if (!prevMoodItems) {
       getAlbumMoodItemsRunning = true;
       const authToken = plexTools.getLocalStorage(storageTokenKey);
-      const { serverBaseUrlCurrent, serverArtUrl } = store.getState().sessionModel.currentServer;
-      const endpoint = endpointConfig.moods.getAlbumMoodItems(serverBaseUrlCurrent, libraryId, moodId);
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const { serverArtUrl } = store.getState().sessionModel.currentServer;
+      const endpoint = endpointConfig.moods.getAlbumMoodItems(plexBaseUrl, libraryId, moodId);
       const data = await fetchData(endpoint, authToken);
 
       // console.log(data.MediaContainer.Metadata);
 
       const albumMoodItems =
         data.MediaContainer.Metadata?.map((album) =>
-          transposeAlbumData(album, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken)
+          transposeAlbumData(album, libraryId, plexBaseUrl, serverArtUrl, authToken)
         ) || [];
 
       // console.log('albumMoodItems', albumMoodItems);
@@ -1075,7 +1052,7 @@ We are transposing the Plex data to a format that is easier to work with in the 
 and doing some additional processing and validation.
 */
 
-const transposeArtistData = (artist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken) => {
+const transposeArtistData = (artist, libraryId, plexBaseUrl, serverArtUrl, authToken) => {
   return {
     libraryId: libraryId,
     artistId: artist.ratingKey,
@@ -1087,14 +1064,14 @@ const transposeArtistData = (artist, libraryId, serverBaseUrlCurrent, serverArtU
     thumb: artist.thumb
       ? mockData
         ? artist.thumb
-        : `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+        : `${plexBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
             `${serverArtUrl}${artist.thumb}`
           )}&X-Plex-Token=${authToken}`
       : null,
   };
 };
 
-const transposeAlbumData = (album, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken) => {
+const transposeAlbumData = (album, libraryId, plexBaseUrl, serverArtUrl, authToken) => {
   return {
     libraryId: libraryId,
     albumId: album.ratingKey,
@@ -1108,14 +1085,14 @@ const transposeAlbumData = (album, libraryId, serverBaseUrlCurrent, serverArtUrl
     thumb: album.thumb
       ? mockData
         ? album.thumb
-        : `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+        : `${plexBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
             `${serverArtUrl}${album.thumb}`
           )}&X-Plex-Token=${authToken}`
       : null,
   };
 };
 
-const transposePlaylistData = (playlist, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken) => {
+const transposePlaylistData = (playlist, libraryId, plexBaseUrl, serverArtUrl, authToken) => {
   const playlistThumb = playlist.thumb ? playlist.thumb : playlist.composite ? playlist.composite : null;
   return {
     libraryId: libraryId,
@@ -1127,14 +1104,14 @@ const transposePlaylistData = (playlist, libraryId, serverBaseUrlCurrent, server
     thumb: playlistThumb
       ? mockData
         ? playlistThumb
-        : `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+        : `${plexBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
             `${serverArtUrl}${playlistThumb}`
           )}&X-Plex-Token=${authToken}`
       : null,
   };
 };
 
-const transposeTrackData = (track, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken) => {
+const transposeTrackData = (track, libraryId, plexBaseUrl, serverArtUrl, authToken) => {
   return {
     libraryId: track.librarySectionID,
     trackId: track.ratingKey,
@@ -1148,15 +1125,15 @@ const transposeTrackData = (track, libraryId, serverBaseUrlCurrent, serverArtUrl
     duration: track.Media[0].duration,
     userRating: track.userRating,
     thumb: track.thumb
-      ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+      ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
           `${serverArtUrl}${track.thumb}`
         )}&X-Plex-Token=${authToken}`
       : null,
-    src: `${serverBaseUrlCurrent}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
+    src: `${plexBaseUrl}${track.Media[0].Part[0].key}?X-Plex-Token=${authToken}`,
   };
 };
 
-const transposeCollectionData = (collection, libraryId, serverBaseUrlCurrent, serverArtUrl, authToken) => {
+const transposeCollectionData = (collection, libraryId, plexBaseUrl, serverArtUrl, authToken) => {
   const collectionThumb = collection.thumb ? collection.thumb : collection.composite ? collection.composite : null;
   return {
     libraryId: libraryId,
@@ -1170,7 +1147,7 @@ const transposeCollectionData = (collection, libraryId, serverBaseUrlCurrent, se
       '/' +
       collection.ratingKey,
     thumb: collectionThumb
-      ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+      ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
           `${serverArtUrl}${collectionThumb}`
         )}&X-Plex-Token=${authToken}`
       : null,

@@ -40,6 +40,7 @@ const userState = {
 };
 
 const plexServerState = {
+  plexBaseUrl: null,
   allLibraries: null,
 };
 
