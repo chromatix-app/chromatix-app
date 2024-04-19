@@ -26,7 +26,7 @@ try {
   localStorageState = localStorage.getItem(config.persistentStoreId)
     ? JSON.parse(localStorage.getItem(config.persistentStoreId))
     : {};
-} catch (e) {
+} catch (error) {
   // browser does not support local storage, or local storage item does not exist
 }
 

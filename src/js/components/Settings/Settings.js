@@ -103,8 +103,8 @@ const ThemeSettings = () => {
                 type="color"
                 className={style.customInput}
                 value={currentColorBackground}
-                onChange={(e) => {
-                  dispatch.sessionModel.setColorBackground(e.target.value);
+                onChange={(event) => {
+                  dispatch.sessionModel.setColorBackground(event.target.value);
                 }}
               />
             </div>
@@ -114,8 +114,8 @@ const ThemeSettings = () => {
                 type="color"
                 className={style.customInput}
                 value={currentColorText}
-                onChange={(e) => {
-                  dispatch.sessionModel.setColorText(e.target.value);
+                onChange={(event) => {
+                  dispatch.sessionModel.setColorText(event.target.value);
                 }}
               />
             </div>
@@ -125,8 +125,8 @@ const ThemeSettings = () => {
                 type="color"
                 className={style.customInput}
                 value={currentColorPrimary}
-                onChange={(e) => {
-                  dispatch.sessionModel.setColorPrimary(e.target.value);
+                onChange={(event) => {
+                  dispatch.sessionModel.setColorPrimary(event.target.value);
                 }}
               />
             </div>

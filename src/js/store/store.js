@@ -29,7 +29,7 @@ const store = init({
 store.subscribe(() => {
   try {
     saveData();
-  } catch (e) {
+  } catch (error) {
     // browser does not support local storage
   }
 });

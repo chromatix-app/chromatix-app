@@ -33,6 +33,7 @@ const endpointConfig = {
   },
   server: {
     getAllServers: () => 'https://plex.tv/api/v2/resources?includeHttps=1&includeRelay=1&includeIPv6=1',
+    // getAllServers: () => '/api/servers.json',
   },
   library: {
     getAllLibraries: (base) => `${base}/library/sections`,
@@ -64,24 +65,24 @@ export const getLocalStorage = (key) => {
 // A CUSTOM PROMISE FUNCTION THAT WAIST FOR THE FIRST RESOLVED PROMISE
 // (i.e. something in between Promise.race and Promise.allSettled)
 
-function raceToSuccess(promises) {
+const raceToSuccess = (promises, errorMessage) => {
   return new Promise((resolve, reject) => {
     let count = promises.length;
     promises.forEach((promise) => {
       (function () {
         promise
           .then(resolve) // if a promise resolves, resolve the main promise
-          .catch(() => {
+          .catch((error) => {
             count--; // if a promise rejects, decrease the count
             if (count === 0) {
               // if all promises have rejected, reject the main promise
-              reject(new Error('All promises were rejected'));
+              reject(errorMessage || error);
             }
           });
       })();
     });
   });
-}
+};
 
 // ======================================================================
 // INITIALISE
@@ -98,8 +99,11 @@ export const init = () => {
       if (pinId) {
         checkPlexPinStatus(pinId).then(resolve).catch(reject);
       } else {
-        console.error('No pin ID found');
-        reject('No pin ID found');
+        reject({
+          code: 'init.1',
+          message: 'No pin ID found',
+          error: null,
+        });
       }
     }
     // otherwise, check if the user is already logged in
@@ -108,8 +112,11 @@ export const init = () => {
       if (authToken) {
         resolve();
       } else {
-        console.error('No auth token found');
-        reject('No auth token found');
+        reject({
+          code: 'init.2',
+          message: 'No auth token found',
+          error: null,
+        });
       }
     }
   });
@@ -154,13 +161,19 @@ export const login = () => {
           // this isn't really necessary, as the user will be redirected to the Plex login page
           resolve();
         })
-        .catch((e) => {
-          console.error('Failed to generate PIN:', e);
-          reject('Failed to generate PIN: ' + e);
+        .catch((error) => {
+          reject({
+            code: 'login.1',
+            message: 'Failed to generate PIN',
+            error: error,
+          });
         });
-    } catch (e) {
-      console.error('Failed to generate PIN:', e);
-      reject('Failed to generate PIN: ' + e);
+    } catch (error) {
+      reject({
+        code: 'login.2',
+        message: 'Failed to generate PIN',
+        error: error,
+      });
     }
   });
 };
@@ -169,10 +182,11 @@ export const login = () => {
 // CHECK PLEX PIN STATUS
 // ======================================================================
 
-export const checkPlexPinStatus = (pinId, retryCount = 0) => {
+const checkPlexPinStatus = (pinId, retryCount = 0) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.auth.pinStatus(pinId);
+      const maxRetries = 5;
       axios
         .get(endpoint, {
           headers: {
@@ -192,21 +206,31 @@ export const checkPlexPinStatus = (pinId, retryCount = 0) => {
           }
           // if the PIN is not yet authorized, check again in a second
           else {
-            // limit to 5 retries
-            if (retryCount < 5) {
+            // limit number of retries
+            if (retryCount < maxRetries) {
               setTimeout(() => checkPlexPinStatus(pinId, retryCount + 1), 1000);
             } else {
-              reject('Failed to authorize PIN after 5 attempts');
+              reject({
+                code: 'checkPlexPinStatus.1',
+                message: 'Failed to authorize PIN after ' + maxRetries + ' attempts',
+                error: null,
+              });
             }
           }
         })
-        .catch((e) => {
-          console.error('Failed to check PIN status:', e);
-          reject('Failed to check PIN status: ' + e);
+        .catch((error) => {
+          reject({
+            code: 'checkPlexPinStatus.2',
+            message: 'Failed to check PIN status',
+            error: error,
+          });
         });
-    } catch (e) {
-      console.error('Failed to check PIN status:', e);
-      reject('Failed to check PIN status: ' + e);
+    } catch (error) {
+      reject({
+        code: 'checkPlexPinStatus.3',
+        message: 'Failed to check PIN status',
+        error: error,
+      });
     }
   });
 };
@@ -239,14 +263,20 @@ export const getUserInfo = () => {
           const jsonObj = parser.parse(response.data).user;
           resolve(jsonObj);
         })
-        .catch((e) => {
-          console.error('Failed to get user info:', e);
+        .catch((error) => {
           window.localStorage.removeItem(storageTokenKey);
-          reject('Failed to get user info: ' + e);
+          reject({
+            code: 'getUserInfo.1',
+            message: 'Failed to get user info: ' + error.message,
+            error: error,
+          });
         });
-    } catch (e) {
-      console.error('Failed to get user info:', e);
-      reject('Failed to get user info: ' + e);
+    } catch (error) {
+      reject({
+        code: 'getUserInfo.2',
+        message: 'Failed to get user info: ' + error.message,
+        error: error,
+      });
     }
   });
 };
@@ -273,13 +303,19 @@ export const getAllServers = () => {
           const data = response?.data?.filter((resource) => resource.provides === 'server');
           resolve(data);
         })
-        .catch((e) => {
-          console.error('Failed to get user servers:', e);
-          reject(e);
+        .catch((error) => {
+          reject({
+            code: 'getAllServers.1',
+            message: 'Failed to get all servers: ' + error.message,
+            error: error,
+          });
         });
-    } catch (e) {
-      console.error('Failed to get all servers:', e);
-      reject('Failed to get all servers: ' + e);
+    } catch (error) {
+      reject({
+        code: 'getAllServers.2',
+        message: 'Failed to get all servers: ' + error.message,
+        error: error,
+      });
     }
   });
 };
@@ -318,21 +354,28 @@ export const getFastestServerConnection = (server) => {
           })
           .then(() => resolve(connection))
           .catch((error) => {
-            console.error(`Failed to connect to ${connection.uri}:`, error);
-            reject(error);
+            reject({
+              code: 'getFastestServerConnection.1',
+              message: `Failed to connect to ${connection.uri}: ${error.message}`,
+              error,
+            });
           });
       }, delay);
     });
   });
 
   // return the first connection that responds
-  return raceToSuccess(requests).then((activeConnection) => {
+  return raceToSuccess(requests, {
+    code: 'getFastestServerConnection.2',
+    message: 'No active connection found',
+    error: null,
+  }).then((activeConnection) => {
     return activeConnection;
   });
 };
 
 // ======================================================================
-// GET USER LIBRARIES
+// GET ALL LIBRARIES
 // ======================================================================
 
 export const getAllLibraries = (baseUrl) => {
@@ -352,12 +395,18 @@ export const getAllLibraries = (baseUrl) => {
           resolve(response?.data?.MediaContainer.Directory);
         })
         .catch((error) => {
-          console.error('Failed to get user libraries:', error);
-          reject(error);
+          reject({
+            code: 'getAllLibraries.1',
+            message: 'Failed to get all libraries: ' + error.message,
+            error: error,
+          });
         });
-    } catch (e) {
-      console.error('Failed to get all libraries:', e);
-      reject('Failed to get all libraries: ' + e);
+    } catch (error) {
+      reject({
+        code: 'getAllLibraries.2',
+        message: 'Failed to get all libraries: ' + error.message,
+        error: error,
+      });
     }
   });
 };

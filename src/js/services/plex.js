@@ -79,7 +79,8 @@ export const init = () => {
     .then((res) => {
       getUserInfo();
     })
-    .catch((e) => {
+    .catch((error) => {
+      console.error(error);
       store.dispatch.appModel.setLoggedOut();
     });
 };
@@ -90,7 +91,8 @@ export const init = () => {
 
 export const login = async () => {
   console.log('%c--- plex - login ---', 'color:#f9743b;');
-  plexTools.login().catch((e) => {
+  plexTools.login().catch((error) => {
+    console.error(error);
     store.dispatch.appModel.plexErrorLogin();
   });
 };
@@ -124,7 +126,8 @@ const getUserInfo = () => {
       };
       store.dispatch.appModel.setLoggedIn(currentUser);
     })
-    .catch((e) => {
+    .catch((error) => {
+      console.error(error);
       store.dispatch.appModel.plexErrorLogin();
     });
 };
@@ -152,7 +155,8 @@ export const getAllServers = () => {
           });
           store.dispatch.appModel.storeAllServers(allServers);
         })
-        .catch((e) => {
+        .catch((error) => {
+          console.error(error);
           store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
         })
         .finally(() => {
@@ -163,7 +167,26 @@ export const getAllServers = () => {
 };
 
 // ======================================================================
-// GET USER LIBRARIES
+// GET FASTEST SERVER CONNECTION
+// ======================================================================
+
+const getFastestServerConnection = async (currentServer) => {
+  let plexBaseUrl;
+  try {
+    await plexTools.getFastestServerConnection(currentServer).then((res) => {
+      plexBaseUrl = res.uri;
+      store.dispatch.appModel.setAppState({ plexBaseUrl });
+    });
+  } catch (error) {
+    console.error(error);
+    store.dispatch.sessionModel.unsetCurrentServer();
+    throw error;
+  }
+  return plexBaseUrl;
+};
+
+// ======================================================================
+// GET ALL LIBRARIES
 // ======================================================================
 
 let getUserLibrariesRunning;
@@ -176,14 +199,13 @@ export const getAllLibraries = async () => {
       if (currentServer) {
         console.log('%c--- plex - getAllLibraries ---', 'color:#f9743b;');
         getUserLibrariesRunning = true;
+
+        // before getting libraries, get the fastest server connection
         let plexBaseUrl;
         try {
-          await plexTools.getFastestServerConnection(currentServer).then((res) => {
-            plexBaseUrl = res.uri;
-            store.dispatch.appModel.setAppState({ plexBaseUrl });
-          });
-        } catch (e) {
-          store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
+          plexBaseUrl = await getFastestServerConnection(currentServer);
+        } catch (error) {
+          getUserLibrariesRunning = false;
           return;
         }
 
@@ -195,11 +217,6 @@ export const getAllLibraries = async () => {
               .filter((library) => library.type === 'artist')
               .map((library) => {
                 library.libraryId = library.key;
-                // library.thumb = library.composite
-                //   ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-                //       `${serverArtUrl}${library.composite}`
-                //     )}&X-Plex-Token=${authToken}`
-                //   : null;
                 return library;
               });
 
@@ -208,7 +225,8 @@ export const getAllLibraries = async () => {
             store.dispatch.sessionModel.refreshCurrentLibrary(allLibraries);
             store.dispatch.appModel.setAppState({ allLibraries });
           })
-          .catch((e) => {
+          .catch((error) => {
+            console.error(error);
             store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
           })
           .finally(() => {
