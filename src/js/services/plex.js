@@ -147,18 +147,25 @@ export const getAllServers = () => {
         .getAllServers()
         .then((res) => {
           // transpose server data
-          const allServers = res.map((resource) => {
-            const connectionLocal = resource.connections.filter((connection) => connection.local);
+          const allServers = res.map((resource, index) => {
+            // const connectionLocal = resource.connections.filter((connection) => connection.local);
             const connectionUrls = resource.connections.map((connection) => connection.uri);
-            delete resource.connections;
+            // delete resource.connections;
             resource.serverId = resource.clientIdentifier;
             resource.serverBaseUrls = connectionUrls;
             resource.serverBaseUrlCurrent = connectionUrls[0];
             resource.serverBaseUrlIndex = 0;
             resource.serverBaseUrlTotal = connectionUrls.length;
-            resource.serverArtUrl = connectionLocal?.[0]
-              ? `${connectionLocal[0].protocol}://localhost:${connectionLocal[0].port}`
-              : null;
+            resource.serverArtUrl = '';
+            // connectionLocal?.[0]
+            //   ? `${connectionLocal[0].protocol}://localhost:${connectionLocal[0].port}`
+            //   : null;
+
+            // if (index === 0) {
+            //   plexTools.getFastestServerConnection(resource);
+            //   // plexTools.getFastestArtworkUrl(resource);
+            // }
+
             return resource;
           });
           store.dispatch.appModel.storeAllServers(allServers);

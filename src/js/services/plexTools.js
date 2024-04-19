@@ -260,6 +260,60 @@ export const getAllServers = () => {
   });
 };
 
+// ======================================================================
+// GET FASTEST SERVER CONNECTION
+// ======================================================================
+
+export const getFastestServerConnection = (server) => {
+  let { connections } = server;
+
+  // sort connections based on preference
+  connections.sort((a, b) => {
+    if (a.local && !b.local) return -1;
+    if (!a.local && b.local) return 1;
+    if (a.relay && !b.relay) return 1;
+    if (!a.relay && b.relay) return -1;
+    return 0;
+  });
+
+  const requests = connections.map((connection, index) => {
+    // incremental delay based on position in sorted array,
+    // because we want the preferred connections to be tested first
+    const delay = index * 300;
+
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        axios
+          .head(connection.uri, {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              'X-Plex-Token': getLocalStorage(storageTokenKey),
+            },
+            timeout: 3000,
+          })
+          .then(() => resolve(connection))
+          .catch((error) => {
+            console.error(`Failed to connect to ${connection.uri}:`, error);
+            reject(error);
+          });
+      }, delay);
+    });
+  });
+
+  // return the first connection that responds
+  return Promise.race(requests)
+    .then((activeConnection) => {
+      console.log(111);
+      console.log(activeConnection.uri);
+      return activeConnection;
+    })
+    .catch((error) => {
+      console.error('All connections failed:', error);
+      return null;
+    });
+};
+
 // // ======================================================================
 // // GET USER LIBRARIES
 // // ======================================================================
