@@ -45,7 +45,7 @@ export const RangeSlider = ({
             max={max}
             step={step}
             value={value}
-            onChange={(e) => debouncedHandleChange(parseFloat(e.target.value))}
+            onChange={(event) => debouncedHandleChange(parseFloat(event.target.value))}
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
           />

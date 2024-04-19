@@ -203,7 +203,7 @@ const effects = (dispatch) => ({
       const sessionKey = config.sessionStoreId + '-' + userHash;
       try {
         localStorageState = localStorage.getItem(sessionKey) ? JSON.parse(localStorage.getItem(sessionKey)) : {};
-      } catch (e) {
+      } catch (error) {
         // browser does not support local storage, or local storage item does not exist
       }
     }

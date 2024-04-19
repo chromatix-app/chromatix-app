@@ -31,17 +31,20 @@ const endpointConfig = {
   user: {
     getUserInfo: () => 'https://plex.tv/users/account',
   },
-  // server: {
-  //   getAllServers: () => 'https://plex.tv/api/v2/resources?includeHttps=1&includeRelay=1&includeIPv6=1',
-  // },
-  // library: {
-  //   getAllLibraries: (base) => `${base}/library/sections`,
-  // },
+  server: {
+    getAllServers: () => 'https://plex.tv/api/v2/resources?includeHttps=1&includeRelay=1&includeIPv6=1',
+    // getAllServers: () => '/api/servers.json',
+  },
+  library: {
+    getAllLibraries: (base) => `${base}/library/sections`,
+  },
 };
 
 // ======================================================================
-// ENCRYPTED LOCAL STORAGE HELPER FUNCTIONS
+// HELPER FUNCTIONS
 // ======================================================================
+
+// SET AND GET ENCRYPTED LOCAL STORAGE
 
 export const setLocalStorage = (key, value) => {
   const stringValue = String(value);
@@ -59,6 +62,28 @@ export const getLocalStorage = (key) => {
   return null;
 };
 
+// A CUSTOM PROMISE FUNCTION THAT WAITS FOR THE FIRST RESOLVED PROMISE
+// (i.e. something in between Promise.race and Promise.allSettled)
+
+const raceToSuccess = (promises, errorMessage) => {
+  return new Promise((resolve, reject) => {
+    let count = promises.length;
+    promises.forEach((promise) => {
+      (function () {
+        promise
+          .then(resolve) // if a promise resolves, resolve the main promise
+          .catch((error) => {
+            count--; // if a promise rejects, decrease the count
+            if (count === 0) {
+              // if all promises have rejected, reject the main promise
+              reject(errorMessage || error);
+            }
+          });
+      })();
+    });
+  });
+};
+
 // ======================================================================
 // INITIALISE
 // ======================================================================
@@ -74,8 +99,11 @@ export const init = () => {
       if (pinId) {
         checkPlexPinStatus(pinId).then(resolve).catch(reject);
       } else {
-        console.error('No pin ID found');
-        reject('No pin ID found');
+        reject({
+          code: 'init.1',
+          message: 'No pin ID found',
+          error: null,
+        });
       }
     }
     // otherwise, check if the user is already logged in
@@ -84,8 +112,11 @@ export const init = () => {
       if (authToken) {
         resolve();
       } else {
-        console.error('No auth token found');
-        reject('No auth token found');
+        reject({
+          code: 'init.2',
+          message: 'No auth token found',
+          error: null,
+        });
       }
     }
   });
@@ -130,13 +161,19 @@ export const login = () => {
           // this isn't really necessary, as the user will be redirected to the Plex login page
           resolve();
         })
-        .catch((e) => {
-          console.error('Failed to generate PIN:', e);
-          reject('Failed to generate PIN: ' + e);
+        .catch((error) => {
+          reject({
+            code: 'login.1',
+            message: 'Failed to generate PIN',
+            error: error,
+          });
         });
-    } catch (e) {
-      console.error('Failed to generate PIN:', e);
-      reject('Failed to generate PIN: ' + e);
+    } catch (error) {
+      reject({
+        code: 'login.2',
+        message: 'Failed to generate PIN',
+        error: error,
+      });
     }
   });
 };
@@ -145,14 +182,16 @@ export const login = () => {
 // CHECK PLEX PIN STATUS
 // ======================================================================
 
-export const checkPlexPinStatus = (pinId, retryCount = 0) => {
+const checkPlexPinStatus = (pinId, retryCount = 0) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.auth.pinStatus(pinId);
+      const maxRetries = 5;
       axios
         .get(endpoint, {
           headers: {
             Accept: 'application/json',
+            'Content-Type': 'application/json',
             'X-Plex-Client-Identifier': clientIdentifier,
           },
         })
@@ -167,21 +206,31 @@ export const checkPlexPinStatus = (pinId, retryCount = 0) => {
           }
           // if the PIN is not yet authorized, check again in a second
           else {
-            // limit to 5 retries
-            if (retryCount < 5) {
+            // limit number of retries
+            if (retryCount < maxRetries) {
               setTimeout(() => checkPlexPinStatus(pinId, retryCount + 1), 1000);
             } else {
-              reject('Failed to authorize PIN after 5 attempts');
+              reject({
+                code: 'checkPlexPinStatus.1',
+                message: 'Failed to authorize PIN after ' + maxRetries + ' attempts',
+                error: null,
+              });
             }
           }
         })
-        .catch((e) => {
-          console.error('Failed to check PIN status:', e);
-          reject('Failed to check PIN status: ' + e);
+        .catch((error) => {
+          reject({
+            code: 'checkPlexPinStatus.2',
+            message: 'Failed to check PIN status',
+            error: error,
+          });
         });
-    } catch (e) {
-      console.error('Failed to check PIN status:', e);
-      reject('Failed to check PIN status: ' + e);
+    } catch (error) {
+      reject({
+        code: 'checkPlexPinStatus.3',
+        message: 'Failed to check PIN status',
+        error: error,
+      });
     }
   });
 };
@@ -214,162 +263,150 @@ export const getUserInfo = () => {
           const jsonObj = parser.parse(response.data).user;
           resolve(jsonObj);
         })
-        .catch((e) => {
-          console.error('Failed to get user info:', e);
+        .catch((error) => {
           window.localStorage.removeItem(storageTokenKey);
-          reject('Failed to get user info: ' + e);
+          reject({
+            code: 'getUserInfo.1',
+            message: 'Failed to get user info: ' + error.message,
+            error: error,
+          });
         });
-    } catch (e) {
-      console.error('Failed to get user info:', e);
-      reject('Failed to get user info: ' + e);
+    } catch (error) {
+      reject({
+        code: 'getUserInfo.2',
+        message: 'Failed to get user info: ' + error.message,
+        error: error,
+      });
     }
   });
 };
 
-// // ======================================================================
-// // GET USER SERVERS
-// // ======================================================================
+// ======================================================================
+// GET ALL SERVERS
+// ======================================================================
 
-// let getUserServersRunning;
+export const getAllServers = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      const authToken = getLocalStorage(storageTokenKey);
+      const endpoint = endpointConfig.server.getAllServers();
+      axios
+        .get(endpoint, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': authToken,
+            'X-Plex-Client-Identifier': 'chromatix.app',
+          },
+        })
+        .then((response) => {
+          const data = response?.data?.filter((resource) => resource.provides === 'server');
+          resolve(data);
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllServers.1',
+            message: 'Failed to get all servers: ' + error.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllServers.2',
+        message: 'Failed to get all servers: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};
 
-// export const getAllServers = async () => {
-//   if (!getUserServersRunning) {
-//     const prevAllResources = store.getState().appModel.allServers;
-//     if (!prevAllResources) {
-//       console.log('%c--- plex - getAllServers ---', 'color:#f9743b;');
-//       getUserServersRunning = true;
+// ======================================================================
+// GET FASTEST SERVER CONNECTION
+// ======================================================================
 
-//       try {
-//         const authToken = getLocalStorage(storageTokenKey);
-//         const endpoint = endpointConfig.server.getAllServers();
-//         const response = await fetch(endpoint, {
-//           headers: {
-//             Accept: 'application/json',
-//             'Content-Type': 'application/json',
-//             'X-Plex-Token': authToken,
-//             'X-Plex-Client-Identifier': 'chromatix.app',
-//           },
-//         });
+export const getFastestServerConnection = (server) => {
+  let { connections } = server;
 
-//         // error handling
-//         if (!response.ok) {
-//           console.error('Failed to get user servers:', response.statusText);
-//           store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
-//           return;
-//         }
+  // sort connections based on preference
+  connections.sort((a, b) => {
+    if (a.local && !b.local) return -1;
+    if (!a.local && b.local) return 1;
+    if (a.relay && !b.relay) return 1;
+    if (!a.relay && b.relay) return -1;
+    return 0;
+  });
 
-//         const data = await response.json();
+  const requests = connections.map((connection, index) => {
+    // incremental delay based on position in sorted array,
+    // because we want the preferred connections to be tested first
+    const delay = index * 300;
 
-//         // console.log(data);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        axios
+          .head(connection.uri, {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              'X-Plex-Token': getLocalStorage(storageTokenKey),
+            },
+            timeout: 3000,
+          })
+          .then(() => resolve(connection))
+          .catch((error) => {
+            reject({
+              code: 'getFastestServerConnection.1',
+              message: `Failed to connect to ${connection.uri}: ${error.message}`,
+              error,
+            });
+          });
+      }, delay);
+    });
+  });
 
-//         const allServers = data
-//           .filter((resource) => resource.provides === 'server')
-//           .map((resource) => {
-//             // resource.connections.push(resource.connections.shift());
+  // return the first connection that responds
+  return raceToSuccess(requests, {
+    code: 'getFastestServerConnection.2',
+    message: 'No active connection found',
+    error: null,
+  }).then((activeConnection) => {
+    return activeConnection;
+  });
+};
 
-//             const connectionLocal = resource.connections.filter((connection) => connection.local);
-//             const connectionUrls = resource.connections.map((connection) => connection.uri);
-//             delete resource.connections;
-//             resource.serverId = resource.clientIdentifier;
-//             resource.serverBaseUrls = connectionUrls;
-//             resource.serverBaseUrlCurrent = connectionUrls[0];
-//             resource.serverBaseUrlIndex = 0;
-//             resource.serverBaseUrlTotal = connectionUrls.length;
-//             resource.serverArtUrl = connectionLocal?.[0]
-//               ? `${connectionLocal[0].protocol}://localhost:${connectionLocal[0].port}`
-//               : null;
-//             return resource;
-//           });
+// ======================================================================
+// GET ALL LIBRARIES
+// ======================================================================
 
-//         // console.log('allServers', allServers);
-
-//         store.dispatch.appModel.storeAllServers(allServers);
-//       } catch (e) {
-//         // error handling
-//         console.error('Failed to get user servers:', e);
-//         store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
-//       }
-
-//       getUserServersRunning = false;
-//     }
-//   }
-// };
-
-// // ======================================================================
-// // GET USER LIBRARIES
-// // ======================================================================
-
-// let getUserLibrariesRunning;
-
-// export const getAllLibraries = async () => {
-//   if (!getUserLibrariesRunning) {
-//     const prevAllLibraries = store.getState().appModel.allLibraries;
-//     if (!prevAllLibraries) {
-//       const currentServer = store.getState().sessionModel.currentServer;
-//       if (currentServer) {
-//         console.log('%c--- plex - getAllLibraries ---', 'color:#f9743b;');
-//         getUserLibrariesRunning = true;
-
-//         // we need to cycle through the serverBaseUrls to find the first one that works
-//         const { serverBaseUrls, serverBaseUrlCurrent, serverBaseUrlIndex, serverBaseUrlTotal } = currentServer;
-
-//         try {
-//           const authToken = getLocalStorage(storageTokenKey);
-//           const endpoint = endpointConfig.library.getAllLibraries(serverBaseUrlCurrent);
-//           const response = await axios.get(endpoint, {
-//             timeout: 5000, // 5 seconds
-//             headers: {
-//               Accept: 'application/json',
-//               'Content-Type': 'application/json',
-//               'X-Plex-Token': authToken,
-//             },
-//           });
-
-//           const data = response.data;
-
-//           // console.log(data.MediaContainer.Directory);
-
-//           const allLibraries = data.MediaContainer.Directory.filter((library) => library.type === 'artist');
-
-//           allLibraries.forEach((library) => {
-//             library.libraryId = library.key;
-//             // library.thumb = library.composite
-//             //   ? `${serverBaseUrlCurrent}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
-//             //       `${serverArtUrl}${library.composite}`
-//             //     )}&X-Plex-Token=${authToken}`
-//             //   : null;
-//           });
-
-//           // console.log('allLibraries', allLibraries);
-
-//           store.dispatch.sessionModel.refreshCurrentLibrary(allLibraries);
-//           store.dispatch.appModel.setAppState({ allLibraries });
-//         } catch (e) {
-//           // error handling
-//           console.error('Failed to get user libraries:', e);
-//           // let's make sure we've tried every connection url before giving up
-//           if (serverBaseUrlIndex < serverBaseUrlTotal - 1) {
-//             // retry the request with the next connection url
-//             console.log('TRY NEXT BASE URL');
-//             store.dispatch.sessionModel.setServerIndex({
-//               serverBaseUrlCurrent: serverBaseUrls[serverBaseUrlIndex + 1],
-//               serverBaseUrlIndex: serverBaseUrlIndex + 1,
-//             });
-//             getUserLibrariesRunning = false;
-//             getAllLibraries();
-//           } else {
-//             // default error handling
-//             if (e.code === 'ECONNABORTED') {
-//               console.error('Request timed out');
-//               store.dispatch.sessionModel.unsetCurrentServer();
-//             } else {
-//               store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
-//             }
-//           }
-//         }
-
-//         getUserLibrariesRunning = false;
-//       }
-//     }
-//   }
-// };
+export const getAllLibraries = (baseUrl) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const authToken = getLocalStorage(storageTokenKey);
+      const endpoint = endpointConfig.library.getAllLibraries(baseUrl);
+      axios
+        .get(endpoint, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': authToken,
+          },
+        })
+        .then((response) => {
+          resolve(response?.data?.MediaContainer.Directory);
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllLibraries.1',
+            message: 'Failed to get all libraries: ' + error.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllLibraries.2',
+        message: 'Failed to get all libraries: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};

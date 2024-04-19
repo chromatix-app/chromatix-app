@@ -1,0 +1,65 @@
+[
+  {
+    "name": "Alex's Library",
+    "product": "Plex Media Server",
+    "productVersion": "1.40.1.8227-c0dd5a73e",
+    "platform": "MacOSX",
+    "platformVersion": "14.4.1",
+    "device": "Mac14,3",
+    "clientIdentifier": "addfc761febdf1c572f520c1ab60ef33817d509a",
+    "createdAt": "2015-06-10T18:49:11Z",
+    "lastSeenAt": "2024-04-18T17:21:51Z",
+    "provides": "server",
+    "ownerId": null,
+    "sourceTitle": null,
+    "publicAddress": "137.220.107.107",
+    "accessToken": "7sEnhsU5NcTvDJyhsar2",
+    "owned": true,
+    "home": false,
+    "synced": false,
+    "relay": true,
+    "presence": true,
+    "httpsRequired": false,
+    "publicAddressMatches": true,
+    "dnsRebindingProtection": false,
+    "natLoopbackSupported": true,
+    "connections": [
+      {
+        "protocol": "https",
+        "address": "192.168.1.201",
+        "port": 32400,
+        "uri": "https://192-168-1-201.6b3f9dff67f64b3aab29466ce77a1194.plex.direct:32400",
+        "local": true,
+        "relay": false,
+        "IPv6": false
+      },
+      {
+        "protocol": "https",
+        "address": "2a01:4b00:8a37:6b00:42e:47cd:d9cf:c5ef",
+        "port": 32400,
+        "uri": "https://2a01-4b00-8a37-6b00-042e-47cd-d9cf-c5ef.6b3f9dff67f64b3aab29466ce77a1194.plex.direct:32400",
+        "local": false,
+        "relay": false,
+        "IPv6": true
+      },
+      {
+        "protocol": "https",
+        "address": "137.220.107.107",
+        "port": 32400,
+        "uri": "https://137-220-107-107.6b3f9dff67f64b3aab29466ce77a1194.plex.direct:32400",
+        "local": false,
+        "relay": false,
+        "IPv6": false
+      },
+      {
+        "protocol": "https",
+        "address": "178.79.149.70",
+        "port": 8443,
+        "uri": "https://178-79-149-70.6b3f9dff67f64b3aab29466ce77a1194.plex.direct:8443",
+        "local": false,
+        "relay": true,
+        "IPv6": false
+      }
+    ]
+  }
+]
