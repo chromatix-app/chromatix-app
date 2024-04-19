@@ -78,7 +78,7 @@ export const init = () => {
   console.log('%c--- plex - init ---', 'color:#f9743b;');
   plexTools
     .init()
-    .then(() => {
+    .then((res) => {
       getUserInfo();
     })
     .catch((e) => {
@@ -116,6 +116,7 @@ const getUserInfo = () => {
   plexTools
     .getUserInfo()
     .then((res) => {
+      // transpose user data
       const currentUser = {
         userId: res['@_id'],
         email: res['email'],
@@ -131,50 +132,22 @@ const getUserInfo = () => {
 };
 
 // ======================================================================
-// GET USER SERVERS
+// GET ALL SERVERS
 // ======================================================================
 
 let getUserServersRunning;
 
-export const getAllServers = async () => {
+export const getAllServers = () => {
   if (!getUserServersRunning) {
     const prevAllResources = store.getState().appModel.allServers;
     if (!prevAllResources) {
       console.log('%c--- plex - getAllServers ---', 'color:#f9743b;');
       getUserServersRunning = true;
-
-      try {
-        const authToken = plexTools.getLocalStorage(storageTokenKey);
-
-        const mockEndpoint = '/api/servers.json';
-        const prodEndpoint = endpointConfig.server.getAllServers();
-        const endpoint = mockData ? mockEndpoint : prodEndpoint;
-
-        const response = await fetch(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': authToken,
-            'X-Plex-Client-Identifier': 'chromatix.app',
-          },
-        });
-
-        // error handling
-        if (!response.ok) {
-          console.error('Failed to get user servers:', response.statusText);
-          store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
-          return;
-        }
-
-        const data = await response.json();
-
-        // console.log(data);
-
-        const allServers = data
-          .filter((resource) => resource.provides === 'server')
-          .map((resource) => {
-            // resource.connections.push(resource.connections.shift());
-
+      plexTools
+        .getAllServers()
+        .then((res) => {
+          // transpose server data
+          const allServers = res.map((resource) => {
             const connectionLocal = resource.connections.filter((connection) => connection.local);
             const connectionUrls = resource.connections.map((connection) => connection.uri);
             delete resource.connections;
@@ -188,17 +161,14 @@ export const getAllServers = async () => {
               : null;
             return resource;
           });
-
-        // console.log('allServers', allServers);
-
-        store.dispatch.appModel.storeAllServers(allServers);
-      } catch (e) {
-        // error handling
-        console.error('Failed to get user servers:', e);
-        store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
-      }
-
-      getUserServersRunning = false;
+          store.dispatch.appModel.storeAllServers(allServers);
+        })
+        .catch((e) => {
+          store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
+        })
+        .finally(() => {
+          getUserServersRunning = false;
+        });
     }
   }
 };

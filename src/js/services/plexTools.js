@@ -31,9 +31,9 @@ const endpointConfig = {
   user: {
     getUserInfo: () => 'https://plex.tv/users/account',
   },
-  // server: {
-  //   getAllServers: () => 'https://plex.tv/api/v2/resources?includeHttps=1&includeRelay=1&includeIPv6=1',
-  // },
+  server: {
+    getAllServers: () => 'https://plex.tv/api/v2/resources?includeHttps=1&includeRelay=1&includeIPv6=1',
+  },
   // library: {
   //   getAllLibraries: (base) => `${base}/library/sections`,
   // },
@@ -226,74 +226,39 @@ export const getUserInfo = () => {
   });
 };
 
-// // ======================================================================
-// // GET USER SERVERS
-// // ======================================================================
+// ======================================================================
+// GET ALL SERVERS
+// ======================================================================
 
-// let getUserServersRunning;
-
-// export const getAllServers = async () => {
-//   if (!getUserServersRunning) {
-//     const prevAllResources = store.getState().appModel.allServers;
-//     if (!prevAllResources) {
-//       console.log('%c--- plex - getAllServers ---', 'color:#f9743b;');
-//       getUserServersRunning = true;
-
-//       try {
-//         const authToken = getLocalStorage(storageTokenKey);
-//         const endpoint = endpointConfig.server.getAllServers();
-//         const response = await fetch(endpoint, {
-//           headers: {
-//             Accept: 'application/json',
-//             'Content-Type': 'application/json',
-//             'X-Plex-Token': authToken,
-//             'X-Plex-Client-Identifier': 'chromatix.app',
-//           },
-//         });
-
-//         // error handling
-//         if (!response.ok) {
-//           console.error('Failed to get user servers:', response.statusText);
-//           store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
-//           return;
-//         }
-
-//         const data = await response.json();
-
-//         // console.log(data);
-
-//         const allServers = data
-//           .filter((resource) => resource.provides === 'server')
-//           .map((resource) => {
-//             // resource.connections.push(resource.connections.shift());
-
-//             const connectionLocal = resource.connections.filter((connection) => connection.local);
-//             const connectionUrls = resource.connections.map((connection) => connection.uri);
-//             delete resource.connections;
-//             resource.serverId = resource.clientIdentifier;
-//             resource.serverBaseUrls = connectionUrls;
-//             resource.serverBaseUrlCurrent = connectionUrls[0];
-//             resource.serverBaseUrlIndex = 0;
-//             resource.serverBaseUrlTotal = connectionUrls.length;
-//             resource.serverArtUrl = connectionLocal?.[0]
-//               ? `${connectionLocal[0].protocol}://localhost:${connectionLocal[0].port}`
-//               : null;
-//             return resource;
-//           });
-
-//         // console.log('allServers', allServers);
-
-//         store.dispatch.appModel.storeAllServers(allServers);
-//       } catch (e) {
-//         // error handling
-//         console.error('Failed to get user servers:', e);
-//         store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
-//       }
-
-//       getUserServersRunning = false;
-//     }
-//   }
-// };
+export const getAllServers = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      const authToken = getLocalStorage(storageTokenKey);
+      const endpoint = endpointConfig.server.getAllServers();
+      axios
+        .get(endpoint, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': authToken,
+            'X-Plex-Client-Identifier': 'chromatix.app',
+          },
+        })
+        .then((response) => {
+          const data = response.data;
+          const allServers = data.filter((resource) => resource.provides === 'server');
+          resolve(allServers);
+        })
+        .catch((e) => {
+          console.error('Failed to get user servers:', e);
+          reject(e);
+        });
+    } catch (e) {
+      console.error('Failed to get all servers:', e);
+      reject('Failed to get all servers: ' + e);
+    }
+  });
+};
 
 // // ======================================================================
 // // GET USER LIBRARIES
