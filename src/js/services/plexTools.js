@@ -62,7 +62,7 @@ export const getLocalStorage = (key) => {
   return null;
 };
 
-// A CUSTOM PROMISE FUNCTION THAT WAIST FOR THE FIRST RESOLVED PROMISE
+// A CUSTOM PROMISE FUNCTION THAT WAITS FOR THE FIRST RESOLVED PROMISE
 // (i.e. something in between Promise.race and Promise.allSettled)
 
 const raceToSuccess = (promises, errorMessage) => {
