@@ -67,9 +67,9 @@ const ControlBar = () => {
           {trackDetail && (
             <>
               <div className={style.title}>{trackDetail.title}</div>
-              <NavLink className={style.artist} to={trackDetail.artistLink}>
-                {trackDetail.artist}
-              </NavLink>
+              <div className={style.artist}>
+                <NavLink to={trackDetail.artistLink}>{trackDetail.artist}</NavLink>
+              </div>
             </>
           )}
         </div>
