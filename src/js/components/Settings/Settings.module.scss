@@ -111,11 +111,50 @@
 
   label {
     display: inline-flex;
-    margin: 0 auto 0 0;
     align-items: center;
+    margin: 0 auto 0 0;
   }
 
   input[type='checkbox'] {
     margin: 0 10px 0 0;
   }
+}
+
+//
+// ABOUT
+//
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 20px;
+}
+
+.linkIcon {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+}
+
+.kofi {
+  display: block;
+  width: 220px;
+  height: 35px;
+  background: #0067fc;
+  background-image: url(../../../images/kofi.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 6px;
+
+  font-size: 0;
+  line-height: 0;
+  text-indent: -9999px;
+}
+
+.legal {
+  margin: 20px 0 0;
+  font-size: 14px;
+  color: #555;
 }

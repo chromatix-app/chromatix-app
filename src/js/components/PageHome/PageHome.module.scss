@@ -90,7 +90,6 @@
   overflow: hidden;
   width: 100%;
   max-width: 460px;
-  margin: 100px auto;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 6px;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.35);
@@ -98,13 +97,22 @@
   @media (min-width: 768px) {
     width: 80vw;
     max-width: none;
-    margin: 115px auto;
     border-radius: 8px;
   }
   @media (min-width: 1024px) {
     max-width: 1200px;
-    margin: 135px auto;
     border-radius: 12px;
+  }
+}
+
+.margin {
+  margin: 100px auto;
+
+  @media (min-width: 768px) {
+    margin: 115px auto;
+  }
+  @media (min-width: 1024px) {
+    margin: 135px auto;
 
     @media (max-height: 900px) {
       margin: 120px auto;
@@ -115,7 +123,50 @@
   }
 }
 
+//
+// SOCIAL
+//
+
+.social {
+}
+
+.icons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.icon {
+  display: block;
+  width: 48px;
+  height: 48px;
+}
+
+.kofi {
+  display: block;
+  width: 240px;
+  height: 38px;
+  margin: 40px auto 0;
+  background: #0067fc;
+  background-image: url(../../../images/kofi.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 6px;
+
+  font-size: 0;
+  line-height: 0;
+  text-indent: -9999px;
+
+  @media (min-width: 390px) {
+    width: 280px;
+    height: 44px;
+  }
+}
+
+//
 // FOOTER
+//
 
 .border {
   max-width: 1280px;
@@ -142,7 +193,7 @@
   }
 
   @media (min-width: 1024px) {
-    margin: 140px auto 90px;
+    margin: 120px auto 90px;
   }
 }
 
