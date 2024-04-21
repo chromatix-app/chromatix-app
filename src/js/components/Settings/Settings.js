@@ -29,6 +29,10 @@ export const Settings = () => {
         <div className={style.title}>Customise Menu</div>
         <MenuSettings />
       </div>
+      <div className={style.entry}>
+        <div className={style.title}>About</div>
+        <About />
+      </div>
     </div>
   );
 };
@@ -224,6 +228,39 @@ const MenuSettings = () => {
           </label>
         </div>
       ))}
+    </div>
+  );
+};
+
+//
+// ABOUT
+//
+
+const About = () => {
+  return (
+    <div className={style.about}>
+      <div>
+        <a className={style.link} href="https://www.reddit.com/r/chromatix/" target="_blank" rel="noreferrer nofollow">
+          <span className={style.linkIcon}>
+            <Icon icon="RedditIcon" cover />
+          </span>
+          <span>Join us on Reddit</span>
+        </a>
+      </div>
+      <div>
+        <a className={style.link} href="https://github.com/chromatix-app" target="_blank" rel="noreferrer nofollow">
+          <span className={style.linkIcon}>
+            <Icon icon="GithubIcon" cover />
+          </span>
+          <span>View us on GitHub</span>
+        </a>
+      </div>
+      <div>
+        <a className={style.kofi} href="https://ko-fi.com/chromaticnova" target="_blank" rel="noreferrer nofollow">
+          Support me on Ko-fi
+        </a>
+      </div>
+      <div className={style.legal}>Copyright &copy; {new Date().getFullYear()}</div>
     </div>
   );
 };

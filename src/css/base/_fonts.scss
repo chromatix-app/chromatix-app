@@ -56,3 +56,9 @@ a {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.u-hide-text {
+  font-size: 0;
+  line-height: 0;
+  text-indent: -9999px;
+}

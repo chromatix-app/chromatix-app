@@ -70,9 +70,11 @@ export const PageHome = () => {
             rel="noreferrer nofollow"
           >
             <Icon icon="RedditIcon" cover />
+            <span className="u-hide-text">Join us on Reddit</span>
           </a>
           <a className={style.icon} href="https://github.com/chromatix-app" target="_blank" rel="noreferrer nofollow">
             <Icon icon="GithubIcon" cover />
+            <span className="u-hide-text">View us on Github</span>
           </a>
         </div>
         <a className={style.kofi} href="https://ko-fi.com/chromaticnova" target="_blank" rel="noreferrer nofollow">
