@@ -5,7 +5,7 @@
 import { useDispatch } from 'react-redux';
 import clsx from 'clsx';
 
-import { Button } from 'js/components';
+import { Button, Icon } from 'js/components';
 
 import style from './PageHome.module.scss';
 
@@ -43,7 +43,7 @@ export const PageHome = () => {
         <Button onClick={dispatch.appModel.doLogin}>Login with Plex</Button>
       </div>
 
-      <div className={style.image}>
+      <div className={clsx(style.image, style.margin)}>
         <img src="/images/chromatix001.jpg" alt="Chromatix music player for Plex" width="2000" height="1484" />
       </div>
 
@@ -59,6 +59,25 @@ export const PageHome = () => {
         <div className="mt-50"></div>
 
         <Button onClick={dispatch.appModel.doLogin}>Login with Plex</Button>
+      </div>
+
+      <div className={clsx(style.social, style.margin)}>
+        <div className={style.icons}>
+          <a
+            className={style.icon}
+            href="https://www.reddit.com/r/chromatix/"
+            target="_blank"
+            rel="noreferrer nofollow"
+          >
+            <Icon icon="RedditIcon" cover />
+          </a>
+          <a className={style.icon} href="https://github.com/chromatix-app" target="_blank" rel="noreferrer nofollow">
+            <Icon icon="GithubIcon" cover />
+          </a>
+        </div>
+        <a className={style.kofi} href="https://ko-fi.com/chromaticnova" target="_blank" rel="noreferrer nofollow">
+          Support me on Ko-fi
+        </a>
       </div>
 
       <div className={style.border}></div>
