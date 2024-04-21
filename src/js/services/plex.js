@@ -2,6 +2,8 @@
 // IMPORTS
 // ======================================================================
 
+import { track } from '@vercel/analytics';
+
 import * as plexTools from 'js/services/plexTools';
 import store from 'js/store/store';
 
@@ -80,8 +82,17 @@ export const init = () => {
       getUserInfo();
     })
     .catch((error) => {
-      console.error(error);
       store.dispatch.appModel.setLoggedOut();
+      if (error?.code !== 'init.2') {
+        console.error(error);
+        if (error?.code === 'init.1') {
+          track('Error: Plex Init - No Pin ID');
+        } else if (error?.code === 'checkPlexPinStatus.2') {
+          track('Error: Plex Init - Pin Check Failed');
+        } else {
+          track('Error: Plex Init - Unknown Error');
+        }
+      }
     });
 };
 
@@ -91,10 +102,16 @@ export const init = () => {
 
 export const login = async () => {
   console.log('%c--- plex - login ---', 'color:#f9743b;');
-  plexTools.login().catch((error) => {
-    console.error(error);
-    store.dispatch.appModel.plexErrorLogin();
-  });
+  plexTools
+    .login()
+    .then((res) => {
+      track('Plex: Login Success');
+    })
+    .catch((error) => {
+      console.error(error);
+      store.dispatch.appModel.plexErrorLogin();
+      track('Plex: Login Error');
+    });
 };
 
 // ======================================================================
@@ -105,6 +122,7 @@ export const logout = () => {
   console.log('%c--- plex - logout ---', 'color:#f9743b;');
   plexTools.logout();
   store.dispatch.appModel.setLoggedOut();
+  track('Plex: Logout');
 };
 
 // ======================================================================
@@ -129,6 +147,7 @@ const getUserInfo = () => {
     .catch((error) => {
       console.error(error);
       store.dispatch.appModel.plexErrorLogin();
+      track('Error: Plex Get User Info');
     });
 };
 
@@ -157,6 +176,7 @@ export const getAllServers = () => {
         .catch((error) => {
           console.error(error);
           store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
+          track('Error: Plex Get All Servers');
         })
         .finally(() => {
           getUserServersRunning = false;
@@ -179,6 +199,7 @@ const getFastestServerConnection = async (currentServer) => {
   } catch (error) {
     console.error(error);
     store.dispatch.sessionModel.unsetCurrentServer();
+    track('Error: Plex Get Fastest Server Connection');
     throw error;
   }
   return plexBaseUrl;
@@ -227,6 +248,7 @@ export const getAllLibraries = async () => {
           .catch((error) => {
             console.error(error);
             store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
+            track('Error: Plex Get All Libraries');
           })
           .finally(() => {
             getUserLibrariesRunning = false;

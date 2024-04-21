@@ -2,6 +2,8 @@
 // IMPORTS
 // ======================================================================
 
+import { track } from '@vercel/analytics';
+
 import * as plex from 'js/services/plex';
 
 // ======================================================================
@@ -507,7 +509,7 @@ const effects = (dispatch) => ({
     });
     // play next track when current track ends
     playerElement.addEventListener('ended', () => {
-      dispatch.appModel.playerNext();
+      dispatch.appModel.playerNext(true);
     });
   },
 
@@ -573,6 +575,8 @@ const effects = (dispatch) => ({
       playingTrackCount: currentAlbumTracks.length,
       playingTrackProgress: 0,
     });
+
+    track('Plex: Load Album');
   },
 
   async playerLoadPlaylist(payload, rootState) {
@@ -599,6 +603,8 @@ const effects = (dispatch) => ({
       playingTrackCount: currentPlaylistTracks.length,
       playingTrackProgress: 0,
     });
+
+    track('Plex: Load Playlist');
   },
 
   playerLoadTrackList(payload, rootState) {
@@ -643,6 +649,7 @@ const effects = (dispatch) => ({
     dispatch.appModel.setAppState({
       playerPlaying: true,
     });
+    track('Plex: Play');
   },
 
   playerPause(payload, rootState) {
@@ -652,6 +659,7 @@ const effects = (dispatch) => ({
     dispatch.appModel.setAppState({
       playerPlaying: false,
     });
+    track('Plex: Pause');
   },
 
   playerRestart(payload, rootState) {
@@ -678,6 +686,7 @@ const effects = (dispatch) => ({
     else {
       dispatch.appModel.playerRestart();
     }
+    track('Plex: Previous Track');
   },
 
   playerNext(payload, rootState) {
@@ -702,6 +711,11 @@ const effects = (dispatch) => ({
         playingTrackIndex: 0,
       });
       dispatch.appModel.playerLoadIndex({ index: 0, play: false });
+    }
+    if (payload === true) {
+      track('Plex: Next Track (Auto)');
+    } else {
+      track('Plex: Next Track');
     }
   },
 
