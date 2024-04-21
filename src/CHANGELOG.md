@@ -1,3 +1,11 @@
+<a name="0.8.0"></a>
+# 0.8.0 (2024-04-21)
+Features:
+- Created changelog file.
+- Added social links to home page and settings page.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.7.0"></a>
 # 0.7.0 (2024-04-21)
 Features:
