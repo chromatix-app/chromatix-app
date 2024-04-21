@@ -144,11 +144,15 @@ const ThemeSettings = () => {
 const OptionSettings = () => {
   const dispatch = useDispatch();
 
-  const { optionGridEllipsis, optionGridRatings } = useSelector(({ sessionModel }) => sessionModel);
+  const { optionShowFullTitles, optionShowStarRatings } = useSelector(({ sessionModel }) => sessionModel);
 
   const menuItems = [
-    { key: 'optionGridEllipsis', label: 'Trim titles to one line in grid view', state: optionGridEllipsis },
-    { key: 'optionGridRatings', label: 'Show star ratings in grid view', state: optionGridRatings },
+    {
+      key: 'optionShowFullTitles',
+      label: 'Always show full track, artist and album titles',
+      state: optionShowFullTitles,
+    },
+    { key: 'optionShowStarRatings', label: 'Show star ratings', state: optionShowStarRatings },
   ];
 
   return (

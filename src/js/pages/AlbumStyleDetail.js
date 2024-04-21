@@ -16,6 +16,8 @@ import * as plex from 'js/services/plex';
 const AlbumStyleDetail = () => {
   const { styleId, libraryId } = useParams();
 
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+
   const allAlbumStyles = useSelector(({ appModel }) => appModel.allAlbumStyles);
   const currentAlbumStyle = allAlbumStyles?.filter((style) => style.styleId === styleId)[0];
 
@@ -37,7 +39,7 @@ const AlbumStyleDetail = () => {
         <TitleHeading
           thumb={styleThumb}
           title={styleTitle}
-          detail={styleRating && <StarRating rating={styleRating} size={13} inline />}
+          detail={optionShowStarRatings && styleRating && <StarRating rating={styleRating} size={13} inline />}
           subtitle={
             currentAlbumStyleItems ? (
               currentAlbumStyleItems?.length + ' Album' + (currentAlbumStyleItems?.length !== 1 ? 's' : '')

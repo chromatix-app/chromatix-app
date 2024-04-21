@@ -16,6 +16,8 @@ import * as plex from 'js/services/plex';
 const ArtistMoodDetail = () => {
   const { moodId, libraryId } = useParams();
 
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+
   const allArtistMoods = useSelector(({ appModel }) => appModel.allArtistMoods);
   const currentArtistMood = allArtistMoods?.filter((mood) => mood.moodId === moodId)[0];
 
@@ -37,7 +39,7 @@ const ArtistMoodDetail = () => {
         <TitleHeading
           thumb={moodThumb}
           title={moodTitle}
-          detail={moodRating && <StarRating rating={moodRating} size={13} inline />}
+          detail={optionShowStarRatings && moodRating && <StarRating rating={moodRating} size={13} inline />}
           subtitle={
             currentArtistMoodItems ? (
               currentArtistMoodItems?.length + ' Artist' + (currentArtistMoodItems?.length !== 1 ? 's' : '')

@@ -16,6 +16,8 @@ import * as plex from 'js/services/plex';
 const AlbumGenreDetail = () => {
   const { genreId, libraryId } = useParams();
 
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+
   const allAlbumGenres = useSelector(({ appModel }) => appModel.allAlbumGenres);
   const currentAlbumGenre = allAlbumGenres?.filter((genre) => genre.genreId === genreId)[0];
 
@@ -37,7 +39,7 @@ const AlbumGenreDetail = () => {
         <TitleHeading
           thumb={genreThumb}
           title={genreTitle}
-          detail={genreRating && <StarRating rating={genreRating} size={13} inline />}
+          detail={optionShowStarRatings && genreRating && <StarRating rating={genreRating} size={13} inline />}
           subtitle={
             currentAlbumGenreItems ? (
               currentAlbumGenreItems?.length + ' Album' + (currentAlbumGenreItems?.length !== 1 ? 's' : '')

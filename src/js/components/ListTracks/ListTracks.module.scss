@@ -18,14 +18,20 @@
   gap: 13px;
 
   @media (min-width: 1024px) {
-    grid-template-columns: 30px 1.3fr 1fr 0.5fr 60px;
     gap: 15px;
   }
 
   .wrap.wrapPlaylists & {
     grid-template-columns: 30px 41px 1.3fr 1fr 1fr 60px;
+  }
+}
 
-    @media (min-width: 1024px) {
+.header.headerWithRating,
+.entry.entryWithRating {
+  @media (min-width: 1024px) {
+    grid-template-columns: 30px 1.3fr 1fr 0.5fr 60px;
+
+    .wrap.wrapPlaylists & {
       grid-template-columns: 30px 41px 1.3fr 1fr 1fr 0.5fr 60px;
     }
   }
@@ -188,10 +194,6 @@ span.minCenter {
 }
 
 .title {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
   .entry.entryPlaying & {
     font-weight: 500;
     color: var(--color-primary);
@@ -199,10 +201,7 @@ span.minCenter {
 }
 
 .artist {
-  overflow: hidden;
   opacity: 0.5;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 
   .entry:hover & {
     opacity: 1;
@@ -210,10 +209,7 @@ span.minCenter {
 }
 
 .album {
-  overflow: hidden;
   opacity: 0.5;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 
   .entry:hover & {
     opacity: 1;

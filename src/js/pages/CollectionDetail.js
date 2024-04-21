@@ -16,6 +16,8 @@ import * as plex from 'js/services/plex';
 const CollectionDetail = () => {
   const { collectionId, libraryId } = useParams();
 
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+
   const allCollections = useSelector(({ appModel }) => appModel.allCollections);
   const currentCollection = allCollections?.filter((collection) => collection.collectionId === collectionId)[0];
 
@@ -42,7 +44,9 @@ const CollectionDetail = () => {
         <TitleHeading
           thumb={collectionThumb}
           title={collectionTitle}
-          detail={collectionRating && <StarRating rating={collectionRating} size={13} inline />}
+          detail={
+            optionShowStarRatings && collectionRating && <StarRating rating={collectionRating} size={13} inline />
+          }
           subtitle={
             currentCollectionItems ? (
               currentCollectionItems?.length +

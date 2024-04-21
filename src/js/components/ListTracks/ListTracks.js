@@ -28,6 +28,9 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
   const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
   const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
 
+  const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+
   const trackDetail = playingTrackList?.[playingTrackIndex];
 
   const totalDiscs = useMemo(() => {
@@ -57,19 +60,27 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
     return (
       <div className={clsx(style.wrap, style['wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1)])}>
         {variant === 'albums' && (
-          <div className={style.header}>
+          <div
+            className={clsx(style.header, {
+              [style.headerWithRating]: optionShowStarRatings,
+            })}
+          >
             <div>
               <span className={style.minCenter}>#</span>
             </div>
             <div>Title</div>
             <div>Artist</div>
-            <div className={style.headerRating}>Rating</div>
+            {optionShowStarRatings && <div className={style.headerRating}>Rating</div>}
             <div>Duration</div>
           </div>
         )}
 
         {variant === 'playlists' && (
-          <div className={style.header}>
+          <div
+            className={clsx(style.header, {
+              [style.headerWithRating]: optionShowStarRatings,
+            })}
+          >
             <div>
               <span className={style.minCenter}>#</span>
             </div>
@@ -77,7 +88,7 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
             <div></div>
             <div>Artist</div>
             <div>Album</div>
-            <div className={style.headerRating}>Rating</div>
+            {optionShowStarRatings && <div className={style.headerRating}>Rating</div>}
             <div>Duration</div>
           </div>
         )}
@@ -118,6 +129,8 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
                 playerPlaying={playerPlaying}
                 doPlay={doPlay}
                 variant={variant}
+                optionShowFullTitles={optionShowFullTitles}
+                optionShowStarRatings={optionShowStarRatings}
               />
             );
           })}
@@ -127,82 +140,97 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
   }
 };
 
-const ListEntry = React.memo(({ entry, trackNumber, showDisc, isCurrentlyPlaying, playerPlaying, doPlay, variant }) => {
-  const dispatch = useDispatch();
+const ListEntry = React.memo(
+  ({
+    entry,
+    trackNumber,
+    showDisc,
+    isCurrentlyPlaying,
+    playerPlaying,
+    doPlay,
+    variant,
+    optionShowFullTitles,
+    optionShowStarRatings,
+  }) => {
+    const dispatch = useDispatch();
 
-  return (
-    <>
-      {showDisc && (
-        <div className={style.disc}>
-          <div className={style.discIcon}>
-            <Icon icon="DiscIcon" cover stroke />
+    return (
+      <>
+        {showDisc && (
+          <div className={style.disc}>
+            <div className={style.discIcon}>
+              <Icon icon="DiscIcon" cover stroke />
+            </div>
+            <div className={style.discNumber}>Disc {entry.discNumber}</div>
           </div>
-          <div className={style.discNumber}>Disc {entry.discNumber}</div>
+        )}
+
+        <div
+          id={entry.trackId}
+          className={clsx(style.entry, {
+            [style.entryPlaying]: isCurrentlyPlaying,
+            [style.entryWithRating]: optionShowStarRatings,
+          })}
+          onDoubleClick={() => {
+            doPlay(true);
+          }}
+        >
+          {!isCurrentlyPlaying && (
+            <div className={style.trackNumber}>
+              <span className={style.minCenter}>{trackNumber}</span>
+            </div>
+          )}
+
+          {isCurrentlyPlaying && (
+            <div className={style.playingIcon}>
+              <Icon icon="VolHighIcon" cover stroke />
+            </div>
+          )}
+
+          {!(isCurrentlyPlaying && playerPlaying) && (
+            <div
+              className={style.playIcon}
+              onClick={() => {
+                doPlay(!isCurrentlyPlaying);
+              }}
+            >
+              <Icon icon="PlayFilledIcon" cover />
+            </div>
+          )}
+          {isCurrentlyPlaying && playerPlaying && (
+            <div className={style.pauseIcon} onClick={dispatch.appModel.playerPause}>
+              <Icon icon="PauseFilledIcon" cover />
+            </div>
+          )}
+
+          {variant === 'playlists' && entry.thumb && (
+            <div className={style.thumb}>
+              <img src={entry.thumb} alt={entry.title} loading="lazy" />
+            </div>
+          )}
+
+          <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
+
+          <div className={clsx(style.artist, { 'text-trim': !optionShowFullTitles })}>
+            <NavLink to={entry.artistLink}>{entry.artist}</NavLink>
+          </div>
+
+          {variant === 'playlists' && (
+            <div className={clsx(style.album, { 'text-trim': !optionShowFullTitles })}>
+              <NavLink to={entry.albumLink}>{entry.album} </NavLink>
+            </div>
+          )}
+
+          {optionShowStarRatings && (
+            <div className={style.userRating}>{entry.userRating && <StarRating rating={entry.userRating} />}</div>
+          )}
+
+          <div className={style.duration}>{durationToStringShort(entry.duration)}</div>
         </div>
-      )}
-
-      <div
-        id={entry.trackId}
-        className={clsx(style.entry, {
-          [style.entryPlaying]: isCurrentlyPlaying,
-        })}
-        onDoubleClick={() => {
-          doPlay(true);
-        }}
-      >
-        {!isCurrentlyPlaying && (
-          <div className={style.trackNumber}>
-            <span className={style.minCenter}>{trackNumber}</span>
-          </div>
-        )}
-
-        {isCurrentlyPlaying && (
-          <div className={style.playingIcon}>
-            <Icon icon="VolHighIcon" cover stroke />
-          </div>
-        )}
-
-        {!(isCurrentlyPlaying && playerPlaying) && (
-          <div
-            className={style.playIcon}
-            onClick={() => {
-              doPlay(!isCurrentlyPlaying);
-            }}
-          >
-            <Icon icon="PlayFilledIcon" cover />
-          </div>
-        )}
-        {isCurrentlyPlaying && playerPlaying && (
-          <div className={style.pauseIcon} onClick={dispatch.appModel.playerPause}>
-            <Icon icon="PauseFilledIcon" cover />
-          </div>
-        )}
-
-        {variant === 'playlists' && entry.thumb && (
-          <div className={style.thumb}>
-            <img src={entry.thumb} alt={entry.title} loading="lazy" />
-          </div>
-        )}
-
-        <div className={style.title}>{entry.title}</div>
-
-        <div className={style.artist}>
-          <NavLink to={entry.artistLink}>{entry.artist}</NavLink>
-        </div>
-
-        {variant === 'playlists' && (
-          <div className={style.album}>
-            <NavLink to={entry.albumLink}>{entry.album} </NavLink>
-          </div>
-        )}
-
-        <div className={style.userRating}>{entry.userRating && <StarRating rating={entry.userRating} />}</div>
-
-        <div className={style.duration}>{durationToStringShort(entry.duration)}</div>
-      </div>
-    </>
-  );
-});
+      </>
+    );
+  }
+);
 
 // ======================================================================
 // EXPORT

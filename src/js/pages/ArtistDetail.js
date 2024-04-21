@@ -16,6 +16,8 @@ import * as plex from 'js/services/plex';
 const ArtistDetail = () => {
   const { artistId, libraryId } = useParams();
 
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+
   const allArtists = useSelector(({ appModel }) => appModel.allArtists);
   const currentArtist = allArtists?.filter((artist) => artist.artistId === artistId)[0];
 
@@ -63,7 +65,11 @@ const ArtistDetail = () => {
           detail={
             currentArtistAlbums && currentArtistRelated ? (
               <>
-                {artistCountry} • {artistGenre} {artistRating && <StarRating rating={artistRating} size={13} inline />}
+                {artistCountry}
+                {artistCountry && artistGenre && ' • '}
+                {artistGenre}
+                {(artistCountry || artistGenre) && optionShowStarRatings && artistRating && ' • '}
+                {optionShowStarRatings && artistRating && <StarRating rating={artistRating} size={13} inline />}
               </>
             ) : (
               <>&nbsp;</>

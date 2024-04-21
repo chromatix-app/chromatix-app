@@ -65,7 +65,7 @@ const ListEntry = React.memo(
     const history = useHistory();
     const dispatch = useDispatch();
 
-    const { optionGridEllipsis, optionGridRatings } = useSelector(({ sessionModel }) => sessionModel);
+    const { optionShowFullTitles, optionShowStarRatings } = useSelector(({ sessionModel }) => sessionModel);
 
     const handleCardClick = useCallback(
       (event) => {
@@ -134,15 +134,15 @@ const ListEntry = React.memo(
         </div>
 
         <div className={style.body}>
-          {title && <div className={clsx(style.title, { 'text-trim': optionGridEllipsis })}>{title}</div>}
+          {title && <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{title}</div>}
 
           {artist && !artistLink && (
-            <div className={clsx(style.subtitle, { 'text-trim': optionGridEllipsis })}>{artist}</div>
+            <div className={clsx(style.subtitle, { 'text-trim': !optionShowFullTitles })}>{artist}</div>
           )}
 
           {artist && artistLink && (
             <NavLink
-              className={clsx(style.subtitle, { 'text-trim': optionGridEllipsis })}
+              className={clsx(style.subtitle, { 'text-trim': !optionShowFullTitles })}
               to={artistLink}
               onClick={handleLinkClick}
             >
@@ -156,7 +156,7 @@ const ListEntry = React.memo(
 
           {/* {albumRelease && <div className={style.subtitle}>{albumRelease}</div>} */}
 
-          {optionGridRatings && userRating && (
+          {optionShowStarRatings && userRating && (
             <div className={style.rating}>
               <StarRating rating={userRating} />
             </div>
