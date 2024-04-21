@@ -130,6 +130,8 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
 const ListEntry = React.memo(({ entry, trackNumber, showDisc, isCurrentlyPlaying, playerPlaying, doPlay, variant }) => {
   const dispatch = useDispatch();
 
+  const { optionShowFullTitles } = useSelector(({ sessionModel }) => sessionModel);
+
   return (
     <>
       {showDisc && (
@@ -184,14 +186,14 @@ const ListEntry = React.memo(({ entry, trackNumber, showDisc, isCurrentlyPlaying
           </div>
         )}
 
-        <div className={style.title}>{entry.title}</div>
+        <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
 
-        <div className={style.artist}>
+        <div className={clsx(style.artist, { 'text-trim': !optionShowFullTitles })}>
           <NavLink to={entry.artistLink}>{entry.artist}</NavLink>
         </div>
 
         {variant === 'playlists' && (
-          <div className={style.album}>
+          <div className={clsx(style.album, { 'text-trim': !optionShowFullTitles })}>
             <NavLink to={entry.albumLink}>{entry.album} </NavLink>
           </div>
         )}

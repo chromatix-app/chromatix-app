@@ -20,6 +20,8 @@ const AlbumDetail = () => {
 
   const dispatch = useDispatch();
 
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums);
   const currentAlbum = allAlbums?.filter((album) => album.albumId === albumId)[0];
 
@@ -63,8 +65,13 @@ const AlbumDetail = () => {
           detail={
             currentAlbumTracks ? (
               <>
-                {albumRelease} • {albumTracks} track{albumTracks !== 1 && 's'} • {albumDurationString}{' '}
-                {albumRating && <StarRating rating={albumRating} size={13} inline />}
+                {albumRelease}
+                {albumRelease && albumTracks && ' • '}
+                {albumTracks} track{albumTracks !== 1 && 's'}
+                {(albumRelease || albumTracks) && albumDurationString && ' • '}
+                {albumDurationString}
+                {(albumRelease || albumTracks || albumDurationString) && optionShowStarRatings && albumRating && ' • '}
+                {optionShowStarRatings && albumRating && <StarRating rating={albumRating} size={13} inline />}
               </>
             ) : (
               <>&nbsp;</>

@@ -34,8 +34,8 @@ const sessionState = {
 
   menuShowAllPlaylists: true,
 
-  optionGridEllipsis: true,
-  optionGridRatings: true,
+  optionShowFullTitles: false,
+  optionShowStarRatings: true,
 };
 
 const playingState = {
