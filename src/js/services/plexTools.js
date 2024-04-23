@@ -327,7 +327,7 @@ export const getAllServers = () => {
 // ======================================================================
 
 export const getFastestServerConnection = (server) => {
-  let { connections } = server;
+  let { accessToken, connections } = server;
 
   // sort connections based on preference
   connections.sort((a, b) => {
@@ -350,7 +350,7 @@ export const getFastestServerConnection = (server) => {
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
-              'X-Plex-Token': getLocalStorage(storageTokenKey),
+              'X-Plex-Token': accessToken,
               'X-Plex-Client-Identifier': clientIdentifier,
             },
             timeout: 3000,
@@ -381,17 +381,16 @@ export const getFastestServerConnection = (server) => {
 // GET ALL LIBRARIES
 // ======================================================================
 
-export const getAllLibraries = (baseUrl) => {
+export const getAllLibraries = (baseUrl, accessToken) => {
   return new Promise((resolve, reject) => {
     try {
-      const authToken = getLocalStorage(storageTokenKey);
       const endpoint = endpointConfig.library.getAllLibraries(baseUrl);
       axios
         .get(endpoint, {
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            'X-Plex-Token': authToken,
+            'X-Plex-Token': accessToken,
             'X-Plex-Client-Identifier': clientIdentifier,
           },
         })
