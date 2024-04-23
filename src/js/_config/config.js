@@ -3,6 +3,8 @@ export const config = {
   globalStore: true,
 
   // localstorage
+  storagePinKey: 'chromatix-pin-id',
+  storageTokenKey: 'chromatix-auth-token',
   persistentStoreId: 'chromatix-persist-v1',
   sessionStoreId: 'chromatix-session-v1',
 };
