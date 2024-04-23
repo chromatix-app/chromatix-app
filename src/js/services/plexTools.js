@@ -6,6 +6,8 @@ import axios from 'axios';
 import CryptoJS from 'crypto-js';
 import { XMLParser } from 'fast-xml-parser';
 
+import config from 'js/_config/config';
+
 // ======================================================================
 // OPTIONS
 // ======================================================================
@@ -16,8 +18,8 @@ const appName = 'Chromatix';
 const clientIdentifier = 'chromatix.app';
 const clientIcon = 'https://chromatix.app/icon/icon-512.png';
 
-const storagePinKey = 'chromatix-pin-id';
-const storageTokenKey = 'chromatix-auth-token';
+const storagePinKey = config.storagePinKey;
+const storageTokenKey = config.storageTokenKey;
 
 const redirectPath = window.location.origin;
 const redirectQuery = 'plex-login';

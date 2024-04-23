@@ -4,6 +4,7 @@
 
 import { track } from '@vercel/analytics';
 
+import config from 'js/_config/config';
 import * as plexTools from 'js/services/plexTools';
 import store from 'js/store/store';
 
@@ -16,7 +17,7 @@ const isProduction = process.env.REACT_APP_ENV === 'production';
 const mockData = isProduction ? false : false;
 const thumbSize = 480;
 
-const storageTokenKey = 'chromatix-auth-token';
+const storageTokenKey = config.storageTokenKey;
 
 const endpointConfig = {
   server: {
