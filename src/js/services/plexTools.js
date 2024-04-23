@@ -298,7 +298,7 @@ export const getAllServers = () => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
             'X-Plex-Token': authToken,
-            'X-Plex-Client-Identifier': 'chromatix.app',
+            'X-Plex-Client-Identifier': clientIdentifier,
           },
         })
         .then((response) => {
@@ -351,6 +351,7 @@ export const getFastestServerConnection = (server) => {
               Accept: 'application/json',
               'Content-Type': 'application/json',
               'X-Plex-Token': getLocalStorage(storageTokenKey),
+              'X-Plex-Client-Identifier': clientIdentifier,
             },
             timeout: 3000,
           })
@@ -391,6 +392,7 @@ export const getAllLibraries = (baseUrl) => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
             'X-Plex-Token': authToken,
+            'X-Plex-Client-Identifier': clientIdentifier,
           },
         })
         .then((response) => {

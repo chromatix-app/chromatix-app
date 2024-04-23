@@ -20,12 +20,6 @@ const thumbSize = 480;
 const storageTokenKey = config.storageTokenKey;
 
 const endpointConfig = {
-  server: {
-    getAllServers: () => 'https://plex.tv/api/v2/resources?includeHttps=1&includeRelay=1&includeIPv6=1',
-  },
-  library: {
-    getAllLibraries: (base) => `${base}/library/sections`,
-  },
   artist: {
     getAllArtists: (base, libraryId) => `${base}/library/sections/${libraryId}/all?type=8`,
     getDetails: (base, artistId) => `${base}/library/metadata/${artistId}`,
