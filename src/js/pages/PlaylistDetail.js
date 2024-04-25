@@ -32,7 +32,7 @@ const PlaylistDetail = () => {
   const playlistDurationString = durationToStringLong(playlistDurationMillisecs);
 
   const doPlay = () => {
-    dispatch.appModel.playerLoadPlaylist({ playlistId });
+    dispatch.playerModel.playerLoadPlaylist({ playlistId });
   };
 
   useEffect(() => {

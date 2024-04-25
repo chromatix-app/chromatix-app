@@ -40,7 +40,7 @@ const AlbumDetail = () => {
   const artistLink = currentAlbum?.artistLink;
 
   const doPlay = () => {
-    dispatch.appModel.playerLoadAlbum({ albumId });
+    dispatch.playerModel.playerLoadAlbum({ albumId });
   };
 
   useEffect(() => {

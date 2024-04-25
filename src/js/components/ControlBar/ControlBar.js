@@ -20,7 +20,7 @@ import style from './ControlBar.module.scss';
 const ControlBar = () => {
   const dispatch = useDispatch();
 
-  const { playerLoading, playerPlaying, playerVolume, playerMuted } = useSelector(({ appModel }) => appModel);
+  const { playerLoading, playerPlaying, playerVolume, playerMuted } = useSelector(({ playerModel }) => playerModel);
 
   const {
     playingVariant,
@@ -46,10 +46,10 @@ const ControlBar = () => {
   // handle keyboard controls
   const keyboardControls = useMemo(
     () => ({
-      prev: () => !isDisabled && dispatch.appModel.playerPrev(),
-      next: () => !isDisabled && dispatch.appModel.playerNext(),
+      prev: () => !isDisabled && dispatch.playerModel.playerPrev(),
+      next: () => !isDisabled && dispatch.playerModel.playerNext(),
       playPause: () =>
-        !isDisabled && !playerPlaying ? dispatch.appModel.playerPlay() : dispatch.appModel.playerPause(),
+        !isDisabled && !playerPlaying ? dispatch.playerModel.playerPlay() : dispatch.playerModel.playerPause(),
     }),
     [dispatch, isDisabled, playerPlaying]
   );
@@ -88,31 +88,31 @@ const ControlBar = () => {
         <div className={style.controls}>
           <button
             className={clsx(style.shuffle, { [style.active]: playingShuffle })}
-            onClick={dispatch.appModel.toggleShuffle}
+            onClick={dispatch.playerModel.playerToggleShuffle}
             disabled={isDisabled}
           >
             <Icon icon="ShuffleIcon" cover stroke />
           </button>
-          <button className={style.rewind} onClick={dispatch.appModel.playerPrev} disabled={isDisabled}>
+          <button className={style.rewind} onClick={dispatch.playerModel.playerPrev} disabled={isDisabled}>
             <Icon icon="RewindIcon" cover stroke />
           </button>
           {!playerPlaying && (
-            <button className={style.play} onClick={dispatch.appModel.playerPlay} disabled={isDisabled}>
+            <button className={style.play} onClick={dispatch.playerModel.playerPlay} disabled={isDisabled}>
               <Icon icon="PlayFilledIcon" cover />
             </button>
           )}
           {playerPlaying && (
-            <button className={style.pause} onClick={dispatch.appModel.playerPause}>
+            <button className={style.pause} onClick={dispatch.playerModel.playerPause}>
               {!playerLoading && <Icon icon="PauseFilledIcon" cover />}
               {playerLoading && <div className={style.loading}></div>}
             </button>
           )}
-          <button className={style.forward} onClick={dispatch.appModel.playerNext} disabled={isDisabled}>
+          <button className={style.forward} onClick={dispatch.playerModel.playerNext} disabled={isDisabled}>
             <Icon icon="FastForwardIcon" cover stroke />
           </button>
           <button
             className={clsx(style.repeat, { [style.active]: playingRepeat })}
-            onClick={dispatch.appModel.toggleRepeat}
+            onClick={dispatch.playerModel.playerToggleRepeat}
             disabled={isDisabled}
           >
             <Icon icon="RepeatIcon" cover stroke />
@@ -123,11 +123,11 @@ const ControlBar = () => {
       </div>
 
       <div className={style.secondary}>
-        <button className={style.volHigh} onClick={dispatch.appModel.playerMuteToggle}>
+        <button className={style.volHigh} onClick={dispatch.playerModel.playerMuteToggle}>
           <Icon icon={volIcon} cover stroke />
         </button>
         <div className={style.volSlider}>
-          <RangeSlider value={playerMuted ? 0 : playerVolume} handleChange={dispatch.appModel.playerVolumeSet} />
+          <RangeSlider value={playerMuted ? 0 : playerVolume} handleChange={dispatch.playerModel.playerVolumeSet} />
         </div>
       </div>
     </div>
@@ -142,7 +142,7 @@ const ControlProgress = () => {
   const intervalRef = useRef(null);
   const mouseDownRef = useRef(false);
 
-  const { playerElement, playerInteractionCount } = useSelector(({ appModel }) => appModel);
+  const { playerElement, playerInteractionCount } = useSelector(({ playerModel }) => playerModel);
   const { playingTrackList, playingTrackIndex } = useSelector(({ sessionModel }) => sessionModel);
 
   const [trackProgress, setTrackProgress] = useState(playerElement?.currentTime * 1000 || 0);

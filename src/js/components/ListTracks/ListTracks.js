@@ -19,7 +19,7 @@ import style from './ListTracks.module.scss';
 const ListTracks = ({ variant, albumId, playlistId, entries }) => {
   const dispatch = useDispatch();
 
-  const playerPlaying = useSelector(({ appModel }) => appModel.playerPlaying);
+  const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
   const scrollToPlaying = useSelector(({ appModel }) => appModel.scrollToPlaying);
 
   const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
@@ -108,14 +108,14 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
 
             const doPlay = (restart) => {
               if (restart) {
-                dispatch.appModel.playerLoadTrackItem({
+                dispatch.playerModel.playerLoadTrackItem({
                   playingVariant: variant,
                   playingAlbumId: albumId,
                   playingPlaylistId: playlistId,
                   playingTrackIndex: index,
                 });
               } else {
-                dispatch.appModel.playerPlay();
+                dispatch.playerModel.playerPlay();
               }
             };
 
@@ -198,7 +198,7 @@ const ListEntry = React.memo(
             </div>
           )}
           {isCurrentlyPlaying && playerPlaying && (
-            <div className={style.pauseIcon} onClick={dispatch.appModel.playerPause}>
+            <div className={style.pauseIcon} onClick={dispatch.playerModel.playerPause}>
               <Icon icon="PauseFilledIcon" cover />
             </div>
           )}

@@ -20,7 +20,7 @@ const ListCards = ({ entries, variant }) => {
   const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
   const playingAlbumId = useSelector(({ sessionModel }) => sessionModel.playingAlbumId);
   const playingPlaylistId = useSelector(({ sessionModel }) => sessionModel.playingPlaylistId);
-  const playerPlaying = useSelector(({ appModel }) => appModel.playerPlaying);
+  const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
 
   if (entries) {
     return (
@@ -84,12 +84,12 @@ const ListEntry = React.memo(
       (event) => {
         event.stopPropagation();
         if (isCurrentlyLoaded) {
-          dispatch.appModel.playerPlay();
+          dispatch.playerModel.playerPlay();
         } else {
           if (variant === 'albums') {
-            dispatch.appModel.playerLoadAlbum({ albumId });
+            dispatch.playerModel.playerLoadAlbum({ albumId });
           } else if (variant === 'playlists') {
-            dispatch.appModel.playerLoadPlaylist({ playlistId });
+            dispatch.playerModel.playerLoadPlaylist({ playlistId });
           }
         }
       },
@@ -99,7 +99,7 @@ const ListEntry = React.memo(
     const handlePause = useCallback(
       (event) => {
         event.stopPropagation();
-        dispatch.appModel.playerPause();
+        dispatch.playerModel.playerPause();
       },
       [dispatch]
     );
