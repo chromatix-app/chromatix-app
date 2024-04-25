@@ -5,6 +5,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import clsx from 'clsx';
 
 import { Icon, RangeSlider } from 'js/components';
 import { useKeyboardControls } from 'js/hooks';
@@ -21,8 +22,16 @@ const ControlBar = () => {
 
   const { playerLoading, playerPlaying, playerVolume, playerMuted } = useSelector(({ appModel }) => appModel);
 
-  const { playingVariant, playingLibraryId, playingAlbumId, playingPlaylistId, playingTrackList, playingTrackIndex } =
-    useSelector(({ sessionModel }) => sessionModel);
+  const {
+    playingVariant,
+    playingLibraryId,
+    playingAlbumId,
+    playingPlaylistId,
+    playingTrackList,
+    playingTrackIndex,
+    playingRepeat,
+    playingShuffle,
+  } = useSelector(({ sessionModel }) => sessionModel);
 
   const playingLink =
     playingVariant === 'albums'
@@ -77,6 +86,13 @@ const ControlBar = () => {
 
       <div>
         <div className={style.controls}>
+          <button
+            className={clsx(style.shuffle, { [style.active]: playingShuffle })}
+            onClick={dispatch.appModel.toggleShuffle}
+            disabled={isDisabled}
+          >
+            <Icon icon="ShuffleIcon" cover stroke />
+          </button>
           <button className={style.rewind} onClick={dispatch.appModel.playerPrev} disabled={isDisabled}>
             <Icon icon="RewindIcon" cover stroke />
           </button>
@@ -93,6 +109,13 @@ const ControlBar = () => {
           )}
           <button className={style.forward} onClick={dispatch.appModel.playerNext} disabled={isDisabled}>
             <Icon icon="FastForwardIcon" cover stroke />
+          </button>
+          <button
+            className={clsx(style.repeat, { [style.active]: playingRepeat })}
+            onClick={dispatch.appModel.toggleRepeat}
+            disabled={isDisabled}
+          >
+            <Icon icon="RepeatIcon" cover stroke />
           </button>
         </div>
 

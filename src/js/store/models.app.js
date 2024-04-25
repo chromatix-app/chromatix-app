@@ -702,15 +702,26 @@ const effects = (dispatch) => ({
       });
       dispatch.appModel.playerLoadIndex({ index: playingTrackIndex + 1, play: true });
     }
-    // handle last track - loop back to first track and stop playing
+    // handle last track - loop back to beginning
     else {
-      dispatch.appModel.setAppState({
-        playerPlaying: false,
-      });
-      dispatch.sessionModel.setSessionState({
-        playingTrackIndex: 0,
-      });
-      dispatch.appModel.playerLoadIndex({ index: 0, play: false });
+      const playingRepeat = rootState.sessionModel.playingRepeat;
+      // repeat
+      if (playingRepeat) {
+        dispatch.sessionModel.setSessionState({
+          playingTrackIndex: 0,
+        });
+        dispatch.appModel.playerLoadIndex({ index: 0, play: true });
+      }
+      // do not repeat
+      else {
+        dispatch.appModel.setAppState({
+          playerPlaying: false,
+        });
+        dispatch.sessionModel.setSessionState({
+          playingTrackIndex: 0,
+        });
+        dispatch.appModel.playerLoadIndex({ index: 0, play: false });
+      }
     }
     if (payload === true) {
       track('Plex: Next Track (Auto)');
@@ -762,6 +773,22 @@ const effects = (dispatch) => ({
     });
     const playerElement = rootState.appModel.playerElement;
     playerElement.volume = newMuted ? 0 : newVolume / 100;
+  },
+
+  toggleRepeat(payload, rootState) {
+    // console.log('%c--- toggleRepeat ---', 'color:#07a098');
+    const playingRepeat = rootState.sessionModel.playingRepeat;
+    dispatch.sessionModel.setSessionState({
+      playingRepeat: !playingRepeat,
+    });
+  },
+
+  toggleShuffle(payload, rootState) {
+    // console.log('%c--- toggleShuffle ---', 'color:#07a098');
+    const playingShuffle = rootState.sessionModel.playingShuffle;
+    dispatch.sessionModel.setSessionState({
+      playingShuffle: !playingShuffle,
+    });
   },
 });
 

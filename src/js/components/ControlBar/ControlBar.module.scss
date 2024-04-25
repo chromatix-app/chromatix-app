@@ -98,9 +98,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 4px;
   width: 40vw;
   min-width: 320px;
   max-width: 566px;
+
+  @media (min-width: 1024px) {
+    gap: 10px;
+  }
 }
 
 button.shuffle,
@@ -116,7 +121,7 @@ button.volHigh {
   width: 44px;
   height: 44px;
   padding: 8px;
-  margin: 0 5px;
+  // margin: 0 5px;
   background: none;
   border: none;
   border: 2px solid var(--color-panel-background);
@@ -148,7 +153,7 @@ button.repeat {
 
 button.play,
 button.pause {
-  margin: 0 12px;
+  margin: 0 6px;
   background: var(--color-primary) !important;
   border: 2px solid var(--color-panel-background);
   color: var(--color-panel-background);
@@ -174,6 +179,10 @@ button.volHigh {
 button.queue {
   padding: 11px;
   margin-right: 0;
+}
+
+button.active {
+  color: var(--color-primary);
 }
 
 .loading {
