@@ -88,7 +88,7 @@ const ControlBar = () => {
         <div className={style.controls}>
           <button
             className={clsx(style.shuffle, { [style.active]: playingShuffle })}
-            onClick={dispatch.playerModel.playerToggleShuffle}
+            onClick={dispatch.playerModel.playerShuffleToggle}
             disabled={isDisabled}
           >
             <Icon icon="ShuffleIcon" cover stroke />
@@ -112,7 +112,7 @@ const ControlBar = () => {
           </button>
           <button
             className={clsx(style.repeat, { [style.active]: playingRepeat })}
-            onClick={dispatch.playerModel.playerToggleRepeat}
+            onClick={dispatch.playerModel.playerRepeatToggle}
             disabled={isDisabled}
           >
             <Icon icon="RepeatIcon" cover stroke />

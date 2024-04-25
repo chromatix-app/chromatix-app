@@ -192,6 +192,12 @@ const effects = (dispatch) => ({
     const playingTrackList = rootState.sessionModel.playingTrackList;
     const { index, play, progress } = payload;
     if (index || index === 0) {
+      dispatch.playerModel.setPlayerState({
+        playerPlaying: play,
+      });
+      dispatch.sessionModel.setSessionState({
+        playingTrackIndex: index,
+      });
       playerElement.src = playingTrackList[index].src;
       playerElement.load();
       if (progress) {
@@ -231,7 +237,9 @@ const effects = (dispatch) => ({
     // console.log('%c--- playerRestart ---', 'color:#5c16b1');
     const playerElement = rootState.playerModel.playerElement;
     playerElement.currentTime = 0;
+    playerElement.play().catch((error) => null);
     dispatch.playerModel.setPlayerState({
+      playerPlaying: true,
       playerInteractionCount: rootState.playerModel.playerInteractionCount + 1,
     });
   },
@@ -244,16 +252,10 @@ const effects = (dispatch) => ({
     const playingTrackCount = rootState.sessionModel.playingTrackCount;
     // play previous track, if available
     if (playingTrackIndex > 0 && playerElement.currentTime <= 5) {
-      dispatch.sessionModel.setSessionState({
-        playingTrackIndex: playingTrackIndex - 1,
-      });
       dispatch.playerModel.playerLoadIndex({ index: playingTrackIndex - 1, play: true });
     }
     // else play last track, if on repeat
     else if (playingRepeat && playerElement.currentTime <= 5) {
-      dispatch.sessionModel.setSessionState({
-        playingTrackIndex: playingTrackCount - 1,
-      });
       dispatch.playerModel.playerLoadIndex({ index: playingTrackCount - 1, play: true });
     }
     // else restart current track
@@ -270,29 +272,14 @@ const effects = (dispatch) => ({
     const playingRepeat = rootState.sessionModel.playingRepeat;
     // play next track, if available
     if (playingTrackIndex < playingTrackCount - 1) {
-      dispatch.playerModel.setPlayerState({
-        playerPlaying: true,
-      });
-      dispatch.sessionModel.setSessionState({
-        playingTrackIndex: playingTrackIndex + 1,
-      });
       dispatch.playerModel.playerLoadIndex({ index: playingTrackIndex + 1, play: true });
     }
     // else play first track, if on repeat
     else if (playingRepeat) {
-      dispatch.sessionModel.setSessionState({
-        playingTrackIndex: 0,
-      });
       dispatch.playerModel.playerLoadIndex({ index: 0, play: true });
     }
     // else load first track, but don't play
     else {
-      dispatch.playerModel.setPlayerState({
-        playerPlaying: false,
-      });
-      dispatch.sessionModel.setSessionState({
-        playingTrackIndex: 0,
-      });
       dispatch.playerModel.playerLoadIndex({ index: 0, play: false });
     }
     if (payload === true) {
@@ -301,6 +288,26 @@ const effects = (dispatch) => ({
       track('Plex: Next Track');
     }
   },
+
+  playerRepeatToggle(payload, rootState) {
+    // console.log('%c--- toggleRepeat ---', 'color:#5c16b1');
+    const playingRepeat = rootState.sessionModel.playingRepeat;
+    dispatch.sessionModel.setSessionState({
+      playingRepeat: !playingRepeat,
+    });
+  },
+
+  playerShuffleToggle(payload, rootState) {
+    // console.log('%c--- toggleShuffle ---', 'color:#5c16b1');
+    const playingShuffle = rootState.sessionModel.playingShuffle;
+    dispatch.sessionModel.setSessionState({
+      playingShuffle: !playingShuffle,
+    });
+  },
+
+  //
+  // VOLUME CONTROLS
+  //
 
   playerVolumeSet(payload, rootState) {
     // console.log('%c--- playerVolumeSet ---', 'color:#5c16b1');
@@ -345,22 +352,6 @@ const effects = (dispatch) => ({
     });
     const playerElement = rootState.playerModel.playerElement;
     playerElement.volume = newMuted ? 0 : newVolume / 100;
-  },
-
-  playerToggleRepeat(payload, rootState) {
-    // console.log('%c--- toggleRepeat ---', 'color:#5c16b1');
-    const playingRepeat = rootState.sessionModel.playingRepeat;
-    dispatch.sessionModel.setSessionState({
-      playingRepeat: !playingRepeat,
-    });
-  },
-
-  playerToggleShuffle(payload, rootState) {
-    // console.log('%c--- toggleShuffle ---', 'color:#5c16b1');
-    const playingShuffle = rootState.sessionModel.playingShuffle;
-    dispatch.sessionModel.setSessionState({
-      playingShuffle: !playingShuffle,
-    });
   },
 });
 
