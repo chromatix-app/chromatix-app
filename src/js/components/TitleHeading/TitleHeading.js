@@ -36,12 +36,18 @@ const TitleHeading = ({ title, subtitle, detail, thumb, handlePlay }) => {
           {subtitle && <h2 className={style.subtitle}>{subtitle}</h2>}
           {detail && <div className={style.detail}>{detail}</div>}
           {handlePlay && (
-            <div>
-              <button className={style.playButton} onClick={handlePlay}>
+            <div className={style.buttons}>
+              <button className={style.playButton} onClick={() => handlePlay(false)}>
                 <span className={style.playIcon}>
                   <Icon icon="PlayFilledIcon" cover />
                 </span>
                 <span className={style.playText}>Play</span>
+              </button>
+              <button className={style.shuffleButton} onClick={() => handlePlay(true)}>
+                <span className={style.shuffleIcon}>
+                  <Icon icon="ShuffleIcon" cover stroke strokeWidth={3} />
+                </span>
+                <span className={style.shuffleText}>Shuffle</span>
               </button>
             </div>
           )}

@@ -47,7 +47,11 @@ const playingState = {
   playingTrackList: null,
   playingTrackCount: null,
   playingTrackIndex: null,
+  playingTrackKeys: null,
   playingTrackProgress: 0,
+
+  playingRepeat: false,
+  playingShuffle: false,
 };
 
 const state = Object.assign({}, sessionState, playingState);

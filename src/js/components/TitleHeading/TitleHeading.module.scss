@@ -155,11 +155,26 @@
   }
 }
 
-.playButton {
-  display: inline-flex;
-  align-items: center;
+//
+// BUTTONS
+//
+
+.buttons {
+  display: flex;
+  gap: 10px;
   margin-top: 12px;
-  padding: 3px 12px;
+
+  @media (min-width: 1024px) {
+    margin-top: 15px;
+  }
+}
+
+.playButton,
+.shuffleButton {
+  display: inline-flex;
+  position: relative;
+  align-items: center;
+  padding: 1px 12px;
   background: var(--color-primary);
   border-radius: 6px;
 
@@ -168,17 +183,23 @@
   color: var(--color-background);
 
   @media (min-width: 1024px) {
-    margin-top: 15px;
     padding: 4px 12px;
   }
 }
 
-.playIcon {
+.playIcon,
+.shuffleIcon {
   display: block;
   position: relative;
   width: 11px;
   height: 11px;
-  margin-right: 5px;
+  margin: 2px 5px 2px 0;
+}
+
+.shuffleIcon {
+  width: 15px;
+  height: 15px;
+  margin: 0 4px 0 -3px;
 }
 
 //
