@@ -40,6 +40,9 @@ const endpointConfig = {
   library: {
     getAllLibraries: (base) => `${base}/library/sections`,
   },
+  status: {
+    postPlaybackStatus: (base) => `${base}/:/timeline`,
+  },
 };
 
 // ======================================================================
@@ -413,3 +416,71 @@ export const getAllLibraries = (baseUrl, accessToken) => {
     }
   });
 };
+
+// ======================================================================
+// LOG PLAYBACK STATUS
+// ======================================================================
+
+export const logPlaybackStatus = (baseUrl, accessToken, type, ratingKey, trackId, state, currentTime, duration) => {
+  // console.log('logPlaybackStatus', trackId, state, currentTime, duration);
+  return new Promise((resolve, reject) => {
+    const endpoint = endpointConfig.status.postPlaybackStatus(baseUrl);
+    const data = {
+      type: type,
+      key: trackId,
+      ratingKey: ratingKey,
+      state: state, // playing, paused, stopped
+      time: currentTime, // time in milliseconds
+      playbackTime: currentTime, // time in milliseconds
+      duration: duration, // total length of the media in milliseconds
+      // Add any other necessary data here
+    };
+    axios
+      .get(endpoint, {
+        params: data,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Plex-Token': accessToken,
+          'X-Plex-Client-Identifier': clientIdentifier,
+        },
+      })
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject({
+          code: 'logPlaybackStatus.1',
+          message: 'Failed to update playback status',
+          error,
+        });
+      });
+  });
+};
+
+// ======================================================================
+// SCROBBLE ITEM
+// ======================================================================
+
+// export const scrobbleItem = (baseUrl, accessToken, key, identifier) => {
+//   return new Promise((resolve, reject) => {
+//     const endpoint = `${baseUrl}/:/scrobble?key=${key}&identifier=${identifier}`;
+//     axios
+//       .get(endpoint, {
+//         headers: {
+//           'Content-Type': 'application/json',
+//           'X-Plex-Token': accessToken,
+//           'X-Plex-Client-Identifier': clientIdentifier,
+//         },
+//       })
+//       .then((response) => {
+//         resolve(response);
+//       })
+//       .catch((error) => {
+//         reject({
+//           code: 'scrobbleItem.1',
+//           message: `Failed to scrobble item to ${endpoint}: ${error.message}`,
+//           error,
+//         });
+//       });
+//   });
+// };

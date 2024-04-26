@@ -161,7 +161,7 @@ const ControlProgress = () => {
   const handleProgressChange = useCallback(
     (value) => {
       setTrackProgress(value * 1000);
-      dispatch.sessionModel.setPlayingTrackProgress(value * 1000);
+      dispatch.playerModel.playerProgress(value * 1000);
     },
     [dispatch]
   );
@@ -183,7 +183,7 @@ const ControlProgress = () => {
       // only update redux every 5 seconds
       counterRef.current += 1;
       if (counterRef.current === 5) {
-        dispatch.sessionModel.setPlayingTrackProgress(newTrackProgress);
+        dispatch.playerModel.playerProgress(newTrackProgress);
         counterRef.current = 0;
       }
     }
