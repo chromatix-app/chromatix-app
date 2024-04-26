@@ -108,7 +108,7 @@ const reducers = {
       ...rootState,
       currentServer: payload,
       currentLibrary: null,
-      ...playingState,
+      ...Object.assign({}, playingState),
     };
   },
 
@@ -150,7 +150,7 @@ const reducers = {
         ...rootState,
         currentServer: null,
         currentLibrary: null,
-        ...playingState,
+        ...Object.assign({}, playingState),
       };
     }
   },
@@ -170,6 +170,14 @@ const reducers = {
     return {
       ...rootState,
       playingTrackProgress: payload,
+    };
+  },
+
+  unloadTrack(rootState, payload) {
+    console.log('%c--- unloadTrack ---', 'color:#0f60b7');
+    return {
+      ...rootState,
+      ...Object.assign({}, playingState),
     };
   },
 
@@ -219,8 +227,8 @@ const effects = (dispatch) => ({
   setLoggedOut(payload, rootState) {
     console.log('%c--- setLoggedOut ---', 'color:#0f60b7');
     dispatch.sessionModel.setSessionState({
-      ...sessionState,
-      ...playingState,
+      ...Object.assign({}, sessionState),
+      ...Object.assign({}, playingState),
     });
   },
 
@@ -229,7 +237,7 @@ const effects = (dispatch) => ({
     dispatch.sessionModel.setSessionState({
       currentServer: null,
       currentLibrary: null,
-      ...playingState,
+      ...Object.assign({}, playingState),
     });
     dispatch.appModel.clearPlexServerState();
   },
@@ -246,7 +254,7 @@ const effects = (dispatch) => ({
         ...rootState,
         currentServer: newServer,
         currentLibrary: null,
-        ...playingState,
+        ...Object.assign({}, playingState),
       });
       dispatch.appModel.clearPlexServerState();
       dispatch.persistentModel.clearHistoryState();

@@ -68,7 +68,7 @@ const reducers = {
   clearHistoryState(rootState) {
     return {
       ...rootState,
-      ...historyState,
+      ...Object.assign({}, historyState),
     };
   },
 };
