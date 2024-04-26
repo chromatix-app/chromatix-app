@@ -31,8 +31,8 @@ const PlaylistDetail = () => {
   const playlistDurationMillisecs = currentPlaylistTracks?.reduce((acc, track) => acc + track.duration, 0);
   const playlistDurationString = durationToStringLong(playlistDurationMillisecs);
 
-  const doPlay = () => {
-    dispatch.playerModel.playerLoadPlaylist({ playlistId });
+  const doPlay = (isShuffle) => {
+    dispatch.playerModel.playerLoadPlaylist({ playlistId, isShuffle });
   };
 
   useEffect(() => {

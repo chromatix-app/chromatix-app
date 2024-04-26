@@ -39,8 +39,8 @@ const AlbumDetail = () => {
 
   const artistLink = currentAlbum?.artistLink;
 
-  const doPlay = () => {
-    dispatch.playerModel.playerLoadAlbum({ albumId });
+  const doPlay = (isShuffle) => {
+    dispatch.playerModel.playerLoadAlbum({ albumId, isShuffle });
   };
 
   useEffect(() => {

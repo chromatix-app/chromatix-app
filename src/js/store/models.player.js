@@ -105,16 +105,29 @@ const effects = (dispatch) => ({
   //
 
   playerLoadTrackItem(payload, rootState) {
+    // console.log('%c--- playerLoadTrackItem ---', 'color:#5c16b1');
     const { playingVariant, playingAlbumId, playingPlaylistId, playingTrackIndex } = payload;
+    const isShuffle = rootState.sessionModel.playingShuffle;
     if (playingVariant === 'albums') {
-      dispatch.playerModel.playerLoadAlbum({ albumId: playingAlbumId, trackIndex: playingTrackIndex });
+      dispatch.playerModel.playerLoadAlbum({
+        albumId: playingAlbumId,
+        trackIndex: playingTrackIndex,
+        isShuffle: isShuffle,
+        isTrack: true,
+      });
     } else if (playingVariant === 'playlists') {
-      dispatch.playerModel.playerLoadPlaylist({ playlistId: playingPlaylistId, trackIndex: playingTrackIndex });
+      dispatch.playerModel.playerLoadPlaylist({
+        playlistId: playingPlaylistId,
+        trackIndex: playingTrackIndex,
+        isShuffle: isShuffle,
+        isTrack: true,
+      });
     }
   },
 
   async playerLoadAlbum(payload, rootState) {
-    const { albumId, trackIndex = 0 } = payload;
+    // console.log('%c--- playerLoadAlbum ---', 'color:#5c16b1');
+    const { albumId, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
 
     const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
     const allAlbumTracks = rootState.appModel.allAlbumTracks;
@@ -126,8 +139,8 @@ const effects = (dispatch) => ({
       return;
     }
 
-    const isShuffle = rootState.sessionModel.playingShuffle;
-    const trackKeys = getTrackKeys(currentAlbumTracks.length, isShuffle);
+    const trackKeys = getTrackKeys(currentAlbumTracks.length, isShuffle, isTrack ? trackIndex : null);
+    const realIndex = isTrack ? trackKeys.indexOf(trackIndex) : 0;
 
     dispatch.playerModel.playerLoadTrackList({
       playingVariant: 'albums',
@@ -135,18 +148,20 @@ const effects = (dispatch) => ({
       playingLibraryId: rootState.sessionModel.currentLibrary?.libraryId,
       playingAlbumId: albumId,
       playingPlaylistId: null,
-      playingTrackIndex: trackIndex,
+      playingTrackIndex: realIndex,
       playingTrackKeys: trackKeys,
       playingTrackList: currentAlbumTracks,
       playingTrackCount: currentAlbumTracks.length,
       playingTrackProgress: 0,
+      playingShuffle: isShuffle,
     });
 
     track('Plex: Load Album');
   },
 
   async playerLoadPlaylist(payload, rootState) {
-    const { playlistId, trackIndex = 0 } = payload;
+    // console.log('%c--- playerLoadPlaylist ---', 'color:#5c16b1');
+    const { playlistId, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
 
     const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
     const allPlaylistTracks = rootState.appModel.allPlaylistTracks;
@@ -158,8 +173,8 @@ const effects = (dispatch) => ({
       return;
     }
 
-    const isShuffle = rootState.sessionModel.playingShuffle;
-    const trackKeys = getTrackKeys(currentPlaylistTracks.length, isShuffle);
+    const trackKeys = getTrackKeys(currentPlaylistTracks.length, isShuffle, isTrack ? trackIndex : null);
+    const realIndex = isTrack ? trackKeys.indexOf(trackIndex) : 0;
 
     dispatch.playerModel.playerLoadTrackList({
       playingVariant: 'playlists',
@@ -167,11 +182,12 @@ const effects = (dispatch) => ({
       playingLibraryId: rootState.sessionModel.currentLibrary?.libraryId,
       playingAlbumId: null,
       playingPlaylistId: playlistId,
-      playingTrackIndex: trackIndex,
+      playingTrackIndex: realIndex,
       playingTrackKeys: trackKeys,
       playingTrackList: currentPlaylistTracks,
       playingTrackCount: currentPlaylistTracks.length,
       playingTrackProgress: 0,
+      playingShuffle: isShuffle,
     });
 
     track('Plex: Load Playlist');
@@ -320,13 +336,13 @@ const effects = (dispatch) => ({
     const playingTrackCount = rootState.sessionModel.playingTrackCount;
     const isShuffle = !playingShuffle;
 
-    const oldKey = rootState.sessionModel.playingTrackKeys[playingTrackIndex];
-    const trackKeys = getTrackKeys(playingTrackCount, isShuffle);
-    const newKey = trackKeys.indexOf(oldKey);
+    const realIndex = rootState.sessionModel.playingTrackKeys[playingTrackIndex];
+    const trackKeys = getTrackKeys(playingTrackCount, isShuffle, realIndex);
+    const newIndex = trackKeys.indexOf(realIndex);
 
     dispatch.sessionModel.setSessionState({
       playingShuffle: isShuffle,
-      playingTrackIndex: newKey,
+      playingTrackIndex: newIndex,
       playingTrackKeys: trackKeys,
     });
     track('Plex: Shuffle ' + (isShuffle ? 'On' : 'Off'));
