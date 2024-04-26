@@ -4,6 +4,7 @@
 
 import { track } from '@vercel/analytics';
 
+import { getTrackKeys } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
@@ -125,6 +126,9 @@ const effects = (dispatch) => ({
       return;
     }
 
+    const isShuffle = rootState.sessionModel.playingShuffle;
+    const trackKeys = getTrackKeys(currentAlbumTracks.length, isShuffle);
+
     dispatch.playerModel.playerLoadTrackList({
       playingVariant: 'albums',
       playingServerId: rootState.sessionModel.currentServer?.serverId,
@@ -132,6 +136,7 @@ const effects = (dispatch) => ({
       playingAlbumId: albumId,
       playingPlaylistId: null,
       playingTrackIndex: trackIndex,
+      playingTrackKeys: trackKeys,
       playingTrackList: currentAlbumTracks,
       playingTrackCount: currentAlbumTracks.length,
       playingTrackProgress: 0,
@@ -153,6 +158,9 @@ const effects = (dispatch) => ({
       return;
     }
 
+    const isShuffle = rootState.sessionModel.playingShuffle;
+    const trackKeys = getTrackKeys(currentPlaylistTracks.length, isShuffle);
+
     dispatch.playerModel.playerLoadTrackList({
       playingVariant: 'playlists',
       playingServerId: rootState.sessionModel.currentServer?.serverId,
@@ -160,6 +168,7 @@ const effects = (dispatch) => ({
       playingAlbumId: null,
       playingPlaylistId: playlistId,
       playingTrackIndex: trackIndex,
+      playingTrackKeys: trackKeys,
       playingTrackList: currentPlaylistTracks,
       playingTrackCount: currentPlaylistTracks.length,
       playingTrackProgress: 0,
@@ -178,7 +187,7 @@ const effects = (dispatch) => ({
     });
     // start playing
     const playerElement = rootState.playerModel.playerElement;
-    playerElement.src = payload.playingTrackList[payload.playingTrackIndex].src;
+    playerElement.src = payload.playingTrackList[payload.playingTrackKeys[payload.playingTrackIndex]].src;
     playerElement.load();
     playerElement.play().catch((error) => null);
     dispatch.playerModel.setPlayerState({
@@ -190,6 +199,7 @@ const effects = (dispatch) => ({
     // console.log('%c--- playerLoadIndex ---', 'color:#5c16b1');
     const playerElement = rootState.playerModel.playerElement;
     const playingTrackList = rootState.sessionModel.playingTrackList;
+    const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
     const { index, play, progress } = payload;
     if (index || index === 0) {
       dispatch.playerModel.setPlayerState({
@@ -198,7 +208,7 @@ const effects = (dispatch) => ({
       dispatch.sessionModel.setSessionState({
         playingTrackIndex: index,
       });
-      playerElement.src = playingTrackList[index].src;
+      playerElement.src = playingTrackList[playingTrackKeys[index]].src;
       playerElement.load();
       if (progress) {
         playerElement.currentTime = progress / 1000;
@@ -306,10 +316,20 @@ const effects = (dispatch) => ({
   playerShuffleToggle(payload, rootState) {
     // console.log('%c--- toggleShuffle ---', 'color:#5c16b1');
     const playingShuffle = rootState.sessionModel.playingShuffle;
+    const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+    const playingTrackCount = rootState.sessionModel.playingTrackCount;
+    const isShuffle = !playingShuffle;
+
+    const oldKey = rootState.sessionModel.playingTrackKeys[playingTrackIndex];
+    const trackKeys = getTrackKeys(playingTrackCount, isShuffle);
+    const newKey = trackKeys.indexOf(oldKey);
+
     dispatch.sessionModel.setSessionState({
-      playingShuffle: !playingShuffle,
+      playingShuffle: isShuffle,
+      playingTrackIndex: newKey,
+      playingTrackKeys: trackKeys,
     });
-    track('Plex: Shuffle ' + (!playingShuffle ? 'On' : 'Off'));
+    track('Plex: Shuffle ' + (isShuffle ? 'On' : 'Off'));
   },
 
   //

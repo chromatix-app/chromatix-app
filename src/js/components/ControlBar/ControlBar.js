@@ -30,6 +30,7 @@ const ControlBar = () => {
     playingPlaylistId,
     playingTrackList,
     playingTrackIndex,
+    playingTrackKeys,
     playingRepeat,
     playingShuffle,
   } = useSelector(({ sessionModel }) => sessionModel);
@@ -39,7 +40,7 @@ const ControlBar = () => {
       ? `/albums/${playingLibraryId}/${playingAlbumId}`
       : `/playlists/${playingLibraryId}/${playingPlaylistId}`;
 
-  const trackDetail = playingTrackList?.[playingTrackIndex];
+  const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
   const isDisabled = !trackDetail ? true : false;
 
   const volIcon = playerMuted || playerVolume <= 0 ? 'VolXIcon' : playerVolume < 50 ? 'VolLowIcon' : 'VolHighIcon';
@@ -145,11 +146,12 @@ const ControlProgress = () => {
   const mouseDownRef = useRef(false);
 
   const { playerElement, playerInteractionCount } = useSelector(({ playerModel }) => playerModel);
-  const { playingTrackList, playingTrackIndex } = useSelector(({ sessionModel }) => sessionModel);
+  const { playingTrackList, playingTrackIndex, playingTrackKeys } = useSelector(({ sessionModel }) => sessionModel);
 
   const [trackProgress, setTrackProgress] = useState(playerElement?.currentTime * 1000 || 0);
 
-  const trackDetail = playingTrackList?.[playingTrackIndex];
+  const realIndex = playingTrackKeys?.[playingTrackIndex];
+  const trackDetail = playingTrackList?.[realIndex];
   const isDisabled = !trackDetail ? true : false;
 
   const trackProgressCurrent = trackProgress / 1000;
@@ -206,7 +208,7 @@ const ControlProgress = () => {
     } else {
       didMountRef.current = true;
     }
-  }, [playingTrackIndex, playerInteractionCount]);
+  }, [realIndex, playerInteractionCount]);
 
   return (
     <div className={style.scrubber}>

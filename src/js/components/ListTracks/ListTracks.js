@@ -27,11 +27,12 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
   const playingPlaylistId = useSelector(({ sessionModel }) => sessionModel.playingPlaylistId);
   const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
   const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
+  const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
 
   const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
-  const trackDetail = playingTrackList?.[playingTrackIndex];
+  const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
 
   const totalDiscs = useMemo(() => {
     if (variant === 'albums') {
