@@ -145,9 +145,9 @@ const effects = (dispatch) => ({
     console.log('%c--- setLoggedOut ---', 'color:#07a098');
     dispatch.appModel.setAppState({
       inited: true,
-      ...userState,
-      ...plexServerState,
-      ...plexLibraryState,
+      ...Object.assign({}, userState),
+      ...Object.assign({}, plexServerState),
+      ...Object.assign({}, plexLibraryState),
     });
     dispatch.playerModel.playerUnload();
     dispatch.sessionModel.setLoggedOut();
@@ -178,8 +178,8 @@ const effects = (dispatch) => ({
   clearPlexServerState(payload, rootState) {
     console.log('%c--- clearPlexServerState ---', 'color:#07a098');
     dispatch.appModel.setAppState({
-      ...plexServerState,
-      ...plexLibraryState,
+      ...Object.assign({}, plexServerState),
+      ...Object.assign({}, plexLibraryState),
     });
     dispatch.playerModel.playerUnload();
   },
@@ -187,7 +187,7 @@ const effects = (dispatch) => ({
   clearPlexLibraryState(payload, rootState) {
     console.log('%c--- clearPlexLibraryState ---', 'color:#07a098');
     dispatch.appModel.setAppState({
-      ...plexLibraryState,
+      ...Object.assign({}, plexLibraryState),
     });
     rootState.appModel.history.push('/');
     plex.getAllPlaylists();

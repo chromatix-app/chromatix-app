@@ -213,25 +213,30 @@ const effects = (dispatch) => ({
 
   playerLoadIndex(payload, rootState) {
     // console.log('%c--- playerLoadIndex ---', 'color:#5c16b1');
-    const playerElement = rootState.playerModel.playerElement;
-    const playingTrackList = rootState.sessionModel.playingTrackList;
-    const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
-    const { index, play, progress } = payload;
-    if (index || index === 0) {
-      dispatch.playerModel.setPlayerState({
-        playerPlaying: play,
-      });
-      dispatch.sessionModel.setSessionState({
-        playingTrackIndex: index,
-      });
-      playerElement.src = playingTrackList[playingTrackKeys[index]].src;
-      playerElement.load();
-      if (progress) {
-        playerElement.currentTime = progress / 1000;
+    try {
+      const playerElement = rootState.playerModel.playerElement;
+      const playingTrackList = rootState.sessionModel.playingTrackList;
+      const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
+      const { index, play, progress } = payload;
+      if (index || index === 0) {
+        dispatch.playerModel.setPlayerState({
+          playerPlaying: play,
+        });
+        dispatch.sessionModel.setSessionState({
+          playingTrackIndex: index,
+        });
+        playerElement.src = playingTrackList[playingTrackKeys[index]].src;
+        playerElement.load();
+        if (progress) {
+          playerElement.currentTime = progress / 1000;
+        }
+        if (play) {
+          playerElement.play().catch((error) => null);
+        }
       }
-      if (play) {
-        playerElement.play().catch((error) => null);
-      }
+    } catch (error) {
+      // this catches older users before shuffle was implemented
+      dispatch.sessionModel.unloadTrack();
     }
   },
 
