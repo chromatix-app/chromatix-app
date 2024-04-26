@@ -5,6 +5,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { track } from '@vercel/analytics';
 import clsx from 'clsx';
 
 import { Icon, RangeSlider } from 'js/components';
@@ -66,6 +67,7 @@ const ControlBar = () => {
               to={playingLink}
               onClick={() => {
                 dispatch.appModel.setAppState({ scrollToPlaying: true });
+                track('Navigate to Playing');
               }}
             >
               <img src={trackDetail.thumb} alt={trackDetail.title} />

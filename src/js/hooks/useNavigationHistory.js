@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { track } from '@vercel/analytics';
 
 const useNavigationHistory = () => {
   const dispatch = useDispatch();
@@ -16,12 +17,14 @@ const useNavigationHistory = () => {
   const goBack = () => {
     if (canGoBack) {
       history.goBack();
+      track('Navigate Backwards');
     }
   };
 
   const goForward = () => {
     if (canGoForward) {
       history.goForward();
+      track('Navigate Forwards');
     }
   };
 

@@ -273,19 +273,24 @@ const effects = (dispatch) => ({
     // play next track, if available
     if (playingTrackIndex < playingTrackCount - 1) {
       dispatch.playerModel.playerLoadIndex({ index: playingTrackIndex + 1, play: true });
+      if (payload === true) {
+        track('Plex: Next Track (Auto)');
+      } else {
+        track('Plex: Next Track');
+      }
     }
     // else play first track, if on repeat
     else if (playingRepeat) {
       dispatch.playerModel.playerLoadIndex({ index: 0, play: true });
+      if (payload === true) {
+        track('Plex: Next Track (Restart) (Auto)');
+      } else {
+        track('Plex: Next Track (Restart)');
+      }
     }
     // else load first track, but don't play
     else {
       dispatch.playerModel.playerLoadIndex({ index: 0, play: false });
-    }
-    if (payload === true) {
-      track('Plex: Next Track (Auto)');
-    } else {
-      track('Plex: Next Track');
     }
   },
 
@@ -295,6 +300,7 @@ const effects = (dispatch) => ({
     dispatch.sessionModel.setSessionState({
       playingRepeat: !playingRepeat,
     });
+    track('Plex: Repeat ' + (!playingRepeat ? 'On' : 'Off'));
   },
 
   playerShuffleToggle(payload, rootState) {
@@ -303,6 +309,7 @@ const effects = (dispatch) => ({
     dispatch.sessionModel.setSessionState({
       playingShuffle: !playingShuffle,
     });
+    track('Plex: Shuffle ' + (!playingShuffle ? 'On' : 'Off'));
   },
 
   //
@@ -352,6 +359,7 @@ const effects = (dispatch) => ({
     });
     const playerElement = rootState.playerModel.playerElement;
     playerElement.volume = newMuted ? 0 : newVolume / 100;
+    track('Plex: Mute ' + (newMuted ? 'On' : 'Off'));
   },
 });
 
