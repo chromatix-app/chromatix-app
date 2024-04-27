@@ -89,26 +89,25 @@ const raceToSuccess = (promises, errorMessage) => {
   });
 };
 
+// A SIMPLE FUNCTION TO GET THE BROWSER NAME
+
 const getBrowserName = () => {
   const userAgent = navigator.userAgent;
-  let browserName = 'Unknown';
-
-  // Detect browser name
-  if (userAgent.indexOf('Firefox') > -1) {
-    browserName = 'Firefox';
-  } else if (userAgent.indexOf('Opera') > -1 || userAgent.indexOf('OPR') > -1) {
-    browserName = 'Opera';
-  } else if (userAgent.indexOf('Trident') > -1) {
-    browserName = 'Internet Explorer';
-  } else if (userAgent.indexOf('Edg') > -1) {
-    browserName = 'Microsoft Edge';
-  } else if (userAgent.indexOf('Chrome') > -1) {
-    browserName = 'Chrome';
-  } else if (userAgent.indexOf('Safari') > -1) {
-    browserName = 'Safari';
-  }
-
-  return browserName;
+  const browsers = [
+    { name: 'Microsoft Edge', identifier: 'Edg' },
+    { name: 'Brave', identifier: 'Brave' },
+    { name: 'Opera', identifier: ['Opera', 'OPR'] },
+    { name: 'Chrome', identifier: 'Chrome' },
+    { name: 'Chromium', identifier: 'Chromium' },
+    { name: 'Firefox', identifier: 'Firefox' },
+    { name: 'Safari', identifier: 'Safari' },
+    { name: 'Samsung Internet', identifier: 'SamsungBrowser' },
+    { name: 'Microsoft Internet Explorer', identifier: 'Trident' },
+  ];
+  const browser = browsers.find((b) =>
+    Array.isArray(b.identifier) ? b.identifier.some((id) => userAgent.includes(id)) : userAgent.includes(b.identifier)
+  );
+  return browser ? browser.name : 'Unknown';
 };
 
 // ======================================================================
