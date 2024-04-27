@@ -2,6 +2,7 @@
 // IMPORTS
 // ======================================================================
 
+import CryptoJS from 'crypto-js';
 import sha3 from 'crypto-js/sha3';
 
 import config from 'js/_config/config';
@@ -12,6 +13,8 @@ import config from 'js/_config/config';
 // ======================================================================
 
 const sessionState = {
+  sessionId: CryptoJS.lib.WordArray.random(16).toString(),
+
   currentServer: null,
   currentLibrary: null,
 
