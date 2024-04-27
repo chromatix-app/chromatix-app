@@ -2,6 +2,8 @@
 // IMPORTS
 // ======================================================================
 
+import { Queue } from 'js/components';
+
 import style from './RightBar.module.scss';
 
 // ======================================================================
@@ -9,7 +11,11 @@ import style from './RightBar.module.scss';
 // ======================================================================
 
 const RightBar = () => {
-  return <div className={style.wrap}>Queue</div>;
+  return (
+    <div className={style.wrap}>
+      <Queue />
+    </div>
+  );
 };
 
 // ======================================================================

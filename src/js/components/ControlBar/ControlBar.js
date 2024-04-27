@@ -18,7 +18,7 @@ import style from './ControlBar.module.scss';
 // COMPONENT
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
+const isProduction = process.env.REACT_APP_ENV === 'production';
 
 const ControlBar = () => {
   const dispatch = useDispatch();
@@ -145,7 +145,7 @@ const ControlBar = () => {
 
       <div className={style.secondary}>
         <div className={style.secondaryControls}>
-          {isLocal && (
+          {!isProduction && (
             <button
               className={clsx(style.queue, { [style.active]: queueIsVisible })}
               onClick={dispatch.sessionModel.queueVisibleToggle}
