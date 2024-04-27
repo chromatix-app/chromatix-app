@@ -125,6 +125,7 @@ const effects = (dispatch) => ({
 
   doLogout(payload, rootState) {
     console.log('%c--- logout ---', 'color:#07a098');
+    dispatch.playerModel.playerLogQuit();
     plex.logout();
     rootState.appModel.history.replace('/');
   },

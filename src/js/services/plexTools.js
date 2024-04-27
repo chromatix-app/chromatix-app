@@ -15,7 +15,7 @@ import config from 'js/_config/config';
 const secretKey = 'your_secret_key_here';
 
 const appName = 'Chromatix';
-const clientIdentifier = 'chromatix.app';
+const clientId = 'chromatix.app';
 const clientIcon = 'https://chromatix.app/icon/icon-512.png';
 
 const storagePinKey = config.storagePinKey;
@@ -89,6 +89,28 @@ const raceToSuccess = (promises, errorMessage) => {
   });
 };
 
+const getBrowserName = () => {
+  const userAgent = navigator.userAgent;
+  let browserName = 'Unknown';
+
+  // Detect browser name
+  if (userAgent.indexOf('Firefox') > -1) {
+    browserName = 'Firefox';
+  } else if (userAgent.indexOf('Opera') > -1 || userAgent.indexOf('OPR') > -1) {
+    browserName = 'Opera';
+  } else if (userAgent.indexOf('Trident') > -1) {
+    browserName = 'Internet Explorer';
+  } else if (userAgent.indexOf('Edg') > -1) {
+    browserName = 'Microsoft Edge';
+  } else if (userAgent.indexOf('Chrome') > -1) {
+    browserName = 'Chrome';
+  } else if (userAgent.indexOf('Safari') > -1) {
+    browserName = 'Safari';
+  }
+
+  return browserName;
+};
+
 // ======================================================================
 // INITIALISE
 // ======================================================================
@@ -144,7 +166,7 @@ export const login = () => {
               Accept: 'application/json',
               'Content-Type': 'application/json',
               'X-Plex-Product': appName,
-              'X-Plex-Client-Identifier': clientIdentifier,
+              'X-Plex-Client-Identifier': clientId,
               'X-Plex-Device-Icon': clientIcon, // NOTE: this doesn't seem to work
             },
           }
@@ -158,7 +180,7 @@ export const login = () => {
           setLocalStorage(storagePinKey, pinId);
 
           // redirect to the Plex login page
-          const authAppUrl = `https://app.plex.tv/auth#?clientID=${clientIdentifier}&code=${pinCode}&context%5Bdevice%5D%5Bproduct%5D=${encodeURIComponent(
+          const authAppUrl = `https://app.plex.tv/auth#?clientID=${clientId}&code=${pinCode}&context%5Bdevice%5D%5Bproduct%5D=${encodeURIComponent(
             appName
           )}&forwardUrl=${encodeURIComponent(redirectUrl)}`;
           window.location.href = authAppUrl;
@@ -197,7 +219,7 @@ const checkPlexPinStatus = (pinId, retryCount = 0) => {
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            'X-Plex-Client-Identifier': clientIdentifier,
+            'X-Plex-Client-Identifier': clientId,
           },
         })
         .then((response) => {
@@ -301,7 +323,7 @@ export const getAllServers = () => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
             'X-Plex-Token': authToken,
-            'X-Plex-Client-Identifier': clientIdentifier,
+            'X-Plex-Client-Identifier': clientId,
           },
         })
         .then((response) => {
@@ -354,7 +376,7 @@ export const getFastestServerConnection = (server) => {
               Accept: 'application/json',
               'Content-Type': 'application/json',
               'X-Plex-Token': accessToken,
-              'X-Plex-Client-Identifier': clientIdentifier,
+              'X-Plex-Client-Identifier': clientId,
             },
             timeout: 3000,
           })
@@ -394,7 +416,7 @@ export const getAllLibraries = (baseUrl, accessToken) => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
             'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientIdentifier,
+            'X-Plex-Client-Identifier': clientId,
           },
         })
         .then((response) => {
@@ -421,7 +443,17 @@ export const getAllLibraries = (baseUrl, accessToken) => {
 // LOG PLAYBACK STATUS
 // ======================================================================
 
-export const logPlaybackStatus = (baseUrl, accessToken, type, ratingKey, trackId, state, currentTime, duration) => {
+export const logPlaybackStatus = (
+  baseUrl,
+  accessToken,
+  sessionId,
+  type,
+  ratingKey,
+  trackId,
+  state,
+  currentTime,
+  duration
+) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.status.postPlaybackStatus(baseUrl);
@@ -441,7 +473,12 @@ export const logPlaybackStatus = (baseUrl, accessToken, type, ratingKey, trackId
           headers: {
             'Content-Type': 'application/json',
             'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientIdentifier,
+            'X-Plex-Client-Identifier': clientId,
+            'X-Plex-Session-Identifier': sessionId,
+            'X-Plex-Product': appName,
+            'X-Plex-Device-Name': getBrowserName(),
+            'X-Plex-Platform': getBrowserName(),
+            'X-Plex-Device-Icon': clientIcon,
           },
         })
         .then((response) => {
@@ -465,7 +502,17 @@ export const logPlaybackStatus = (baseUrl, accessToken, type, ratingKey, trackId
 // This is because axios does not support keepalive, and fetch with keepalive
 // will allow the request to complete even if the page is closed.
 
-export const logPlaybackQuit = (baseUrl, accessToken, type, ratingKey, trackId, state, currentTime, duration) => {
+export const logPlaybackQuit = (
+  baseUrl,
+  accessToken,
+  sessionId,
+  type,
+  ratingKey,
+  trackId,
+  state,
+  currentTime,
+  duration
+) => {
   try {
     const endpoint = endpointConfig.status.postPlaybackStatus(baseUrl);
     const params = new URLSearchParams({
@@ -485,7 +532,12 @@ export const logPlaybackQuit = (baseUrl, accessToken, type, ratingKey, trackId, 
       headers: {
         'Content-Type': 'application/json',
         'X-Plex-Token': accessToken,
-        'X-Plex-Client-Identifier': clientIdentifier,
+        'X-Plex-Client-Identifier': clientId,
+        'X-Plex-Session-Identifier': sessionId,
+        'X-Plex-Product': appName,
+        'X-Plex-Device-Name': getBrowserName(),
+        'X-Plex-Platform': getBrowserName(),
+        'X-Plex-Device-Icon': clientIcon,
       },
     });
   } catch (error) {
@@ -505,7 +557,7 @@ export const logPlaybackQuit = (baseUrl, accessToken, type, ratingKey, trackId, 
 //         headers: {
 //           'Content-Type': 'application/json',
 //           'X-Plex-Token': accessToken,
-//           'X-Plex-Client-Identifier': clientIdentifier,
+//           'X-Plex-Client-Identifier': clientId,
 //         },
 //       })
 //       .then((response) => {

@@ -71,7 +71,7 @@ const effects = (dispatch) => ({
     });
     // handle quit
     window.addEventListener('beforeunload', () => {
-      dispatch.playerModel.playerQuit();
+      dispatch.playerModel.playerLogQuit();
     });
   },
 
@@ -104,8 +104,8 @@ const effects = (dispatch) => ({
     });
   },
 
-  playerQuit(payload, rootState) {
-    // console.log('%c--- playerQuit ---', 'color:#5c16b1');
+  playerLogQuit(payload, rootState) {
+    // console.log('%c--- playerLogQuit ---', 'color:#5c16b1');
     try {
       const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
       const playingTrackList = rootState.sessionModel.playingTrackList;

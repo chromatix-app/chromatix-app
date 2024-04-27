@@ -1054,11 +1054,12 @@ export const logPlaybackStop = (currentTrack) => {
 export const logPlaybackStatus = (currentTrack, state, currentTime) => {
   const optionLogPlexPlayback = store.getState().sessionModel.optionLogPlexPlayback;
   if (optionLogPlexPlayback) {
-    const accessToken = store.getState().sessionModel.currentServer.accessToken;
     const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+    const accessToken = store.getState().sessionModel.currentServer.accessToken;
+    const sessionId = store.getState().sessionModel.sessionId;
     const { trackId, trackKey, duration } = currentTrack || {};
     plexTools
-      .logPlaybackStatus(plexBaseUrl, accessToken, 'music', trackId, trackKey, state, currentTime, duration)
+      .logPlaybackStatus(plexBaseUrl, accessToken, sessionId, 'music', trackId, trackKey, state, currentTime, duration)
       .catch((error) => {
         console.error(error);
         track('Error: Plex Update Playback Status');
@@ -1069,10 +1070,21 @@ export const logPlaybackStatus = (currentTrack, state, currentTime) => {
 export const logPlaybackQuit = (currentTrack, currentTime) => {
   const optionLogPlexPlayback = store.getState().sessionModel.optionLogPlexPlayback;
   if (optionLogPlexPlayback) {
-    const accessToken = store.getState().sessionModel.currentServer.accessToken;
     const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+    const accessToken = store.getState().sessionModel.currentServer.accessToken;
+    const sessionId = store.getState().sessionModel.sessionId;
     const { trackId, trackKey, duration } = currentTrack || {};
-    plexTools.logPlaybackQuit(plexBaseUrl, accessToken, 'music', trackId, trackKey, 'stopped', currentTime, duration);
+    plexTools.logPlaybackQuit(
+      plexBaseUrl,
+      accessToken,
+      sessionId,
+      'music',
+      trackId,
+      trackKey,
+      'stopped',
+      currentTime,
+      duration
+    );
   }
 };
 
