@@ -69,6 +69,10 @@ const effects = (dispatch) => ({
     playerElement.addEventListener('ended', () => {
       dispatch.playerModel.playerNext(true);
     });
+    // handle quit
+    window.addEventListener('beforeunload', () => {
+      dispatch.playerModel.playerQuit();
+    });
   },
 
   playerRefresh(payload, rootState) {
@@ -98,6 +102,20 @@ const effects = (dispatch) => ({
     dispatch.playerModel.setPlayerState({
       playerPlaying: false,
     });
+  },
+
+  playerQuit(payload, rootState) {
+    // console.log('%c--- playerQuit ---', 'color:#5c16b1');
+    try {
+      const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+      const playingTrackList = rootState.sessionModel.playingTrackList;
+      const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
+      const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
+      const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
+      plex.logPlaybackQuit(currentTrack, playingTrackProgress);
+    } catch (error) {
+      // do nothing
+    }
   },
 
   //

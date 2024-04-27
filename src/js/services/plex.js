@@ -1063,6 +1063,13 @@ export const logPlaybackStatus = (currentTrack, state, currentTime) => {
     });
 };
 
+export const logPlaybackQuit = (currentTrack, currentTime) => {
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+  const { trackId, trackKey, duration } = currentTrack || {};
+  plexTools.logPlaybackQuit(plexBaseUrl, accessToken, 'music', trackId, trackKey, 'stopped', currentTime, duration);
+};
+
 // ======================================================================
 // FETCH DATA
 // ======================================================================
