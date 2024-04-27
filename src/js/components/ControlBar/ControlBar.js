@@ -9,7 +9,7 @@ import { track } from '@vercel/analytics';
 import clsx from 'clsx';
 
 import { Icon, RangeSlider } from 'js/components';
-import { useKeyboardControls } from 'js/hooks';
+import { useKeyboardControls, useMediaControls, useMediaMeta } from 'js/hooks';
 import { durationToStringShort } from 'js/utils';
 
 import style from './ControlBar.module.scss';
@@ -46,17 +46,32 @@ const ControlBar = () => {
   const volIcon = playerMuted || playerVolume <= 0 ? 'VolXIcon' : playerVolume < 50 ? 'VolLowIcon' : 'VolHighIcon';
 
   // handle keyboard controls
-  const keyboardControls = useMemo(
+  const controlHandlers = useMemo(
     () => ({
-      prev: () => !isDisabled && dispatch.playerModel.playerPrev(),
-      next: () => !isDisabled && dispatch.playerModel.playerNext(),
       playPause: () =>
         !isDisabled && !playerPlaying ? dispatch.playerModel.playerPlay() : dispatch.playerModel.playerPause(),
+      play: () => !isDisabled && dispatch.playerModel.playerPlay(),
+      pause: () => !isDisabled && dispatch.playerModel.playerPause(),
+      prev: () => !isDisabled && dispatch.playerModel.playerPrev(),
+      next: () => !isDisabled && dispatch.playerModel.playerNext(),
     }),
     [dispatch, isDisabled, playerPlaying]
   );
 
-  useKeyboardControls(keyboardControls);
+  const trackMeta = useMemo(() => {
+    return trackDetail
+      ? {
+          title: trackDetail.title,
+          artist: trackDetail.artist,
+          album: trackDetail.album,
+          artwork: trackDetail.thumb ? [{ src: trackDetail.thumb }] : null,
+        }
+      : null;
+  }, [trackDetail]);
+
+  useKeyboardControls(controlHandlers);
+  useMediaControls(controlHandlers);
+  useMediaMeta(trackMeta);
 
   return (
     <div className={style.wrap}>

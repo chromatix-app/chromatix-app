@@ -65,6 +65,12 @@ const effects = (dispatch) => ({
       clearTimeout(loadstartTimeoutId);
       dispatch.playerModel.playerSetLoading(false);
     });
+    // playerElement.addEventListener('play', () => {
+    //   dispatch.playerModel.playerSetPlaying(true);
+    // });
+    // playerElement.addEventListener('pause', () => {
+    //   dispatch.playerModel.playerSetPlaying(true);
+    // });
     // play next track when current track ends
     playerElement.addEventListener('ended', () => {
       dispatch.playerModel.playerNext(true);
@@ -83,6 +89,16 @@ const effects = (dispatch) => ({
       dispatch.playerModel.playerLoadIndex({ index: playingTrackIndex, play: false, progress: playingTrackProgress });
     }
   },
+
+  // playerSetPlaying(payload, rootState) {
+  //   const playerPlaying = rootState.playerModel.playerPlaying;
+  //   if (playerPlaying !== payload) {
+  //     console.log(555);
+  //     dispatch.playerModel.setPlayerState({
+  //       playerPlaying: payload,
+  //     });
+  //   }
+  // },
 
   playerSetLoading(payload, rootState) {
     const playerLoading = rootState.playerModel.playerLoading;

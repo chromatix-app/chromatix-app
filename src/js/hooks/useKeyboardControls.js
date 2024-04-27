@@ -1,18 +1,32 @@
 import { useEffect } from 'react';
 
-const useKeyboardControls = (controls) => {
+const useKeyboardControls = (handlers) => {
   useEffect(() => {
     function handleKeyDown(event) {
       switch (event.key) {
-        case 'ArrowLeft':
-          controls.prev();
+        case 'MediaPlayPause':
+          event.preventDefault();
+          handlers.playPause();
           break;
-        case 'ArrowRight':
-          controls.next();
+        case 'MediaTrackPrevious':
+          event.preventDefault();
+          handlers.prev();
+          break;
+        case 'MediaTrackNext':
+          event.preventDefault();
+          handlers.next();
           break;
         case ' ':
           event.preventDefault();
-          controls.playPause();
+          handlers.playPause();
+          break;
+        case 'ArrowLeft':
+          event.preventDefault();
+          handlers.prev();
+          break;
+        case 'ArrowRight':
+          event.preventDefault();
+          handlers.next();
           break;
         default:
           break;
@@ -21,10 +35,11 @@ const useKeyboardControls = (controls) => {
 
     window.addEventListener('keydown', handleKeyDown);
 
+    // cleanup
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [controls]);
+  }, [handlers]);
 
   return null;
 };
