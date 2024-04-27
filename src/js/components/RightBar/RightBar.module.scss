@@ -1,0 +1,14 @@
+@import '../../../css/global';
+
+.wrap {
+  overflow-x: hidden;
+  width: 200px;
+  min-height: 100%;
+  padding: 90px 12px 20px;
+  background: var(--color-panel-background);
+  border-left: 1px solid var(--color-border);
+
+  @media (min-width: 1024px) {
+    width: 220px;
+  }
+}

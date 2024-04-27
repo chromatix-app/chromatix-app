@@ -40,6 +40,8 @@ const sessionState = {
   optionShowFullTitles: false,
   optionShowStarRatings: true,
   optionLogPlexPlayback: true,
+
+  queueIsVisible: false,
 };
 
 const playingState = {
@@ -182,6 +184,14 @@ const reducers = {
     return {
       ...rootState,
       ...Object.assign({}, playingState),
+    };
+  },
+
+  queueVisibleToggle(rootState, payload) {
+    // console.log('%c--- queueVisibleToggle ---', 'color:#0f60b7');
+    return {
+      ...rootState,
+      queueIsVisible: !rootState.queueIsVisible,
     };
   },
 
