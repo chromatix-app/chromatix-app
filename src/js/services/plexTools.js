@@ -439,6 +439,53 @@ export const getAllLibraries = (baseUrl, accessToken) => {
 };
 
 // ======================================================================
+// SET STAR RATING
+// ======================================================================
+
+// export const setStarRating = (baseUrl, accessToken, sessionId, ratingKey, rating) => {
+//   return new Promise((resolve, reject) => {
+//     try {
+//       const endpoint = `${baseUrl}/library/metadata/${ratingKey}`;
+//       const browserName = getBrowserName();
+//       const params = {
+//         userRating: rating,
+//       };
+
+//       axios
+//         .put(endpoint, params, {
+//           headers: {
+//             Accept: 'application/json',
+//             'Content-Type': 'application/json',
+//             'X-Plex-Token': accessToken,
+//             'X-Plex-Client-Identifier': clientId,
+//             'X-Plex-Session-Identifier': sessionId,
+//             'X-Plex-Product': appName,
+//             'X-Plex-Device-Name': browserName,
+//             'X-Plex-Platform': browserName,
+//             'X-Plex-Device-Icon': clientIcon,
+//           },
+//         })
+//         .then((response) => {
+//           resolve(response.data);
+//         })
+//         .catch((error) => {
+//           reject({
+//             code: 'setStarRating.1',
+//             message: `Failed to set star rating for ${ratingKey}: ${error.message}`,
+//             error: error,
+//           });
+//         });
+//     } catch (error) {
+//       reject({
+//         code: 'setStarRating.2',
+//         message: `Failed to set star rating for ${ratingKey}: ${error.message}`,
+//         error: error,
+//       });
+//     }
+//   });
+// };
+
+// ======================================================================
 // LOG PLAYBACK STATUS
 // ======================================================================
 
@@ -456,6 +503,7 @@ export const logPlaybackStatus = (
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.status.postPlaybackStatus(baseUrl);
+      const browserName = getBrowserName();
       const params = {
         type: type,
         key: trackId,
@@ -475,8 +523,8 @@ export const logPlaybackStatus = (
             'X-Plex-Client-Identifier': clientId,
             'X-Plex-Session-Identifier': sessionId,
             'X-Plex-Product': appName,
-            'X-Plex-Device-Name': getBrowserName(),
-            'X-Plex-Platform': getBrowserName(),
+            'X-Plex-Device-Name': browserName,
+            'X-Plex-Platform': browserName,
             'X-Plex-Device-Icon': clientIcon,
           },
         })
@@ -491,7 +539,11 @@ export const logPlaybackStatus = (
           });
         });
     } catch (error) {
-      // do nothing
+      reject({
+        code: 'logPlaybackStatus.2',
+        message: 'Failed to update playback status',
+        error,
+      });
     }
   });
 };
