@@ -38,10 +38,10 @@
 .layout {
   display: grid;
   grid-template-areas:
-    'sidebar content'
-    'controls controls';
+    'sidebar content rightbar'
+    'controls controls controls';
   grid-template-rows: 1fr auto;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr auto;
   height: 100vh;
   height: 100svh;
 }
@@ -56,10 +56,18 @@
   overflow: auto;
   grid-area: content;
   background: var(--color-background);
+  // container-type: inline-size;
 }
 
 .layout-controls {
   grid-area: controls;
+  background: var(--color-background);
+}
+
+.layout-rightbar {
+  overflow: auto;
+  grid-area: rightbar;
+  background: var(--color-background);
 }
 
 .loading {

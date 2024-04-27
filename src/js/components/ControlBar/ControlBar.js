@@ -18,6 +18,8 @@ import style from './ControlBar.module.scss';
 // COMPONENT
 // ======================================================================
 
+const isProduction = process.env.REACT_APP_ENV === 'production';
+
 const ControlBar = () => {
   const dispatch = useDispatch();
 
@@ -33,6 +35,7 @@ const ControlBar = () => {
     playingTrackKeys,
     playingRepeat,
     playingShuffle,
+    queueIsVisible,
   } = useSelector(({ sessionModel }) => sessionModel);
 
   const playingLink =
@@ -141,9 +144,19 @@ const ControlBar = () => {
       </div>
 
       <div className={style.secondary}>
-        <button className={style.volHigh} onClick={dispatch.playerModel.playerMuteToggle}>
-          <Icon icon={volIcon} cover stroke />
-        </button>
+        <div className={style.secondaryControls}>
+          {!isProduction && (
+            <button
+              className={clsx(style.queue, { [style.active]: queueIsVisible })}
+              onClick={dispatch.sessionModel.queueVisibleToggle}
+            >
+              <Icon icon="QueueIcon" cover stroke />
+            </button>
+          )}
+          <button className={style.volume} onClick={dispatch.playerModel.playerMuteToggle}>
+            <Icon icon={volIcon} cover stroke />
+          </button>
+        </div>
         <div className={style.volSlider}>
           <RangeSlider value={playerMuted ? 0 : playerVolume} handleChange={dispatch.playerModel.playerVolumeSet} />
         </div>

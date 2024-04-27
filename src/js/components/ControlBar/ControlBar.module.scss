@@ -115,7 +115,7 @@ button.pause,
 button.forward,
 button.repeat,
 button.queue,
-button.volHigh {
+button.volume {
   display: block;
   position: relative;
   width: 44px;
@@ -172,7 +172,7 @@ button.pause {
   padding: 11px;
 }
 
-button.volHigh {
+button.volume {
   margin-right: 2px;
 }
 
@@ -235,6 +235,17 @@ button.active {
   display: flex;
   align-items: center;
   margin: 0 0 0 auto;
+}
+
+.secondaryControls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+
+  // @media (min-width: 1024px) {
+  //   gap: 10px;
+  // }
 }
 
 .volSlider {
