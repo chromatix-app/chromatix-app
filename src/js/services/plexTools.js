@@ -40,6 +40,9 @@ const endpointConfig = {
   library: {
     getAllLibraries: (base) => `${base}/library/sections`,
   },
+  status: {
+    postPlaybackStatus: (base) => `${base}/:/timeline`,
+  },
 };
 
 // ======================================================================
@@ -413,3 +416,107 @@ export const getAllLibraries = (baseUrl, accessToken) => {
     }
   });
 };
+
+// ======================================================================
+// LOG PLAYBACK STATUS
+// ======================================================================
+
+export const logPlaybackStatus = (baseUrl, accessToken, type, ratingKey, trackId, state, currentTime, duration) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.status.postPlaybackStatus(baseUrl);
+      const params = {
+        type: type,
+        key: trackId,
+        ratingKey: ratingKey,
+        state: state, // playing, paused, stopped
+        time: currentTime, // time in milliseconds
+        playbackTime: currentTime, // time in milliseconds
+        duration: duration, // duration of the media in milliseconds
+        // Add any other necessary data here
+      };
+      axios
+        .get(endpoint, {
+          params: params,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Plex-Token': accessToken,
+            'X-Plex-Client-Identifier': clientIdentifier,
+          },
+        })
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((error) => {
+          reject({
+            code: 'logPlaybackStatus.1',
+            message: 'Failed to update playback status',
+            error,
+          });
+        });
+    } catch (error) {
+      // do nothing
+    }
+  });
+};
+
+// The below variation is used on window unload in order to log playback as stopped.
+// The fetch method is used instead of axios, with keepalive set to true.
+// This is because axios does not support keepalive, and fetch with keepalive
+// will allow the request to complete even if the page is closed.
+
+export const logPlaybackQuit = (baseUrl, accessToken, type, ratingKey, trackId, state, currentTime, duration) => {
+  try {
+    const endpoint = endpointConfig.status.postPlaybackStatus(baseUrl);
+    const params = new URLSearchParams({
+      type: type,
+      key: trackId,
+      ratingKey: ratingKey,
+      state: state, // playing, paused, stopped
+      time: currentTime, // time in milliseconds
+      playbackTime: currentTime, // time in milliseconds
+      duration: duration, // duration of the media in milliseconds
+      // Add any other necessary data here
+    }).toString();
+    const fetchUrl = `${endpoint}?${params}`;
+    fetch(fetchUrl, {
+      method: 'GET',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Plex-Token': accessToken,
+        'X-Plex-Client-Identifier': clientIdentifier,
+      },
+    });
+  } catch (error) {
+    // do nothing
+  }
+};
+
+// ======================================================================
+// SCROBBLE ITEM
+// ======================================================================
+
+// export const scrobbleItem = (baseUrl, accessToken, key, identifier) => {
+//   return new Promise((resolve, reject) => {
+//     const endpoint = `${baseUrl}/:/scrobble?key=${key}&identifier=${identifier}`;
+//     axios
+//       .get(endpoint, {
+//         headers: {
+//           'Content-Type': 'application/json',
+//           'X-Plex-Token': accessToken,
+//           'X-Plex-Client-Identifier': clientIdentifier,
+//         },
+//       })
+//       .then((response) => {
+//         resolve(response);
+//       })
+//       .catch((error) => {
+//         reject({
+//           code: 'scrobbleItem.1',
+//           message: `Failed to scrobble item to ${endpoint}: ${error.message}`,
+//           error,
+//         });
+//       });
+//   });
+// };

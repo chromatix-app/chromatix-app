@@ -1031,6 +1031,52 @@ export const getAlbumMoodItems = async (libraryId, moodId) => {
 };
 
 // ======================================================================
+// LOG PLAYBACK STATUS
+// ======================================================================
+
+export const logPlaybackPlay = (currentTrack, currentTime = 0) => {
+  logPlaybackStatus(currentTrack, 'playing', currentTime);
+};
+
+export const logPlaybackProgress = (currentTrack, currentTime) => {
+  logPlaybackStatus(currentTrack, 'playing', currentTime);
+};
+
+export const logPlaybackPause = (currentTrack, currentTime) => {
+  logPlaybackStatus(currentTrack, 'paused', currentTime);
+};
+
+export const logPlaybackStop = (currentTrack) => {
+  const { duration } = currentTrack;
+  logPlaybackStatus(currentTrack, 'stopped', duration);
+};
+
+export const logPlaybackStatus = (currentTrack, state, currentTime) => {
+  const optionLogPlexPlayback = store.getState().sessionModel.optionLogPlexPlayback;
+  if (optionLogPlexPlayback) {
+    const accessToken = store.getState().sessionModel.currentServer.accessToken;
+    const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+    const { trackId, trackKey, duration } = currentTrack || {};
+    plexTools
+      .logPlaybackStatus(plexBaseUrl, accessToken, 'music', trackId, trackKey, state, currentTime, duration)
+      .catch((error) => {
+        console.error(error);
+        track('Error: Plex Update Playback Status');
+      });
+  }
+};
+
+export const logPlaybackQuit = (currentTrack, currentTime) => {
+  const optionLogPlexPlayback = store.getState().sessionModel.optionLogPlexPlayback;
+  if (optionLogPlexPlayback) {
+    const accessToken = store.getState().sessionModel.currentServer.accessToken;
+    const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+    const { trackId, trackKey, duration } = currentTrack || {};
+    plexTools.logPlaybackQuit(plexBaseUrl, accessToken, 'music', trackId, trackKey, 'stopped', currentTime, duration);
+  }
+};
+
+// ======================================================================
 // FETCH DATA
 // ======================================================================
 
@@ -1119,6 +1165,7 @@ const transposeTrackData = (track, libraryId, plexBaseUrl, accessToken) => {
   return {
     libraryId: track.librarySectionID,
     trackId: track.ratingKey,
+    trackKey: track.key,
     title: track.title,
     artist: track.grandparentTitle,
     artistLink: '/artists/' + track.librarySectionID + '/' + track.grandparentRatingKey,

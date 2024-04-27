@@ -148,7 +148,9 @@ const ThemeSettings = () => {
 const OptionSettings = () => {
   const dispatch = useDispatch();
 
-  const { optionShowFullTitles, optionShowStarRatings } = useSelector(({ sessionModel }) => sessionModel);
+  const { optionShowFullTitles, optionShowStarRatings, optionLogPlexPlayback } = useSelector(
+    ({ sessionModel }) => sessionModel
+  );
 
   const menuItems = [
     {
@@ -157,11 +159,17 @@ const OptionSettings = () => {
       state: optionShowFullTitles,
     },
     { key: 'optionShowStarRatings', label: 'Show star ratings', state: optionShowStarRatings },
+    {
+      key: 'optionLogPlexPlayback',
+      label: 'Log playback events to Plex',
+      description: 'This is used to tell the Plex server what is currently playing, and to update the play count.',
+      state: optionLogPlexPlayback,
+    },
   ];
 
   return (
     <div className={style.menu}>
-      {menuItems.map(({ key, label, state }) => (
+      {menuItems.map(({ key, label, description, state }) => (
         <div key={key} className={style.menuEntry}>
           <label>
             <input
@@ -169,7 +177,10 @@ const OptionSettings = () => {
               checked={state}
               onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
             />
-            <div>{label}</div>
+            <div>
+              {label && <div className={style.label}>{label}</div>}
+              {description && <div className={style.description}>{description}</div>}
+            </div>
           </label>
         </div>
       ))}

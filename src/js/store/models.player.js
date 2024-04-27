@@ -69,6 +69,10 @@ const effects = (dispatch) => ({
     playerElement.addEventListener('ended', () => {
       dispatch.playerModel.playerNext(true);
     });
+    // handle quit
+    window.addEventListener('beforeunload', () => {
+      dispatch.playerModel.playerQuit();
+    });
   },
 
   playerRefresh(payload, rootState) {
@@ -98,6 +102,20 @@ const effects = (dispatch) => ({
     dispatch.playerModel.setPlayerState({
       playerPlaying: false,
     });
+  },
+
+  playerQuit(payload, rootState) {
+    // console.log('%c--- playerQuit ---', 'color:#5c16b1');
+    try {
+      const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+      const playingTrackList = rootState.sessionModel.playingTrackList;
+      const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
+      const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
+      const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
+      plex.logPlaybackQuit(currentTrack, playingTrackProgress);
+    } catch (error) {
+      // do nothing
+    }
   },
 
   //
@@ -203,12 +221,14 @@ const effects = (dispatch) => ({
     });
     // start playing
     const playerElement = rootState.playerModel.playerElement;
-    playerElement.src = payload.playingTrackList[payload.playingTrackKeys[payload.playingTrackIndex]].src;
+    const currentTrack = payload.playingTrackList[payload.playingTrackKeys[payload.playingTrackIndex]];
+    playerElement.src = currentTrack.src;
     playerElement.load();
     playerElement.play().catch((error) => null);
     dispatch.playerModel.setPlayerState({
       playerInteractionCount: rootState.playerModel.playerInteractionCount + 1,
     });
+    plex.logPlaybackPlay(currentTrack);
   },
 
   playerLoadIndex(payload, rootState) {
@@ -219,19 +239,21 @@ const effects = (dispatch) => ({
       const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
       const { index, play, progress } = payload;
       if (index || index === 0) {
+        const currentTrack = playingTrackList[playingTrackKeys[index]];
         dispatch.playerModel.setPlayerState({
           playerPlaying: play,
         });
         dispatch.sessionModel.setSessionState({
           playingTrackIndex: index,
         });
-        playerElement.src = playingTrackList[playingTrackKeys[index]].src;
+        playerElement.src = currentTrack.src;
         playerElement.load();
         if (progress) {
           playerElement.currentTime = progress / 1000;
         }
         if (play) {
           playerElement.play().catch((error) => null);
+          plex.logPlaybackPlay(currentTrack, progress);
         }
       }
     } catch (error) {
@@ -244,23 +266,50 @@ const effects = (dispatch) => ({
   // PLAYER CONTROLS
   //
 
+  // TODO: funnel all play actions through this function
+
   playerPlay(payload, rootState) {
     // console.log('%c--- playerPlay ---', 'color:#5c16b1');
     const playerElement = rootState.playerModel.playerElement;
+    const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+    const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
+    const playingTrackList = rootState.sessionModel.playingTrackList;
+    const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
+    const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
     playerElement.play().catch((error) => null);
     dispatch.playerModel.setPlayerState({
       playerPlaying: true,
     });
+    plex.logPlaybackPlay(currentTrack, playingTrackProgress);
     track('Plex: Play');
+  },
+
+  playerProgress(payload, rootState) {
+    // console.log('%c--- playerProgress ---', 'color:#5c16b1');
+    const playerPlaying = rootState.playerModel.playerPlaying;
+    if (playerPlaying) {
+      const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+      const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
+      const playingTrackList = rootState.sessionModel.playingTrackList;
+      const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
+      dispatch.sessionModel.setPlayingTrackProgress(payload);
+      plex.logPlaybackProgress(currentTrack, payload);
+    }
   },
 
   playerPause(payload, rootState) {
     // console.log('%c--- playerPause ---', 'color:#5c16b1');
     const playerElement = rootState.playerModel.playerElement;
+    const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+    const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
+    const playingTrackList = rootState.sessionModel.playingTrackList;
+    const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
+    const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
     playerElement.pause();
     dispatch.playerModel.setPlayerState({
       playerPlaying: false,
     });
+    plex.logPlaybackPause(currentTrack, playingTrackProgress);
     track('Plex: Pause');
   },
 
@@ -299,8 +348,11 @@ const effects = (dispatch) => ({
   playerNext(payload, rootState) {
     // console.log('%c--- playerNext ---', 'color:#5c16b1');
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+    const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
+    const playingTrackList = rootState.sessionModel.playingTrackList;
     const playingTrackCount = rootState.sessionModel.playingTrackCount;
     const playingRepeat = rootState.sessionModel.playingRepeat;
+    const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
     // play next track, if available
     if (playingTrackIndex < playingTrackCount - 1) {
       dispatch.playerModel.playerLoadIndex({ index: playingTrackIndex + 1, play: true });
@@ -322,6 +374,7 @@ const effects = (dispatch) => ({
     // else load first track, but don't play
     else {
       dispatch.playerModel.playerLoadIndex({ index: 0, play: false });
+      plex.logPlaybackStop(currentTrack);
     }
   },
 

@@ -36,6 +36,7 @@ const sessionState = {
 
   optionShowFullTitles: false,
   optionShowStarRatings: true,
+  optionLogPlexPlayback: true,
 };
 
 const playingState = {
