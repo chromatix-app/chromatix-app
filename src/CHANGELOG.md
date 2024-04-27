@@ -1,3 +1,11 @@
+<a name="0.11.0"></a>
+# 0.11.0 (2024-04-27)
+Features:
+- Added media key support.
+- Added media metadata support.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.10.0"></a>
 # 0.10.0 (2024-04-27)
 Features:
