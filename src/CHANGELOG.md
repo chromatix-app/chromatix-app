@@ -1,3 +1,17 @@
+<a name="0.10.0"></a>
+# 0.10.0 (2024-04-27)
+Features:
+- Added logging of playback status back to Plex.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
+<a name="0.9.0"></a>
+# 0.9.0 (2024-04-26)
+Features:
+- Added repeat and shuffle functionality.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.8.0"></a>
 # 0.8.0 (2024-04-21)
 Features:
