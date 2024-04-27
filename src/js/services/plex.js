@@ -1052,22 +1052,28 @@ export const logPlaybackStop = (currentTrack) => {
 };
 
 export const logPlaybackStatus = (currentTrack, state, currentTime) => {
-  const accessToken = store.getState().sessionModel.currentServer.accessToken;
-  const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-  const { trackId, trackKey, duration } = currentTrack || {};
-  plexTools
-    .logPlaybackStatus(plexBaseUrl, accessToken, 'music', trackId, trackKey, state, currentTime, duration)
-    .catch((error) => {
-      console.error(error);
-      track('Error: Plex Update Playback Status');
-    });
+  const optionLogPlexPlayback = store.getState().sessionModel.optionLogPlexPlayback;
+  if (optionLogPlexPlayback) {
+    const accessToken = store.getState().sessionModel.currentServer.accessToken;
+    const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+    const { trackId, trackKey, duration } = currentTrack || {};
+    plexTools
+      .logPlaybackStatus(plexBaseUrl, accessToken, 'music', trackId, trackKey, state, currentTime, duration)
+      .catch((error) => {
+        console.error(error);
+        track('Error: Plex Update Playback Status');
+      });
+  }
 };
 
 export const logPlaybackQuit = (currentTrack, currentTime) => {
-  const accessToken = store.getState().sessionModel.currentServer.accessToken;
-  const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-  const { trackId, trackKey, duration } = currentTrack || {};
-  plexTools.logPlaybackQuit(plexBaseUrl, accessToken, 'music', trackId, trackKey, 'stopped', currentTime, duration);
+  const optionLogPlexPlayback = store.getState().sessionModel.optionLogPlexPlayback;
+  if (optionLogPlexPlayback) {
+    const accessToken = store.getState().sessionModel.currentServer.accessToken;
+    const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+    const { trackId, trackKey, duration } = currentTrack || {};
+    plexTools.logPlaybackQuit(plexBaseUrl, accessToken, 'music', trackId, trackKey, 'stopped', currentTime, duration);
+  }
 };
 
 // ======================================================================
