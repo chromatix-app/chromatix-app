@@ -1175,14 +1175,14 @@ const transposePlaylistData = (playlist, libraryId, plexBaseUrl, accessToken) =>
 
 const transposeTrackData = (track, libraryId, plexBaseUrl, accessToken) => {
   return {
-    libraryId: track.librarySectionID,
+    libraryId: libraryId,
     trackId: track.ratingKey,
     trackKey: track.key,
     title: track.title,
     artist: track.grandparentTitle,
-    artistLink: '/artists/' + track.librarySectionID + '/' + track.grandparentRatingKey,
+    artistLink: '/artists/' + libraryId + '/' + track.grandparentRatingKey,
     album: track.parentTitle,
-    albumLink: '/albums/' + track.librarySectionID + '/' + track.parentRatingKey,
+    albumLink: '/albums/' + libraryId + '/' + track.parentRatingKey,
     trackNumber: track.index,
     discNumber: track.parentIndex,
     duration: track.Media[0].duration,
