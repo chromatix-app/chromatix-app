@@ -72,11 +72,11 @@ const QueueEntry = ({
           doPlay(true);
         }}
       >
-        {playingVariant === 'playlists' && entry.thumb && (
-          <div className={style.thumb}>
-            <img src={entry.thumb} alt={entry.title} loading="lazy" />
-          </div>
-        )}
+        {/* {playingVariant === 'playlists' && entry.thumb && ( */}
+        <div className={style.thumb}>
+          <img src={entry.thumb} alt={entry.title} loading="lazy" />
+        </div>
+        {/* )} */}
 
         <div className={clsx(style.content, { 'text-trim': !optionShowFullTitles })}>
           <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
