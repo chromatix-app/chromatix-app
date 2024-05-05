@@ -23,6 +23,7 @@ const UserMenu = () => {
   const currentUser = useSelector(({ appModel }) => appModel.currentUser);
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
+  const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
 
   const allServers = useSelector(({ appModel }) => appModel.allServers);
   const allLibraries = useSelector(({ appModel }) => appModel.allLibraries);
@@ -35,7 +36,7 @@ const UserMenu = () => {
     <>
       {showMenu && <div className={style.overlay} onClick={toggleMenu}></div>}
 
-      <div className={style.wrap}>
+      <div className={clsx(style.wrap, { [style.wrapWithQueue]: queueIsVisible })}>
         <button className={style.status} onClick={toggleMenu}>
           <div className={style.content}>
             {currentLibrary && currentServer && (
