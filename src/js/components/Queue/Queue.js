@@ -19,10 +19,10 @@ const Queue = () => {
   const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
   const playingRepeat = useSelector(({ sessionModel }) => sessionModel.playingRepeat);
 
-  const upcomingTrackKeys = playingTrackKeys.filter((_, index) => index >= playingTrackIndex);
+  const upcomingTrackKeys = playingTrackKeys ? playingTrackKeys.filter((_, index) => index >= playingTrackIndex) : [];
   const upcomingEntries = upcomingTrackKeys.map((key) => playingTrackList[key]);
 
-  const repeatEntries = playingRepeat ? playingTrackKeys.map((key) => playingTrackList[key]) : [];
+  const repeatEntries = playingRepeat && playingTrackKeys ? playingTrackKeys.map((key) => playingTrackList[key]) : [];
 
   const totalTracksRemaining = playingTrackKeys ? playingTrackKeys.length - playingTrackIndex : 0;
 
