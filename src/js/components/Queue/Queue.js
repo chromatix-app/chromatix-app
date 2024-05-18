@@ -19,31 +19,37 @@ const Queue = () => {
   const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
   const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
 
-  const totalTracksRemaining = playingTrackKeys.length - playingTrackIndex;
+  const totalTracksRemaining = playingTrackKeys ? playingTrackKeys.length - playingTrackIndex : 0;
 
   return (
     <div className={style.wrap}>
-      {playingTrackKeys.map((value, index) => {
-        const entry = playingTrackList[value];
+      {playingTrackKeys &&
+        playingTrackKeys.map((value, index) => {
+          const entry = playingTrackList[value];
 
-        if (index < playingTrackIndex) return null;
+          if (index < playingTrackIndex) return null;
 
-        const isCurrentlyPlaying = index === playingTrackIndex;
+          const isCurrentlyPlaying = index === playingTrackIndex;
 
-        return (
-          <QueueEntry
-            key={index}
-            index={index}
-            entry={entry}
-            isCurrentlyPlaying={isCurrentlyPlaying}
-            optionShowFullTitles={optionShowFullTitles}
-            playingVariant={playingVariant}
-            totalTracksRemaining={totalTracksRemaining}
-          />
-        );
-      })}
+          return (
+            <QueueEntry
+              key={index}
+              index={index}
+              entry={entry}
+              isCurrentlyPlaying={isCurrentlyPlaying}
+              optionShowFullTitles={optionShowFullTitles}
+              playingVariant={playingVariant}
+              totalTracksRemaining={totalTracksRemaining}
+            />
+          );
+        })}
+      {!playingTrackKeys && <QueueEmpty />}
     </div>
   );
+};
+
+const QueueEmpty = () => {
+  return <div className={style.section}>No tracks in queue</div>;
 };
 
 const QueueEntry = ({
