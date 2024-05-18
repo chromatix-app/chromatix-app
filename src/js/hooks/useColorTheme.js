@@ -29,6 +29,7 @@ function useColorTheme() {
   let colorOpacity01 = colorText + '1a';
   let colorOpacity015 = colorText + '26';
   let colorOpacity02 = colorText + '33';
+  let colorOpacity05 = colorText + '80';
 
   let colorShadow = isLightTheme ? '' : '#00000044';
 
@@ -54,6 +55,7 @@ function useColorTheme() {
       '--color-opacity-01': colorOpacity01,
       '--color-opacity-015': colorOpacity015,
       '--color-opacity-02': colorOpacity02,
+      '--color-opacity-05': colorOpacity05,
 
       '--color-shadow': colorShadow,
     };
@@ -75,6 +77,7 @@ function useColorTheme() {
     colorOpacity01,
     colorOpacity015,
     colorOpacity02,
+    colorOpacity05,
 
     colorShadow,
   ]);

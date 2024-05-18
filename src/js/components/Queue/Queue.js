@@ -14,36 +14,42 @@ import style from './Queue.module.scss';
 
 const Queue = () => {
   const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
-  const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
   const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
   const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
   const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
+  const playingRepeat = useSelector(({ sessionModel }) => sessionModel.playingRepeat);
+
+  const upcomingTrackKeys = playingTrackKeys.filter((_, index) => index >= playingTrackIndex);
+  const upcomingEntries = upcomingTrackKeys.map((key) => playingTrackList[key]);
+
+  const repeatEntries = playingRepeat ? playingTrackKeys.map((key) => playingTrackList[key]) : [];
 
   const totalTracksRemaining = playingTrackKeys ? playingTrackKeys.length - playingTrackIndex : 0;
 
   return (
     <div className={style.wrap}>
-      {playingTrackKeys &&
-        playingTrackKeys.map((value, index) => {
-          const entry = playingTrackList[value];
-
-          if (index < playingTrackIndex) return null;
-
-          const isCurrentlyPlaying = index === playingTrackIndex;
-
-          return (
-            <QueueEntry
-              key={index}
-              index={index}
-              entry={entry}
-              isCurrentlyPlaying={isCurrentlyPlaying}
-              optionShowFullTitles={optionShowFullTitles}
-              playingVariant={playingVariant}
-              totalTracksRemaining={totalTracksRemaining}
-            />
-          );
-        })}
       {!playingTrackKeys && <QueueEmpty />}
+      {playingTrackKeys && (
+        <QueueList
+          entries={upcomingEntries}
+          isRepeat={false}
+          optionShowFullTitles={optionShowFullTitles}
+          totalTracksRemaining={totalTracksRemaining}
+        />
+      )}
+      {playingRepeat && (
+        <>
+          <QueueList
+            entries={repeatEntries}
+            isRepeat={true}
+            optionShowFullTitles={optionShowFullTitles}
+            totalTracksRemaining={totalTracksRemaining}
+          />
+          <div className={style.repeat}>
+            <span>Repeating</span>
+          </div>
+        </>
+      )}
     </div>
   );
 };
@@ -52,14 +58,25 @@ const QueueEmpty = () => {
   return <div className={style.section}>No tracks in queue</div>;
 };
 
-const QueueEntry = ({
-  entry,
-  index,
-  isCurrentlyPlaying,
-  optionShowFullTitles,
-  playingVariant,
-  totalTracksRemaining,
-}) => {
+const QueueList = ({ entries, isRepeat, optionShowFullTitles, totalTracksRemaining }) => {
+  return entries.map((entry, index) => {
+    const isCurrentlyPlaying = index === 0;
+
+    return (
+      <QueueEntry
+        key={index}
+        index={index}
+        entry={entry}
+        isRepeat={isRepeat}
+        isCurrentlyPlaying={isCurrentlyPlaying}
+        optionShowFullTitles={optionShowFullTitles}
+        totalTracksRemaining={totalTracksRemaining}
+      />
+    );
+  });
+};
+
+const QueueEntry = ({ entry, index, isRepeat, isCurrentlyPlaying, optionShowFullTitles, totalTracksRemaining }) => {
   const dispatch = useDispatch();
 
   const doPlay = () => {
@@ -70,19 +87,17 @@ const QueueEntry = ({
 
   return (
     <>
-      {isCurrentlyPlaying && <div className={style.section}>Now playing</div>}
+      {!isRepeat && isCurrentlyPlaying && <div className={style.section}>Now playing</div>}
 
       <div
-        className={clsx(style.entry, 'text-trim', { [style.entryCurrent]: isCurrentlyPlaying })}
+        className={clsx(style.entry, 'text-trim', { [style.entryCurrent]: !isRepeat && isCurrentlyPlaying })}
         onDoubleClick={() => {
           doPlay(true);
         }}
       >
-        {/* {playingVariant === 'playlists' && entry.thumb && ( */}
         <div className={style.thumb}>
           <img src={entry.thumb} alt={entry.title} loading="lazy" />
         </div>
-        {/* )} */}
 
         <div className={clsx(style.content, { 'text-trim': !optionShowFullTitles })}>
           <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
@@ -92,9 +107,7 @@ const QueueEntry = ({
         </div>
       </div>
 
-      {/* {isCurrentlyPlaying && totalTracksRemaining > 1 && <div className={style.section}>Next in queue</div>} */}
-
-      {isCurrentlyPlaying && totalTracksRemaining > 1 && <div className={style.section}>Coming up</div>}
+      {!isRepeat && isCurrentlyPlaying && totalTracksRemaining > 1 && <div className={style.section}>Coming up</div>}
     </>
   );
 };
