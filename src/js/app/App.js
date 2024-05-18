@@ -2,12 +2,13 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import clsx from 'clsx';
 
 import { ControlBar, RightBar, SideBar, UserMenu } from 'js/components';
-import { useColorTheme, useGotRequiredData, useScrollRestoration } from 'js/hooks';
+import { useColorTheme, useGotRequiredData, useScrollRestoration, useWindowSize } from 'js/hooks';
 import { ErrorPlexGeneral, ErrorPlexLogin } from 'js/pages';
 import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 
@@ -26,7 +27,6 @@ const App = () => {
 
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
-  const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
 
   const debugConsole = useSelector(({ persistentModel }) => persistentModel.debugConsole);
 
@@ -111,30 +111,53 @@ const App = () => {
         </div>
       );
     } else {
-      return (
-        <div className="wrap">
-          <div className="layout">
-            <div className="layout-sidebar">
-              <SideBar />
-            </div>
-            <div id="content" className="layout-content">
-              <BrowserRouteSwitch />
-            </div>
-            {queueIsVisible && (
-              <div className="layout-rightbar">
-                <RightBar />
-              </div>
-            )}
-            <div className="layout-controls">
-              <ControlBar />
-            </div>
-            {/* <Blocker /> */}
-          </div>
-          <UserMenu />
-        </div>
-      );
+      return <AppMain />;
     }
   }
+};
+
+const breakPoints = [620, 680, 800, 860, 920, 980];
+
+const AppMain = () => {
+  const [contentContainerClass, setContentContainerClass] = useState(0);
+  const contentRef = useRef();
+
+  const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
+
+  const { windowWidth } = useWindowSize();
+
+  // handle window size
+  useEffect(() => {
+    const contentWidth = contentRef.current.offsetWidth;
+    const classList = breakPoints
+      .filter((bp) => bp <= contentWidth)
+      .map((bp) => 'cq-' + bp)
+      .join(' ');
+    setContentContainerClass(classList);
+  }, [windowWidth, queueIsVisible]);
+
+  return (
+    <div className="wrap">
+      <div className="layout">
+        <div className="layout-sidebar">
+          <SideBar />
+        </div>
+        <div ref={contentRef} id="content" className={clsx('layout-content', contentContainerClass)}>
+          <BrowserRouteSwitch />
+          <UserMenu />
+        </div>
+        {queueIsVisible && (
+          <div className="layout-rightbar">
+            <RightBar />
+          </div>
+        )}
+        <div className="layout-controls">
+          <ControlBar />
+        </div>
+        {/* <Blocker /> */}
+      </div>
+    </div>
+  );
 };
 
 // ======================================================================
