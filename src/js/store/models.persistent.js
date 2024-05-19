@@ -23,8 +23,8 @@ const historyState = {
 
 let localStorageState = {};
 try {
-  localStorageState = localStorage.getItem(config.persistentStoreId)
-    ? JSON.parse(localStorage.getItem(config.persistentStoreId))
+  localStorageState = localStorage.getItem(config.persistentStoreKey)
+    ? JSON.parse(localStorage.getItem(config.persistentStoreKey))
     : {};
 } catch (error) {
   // browser does not support local storage, or local storage item does not exist
