@@ -18,8 +18,6 @@ import style from './ControlBar.module.scss';
 // COMPONENT
 // ======================================================================
 
-const isProduction = process.env.REACT_APP_ENV === 'production';
-
 const ControlBar = () => {
   const dispatch = useDispatch();
 
@@ -145,14 +143,12 @@ const ControlBar = () => {
 
       <div className={style.secondary}>
         <div className={style.secondaryControls}>
-          {!isProduction && (
-            <button
-              className={clsx(style.queue, { [style.active]: queueIsVisible })}
-              onClick={dispatch.sessionModel.queueVisibleToggle}
-            >
-              <Icon icon="QueueIcon" cover stroke />
-            </button>
-          )}
+          <button
+            className={clsx(style.queue, { [style.active]: queueIsVisible })}
+            onClick={dispatch.sessionModel.queueVisibleToggle}
+          >
+            <Icon icon="QueueIcon" cover stroke />
+          </button>
           <button className={style.volume} onClick={dispatch.playerModel.playerMuteToggle}>
             <Icon icon={volIcon} cover stroke />
           </button>
