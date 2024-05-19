@@ -1,6 +1,10 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 
+import config from 'js/_config/config';
+
+const { contentPosKey, windowPosKey } = config;
+
 const useScrollRestoration = () => {
   const history = useHistory();
 
@@ -24,8 +28,8 @@ const useScrollRestoration = () => {
     }
 
     // Store the scroll position history in session storage
-    sessionStorage.setItem('music-window-scroll-positions', JSON.stringify(windowScrollPositions.current));
-    sessionStorage.setItem('music-content-scroll-positions', JSON.stringify(contentScrollPositions.current));
+    sessionStorage.setItem(windowPosKey, JSON.stringify(windowScrollPositions.current));
+    sessionStorage.setItem(contentPosKey, JSON.stringify(contentScrollPositions.current));
 
     if (action === 'PUSH' || action === 'REPLACE') {
       window.scrollTo(0, 0);
@@ -55,8 +59,8 @@ const useScrollRestoration = () => {
 
     if (pageAccessedByReload) {
       // Load the scroll position history from session storage
-      const storedWindowScrollPositions = sessionStorage.getItem('music-window-scroll-positions');
-      const storedContentScrollPositions = sessionStorage.getItem('music-content-scroll-positions');
+      const storedWindowScrollPositions = sessionStorage.getItem(windowPosKey);
+      const storedContentScrollPositions = sessionStorage.getItem(contentPosKey);
       if (storedWindowScrollPositions) {
         windowScrollPositions.current = JSON.parse(storedWindowScrollPositions);
       }

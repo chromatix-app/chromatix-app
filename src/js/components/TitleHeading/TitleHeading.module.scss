@@ -5,7 +5,7 @@
   align-items: center;
   padding: 55px 30px 40px;
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     padding: 55px 40px 40px;
   }
 
@@ -27,17 +27,17 @@
   border-radius: 6px;
   outline: 1px solid var(--color-opacity-005);
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     width: 160px;
     height: 160px;
     margin-right: 25px;
   }
-  @media (min-width: 1140px) {
+  :global(.cq-920) & {
     width: 170px;
     height: 170px;
     margin-right: 30px;
   }
-  @media (min-width: 1200px) {
+  :global(.cq-980) & {
     width: 180px;
     height: 180px;
     margin-right: 30px;
@@ -58,7 +58,7 @@
   width: 100%;
   padding-right: 50px;
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     padding-right: 150px;
   }
 }
@@ -72,26 +72,26 @@
   &.xl {
     font-size: 38px;
 
-    @media (min-width: 880px) {
+    :global(.cq-680) & {
       font-size: 44px;
     }
-    @media (min-width: 1024px) {
+    :global(.cq-800) & {
       font-size: 48px;
     }
   }
   &.lg {
     font-size: 28px;
 
-    @media (min-width: 880px) {
+    :global(.cq-680) & {
       font-size: 32px;
     }
-    @media (min-width: 1024px) {
+    :global(.cq-800) & {
       font-size: 36px;
     }
-    @media (min-width: 1080px) {
+    :global(.cq-860) & {
       font-size: 42px;
     }
-    @media (min-width: 1140px) {
+    :global(.cq-920) & {
       margin-left: -2px;
       font-size: 48px;
     }
@@ -99,32 +99,32 @@
   &.md {
     font-size: 24px;
 
-    @media (min-width: 880px) {
+    :global(.cq-680) & {
       font-size: 30px;
     }
-    @media (min-width: 1024px) {
+    :global(.cq-800) & {
       font-size: 34px;
     }
-    @media (min-width: 1080px) {
+    :global(.cq-860) & {
       font-size: 38px;
     }
-    @media (min-width: 1024px) {
+    :global(.cq-800) & {
       font-size: 42px;
     }
   }
   &.sm {
     font-size: 20px;
 
-    @media (min-width: 880px) {
+    :global(.cq-680) & {
       font-size: 24px;
     }
-    @media (min-width: 1024px) {
+    :global(.cq-800) & {
       font-size: 28px;
     }
-    @media (min-width: 1080px) {
+    :global(.cq-860) & {
       font-size: 32px;
     }
-    @media (min-width: 1140px) {
+    :global(.cq-920) & {
       font-size: 36px;
     }
   }
@@ -136,7 +136,7 @@
   font-size: 14px;
   font-weight: bold;
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     margin-top: 8px;
   }
 
@@ -150,7 +150,7 @@
   opacity: 0.5;
   font-size: 12px;
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     margin-top: 6px;
   }
 }
@@ -164,7 +164,7 @@
   gap: 10px;
   margin-top: 12px;
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     margin-top: 15px;
   }
 }
@@ -174,7 +174,7 @@
   display: inline-flex;
   position: relative;
   align-items: center;
-  padding: 1px 12px;
+  padding: 2px 10px;
   background: var(--color-primary);
   border-radius: 6px;
 
@@ -182,7 +182,7 @@
   font-weight: bold;
   color: var(--color-background);
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     padding: 4px 12px;
   }
 }
@@ -230,14 +230,14 @@
   padding: 20px 30px;
   background: var(--color-background);
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     padding: 20px 40px;
   }
 }
 
 .stickyTitle {
   overflow: hidden;
-  padding-right: 200px;
+  padding-right: 70px;
   opacity: 0;
   transition: opacity 0.3s;
   font-size: 26px;
@@ -246,11 +246,12 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  @media (min-width: 880px) {
+  :global(.cq-680) & {
     font-size: 28px;
   }
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     font-size: 30px;
+    padding-right: 200px;
   }
 
   .stickyWrapVisible & {

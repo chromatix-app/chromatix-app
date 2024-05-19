@@ -6,11 +6,25 @@
 }
 
 .section {
-  font-weight: bold;
   padding: 15px 10px 10px;
+  font-weight: bold;
 
   &:first-child {
     padding-top: 0;
+  }
+}
+
+.repeat {
+  padding: 25px 10px 10px;
+  font-weight: 600;
+  text-align: center;
+
+  span {
+    font-size: 11px;
+    padding: 4px 18px;
+    background: var(--color-opacity-005);
+    border-radius: 99px;
+    color: var(--color-opacity-05);
   }
 }
 
@@ -65,8 +79,8 @@
 }
 
 .artist {
-  font-size: 11px;
   opacity: 0.5;
+  font-size: 11px;
 
   .entryCurrent & {
     opacity: 1;

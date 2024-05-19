@@ -7,7 +7,11 @@
   z-index: 9999;
 
   &WithQueue {
-    right: 340px;
+    right: 300px;
+
+    @media (min-width: 1024px) {
+      right: 340px;
+    }
   }
 }
 
@@ -35,7 +39,7 @@
   border-radius: 9px;
   box-shadow: 0 0 10px var(--color-shadow);
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     padding: 6px 6px 6px 15px;
   }
 
@@ -49,7 +53,7 @@
   font-weight: 500;
   text-align: right;
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     display: block;
   }
 }
@@ -72,7 +76,7 @@
   background: var(--color-opacity-01);
   border-radius: 4px;
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     margin-left: 12px;
   }
 

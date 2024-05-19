@@ -5,7 +5,7 @@
   padding: 0 20px 50px;
   font-size: 12px;
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     padding: 0 30px 50px;
   }
 }
@@ -17,7 +17,7 @@
   grid-template-columns: 30px 1.3fr 1fr 60px;
   gap: 13px;
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     gap: 15px;
   }
 
@@ -28,10 +28,12 @@
 
 .header.headerWithRating,
 .entry.entryWithRating {
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     grid-template-columns: 30px 1.3fr 1fr 0.5fr 60px;
+  }
 
-    .wrap.wrapPlaylists & {
+  .wrap.wrapPlaylists & {
+    :global(.cq-800) & {
       grid-template-columns: 30px 41px 1.3fr 1fr 1fr 0.5fr 60px;
     }
   }
@@ -46,7 +48,7 @@
   z-index: 3;
   font-weight: bold;
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     padding: 0 25px 8px;
   }
 
@@ -73,7 +75,7 @@
 .headerRating {
   display: none;
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     display: block;
   }
 }
@@ -84,14 +86,14 @@
   border: 1px solid transparent;
   border-radius: 8px;
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     padding: 10px 19px;
   }
 
   .wrap.wrapPlaylists & {
     padding: 6px 14px;
 
-    @media (min-width: 1024px) {
+    :global(.cq-800) & {
       padding: 6px 19px;
     }
   }
@@ -116,7 +118,7 @@
   opacity: 0.5;
   font-weight: bold;
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     padding: 11px 20px;
   }
 
@@ -131,7 +133,7 @@
   padding: 0 2px;
   margin-right: 24px;
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     margin-right: 26px;
   }
 }
@@ -220,7 +222,7 @@ span.minCenter {
   display: none;
   opacity: 0.3;
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     display: block;
   }
 

@@ -3,7 +3,7 @@
 .wrap {
   padding: 0 30px 50px;
 
-  @media (min-width: 1024px) {
+  :global(.cq-800) & {
     padding: 0 40px 50px;
   }
 }
