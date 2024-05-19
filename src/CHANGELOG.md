@@ -1,3 +1,10 @@
+<a name="0.12.0"></a>
+# 0.12.0 (2024-05-19)
+Features:
+- Added right sidebar with queue view.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.11.0"></a>
 # 0.11.0 (2024-04-27)
 Features:
