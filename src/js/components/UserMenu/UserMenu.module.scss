@@ -5,6 +5,9 @@
   top: 20px;
   right: 20px;
   z-index: 9999;
+  // background: rgba(255, 0, 0, 0.1);
+
+  @include electron-no-drag;
 
   &WithQueue {
     right: 300px;
