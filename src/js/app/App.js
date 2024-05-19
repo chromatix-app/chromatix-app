@@ -138,6 +138,7 @@ const AppMain = () => {
 
   return (
     <div className="wrap">
+      <div className="electron-drag"></div>
       <div className="layout">
         <div className="layout-sidebar">
           <SideBar />
