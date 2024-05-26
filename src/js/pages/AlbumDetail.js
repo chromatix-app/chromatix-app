@@ -70,8 +70,14 @@ const AlbumDetail = () => {
                 {albumTracks} track{albumTracks !== 1 && 's'}
                 {(albumRelease || albumTracks) && albumDurationString && ' • '}
                 {albumDurationString}
-                {(albumRelease || albumTracks || albumDurationString) && optionShowStarRatings && albumRating && ' • '}
-                {optionShowStarRatings && albumRating && <StarRating rating={albumRating} size={13} inline />}
+                {(albumRelease || albumTracks || albumDurationString) &&
+                  optionShowStarRatings &&
+                  typeof albumRating !== 'undefined' &&
+                  albumRating !== 0 &&
+                  ' • '}
+                {optionShowStarRatings && typeof albumRating !== 'undefined' && (
+                  <StarRating type="album" ratingKey={albumId} rating={albumRating} size={13} inline />
+                )}
               </>
             ) : (
               <>&nbsp;</>

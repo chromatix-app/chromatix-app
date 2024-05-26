@@ -223,7 +223,11 @@ const ListEntry = React.memo(
           )}
 
           {optionShowStarRatings && (
-            <div className={style.userRating}>{entry.userRating && <StarRating rating={entry.userRating} />}</div>
+            <div className={style.userRating}>
+              {typeof entry.userRating !== 'undefined' && (
+                <StarRating type="track" ratingKey={entry.trackId} rating={entry.userRating} />
+              )}
+            </div>
           )}
 
           <div className={style.duration}>{durationToStringShort(entry.duration)}</div>

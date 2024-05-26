@@ -45,7 +45,10 @@ const CollectionDetail = () => {
           thumb={collectionThumb}
           title={collectionTitle}
           detail={
-            optionShowStarRatings && collectionRating && <StarRating rating={collectionRating} size={13} inline />
+            optionShowStarRatings &&
+            typeof collectionRating !== 'undefined' && (
+              <StarRating type="collection" ratingKey={collectionId} rating={collectionRating} size={13} inline />
+            )
           }
           subtitle={
             currentCollectionItems ? (

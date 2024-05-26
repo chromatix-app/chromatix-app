@@ -1031,6 +1031,35 @@ export const getAlbumMoodItems = async (libraryId, moodId) => {
 };
 
 // ======================================================================
+// SET STAR RATING
+// ======================================================================
+
+export const setStarRating = (type, ratingKey, rating) => {
+  const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const sessionId = store.getState().sessionModel.sessionId;
+  plexTools
+    .setStarRating(plexBaseUrl, accessToken, sessionId, ratingKey, rating)
+    .then(() => {
+      if (type === 'artist' || type === 'artists') {
+        store.dispatch.appModel.setArtistRating({ ratingKey, rating });
+      } else if (type === 'album' || type === 'albums') {
+        store.dispatch.appModel.setAlbumRating({ ratingKey, rating });
+      } else if (type === 'track' || type === 'tracks') {
+        store.dispatch.appModel.setTrackRating({ ratingKey, rating });
+      } else if (type === 'collection' || type === 'collections') {
+        store.dispatch.appModel.setCollectionRating({ ratingKey, rating });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      track('Error: Plex Set Star Rating');
+    });
+};
+
+window.setStarRating = setStarRating;
+
+// ======================================================================
 // LOG PLAYBACK STATUS
 // ======================================================================
 
