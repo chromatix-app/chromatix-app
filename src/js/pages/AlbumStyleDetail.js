@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { ListCards, Loading, StarRating, TitleHeading } from 'js/components';
+import { ListCards, Loading, TitleHeading } from 'js/components';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
@@ -16,8 +16,6 @@ import * as plex from 'js/services/plex';
 const AlbumStyleDetail = () => {
   const { styleId, libraryId } = useParams();
 
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   const allAlbumStyles = useSelector(({ appModel }) => appModel.allAlbumStyles);
   const currentAlbumStyle = allAlbumStyles?.filter((style) => style.styleId === styleId)[0];
 
@@ -26,7 +24,6 @@ const AlbumStyleDetail = () => {
 
   const styleThumb = currentAlbumStyle?.thumb;
   const styleTitle = currentAlbumStyle?.title;
-  const styleRating = currentAlbumStyle?.userRating;
 
   useEffect(() => {
     plex.getAllAlbumStyles();
@@ -39,7 +36,6 @@ const AlbumStyleDetail = () => {
         <TitleHeading
           thumb={styleThumb}
           title={styleTitle}
-          detail={optionShowStarRatings && styleRating && <StarRating rating={styleRating} size={13} inline />}
           subtitle={
             currentAlbumStyleItems ? (
               currentAlbumStyleItems?.length + ' Album' + (currentAlbumStyleItems?.length !== 1 ? 's' : '')

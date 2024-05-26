@@ -37,7 +37,7 @@ const ArtistCollectionList = () => {
         }
       />
       {!allCollections && <Loading forceVisible inline />}
-      {allCollections && <ListCards variant="artists" entries={allCollections} />}
+      {allCollections && <ListCards variant="collections" entries={allCollections} />}
     </>
   );
 };
