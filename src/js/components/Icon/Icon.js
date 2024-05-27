@@ -7,6 +7,14 @@ import clsx from 'clsx';
 import style from './Icon.module.scss';
 
 // custom
+import { ReactComponent as AlbumCollectionsIcon } from './icons/music/album-collections.svg';
+import { ReactComponent as AlbumGenresIcon } from './icons/music/album-genres.svg';
+import { ReactComponent as AlbumMoodsIcon } from './icons/music/album-moods.svg';
+import { ReactComponent as AlbumStylesIcon } from './icons/music/album-styles.svg';
+import { ReactComponent as ArtistCollectionsIcon } from './icons/music/artist-collections.svg';
+import { ReactComponent as ArtistGenresIcon } from './icons/music/artist-genres.svg';
+import { ReactComponent as ArtistMoodsIcon } from './icons/music/artist-moods.svg';
+import { ReactComponent as ArtistStylesIcon } from './icons/music/artist-styles.svg';
 import { ReactComponent as CheckCircleIcon } from './icons/music/check-circle.svg';
 import { ReactComponent as CogIcon } from './icons/music/cog.svg';
 import { ReactComponent as DiscIcon } from './icons/music/disc.svg';
@@ -19,8 +27,11 @@ import { ReactComponent as NextIcon } from './icons/music/next.svg';
 import { ReactComponent as PauseIcon } from './icons/music/pause.svg';
 import { ReactComponent as PauseFilledIcon } from './icons/music/pause-filled.svg';
 import { ReactComponent as PencilIcon } from './icons/music/pencil.svg';
+import { ReactComponent as PeopleIcon } from './icons/music/people.svg';
 import { ReactComponent as PlayIcon } from './icons/music/play.svg';
+import { ReactComponent as PlayCircleIcon } from './icons/music/play-circle.svg';
 import { ReactComponent as PlayFilledIcon } from './icons/music/play-filled.svg';
+import { ReactComponent as PlaylistIcon } from './icons/music/playlist.svg';
 import { ReactComponent as PreviousIcon } from './icons/music/previous.svg';
 import { ReactComponent as QueueIcon } from './icons/music/queue.svg';
 import { ReactComponent as RepeatIcon } from './icons/music/repeat.svg';
@@ -49,6 +60,14 @@ import { ReactComponent as RedditIcon } from './icons/site/reddit.svg';
 // ======================================================================
 
 const customIcons = {
+  AlbumCollectionsIcon,
+  AlbumGenresIcon,
+  AlbumMoodsIcon,
+  AlbumStylesIcon,
+  ArtistCollectionsIcon,
+  ArtistGenresIcon,
+  ArtistMoodsIcon,
+  ArtistStylesIcon,
   CheckCircleIcon,
   CogIcon,
   DiscIcon,
@@ -61,8 +80,11 @@ const customIcons = {
   PauseIcon,
   PauseFilledIcon,
   PencilIcon,
+  PeopleIcon,
   PlayIcon,
+  PlayCircleIcon,
   PlayFilledIcon,
+  PlaylistIcon,
   PreviousIcon,
   QueueIcon,
   RepeatIcon,

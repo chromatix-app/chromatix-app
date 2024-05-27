@@ -50,7 +50,7 @@
 .link {
   display: block;
   overflow: hidden;
-  padding: 6px 13px;
+  padding: 6px 11px;
   margin: 0 0 1px;
   border-radius: 6px;
   font-size: 13px;
@@ -60,7 +60,7 @@
   white-space: nowrap;
 
   @media (min-width: 1024px) {
-    padding: 6px 16px;
+    padding: 6px 13px;
   }
 
   &:hover,
@@ -73,4 +73,22 @@
     font-weight: 600;
     color: var(--color-primary);
   }
+}
+
+.icon {
+  display: inline-block;
+  position: relative;
+  top: 1px;
+  width: 14px;
+  height: 14px;
+  margin: 0 8px 0 0;
+  opacity: 0.5;
+
+  .linkActive & {
+    opacity: 1;
+  }
+
+  // &Plus1 {
+  //   top: 2px;
+  // }
 }

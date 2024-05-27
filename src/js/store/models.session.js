@@ -23,6 +23,7 @@ const sessionState = {
   currentColorText: '#ffffff',
   currentColorPrimary: '#f7277a',
 
+  menuShowIcons: true,
   menuShowArtists: true,
   menuShowAlbums: true,
   menuShowPlaylists: true,
