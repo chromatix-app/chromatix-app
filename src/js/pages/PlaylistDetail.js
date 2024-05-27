@@ -61,13 +61,16 @@ const PlaylistDetail = () => {
             currentPlaylistTracks ? (
               <>
                 {playlistDurationString}
-                {playlistDurationString &&
-                  optionShowStarRatings &&
-                  typeof playlistRating !== 'undefined' &&
-                  playlistRating !== 0 &&
-                  ' • '}
-                {optionShowStarRatings && typeof playlistRating !== 'undefined' && (
-                  <StarRating type="playlist" ratingKey={playlistId} rating={playlistRating} size={13} inline />
+                {playlistDurationString && optionShowStarRatings && ' • '}
+                {optionShowStarRatings && (
+                  <StarRating
+                    type="playlist"
+                    ratingKey={playlistId}
+                    rating={playlistRating}
+                    size={13}
+                    inline
+                    editable
+                  />
                 )}
               </>
             ) : (

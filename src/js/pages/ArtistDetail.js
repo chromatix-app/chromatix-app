@@ -68,13 +68,9 @@ const ArtistDetail = () => {
                 {artistCountry}
                 {artistCountry && artistGenre && ' • '}
                 {artistGenre}
-                {(artistCountry || artistGenre) &&
-                  optionShowStarRatings &&
-                  typeof artistRating !== 'undefined' &&
-                  artistRating !== 0 &&
-                  ' • '}
-                {optionShowStarRatings && typeof artistRating !== 'undefined' && (
-                  <StarRating type="artist" ratingKey={artistId} rating={artistRating} size={13} inline />
+                {(artistCountry || artistGenre) && optionShowStarRatings && ' • '}
+                {optionShowStarRatings && (
+                  <StarRating type="artist" ratingKey={artistId} rating={artistRating} size={13} inline editable />
                 )}
               </>
             ) : (

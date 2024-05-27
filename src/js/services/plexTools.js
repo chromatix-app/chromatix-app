@@ -452,8 +452,6 @@ export const setStarRating = (baseUrl, accessToken, sessionId, ratingKey, rating
       const endpoint = endpointConfig.rating.setStarRating(baseUrl, ratingKey, rating);
       const browserName = getBrowserName();
 
-      console.log(1111);
-
       axios
         .put(endpoint, {
           headers: {

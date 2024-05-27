@@ -42,9 +42,15 @@ const AlbumCollectionDetail = () => {
           thumb={collectionThumb}
           title={collectionTitle}
           detail={
-            optionShowStarRatings &&
-            typeof collectionRating !== 'undefined' && (
-              <StarRating type="collection" ratingKey={collectionId} rating={collectionRating} size={13} inline />
+            optionShowStarRatings && (
+              <StarRating
+                type="collection"
+                ratingKey={collectionId}
+                rating={collectionRating}
+                size={13}
+                inline
+                editable
+              />
             )
           }
           subtitle={
