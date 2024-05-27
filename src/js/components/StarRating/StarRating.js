@@ -66,7 +66,10 @@ const StarRating = ({ type, ratingKey, rating, inline, size = 14 }) => {
           [style.wrapInline]: inline,
         })}
       >
-        <div className={style.flex}>{stars}</div>
+        <div className={style.flex}>
+          {stars}
+          {/* {type} {ratingKey} */}
+        </div>
       </div>
     );
   }

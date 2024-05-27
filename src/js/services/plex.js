@@ -1073,6 +1073,8 @@ export const setStarRating = (type, ratingKey, rating) => {
         store.dispatch.appModel.setAlbumRating({ ratingKey, rating });
       } else if (type === 'track' || type === 'tracks') {
         store.dispatch.appModel.setTrackRating({ ratingKey, rating });
+      } else if (type === 'playlist' || type === 'playlists') {
+        store.dispatch.appModel.setPlaylistRating({ ratingKey, rating });
       } else if (type === 'collection' || type === 'collections') {
         store.dispatch.appModel.setCollectionRating({ ratingKey, rating });
       }
@@ -1215,6 +1217,7 @@ const transposePlaylistData = (playlist, libraryId, plexBaseUrl, accessToken) =>
     libraryId: libraryId,
     playlistId: playlist.ratingKey,
     title: playlist.title,
+    userRating: playlist.userRating,
     link: '/playlists/' + libraryId + '/' + playlist.ratingKey,
     totalTracks: playlist.leafCount,
     duration: playlist.duration,

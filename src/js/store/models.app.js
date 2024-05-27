@@ -506,6 +506,20 @@ const effects = (dispatch) => ({
     });
   },
 
+  setPlaylistRating(payload, rootState) {
+    console.log('%c--- setPlaylistRating ---', 'color:#07a098');
+    const { ratingKey, rating } = payload;
+    const prevPlaylists = rootState.appModel.allPlaylists;
+    const allPlaylists = prevPlaylists ? [...prevPlaylists] : [];
+    const playlistIndex = allPlaylists.findIndex((playlist) => playlist.playlistId === ratingKey);
+    if (playlistIndex !== -1) {
+      allPlaylists[playlistIndex].userRating = rating;
+      dispatch.appModel.setAppState({
+        allPlaylists,
+      });
+    }
+  },
+
   //
   // PLEX - TRACKS
   //

@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { ListTracks, Loading, TitleHeading } from 'js/components';
+import { ListTracks, Loading, StarRating, TitleHeading } from 'js/components';
 import { durationToStringLong } from 'js/utils';
 import * as plex from 'js/services/plex';
 
@@ -16,6 +16,8 @@ import * as plex from 'js/services/plex';
 
 const PlaylistDetail = () => {
   const { libraryId, playlistId } = useParams();
+
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   const dispatch = useDispatch();
 
@@ -30,6 +32,7 @@ const PlaylistDetail = () => {
   const playlistTracks = currentPlaylistTracks?.length;
   const playlistDurationMillisecs = currentPlaylistTracks?.reduce((acc, track) => acc + track.duration, 0);
   const playlistDurationString = durationToStringLong(playlistDurationMillisecs);
+  const playlistRating = currentPlaylist?.userRating;
 
   const doPlay = (isShuffle) => {
     dispatch.playerModel.playerLoadPlaylist({ playlistId, isShuffle });
@@ -54,7 +57,23 @@ const PlaylistDetail = () => {
           thumb={playlistThumb}
           title={playlistTitle}
           subtitle={currentPlaylistTracks ? playlistTracks + ' tracks' : <>&nbsp;</>}
-          detail={currentPlaylistTracks ? playlistDurationString : <>&nbsp;</>}
+          detail={
+            currentPlaylistTracks ? (
+              <>
+                {playlistDurationString}
+                {playlistDurationString &&
+                  optionShowStarRatings &&
+                  typeof playlistRating !== 'undefined' &&
+                  playlistRating !== 0 &&
+                  ' • '}
+                {optionShowStarRatings && typeof playlistRating !== 'undefined' && (
+                  <StarRating type="playlist" ratingKey={playlistId} rating={playlistRating} size={13} inline />
+                )}
+              </>
+            ) : (
+              <>&nbsp;</>
+            )
+          }
           handlePlay={currentPlaylistTracks ? doPlay : null}
         />
       )}
