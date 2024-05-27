@@ -1078,6 +1078,7 @@ export const setStarRating = (type, ratingKey, rating) => {
       } else if (type === 'collection' || type === 'collections') {
         store.dispatch.appModel.setCollectionRating({ ratingKey, rating });
       }
+      track('Plex: Set Star Rating');
     })
     .catch((error) => {
       console.error(error);
