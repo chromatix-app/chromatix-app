@@ -13,12 +13,7 @@ import * as plex from 'js/services/plex';
 // ======================================================================
 
 const AlbumCollectionList = () => {
-  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
-  const currentLibraryId = currentLibrary?.libraryId;
-
-  const allCollections = useSelector(({ appModel }) => appModel.allCollections)?.filter(
-    (collection) => collection.libraryId === currentLibraryId && collection.type === 'album'
-  );
+  const allAlbumCollections = useSelector(({ appModel }) => appModel.allAlbumCollections);
 
   useEffect(() => {
     plex.getAllCollections();
@@ -29,15 +24,15 @@ const AlbumCollectionList = () => {
       <TitleHeading
         title="Album Collections"
         subtitle={
-          allCollections ? (
-            allCollections?.length + ' Album Collection' + (allCollections?.length !== 1 ? 's' : '')
+          allAlbumCollections ? (
+            allAlbumCollections?.length + ' Album Collection' + (allAlbumCollections?.length !== 1 ? 's' : '')
           ) : (
             <>&nbsp;</>
           )
         }
       />
-      {!allCollections && <Loading forceVisible inline />}
-      {allCollections && <ListCards variant="collections" entries={allCollections} />}
+      {!allAlbumCollections && <Loading forceVisible inline />}
+      {allAlbumCollections && <ListCards variant="collections" entries={allAlbumCollections} />}
     </>
   );
 };

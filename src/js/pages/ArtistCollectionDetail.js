@@ -13,34 +13,31 @@ import * as plex from 'js/services/plex';
 // COMPONENT
 // ======================================================================
 
-const CollectionDetail = () => {
+const ArtistCollectionDetail = () => {
   const { collectionId, libraryId } = useParams();
 
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
-  const allCollections = useSelector(({ appModel }) => appModel.allCollections);
-  const currentCollection = allCollections?.filter((collection) => collection.collectionId === collectionId)[0];
+  const allArtistCollections = useSelector(({ appModel }) => appModel.allArtistCollections);
+  const currentArtistCollection = allArtistCollections?.filter(
+    (collection) => collection.collectionId === collectionId
+  )[0];
 
-  const allCollectionItems = useSelector(({ appModel }) => appModel.allCollectionItems);
-  const currentCollectionItems = allCollectionItems[libraryId + '-' + collectionId];
+  const allArtistCollectionItems = useSelector(({ appModel }) => appModel.allArtistCollectionItems);
+  const currentArtistCollectionItems = allArtistCollectionItems[libraryId + '-' + collectionId];
 
-  const collectionType = currentCollection?.type;
-  const collectionThumb = currentCollection?.thumb;
-  const collectionTitle = currentCollection?.title;
-  const collectionRating = currentCollection?.userRating;
-
-  const collectionTypeCapitalized = collectionType?.charAt(0).toUpperCase() + collectionType?.slice(1);
+  const collectionThumb = currentArtistCollection?.thumb;
+  const collectionTitle = currentArtistCollection?.title;
+  const collectionRating = currentArtistCollection?.userRating;
 
   useEffect(() => {
     plex.getAllCollections();
-    if (collectionType) {
-      plex.getCollectionItems(libraryId, collectionId, collectionType);
-    }
-  }, [collectionId, libraryId, collectionType]);
+    plex.getArtistCollectionItems(libraryId, collectionId);
+  }, [collectionId, libraryId]);
 
   return (
     <>
-      {currentCollection && (
+      {currentArtistCollection && (
         <TitleHeading
           thumb={collectionThumb}
           title={collectionTitle}
@@ -51,20 +48,17 @@ const CollectionDetail = () => {
             )
           }
           subtitle={
-            currentCollectionItems ? (
-              currentCollectionItems?.length +
-              ' ' +
-              collectionTypeCapitalized +
-              (currentCollectionItems?.length !== 1 ? 's' : '')
+            currentArtistCollectionItems ? (
+              currentArtistCollectionItems?.length + ' Artist' + (currentArtistCollectionItems?.length !== 1 ? 's' : '')
             ) : (
               <>&nbsp;</>
             )
           }
         />
       )}
-      {!(currentCollection && currentCollectionItems) && <Loading forceVisible inline />}
-      {currentCollection && currentCollectionItems && (
-        <ListCards variant={collectionType + 's'} entries={currentCollectionItems} />
+      {!(currentArtistCollection && currentArtistCollectionItems) && <Loading forceVisible inline />}
+      {currentArtistCollection && currentArtistCollectionItems && (
+        <ListCards variant={'artists'} entries={currentArtistCollectionItems} />
       )}
     </>
   );
@@ -74,4 +68,4 @@ const CollectionDetail = () => {
 // EXPORT
 // ======================================================================
 
-export default CollectionDetail;
+export default ArtistCollectionDetail;
