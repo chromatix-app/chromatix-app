@@ -6,7 +6,7 @@ import * as plex from 'js/services/plex';
 
 import style from './StarRating.module.scss';
 
-const StarRating = ({ type, ratingKey, rating = 0, inline, size = 14, editable = false }) => {
+const StarRating = ({ type, ratingKey, rating = 0, inline, size = 14, editable = false, alwaysVisible = false }) => {
   const [displayRating, setDisplayRating] = useState(null);
 
   const actualRating = displayRating ? displayRating : rating;
@@ -50,7 +50,7 @@ const StarRating = ({ type, ratingKey, rating = 0, inline, size = 14, editable =
           height: size,
         }}
       >
-        <Icon icon={icon} cover />
+        {(displayRating || alwaysVisible || rating > 0) && <Icon icon={icon} cover />}
       </div>
     );
   });
@@ -61,6 +61,9 @@ const StarRating = ({ type, ratingKey, rating = 0, inline, size = 14, editable =
         [style.wrapInline]: inline,
         [style.wrapZero]: rating <= 0 && !displayRating,
       })}
+      style={{
+        width: size * 5,
+      }}
     >
       <div className={style.stars}>{stars}</div>
       {editable && (

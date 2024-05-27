@@ -67,9 +67,9 @@ const PlaylistDetail = () => {
                     type="playlist"
                     ratingKey={playlistId}
                     rating={playlistRating}
-                    size={13}
                     inline
                     editable
+                    alwaysVisible
                   />
                 )}
               </>

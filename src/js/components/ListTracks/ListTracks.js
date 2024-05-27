@@ -224,9 +224,7 @@ const ListEntry = React.memo(
 
           {optionShowStarRatings && (
             <div className={style.userRating}>
-              {typeof entry.userRating !== 'undefined' && (
-                <StarRating type="track" ratingKey={entry.trackId} rating={entry.userRating} />
-              )}
+              <StarRating type="track" ratingKey={entry.trackId} rating={entry.userRating} editable />
             </div>
           )}
 

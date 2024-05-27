@@ -47,9 +47,9 @@ const AlbumCollectionDetail = () => {
                 type="collection"
                 ratingKey={collectionId}
                 rating={collectionRating}
-                size={13}
                 inline
                 editable
+                alwaysVisible
               />
             )
           }

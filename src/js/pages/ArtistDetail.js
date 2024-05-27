@@ -70,7 +70,7 @@ const ArtistDetail = () => {
                 {artistGenre}
                 {(artistCountry || artistGenre) && optionShowStarRatings && ' • '}
                 {optionShowStarRatings && (
-                  <StarRating type="artist" ratingKey={artistId} rating={artistRating} size={13} inline editable />
+                  <StarRating type="artist" ratingKey={artistId} rating={artistRating} inline editable alwaysVisible />
                 )}
               </>
             ) : (
