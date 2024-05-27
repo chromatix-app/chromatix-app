@@ -405,8 +405,21 @@ const effects = (dispatch) => ({
         allArtistAlbums[key] = artistAlbums;
       }
     });
-    dispatch.appModel.setAppState({
-      allArtistAlbums,
+
+    // update artist related albums
+    const allArtistRelated = { ...rootState.appModel.allArtistRelated };
+    const artistKeys = Object.keys(allArtistRelated);
+    artistKeys.forEach((artistKey) => {
+      const artistGroups = allArtistRelated[artistKey];
+      artistGroups.forEach((group) => {
+        const relatedAlbums = group.related;
+        relatedAlbums.forEach((album, index) => {
+          if (album.albumId === ratingKey) {
+            group.related[index].userRating = rating;
+          }
+        });
+      });
+      allArtistRelated[artistKey] = artistGroups;
     });
 
     // update album collection items
@@ -460,6 +473,8 @@ const effects = (dispatch) => ({
 
     // save
     dispatch.appModel.setAppState({
+      allArtistAlbums,
+      allArtistRelated,
       allAlbumCollectionItems,
       allAlbumGenreItems,
       allAlbumStyleItems,
