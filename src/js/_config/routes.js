@@ -100,7 +100,7 @@ export const authRoutes = [
   {
     path: '/artist-collections/:libraryId/:collectionId',
     exact: true,
-    component: 'CollectionDetail',
+    component: 'ArtistCollectionDetail',
   },
 
   // album collections
@@ -112,7 +112,7 @@ export const authRoutes = [
   {
     path: '/album-collections/:libraryId/:collectionId',
     exact: true,
-    component: 'CollectionDetail',
+    component: 'AlbumCollectionDetail',
   },
 
   // artist genres

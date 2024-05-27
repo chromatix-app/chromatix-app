@@ -52,7 +52,9 @@ const ListEntry = React.memo(
     title,
     albumId,
     artist,
+    artistId,
     artistLink,
+    collectionId,
     playlistId,
     duration,
     userRating,
@@ -64,6 +66,17 @@ const ListEntry = React.memo(
   }) => {
     const history = useHistory();
     const dispatch = useDispatch();
+
+    const ratingKey =
+      variant === 'albums'
+        ? albumId
+        : variant === 'artists'
+        ? artistId
+        : variant === 'playlists'
+        ? playlistId
+        : variant === 'collections'
+        ? collectionId
+        : null;
 
     const { optionShowFullTitles, optionShowStarRatings } = useSelector(({ sessionModel }) => sessionModel);
 
@@ -156,9 +169,9 @@ const ListEntry = React.memo(
 
           {/* {albumRelease && <div className={style.subtitle}>{albumRelease}</div>} */}
 
-          {optionShowStarRatings && userRating && (
+          {optionShowStarRatings && typeof userRating !== 'undefined' && (
             <div className={style.rating}>
-              <StarRating rating={userRating} />
+              <StarRating type={variant} ratingKey={ratingKey} rating={userRating} />
             </div>
           )}
         </div>

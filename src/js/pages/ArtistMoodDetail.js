@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { ListCards, Loading, StarRating, TitleHeading } from 'js/components';
+import { ListCards, Loading, TitleHeading } from 'js/components';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
@@ -16,8 +16,6 @@ import * as plex from 'js/services/plex';
 const ArtistMoodDetail = () => {
   const { moodId, libraryId } = useParams();
 
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   const allArtistMoods = useSelector(({ appModel }) => appModel.allArtistMoods);
   const currentArtistMood = allArtistMoods?.filter((mood) => mood.moodId === moodId)[0];
 
@@ -26,7 +24,6 @@ const ArtistMoodDetail = () => {
 
   const moodThumb = currentArtistMood?.thumb;
   const moodTitle = currentArtistMood?.title;
-  const moodRating = currentArtistMood?.userRating;
 
   useEffect(() => {
     plex.getAllArtistMoods();
@@ -39,7 +36,6 @@ const ArtistMoodDetail = () => {
         <TitleHeading
           thumb={moodThumb}
           title={moodTitle}
-          detail={optionShowStarRatings && moodRating && <StarRating rating={moodRating} size={13} inline />}
           subtitle={
             currentArtistMoodItems ? (
               currentArtistMoodItems?.length + ' Artist' + (currentArtistMoodItems?.length !== 1 ? 's' : '')

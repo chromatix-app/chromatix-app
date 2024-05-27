@@ -68,8 +68,10 @@ const ArtistDetail = () => {
                 {artistCountry}
                 {artistCountry && artistGenre && ' • '}
                 {artistGenre}
-                {(artistCountry || artistGenre) && optionShowStarRatings && artistRating && ' • '}
-                {optionShowStarRatings && artistRating && <StarRating rating={artistRating} size={13} inline />}
+                {(artistCountry || artistGenre) && optionShowStarRatings && ' • '}
+                {optionShowStarRatings && (
+                  <StarRating type="artist" ratingKey={artistId} rating={artistRating} inline editable alwaysVisible />
+                )}
               </>
             ) : (
               <>&nbsp;</>

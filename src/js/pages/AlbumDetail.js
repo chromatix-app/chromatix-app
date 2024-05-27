@@ -70,8 +70,10 @@ const AlbumDetail = () => {
                 {albumTracks} track{albumTracks !== 1 && 's'}
                 {(albumRelease || albumTracks) && albumDurationString && ' • '}
                 {albumDurationString}
-                {(albumRelease || albumTracks || albumDurationString) && optionShowStarRatings && albumRating && ' • '}
-                {optionShowStarRatings && albumRating && <StarRating rating={albumRating} size={13} inline />}
+                {(albumRelease || albumTracks || albumDurationString) && optionShowStarRatings && ' • '}
+                {optionShowStarRatings && (
+                  <StarRating type="album" ratingKey={albumId} rating={albumRating} inline editable alwaysVisible />
+                )}
               </>
             ) : (
               <>&nbsp;</>

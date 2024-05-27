@@ -196,6 +196,7 @@ const MenuSettings = () => {
   const dispatch = useDispatch();
 
   const {
+    menuShowIcons,
     menuShowArtists,
     menuShowAlbums,
     menuShowPlaylists,
@@ -211,6 +212,7 @@ const MenuSettings = () => {
   } = useSelector(({ sessionModel }) => sessionModel);
 
   const menuItems = [
+    { key: 'menuShowIcons', label: 'Show Icons', state: menuShowIcons },
     { key: 'menuShowArtists', label: 'Artists', state: menuShowArtists },
     { key: 'menuShowAlbums', label: 'Albums', state: menuShowAlbums },
     { key: 'menuShowPlaylists', label: 'Playlists', state: menuShowPlaylists },

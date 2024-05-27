@@ -40,6 +40,10 @@ const endpointConfig = {
   library: {
     getAllLibraries: (base) => `${base}/library/sections`,
   },
+  rating: {
+    setStarRating: (base, ratingKey, rating) =>
+      `${base}/:/rate?identifier=com.plexapp.plugins.library&key=${ratingKey}&rating=${rating}`,
+  },
   status: {
     postPlaybackStatus: (base) => `${base}/:/timeline`,
   },
@@ -442,48 +446,45 @@ export const getAllLibraries = (baseUrl, accessToken) => {
 // SET STAR RATING
 // ======================================================================
 
-// export const setStarRating = (baseUrl, accessToken, sessionId, ratingKey, rating) => {
-//   return new Promise((resolve, reject) => {
-//     try {
-//       const endpoint = `${baseUrl}/library/metadata/${ratingKey}`;
-//       const browserName = getBrowserName();
-//       const params = {
-//         userRating: rating,
-//       };
+export const setStarRating = (baseUrl, accessToken, sessionId, ratingKey, rating) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.rating.setStarRating(baseUrl, ratingKey, rating);
+      const browserName = getBrowserName();
 
-//       axios
-//         .put(endpoint, params, {
-//           headers: {
-//             Accept: 'application/json',
-//             'Content-Type': 'application/json',
-//             'X-Plex-Token': accessToken,
-//             'X-Plex-Client-Identifier': clientId,
-//             'X-Plex-Session-Identifier': sessionId,
-//             'X-Plex-Product': appName,
-//             'X-Plex-Device-Name': browserName,
-//             'X-Plex-Platform': browserName,
-//             'X-Plex-Device-Icon': clientIcon,
-//           },
-//         })
-//         .then((response) => {
-//           resolve(response.data);
-//         })
-//         .catch((error) => {
-//           reject({
-//             code: 'setStarRating.1',
-//             message: `Failed to set star rating for ${ratingKey}: ${error.message}`,
-//             error: error,
-//           });
-//         });
-//     } catch (error) {
-//       reject({
-//         code: 'setStarRating.2',
-//         message: `Failed to set star rating for ${ratingKey}: ${error.message}`,
-//         error: error,
-//       });
-//     }
-//   });
-// };
+      axios
+        .put(endpoint, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': accessToken,
+            'X-Plex-Client-Identifier': clientId,
+            'X-Plex-Session-Identifier': sessionId,
+            'X-Plex-Product': appName,
+            'X-Plex-Device-Name': browserName,
+            'X-Plex-Platform': browserName,
+            'X-Plex-Device-Icon': clientIcon,
+          },
+        })
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch((error) => {
+          reject({
+            code: 'setStarRating.1',
+            message: `Failed to set star rating for ${ratingKey}: ${error.message}`,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'setStarRating.2',
+        message: `Failed to set star rating for ${ratingKey}: ${error.message}`,
+        error: error,
+      });
+    }
+  });
+};
 
 // ======================================================================
 // LOG PLAYBACK STATUS

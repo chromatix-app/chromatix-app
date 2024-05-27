@@ -599,9 +599,12 @@ export const getAllCollections = async () => {
           (collection) => collection.subtype === 'artist' || collection.subtype === 'album'
         ).map((collection) => transposeCollectionData(collection, libraryId, plexBaseUrl, accessToken)) || [];
 
+      const allArtistCollections = allCollections.filter((collection) => collection.type === 'artist');
+      const allAlbumCollections = allCollections.filter((collection) => collection.type === 'album');
+
       // console.log('allCollections', allCollections);
 
-      store.dispatch.appModel.setAppState({ allCollections });
+      store.dispatch.appModel.setAppState({ allArtistCollections, allAlbumCollections });
 
       getAllCollectionsRunning = false;
     }
@@ -609,16 +612,17 @@ export const getAllCollections = async () => {
 };
 
 // ======================================================================
-// GET COLLECTION ITEMS
+// GET ARTIST COLLECTION ITEMS
 // ======================================================================
 
-let getCollectionItemsRunning;
+let getArtistCollectionItemsRunning;
 
-export const getCollectionItems = async (libraryId, collectionId, collectionType) => {
-  if (!getCollectionItemsRunning) {
-    const prevCollectionItems = store.getState().appModel.allCollectionItems[libraryId + '-' + collectionId];
-    if (!prevCollectionItems) {
-      getCollectionItemsRunning = true;
+export const getArtistCollectionItems = async (libraryId, collectionId) => {
+  if (!getArtistCollectionItemsRunning) {
+    const prevArtistCollectionItems =
+      store.getState().appModel.allArtistCollectionItems[libraryId + '-' + collectionId];
+    if (!prevArtistCollectionItems) {
+      getArtistCollectionItemsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const endpoint = endpointConfig.collection.getItems(plexBaseUrl, collectionId);
@@ -626,25 +630,47 @@ export const getCollectionItems = async (libraryId, collectionId, collectionType
 
       // console.log(data.MediaContainer.Metadata);
 
-      let collectionItems;
+      const artistCollectionItems =
+        data.MediaContainer.Metadata?.map((artist) =>
+          transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
+        ) || [];
 
-      if (collectionType === 'artist') {
-        collectionItems =
-          data.MediaContainer.Metadata?.map((artist) =>
-            transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
-          ) || [];
-      } else if (collectionType === 'album') {
-        collectionItems =
-          data.MediaContainer.Metadata?.map((album) =>
-            transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
-          ) || [];
-      }
+      // console.log('collectionItems', collectionItems);
 
-      // console.log('collectionItems', collectionType, collectionItems);
+      store.dispatch.appModel.storeArtistCollectionItems({ libraryId, collectionId, artistCollectionItems });
 
-      store.dispatch.appModel.storeCollectionItems({ libraryId, collectionId, collectionItems });
+      getArtistCollectionItemsRunning = false;
+    }
+  }
+};
 
-      getCollectionItemsRunning = false;
+// ======================================================================
+// GET ALBUM COLLECTION ITEMS
+// ======================================================================
+
+let getAlbumCollectionItemsRunning;
+
+export const getAlbumCollectionItems = async (libraryId, collectionId) => {
+  if (!getAlbumCollectionItemsRunning) {
+    const prevAlbumCollectionItems = store.getState().appModel.allAlbumCollectionItems[libraryId + '-' + collectionId];
+    if (!prevAlbumCollectionItems) {
+      getAlbumCollectionItemsRunning = true;
+      const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const endpoint = endpointConfig.collection.getItems(plexBaseUrl, collectionId);
+      const data = await fetchData(endpoint, accessToken);
+
+      // console.log(data.MediaContainer.Metadata);
+
+      const albumCollectionItems =
+        data.MediaContainer.Metadata?.map((album) => transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)) ||
+        [];
+
+      // console.log('collectionItems', collectionItems);
+
+      store.dispatch.appModel.storeAlbumCollectionItems({ libraryId, collectionId, albumCollectionItems });
+
+      getAlbumCollectionItemsRunning = false;
     }
   }
 };
@@ -1031,6 +1057,37 @@ export const getAlbumMoodItems = async (libraryId, moodId) => {
 };
 
 // ======================================================================
+// SET STAR RATING
+// ======================================================================
+
+export const setStarRating = (type, ratingKey, rating) => {
+  const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const sessionId = store.getState().sessionModel.sessionId;
+  plexTools
+    .setStarRating(plexBaseUrl, accessToken, sessionId, ratingKey, rating)
+    .then(() => {
+      if (type === 'artist' || type === 'artists') {
+        store.dispatch.appModel.setArtistRating({ ratingKey, rating });
+      } else if (type === 'album' || type === 'albums') {
+        store.dispatch.appModel.setAlbumRating({ ratingKey, rating });
+      } else if (type === 'track' || type === 'tracks') {
+        store.dispatch.appModel.setTrackRating({ ratingKey, rating });
+      } else if (type === 'playlist' || type === 'playlists') {
+        store.dispatch.appModel.setPlaylistRating({ ratingKey, rating });
+      } else if (type === 'collection' || type === 'collections') {
+        store.dispatch.appModel.setCollectionRating({ ratingKey, rating });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      track('Error: Plex Set Star Rating');
+    });
+};
+
+window.setStarRating = setStarRating;
+
+// ======================================================================
 // LOG PLAYBACK STATUS
 // ======================================================================
 
@@ -1160,6 +1217,7 @@ const transposePlaylistData = (playlist, libraryId, plexBaseUrl, accessToken) =>
     libraryId: libraryId,
     playlistId: playlist.ratingKey,
     title: playlist.title,
+    userRating: playlist.userRating,
     link: '/playlists/' + libraryId + '/' + playlist.ratingKey,
     totalTracks: playlist.leafCount,
     duration: playlist.duration,

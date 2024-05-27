@@ -49,8 +49,10 @@ const plexLibraryState = {
   allPlaylists: null,
   allPlaylistTracks: {},
   // collections
-  allCollections: null,
-  allCollectionItems: {},
+  allArtistCollections: null,
+  allArtistCollectionItems: {},
+  allAlbumCollections: null,
+  allAlbumCollectionItems: {},
   // genres
   allArtistGenres: null,
   allArtistGenreItems: {},
@@ -266,6 +268,78 @@ const effects = (dispatch) => ({
     });
   },
 
+  setArtistRating(payload, rootState) {
+    console.log('%c--- setArtistRating ---', 'color:#07a098');
+    const { ratingKey, rating } = payload;
+
+    // update artist
+    const prevArtists = rootState.appModel.allArtists;
+    const allArtists = prevArtists ? [...prevArtists] : [];
+    const artistIndex = allArtists.findIndex((artist) => artist.artistId === ratingKey);
+    if (artistIndex !== -1) {
+      allArtists[artistIndex].userRating = rating;
+      dispatch.appModel.setAppState({
+        allArtists,
+      });
+    }
+
+    // update artist collection items
+    const allArtistCollectionItems = { ...rootState.appModel.allArtistCollectionItems };
+    const collectionKeys = Object.keys(allArtistCollectionItems);
+    collectionKeys.forEach((key) => {
+      const artistCollectionItems = allArtistCollectionItems[key];
+      const artistIndex = artistCollectionItems.findIndex((artist) => artist.artistId === ratingKey);
+      if (artistIndex !== -1) {
+        artistCollectionItems[artistIndex].userRating = rating;
+        allArtistCollectionItems[key] = artistCollectionItems;
+      }
+    });
+
+    // update artist genre items
+    const allArtistGenreItems = { ...rootState.appModel.allArtistGenreItems };
+    const genreKeys = Object.keys(allArtistGenreItems);
+    genreKeys.forEach((key) => {
+      const artistGenreItems = allArtistGenreItems[key];
+      const artistIndex = artistGenreItems.findIndex((artist) => artist.artistId === ratingKey);
+      if (artistIndex !== -1) {
+        artistGenreItems[artistIndex].userRating = rating;
+        allArtistGenreItems[key] = artistGenreItems;
+      }
+    });
+
+    // update artist style items
+    const allArtistStyleItems = { ...rootState.appModel.allArtistStyleItems };
+    const styleKeys = Object.keys(allArtistStyleItems);
+    styleKeys.forEach((key) => {
+      const artistStyleItems = allArtistStyleItems[key];
+      const artistIndex = artistStyleItems.findIndex((artist) => artist.artistId === ratingKey);
+      if (artistIndex !== -1) {
+        artistStyleItems[artistIndex].userRating = rating;
+        allArtistStyleItems[key] = artistStyleItems;
+      }
+    });
+
+    // update artist mood items
+    const allArtistMoodItems = { ...rootState.appModel.allArtistMoodItems };
+    const moodKeys = Object.keys(allArtistMoodItems);
+    moodKeys.forEach((key) => {
+      const artistMoodItems = allArtistMoodItems[key];
+      const artistIndex = artistMoodItems.findIndex((artist) => artist.artistId === ratingKey);
+      if (artistIndex !== -1) {
+        artistMoodItems[artistIndex].userRating = rating;
+        allArtistMoodItems[key] = artistMoodItems;
+      }
+    });
+
+    // save
+    dispatch.appModel.setAppState({
+      allArtistCollectionItems,
+      allArtistGenreItems,
+      allArtistStyleItems,
+      allArtistMoodItems,
+    });
+  },
+
   //
   // PLEX - ALBUMS
   //
@@ -302,6 +376,109 @@ const effects = (dispatch) => ({
     allAlbumTracks[libraryId + '-' + albumId] = albumTracks;
     dispatch.appModel.setAppState({
       allAlbumTracks,
+    });
+  },
+
+  setAlbumRating(payload, rootState) {
+    console.log('%c--- setAlbumRating ---', 'color:#07a098');
+    const { ratingKey, rating } = payload;
+
+    // update albums
+    const prevAlbums = rootState.appModel.allAlbums;
+    const allAlbums = prevAlbums ? [...prevAlbums] : [];
+    const albumIndex = allAlbums.findIndex((album) => album.albumId === ratingKey);
+    if (albumIndex !== -1) {
+      allAlbums[albumIndex].userRating = rating;
+      dispatch.appModel.setAppState({
+        allAlbums,
+      });
+    }
+
+    // update artist albums
+    const allArtistAlbums = { ...rootState.appModel.allArtistAlbums };
+    const artistAlbumKeys = Object.keys(allArtistAlbums);
+    artistAlbumKeys.forEach((key) => {
+      const artistAlbums = allArtistAlbums[key];
+      const albumIndex = artistAlbums.findIndex((album) => album.albumId === ratingKey);
+      if (albumIndex !== -1) {
+        artistAlbums[albumIndex].userRating = rating;
+        allArtistAlbums[key] = artistAlbums;
+      }
+    });
+
+    // update artist related albums
+    const allArtistRelated = { ...rootState.appModel.allArtistRelated };
+    const artistKeys = Object.keys(allArtistRelated);
+    artistKeys.forEach((artistKey) => {
+      const artistGroups = allArtistRelated[artistKey];
+      artistGroups.forEach((group) => {
+        const relatedAlbums = group.related;
+        relatedAlbums.forEach((album, index) => {
+          if (album.albumId === ratingKey) {
+            group.related[index].userRating = rating;
+          }
+        });
+      });
+      allArtistRelated[artistKey] = artistGroups;
+    });
+
+    // update album collection items
+    const allAlbumCollectionItems = { ...rootState.appModel.allAlbumCollectionItems };
+    const collectionKeys = Object.keys(allAlbumCollectionItems);
+    collectionKeys.forEach((key) => {
+      const albumCollectionItems = allAlbumCollectionItems[key];
+      console.log(albumCollectionItems);
+      const albumIndex = albumCollectionItems.findIndex((album) => album.albumId === ratingKey);
+      if (albumIndex !== -1) {
+        albumCollectionItems[albumIndex].userRating = rating;
+        allAlbumCollectionItems[key] = albumCollectionItems;
+      }
+    });
+
+    // update album genre items
+    const allAlbumGenreItems = { ...rootState.appModel.allAlbumGenreItems };
+    const genreKeys = Object.keys(allAlbumGenreItems);
+    genreKeys.forEach((key) => {
+      const albumGenreItems = allAlbumGenreItems[key];
+      const albumIndex = albumGenreItems.findIndex((album) => album.albumId === ratingKey);
+      if (albumIndex !== -1) {
+        albumGenreItems[albumIndex].userRating = rating;
+        allAlbumGenreItems[key] = albumGenreItems;
+      }
+    });
+
+    // update album style items
+    const allAlbumStyleItems = { ...rootState.appModel.allAlbumStyleItems };
+    const styleKeys = Object.keys(allAlbumStyleItems);
+    styleKeys.forEach((key) => {
+      const albumStyleItems = allAlbumStyleItems[key];
+      const albumIndex = albumStyleItems.findIndex((album) => album.albumId === ratingKey);
+      if (albumIndex !== -1) {
+        albumStyleItems[albumIndex].userRating = rating;
+        allAlbumStyleItems[key] = albumStyleItems;
+      }
+    });
+
+    // update album mood items
+    const allAlbumMoodItems = { ...rootState.appModel.allAlbumMoodItems };
+    const moodKeys = Object.keys(allAlbumMoodItems);
+    moodKeys.forEach((key) => {
+      const albumMoodItems = allAlbumMoodItems[key];
+      const albumIndex = albumMoodItems.findIndex((album) => album.albumId === ratingKey);
+      if (albumIndex !== -1) {
+        albumMoodItems[albumIndex].userRating = rating;
+        allAlbumMoodItems[key] = albumMoodItems;
+      }
+    });
+
+    // save
+    dispatch.appModel.setAppState({
+      allArtistAlbums,
+      allArtistRelated,
+      allAlbumCollectionItems,
+      allAlbumGenreItems,
+      allAlbumStyleItems,
+      allAlbumMoodItems,
     });
   },
 
@@ -344,24 +521,118 @@ const effects = (dispatch) => ({
     });
   },
 
+  setPlaylistRating(payload, rootState) {
+    console.log('%c--- setPlaylistRating ---', 'color:#07a098');
+    const { ratingKey, rating } = payload;
+    const prevPlaylists = rootState.appModel.allPlaylists;
+    const allPlaylists = prevPlaylists ? [...prevPlaylists] : [];
+    const playlistIndex = allPlaylists.findIndex((playlist) => playlist.playlistId === ratingKey);
+    if (playlistIndex !== -1) {
+      allPlaylists[playlistIndex].userRating = rating;
+      dispatch.appModel.setAppState({
+        allPlaylists,
+      });
+    }
+  },
+
+  //
+  // PLEX - TRACKS
+  //
+
+  setTrackRating(payload, rootState) {
+    console.log('%c--- setTrackRating ---', 'color:#07a098');
+    const { ratingKey, rating } = payload;
+
+    // update album tracks
+    const allAlbumTracks = { ...rootState.appModel.allAlbumTracks };
+    const albumKeys = Object.keys(allAlbumTracks);
+    albumKeys.forEach((key) => {
+      const albumTracks = allAlbumTracks[key];
+      const trackIndex = albumTracks.findIndex((track) => track.trackId === ratingKey);
+      if (trackIndex !== -1) {
+        albumTracks[trackIndex].userRating = rating;
+        allAlbumTracks[key] = albumTracks;
+      }
+    });
+
+    // update playlist tracks
+    const allPlaylistTracks = { ...rootState.appModel.allPlaylistTracks };
+    const playlistKeys = Object.keys(allPlaylistTracks);
+    playlistKeys.forEach((key) => {
+      const playlistTracks = allPlaylistTracks[key];
+      const trackIndex = playlistTracks.findIndex((track) => track.trackId === ratingKey);
+      if (trackIndex !== -1) {
+        playlistTracks[trackIndex].userRating = rating;
+        allPlaylistTracks[key] = playlistTracks;
+      }
+    });
+    dispatch.appModel.setAppState({
+      allAlbumTracks,
+      allPlaylistTracks,
+    });
+  },
+
   //
   // PLEX - COLLECTIONS
   //
 
-  storeCollectionItems(payload, rootState) {
-    console.log('%c--- storeCollectionItems ---', 'color:#07a098');
-    const { libraryId, collectionId, collectionItems } = payload;
-    const allCollectionItems = { ...rootState.appModel.allCollectionItems };
+  storeArtistCollectionItems(payload, rootState) {
+    console.log('%c--- storeArtistCollectionItems ---', 'color:#07a098');
+    const { libraryId, collectionId, artistCollectionItems } = payload;
+    const allArtistCollectionItems = { ...rootState.appModel.allArtistCollectionItems };
     // limit recent entries
-    const keys = Object.keys(allCollectionItems);
+    const keys = Object.keys(allArtistCollectionItems);
     if (keys.length >= maxDataLength) {
-      delete allCollectionItems[keys[0]];
+      delete allArtistCollectionItems[keys[0]];
     }
     // add the new entry and save
-    allCollectionItems[libraryId + '-' + collectionId] = collectionItems;
+    allArtistCollectionItems[libraryId + '-' + collectionId] = artistCollectionItems;
     dispatch.appModel.setAppState({
-      allCollectionItems,
+      allArtistCollectionItems,
     });
+  },
+
+  storeAlbumCollectionItems(payload, rootState) {
+    console.log('%c--- storeAlbumCollectionItems ---', 'color:#07a098');
+    const { libraryId, collectionId, albumCollectionItems } = payload;
+    const allAlbumCollectionItems = { ...rootState.appModel.allAlbumCollectionItems };
+    // limit recent entries
+    const keys = Object.keys(allAlbumCollectionItems);
+    if (keys.length >= maxDataLength) {
+      delete allAlbumCollectionItems[keys[0]];
+    }
+    // add the new entry and save
+    allAlbumCollectionItems[libraryId + '-' + collectionId] = albumCollectionItems;
+    dispatch.appModel.setAppState({
+      allAlbumCollectionItems,
+    });
+  },
+
+  setCollectionRating(payload, rootState) {
+    console.log('%c--- setCollectionRating ---', 'color:#07a098');
+    const { ratingKey, rating } = payload;
+
+    // update artist collections
+    const prevArtistCollections = rootState.appModel.allArtistCollections;
+    const allArtistCollections = prevArtistCollections ? [...prevArtistCollections] : [];
+    const artistCollectionIndex = allArtistCollections.findIndex((collection) => collection.collectionId === ratingKey);
+    if (artistCollectionIndex !== -1) {
+      allArtistCollections[artistCollectionIndex].userRating = rating;
+      dispatch.appModel.setAppState({
+        allArtistCollections,
+      });
+    }
+
+    // update album collections
+    const prevAlbumCollections = rootState.appModel.allAlbumCollections;
+    const allAlbumCollections = prevAlbumCollections ? [...prevAlbumCollections] : [];
+    const albumCollectionIndex = allAlbumCollections.findIndex((collection) => collection.collectionId === ratingKey);
+    if (albumCollectionIndex !== -1) {
+      allAlbumCollections[albumCollectionIndex].userRating = rating;
+      dispatch.appModel.setAppState({
+        allAlbumCollections,
+      });
+    }
   },
 
   //

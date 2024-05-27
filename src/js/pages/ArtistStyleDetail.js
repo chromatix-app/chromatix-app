@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { ListCards, Loading, StarRating, TitleHeading } from 'js/components';
+import { ListCards, Loading, TitleHeading } from 'js/components';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
@@ -16,8 +16,6 @@ import * as plex from 'js/services/plex';
 const ArtistStyleDetail = () => {
   const { styleId, libraryId } = useParams();
 
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   const allArtistStyles = useSelector(({ appModel }) => appModel.allArtistStyles);
   const currentArtistStyle = allArtistStyles?.filter((style) => style.styleId === styleId)[0];
 
@@ -26,7 +24,6 @@ const ArtistStyleDetail = () => {
 
   const styleThumb = currentArtistStyle?.thumb;
   const styleTitle = currentArtistStyle?.title;
-  const styleRating = currentArtistStyle?.userRating;
 
   useEffect(() => {
     plex.getAllArtistStyles();
@@ -39,7 +36,6 @@ const ArtistStyleDetail = () => {
         <TitleHeading
           thumb={styleThumb}
           title={styleTitle}
-          detail={optionShowStarRatings && styleRating && <StarRating rating={styleRating} size={13} inline />}
           subtitle={
             currentArtistStyleItems ? (
               currentArtistStyleItems?.length + ' Artist' + (currentArtistStyleItems?.length !== 1 ? 's' : '')

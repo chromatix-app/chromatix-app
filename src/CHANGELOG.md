@@ -1,3 +1,13 @@
+<a name="0.13.0"></a>
+# 0.13.0 (2024-05-27)
+Features:
+- Add ability to edit star ratings.
+- Add icons to sidebar menu.
+Refactor:
+- Separated artist and album collection code.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.12.0"></a>
 # 0.12.0 (2024-05-19)
 Features:

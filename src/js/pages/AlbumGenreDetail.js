@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { ListCards, Loading, StarRating, TitleHeading } from 'js/components';
+import { ListCards, Loading, TitleHeading } from 'js/components';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
@@ -16,8 +16,6 @@ import * as plex from 'js/services/plex';
 const AlbumGenreDetail = () => {
   const { genreId, libraryId } = useParams();
 
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   const allAlbumGenres = useSelector(({ appModel }) => appModel.allAlbumGenres);
   const currentAlbumGenre = allAlbumGenres?.filter((genre) => genre.genreId === genreId)[0];
 
@@ -26,7 +24,6 @@ const AlbumGenreDetail = () => {
 
   const genreThumb = currentAlbumGenre?.thumb;
   const genreTitle = currentAlbumGenre?.title;
-  const genreRating = currentAlbumGenre?.userRating;
 
   useEffect(() => {
     plex.getAllAlbumGenres();
@@ -39,7 +36,6 @@ const AlbumGenreDetail = () => {
         <TitleHeading
           thumb={genreThumb}
           title={genreTitle}
-          detail={optionShowStarRatings && genreRating && <StarRating rating={genreRating} size={13} inline />}
           subtitle={
             currentAlbumGenreItems ? (
               currentAlbumGenreItems?.length + ' Album' + (currentAlbumGenreItems?.length !== 1 ? 's' : '')
