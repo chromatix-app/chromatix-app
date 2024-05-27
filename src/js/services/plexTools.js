@@ -41,8 +41,7 @@ const endpointConfig = {
     getAllLibraries: (base) => `${base}/library/sections`,
   },
   rating: {
-    setStarRating: (base, ratingKey, rating) =>
-      `${base}/:/rate?identifier=com.plexapp.plugins.library&key=${ratingKey}&rating=${rating}`,
+    setStarRating: (base) => `${base}/:/rate`,
   },
   status: {
     postPlaybackStatus: (base) => `${base}/:/timeline`,
@@ -451,9 +450,15 @@ export const setStarRating = (baseUrl, accessToken, sessionId, ratingKey, rating
     try {
       const endpoint = endpointConfig.rating.setStarRating(baseUrl, ratingKey, rating);
       const browserName = getBrowserName();
+      const params = {
+        identifier: 'com.plexapp.plugins.library',
+        key: ratingKey,
+        rating: rating,
+      };
 
       axios
-        .put(endpoint, {
+        .get(endpoint, {
+          params: params,
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
