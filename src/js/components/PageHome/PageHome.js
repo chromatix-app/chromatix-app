@@ -4,6 +4,7 @@
 
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { track } from '@vercel/analytics';
 import axios from 'axios';
 import clsx from 'clsx';
 
@@ -23,6 +24,10 @@ export const PageHome = () => {
   const [macDownloadUrl, setMacDownloadUrl] = useState(
     'https://github.com/chromatix-app/chromatix-release/releases/latest'
   );
+
+  const handleDownloadMac = () => {
+    track('Download: macOS');
+  };
 
   useEffect(() => {
     axios.get('https://api.github.com/repos/chromatix-app/chromatix-release/releases/latest').then((response) => {
@@ -64,7 +69,7 @@ export const PageHome = () => {
           <>
             <div className="mt-10"></div>
 
-            <Button variant="downloadMac" href={macDownloadUrl} target="_blank">
+            <Button variant="downloadMac" href={macDownloadUrl} target="_blank" onClick={handleDownloadMac}>
               Download for macOS
             </Button>
 
@@ -96,7 +101,7 @@ export const PageHome = () => {
           <>
             <div className="mt-10"></div>
 
-            <Button variant="downloadMac" href={macDownloadUrl} target="_blank">
+            <Button variant="downloadMac" href={macDownloadUrl} target="_blank" onClick={handleDownloadMac}>
               Download for macOS
             </Button>
 
