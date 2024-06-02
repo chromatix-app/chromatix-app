@@ -14,7 +14,7 @@
   margin: 0;
   background: $color-primary;
   border: 1px solid $color-opacity-02;
-  border-radius: 12px;
+  border-radius: 10px;
 
   font-size: 18px;
   line-height: 1.2;
@@ -75,5 +75,21 @@
     @media (min-width: 1024px) {
       margin-inline: auto;
     }
+  }
+}
+
+.downloadMac {
+  max-width: 220px;
+  padding: 16px 10px;
+  font-size: 14px;
+  line-height: 1;
+
+  .icon {
+    display: inline-block;
+    position: relative;
+    width: 22px;
+    height: 22px;
+    margin: 0 7px -8px -3px;
+    top: -5px;
   }
 }
