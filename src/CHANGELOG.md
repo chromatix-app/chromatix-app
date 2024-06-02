@@ -1,3 +1,10 @@
+<a name="0.14.0"></a>
+# 0.14.0 (2024-06-02)
+Features:
+- Released bundled macOS app.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.13.0"></a>
 # 0.13.0 (2024-05-27)
 Features:
