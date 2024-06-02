@@ -2,19 +2,37 @@
 // IMPORTS
 // ======================================================================
 
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import axios from 'axios';
 import clsx from 'clsx';
 
 import { Button, Icon } from 'js/components';
 
 import style from './PageHome.module.scss';
+import { useEffect } from 'react';
 
 // ======================================================================
 // RENDER
 // ======================================================================
 
 export const PageHome = () => {
+  const isElectron = window.isElectron;
   const dispatch = useDispatch();
+
+  const [macDownloadUrl, setMacDownloadUrl] = useState(
+    'https://github.com/chromatix-app/chromatix-release/releases/latest'
+  );
+
+  useEffect(() => {
+    axios.get('https://api.github.com/repos/chromatix-app/chromatix-release/releases/latest').then((response) => {
+      const assets = response.data.assets;
+      const dmgAsset = assets.find((asset) => asset.name.endsWith('.dmg'));
+      if (dmgAsset) {
+        setMacDownloadUrl(dmgAsset.browser_download_url);
+      }
+    });
+  }, []);
 
   return (
     <div className={clsx(style.wrap, 'text-center')}>
@@ -41,10 +59,24 @@ export const PageHome = () => {
         <div className="mt-45 mt-lg-50"></div>
 
         <Button onClick={dispatch.appModel.doLogin}>Login with Plex</Button>
+
+        {!isElectron && (
+          <>
+            <div className="mt-10"></div>
+
+            <Button variant="downloadMac" href={macDownloadUrl} target="_blank">
+              Download for macOS
+            </Button>
+
+            <div className="mt-25"></div>
+
+            <div className={style.note}>Coming soon for Windows</div>
+          </>
+        )}
       </div>
 
       <div className={clsx(style.image, style.margin)}>
-        <img src="/images/chromatix001.jpg" alt="Chromatix music player for Plex" width="2000" height="1484" />
+        <img src="/images/chromatix002.jpg" alt="Chromatix music player for Plex" width="2000" height="1484" />
       </div>
 
       <div className={style.intro}>
@@ -59,6 +91,20 @@ export const PageHome = () => {
         <div className="mt-50"></div>
 
         <Button onClick={dispatch.appModel.doLogin}>Login with Plex</Button>
+
+        {!isElectron && (
+          <>
+            <div className="mt-10"></div>
+
+            <Button variant="downloadMac" href={macDownloadUrl} target="_blank">
+              Download for macOS
+            </Button>
+
+            <div className="mt-25"></div>
+
+            <div className={style.note}>Coming soon for Windows</div>
+          </>
+        )}
       </div>
 
       <div className={clsx(style.social, style.margin)}>
