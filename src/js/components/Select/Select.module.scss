@@ -1,0 +1,53 @@
+@import '../../../css/global';
+
+.wrap {
+  padding: 0 30px 40px;
+  margin-top: -33px;
+
+  :global(.cq-800) & {
+    padding: 0 40px 40px;
+  }
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  line-height: 1;
+  padding: 6px 0;
+  color: var(--color-opacity-06);
+}
+
+.icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin: 0 10px 0 0;
+}
+
+.content {
+  left: 9px;
+  background: var(--color-panel-background);
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  padding: 6px 0;
+  box-shadow: 0 0 10px var(--color-shadow);
+  font-size: 13px;
+  line-height: 1;
+}
+
+.viewport {
+}
+
+.item {
+  padding: 5px 14px;
+  cursor: pointer;
+
+  &[data-state='checked'] {
+    color: var(--color-primary);
+  }
+}
+
+.indicator {
+  margin: 0 5px 0 0;
+}
