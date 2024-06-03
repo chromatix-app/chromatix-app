@@ -14,8 +14,8 @@ const ErrorPlexLogin = () => {
   const dispatch = useDispatch();
 
   return (
-    <main className="wrap-middle text-center">
-      <div>
+    <main className="wrap-inner">
+      <div className="wrap-middle text-center">
         <TitleBasic title="Oops!" />
         <div className="mt-15"></div>
         Sorry, there was an error connecting to Plex.

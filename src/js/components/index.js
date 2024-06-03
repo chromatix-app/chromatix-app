@@ -9,6 +9,7 @@ export { default as PageHome } from './PageHome/PageHome';
 export { default as Queue } from './Queue/Queue';
 export { default as RangeSlider } from './RangeSlider/RangeSlider';
 export { default as RightBar } from './RightBar/RightBar';
+export { default as Select } from './Select/Select';
 export { default as Settings } from './Settings/Settings';
 export { default as SideBar } from './SideBar/SideBar';
 export { default as StarRating } from './StarRating/StarRating';

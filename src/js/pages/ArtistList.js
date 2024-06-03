@@ -5,12 +5,14 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { ListCards, Loading, TitleHeading } from 'js/components';
+import { ListCards, Loading, Select, TitleHeading } from 'js/components';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
+
+const isLocal = process.env.REACT_APP_ENV === 'local';
 
 const ArtistList = () => {
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
@@ -30,6 +32,7 @@ const ArtistList = () => {
         title="Artists"
         subtitle={allArtists ? allArtists?.length + ' Artist' + (allArtists?.length !== 1 ? 's' : '') : null}
       />
+      {isLocal && <Select />}
       {!allArtists && <Loading forceVisible inline />}
       {allArtists && <ListCards variant="artists" entries={allArtists} />}
     </>
