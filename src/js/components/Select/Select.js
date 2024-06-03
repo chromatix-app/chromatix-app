@@ -32,7 +32,7 @@ export const Select = () => {
       <RadixSelect.Root value={value} onValueChange={handleValueChange}>
         <RadixSelect.Trigger className={style.trigger} aria-label="Food">
           <span className={style.icon}>
-            <Icon icon="ServerIcon" cover stroke />
+            <Icon icon="ArrowsVerticalIcon" cover stroke />
           </span>
           <RadixSelect.Value />
         </RadixSelect.Trigger>
@@ -56,8 +56,12 @@ export const Select = () => {
 const SelectItem = forwardRef(({ children, className, ...props }, forwardedRef) => {
   return (
     <RadixSelect.Item className={style.item} {...props} ref={forwardedRef}>
-      <RadixSelect.ItemIndicator className={style.indicator}>&gt;</RadixSelect.ItemIndicator>
       <RadixSelect.ItemText>{children}</RadixSelect.ItemText>
+      <RadixSelect.ItemIndicator className={style.indicator}>
+        <span className={style.icon}>
+          <Icon icon="CheckCircleIcon" cover stroke />
+        </span>
+      </RadixSelect.ItemIndicator>
     </RadixSelect.Item>
   );
 });
