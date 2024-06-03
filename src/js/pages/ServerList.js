@@ -20,8 +20,8 @@ const ServerList = () => {
   }, []);
 
   return (
-    <main className="wrap-middle text-center">
-      <div>
+    <main className="wrap-inner">
+      <div className="wrap-middle text-center">
         {!allServers && <Loading forceVisible inline />}
         {allServers && (
           <>

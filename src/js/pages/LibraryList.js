@@ -22,8 +22,8 @@ const LibraryList = () => {
   }, []);
 
   return (
-    <main className="wrap-middle text-center">
-      <div>
+    <main className="wrap-inner">
+      <div className="wrap-middle text-center">
         {!allLibraries && <Loading forceVisible inline />}
         {allLibraries && (
           <>
