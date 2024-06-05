@@ -43,6 +43,8 @@ const sessionState = {
   optionLogPlexPlayback: true,
 
   queueIsVisible: false,
+
+  sortArtists: 'alphabetical',
 };
 
 const playingState = {

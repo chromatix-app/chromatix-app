@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { forwardRef, useState } from 'react';
+import { forwardRef } from 'react';
 import * as RadixSelect from '@radix-ui/react-select';
 
 import { Icon } from 'js/components';
@@ -13,18 +13,9 @@ import style from './Select.module.scss';
 // RENDER
 // ======================================================================
 
-export const Select = () => {
-  const [value, setValue] = useState('alphabetical');
-
-  const options = [
-    { value: 'alphabetical', label: 'Alphabetical' },
-    { value: 'rating', label: 'Rating' },
-    { value: 'recentlyAdded', label: 'Recently Added' },
-    { value: 'recentlyPlayed', label: 'Recently Played' },
-  ];
-
+export const Select = ({ value, options, setter }) => {
   const handleValueChange = (newValue) => {
-    setValue(newValue);
+    setter(newValue);
   };
 
   return (
