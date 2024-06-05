@@ -5,6 +5,7 @@
 import React, { useCallback } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+// import moment from 'moment';
 import clsx from 'clsx';
 
 import { Icon, StarRating } from 'js/components';
@@ -15,6 +16,8 @@ import style from './ListCards.module.scss';
 // ======================================================================
 // COMPONENT
 // ======================================================================
+
+// const isLocal = process.env.REACT_APP_ENV === 'local';
 
 const ListCards = ({ entries, variant }) => {
   const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
@@ -61,6 +64,9 @@ const ListEntry = React.memo(
     link,
     totalTracks,
     variant,
+    addedAt,
+    lastPlayed,
+    releaseDate,
     isCurrentlyLoaded,
     isCurrentlyPlaying,
   }) => {
@@ -168,6 +174,16 @@ const ListEntry = React.memo(
           {duration && <div className={style.subtitle}>{durationToStringLong(duration)}</div>}
 
           {/* {albumRelease && <div className={style.subtitle}>{albumRelease}</div>} */}
+
+          {/* {isLocal && (
+            <div className={style.subtitle}>{releaseDate ? moment(releaseDate).format('YY-MM-DD') : '-'}</div>
+          )} */}
+
+          {/* {isLocal && <div className={style.subtitle}>{addedAt ? moment(addedAt * 1000).format('YY-MM-DD') : '-'}</div>} */}
+
+          {/* {isLocal && (
+            <div className={style.subtitle}>{lastPlayed ? moment(lastPlayed * 1000).format('YY-MM-DD') : '-'}</div>
+          )} */}
 
           {optionShowStarRatings && typeof userRating !== 'undefined' && (
             <div className={style.rating}>

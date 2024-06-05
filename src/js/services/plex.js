@@ -1222,6 +1222,8 @@ const transposePlaylistData = (playlist, libraryId, plexBaseUrl, accessToken) =>
     libraryId: libraryId,
     playlistId: playlist.ratingKey,
     title: playlist.title,
+    addedAt: playlist.addedAt,
+    lastPlayed: playlist.lastViewedAt,
     userRating: playlist.userRating,
     link: '/playlists/' + libraryId + '/' + playlist.ratingKey,
     totalTracks: playlist.leafCount,
@@ -1265,6 +1267,7 @@ const transposeCollectionData = (collection, libraryId, plexBaseUrl, accessToken
     libraryId: libraryId,
     collectionId: collection.ratingKey,
     title: collection.title,
+    addedAt: collection.addedAt,
     userRating: collection.userRating,
     type: collection.subtype,
     link:

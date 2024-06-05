@@ -13,8 +13,6 @@ import * as plex from 'js/services/plex';
 // COMPONENT
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
-
 const ArtistList = () => {
   const dispatch = useDispatch();
 
@@ -37,22 +35,20 @@ const ArtistList = () => {
         title="Artists"
         subtitle={sortedArtists ? sortedArtists?.length + ' Artist' + (sortedArtists?.length !== 1 ? 's' : '') : null}
       />
-      {isLocal && (
-        <Select
-          value={sortArtists}
-          options={[
-            { value: 'title', label: 'Alphabetical' },
-            { value: 'userRating', label: 'Rating' },
-            { value: 'addedAt', label: 'Recently Added' },
-            { value: 'lastPlayed', label: 'Recently Played' },
-          ]}
-          setter={(sortArtists) => {
-            dispatch.sessionModel.setSessionState({
-              sortArtists,
-            });
-          }}
-        />
-      )}
+      <Select
+        value={sortArtists}
+        options={[
+          { value: 'title', label: 'Alphabetical' },
+          { value: 'userRating', label: 'Rating' },
+          { value: 'addedAt', label: 'Recently Added' },
+          { value: 'lastPlayed', label: 'Recently Played' },
+        ]}
+        setter={(sortArtists) => {
+          dispatch.sessionModel.setSessionState({
+            sortArtists,
+          });
+        }}
+      />
       {!sortedArtists && <Loading forceVisible inline />}
       {sortedArtists && <ListCards variant="artists" entries={sortedArtists} />}
     </>

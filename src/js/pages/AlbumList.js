@@ -13,8 +13,6 @@ import * as plex from 'js/services/plex';
 // COMPONENT
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
-
 const AlbumList = () => {
   const dispatch = useDispatch();
 
@@ -37,26 +35,24 @@ const AlbumList = () => {
         title="Albums"
         subtitle={sortedAlbums ? sortedAlbums?.length + ' Album' + (sortedAlbums?.length !== 1 ? 's' : '') : null}
       />
-      {isLocal && (
-        <Select
-          value={sortAlbums}
-          options={[
-            { value: 'title', label: 'Alphabetical' },
-            { value: 'artist', label: 'Artist' },
-            { value: 'artist-releaseDate', label: 'Artist, by Newest Release' },
-            { value: 'artist-releaseDateDesc', label: 'Artist, by Oldest Release' },
-            { value: 'userRating', label: 'Rating' },
-            { value: 'releaseDate', label: 'Release Date' },
-            { value: 'addedAt', label: 'Recently Added' },
-            { value: 'lastPlayed', label: 'Recently Played' },
-          ]}
-          setter={(sortAlbums) => {
-            dispatch.sessionModel.setSessionState({
-              sortAlbums,
-            });
-          }}
-        />
-      )}
+      <Select
+        value={sortAlbums}
+        options={[
+          { value: 'title', label: 'Alphabetical' },
+          { value: 'artist', label: 'Artist' },
+          { value: 'artist-asc-releaseDate-asc', label: 'Artist, by Newest Release' },
+          { value: 'artist-asc-releaseDate-desc', label: 'Artist, by Oldest Release' },
+          { value: 'userRating', label: 'Rating' },
+          { value: 'releaseDate', label: 'Release Date' },
+          { value: 'addedAt', label: 'Recently Added' },
+          { value: 'lastPlayed', label: 'Recently Played' },
+        ]}
+        setter={(sortAlbums) => {
+          dispatch.sessionModel.setSessionState({
+            sortAlbums,
+          });
+        }}
+      />
       {!sortedAlbums && <Loading forceVisible inline />}
       {sortedAlbums && <ListCards variant="albums" entries={sortedAlbums} />}
     </>

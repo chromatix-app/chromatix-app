@@ -45,8 +45,10 @@ const sessionState = {
   queueIsVisible: false,
 
   sortArtists: 'title',
-  sortAlbums: 'title',
+  sortAlbums: 'artist',
   sortPlaylists: 'title',
+  sortArtistCollections: 'title',
+  sortAlbumCollections: 'title',
 };
 
 const playingState = {
