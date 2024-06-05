@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ListCards, Loading, Select, TitleHeading } from 'js/components';
+import { sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
@@ -19,13 +20,12 @@ const ArtistList = () => {
 
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const currentLibraryId = currentLibrary?.libraryId;
-
   const sortArtists = useSelector(({ sessionModel }) => sessionModel.sortArtists);
 
   const allArtists = useSelector(({ appModel }) => appModel.allArtists)?.filter(
     (artist) => artist.libraryId === currentLibraryId
   );
-  const sortedArtists = allArtists ? sortArtistsArray(allArtists, sortArtists) : null;
+  const sortedArtists = allArtists ? sortList(allArtists, sortArtists) : null;
 
   useEffect(() => {
     plex.getAllArtists();
@@ -41,10 +41,10 @@ const ArtistList = () => {
         <Select
           value={sortArtists}
           options={[
-            { value: 'alphabetical', label: 'Alphabetical' },
-            { value: 'rating', label: 'Rating' },
-            { value: 'recentlyAdded', label: 'Recently Added' },
-            { value: 'recentlyPlayed', label: 'Recently Played' },
+            { value: 'title', label: 'Alphabetical' },
+            { value: 'userRating', label: 'Rating' },
+            { value: 'addedAt', label: 'Recently Added' },
+            { value: 'lastPlayed', label: 'Recently Played' },
           ]}
           setter={(sortArtists) => {
             dispatch.sessionModel.setSessionState({
@@ -57,21 +57,6 @@ const ArtistList = () => {
       {sortedArtists && <ListCards variant="artists" entries={sortedArtists} />}
     </>
   );
-};
-
-const sortArtistsArray = (artists, sortKey) => {
-  switch (sortKey) {
-    case 'alphabetical':
-      return artists.sort((a, b) => a.title?.localeCompare(b.title));
-    case 'rating':
-      return artists.sort((a, b) => (parseInt(b.userRating) || 0) - (parseInt(a.userRating) || 0));
-    case 'recentlyAdded':
-      return artists.sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt));
-    case 'recentlyPlayed':
-      return artists.sort((a, b) => new Date(b.lastPlayed) - new Date(a.lastPlayed));
-    default:
-      return artists;
-  }
 };
 
 // ======================================================================
