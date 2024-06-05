@@ -1,3 +1,10 @@
+<a name="0.15.0"></a>
+# 0.15.0 (2024-06-05)
+Features:
+- Added sorting options to key library sections.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.14.0"></a>
 # 0.14.0 (2024-06-02)
 Features:
