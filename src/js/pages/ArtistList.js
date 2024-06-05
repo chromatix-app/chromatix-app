@@ -3,24 +3,27 @@
 // ======================================================================
 
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { ListCards, Loading, Select, TitleHeading } from 'js/components';
+import { sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
-
 const ArtistList = () => {
+  const dispatch = useDispatch();
+
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const currentLibraryId = currentLibrary?.libraryId;
+  const sortArtists = useSelector(({ sessionModel }) => sessionModel.sortArtists);
 
   const allArtists = useSelector(({ appModel }) => appModel.allArtists)?.filter(
     (artist) => artist.libraryId === currentLibraryId
   );
+  const sortedArtists = allArtists ? sortList(allArtists, sortArtists) : null;
 
   useEffect(() => {
     plex.getAllArtists();
@@ -30,11 +33,24 @@ const ArtistList = () => {
     <>
       <TitleHeading
         title="Artists"
-        subtitle={allArtists ? allArtists?.length + ' Artist' + (allArtists?.length !== 1 ? 's' : '') : null}
+        subtitle={sortedArtists ? sortedArtists?.length + ' Artist' + (sortedArtists?.length !== 1 ? 's' : '') : null}
       />
-      {isLocal && <Select />}
-      {!allArtists && <Loading forceVisible inline />}
-      {allArtists && <ListCards variant="artists" entries={allArtists} />}
+      <Select
+        value={sortArtists}
+        options={[
+          { value: 'title', label: 'Alphabetical' },
+          { value: 'userRating', label: 'Rating' },
+          { value: 'addedAt', label: 'Recently Added' },
+          { value: 'lastPlayed', label: 'Recently Played' },
+        ]}
+        setter={(sortArtists) => {
+          dispatch.sessionModel.setSessionState({
+            sortArtists,
+          });
+        }}
+      />
+      {!sortedArtists && <Loading forceVisible inline />}
+      {sortedArtists && <ListCards variant="artists" entries={sortedArtists} />}
     </>
   );
 };

@@ -43,6 +43,12 @@ const sessionState = {
   optionLogPlexPlayback: true,
 
   queueIsVisible: false,
+
+  sortArtists: 'title',
+  sortAlbums: 'artist',
+  sortPlaylists: 'title',
+  sortArtistCollections: 'title',
+  sortAlbumCollections: 'title',
 };
 
 const playingState = {
