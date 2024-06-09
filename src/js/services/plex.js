@@ -1244,6 +1244,7 @@ const transposeTrackData = (track, libraryId, plexBaseUrl, accessToken) => {
     trackId: track.ratingKey,
     trackKey: track.key,
     title: track.title,
+    // addedAt: track.addedAt,
     artist: track.grandparentTitle,
     artistLink: '/artists/' + libraryId + '/' + track.grandparentRatingKey,
     album: track.parentTitle,

@@ -47,6 +47,7 @@ const sessionState = {
   sortArtists: 'title',
   sortAlbums: 'artist',
   sortPlaylists: 'title',
+  sortPlaylistTracks: {},
   sortArtistCollections: 'title',
   sortAlbumCollections: 'title',
 };
@@ -202,22 +203,53 @@ const reducers = {
     };
   },
 
-  // setSortTasks(rootState, payload) {
-  //   let sortTasksKey = payload;
-  //   let sortTasksOrder = 'ASC';
-  //   if (sortTasksKey === rootState.sortTasksKey) {
-  //     if (rootState.sortTasksOrder === 'ASC') {
-  //       sortTasksOrder = 'DESC';
-  //     } else {
-  //       sortTasksKey = 'created';
-  //     }
-  //   }
-  //   return {
-  //     ...rootState,
-  //     sortTasksKey,
-  //     sortTasksOrder,
-  //   };
-  // },
+  setSortPlaylistTracks(rootState, payload) {
+    const { playlistId, sortKey } = payload;
+    const sortPlaylistTracks = rootState.sortPlaylistTracks;
+    let currentSortValue = sortPlaylistTracks[playlistId] || null;
+    let currentSortArray;
+    let currentSortKey;
+    let currentSortDirection;
+    let newSortValue = null;
+
+    if (currentSortValue) {
+      currentSortArray = currentSortValue.split('-');
+      currentSortKey = currentSortArray[0];
+      currentSortDirection = currentSortArray[1];
+    }
+
+    if (sortKey === 'sortOrder') {
+      if (!currentSortValue) {
+        newSortValue = 'sortOrder-desc';
+      }
+    } else {
+      if (currentSortValue) {
+        if (sortKey === currentSortKey && currentSortDirection === 'asc') {
+          // if there is a current sort key, and it is the same as the new sort key, and it is ascending
+          newSortValue = sortKey + '-desc';
+        } else if (sortKey !== currentSortKey) {
+          // if there is a current sort key, and it is different from the new sort key
+          newSortValue = sortKey + '-asc';
+        }
+      } else {
+        // if there is no current sort key
+        newSortValue = sortKey + '-asc';
+      }
+    }
+
+    // add a secondary sort key for albums
+    if (newSortValue && sortKey === 'album') {
+      newSortValue += '-trackNumber-asc';
+    }
+
+    return {
+      ...rootState,
+      sortPlaylistTracks: {
+        ...sortPlaylistTracks,
+        [playlistId]: newSortValue,
+      },
+    };
+  },
 };
 
 // ======================================================================

@@ -8,7 +8,7 @@ import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 
 import { Icon, StarRating } from 'js/components';
-import { durationToStringShort } from 'js/utils';
+import { durationToStringShort, sortList } from 'js/utils';
 
 import style from './ListTracks.module.scss';
 
@@ -31,8 +31,10 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
 
   const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+  const sortPlaylistTracks = useSelector(({ sessionModel }) => sessionModel.sortPlaylistTracks);
 
   const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
+  const sortKey = (variant === 'playlists' && sortPlaylistTracks[playlistId]) || null;
 
   const totalDiscs = useMemo(() => {
     if (variant === 'albums') {
@@ -42,6 +44,39 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
     }
     return 1;
   }, [variant, entries]);
+
+  const sortedEntries = useMemo(() => {
+    if (sortKey) {
+      // Add originalIndex to each entry
+      const entriesWithOriginalIndex = entries.map((entry, index) => ({
+        ...entry,
+        originalIndex: index,
+      }));
+      // Sort entries
+      if (sortKey === 'sortOrder-desc') {
+        return entriesWithOriginalIndex.slice().reverse();
+      } else {
+        return sortList(entriesWithOriginalIndex, sortKey);
+      }
+    }
+    // If not a playlist or no sortKey, return original entries
+    return entries.map((entry, index) => ({
+      ...entry,
+      originalIndex: index,
+    }));
+  }, [entries, sortKey]);
+
+  const sortedIndices = useMemo(() => {
+    return sortedEntries.map((entry) => entry.originalIndex);
+  }, [sortedEntries]);
+
+  const handleSortTracks = (event) => {
+    const sortKey = event.currentTarget.dataset.sort;
+    dispatch.sessionModel.setSortPlaylistTracks({
+      playlistId,
+      sortKey,
+    });
+  };
 
   // scroll to playing track, if required
   useEffect(() => {
@@ -57,7 +92,7 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
 
   let currentDisc = 0;
 
-  if (entries) {
+  if (sortedEntries) {
     return (
       <div className={clsx(style.wrap, style['wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1)])}>
         {variant === 'albums' && (
@@ -82,20 +117,95 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
               [style.headerWithRating]: optionShowStarRatings,
             })}
           >
-            <div>
+            <div onClick={handleSortTracks} data-sort="sortOrder">
               <span className={style.minCenter}>#</span>
             </div>
-            <div>Title</div>
+            <div onClick={handleSortTracks} data-sort="title">
+              Title
+              {sortKey === 'title-asc' && (
+                <span className={style.sortIcon}>
+                  <Icon icon="ArrowDownIcon" cover stroke />
+                </span>
+              )}
+              {sortKey === 'title-desc' && (
+                <span className={style.sortIcon}>
+                  <Icon icon="ArrowUpIcon" cover stroke />
+                </span>
+              )}
+            </div>
             <div></div>
-            <div>Artist</div>
-            <div>Album</div>
-            {optionShowStarRatings && <div className={style.headerRating}>Rating</div>}
-            <div>Duration</div>
+            <div onClick={handleSortTracks} data-sort="artist">
+              Artist
+              {sortKey === 'artist-asc' && (
+                <span className={style.sortIcon}>
+                  <Icon icon="ArrowDownIcon" cover stroke />
+                </span>
+              )}
+              {sortKey === 'artist-desc' && (
+                <span className={style.sortIcon}>
+                  <Icon icon="ArrowUpIcon" cover stroke />
+                </span>
+              )}
+            </div>
+            <div onClick={handleSortTracks} data-sort="album">
+              Album
+              {sortKey?.startsWith('album-asc') && (
+                <span className={style.sortIcon}>
+                  <Icon icon="ArrowDownIcon" cover stroke />
+                </span>
+              )}
+              {sortKey?.startsWith('album-desc') && (
+                <span className={style.sortIcon}>
+                  <Icon icon="ArrowUpIcon" cover stroke />
+                </span>
+              )}
+            </div>
+            {optionShowStarRatings && (
+              <div className={style.headerRating} onClick={handleSortTracks} data-sort="userRating">
+                Rating
+                {sortKey === 'userRating-desc' && (
+                  <span className={style.sortIcon}>
+                    <Icon icon="ArrowUpIcon" cover stroke />
+                  </span>
+                )}
+                {sortKey === 'userRating-asc' && (
+                  <span className={style.sortIcon}>
+                    <Icon icon="ArrowDownIcon" cover stroke />
+                  </span>
+                )}
+              </div>
+            )}
+            {/* <div onClick={handleSortTracks} data-sort="addedAt">
+              Added
+              {sortKey === 'addedAt-asc' && (
+                <span className={style.sortIcon}>
+                  <Icon icon="ArrowDownIcon" cover stroke />
+                </span>
+              )}
+              {sortKey === 'addedAt-desc' && (
+                <span className={style.sortIcon}>
+                  <Icon icon="ArrowUpIcon" cover stroke />
+                </span>
+              )}
+            </div> */}
+            <div onClick={handleSortTracks} data-sort="duration">
+              Duration
+              {sortKey === 'duration-asc' && (
+                <span className={style.sortIcon}>
+                  <Icon icon="ArrowDownIcon" cover stroke />
+                </span>
+              )}
+              {sortKey === 'duration-desc' && (
+                <span className={style.sortIcon}>
+                  <Icon icon="ArrowUpIcon" cover stroke />
+                </span>
+              )}
+            </div>
           </div>
         )}
 
-        <div className={style.entries}>
-          {entries.map((entry, index) => {
+        <div className={style.sortedEntries}>
+          {sortedEntries.map((entry, index) => {
             const trackNumber = variant === 'playlists' ? index + 1 : entry.trackNumber;
 
             const showDisc = totalDiscs > 1 && currentDisc !== entry.discNumber;
@@ -113,7 +223,10 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
                   playingVariant: variant,
                   playingAlbumId: albumId,
                   playingPlaylistId: playlistId,
+                  // playingPlaylistOrder: null,
+                  playingPlaylistOrder: sortKey ? sortedIndices : null,
                   playingTrackIndex: index,
+                  // playingTrackIndex: sortKey ? sortedIndices[index] : index,
                 });
               } else {
                 dispatch.playerModel.playerPlay();
@@ -227,6 +340,8 @@ const ListEntry = React.memo(
               <StarRating type="track" ratingKey={entry.trackId} rating={entry.userRating} editable />
             </div>
           )}
+
+          {/* {variant === 'playlists' && <div className={style.addedAt}>{addedAtToString(entry.addedAt)}</div>} */}
 
           <div className={style.duration}>{durationToStringShort(entry.duration)}</div>
         </div>

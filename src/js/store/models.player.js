@@ -140,7 +140,7 @@ const effects = (dispatch) => ({
 
   playerLoadTrackItem(payload, rootState) {
     // console.log('%c--- playerLoadTrackItem ---', 'color:#5c16b1');
-    const { playingVariant, playingAlbumId, playingPlaylistId, playingTrackIndex } = payload;
+    const { playingVariant, playingAlbumId, playingPlaylistId, playingPlaylistOrder, playingTrackIndex } = payload;
     const isShuffle = rootState.sessionModel.playingShuffle;
     if (playingVariant === 'albums') {
       dispatch.playerModel.playerLoadAlbum({
@@ -152,6 +152,7 @@ const effects = (dispatch) => ({
     } else if (playingVariant === 'playlists') {
       dispatch.playerModel.playerLoadPlaylist({
         playlistId: playingPlaylistId,
+        playlistOrder: playingPlaylistOrder,
         trackIndex: playingTrackIndex,
         isShuffle: isShuffle,
         isTrack: true,
@@ -195,16 +196,22 @@ const effects = (dispatch) => ({
 
   async playerLoadPlaylist(payload, rootState) {
     // console.log('%c--- playerLoadPlaylist ---', 'color:#5c16b1');
-    const { playlistId, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
+    const { playlistId, playlistOrder = null, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
 
     const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
     const allPlaylistTracks = rootState.appModel.allPlaylistTracks;
-    const currentPlaylistTracks = allPlaylistTracks[libraryId + '-' + playlistId];
+    let currentPlaylistTracks = allPlaylistTracks[libraryId + '-' + playlistId];
 
     if (!currentPlaylistTracks) {
       await plex.getPlaylistTracks(libraryId, playlistId);
       dispatch.playerModel.playerLoadPlaylist({ playlistId, trackIndex });
       return;
+    }
+
+    // Handle custom playlist order
+    if (playlistOrder) {
+      const sortedPlaylistTracks = playlistOrder.map((index) => currentPlaylistTracks[index]);
+      currentPlaylistTracks = sortedPlaylistTracks;
     }
 
     const trackKeys = getTrackKeys(currentPlaylistTracks.length, isShuffle, isTrack ? trackIndex : null);
