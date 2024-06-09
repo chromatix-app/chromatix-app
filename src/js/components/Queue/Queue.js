@@ -90,7 +90,10 @@ const QueueEntry = ({ entry, index, isRepeat, isCurrentlyPlaying, optionShowFull
       {!isRepeat && isCurrentlyPlaying && <div className={style.section}>Now playing</div>}
 
       <div
-        className={clsx(style.entry, 'text-trim', { [style.entryCurrent]: !isRepeat && isCurrentlyPlaying })}
+        className={clsx(style.entry, {
+          [style.entryCurrent]: !isRepeat && isCurrentlyPlaying,
+          'text-trim': !optionShowFullTitles,
+        })}
         onDoubleClick={() => {
           doPlay(true);
         }}
