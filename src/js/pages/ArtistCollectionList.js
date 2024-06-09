@@ -5,7 +5,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { FilterWrap, ListCards, Loading, Select, TitleHeading } from 'js/components';
+import { FilterSelect, FilterWrap, ListCards, Loading, TitleHeading } from 'js/components';
 import { sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
@@ -41,7 +41,7 @@ const ArtistCollectionList = () => {
         }
       />
       <FilterWrap>
-        <Select
+        <FilterSelect
           value={sortArtistCollections}
           options={[
             { value: 'title', label: 'Alphabetical' },
@@ -54,7 +54,7 @@ const ArtistCollectionList = () => {
             });
           }}
         />
-        <Select
+        <FilterSelect
           value={orderArtistCollections}
           options={[
             { value: 'asc', label: 'Ascending' },

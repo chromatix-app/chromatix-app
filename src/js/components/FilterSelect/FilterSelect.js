@@ -7,13 +7,13 @@ import * as RadixSelect from '@radix-ui/react-select';
 
 import { Icon } from 'js/components';
 
-import style from './Select.module.scss';
+import style from './FilterSelect.module.scss';
 
 // ======================================================================
 // RENDER
 // ======================================================================
 
-export const Select = ({ value, options, setter }) => {
+export const FilterSelect = ({ value, options, setter }) => {
   const handleValueChange = (newValue) => {
     setter(newValue);
   };
@@ -61,4 +61,4 @@ const SelectItem = forwardRef(({ children, className, ...props }, forwardedRef) 
 // EXPORT
 // ======================================================================
 
-export default Select;
+export default FilterSelect;

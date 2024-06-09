@@ -5,7 +5,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { FilterWrap, ListCards, Loading, Select, TitleHeading } from 'js/components';
+import { FilterSelect, FilterWrap, ListCards, Loading, TitleHeading } from 'js/components';
 import { sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
@@ -37,7 +37,7 @@ const AlbumList = () => {
         subtitle={sortedAlbums ? sortedAlbums?.length + ' Album' + (sortedAlbums?.length !== 1 ? 's' : '') : null}
       />
       <FilterWrap>
-        <Select
+        <FilterSelect
           value={sortAlbums}
           options={[
             { value: 'title', label: 'Alphabetical' },
@@ -55,7 +55,7 @@ const AlbumList = () => {
             });
           }}
         />
-        <Select
+        <FilterSelect
           value={orderAlbums}
           options={[
             { value: 'asc', label: 'Ascending' },
