@@ -1,5 +1,6 @@
 export { default as Button } from './Button/Button';
 export { default as ControlBar } from './ControlBar/ControlBar';
+export { default as FilterWrap } from './FilterWrap/FilterWrap';
 export { default as Icon } from './Icon/Icon';
 export { default as ListCards } from './ListCards/ListCards';
 export { default as ListServers } from './ListServers/ListServers';

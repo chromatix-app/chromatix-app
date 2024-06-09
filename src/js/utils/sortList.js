@@ -1,11 +1,16 @@
-const sortList = (entries, options) => {
+const sortList = (entries, options, direction = 'asc') => {
   const optionsArray = options.split('-');
 
   const primarySortKey = optionsArray[0];
-  const primaryDirection = optionsArray[1] || 'asc';
+  let primaryDirection = optionsArray[1] || 'asc';
 
   const secondarySortKey = optionsArray[2] || 'title';
-  const secondaryDirection = optionsArray[3] || 'asc';
+  let secondaryDirection = optionsArray[3] || 'asc';
+
+  if (direction === 'desc') {
+    primaryDirection = primaryDirection === 'asc' ? 'desc' : 'asc';
+    secondaryDirection = secondaryDirection === 'asc' ? 'desc' : 'asc';
+  }
 
   return doSorting(entries, primarySortKey, primaryDirection, secondarySortKey, secondaryDirection);
 };

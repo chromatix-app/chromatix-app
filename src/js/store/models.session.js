@@ -50,6 +50,12 @@ const sessionState = {
   sortPlaylistTracks: {},
   sortArtistCollections: 'title',
   sortAlbumCollections: 'title',
+
+  orderArtists: 'asc',
+  orderAlbums: 'asc',
+  orderPlaylists: 'asc',
+  orderArtistCollections: 'asc',
+  orderAlbumCollections: 'asc',
 };
 
 const playingState = {
