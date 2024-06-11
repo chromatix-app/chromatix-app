@@ -1,6 +1,5 @@
 // Function to get track keys
 const getTrackKeys = (trackCount, playingOrder, isShuffle, firstValue) => {
-  console.log(firstValue);
   // If shuffle is true, return shuffled track keys
   if (isShuffle) {
     return getShuffledTrackKeys(trackCount, firstValue);
