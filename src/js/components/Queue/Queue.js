@@ -32,6 +32,7 @@ const Queue = () => {
       {playingTrackKeys && (
         <QueueList
           entries={upcomingEntries}
+          initialIndex={playingTrackIndex}
           isRepeat={false}
           optionShowFullTitles={optionShowFullTitles}
           totalTracksRemaining={totalTracksRemaining}
@@ -41,6 +42,7 @@ const Queue = () => {
         <>
           <QueueList
             entries={repeatEntries}
+            initialIndex={0}
             isRepeat={true}
             optionShowFullTitles={optionShowFullTitles}
             totalTracksRemaining={totalTracksRemaining}
@@ -58,14 +60,14 @@ const QueueEmpty = () => {
   return <div className={style.section}>No tracks in queue</div>;
 };
 
-const QueueList = ({ entries, isRepeat, optionShowFullTitles, totalTracksRemaining }) => {
+const QueueList = ({ entries, initialIndex = 0, isRepeat, optionShowFullTitles, totalTracksRemaining }) => {
   return entries.map((entry, index) => {
     const isCurrentlyPlaying = index === 0;
 
     return (
       <QueueEntry
         key={index}
-        index={index}
+        index={index + initialIndex}
         entry={entry}
         isRepeat={isRepeat}
         isCurrentlyPlaying={isCurrentlyPlaying}

@@ -223,10 +223,8 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
                   playingVariant: variant,
                   playingAlbumId: albumId,
                   playingPlaylistId: playlistId,
-                  // playingPlaylistOrder: null,
-                  playingPlaylistOrder: sortKey ? sortedIndices : null,
-                  playingTrackIndex: index,
-                  // playingTrackIndex: sortKey ? sortedIndices[index] : index,
+                  playingOrder: sortKey ? sortedIndices : null,
+                  playingTrackIndex: sortKey ? sortedIndices[index] : index,
                 });
               } else {
                 dispatch.playerModel.playerPlay();

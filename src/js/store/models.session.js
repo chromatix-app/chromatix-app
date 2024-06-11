@@ -64,6 +64,7 @@ const playingState = {
   playingLibraryId: null,
   playingAlbumId: null,
   playingPlaylistId: null,
+  playingOrder: null,
   playingTrackList: null,
   playingTrackCount: null,
   playingTrackIndex: null,
