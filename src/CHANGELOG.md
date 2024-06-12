@@ -1,5 +1,5 @@
 <a name="0.16.0"></a>
-# 0.16.0 (2024-06-XX)
+# 0.16.0 (2024-06-12)
 Features:
 - Added order (asc/desc) to key library sections.
 - Added sorting of playlist tracks.
