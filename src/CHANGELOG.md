@@ -3,6 +3,9 @@
 Features:
 - Added order (asc/desc) to key library sections.
 - Added sorting of playlist tracks.
+Fixed:
+- Fixed some text trimming in the queue.
+- Fixed handling of items with no artwork.
 
 <!-- CHANGELOG SPLIT MARKER -->
 
