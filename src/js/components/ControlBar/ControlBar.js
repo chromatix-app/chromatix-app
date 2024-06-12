@@ -65,7 +65,7 @@ const ControlBar = () => {
           title: trackDetail.title,
           artist: trackDetail.artist,
           album: trackDetail.album,
-          artwork: trackDetail.thumb ? [{ src: trackDetail.thumb }] : null,
+          artwork: [{ src: trackDetail.thumb ? trackDetail.thumb : null }],
         }
       : null;
   }, [trackDetail]);
