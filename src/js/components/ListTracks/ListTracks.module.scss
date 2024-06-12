@@ -14,7 +14,7 @@
 .entry {
   display: grid;
   align-items: center;
-  grid-template-columns: 30px 1.3fr 1fr 60px;
+  grid-template-columns: 30px 1.2fr 1fr minmax(72px, auto);
   gap: 13px;
 
   :global(.cq-800) & {
@@ -22,19 +22,19 @@
   }
 
   .wrap.wrapPlaylists & {
-    grid-template-columns: 30px 41px 1.3fr 1fr 1fr 60px;
+    grid-template-columns: 30px 41px 1.2fr 1fr 1fr minmax(72px, auto);
   }
 }
 
 .header.headerWithRating,
 .entry.entryWithRating {
   :global(.cq-800) & {
-    grid-template-columns: 30px 1.3fr 1fr 0.5fr 60px;
+    grid-template-columns: 30px 1.2fr 1fr 0.5fr minmax(72px, auto);
   }
 
   .wrap.wrapPlaylists & {
     :global(.cq-800) & {
-      grid-template-columns: 30px 41px 1.3fr 1fr 1fr 0.5fr 60px;
+      grid-template-columns: 30px 41px 1.2fr 1fr 1fr 0.5fr minmax(72px, auto);
     }
   }
 }
@@ -136,6 +136,15 @@
   :global(.cq-800) & {
     margin-right: 26px;
   }
+}
+
+.sortIcon {
+  display: inline-block;
+  position: relative;
+  width: 14px;
+  height: 14px;
+  top: 2px;
+  left: 2px;
 }
 
 .trackNumber {

@@ -2,12 +2,12 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { ListTracks, Loading, StarRating, TitleHeading } from 'js/components';
-import { durationToStringLong } from 'js/utils';
+import { durationToStringLong, sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
@@ -17,9 +17,11 @@ import * as plex from 'js/services/plex';
 const PlaylistDetail = () => {
   const { libraryId, playlistId } = useParams();
 
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   const dispatch = useDispatch();
+
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+  const sortPlaylistTracks = useSelector(({ sessionModel }) => sessionModel.sortPlaylistTracks);
+  const sortKey = sortPlaylistTracks[playlistId] || null;
 
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
   const currentPlaylist = allPlaylists?.filter((playlist) => playlist.playlistId === playlistId)[0];
@@ -34,8 +36,40 @@ const PlaylistDetail = () => {
   const playlistDurationString = durationToStringLong(playlistDurationMillisecs);
   const playlistRating = currentPlaylist?.userRating;
 
+  const sortedPlaylistTracks = useMemo(() => {
+    if (!currentPlaylistTracks) return null;
+    if (sortKey) {
+      // Add originalIndex to each entry
+      const entriesWithOriginalIndex = currentPlaylistTracks.map((entry, index) => ({
+        ...entry,
+        originalIndex: index,
+      }));
+      // Sort entries
+      if (sortKey === 'sortOrder-desc') {
+        return entriesWithOriginalIndex.slice().reverse();
+      } else {
+        return sortList(entriesWithOriginalIndex, sortKey);
+      }
+    }
+    // If not a playlist or no sortKey, return original entries
+    return currentPlaylistTracks.map((entry, index) => ({
+      ...entry,
+      originalIndex: index,
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allPlaylistTracks, currentPlaylistTracks, sortKey]);
+
+  const playingOrder = useMemo(() => {
+    return sortedPlaylistTracks?.map((entry) => entry.originalIndex);
+  }, [sortedPlaylistTracks]);
+
   const doPlay = (isShuffle) => {
-    dispatch.playerModel.playerLoadPlaylist({ playlistId, isShuffle });
+    dispatch.playerModel.playerLoadPlaylist({
+      playlistId,
+      isShuffle,
+      playingOrder,
+      trackIndex: isShuffle ? null : playingOrder ? playingOrder[0] : 0,
+    });
   };
 
   useEffect(() => {
@@ -82,7 +116,12 @@ const PlaylistDetail = () => {
       )}
       {!(currentPlaylist && currentPlaylistTracks) && <Loading forceVisible inline />}
       {currentPlaylist && currentPlaylistTracks && (
-        <ListTracks variant="playlists" playlistId={playlistId} entries={currentPlaylistTracks} />
+        <ListTracks
+          variant="playlists"
+          playlistId={playlistId}
+          entries={sortedPlaylistTracks}
+          playingOrder={playingOrder}
+        />
       )}
     </>
   );

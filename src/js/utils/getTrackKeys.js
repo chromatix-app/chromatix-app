@@ -1,7 +1,17 @@
 // Function to get track keys
-const getTrackKeys = (n, isShuffle, firstValue) => {
-  // If shuffle is true, return shuffled track keys, else return an array from 0 to n-1
-  return isShuffle ? getShuffledTrackKeys(n, firstValue) : Array.from({ length: n }, (_, i) => i);
+const getTrackKeys = (trackCount, playingOrder, isShuffle, firstValue) => {
+  // If shuffle is true, return shuffled track keys
+  if (isShuffle) {
+    return getShuffledTrackKeys(trackCount, firstValue);
+  }
+  // Else if playingOrder is defined, return the playingOrder
+  else if (playingOrder) {
+    return playingOrder;
+  }
+  // Else return an array from 0 to n-1
+  else {
+    return Array.from({ length: trackCount }, (_, i) => i);
+  }
 };
 
 // Function to get shuffled track keys

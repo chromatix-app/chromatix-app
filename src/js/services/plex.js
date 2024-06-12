@@ -15,6 +15,7 @@ const isProduction = process.env.REACT_APP_ENV === 'production';
 
 const mockData = isProduction ? false : false;
 const thumbSize = 480;
+const thumbPlaceholder = '/images/artwork-placeholder.png';
 
 const endpointConfig = {
   artist: {
@@ -1189,7 +1190,7 @@ const transposeArtistData = (artist, libraryId, plexBaseUrl, accessToken) => {
         : `${plexBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
             artist.thumb
           )}&X-Plex-Token=${accessToken}`
-      : null,
+      : thumbPlaceholder,
   };
 };
 
@@ -1212,7 +1213,7 @@ const transposeAlbumData = (album, libraryId, plexBaseUrl, accessToken) => {
         : `${plexBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
             album.thumb
           )}&X-Plex-Token=${accessToken}`
-      : null,
+      : thumbPlaceholder,
   };
 };
 
@@ -1234,7 +1235,7 @@ const transposePlaylistData = (playlist, libraryId, plexBaseUrl, accessToken) =>
         : `${plexBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
             playlistThumb
           )}&X-Plex-Token=${accessToken}`
-      : null,
+      : thumbPlaceholder,
   };
 };
 
@@ -1244,6 +1245,7 @@ const transposeTrackData = (track, libraryId, plexBaseUrl, accessToken) => {
     trackId: track.ratingKey,
     trackKey: track.key,
     title: track.title,
+    // addedAt: track.addedAt,
     artist: track.grandparentTitle,
     artistLink: '/artists/' + libraryId + '/' + track.grandparentRatingKey,
     album: track.parentTitle,
@@ -1256,7 +1258,7 @@ const transposeTrackData = (track, libraryId, plexBaseUrl, accessToken) => {
       ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
           track.thumb
         )}&X-Plex-Token=${accessToken}`
-      : null,
+      : thumbPlaceholder,
     src: `${plexBaseUrl}${track.Media[0].Part[0].key}?X-Plex-Token=${accessToken}`,
   };
 };
@@ -1279,7 +1281,7 @@ const transposeCollectionData = (collection, libraryId, plexBaseUrl, accessToken
       ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
           collectionThumb
         )}&X-Plex-Token=${accessToken}`
-      : null,
+      : thumbPlaceholder,
   };
 };
 

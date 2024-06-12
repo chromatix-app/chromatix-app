@@ -11,6 +11,8 @@ import { ReactComponent as AlbumCollectionsIcon } from './icons/music/album-coll
 import { ReactComponent as AlbumGenresIcon } from './icons/music/album-genres.svg';
 import { ReactComponent as AlbumMoodsIcon } from './icons/music/album-moods.svg';
 import { ReactComponent as AlbumStylesIcon } from './icons/music/album-styles.svg';
+import { ReactComponent as ArrowDownIcon } from './icons/music/arrow-down.svg';
+import { ReactComponent as ArrowUpIcon } from './icons/music/arrow-up.svg';
 import { ReactComponent as ArrowsVerticalIcon } from './icons/music/arrows-vertical.svg';
 import { ReactComponent as ArtistCollectionsIcon } from './icons/music/artist-collections.svg';
 import { ReactComponent as ArtistGenresIcon } from './icons/music/artist-genres.svg';
@@ -66,6 +68,8 @@ const customIcons = {
   AlbumGenresIcon,
   AlbumMoodsIcon,
   AlbumStylesIcon,
+  ArrowDownIcon,
+  ArrowUpIcon,
   ArrowsVerticalIcon,
   ArtistCollectionsIcon,
   ArtistGenresIcon,

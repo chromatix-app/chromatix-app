@@ -1,0 +1,10 @@
+@import '../../../css/global';
+
+.wrap {
+  padding: 0 30px 40px;
+  margin-top: -33px;
+
+  :global(.cq-800) & {
+    padding: 0 40px 40px;
+  }
+}

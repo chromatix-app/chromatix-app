@@ -1,3 +1,14 @@
+<a name="0.16.0"></a>
+# 0.16.0 (2024-06-XX)
+Features:
+- Added order (asc/desc) to key library sections.
+- Added sorting of playlist tracks.
+Fixed:
+- Fixed some text trimming in the queue.
+- Fixed handling of items with no artwork.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.15.0"></a>
 # 0.15.0 (2024-06-05)
 Features:
