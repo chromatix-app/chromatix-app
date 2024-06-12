@@ -1240,7 +1240,6 @@ const transposePlaylistData = (playlist, libraryId, plexBaseUrl, accessToken) =>
 };
 
 const transposeTrackData = (track, libraryId, plexBaseUrl, accessToken) => {
-  console.log(track.thumb);
   return {
     libraryId: libraryId,
     trackId: track.ratingKey,

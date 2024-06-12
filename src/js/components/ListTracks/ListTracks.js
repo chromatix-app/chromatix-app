@@ -8,7 +8,7 @@ import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 
 import { Icon, StarRating } from 'js/components';
-import { durationToStringShort, sortList } from 'js/utils';
+import { durationToStringShort } from 'js/utils';
 
 import style from './ListTracks.module.scss';
 
@@ -16,7 +16,7 @@ import style from './ListTracks.module.scss';
 // COMPONENT
 // ======================================================================
 
-const ListTracks = ({ variant, albumId, playlistId, entries }) => {
+const ListTracks = ({ variant, albumId, playlistId, playingOrder, entries }) => {
   const dispatch = useDispatch();
 
   const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
@@ -45,31 +45,6 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
     return 1;
   }, [variant, entries]);
 
-  const sortedEntries = useMemo(() => {
-    if (sortKey) {
-      // Add originalIndex to each entry
-      const entriesWithOriginalIndex = entries.map((entry, index) => ({
-        ...entry,
-        originalIndex: index,
-      }));
-      // Sort entries
-      if (sortKey === 'sortOrder-desc') {
-        return entriesWithOriginalIndex.slice().reverse();
-      } else {
-        return sortList(entriesWithOriginalIndex, sortKey);
-      }
-    }
-    // If not a playlist or no sortKey, return original entries
-    return entries.map((entry, index) => ({
-      ...entry,
-      originalIndex: index,
-    }));
-  }, [entries, sortKey]);
-
-  const sortedIndices = useMemo(() => {
-    return sortedEntries.map((entry) => entry.originalIndex);
-  }, [sortedEntries]);
-
   const handleSortTracks = (event) => {
     const sortKey = event.currentTarget.dataset.sort;
     dispatch.sessionModel.setSortPlaylistTracks({
@@ -92,7 +67,7 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
 
   let currentDisc = 0;
 
-  if (sortedEntries) {
+  if (entries) {
     return (
       <div className={clsx(style.wrap, style['wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1)])}>
         {variant === 'albums' && (
@@ -204,8 +179,8 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
           </div>
         )}
 
-        <div className={style.sortedEntries}>
-          {sortedEntries.map((entry, index) => {
+        <div className={style.entries}>
+          {entries.map((entry, index) => {
             const trackNumber = variant === 'playlists' ? index + 1 : entry.trackNumber;
 
             const showDisc = totalDiscs > 1 && currentDisc !== entry.discNumber;
@@ -223,8 +198,8 @@ const ListTracks = ({ variant, albumId, playlistId, entries }) => {
                   playingVariant: variant,
                   playingAlbumId: albumId,
                   playingPlaylistId: playlistId,
-                  playingOrder: sortKey ? sortedIndices : null,
-                  playingTrackIndex: sortKey ? sortedIndices[index] : index,
+                  playingOrder: sortKey ? playingOrder : null,
+                  playingTrackIndex: sortKey ? playingOrder[index] : index,
                 });
               } else {
                 dispatch.playerModel.playerPlay();
