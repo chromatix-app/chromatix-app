@@ -41,8 +41,8 @@ const ControlBar = () => {
       ? `/albums/${playingLibraryId}/${playingAlbumId}`
       : `/playlists/${playingLibraryId}/${playingPlaylistId}`;
 
-  const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
-  const isDisabled = !trackDetail ? true : false;
+  const trackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
+  const isDisabled = !trackCurrent ? true : false;
 
   const volIcon = playerMuted || playerVolume <= 0 ? 'VolXIcon' : playerVolume < 50 ? 'VolLowIcon' : 'VolHighIcon';
 
@@ -60,15 +60,15 @@ const ControlBar = () => {
   );
 
   const trackMeta = useMemo(() => {
-    return trackDetail
+    return trackCurrent
       ? {
-          title: trackDetail.title,
-          artist: trackDetail.artist,
-          album: trackDetail.album,
-          artwork: [{ src: trackDetail.thumb ? trackDetail.thumb : null }],
+          title: trackCurrent.title,
+          artist: trackCurrent.artist,
+          album: trackCurrent.album,
+          artwork: [{ src: trackCurrent.thumb ? trackCurrent.thumb : null }],
         }
       : null;
-  }, [trackDetail]);
+  }, [trackCurrent]);
 
   useKeyboardControls(controlHandlers);
   useMediaControls(controlHandlers);
@@ -78,7 +78,7 @@ const ControlBar = () => {
     <div className={style.wrap}>
       <div className={style.current}>
         <div className={style.cover}>
-          {trackDetail && trackDetail.thumb && (
+          {trackCurrent && trackCurrent.thumb && (
             <NavLink
               className={style.cover}
               to={playingLink}
@@ -87,16 +87,16 @@ const ControlBar = () => {
                 track('Navigate to Playing');
               }}
             >
-              <img src={trackDetail.thumb} alt={trackDetail.title} />
+              <img src={trackCurrent.thumb} alt={trackCurrent.title} />
             </NavLink>
           )}
         </div>
         <div className={style.text}>
-          {trackDetail && (
+          {trackCurrent && (
             <>
-              <div className={style.title}>{trackDetail.title}</div>
+              <div className={style.title}>{trackCurrent.title}</div>
               <div className={style.artist}>
-                <NavLink to={trackDetail.artistLink}>{trackDetail.artist}</NavLink>
+                <NavLink to={trackCurrent.artistLink}>{trackCurrent.artist}</NavLink>
               </div>
             </>
           )}
@@ -175,11 +175,11 @@ const ControlProgress = () => {
   const [trackProgress, setTrackProgress] = useState(playerElement?.currentTime * 1000 || 0);
 
   const realIndex = playingTrackKeys?.[playingTrackIndex];
-  const trackDetail = playingTrackList?.[realIndex];
-  const isDisabled = !trackDetail ? true : false;
+  const trackCurrent = playingTrackList?.[realIndex];
+  const isDisabled = !trackCurrent ? true : false;
 
   const trackProgressCurrent = trackProgress / 1000;
-  const trackProgressTotal = trackDetail?.duration ? trackDetail?.duration / 1000 : 0;
+  const trackProgressTotal = trackCurrent?.duration ? trackCurrent?.duration / 1000 : 0;
 
   // handle progress change
   const handleProgressChange = useCallback(
@@ -247,7 +247,7 @@ const ControlProgress = () => {
           isDisabled={isDisabled}
         />
       </div>
-      <div className={style.scrubRight}>{!isDisabled && durationToStringShort(trackDetail?.duration)}</div>
+      <div className={style.scrubRight}>{!isDisabled && durationToStringShort(trackCurrent?.duration)}</div>
     </div>
   );
 };
