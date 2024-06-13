@@ -1,4 +1,6 @@
 export { default as useColorTheme } from './useColorTheme';
+export { default as useGetAlbumDetail } from './useGetAlbumDetail';
+export { default as useGetPlaylistDetail } from './useGetPlaylistDetail';
 export { default as useGotRequiredData } from './useGotRequiredData';
 export { default as useKeyboardControls } from './useKeyboardControls';
 export { default as useMediaControls } from './useMediaControls';

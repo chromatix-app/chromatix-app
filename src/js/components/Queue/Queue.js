@@ -66,7 +66,7 @@ const QueueList = ({ entries, initialIndex = 0, isRepeat, optionShowFullTitles, 
 
     return (
       <QueueEntry
-        key={index}
+        key={entry.trackId}
         index={index + initialIndex}
         entry={entry}
         isRepeat={isRepeat}
