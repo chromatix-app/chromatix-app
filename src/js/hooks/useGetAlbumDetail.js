@@ -1,0 +1,62 @@
+import { useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import moment from 'moment';
+
+import { durationToStringLong } from 'js/utils';
+import * as plex from 'js/services/plex';
+
+const useGetAlbumDetail = ({ libraryId, albumId }) => {
+  const allAlbums = useSelector(({ appModel }) => appModel.allAlbums);
+  const albumInfo = allAlbums?.filter((album) => album.albumId === albumId)[0];
+
+  const allAlbumTracks = useSelector(({ appModel }) => appModel.allAlbumTracks);
+  const albumTracks = allAlbumTracks[libraryId + '-' + albumId];
+
+  const albumThumb = albumInfo?.thumb;
+  const albumTitle = albumInfo?.title;
+  const albumArtist = albumInfo?.artist;
+  const albumReleaseDate = albumInfo?.releaseDate ? moment(albumInfo?.releaseDate).format('YYYY') : null;
+  const albumDiscCount = useMemo(() => {
+    return (
+      albumTracks?.reduce((acc, entry) => {
+        return Math.max(acc, entry.discNumber);
+      }, 0) || 1
+    );
+  }, [albumTracks]);
+  const albumTrackCount = albumTracks?.length;
+  const albumDurationMillisecs = albumTracks?.reduce((acc, track) => acc + track.duration, 0);
+  const albumDurationString = durationToStringLong(albumDurationMillisecs);
+  const albumRating = albumInfo?.userRating;
+
+  const albumArtistLink = albumInfo?.artistLink;
+
+  useEffect(() => {
+    plex.getAllAlbums();
+    plex.getAlbumTracks(libraryId, albumId);
+  }, [albumId, libraryId]);
+
+  useEffect(() => {
+    if (allAlbums && !albumInfo) {
+      plex.getAlbumDetails(libraryId, albumId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allAlbums, albumInfo]);
+
+  return {
+    albumInfo,
+
+    albumThumb,
+    albumTitle,
+    albumArtist,
+    albumReleaseDate,
+    albumDiscCount,
+    albumTrackCount,
+    albumDurationString,
+    albumRating,
+    albumArtistLink,
+
+    albumTracks,
+  };
+};
+
+export default useGetAlbumDetail;

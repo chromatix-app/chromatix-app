@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
@@ -16,7 +16,7 @@ import style from './ListTracks.module.scss';
 // COMPONENT
 // ======================================================================
 
-const ListTracks = ({ variant, albumId, playlistId, playingOrder, entries }) => {
+const ListTracks = ({ variant, albumId, playlistId, playingOrder, discCount = 1, entries }) => {
   const dispatch = useDispatch();
 
   const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
@@ -36,16 +36,7 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, entries }) => 
   const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
   const sortKey = (variant === 'playlists' && sortPlaylistTracks[playlistId]) || null;
 
-  const totalDiscs = useMemo(() => {
-    if (variant === 'albums') {
-      return entries.reduce((acc, entry) => {
-        return Math.max(acc, entry.discNumber);
-      }, 0);
-    }
-    return 1;
-  }, [variant, entries]);
-
-  const handleSortTracks = (event) => {
+  const handleSortPlaylist = (event) => {
     const sortKey = event.currentTarget.dataset.sort;
     dispatch.sessionModel.setSortPlaylistTracks({
       playlistId,
@@ -92,10 +83,10 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, entries }) => 
               [style.headerWithRating]: optionShowStarRatings,
             })}
           >
-            <div onClick={handleSortTracks} data-sort="sortOrder">
+            <div onClick={handleSortPlaylist} data-sort="sortOrder">
               <span className={style.minCenter}>#</span>
             </div>
-            <div onClick={handleSortTracks} data-sort="title">
+            <div onClick={handleSortPlaylist} data-sort="title">
               Title
               {sortKey === 'title-asc' && (
                 <span className={style.sortIcon}>
@@ -109,7 +100,7 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, entries }) => 
               )}
             </div>
             <div></div>
-            <div onClick={handleSortTracks} data-sort="artist">
+            <div onClick={handleSortPlaylist} data-sort="artist">
               Artist
               {sortKey === 'artist-asc' && (
                 <span className={style.sortIcon}>
@@ -122,7 +113,7 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, entries }) => 
                 </span>
               )}
             </div>
-            <div onClick={handleSortTracks} data-sort="album">
+            <div onClick={handleSortPlaylist} data-sort="album">
               Album
               {sortKey?.startsWith('album-asc') && (
                 <span className={style.sortIcon}>
@@ -136,7 +127,7 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, entries }) => 
               )}
             </div>
             {optionShowStarRatings && (
-              <div className={style.headerRating} onClick={handleSortTracks} data-sort="userRating">
+              <div className={style.headerRating} onClick={handleSortPlaylist} data-sort="userRating">
                 Rating
                 {sortKey === 'userRating-desc' && (
                   <span className={style.sortIcon}>
@@ -150,7 +141,7 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, entries }) => 
                 )}
               </div>
             )}
-            {/* <div onClick={handleSortTracks} data-sort="addedAt">
+            {/* <div onClick={handleSortPlaylist} data-sort="addedAt">
               Added
               {sortKey === 'addedAt-asc' && (
                 <span className={style.sortIcon}>
@@ -163,7 +154,7 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, entries }) => 
                 </span>
               )}
             </div> */}
-            <div onClick={handleSortTracks} data-sort="duration">
+            <div onClick={handleSortPlaylist} data-sort="duration">
               Duration
               {sortKey === 'duration-asc' && (
                 <span className={style.sortIcon}>
@@ -183,7 +174,7 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, entries }) => 
           {entries.map((entry, index) => {
             const trackNumber = variant === 'playlists' ? index + 1 : entry.trackNumber;
 
-            const showDisc = totalDiscs > 1 && currentDisc !== entry.discNumber;
+            const showDisc = discCount > 1 && currentDisc !== entry.discNumber;
             currentDisc = entry.discNumber;
 
             const isCurrentlyPlaying =
@@ -208,7 +199,7 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, entries }) => 
 
             return (
               <ListEntry
-                key={index}
+                key={entry.trackId}
                 entry={entry}
                 trackNumber={trackNumber}
                 showDisc={showDisc}
