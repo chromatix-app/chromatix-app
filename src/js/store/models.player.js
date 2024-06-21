@@ -145,6 +145,7 @@ const effects = (dispatch) => ({
     if (playingVariant === 'albums') {
       dispatch.playerModel.playerLoadAlbum({
         albumId: playingAlbumId,
+        playingOrder: playingOrder,
         trackIndex: playingTrackIndex,
         isShuffle: isShuffle,
         isTrack: true, // this ensures that the trackIndex is used
@@ -162,7 +163,7 @@ const effects = (dispatch) => ({
 
   async playerLoadAlbum(payload, rootState) {
     // console.log('%c--- playerLoadAlbum ---', 'color:#5c16b1');
-    const { albumId, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
+    const { albumId, playingOrder = null, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
 
     const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
     const allAlbumTracks = rootState.appModel.allAlbumTracks;
@@ -174,7 +175,7 @@ const effects = (dispatch) => ({
       return;
     }
 
-    const trackKeys = getTrackKeys(currentAlbumTracks.length, null, isShuffle, isTrack ? trackIndex : null);
+    const trackKeys = getTrackKeys(currentAlbumTracks.length, playingOrder, isShuffle, isTrack ? trackIndex : null);
     const realIndex = isTrack ? trackKeys.indexOf(trackIndex) : 0;
 
     dispatch.playerModel.playerLoadTrackList({
@@ -183,7 +184,7 @@ const effects = (dispatch) => ({
       playingLibraryId: rootState.sessionModel.currentLibrary?.libraryId,
       playingAlbumId: albumId,
       playingPlaylistId: null,
-      playingOrder: null,
+      playingOrder: playingOrder,
       playingTrackIndex: realIndex,
       playingTrackKeys: trackKeys,
       playingTrackList: currentAlbumTracks,

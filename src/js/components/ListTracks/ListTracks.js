@@ -31,15 +31,21 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, discCount = 1,
 
   const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+  const sortAlbumTracks = useSelector(({ sessionModel }) => sessionModel.sortAlbumTracks);
   const sortPlaylistTracks = useSelector(({ sessionModel }) => sessionModel.sortPlaylistTracks);
 
   const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
-  const sortKey = (variant === 'playlists' && sortPlaylistTracks[playlistId]) || null;
+  const sortKey =
+    (variant === 'albums' && sortAlbumTracks[albumId]) ||
+    (variant === 'playlists' && sortPlaylistTracks[playlistId]) ||
+    null;
+  const sortId = (variant === 'albums' && albumId) || (variant === 'playlists' && playlistId) || null;
 
-  const handleSortPlaylist = (event) => {
+  const handleSortTracks = (event) => {
     const sortKey = event.currentTarget.dataset.sort;
-    dispatch.sessionModel.setSortPlaylistTracks({
-      playlistId,
+    dispatch.sessionModel.setSortTracks({
+      variant,
+      sortId,
       sortKey,
     });
   };
@@ -67,13 +73,41 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, discCount = 1,
               [style.headerWithRating]: optionShowStarRatings,
             })}
           >
-            <div className={style.labelCenter}>
-              <span>#</span>
-            </div>
-            <div>Title</div>
-            <div>Artist</div>
-            {optionShowStarRatings && <div className={style.headerRating}>Rating</div>}
-            <div>Duration</div>
+            <SortableHeader
+              className={style.labelCenter}
+              sortKey="sortOrder"
+              currentSortKey={sortKey}
+              label="#"
+              handleSortCallback={handleSortTracks}
+              showArrows={false}
+            />
+            <SortableHeader
+              sortKey="title"
+              currentSortKey={sortKey}
+              label="Title"
+              handleSortCallback={handleSortTracks}
+            />
+            <SortableHeader
+              sortKey="artist"
+              currentSortKey={sortKey}
+              label="Artist"
+              handleSortCallback={handleSortTracks}
+            />
+            {optionShowStarRatings && (
+              <SortableHeader
+                className={style.headerRating}
+                sortKey="userRating"
+                currentSortKey={sortKey}
+                label="Rating"
+                handleSortCallback={handleSortTracks}
+              />
+            )}
+            <SortableHeader
+              sortKey="duration"
+              currentSortKey={sortKey}
+              label="Duration"
+              handleSortCallback={handleSortTracks}
+            />
           </div>
         )}
 
@@ -88,27 +122,27 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, discCount = 1,
               sortKey="sortOrder"
               currentSortKey={sortKey}
               label="#"
-              handleSortCallback={handleSortPlaylist}
+              handleSortCallback={handleSortTracks}
               showArrows={false}
             />
             <SortableHeader
               sortKey="title"
               currentSortKey={sortKey}
               label="Title"
-              handleSortCallback={handleSortPlaylist}
+              handleSortCallback={handleSortTracks}
             />
             <div></div>
             <SortableHeader
               sortKey="artist"
               currentSortKey={sortKey}
               label="Artist"
-              handleSortCallback={handleSortPlaylist}
+              handleSortCallback={handleSortTracks}
             />
             <SortableHeader
               sortKey="album"
               currentSortKey={sortKey}
               label="Album"
-              handleSortCallback={handleSortPlaylist}
+              handleSortCallback={handleSortTracks}
             />
             {optionShowStarRatings && (
               <SortableHeader
@@ -116,23 +150,25 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, discCount = 1,
                 sortKey="userRating"
                 currentSortKey={sortKey}
                 label="Rating"
-                handleSortCallback={handleSortPlaylist}
+                handleSortCallback={handleSortTracks}
               />
             )}
             <SortableHeader
               sortKey="duration"
               currentSortKey={sortKey}
               label="Duration"
-              handleSortCallback={handleSortPlaylist}
+              handleSortCallback={handleSortTracks}
             />
           </div>
         )}
 
         <div className={style.entries}>
           {entries.map((entry, index) => {
-            const trackNumber = variant === 'playlists' ? index + 1 : entry.trackNumber;
+            const isSorted = sortKey && !sortKey.startsWith('sortOrder');
 
-            const showDisc = discCount > 1 && currentDisc !== entry.discNumber;
+            const trackNumber = variant === 'playlists' || isSorted ? index + 1 : entry.trackNumber;
+
+            const showDisc = discCount > 1 && currentDisc !== entry.discNumber && !isSorted;
             currentDisc = entry.discNumber;
 
             const isCurrentlyPlaying =
