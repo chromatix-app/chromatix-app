@@ -67,8 +67,8 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, discCount = 1,
               [style.headerWithRating]: optionShowStarRatings,
             })}
           >
-            <div>
-              <span className={style.minCenter}>#</span>
+            <div className={style.labelCenter}>
+              <span>#</span>
             </div>
             <div>Title</div>
             <div>Artist</div>
@@ -83,90 +83,48 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, discCount = 1,
               [style.headerWithRating]: optionShowStarRatings,
             })}
           >
-            <div onClick={handleSortPlaylist} data-sort="sortOrder">
-              <span className={style.minCenter}>#</span>
-            </div>
-            <div onClick={handleSortPlaylist} data-sort="title">
-              Title
-              {sortKey === 'title-asc' && (
-                <span className={style.sortIcon}>
-                  <Icon icon="ArrowDownIcon" cover stroke />
-                </span>
-              )}
-              {sortKey === 'title-desc' && (
-                <span className={style.sortIcon}>
-                  <Icon icon="ArrowUpIcon" cover stroke />
-                </span>
-              )}
-            </div>
+            <SortableHeader
+              className={style.labelCenter}
+              sortKey="sortOrder"
+              currentSortKey={sortKey}
+              label="#"
+              handleSortPlaylist={handleSortPlaylist}
+              showArrows={false}
+            />
+            <SortableHeader
+              sortKey="title"
+              currentSortKey={sortKey}
+              label="Title"
+              handleSortPlaylist={handleSortPlaylist}
+            />
             <div></div>
-            <div onClick={handleSortPlaylist} data-sort="artist">
-              Artist
-              {sortKey === 'artist-asc' && (
-                <span className={style.sortIcon}>
-                  <Icon icon="ArrowDownIcon" cover stroke />
-                </span>
-              )}
-              {sortKey === 'artist-desc' && (
-                <span className={style.sortIcon}>
-                  <Icon icon="ArrowUpIcon" cover stroke />
-                </span>
-              )}
-            </div>
-            <div onClick={handleSortPlaylist} data-sort="album">
-              Album
-              {sortKey?.startsWith('album-asc') && (
-                <span className={style.sortIcon}>
-                  <Icon icon="ArrowDownIcon" cover stroke />
-                </span>
-              )}
-              {sortKey?.startsWith('album-desc') && (
-                <span className={style.sortIcon}>
-                  <Icon icon="ArrowUpIcon" cover stroke />
-                </span>
-              )}
-            </div>
+            <SortableHeader
+              sortKey="artist"
+              currentSortKey={sortKey}
+              label="Artist"
+              handleSortPlaylist={handleSortPlaylist}
+            />
+            <SortableHeader
+              sortKey="album"
+              currentSortKey={sortKey}
+              label="Album"
+              handleSortPlaylist={handleSortPlaylist}
+            />
             {optionShowStarRatings && (
-              <div className={style.headerRating} onClick={handleSortPlaylist} data-sort="userRating">
-                Rating
-                {sortKey === 'userRating-desc' && (
-                  <span className={style.sortIcon}>
-                    <Icon icon="ArrowUpIcon" cover stroke />
-                  </span>
-                )}
-                {sortKey === 'userRating-asc' && (
-                  <span className={style.sortIcon}>
-                    <Icon icon="ArrowDownIcon" cover stroke />
-                  </span>
-                )}
-              </div>
+              <SortableHeader
+                className={style.headerRating}
+                sortKey="userRating"
+                currentSortKey={sortKey}
+                label="Rating"
+                handleSortPlaylist={handleSortPlaylist}
+              />
             )}
-            {/* <div onClick={handleSortPlaylist} data-sort="addedAt">
-              Added
-              {sortKey === 'addedAt-asc' && (
-                <span className={style.sortIcon}>
-                  <Icon icon="ArrowDownIcon" cover stroke />
-                </span>
-              )}
-              {sortKey === 'addedAt-desc' && (
-                <span className={style.sortIcon}>
-                  <Icon icon="ArrowUpIcon" cover stroke />
-                </span>
-              )}
-            </div> */}
-            <div onClick={handleSortPlaylist} data-sort="duration">
-              Duration
-              {sortKey === 'duration-asc' && (
-                <span className={style.sortIcon}>
-                  <Icon icon="ArrowDownIcon" cover stroke />
-                </span>
-              )}
-              {sortKey === 'duration-desc' && (
-                <span className={style.sortIcon}>
-                  <Icon icon="ArrowUpIcon" cover stroke />
-                </span>
-              )}
-            </div>
+            <SortableHeader
+              sortKey="duration"
+              currentSortKey={sortKey}
+              label="Duration"
+              handleSortPlaylist={handleSortPlaylist}
+            />
           </div>
         )}
 
@@ -218,6 +176,30 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, discCount = 1,
   }
 };
 
+const SortableHeader = ({ className, sortKey, currentSortKey, label, handleSortPlaylist, showArrows = true }) => {
+  const isAsc = currentSortKey?.startsWith(`${sortKey}-asc`);
+  const isDesc = currentSortKey?.startsWith(`${sortKey}-desc`);
+  return (
+    <div className={className} onClick={handleSortPlaylist} data-sort={sortKey}>
+      <span>{label}</span>
+      {showArrows && (
+        <>
+          {isAsc && (
+            <span className={style.sortIcon}>
+              <Icon icon="ArrowDownIcon" cover stroke />
+            </span>
+          )}
+          {isDesc && (
+            <span className={style.sortIcon}>
+              <Icon icon="ArrowUpIcon" cover stroke />
+            </span>
+          )}
+        </>
+      )}
+    </div>
+  );
+};
+
 const ListEntry = React.memo(
   ({
     entry,
@@ -254,8 +236,8 @@ const ListEntry = React.memo(
           }}
         >
           {!isCurrentlyPlaying && (
-            <div className={style.trackNumber}>
-              <span className={style.minCenter}>{trackNumber}</span>
+            <div className={clsx(style.trackNumber, style.labelCenter)}>
+              <span>{trackNumber}</span>
             </div>
           )}
 
