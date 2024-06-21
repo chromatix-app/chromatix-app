@@ -1,3 +1,10 @@
+<a name="0.17.0"></a>
+# 0.17.0 (2024-06-21)
+Features:
+- Added sorting of album tracks.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.16.0"></a>
 # 0.16.0 (2024-06-12)
 Features:
