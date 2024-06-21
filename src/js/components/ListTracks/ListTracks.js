@@ -88,27 +88,27 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, discCount = 1,
               sortKey="sortOrder"
               currentSortKey={sortKey}
               label="#"
-              handleSortPlaylist={handleSortPlaylist}
+              handleSortCallback={handleSortPlaylist}
               showArrows={false}
             />
             <SortableHeader
               sortKey="title"
               currentSortKey={sortKey}
               label="Title"
-              handleSortPlaylist={handleSortPlaylist}
+              handleSortCallback={handleSortPlaylist}
             />
             <div></div>
             <SortableHeader
               sortKey="artist"
               currentSortKey={sortKey}
               label="Artist"
-              handleSortPlaylist={handleSortPlaylist}
+              handleSortCallback={handleSortPlaylist}
             />
             <SortableHeader
               sortKey="album"
               currentSortKey={sortKey}
               label="Album"
-              handleSortPlaylist={handleSortPlaylist}
+              handleSortCallback={handleSortPlaylist}
             />
             {optionShowStarRatings && (
               <SortableHeader
@@ -116,14 +116,14 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, discCount = 1,
                 sortKey="userRating"
                 currentSortKey={sortKey}
                 label="Rating"
-                handleSortPlaylist={handleSortPlaylist}
+                handleSortCallback={handleSortPlaylist}
               />
             )}
             <SortableHeader
               sortKey="duration"
               currentSortKey={sortKey}
               label="Duration"
-              handleSortPlaylist={handleSortPlaylist}
+              handleSortCallback={handleSortPlaylist}
             />
           </div>
         )}
@@ -176,11 +176,11 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, discCount = 1,
   }
 };
 
-const SortableHeader = ({ className, sortKey, currentSortKey, label, handleSortPlaylist, showArrows = true }) => {
+const SortableHeader = ({ className, sortKey, currentSortKey, label, handleSortCallback, showArrows = true }) => {
   const isAsc = currentSortKey?.startsWith(`${sortKey}-asc`);
   const isDesc = currentSortKey?.startsWith(`${sortKey}-desc`);
   return (
-    <div className={className} onClick={handleSortPlaylist} data-sort={sortKey}>
+    <div className={className} onClick={handleSortCallback} data-sort={sortKey}>
       <span>{label}</span>
       {showArrows && (
         <>
