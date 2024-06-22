@@ -2,33 +2,21 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { FilterSelect, FilterWrap, ListCards, Loading, TitleHeading } from 'js/components';
-import { sortList } from 'js/utils';
-import * as plex from 'js/services/plex';
+import { useGetAllAlbums } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
+const isLocal = process.env.REACT_APP_ENV === 'local';
+
 const AlbumList = () => {
   const dispatch = useDispatch();
 
-  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
-  const currentLibraryId = currentLibrary?.libraryId;
-  const sortAlbums = useSelector(({ sessionModel }) => sessionModel.sortAlbums);
-  const orderAlbums = useSelector(({ sessionModel }) => sessionModel.orderAlbums);
-
-  const allAlbums = useSelector(({ appModel }) => appModel.allAlbums)?.filter(
-    (album) => album.libraryId === currentLibraryId
-  );
-  const sortedAlbums = allAlbums ? sortList(allAlbums, sortAlbums, orderAlbums) : null;
-
-  useEffect(() => {
-    plex.getAllAlbums();
-  }, []);
+  const { viewAlbums, sortAlbums, orderAlbums, sortedAlbums } = useGetAllAlbums();
 
   return (
     <>
@@ -37,17 +25,32 @@ const AlbumList = () => {
         subtitle={sortedAlbums ? sortedAlbums?.length + ' Album' + (sortedAlbums?.length !== 1 ? 's' : '') : null}
       />
       <FilterWrap>
+        {isLocal && (
+          <FilterSelect
+            value={viewAlbums}
+            options={[
+              { value: 'grid', label: 'Grid view' },
+              { value: 'list', label: 'List view' },
+            ]}
+            setter={(viewAlbums) => {
+              dispatch.sessionModel.setSessionState({
+                viewAlbums,
+              });
+            }}
+            icon={viewAlbums === 'grid' ? 'GridIcon' : 'ListIcon'}
+          />
+        )}
         <FilterSelect
           value={sortAlbums}
           options={[
             { value: 'title', label: 'Alphabetical' },
             { value: 'artist', label: 'Artist' },
-            { value: 'artist-asc-releaseDate-asc', label: 'Artist, Newest Release First' },
-            { value: 'artist-asc-releaseDate-desc', label: 'Artist, Oldest Release First' },
+            { value: 'artist-asc-releaseDate-asc', label: 'Artist, newest release first' },
+            { value: 'artist-asc-releaseDate-desc', label: 'Artist, oldest release first' },
             { value: 'userRating', label: 'Rating' },
-            { value: 'releaseDate', label: 'Release Date' },
-            { value: 'addedAt', label: 'Recently Added' },
-            { value: 'lastPlayed', label: 'Recently Played' },
+            { value: 'releaseDate', label: 'Release date' },
+            { value: 'addedAt', label: 'Recently added' },
+            { value: 'lastPlayed', label: 'Recently played' },
           ]}
           setter={(sortAlbums) => {
             dispatch.sessionModel.setSessionState({

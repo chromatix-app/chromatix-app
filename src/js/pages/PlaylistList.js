@@ -2,38 +2,46 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { FilterSelect, FilterWrap, ListCards, Loading, TitleHeading } from 'js/components';
-import { sortList } from 'js/utils';
-import * as plex from 'js/services/plex';
+import { useGetAllPlaylists } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
+const isLocal = process.env.REACT_APP_ENV === 'local';
+
 const PlaylistList = () => {
   const dispatch = useDispatch();
 
-  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
-  const currentLibraryId = currentLibrary?.libraryId;
-  const sortPlaylists = useSelector(({ sessionModel }) => sessionModel.sortPlaylists);
-  const orderPlaylists = useSelector(({ sessionModel }) => sessionModel.orderPlaylists);
-
-  const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists)?.filter(
-    (playlist) => playlist.libraryId === currentLibraryId
-  );
-  const sortedPlaylists = allPlaylists ? sortList(allPlaylists, sortPlaylists, orderPlaylists) : null;
-
-  useEffect(() => {
-    plex.getAllPlaylists();
-  }, []);
+  const { viewPlaylists, sortPlaylists, orderPlaylists, sortedPlaylists } = useGetAllPlaylists();
 
   return (
     <>
-      <TitleHeading title="Playlists" subtitle={sortedPlaylists ? sortedPlaylists?.length + ' Playlists' : null} />
+      <TitleHeading
+        title="Playlists"
+        subtitle={
+          sortedPlaylists ? sortedPlaylists?.length + ' Playlist' + (sortedPlaylists?.length !== 1 ? 's' : '') : null
+        }
+      />
       <FilterWrap>
+        {isLocal && (
+          <FilterSelect
+            value={viewPlaylists}
+            options={[
+              { value: 'grid', label: 'Grid view' },
+              { value: 'list', label: 'List view' },
+            ]}
+            setter={(viewPlaylists) => {
+              dispatch.sessionModel.setSessionState({
+                viewPlaylists,
+              });
+            }}
+            icon={viewPlaylists === 'grid' ? 'GridIcon' : 'ListIcon'}
+          />
+        )}
         <FilterSelect
           value={sortPlaylists}
           options={[

@@ -44,6 +44,12 @@ const sessionState = {
 
   queueIsVisible: false,
 
+  viewArtists: 'grid',
+  viewAlbums: 'grid',
+  viewPlaylists: 'grid',
+  viewArtistCollections: 'grid',
+  viewAlbumCollections: 'grid',
+
   sortArtists: 'title',
   sortAlbums: 'artist',
   sortAlbumTracks: {},

@@ -2,33 +2,21 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { FilterSelect, FilterWrap, ListCards, Loading, TitleHeading } from 'js/components';
-import { sortList } from 'js/utils';
-import * as plex from 'js/services/plex';
+import { useGetAllArtists } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
+const isLocal = process.env.REACT_APP_ENV === 'local';
+
 const ArtistList = () => {
   const dispatch = useDispatch();
 
-  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
-  const currentLibraryId = currentLibrary?.libraryId;
-  const sortArtists = useSelector(({ sessionModel }) => sessionModel.sortArtists);
-  const orderArtists = useSelector(({ sessionModel }) => sessionModel.orderArtists);
-
-  const allArtists = useSelector(({ appModel }) => appModel.allArtists)?.filter(
-    (artist) => artist.libraryId === currentLibraryId
-  );
-  const sortedArtists = allArtists ? sortList(allArtists, sortArtists, orderArtists) : null;
-
-  useEffect(() => {
-    plex.getAllArtists();
-  }, []);
+  const { viewArtists, sortArtists, orderArtists, sortedArtists } = useGetAllArtists();
 
   return (
     <>
@@ -37,13 +25,28 @@ const ArtistList = () => {
         subtitle={sortedArtists ? sortedArtists?.length + ' Artist' + (sortedArtists?.length !== 1 ? 's' : '') : null}
       />
       <FilterWrap>
+        {isLocal && (
+          <FilterSelect
+            value={viewArtists}
+            options={[
+              { value: 'grid', label: 'Grid view' },
+              { value: 'list', label: 'List view' },
+            ]}
+            setter={(viewArtists) => {
+              dispatch.sessionModel.setSessionState({
+                viewArtists,
+              });
+            }}
+            icon={viewArtists === 'grid' ? 'GridIcon' : 'ListIcon'}
+          />
+        )}
         <FilterSelect
           value={sortArtists}
           options={[
             { value: 'title', label: 'Alphabetical' },
             { value: 'userRating', label: 'Rating' },
-            { value: 'addedAt', label: 'Recently Added' },
-            { value: 'lastPlayed', label: 'Recently Played' },
+            { value: 'addedAt', label: 'Recently added' },
+            { value: 'lastPlayed', label: 'Recently played' },
           ]}
           setter={(sortArtists) => {
             dispatch.sessionModel.setSessionState({
