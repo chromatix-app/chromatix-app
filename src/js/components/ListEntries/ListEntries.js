@@ -10,13 +10,13 @@ import clsx from 'clsx';
 import { Icon, StarRating } from 'js/components';
 import { durationToStringShort } from 'js/utils';
 
-import style from './ListTracks.module.scss';
+import style from './ListEntries.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const ListTracks = ({ variant, albumId, playlistId, playingOrder, discCount = 1, entries, sortKey }) => {
+const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1, entries, sortKey }) => {
   const dispatch = useDispatch();
 
   const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
@@ -328,4 +328,4 @@ const ListEntry = React.memo(
 // EXPORT
 // ======================================================================
 
-export default ListTracks;
+export default ListEntries;
