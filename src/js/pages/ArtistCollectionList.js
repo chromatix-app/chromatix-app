@@ -2,31 +2,22 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { FilterSelect, FilterWrap, ListCards, Loading, TitleHeading } from 'js/components';
-import { sortList } from 'js/utils';
-import * as plex from 'js/services/plex';
+import { useGetAllArtistCollections } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
+const isLocal = process.env.REACT_APP_ENV === 'local';
+
 const ArtistCollectionList = () => {
   const dispatch = useDispatch();
 
-  const allArtistCollections = useSelector(({ appModel }) => appModel.allArtistCollections);
-  const sortArtistCollections = useSelector(({ sessionModel }) => sessionModel.sortArtistCollections);
-  const orderArtistCollections = useSelector(({ sessionModel }) => sessionModel.orderArtistCollections);
-
-  const sortedArtistCollections = allArtistCollections
-    ? sortList(allArtistCollections, sortArtistCollections, orderArtistCollections)
-    : null;
-
-  useEffect(() => {
-    plex.getAllCollections();
-  }, []);
+  const { viewArtistCollections, sortArtistCollections, orderArtistCollections, sortedArtistCollections } =
+    useGetAllArtistCollections();
 
   return (
     <>
@@ -41,31 +32,50 @@ const ArtistCollectionList = () => {
         }
       />
       <FilterWrap>
-        <FilterSelect
-          value={sortArtistCollections}
-          options={[
-            { value: 'title', label: 'Alphabetical' },
-            { value: 'userRating', label: 'Rating' },
-            { value: 'addedAt', label: 'Recently added' },
-          ]}
-          setter={(sortArtistCollections) => {
-            dispatch.sessionModel.setSessionState({
-              sortArtistCollections,
-            });
-          }}
-        />
-        <FilterSelect
-          value={orderArtistCollections}
-          options={[
-            { value: 'asc', label: 'Ascending' },
-            { value: 'desc', label: 'Descending' },
-          ]}
-          setter={(orderArtistCollections) => {
-            dispatch.sessionModel.setSessionState({
-              orderArtistCollections,
-            });
-          }}
-        />
+        {isLocal && (
+          <FilterSelect
+            value={viewArtistCollections}
+            options={[
+              { value: 'grid', label: 'Grid view' },
+              { value: 'list', label: 'List view' },
+            ]}
+            setter={(viewArtistCollections) => {
+              dispatch.sessionModel.setSessionState({
+                viewArtistCollections,
+              });
+            }}
+            icon={viewArtistCollections === 'grid' ? 'GridIcon' : 'ListIcon'}
+          />
+        )}
+        {viewArtistCollections === 'grid' && (
+          <>
+            <FilterSelect
+              value={sortArtistCollections}
+              options={[
+                { value: 'title', label: 'Alphabetical' },
+                { value: 'userRating', label: 'Rating' },
+                { value: 'addedAt', label: 'Recently added' },
+              ]}
+              setter={(sortArtistCollections) => {
+                dispatch.sessionModel.setSessionState({
+                  sortArtistCollections,
+                });
+              }}
+            />
+            <FilterSelect
+              value={orderArtistCollections}
+              options={[
+                { value: 'asc', label: 'Ascending' },
+                { value: 'desc', label: 'Descending' },
+              ]}
+              setter={(orderArtistCollections) => {
+                dispatch.sessionModel.setSessionState({
+                  orderArtistCollections,
+                });
+              }}
+            />
+          </>
+        )}
       </FilterWrap>
       {!sortedArtistCollections && <Loading forceVisible inline />}
       {sortedArtistCollections && <ListCards variant="collections" entries={sortedArtistCollections} />}
