@@ -34,7 +34,7 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, discCount = 1,
 
   const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
 
-  const sortId = (variant === 'albums' && albumId) || (variant === 'playlists' && playlistId) || null;
+  const sortId = (variant === 'albumTracks' && albumId) || (variant === 'playlistTracks' && playlistId) || null;
 
   const handleSortTracks = (event) => {
     const sortKey = event.currentTarget.dataset.sort;
@@ -47,7 +47,7 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, discCount = 1,
 
   // scroll to playing track, if required
   useEffect(() => {
-    if (scrollToPlaying) {
+    if ((variant === 'albumTracks' || variant === 'playlistTracks') && scrollToPlaying) {
       const playingElement = document.getElementById(trackDetail?.trackId);
       if (playingElement) {
         playingElement.scrollIntoView({ block: 'center' });
@@ -61,107 +61,105 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, discCount = 1,
 
   if (entries) {
     return (
-      <div className={clsx(style.wrap, style['wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1)])}>
-        {variant === 'albums' && (
-          <div
-            className={clsx(style.header, {
-              [style.headerWithRating]: optionShowStarRatings,
-            })}
-          >
-            <SortableHeader
-              className={style.labelCenter}
-              sortKey="sortOrder"
-              currentSortKey={sortKey}
-              label="#"
-              handleSortCallback={handleSortTracks}
-              showArrows={false}
-            />
-            <SortableHeader
-              sortKey="title"
-              currentSortKey={sortKey}
-              label="Title"
-              handleSortCallback={handleSortTracks}
-            />
-            <SortableHeader
-              sortKey="artist"
-              currentSortKey={sortKey}
-              label="Artist"
-              handleSortCallback={handleSortTracks}
-            />
-            {optionShowStarRatings && (
-              <SortableHeader
-                className={style.headerRating}
-                sortKey="userRating"
+      <div
+        className={clsx(style.wrap, style['wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1)], {
+          [style.wrapWithRatings]: optionShowStarRatings,
+        })}
+      >
+        <div className={style.header}>
+          {variant === 'albumTracks' && (
+            <>
+              <SortableHeading
+                className={style.labelCenter}
+                sortKey="sortOrder"
                 currentSortKey={sortKey}
-                label="Rating"
+                label="#"
+                handleSortCallback={handleSortTracks}
+                showArrows={false}
+              />
+              <SortableHeading
+                sortKey="title"
+                currentSortKey={sortKey}
+                label="Title"
                 handleSortCallback={handleSortTracks}
               />
-            )}
-            <SortableHeader
-              sortKey="duration"
-              currentSortKey={sortKey}
-              label="Duration"
-              handleSortCallback={handleSortTracks}
-            />
-          </div>
-        )}
+              <SortableHeading
+                sortKey="artist"
+                currentSortKey={sortKey}
+                label="Artist"
+                handleSortCallback={handleSortTracks}
+              />
+              {optionShowStarRatings && (
+                <SortableHeading
+                  className={style.headerRating}
+                  sortKey="userRating"
+                  currentSortKey={sortKey}
+                  label="Rating"
+                  handleSortCallback={handleSortTracks}
+                />
+              )}
+              <SortableHeading
+                sortKey="duration"
+                currentSortKey={sortKey}
+                label="Duration"
+                handleSortCallback={handleSortTracks}
+              />
+            </>
+          )}
 
-        {variant === 'playlists' && (
-          <div
-            className={clsx(style.header, {
-              [style.headerWithRating]: optionShowStarRatings,
-            })}
-          >
-            <SortableHeader
-              className={style.labelCenter}
-              sortKey="sortOrder"
-              currentSortKey={sortKey}
-              label="#"
-              handleSortCallback={handleSortTracks}
-              showArrows={false}
-            />
-            <SortableHeader
-              sortKey="title"
-              currentSortKey={sortKey}
-              label="Title"
-              handleSortCallback={handleSortTracks}
-            />
-            <div></div>
-            <SortableHeader
-              sortKey="artist"
-              currentSortKey={sortKey}
-              label="Artist"
-              handleSortCallback={handleSortTracks}
-            />
-            <SortableHeader
-              sortKey="album"
-              currentSortKey={sortKey}
-              label="Album"
-              handleSortCallback={handleSortTracks}
-            />
-            {optionShowStarRatings && (
-              <SortableHeader
-                className={style.headerRating}
-                sortKey="userRating"
+          {variant === 'playlistTracks' && (
+            <>
+              <SortableHeading
+                className={style.labelCenter}
+                sortKey="sortOrder"
                 currentSortKey={sortKey}
-                label="Rating"
+                label="#"
+                handleSortCallback={handleSortTracks}
+                showArrows={false}
+              />
+              <SortableHeading
+                sortKey="title"
+                currentSortKey={sortKey}
+                label="Title"
                 handleSortCallback={handleSortTracks}
               />
-            )}
-            <SortableHeader
-              sortKey="duration"
-              currentSortKey={sortKey}
-              label="Duration"
-              handleSortCallback={handleSortTracks}
-            />
-          </div>
-        )}
+              <div></div>
+              <SortableHeading
+                sortKey="artist"
+                currentSortKey={sortKey}
+                label="Artist"
+                handleSortCallback={handleSortTracks}
+              />
+              <SortableHeading
+                sortKey="album"
+                currentSortKey={sortKey}
+                label="Album"
+                handleSortCallback={handleSortTracks}
+              />
+              {optionShowStarRatings && (
+                <SortableHeading
+                  className={style.headerRating}
+                  sortKey="userRating"
+                  currentSortKey={sortKey}
+                  label="Rating"
+                  handleSortCallback={handleSortTracks}
+                />
+              )}
+              <SortableHeading
+                sortKey="duration"
+                currentSortKey={sortKey}
+                label="Duration"
+                handleSortCallback={handleSortTracks}
+              />
+            </>
+          )}
+        </div>
 
         <div className={style.entries}>
           {entries.map((entry, index) => {
             const isSorted = sortKey && !sortKey.startsWith('sortOrder');
 
-            const trackNumber = variant === 'playlists' || isSorted ? index + 1 : entry.trackNumber;
+            const trackNumber = variant === 'playlistTracks' || isSorted ? index + 1 : entry.trackNumber;
 
             const showDisc = discCount > 1 && currentDisc !== entry.discNumber && !isSorted;
             currentDisc = entry.discNumber;
@@ -207,7 +205,7 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, discCount = 1,
   }
 };
 
-const SortableHeader = ({ className, sortKey, currentSortKey, label, handleSortCallback, showArrows = true }) => {
+const SortableHeading = ({ className, sortKey, currentSortKey, label, handleSortCallback, showArrows = true }) => {
   const isAsc = currentSortKey?.startsWith(`${sortKey}-asc`);
   const isDesc = currentSortKey?.startsWith(`${sortKey}-desc`);
   return (
@@ -260,7 +258,6 @@ const ListEntry = React.memo(
           id={entry.trackId}
           className={clsx(style.entry, {
             [style.entryPlaying]: isCurrentlyPlaying,
-            [style.entryWithRating]: optionShowStarRatings,
           })}
           onDoubleClick={() => {
             doPlay(true);
@@ -294,7 +291,7 @@ const ListEntry = React.memo(
             </div>
           )}
 
-          {variant === 'playlists' && entry.thumb && (
+          {variant === 'playlistTracks' && entry.thumb && (
             <div className={style.thumb}>
               <img src={entry.thumb} alt={entry.title} loading="lazy" />
             </div>
@@ -306,7 +303,7 @@ const ListEntry = React.memo(
             <NavLink to={entry.artistLink}>{entry.artist}</NavLink>
           </div>
 
-          {variant === 'playlists' && (
+          {variant === 'playlistTracks' && (
             <div className={clsx(style.album, { 'text-trim': !optionShowFullTitles })}>
               <NavLink to={entry.albumLink}>{entry.album} </NavLink>
             </div>
@@ -318,7 +315,7 @@ const ListEntry = React.memo(
             </div>
           )}
 
-          {/* {variant === 'playlists' && <div className={style.addedAt}>{addedAtToString(entry.addedAt)}</div>} */}
+          {/* {variant === 'playlistTracks' && <div className={style.addedAt}>{addedAtToString(entry.addedAt)}</div>} */}
 
           <div className={style.duration}>{durationToStringShort(entry.duration)}</div>
         </div>

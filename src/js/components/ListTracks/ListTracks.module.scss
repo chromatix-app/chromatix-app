@@ -14,25 +14,25 @@
 .entry {
   display: grid;
   align-items: center;
-  grid-template-columns: 30px 1.2fr 1fr minmax(72px, auto);
   gap: 13px;
 
   :global(.cq-800) & {
     gap: 15px;
   }
 
-  .wrap.wrapPlaylists & {
+  .wrap.wrapAlbumTracks & {
+    grid-template-columns: 30px 1.2fr 1fr minmax(72px, auto);
+  }
+  .wrap.wrapAlbumTracks.wrapWithRatings & {
+    :global(.cq-800) & {
+      grid-template-columns: 30px 1.2fr 1fr 0.5fr minmax(72px, auto);
+    }
+  }
+
+  .wrap.wrapPlaylistTracks & {
     grid-template-columns: 30px 41px 1.2fr 1fr 1fr minmax(72px, auto);
   }
-}
-
-.header.headerWithRating,
-.entry.entryWithRating {
-  :global(.cq-800) & {
-    grid-template-columns: 30px 1.2fr 1fr 0.5fr minmax(72px, auto);
-  }
-
-  .wrap.wrapPlaylists & {
+  .wrap.wrapPlaylistTracks.wrapWithRatings & {
     :global(.cq-800) & {
       grid-template-columns: 30px 41px 1.2fr 1fr 1fr 0.5fr minmax(72px, auto);
     }
@@ -81,16 +81,19 @@
 }
 
 .entry {
-  padding: 10px 14px;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 8px;
 
-  :global(.cq-800) & {
-    padding: 10px 19px;
+  .wrap.wrapAlbumTracks & {
+    padding: 10px 14px;
+
+    :global(.cq-800) & {
+      padding: 10px 19px;
+    }
   }
 
-  .wrap.wrapPlaylists & {
+  .wrap.wrapPlaylistTracks & {
     padding: 6px 14px;
 
     :global(.cq-800) & {
@@ -141,10 +144,10 @@
 .sortIcon {
   display: inline-block;
   position: relative;
-  width: 14px;
-  height: 14px;
   top: 2px;
   left: 2px;
+  width: 14px;
+  height: 14px;
 }
 
 .trackNumber {

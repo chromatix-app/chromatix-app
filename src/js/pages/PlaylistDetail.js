@@ -76,7 +76,7 @@ const PlaylistDetail = () => {
       {!(playlistInfo && playlistTracks) && <Loading forceVisible inline />}
       {playlistInfo && playlistTracks && (
         <ListTracks
-          variant="playlists"
+          variant="playlistTracks"
           playlistId={playlistId}
           entries={playlistTracks}
           playingOrder={playlistOrder}

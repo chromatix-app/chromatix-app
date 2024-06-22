@@ -77,7 +77,7 @@ const AlbumDetail = () => {
       {!(albumInfo && albumTracks) && <Loading forceVisible inline />}
       {albumInfo && albumTracks && (
         <ListTracks
-          variant="albums"
+          variant="albumTracks"
           albumId={albumId}
           discCount={albumDiscCount}
           entries={albumTracks}
