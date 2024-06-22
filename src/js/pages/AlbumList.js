@@ -42,8 +42,8 @@ const AlbumList = () => {
           options={[
             { value: 'title', label: 'Alphabetical' },
             { value: 'artist', label: 'Artist' },
-            { value: 'artist-asc-releaseDate-asc', label: 'Artist, by Newest Release' },
-            { value: 'artist-asc-releaseDate-desc', label: 'Artist, by Oldest Release' },
+            { value: 'artist-asc-releaseDate-asc', label: 'Artist, Newest Release First' },
+            { value: 'artist-asc-releaseDate-desc', label: 'Artist, Oldest Release First' },
             { value: 'userRating', label: 'Rating' },
             { value: 'releaseDate', label: 'Release Date' },
             { value: 'addedAt', label: 'Recently Added' },

@@ -20,7 +20,11 @@ export const FilterSelect = ({ value, options, setter }) => {
 
   return (
     <div className={style.wrap}>
-      <RadixSelect.Root value={value} onValueChange={handleValueChange}>
+      <RadixSelect.Root
+        value={value}
+        onValueChange={handleValueChange}
+        // open
+      >
         <RadixSelect.Trigger className={style.trigger} aria-label="Food">
           <span className={style.icon}>
             <Icon icon="ArrowsVerticalIcon" cover stroke />
@@ -49,8 +53,8 @@ const SelectItem = forwardRef(({ children, className, ...props }, forwardedRef) 
     <RadixSelect.Item className={style.item} {...props} ref={forwardedRef}>
       <RadixSelect.ItemText>{children}</RadixSelect.ItemText>
       <RadixSelect.ItemIndicator className={style.indicator}>
-        <span className={style.icon}>
-          <Icon icon="CheckCircleIcon" cover stroke />
+        <span className={style.indicatorIcon}>
+          <Icon icon="CheckIcon" cover stroke />
         </span>
       </RadixSelect.ItemIndicator>
     </RadixSelect.Item>

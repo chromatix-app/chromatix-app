@@ -18,6 +18,7 @@ import { ReactComponent as ArtistCollectionsIcon } from './icons/music/artist-co
 import { ReactComponent as ArtistGenresIcon } from './icons/music/artist-genres.svg';
 import { ReactComponent as ArtistMoodsIcon } from './icons/music/artist-moods.svg';
 import { ReactComponent as ArtistStylesIcon } from './icons/music/artist-styles.svg';
+import { ReactComponent as CheckIcon } from './icons/music/check.svg';
 import { ReactComponent as CheckCircleIcon } from './icons/music/check-circle.svg';
 import { ReactComponent as CogIcon } from './icons/music/cog.svg';
 import { ReactComponent as DiscIcon } from './icons/music/disc.svg';
@@ -75,6 +76,7 @@ const customIcons = {
   ArtistGenresIcon,
   ArtistMoodsIcon,
   ArtistStylesIcon,
+  CheckIcon,
   CheckCircleIcon,
   CogIcon,
   DiscIcon,

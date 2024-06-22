@@ -28,7 +28,7 @@
 }
 
 .content {
-  left: 9px;
+  left: 8px;
   background: var(--color-panel-background);
   border: 1px solid var(--color-border);
   border-radius: 5px;
@@ -51,5 +51,13 @@
 }
 
 .indicator {
-  margin: 0 5px 0 0;
+  margin: 0 0 0 8px;
+}
+
+.indicatorIcon {
+  display: inline-block;
+  position: relative;
+  width: 10px;
+  height: 10px;
+  top: 1px;
 }
