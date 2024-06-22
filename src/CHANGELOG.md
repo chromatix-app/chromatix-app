@@ -1,8 +1,16 @@
+<a name="0.17.0"></a>
+# 0.17.0 (2024-06-21)
+Features:
+- Added sorting of album tracks, by clicking table headings.
+- Redesigned settings page.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.16.0"></a>
 # 0.16.0 (2024-06-12)
 Features:
 - Added order (asc/desc) to key library sections.
-- Added sorting of playlist tracks.
+- Added sorting of playlist tracks, by clicking table headings.
 Fixed:
 - Fixed some text trimming in the queue.
 - Fixed handling of items with no artwork.

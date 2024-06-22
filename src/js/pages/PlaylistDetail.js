@@ -28,6 +28,7 @@ const PlaylistDetail = () => {
     playlistRating,
     playlistTracks,
     playlistOrder,
+    playlistSortKey,
   } = useGetPlaylistDetail({
     libraryId,
     playlistId,
@@ -74,7 +75,13 @@ const PlaylistDetail = () => {
       )}
       {!(playlistInfo && playlistTracks) && <Loading forceVisible inline />}
       {playlistInfo && playlistTracks && (
-        <ListTracks variant="playlists" playlistId={playlistId} entries={playlistTracks} playingOrder={playlistOrder} />
+        <ListTracks
+          variant="playlists"
+          playlistId={playlistId}
+          entries={playlistTracks}
+          playingOrder={playlistOrder}
+          sortKey={playlistSortKey}
+        />
       )}
     </>
   );

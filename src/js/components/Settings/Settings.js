@@ -2,10 +2,8 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch, useSelector } from 'react-redux';
-import clsx from 'clsx';
+import { NavLink } from 'react-router-dom';
 
-import { themes } from 'js/_config/themes';
 import { Icon } from 'js/components';
 
 import style from './Settings.module.scss';
@@ -17,263 +15,93 @@ import style from './Settings.module.scss';
 export const Settings = () => {
   return (
     <div className={style.wrap}>
-      <div className={style.entry}>
-        <div className={style.title}>Theme</div>
-        <ThemeSettings />
+      <div className={style.group}>
+        <div className={style.title}>General</div>
+
+        <NavLink className={style.entry} to={'/settings/options'}>
+          <div className={style.entryIcon}>
+            <Icon icon="CogIcon" cover stroke strokeWidth={4} />
+          </div>
+          <div>Options</div>
+          <div className={style.entryArrow}>
+            <Icon icon="ArrowRightIcon" cover stroke />
+          </div>
+        </NavLink>
+
+        <NavLink className={style.entry} to={'/settings/appearance'}>
+          <div className={style.entryIconSmall}>
+            <Icon icon="PaintPaletteIcon" cover stroke strokeWidth={4} />
+          </div>
+          <div>Appearance</div>
+          <div className={style.entryArrow}>
+            <Icon icon="ArrowRightIcon" cover stroke />
+          </div>
+        </NavLink>
       </div>
-      <div className={style.entry}>
-        <div className={style.title}>Options</div>
-        <OptionSettings />
-      </div>
-      <div className={style.entry}>
-        <div className={style.title}>Customise Menu</div>
-        <MenuSettings />
-      </div>
-      <div className={style.entry}>
+
+      <div className={style.group}>
         <div className={style.title}>About</div>
-        <About />
-      </div>
-    </div>
-  );
-};
 
-//
-// THEME
-//
+        {/* <NavLink className={style.entry} to={'/settings/about'}>
+          <div className={style.entryIcon}>
+            <Icon icon="InfoIcon" cover stroke strokeWidth={4} />
+          </div>
+          <div>About Chromatix</div>
+          <div className={style.entryArrow}>
+            <Icon icon="ArrowRightIcon" cover stroke />
+          </div>
+        </NavLink> */}
 
-const ThemeSettings = () => {
-  const dispatch = useDispatch();
+        <NavLink className={style.entry} to={'/settings/changelog'}>
+          <div className={style.entryIconSmall}>
+            <Icon icon="ClockRewindIcon" cover stroke strokeWidth={4} />
+          </div>
+          <div>Changelog</div>
+          <div className={style.entryArrow}>
+            <Icon icon="ArrowRightIcon" cover stroke />
+          </div>
+        </NavLink>
 
-  const currentTheme = useSelector(({ sessionModel }) => sessionModel.currentTheme);
-  const currentColorBackground = useSelector(({ sessionModel }) => sessionModel.currentColorBackground);
-  const currentColorText = useSelector(({ sessionModel }) => sessionModel.currentColorText);
-  const currentColorPrimary = useSelector(({ sessionModel }) => sessionModel.currentColorPrimary);
-
-  const groupedThemes = Object.entries(themes).reduce((groups, [themeName, themeDetails]) => {
-    const group = themeDetails.group;
-    if (!groups[group]) {
-      groups[group] = [];
-    }
-    groups[group].push([themeName, themeDetails]);
-    return groups;
-  }, {});
-
-  return (
-    <>
-      {Object.entries(groupedThemes).map(([groupName, groupThemes], groupIndex) => (
-        <div key={groupIndex} className={style.themes}>
-          {groupThemes.map(([themeName, themeDetails], themeIndex) => (
-            <button
-              key={themeIndex}
-              className={clsx(style.theme, {
-                [style.themeCurrent]: currentTheme === themeName,
-              })}
-              onClick={() => {
-                dispatch.sessionModel.setTheme(themeName);
-              }}
-            >
-              <div className={style.themeBackground} style={{ background: themeDetails.background }}>
-                <div
-                  className={style.themeText}
-                  style={{ borderColor: `transparent transparent ${themeDetails.primary} transparent` }}
-                ></div>
-              </div>
-            </button>
-          ))}
-        </div>
-      ))}
-
-      <div className={style.themes}>
-        <button
-          className={clsx(style.theme, {
-            [style.themeCurrent]: currentTheme === 'custom',
-          })}
-          onClick={() => {
-            dispatch.sessionModel.setTheme('custom');
-          }}
-        >
-          <div className={style.themeBackground}>
-            <div className={style.icon}>
-              <Icon icon="PencilIcon" cover stroke />
+        <a className={style.entry} href="https://www.reddit.com/r/chromatix/" target="_blank" rel="noreferrer nofollow">
+          <div className={style.entryIconLarge}>
+            <Icon icon="RedditIcon" cover stroke strokeWidth={4} />
+          </div>
+          <div>
+            Join us on Reddit
+            <div className={style.externalIcon}>
+              <Icon icon="ExternalLinkIcon" cover stroke />
             </div>
           </div>
-        </button>
+          <div className={style.entryArrow}>
+            <Icon icon="ArrowRightIcon" cover stroke />
+          </div>
+        </a>
 
-        {currentTheme === 'custom' && (
-          <div className={style.custom}>
-            <div className={style.customField}>
-              <div className={style.customLabel}>Background:</div>
-              <input
-                type="color"
-                className={style.customInput}
-                value={currentColorBackground}
-                onChange={(event) => {
-                  dispatch.sessionModel.setColorBackground(event.target.value);
-                }}
-              />
-            </div>
-            <div className={style.customField}>
-              <div className={style.customLabel}>Text:</div>
-              <input
-                type="color"
-                className={style.customInput}
-                value={currentColorText}
-                onChange={(event) => {
-                  dispatch.sessionModel.setColorText(event.target.value);
-                }}
-              />
-            </div>
-            <div className={style.customField}>
-              <div className={style.customLabel}>Highlight:</div>
-              <input
-                type="color"
-                className={style.customInput}
-                value={currentColorPrimary}
-                onChange={(event) => {
-                  dispatch.sessionModel.setColorPrimary(event.target.value);
-                }}
-              />
+        <a className={style.entry} href="https://github.com/chromatix-app" target="_blank" rel="noreferrer nofollow">
+          <div className={style.entryIcon}>
+            <Icon icon="GithubIcon" cover stroke strokeWidth={4} />
+          </div>
+          <div>
+            View us on GitHub
+            <div className={style.externalIcon}>
+              <Icon icon="ExternalLinkIcon" cover stroke />
             </div>
           </div>
-        )}
+          <div className={style.entryArrow}>
+            <Icon icon="ArrowRightIcon" cover stroke />
+          </div>
+        </a>
       </div>
-    </>
-  );
-};
 
-//
-// OPTIONS
-//
-
-const OptionSettings = () => {
-  const dispatch = useDispatch();
-
-  const { optionShowFullTitles, optionShowStarRatings, optionLogPlexPlayback } = useSelector(
-    ({ sessionModel }) => sessionModel
-  );
-
-  const menuItems = [
-    {
-      key: 'optionShowFullTitles',
-      label: 'Always show full track, artist and album titles',
-      state: optionShowFullTitles,
-    },
-    { key: 'optionShowStarRatings', label: 'Show star ratings', state: optionShowStarRatings },
-    {
-      key: 'optionLogPlexPlayback',
-      label: 'Log playback events to Plex',
-      description: 'This is used to tell the Plex server what is currently playing, and to update the play count.',
-      state: optionLogPlexPlayback,
-    },
-  ];
-
-  return (
-    <div className={style.menu}>
-      {menuItems.map(({ key, label, description, state }) => (
-        <div key={key} className={style.menuEntry}>
-          <label>
-            <input
-              type="checkbox"
-              checked={state}
-              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
-            />
-            <div>
-              {label && <div className={style.label}>{label}</div>}
-              {description && <div className={style.description}>{description}</div>}
-            </div>
-          </label>
+      <div className={style.group}>
+        <div className={style.kofiWrap}>
+          <a className={style.kofi} href="https://ko-fi.com/chromaticnova" target="_blank" rel="noreferrer nofollow">
+            Support me on Ko-fi
+          </a>
         </div>
-      ))}
-    </div>
-  );
-};
 
-//
-// MENU
-//
-
-const MenuSettings = () => {
-  const dispatch = useDispatch();
-
-  const {
-    menuShowIcons,
-    menuShowArtists,
-    menuShowAlbums,
-    menuShowPlaylists,
-    menuShowArtistCollections,
-    menuShowAlbumCollections,
-    menuShowArtistGenres,
-    menuShowAlbumGenres,
-    menuShowArtistStyles,
-    menuShowAlbumStyles,
-    menuShowArtistMoods,
-    menuShowAlbumMoods,
-    menuShowAllPlaylists,
-  } = useSelector(({ sessionModel }) => sessionModel);
-
-  const menuItems = [
-    { key: 'menuShowIcons', label: 'Show Icons', state: menuShowIcons },
-    { key: 'menuShowArtists', label: 'Artists', state: menuShowArtists },
-    { key: 'menuShowAlbums', label: 'Albums', state: menuShowAlbums },
-    { key: 'menuShowPlaylists', label: 'Playlists', state: menuShowPlaylists },
-    { key: 'menuShowArtistCollections', label: 'Artist Collections', state: menuShowArtistCollections },
-    { key: 'menuShowAlbumCollections', label: 'Album Collections', state: menuShowAlbumCollections },
-    { key: 'menuShowArtistGenres', label: 'Artist Genres', state: menuShowArtistGenres },
-    { key: 'menuShowAlbumGenres', label: 'Album Genres', state: menuShowAlbumGenres },
-    { key: 'menuShowArtistStyles', label: 'Artist Styles', state: menuShowArtistStyles },
-    { key: 'menuShowAlbumStyles', label: 'Album Styles', state: menuShowAlbumStyles },
-    { key: 'menuShowArtistMoods', label: 'Artist Moods', state: menuShowArtistMoods },
-    { key: 'menuShowAlbumMoods', label: 'Album Moods', state: menuShowAlbumMoods },
-    { key: 'menuShowAllPlaylists', label: 'All Playlists', state: menuShowAllPlaylists },
-  ];
-
-  return (
-    <div className={style.menu}>
-      {menuItems.map(({ key, label, state }) => (
-        <div key={key} className={style.menuEntry}>
-          <label>
-            <input
-              type="checkbox"
-              checked={state}
-              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
-            />
-            <div>{label}</div>
-          </label>
-        </div>
-      ))}
-    </div>
-  );
-};
-
-//
-// ABOUT
-//
-
-const About = () => {
-  return (
-    <div className={style.about}>
-      <div>
-        <a className={style.link} href="https://www.reddit.com/r/chromatix/" target="_blank" rel="noreferrer nofollow">
-          <span className={style.linkIcon}>
-            <Icon icon="RedditIcon" cover />
-          </span>
-          <span>Join us on Reddit</span>
-        </a>
+        <div className={style.legal}>Copyright &copy; {new Date().getFullYear()}</div>
       </div>
-      <div>
-        <a className={style.link} href="https://github.com/chromatix-app" target="_blank" rel="noreferrer nofollow">
-          <span className={style.linkIcon}>
-            <Icon icon="GithubIcon" cover />
-          </span>
-          <span>View us on GitHub</span>
-        </a>
-      </div>
-      <div>
-        <a className={style.kofi} href="https://ko-fi.com/chromaticnova" target="_blank" rel="noreferrer nofollow">
-          Support me on Ko-fi
-        </a>
-      </div>
-      <div className={style.legal}>Copyright &copy; {new Date().getFullYear()}</div>
     </div>
   );
 };

@@ -12,21 +12,29 @@ import { ReactComponent as AlbumGenresIcon } from './icons/music/album-genres.sv
 import { ReactComponent as AlbumMoodsIcon } from './icons/music/album-moods.svg';
 import { ReactComponent as AlbumStylesIcon } from './icons/music/album-styles.svg';
 import { ReactComponent as ArrowDownIcon } from './icons/music/arrow-down.svg';
+import { ReactComponent as ArrowLeftIcon } from './icons/music/arrow-left.svg';
+import { ReactComponent as ArrowRightIcon } from './icons/music/arrow-right.svg';
 import { ReactComponent as ArrowUpIcon } from './icons/music/arrow-up.svg';
 import { ReactComponent as ArrowsVerticalIcon } from './icons/music/arrows-vertical.svg';
 import { ReactComponent as ArtistCollectionsIcon } from './icons/music/artist-collections.svg';
 import { ReactComponent as ArtistGenresIcon } from './icons/music/artist-genres.svg';
 import { ReactComponent as ArtistMoodsIcon } from './icons/music/artist-moods.svg';
 import { ReactComponent as ArtistStylesIcon } from './icons/music/artist-styles.svg';
+import { ReactComponent as CheckIcon } from './icons/music/check.svg';
 import { ReactComponent as CheckCircleIcon } from './icons/music/check-circle.svg';
+import { ReactComponent as ClockRewindIcon } from './icons/music/clock-rewind.svg';
 import { ReactComponent as CogIcon } from './icons/music/cog.svg';
 import { ReactComponent as DiscIcon } from './icons/music/disc.svg';
+import { ReactComponent as ExternalLinkIcon } from './icons/music/external-link.svg';
 import { ReactComponent as FastForwardIcon } from './icons/music/fast-forward.svg';
+import { ReactComponent as GithubIcon } from './icons/music/github.svg';
 import { ReactComponent as GridIcon } from './icons/music/grid.svg';
+import { ReactComponent as InfoIcon } from './icons/music/info.svg';
 import { ReactComponent as ListIcon } from './icons/music/list.svg';
 import { ReactComponent as LogoutIcon } from './icons/music/logout.svg';
 import { ReactComponent as MusicNoteIcon } from './icons/music/music-note.svg';
 import { ReactComponent as NextIcon } from './icons/music/next.svg';
+import { ReactComponent as PaintPaletteIcon } from './icons/music/paint-palette.svg';
 import { ReactComponent as PauseIcon } from './icons/music/pause.svg';
 import { ReactComponent as PauseFilledIcon } from './icons/music/pause-filled.svg';
 import { ReactComponent as PencilIcon } from './icons/music/pencil.svg';
@@ -37,6 +45,7 @@ import { ReactComponent as PlayFilledIcon } from './icons/music/play-filled.svg'
 import { ReactComponent as PlaylistIcon } from './icons/music/playlist.svg';
 import { ReactComponent as PreviousIcon } from './icons/music/previous.svg';
 import { ReactComponent as QueueIcon } from './icons/music/queue.svg';
+import { ReactComponent as RedditIcon } from './icons/music/reddit.svg';
 import { ReactComponent as RepeatIcon } from './icons/music/repeat.svg';
 import { ReactComponent as RewindIcon } from './icons/music/rewind.svg';
 import { ReactComponent as SearchIcon } from './icons/music/search.svg';
@@ -56,8 +65,6 @@ import { ReactComponent as VolUpIcon } from './icons/music/vol-up.svg';
 import { ReactComponent as VolXIcon } from './icons/music/vol-x.svg';
 
 import { ReactComponent as AppleIcon } from './icons/site/apple.svg';
-import { ReactComponent as GithubIcon } from './icons/site/github.svg';
-import { ReactComponent as RedditIcon } from './icons/site/reddit.svg';
 
 // ======================================================================
 // COMPONENT
@@ -69,21 +76,29 @@ const customIcons = {
   AlbumMoodsIcon,
   AlbumStylesIcon,
   ArrowDownIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
   ArrowUpIcon,
   ArrowsVerticalIcon,
   ArtistCollectionsIcon,
   ArtistGenresIcon,
   ArtistMoodsIcon,
   ArtistStylesIcon,
+  CheckIcon,
   CheckCircleIcon,
+  ClockRewindIcon,
   CogIcon,
   DiscIcon,
+  ExternalLinkIcon,
   FastForwardIcon,
+  GithubIcon,
   GridIcon,
+  InfoIcon,
   ListIcon,
   LogoutIcon,
   MusicNoteIcon,
   NextIcon,
+  PaintPaletteIcon,
   PauseIcon,
   PauseFilledIcon,
   PencilIcon,
@@ -94,6 +109,7 @@ const customIcons = {
   PlaylistIcon,
   PreviousIcon,
   QueueIcon,
+  RedditIcon,
   RepeatIcon,
   RewindIcon,
   SearchIcon,
@@ -113,8 +129,6 @@ const customIcons = {
   VolXIcon,
 
   AppleIcon,
-  GithubIcon,
-  RedditIcon,
 };
 
 const getIconComponent = (icon) => {

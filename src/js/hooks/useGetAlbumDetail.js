@@ -2,10 +2,16 @@ import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 
-import { durationToStringLong } from 'js/utils';
+import { durationToStringLong, sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 const useGetAlbumDetail = ({ libraryId, albumId }) => {
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+
+  const sortAlbumTracks = useSelector(({ sessionModel }) => sessionModel.sortAlbumTracks);
+  const currentSortKey = sortAlbumTracks[albumId] || null;
+  const sortKey = !optionShowStarRatings && currentSortKey?.startsWith('userRating') ? null : currentSortKey;
+
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums);
   const albumInfo = allAlbums?.filter((album) => album.albumId === albumId)[0];
 
@@ -27,8 +33,34 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const albumDurationMillisecs = albumTracks?.reduce((acc, track) => acc + track.duration, 0);
   const albumDurationString = durationToStringLong(albumDurationMillisecs);
   const albumRating = albumInfo?.userRating;
-
   const albumArtistLink = albumInfo?.artistLink;
+
+  const sortedAlbumTracks = useMemo(() => {
+    if (!albumTracks) return null;
+    if (sortKey) {
+      // Add originalIndex to each entry
+      const entriesWithOriginalIndex = albumTracks.map((entry, index) => ({
+        ...entry,
+        originalIndex: index,
+      }));
+      // Sort entries
+      if (sortKey === 'sortOrder-desc') {
+        return entriesWithOriginalIndex.slice().reverse();
+      } else {
+        return sortList(entriesWithOriginalIndex, sortKey);
+      }
+    }
+    // If not an album or no sortKey, return original entries
+    return albumTracks.map((entry, index) => ({
+      ...entry,
+      originalIndex: index,
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allAlbumTracks, albumTracks, sortKey]);
+
+  const albumOrder = useMemo(() => {
+    return sortedAlbumTracks?.map((entry) => entry.originalIndex);
+  }, [sortedAlbumTracks]);
 
   useEffect(() => {
     plex.getAllAlbums();
@@ -55,7 +87,9 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
     albumRating,
     albumArtistLink,
 
-    albumTracks,
+    albumTracks: sortedAlbumTracks,
+    albumOrder,
+    albumSortKey: sortKey,
   };
 };
 

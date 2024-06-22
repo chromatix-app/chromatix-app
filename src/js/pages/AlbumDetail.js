@@ -31,13 +31,20 @@ const AlbumDetail = () => {
     albumRating,
     albumArtistLink,
     albumTracks,
+    albumOrder,
+    albumSortKey,
   } = useGetAlbumDetail({
     libraryId,
     albumId,
   });
 
   const doPlay = (isShuffle) => {
-    dispatch.playerModel.playerLoadAlbum({ albumId, isShuffle });
+    dispatch.playerModel.playerLoadAlbum({
+      albumId,
+      isShuffle,
+      playingOrder: albumOrder,
+      trackIndex: albumOrder ? albumOrder[0] : 0,
+    });
   };
 
   return (
@@ -69,7 +76,14 @@ const AlbumDetail = () => {
       )}
       {!(albumInfo && albumTracks) && <Loading forceVisible inline />}
       {albumInfo && albumTracks && (
-        <ListTracks variant="albums" albumId={albumId} discCount={albumDiscCount} entries={albumTracks} />
+        <ListTracks
+          variant="albums"
+          albumId={albumId}
+          discCount={albumDiscCount}
+          entries={albumTracks}
+          playingOrder={albumOrder}
+          sortKey={albumSortKey}
+        />
       )}
     </>
   );

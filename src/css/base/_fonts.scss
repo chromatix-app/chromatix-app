@@ -62,3 +62,57 @@ a {
   line-height: 0;
   text-indent: -9999px;
 }
+
+.font-markdown {
+  font-size: 15px;
+
+  // pre {
+  //   font: inherit;
+  // }
+  // pre + pre {
+  //   padding-top: 30px;
+  //   margin-top: 30px;
+  //   border-top: 1px solid var(--color-border-page-divider);
+  // }
+
+  div + div {
+    padding-top: 30px;
+    margin-top: 30px;
+    border-top: 1px solid var(--color-opacity-015);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: bold;
+    font-size: 1.1em;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  ul,
+  ol {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+
+    &:first-child {
+      margin-top: 0;
+    }
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  ul,
+  ol {
+    margin-left: 20px;
+  }
+}

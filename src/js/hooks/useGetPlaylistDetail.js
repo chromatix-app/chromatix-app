@@ -5,8 +5,11 @@ import { durationToStringLong, sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+
   const sortPlaylistTracks = useSelector(({ sessionModel }) => sessionModel.sortPlaylistTracks);
-  const sortKey = sortPlaylistTracks[playlistId] || null;
+  const currentSortKey = sortPlaylistTracks[playlistId] || null;
+  const sortKey = !optionShowStarRatings && currentSortKey?.startsWith('userRating') ? null : currentSortKey;
 
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
   const playlistInfo = allPlaylists?.filter((playlist) => playlist.playlistId === playlistId)[0];
@@ -71,6 +74,7 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
 
     playlistTracks: sortedPlaylistTracks,
     playlistOrder,
+    playlistSortKey: sortKey,
   };
 };
 
