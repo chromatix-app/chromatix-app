@@ -23,20 +23,21 @@ const durationToStringLong = (durationMillisecs) => {
     minutes = 0; // Omit minutes from the string
   }
 
-  let result = '';
+  const components = [];
   if (days > 0) {
-    result += `${days} day${days > 1 ? 's' : ''} `;
+    components.push(`${days} day${days > 1 ? 's' : ''}`);
   }
   if (hours > 0) {
-    result += `${hours} hour${hours > 1 ? 's' : ''} `;
+    components.push(`${hours} hour${hours > 1 ? 's' : ''}`);
   }
   if (minutes > 0) {
-    result += `${minutes} min${minutes > 1 ? 's' : ''} `;
+    components.push(`${minutes} min${minutes > 1 ? 's' : ''}`);
   }
   if (seconds > 0) {
-    result += `${seconds} sec${seconds > 1 ? 's' : ''}`;
+    components.push(`${seconds} sec${seconds > 1 ? 's' : ''}`);
   }
-  return result.trim();
+
+  return components.join(', ').trim();
 };
 
 export default durationToStringLong;

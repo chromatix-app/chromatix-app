@@ -22,6 +22,8 @@ const StarRating = ({ type, ratingKey, rating = 0, inline, size = 14, editable =
 
   const handleEdit = useCallback(
     (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       plex.setStarRating(type, ratingKey, parseInt(e.target.dataset.value));
     },
     [type, ratingKey]

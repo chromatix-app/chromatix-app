@@ -4,7 +4,7 @@
 
 import { useDispatch } from 'react-redux';
 
-import { FilterSelect, FilterWrap, ListCards, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
 import { useGetAllPlaylists } from 'js/hooks';
 
 // ======================================================================
@@ -42,7 +42,7 @@ const PlaylistList = () => {
             icon={viewPlaylists === 'grid' ? 'GridIcon' : 'ListIcon'}
           />
         )}
-        {viewPlaylists === 'grid' && (
+        {viewPlaylists !== 'grid2' && (
           <>
             <FilterSelect
               value={sortPlaylists}
@@ -74,7 +74,10 @@ const PlaylistList = () => {
         )}
       </FilterWrap>
       {!sortedPlaylists && <Loading forceVisible inline />}
-      {sortedPlaylists && <ListCards variant="playlists" entries={sortedPlaylists} />}
+      {sortedPlaylists && viewPlaylists === 'grid' && <ListCards variant="playlists" entries={sortedPlaylists} />}
+      {sortedPlaylists && viewPlaylists === 'list' && (
+        <ListEntries variant="playlists" entries={sortedPlaylists} sortKey={sortPlaylists} orderKey={orderPlaylists} />
+      )}
     </>
   );
 };

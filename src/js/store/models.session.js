@@ -217,9 +217,17 @@ const reducers = {
     };
   },
 
+  setSortList(rootState, payload) {
+    // const { variant, sortKey, orderKey } = payload;
+
+    return {
+      ...rootState,
+    };
+  },
+
   setSortTracks(rootState, payload) {
     const { sortId, sortKey, variant } = payload;
-    const sortType = variant === 'albums' ? 'sortAlbumTracks' : 'sortPlaylistTracks';
+    const sortType = variant === 'albumTracks' ? 'sortAlbumTracks' : 'sortPlaylistTracks';
     const sortTracks = rootState[sortType];
     let currentSortValue = sortTracks[sortId] || null;
     let currentSortArray;

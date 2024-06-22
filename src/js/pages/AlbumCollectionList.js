@@ -4,7 +4,7 @@
 
 import { useDispatch } from 'react-redux';
 
-import { FilterSelect, FilterWrap, ListCards, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
 import { useGetAllAlbumCollections } from 'js/hooks';
 
 // ======================================================================
@@ -47,7 +47,7 @@ const AlbumCollectionList = () => {
             icon={viewAlbumCollections === 'grid' ? 'GridIcon' : 'ListIcon'}
           />
         )}
-        {viewAlbumCollections === 'grid' && (
+        {viewAlbumCollections !== 'grid2' && (
           <>
             <FilterSelect
               value={sortAlbumCollections}
@@ -78,7 +78,17 @@ const AlbumCollectionList = () => {
         )}
       </FilterWrap>
       {!sortedAlbumCollections && <Loading forceVisible inline />}
-      {sortedAlbumCollections && <ListCards variant="collections" entries={sortedAlbumCollections} />}
+      {sortedAlbumCollections && viewAlbumCollections === 'grid' && (
+        <ListCards variant="collections" entries={sortedAlbumCollections} />
+      )}
+      {sortedAlbumCollections && viewAlbumCollections === 'list' && (
+        <ListEntries
+          variant="albumCollections"
+          entries={sortedAlbumCollections}
+          sortKey={sortAlbumCollections}
+          orderKey={orderAlbumCollections}
+        />
+      )}
     </>
   );
 };

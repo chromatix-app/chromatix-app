@@ -4,7 +4,7 @@
 
 import { useDispatch } from 'react-redux';
 
-import { FilterSelect, FilterWrap, ListCards, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
 import { useGetAllArtists } from 'js/hooks';
 
 // ======================================================================
@@ -40,7 +40,7 @@ const ArtistList = () => {
             icon={viewArtists === 'grid' ? 'GridIcon' : 'ListIcon'}
           />
         )}
-        {viewArtists === 'grid' && (
+        {viewArtists !== 'grid2' && (
           <>
             <FilterSelect
               value={sortArtists}
@@ -51,6 +51,7 @@ const ArtistList = () => {
                 { value: 'lastPlayed', label: 'Recently played' },
               ]}
               setter={(sortArtists) => {
+                console.log(sortArtists);
                 dispatch.sessionModel.setSessionState({
                   sortArtists,
                 });
@@ -72,7 +73,10 @@ const ArtistList = () => {
         )}
       </FilterWrap>
       {!sortedArtists && <Loading forceVisible inline />}
-      {sortedArtists && <ListCards variant="artists" entries={sortedArtists} />}
+      {sortedArtists && viewArtists === 'grid' && <ListCards variant="artists" entries={sortedArtists} />}
+      {sortedArtists && viewArtists === 'list' && (
+        <ListEntries variant="artists" entries={sortedArtists} sortKey={sortArtists} orderKey={orderArtists} />
+      )}
     </>
   );
 };

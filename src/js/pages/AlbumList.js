@@ -4,7 +4,7 @@
 
 import { useDispatch } from 'react-redux';
 
-import { FilterSelect, FilterWrap, ListCards, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
 import { useGetAllAlbums } from 'js/hooks';
 
 // ======================================================================
@@ -40,7 +40,7 @@ const AlbumList = () => {
             icon={viewAlbums === 'grid' ? 'GridIcon' : 'ListIcon'}
           />
         )}
-        {viewAlbums === 'grid' && (
+        {viewAlbums !== 'grid2' && (
           <>
             <FilterSelect
               value={sortAlbums}
@@ -76,7 +76,10 @@ const AlbumList = () => {
         )}
       </FilterWrap>
       {!sortedAlbums && <Loading forceVisible inline />}
-      {sortedAlbums && <ListCards variant="albums" entries={sortedAlbums} />}
+      {sortedAlbums && viewAlbums === 'grid' && <ListCards variant="albums" entries={sortedAlbums} />}
+      {sortedAlbums && viewAlbums === 'list' && (
+        <ListEntries variant="albums" entries={sortedAlbums} sortKey={sortAlbums} orderKey={orderAlbums} />
+      )}
     </>
   );
 };
