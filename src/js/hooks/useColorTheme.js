@@ -29,6 +29,8 @@ function useColorTheme() {
   let colorOpacity01 = colorText + '1a';
   let colorOpacity015 = colorText + '26';
   let colorOpacity02 = colorText + '33';
+  let colorOpacity03 = colorText + '4d';
+  let colorOpacity04 = colorText + '66';
   let colorOpacity05 = colorText + '80';
   let colorOpacity06 = colorText + '99';
   let colorOpacity07 = colorText + 'b3';
@@ -58,6 +60,8 @@ function useColorTheme() {
       '--color-opacity-01': colorOpacity01,
       '--color-opacity-015': colorOpacity015,
       '--color-opacity-02': colorOpacity02,
+      '--color-opacity-03': colorOpacity03,
+      '--color-opacity-04': colorOpacity04,
       '--color-opacity-05': colorOpacity05,
       '--color-opacity-06': colorOpacity06,
       '--color-opacity-07': colorOpacity07,
@@ -83,6 +87,8 @@ function useColorTheme() {
     colorOpacity01,
     colorOpacity015,
     colorOpacity02,
+    colorOpacity03,
+    colorOpacity04,
     colorOpacity05,
     colorOpacity06,
     colorOpacity07,
