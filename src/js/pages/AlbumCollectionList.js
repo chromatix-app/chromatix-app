@@ -46,7 +46,7 @@ const AlbumCollectionList = () => {
           options={[
             { value: 'title', label: 'Alphabetical' },
             { value: 'userRating', label: 'Rating' },
-            { value: 'addedAt', label: 'Recently Added' },
+            { value: 'addedAt', label: 'Recently added' },
           ]}
           setter={(sortAlbumCollections) => {
             dispatch.sessionModel.setSessionState({

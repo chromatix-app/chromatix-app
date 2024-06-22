@@ -42,32 +42,36 @@ const PlaylistList = () => {
             icon={viewPlaylists === 'grid' ? 'GridIcon' : 'ListIcon'}
           />
         )}
-        <FilterSelect
-          value={sortPlaylists}
-          options={[
-            { value: 'title', label: 'Alphabetical' },
-            { value: 'userRating', label: 'Rating' },
-            { value: 'addedAt', label: 'Recently Added' },
-            { value: 'lastPlayed', label: 'Recently Played' },
-          ]}
-          setter={(sortPlaylists) => {
-            dispatch.sessionModel.setSessionState({
-              sortPlaylists,
-            });
-          }}
-        />
-        <FilterSelect
-          value={orderPlaylists}
-          options={[
-            { value: 'asc', label: 'Ascending' },
-            { value: 'desc', label: 'Descending' },
-          ]}
-          setter={(orderPlaylists) => {
-            dispatch.sessionModel.setSessionState({
-              orderPlaylists,
-            });
-          }}
-        />
+        {viewPlaylists === 'grid' && (
+          <>
+            <FilterSelect
+              value={sortPlaylists}
+              options={[
+                { value: 'title', label: 'Alphabetical' },
+                { value: 'userRating', label: 'Rating' },
+                { value: 'addedAt', label: 'Recently added' },
+                { value: 'lastPlayed', label: 'Recently played' },
+              ]}
+              setter={(sortPlaylists) => {
+                dispatch.sessionModel.setSessionState({
+                  sortPlaylists,
+                });
+              }}
+            />
+            <FilterSelect
+              value={orderPlaylists}
+              options={[
+                { value: 'asc', label: 'Ascending' },
+                { value: 'desc', label: 'Descending' },
+              ]}
+              setter={(orderPlaylists) => {
+                dispatch.sessionModel.setSessionState({
+                  orderPlaylists,
+                });
+              }}
+            />
+          </>
+        )}
       </FilterWrap>
       {!sortedPlaylists && <Loading forceVisible inline />}
       {sortedPlaylists && <ListCards variant="playlists" entries={sortedPlaylists} />}

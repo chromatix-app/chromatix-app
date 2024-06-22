@@ -40,32 +40,36 @@ const ArtistList = () => {
             icon={viewArtists === 'grid' ? 'GridIcon' : 'ListIcon'}
           />
         )}
-        <FilterSelect
-          value={sortArtists}
-          options={[
-            { value: 'title', label: 'Alphabetical' },
-            { value: 'userRating', label: 'Rating' },
-            { value: 'addedAt', label: 'Recently added' },
-            { value: 'lastPlayed', label: 'Recently played' },
-          ]}
-          setter={(sortArtists) => {
-            dispatch.sessionModel.setSessionState({
-              sortArtists,
-            });
-          }}
-        />
-        <FilterSelect
-          value={orderArtists}
-          options={[
-            { value: 'asc', label: 'Ascending' },
-            { value: 'desc', label: 'Descending' },
-          ]}
-          setter={(orderArtists) => {
-            dispatch.sessionModel.setSessionState({
-              orderArtists,
-            });
-          }}
-        />
+        {viewArtists === 'grid' && (
+          <>
+            <FilterSelect
+              value={sortArtists}
+              options={[
+                { value: 'title', label: 'Alphabetical' },
+                { value: 'userRating', label: 'Rating' },
+                { value: 'addedAt', label: 'Recently added' },
+                { value: 'lastPlayed', label: 'Recently played' },
+              ]}
+              setter={(sortArtists) => {
+                dispatch.sessionModel.setSessionState({
+                  sortArtists,
+                });
+              }}
+            />
+            <FilterSelect
+              value={orderArtists}
+              options={[
+                { value: 'asc', label: 'Ascending' },
+                { value: 'desc', label: 'Descending' },
+              ]}
+              setter={(orderArtists) => {
+                dispatch.sessionModel.setSessionState({
+                  orderArtists,
+                });
+              }}
+            />
+          </>
+        )}
       </FilterWrap>
       {!sortedArtists && <Loading forceVisible inline />}
       {sortedArtists && <ListCards variant="artists" entries={sortedArtists} />}
