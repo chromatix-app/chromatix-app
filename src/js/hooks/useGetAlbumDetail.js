@@ -6,8 +6,11 @@ import { durationToStringLong, sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 const useGetAlbumDetail = ({ libraryId, albumId }) => {
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+
   const sortAlbumTracks = useSelector(({ sessionModel }) => sessionModel.sortAlbumTracks);
-  const sortKey = sortAlbumTracks[albumId] || null;
+  const currentSortKey = sortAlbumTracks[albumId] || null;
+  const sortKey = !optionShowStarRatings && currentSortKey?.startsWith('userRating') ? null : currentSortKey;
 
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums);
   const albumInfo = allAlbums?.filter((album) => album.albumId === albumId)[0];
