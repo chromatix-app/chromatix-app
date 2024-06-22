@@ -47,17 +47,32 @@
     }
   }
 
-  &StrokeWidth2 {
+  &StrokeWidth10 {
+    path {
+      stroke-width: 1;
+    }
+  }
+  &StrokeWidth11 {
+    path {
+      stroke-width: 1.1;
+    }
+  }
+  &StrokeWidth12 {
+    path {
+      stroke-width: 1.2;
+    }
+  }
+  &StrokeWidth13 {
     path {
       stroke-width: 1.3;
     }
   }
-  &StrokeWidth3 {
+  &StrokeWidth14 {
     path {
       stroke-width: 1.4;
     }
   }
-  &StrokeWidth4 {
+  &StrokeWidth15 {
     path {
       stroke-width: 1.5;
     }

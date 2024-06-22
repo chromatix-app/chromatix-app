@@ -132,7 +132,7 @@ const ListEntry = React.memo(
 
           {(variant === 'genres' || variant === 'styles' || variant === 'moods') && (
             <div className={style.icon}>
-              <Icon icon="MusicNoteIcon" cover stroke strokeWidth={2} />
+              <Icon icon="MusicNoteIcon" cover stroke strokeWidth={1.3} />
             </div>
           )}
 

@@ -139,7 +139,7 @@ const getIconComponent = (icon) => {
   }
 };
 
-export const Icon = ({ icon, cover, stroke, strokeWidth }) => {
+export const Icon = ({ icon, cover, stroke, strokeWidth = 1 }) => {
   const DisplayIcon = getIconComponent(icon);
   if (!DisplayIcon) return null;
   return (
@@ -147,7 +147,7 @@ export const Icon = ({ icon, cover, stroke, strokeWidth }) => {
       className={clsx(style.icon, {
         [style.iconCover]: cover,
         [style.iconStroke]: stroke,
-        [style['iconStrokeWidth' + strokeWidth]]: strokeWidth,
+        [style['iconStrokeWidth' + parseFloat(strokeWidth) * 10]]: strokeWidth,
       })}
     >
       <DisplayIcon />
