@@ -29,7 +29,7 @@ export const Settings = () => {
         </NavLink>
 
         <NavLink className={style.entry} to={'/settings/appearance'}>
-          <div className={style.entryIcon}>
+          <div className={style.entryIconSmall}>
             <Icon icon="PaintPaletteIcon" cover stroke strokeWidth={4} />
           </div>
           <div>Appearance</div>
@@ -52,15 +52,15 @@ export const Settings = () => {
           </div>
         </NavLink> */}
 
-        {/* <NavLink className={style.entry} to={'/settings/changelog'}>
-          <div className={style.entryIcon}>
+        <NavLink className={style.entry} to={'/settings/changelog'}>
+          <div className={style.entryIconSmall}>
             <Icon icon="ClockRewindIcon" cover stroke strokeWidth={4} />
           </div>
           <div>Changelog</div>
           <div className={style.entryArrow}>
             <Icon icon="ArrowRightIcon" cover stroke />
           </div>
-        </NavLink> */}
+        </NavLink>
 
         <a className={style.entry} href="https://www.reddit.com/r/chromatix/" target="_blank" rel="noreferrer nofollow">
           <div className={style.entryIconLarge}>

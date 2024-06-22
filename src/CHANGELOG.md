@@ -2,6 +2,7 @@
 # 0.17.0 (2024-06-21)
 Features:
 - Added sorting of album tracks.
+- Redesigned settings page.
 
 <!-- CHANGELOG SPLIT MARKER -->
 

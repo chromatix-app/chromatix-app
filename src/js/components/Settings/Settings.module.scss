@@ -33,11 +33,18 @@
 }
 
 .entryIcon,
+.entryIconSmall,
 .entryIconLarge {
   display: block;
   width: 24px;
   height: 24px;
   opacity: 0.5;
+}
+
+.entryIconSmall {
+  width: 22px;
+  height: 22px;
+  margin: 1px;
 }
 
 .entryIconLarge {

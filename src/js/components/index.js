@@ -13,6 +13,7 @@ export { default as RangeSlider } from './RangeSlider/RangeSlider';
 export { default as RightBar } from './RightBar/RightBar';
 export { default as Settings } from './Settings/Settings';
 export { default as SettingsAppearance } from './SettingsAppearance/SettingsAppearance';
+export { default as SettingsChangelog } from './SettingsChangelog/SettingsChangelog';
 export { default as SettingsOptions } from './SettingsOptions/SettingsOptions';
 export { default as SideBar } from './SideBar/SideBar';
 export { default as StarRating } from './StarRating/StarRating';
