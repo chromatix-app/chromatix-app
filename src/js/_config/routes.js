@@ -193,6 +193,26 @@ export const authRoutes = [
     exact: true,
     component: 'Settings',
   },
+  {
+    path: '/settings/options',
+    exact: true,
+    component: 'SettingsOptions',
+  },
+  {
+    path: '/settings/appearance',
+    exact: true,
+    component: 'SettingsAppearance',
+  },
+  {
+    path: '/settings/appearance',
+    exact: true,
+    component: 'SettingsAppearance',
+  },
+  {
+    path: '/settings/changelog',
+    exact: true,
+    component: 'SettingsChangelog',
+  },
 
   // other
   {

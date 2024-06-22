@@ -12,6 +12,8 @@ export { default as Queue } from './Queue/Queue';
 export { default as RangeSlider } from './RangeSlider/RangeSlider';
 export { default as RightBar } from './RightBar/RightBar';
 export { default as Settings } from './Settings/Settings';
+export { default as SettingsAppearance } from './SettingsAppearance/SettingsAppearance';
+export { default as SettingsOptions } from './SettingsOptions/SettingsOptions';
 export { default as SideBar } from './SideBar/SideBar';
 export { default as StarRating } from './StarRating/StarRating';
 export { default as TitleBasic } from './TitleBasic/TitleBasic';
