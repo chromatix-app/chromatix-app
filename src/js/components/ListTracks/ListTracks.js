@@ -16,7 +16,7 @@ import style from './ListTracks.module.scss';
 // COMPONENT
 // ======================================================================
 
-const ListTracks = ({ variant, albumId, playlistId, playingOrder, discCount = 1, entries }) => {
+const ListTracks = ({ variant, albumId, playlistId, playingOrder, discCount = 1, entries, sortKey }) => {
   const dispatch = useDispatch();
 
   const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
@@ -31,14 +31,9 @@ const ListTracks = ({ variant, albumId, playlistId, playingOrder, discCount = 1,
 
   const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-  const sortAlbumTracks = useSelector(({ sessionModel }) => sessionModel.sortAlbumTracks);
-  const sortPlaylistTracks = useSelector(({ sessionModel }) => sessionModel.sortPlaylistTracks);
 
   const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
-  const sortKey =
-    (variant === 'albums' && sortAlbumTracks[albumId]) ||
-    (variant === 'playlists' && sortPlaylistTracks[playlistId]) ||
-    null;
+
   const sortId = (variant === 'albums' && albumId) || (variant === 'playlists' && playlistId) || null;
 
   const handleSortTracks = (event) => {

@@ -71,6 +71,7 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
 
     playlistTracks: sortedPlaylistTracks,
     playlistOrder,
+    playlistSortKey: sortKey,
   };
 };
 

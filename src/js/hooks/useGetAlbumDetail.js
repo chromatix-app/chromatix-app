@@ -86,6 +86,7 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
 
     albumTracks: sortedAlbumTracks,
     albumOrder,
+    albumSortKey: sortKey,
   };
 };
 
