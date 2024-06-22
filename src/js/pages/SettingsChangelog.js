@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { Settings, TitleHeading } from 'js/components';
+import { SettingsChangelog, TitleHeading } from 'js/components';
 
 // ======================================================================
 // COMPONENT
@@ -11,8 +11,8 @@ import { Settings, TitleHeading } from 'js/components';
 const Component = () => {
   return (
     <>
-      <TitleHeading title="Settings" />
-      <Settings />
+      <TitleHeading title="Changelog" />
+      <SettingsChangelog />
     </>
   );
 };

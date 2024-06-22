@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 
+import { Icon } from 'js/components';
+
 import style from './Queue.module.scss';
 
 // ======================================================================
@@ -18,6 +20,7 @@ const Queue = () => {
   const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
   const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
   const playingRepeat = useSelector(({ sessionModel }) => sessionModel.playingRepeat);
+  const playingShuffle = useSelector(({ sessionModel }) => sessionModel.playingShuffle);
 
   const upcomingTrackKeys = playingTrackKeys ? playingTrackKeys.filter((_, index) => index >= playingTrackIndex) : [];
   const upcomingEntries = upcomingTrackKeys.map((key) => playingTrackList[key]);
@@ -36,6 +39,7 @@ const Queue = () => {
           isRepeat={false}
           optionShowFullTitles={optionShowFullTitles}
           totalTracksRemaining={totalTracksRemaining}
+          playingShuffle={playingShuffle}
         />
       )}
       {playingRepeat && (
@@ -60,7 +64,14 @@ const QueueEmpty = () => {
   return <div className={style.section}>No tracks in queue</div>;
 };
 
-const QueueList = ({ entries, initialIndex = 0, isRepeat, optionShowFullTitles, totalTracksRemaining }) => {
+const QueueList = ({
+  entries,
+  initialIndex = 0,
+  isRepeat,
+  optionShowFullTitles,
+  totalTracksRemaining,
+  playingShuffle,
+}) => {
   return entries.map((entry, index) => {
     const isCurrentlyPlaying = index === 0;
 
@@ -73,12 +84,21 @@ const QueueList = ({ entries, initialIndex = 0, isRepeat, optionShowFullTitles, 
         isCurrentlyPlaying={isCurrentlyPlaying}
         optionShowFullTitles={optionShowFullTitles}
         totalTracksRemaining={totalTracksRemaining}
+        playingShuffle={playingShuffle}
       />
     );
   });
 };
 
-const QueueEntry = ({ entry, index, isRepeat, isCurrentlyPlaying, optionShowFullTitles, totalTracksRemaining }) => {
+const QueueEntry = ({
+  entry,
+  index,
+  isRepeat,
+  isCurrentlyPlaying,
+  optionShowFullTitles,
+  totalTracksRemaining,
+  playingShuffle,
+}) => {
   const dispatch = useDispatch();
 
   const doPlay = () => {
@@ -112,7 +132,19 @@ const QueueEntry = ({ entry, index, isRepeat, isCurrentlyPlaying, optionShowFull
         </div>
       </div>
 
-      {!isRepeat && isCurrentlyPlaying && totalTracksRemaining > 1 && <div className={style.section}>Coming up</div>}
+      {!isRepeat && isCurrentlyPlaying && totalTracksRemaining > 1 && (
+        <div className={style.section}>
+          Coming up
+          {playingShuffle && (
+            <span className={style.shuffleLabel}>
+              &nbsp;&nbsp;•&nbsp; Shuffle is on{' '}
+              <span className={style.shuffleIcon}>
+                <Icon icon="ShuffleIcon" cover stroke />
+              </span>
+            </span>
+          )}
+        </div>
+      )}
     </>
   );
 };

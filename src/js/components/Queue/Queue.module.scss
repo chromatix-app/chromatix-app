@@ -14,16 +14,30 @@
   }
 }
 
+.shuffleLabel {
+  font-weight: normal;
+  color: var(--color-opacity-05);
+}
+
+.shuffleIcon {
+  display: inline-block;
+  position: relative;
+  top: 3px;
+  width: 12px;
+  height: 12px;
+  margin-left: 1px;
+}
+
 .repeat {
   padding: 25px 10px 10px;
   font-weight: 600;
   text-align: center;
 
   span {
-    font-size: 11px;
     padding: 4px 18px;
     background: var(--color-opacity-005);
     border-radius: 99px;
+    font-size: 11px;
     color: var(--color-opacity-05);
   }
 }
