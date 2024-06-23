@@ -51,6 +51,8 @@ const PlaylistList = () => {
                 { value: 'userRating', label: 'Rating' },
                 { value: 'addedAt', label: 'Recently added' },
                 { value: 'lastPlayed', label: 'Recently played' },
+                { value: 'totalTracks', label: 'Track count' },
+                { value: 'duration', label: 'Duration' },
               ]}
               setter={(sortPlaylists) => {
                 dispatch.sessionModel.setSessionState({

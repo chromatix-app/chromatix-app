@@ -28,7 +28,7 @@ const PlaylistDetail = () => {
     playlistRating,
     playlistTracks,
     playlistOrder,
-    playlistSortKey,
+    playlistSortString,
   } = useGetPlaylistDetail({
     libraryId,
     playlistId,
@@ -80,7 +80,7 @@ const PlaylistDetail = () => {
           playlistId={playlistId}
           entries={playlistTracks}
           playingOrder={playlistOrder}
-          sortKey={playlistSortKey}
+          sortString={playlistSortString}
         />
       )}
     </>

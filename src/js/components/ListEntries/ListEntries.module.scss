@@ -25,11 +25,11 @@
   }
 
   .wrap.wrapArtists & {
-    grid-template-columns: 41px 1.2fr 1fr 0.8fr 0.8fr;
+    grid-template-columns: 41px 1.2fr 0.8fr 0.8fr;
   }
   .wrap.wrapArtists.wrapWithRatings & {
     :global(.cq-800) & {
-      grid-template-columns: 41px 1.2fr 1fr 0.8fr 0.8fr 0.5fr;
+      grid-template-columns: 41px 1.2fr 0.8fr 0.8fr 0.5fr;
     }
   }
 

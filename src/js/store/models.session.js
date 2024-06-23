@@ -51,7 +51,7 @@ const sessionState = {
   viewAlbumCollections: 'grid',
 
   sortArtists: 'title',
-  sortAlbums: 'artist',
+  sortAlbums: 'title',
   sortAlbumTracks: {},
   sortPlaylists: 'title',
   sortPlaylistTracks: {},
@@ -218,18 +218,36 @@ const reducers = {
   },
 
   setSortList(rootState, payload) {
-    // const { variant, sortKey, orderKey } = payload;
-
+    const { variant, sortKey } = payload;
+    const sortIndex = 'sort' + variant.charAt(0).toUpperCase() + variant.slice(1);
+    const orderIndex = 'order' + variant.charAt(0).toUpperCase() + variant.slice(1);
+    const currentSortKey = rootState[sortIndex];
+    const currentOrderKey = rootState[orderIndex];
+    let newSortKey = sortKey;
+    let newOrderKey = 'asc';
+    if (sortKey === currentSortKey) {
+      if (currentOrderKey === 'asc') {
+        // reverse the sort order
+        newOrderKey = 'desc';
+      } else {
+        // reset to default values
+        newSortKey = sessionState[sortIndex];
+        newOrderKey = sessionState[orderIndex];
+      }
+    }
+    console.log(newSortKey, newOrderKey);
     return {
       ...rootState,
+      [sortIndex]: newSortKey,
+      [orderIndex]: newOrderKey,
     };
   },
 
   setSortTracks(rootState, payload) {
-    const { sortId, sortKey, variant } = payload;
+    const { variant, sortId, sortKey } = payload;
     const sortType = variant === 'albumTracks' ? 'sortAlbumTracks' : 'sortPlaylistTracks';
     const sortTracks = rootState[sortType];
-    let currentSortValue = sortTracks[sortId] || null;
+    const currentSortValue = sortTracks[sortId] || null;
     let currentSortArray;
     let currentSortKey;
     let currentSortDirection;

@@ -32,7 +32,7 @@ const AlbumDetail = () => {
     albumArtistLink,
     albumTracks,
     albumOrder,
-    albumSortKey,
+    albumSortString,
   } = useGetAlbumDetail({
     libraryId,
     albumId,
@@ -82,7 +82,7 @@ const AlbumDetail = () => {
           discCount={albumDiscCount}
           entries={albumTracks}
           playingOrder={albumOrder}
-          sortKey={albumSortKey}
+          sortString={albumSortString}
         />
       )}
     </>

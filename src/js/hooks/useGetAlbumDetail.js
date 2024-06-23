@@ -9,8 +9,9 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   const sortAlbumTracks = useSelector(({ sessionModel }) => sessionModel.sortAlbumTracks);
-  const currentSortKey = sortAlbumTracks[albumId] || null;
-  const sortKey = !optionShowStarRatings && currentSortKey?.startsWith('userRating') ? null : currentSortKey;
+  const currentSortString = sortAlbumTracks[albumId] || null;
+  const albumSortString =
+    !optionShowStarRatings && currentSortString?.startsWith('userRating') ? null : currentSortString;
 
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums);
   const albumInfo = allAlbums?.filter((album) => album.albumId === albumId)[0];
@@ -37,26 +38,26 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
 
   const sortedAlbumTracks = useMemo(() => {
     if (!albumTracks) return null;
-    if (sortKey) {
+    if (albumSortString) {
       // Add originalIndex to each entry
       const entriesWithOriginalIndex = albumTracks.map((entry, index) => ({
         ...entry,
         originalIndex: index,
       }));
       // Sort entries
-      if (sortKey === 'sortOrder-desc') {
+      if (albumSortString === 'sortOrder-desc') {
         return entriesWithOriginalIndex.slice().reverse();
       } else {
-        return sortList(entriesWithOriginalIndex, sortKey);
+        return sortList(entriesWithOriginalIndex, albumSortString);
       }
     }
-    // If not an album or no sortKey, return original entries
+    // If not an album or no albumSortString, return original entries
     return albumTracks.map((entry, index) => ({
       ...entry,
       originalIndex: index,
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allAlbumTracks, albumTracks, sortKey]);
+  }, [allAlbumTracks, albumTracks, albumSortString]);
 
   const albumOrder = useMemo(() => {
     return sortedAlbumTracks?.map((entry) => entry.originalIndex);
@@ -89,7 +90,7 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
 
     albumTracks: sortedAlbumTracks,
     albumOrder,
-    albumSortKey: sortKey,
+    albumSortString,
   };
 };
 

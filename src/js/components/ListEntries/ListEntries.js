@@ -17,7 +17,17 @@ import style from './ListEntries.module.scss';
 // COMPONENT
 // ======================================================================
 
-const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1, entries, sortKey, orderKey }) => {
+const ListEntries = ({
+  variant,
+  albumId,
+  playlistId,
+  playingOrder,
+  discCount = 1,
+  entries,
+  sortString,
+  sortKey = sortString ? sortString.split('-')[0] : null,
+  orderKey = sortString ? sortString.split('-')[1] : null,
+}) => {
   const dispatch = useDispatch();
 
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
@@ -30,7 +40,6 @@ const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1
     dispatch.sessionModel.setSortList({
       variant,
       sortKey,
-      orderKey,
     });
   };
 
@@ -55,27 +64,34 @@ const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1
           {variant === 'artists' && (
             <>
               <SortableHeading
+                defaultKey
                 sortKey="title"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Artist"
                 handleSortCallback={handleSortList}
+                style={{
+                  gridColumn: '1 / span 2',
+                }}
               />
-              <div></div>
-              <SortableHeading
+              {/* <SortableHeading
                 sortKey="genre"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Genre"
                 handleSortCallback={handleSortList}
-              />
+              /> */}
               <SortableHeading
                 sortKey="addedAt"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Added"
                 handleSortCallback={handleSortList}
               />
               <SortableHeading
                 sortKey="lastPlayed"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Last Played"
                 handleSortCallback={handleSortList}
               />
@@ -84,6 +100,7 @@ const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1
                   className={style.headerRating}
                   sortKey="userRating"
                   currentSortKey={sortKey}
+                  currentOrderKey={orderKey}
                   label="Rating"
                   handleSortCallback={handleSortList}
                 />
@@ -94,33 +111,41 @@ const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1
           {variant === 'albums' && (
             <>
               <SortableHeading
+                defaultKey
                 sortKey="title"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Title"
                 handleSortCallback={handleSortList}
+                style={{
+                  gridColumn: '1 / span 2',
+                }}
               />
-              <div></div>
               <SortableHeading
                 sortKey="artist"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Artist"
                 handleSortCallback={handleSortList}
               />
               <SortableHeading
                 sortKey="releaseDate"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Released"
                 handleSortCallback={handleSortList}
               />
               <SortableHeading
                 sortKey="addedAt"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Added"
                 handleSortCallback={handleSortList}
               />
               <SortableHeading
                 sortKey="lastPlayed"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Last Played"
                 handleSortCallback={handleSortList}
               />
@@ -129,6 +154,7 @@ const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1
                   className={style.headerRating}
                   sortKey="userRating"
                   currentSortKey={sortKey}
+                  currentOrderKey={orderKey}
                   label="Rating"
                   handleSortCallback={handleSortList}
                 />
@@ -139,33 +165,41 @@ const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1
           {variant === 'playlists' && (
             <>
               <SortableHeading
+                defaultKey
                 sortKey="title"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Title"
                 handleSortCallback={handleSortList}
+                style={{
+                  gridColumn: '1 / span 2',
+                }}
               />
-              <div></div>
               <SortableHeading
-                sortKey="tracks"
+                sortKey="totalTracks"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Tracks"
                 handleSortCallback={handleSortList}
               />
               <SortableHeading
                 sortKey="duration"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Duration"
                 handleSortCallback={handleSortList}
               />
               <SortableHeading
                 sortKey="addedAt"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Added"
                 handleSortCallback={handleSortList}
               />
               <SortableHeading
                 sortKey="lastPlayed"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Last Played"
                 handleSortCallback={handleSortList}
               />
@@ -174,6 +208,7 @@ const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1
                   className={style.headerRating}
                   sortKey="userRating"
                   currentSortKey={sortKey}
+                  currentOrderKey={orderKey}
                   label="Rating"
                   handleSortCallback={handleSortList}
                 />
@@ -184,15 +219,20 @@ const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1
           {(variant === 'artistCollections' || variant === 'albumCollections') && (
             <>
               <SortableHeading
+                defaultKey
                 sortKey="title"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Title"
                 handleSortCallback={handleSortList}
+                style={{
+                  gridColumn: '1 / span 2',
+                }}
               />
-              <div></div>
               <SortableHeading
                 sortKey="addedAt"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Added"
                 handleSortCallback={handleSortList}
               />
@@ -201,6 +241,7 @@ const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1
                   className={style.headerRating}
                   sortKey="userRating"
                   currentSortKey={sortKey}
+                  currentOrderKey={orderKey}
                   label="Rating"
                   handleSortCallback={handleSortList}
                 />
@@ -214,6 +255,7 @@ const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1
                 className={style.labelCenter}
                 sortKey="sortOrder"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="#"
                 handleSortCallback={handleSortTracks}
                 showArrows={false}
@@ -221,12 +263,14 @@ const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1
               <SortableHeading
                 sortKey="title"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Title"
                 handleSortCallback={handleSortTracks}
               />
               <SortableHeading
                 sortKey="artist"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Artist"
                 handleSortCallback={handleSortTracks}
               />
@@ -235,6 +279,7 @@ const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1
                   className={style.headerRating}
                   sortKey="userRating"
                   currentSortKey={sortKey}
+                  currentOrderKey={orderKey}
                   label="Rating"
                   handleSortCallback={handleSortTracks}
                 />
@@ -242,6 +287,7 @@ const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1
               <SortableHeading
                 sortKey="duration"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Duration"
                 handleSortCallback={handleSortTracks}
               />
@@ -254,6 +300,7 @@ const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1
                 className={style.labelCenter}
                 sortKey="sortOrder"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="#"
                 handleSortCallback={handleSortTracks}
                 showArrows={false}
@@ -261,19 +308,24 @@ const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1
               <SortableHeading
                 sortKey="title"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Title"
                 handleSortCallback={handleSortTracks}
+                style={{
+                  gridColumn: '2 / span 2',
+                }}
               />
-              <div></div>
               <SortableHeading
                 sortKey="artist"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Artist"
                 handleSortCallback={handleSortTracks}
               />
               <SortableHeading
                 sortKey="album"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Album"
                 handleSortCallback={handleSortTracks}
               />
@@ -282,6 +334,7 @@ const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1
                   className={style.headerRating}
                   sortKey="userRating"
                   currentSortKey={sortKey}
+                  currentOrderKey={orderKey}
                   label="Rating"
                   handleSortCallback={handleSortTracks}
                 />
@@ -289,6 +342,7 @@ const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1
               <SortableHeading
                 sortKey="duration"
                 currentSortKey={sortKey}
+                currentOrderKey={orderKey}
                 label="Duration"
                 handleSortCallback={handleSortTracks}
               />
@@ -320,11 +374,22 @@ const ListEntries = ({ variant, albumId, playlistId, playingOrder, discCount = 1
   }
 };
 
-const SortableHeading = ({ className, sortKey, currentSortKey, label, handleSortCallback, showArrows = true }) => {
-  const isAsc = currentSortKey?.startsWith(`${sortKey}-asc`);
-  const isDesc = currentSortKey?.startsWith(`${sortKey}-desc`);
+const SortableHeading = ({
+  className,
+  defaultKey,
+  sortKey,
+  currentSortKey,
+  currentOrderKey,
+  label,
+  handleSortCallback,
+  showArrows = true,
+  ...props
+}) => {
+  const isDefault = defaultKey && currentSortKey === sortKey && currentOrderKey === 'asc';
+  const isAsc = !isDefault && currentSortKey === sortKey && currentOrderKey === 'asc';
+  const isDesc = !isDefault && currentSortKey === sortKey && currentOrderKey === 'desc';
   return (
-    <div className={className} onClick={handleSortCallback} data-sort={sortKey}>
+    <div className={className} onClick={handleSortCallback} data-sort={sortKey} {...props}>
       <span>{label}</span>
       {showArrows && (
         <>
@@ -355,7 +420,7 @@ const ListArtists = ({ entries }) => {
           <img src={entry.thumb} alt={entry.title} loading="lazy" />
         </div>
         <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
-        <div className={clsx(style.genre, { 'text-trim': !optionShowFullTitles })}>{entry.genre}</div>
+        {/* <div className={clsx(style.genre, { 'text-trim': !optionShowFullTitles })}>{entry.genre}</div> */}
         <div className={clsx(style.addedAt, { 'text-trim': !optionShowFullTitles })}>
           {formatRecentDate(entry.addedAt)}
         </div>

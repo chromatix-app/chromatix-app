@@ -52,10 +52,12 @@ const sortFunctions = {
   },
   album: (a, b) => a.album?.localeCompare(b.album),
   artist: (a, b) => a.artist?.localeCompare(b.artist),
+  genre: (a, b) => a.genre?.localeCompare(b.genre),
 
   // Numbers
   duration: (a, b) => a.duration - b.duration,
   sortOrder: (a, b) => (parseInt(a.sortOrder) || 0) - (parseInt(b.sortOrder) || 0),
+  totalTracks: (a, b) => (parseInt(a.totalTracks) || 0) - (parseInt(b.totalTracks) || 0),
   trackNumber: (a, b) => (parseInt(a.trackNumber) || 0) - (parseInt(b.trackNumber) || 0),
   userRating: (a, b) => (parseInt(b.userRating) || 0) - (parseInt(a.userRating) || 0),
 
