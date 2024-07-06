@@ -65,11 +65,13 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
     return sortedAlbumTracks?.map((entry) => entry.originalIndex);
   }, [sortedAlbumTracks]);
 
+  // Get the required album data
   useEffect(() => {
     plex.getAllAlbums();
     plex.getAlbumTracks(libraryId, albumId);
   }, [albumId, libraryId]);
 
+  // Fallback in case album data is not included in the allAlbums array
   useEffect(() => {
     if (allAlbums && !albumInfo) {
       plex.getAlbumDetails(libraryId, albumId);
