@@ -12,9 +12,11 @@ import { ReactComponent as AlbumGenresIcon } from './icons/music/album-genres.sv
 import { ReactComponent as AlbumMoodsIcon } from './icons/music/album-moods.svg';
 import { ReactComponent as AlbumStylesIcon } from './icons/music/album-styles.svg';
 import { ReactComponent as ArrowDownIcon } from './icons/music/arrow-down.svg';
+import { ReactComponent as ArrowDownLongIcon } from './icons/music/arrow-down-long.svg';
 import { ReactComponent as ArrowLeftIcon } from './icons/music/arrow-left.svg';
 import { ReactComponent as ArrowRightIcon } from './icons/music/arrow-right.svg';
 import { ReactComponent as ArrowUpIcon } from './icons/music/arrow-up.svg';
+import { ReactComponent as ArrowUpLongIcon } from './icons/music/arrow-up-long.svg';
 import { ReactComponent as ArrowsVerticalIcon } from './icons/music/arrows-vertical.svg';
 import { ReactComponent as ArtistCollectionsIcon } from './icons/music/artist-collections.svg';
 import { ReactComponent as ArtistGenresIcon } from './icons/music/artist-genres.svg';
@@ -76,9 +78,11 @@ const customIcons = {
   AlbumMoodsIcon,
   AlbumStylesIcon,
   ArrowDownIcon,
+  ArrowDownLongIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
   ArrowUpIcon,
+  ArrowUpLongIcon,
   ArrowsVerticalIcon,
   ArtistCollectionsIcon,
   ArtistGenresIcon,
@@ -139,7 +143,7 @@ const getIconComponent = (icon) => {
   }
 };
 
-export const Icon = ({ icon, cover, stroke, strokeWidth }) => {
+export const Icon = ({ icon, cover, stroke, strokeWidth = 1 }) => {
   const DisplayIcon = getIconComponent(icon);
   if (!DisplayIcon) return null;
   return (
@@ -147,7 +151,7 @@ export const Icon = ({ icon, cover, stroke, strokeWidth }) => {
       className={clsx(style.icon, {
         [style.iconCover]: cover,
         [style.iconStroke]: stroke,
-        [style['iconStrokeWidth' + strokeWidth]]: strokeWidth,
+        [style['iconStrokeWidth' + parseFloat(strokeWidth) * 10]]: strokeWidth,
       })}
     >
       <DisplayIcon />

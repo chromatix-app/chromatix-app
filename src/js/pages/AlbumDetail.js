@@ -5,7 +5,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useParams } from 'react-router-dom';
 
-import { ListTracks, Loading, StarRating, TitleHeading } from 'js/components';
+import { ListEntries, Loading, StarRating, TitleHeading } from 'js/components';
 import { useGetAlbumDetail } from 'js/hooks';
 
 // ======================================================================
@@ -32,7 +32,7 @@ const AlbumDetail = () => {
     albumArtistLink,
     albumTracks,
     albumOrder,
-    albumSortKey,
+    albumSortString,
   } = useGetAlbumDetail({
     libraryId,
     albumId,
@@ -76,13 +76,13 @@ const AlbumDetail = () => {
       )}
       {!(albumInfo && albumTracks) && <Loading forceVisible inline />}
       {albumInfo && albumTracks && (
-        <ListTracks
-          variant="albums"
+        <ListEntries
+          variant="albumTracks"
           albumId={albumId}
           discCount={albumDiscCount}
           entries={albumTracks}
           playingOrder={albumOrder}
-          sortKey={albumSortKey}
+          sortString={albumSortString}
         />
       )}
     </>

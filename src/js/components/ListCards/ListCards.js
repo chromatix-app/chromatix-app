@@ -34,9 +34,11 @@ const ListCards = ({ entries, variant }) => {
             (playingAlbumId === entry.albumId || (!playingAlbumId && !entry.albumId)) &&
             (playingPlaylistId === entry.playlistId || (!playingPlaylistId && !entry.playlistId));
 
+          const entryKey = entry.albumId || entry.artistId || entry.playlistId || entry.collectionId || index;
+
           return (
             <ListEntry
-              key={index}
+              key={entryKey}
               variant={variant}
               isCurrentlyLoaded={isCurrentlyLoaded}
               isCurrentlyPlaying={playerPlaying}
@@ -132,7 +134,7 @@ const ListEntry = React.memo(
 
           {(variant === 'genres' || variant === 'styles' || variant === 'moods') && (
             <div className={style.icon}>
-              <Icon icon="MusicNoteIcon" cover stroke strokeWidth={2} />
+              <Icon icon="MusicNoteIcon" cover stroke strokeWidth={1.3} />
             </div>
           )}
 

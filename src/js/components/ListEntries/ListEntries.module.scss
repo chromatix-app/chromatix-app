@@ -14,25 +14,67 @@
 .entry {
   display: grid;
   align-items: center;
-  grid-template-columns: 30px 1.2fr 1fr minmax(72px, auto);
   gap: 13px;
 
   :global(.cq-800) & {
     gap: 15px;
   }
 
+  > *:last-child {
+    text-align: right;
+  }
+
+  .wrap.wrapArtists & {
+    grid-template-columns: 41px 1.2fr 0.8fr 0.8fr;
+  }
+  .wrap.wrapArtists.wrapWithRatings & {
+    :global(.cq-800) & {
+      grid-template-columns: 41px 1.2fr 0.8fr 0.8fr 0.5fr;
+    }
+  }
+
+  .wrap.wrapAlbums & {
+    grid-template-columns: 41px 1.2fr 1fr 0.8fr 0.8fr 0.8fr;
+  }
+  .wrap.wrapAlbums.wrapWithRatings & {
+    :global(.cq-800) & {
+      grid-template-columns: 41px 1.2fr 1fr 0.8fr 0.8fr 0.8fr 0.5fr;
+    }
+  }
+
   .wrap.wrapPlaylists & {
+    grid-template-columns: 41px 1.2fr 1fr 1fr 1fr 1fr;
+  }
+  .wrap.wrapPlaylists.wrapWithRatings & {
+    :global(.cq-800) & {
+      grid-template-columns: 41px 1.2fr 1fr 1fr 1fr 1fr 0.5fr;
+    }
+  }
+
+  .wrap.wrapArtistCollections &,
+  .wrap.wrapAlbumCollections & {
+    grid-template-columns: 41px 1.2fr 1fr;
+  }
+  .wrap.wrapArtistCollections.wrapWithRatings &,
+  .wrap.wrapAlbumCollections.wrapWithRatings & {
+    :global(.cq-800) & {
+      grid-template-columns: 41px 1.2fr 1fr 0.5fr;
+    }
+  }
+
+  .wrap.wrapAlbumTracks & {
+    grid-template-columns: 30px 1.2fr 1fr minmax(72px, auto);
+  }
+  .wrap.wrapAlbumTracks.wrapWithRatings & {
+    :global(.cq-800) & {
+      grid-template-columns: 30px 1.2fr 1fr 0.5fr minmax(72px, auto);
+    }
+  }
+
+  .wrap.wrapPlaylistTracks & {
     grid-template-columns: 30px 41px 1.2fr 1fr 1fr minmax(72px, auto);
   }
-}
-
-.header.headerWithRating,
-.entry.entryWithRating {
-  :global(.cq-800) & {
-    grid-template-columns: 30px 1.2fr 1fr 0.5fr minmax(72px, auto);
-  }
-
-  .wrap.wrapPlaylists & {
+  .wrap.wrapPlaylistTracks.wrapWithRatings & {
     :global(.cq-800) & {
       grid-template-columns: 30px 41px 1.2fr 1fr 1fr 0.5fr minmax(72px, auto);
     }
@@ -56,10 +98,6 @@
     opacity: 0.5;
   }
 
-  > *:last-child {
-    text-align: right;
-  }
-
   &:after {
     content: '';
     display: block;
@@ -81,16 +119,24 @@
 }
 
 .entry {
-  padding: 10px 14px;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 8px;
 
-  :global(.cq-800) & {
-    padding: 10px 19px;
+  .wrap.wrapAlbumTracks & {
+    padding: 10px 14px;
+
+    :global(.cq-800) & {
+      padding: 10px 19px;
+    }
   }
 
-  .wrap.wrapPlaylists & {
+  .wrap.wrapArtists &,
+  .wrap.wrapAlbums &,
+  .wrap.wrapPlaylists &,
+  .wrap.wrapArtistCollections &,
+  .wrap.wrapAlbumCollections &,
+  .wrap.wrapPlaylistTracks & {
     padding: 6px 14px;
 
     :global(.cq-800) & {
@@ -141,10 +187,10 @@
 .sortIcon {
   display: inline-block;
   position: relative;
-  width: 14px;
-  height: 14px;
   top: 2px;
   left: 2px;
+  width: 14px;
+  height: 14px;
 }
 
 .trackNumber {
@@ -211,15 +257,14 @@
   }
 }
 
-.artist {
-  opacity: 0.5;
-
-  .entry:hover & {
-    opacity: 1;
-  }
-}
-
-.album {
+.artist,
+.album,
+.duration,
+.genre,
+.addedAt,
+.lastPlayed,
+.releaseDate,
+.totalTracks {
   opacity: 0.5;
 
   .entry:hover & {
@@ -229,20 +274,11 @@
 
 .userRating {
   display: none;
-  opacity: 0.3;
+  opacity: 0.4;
 
   :global(.cq-800) & {
     display: block;
   }
-
-  .entry:hover & {
-    opacity: 1;
-  }
-}
-
-.duration {
-  opacity: 0.5;
-  text-align: right;
 
   .entry:hover & {
     opacity: 1;

@@ -5,7 +5,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { ListTracks, Loading, StarRating, TitleHeading } from 'js/components';
+import { ListEntries, Loading, StarRating, TitleHeading } from 'js/components';
 import { useGetPlaylistDetail } from 'js/hooks';
 
 // ======================================================================
@@ -28,7 +28,7 @@ const PlaylistDetail = () => {
     playlistRating,
     playlistTracks,
     playlistOrder,
-    playlistSortKey,
+    playlistSortString,
   } = useGetPlaylistDetail({
     libraryId,
     playlistId,
@@ -75,12 +75,12 @@ const PlaylistDetail = () => {
       )}
       {!(playlistInfo && playlistTracks) && <Loading forceVisible inline />}
       {playlistInfo && playlistTracks && (
-        <ListTracks
-          variant="playlists"
+        <ListEntries
+          variant="playlistTracks"
           playlistId={playlistId}
           entries={playlistTracks}
           playingOrder={playlistOrder}
-          sortKey={playlistSortKey}
+          sortString={playlistSortString}
         />
       )}
     </>
