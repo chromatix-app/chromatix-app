@@ -1,5 +1,6 @@
 export { default as useColorTheme } from './useColorTheme';
 export { default as useGetAlbumDetail } from './useGetAlbumDetail';
+export { default as useGetArtistDetail } from './useGetArtistDetail';
 export { default as useGetAllAlbums } from './useGetAllAlbums';
 export { default as useGetAllAlbumCollections } from './useGetAllAlbumCollections';
 export { default as useGetAllArtists } from './useGetAllArtists';
