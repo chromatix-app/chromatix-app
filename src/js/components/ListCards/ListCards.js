@@ -34,9 +34,11 @@ const ListCards = ({ entries, variant }) => {
             (playingAlbumId === entry.albumId || (!playingAlbumId && !entry.albumId)) &&
             (playingPlaylistId === entry.playlistId || (!playingPlaylistId && !entry.playlistId));
 
+          const entryKey = entry.albumId || entry.artistId || entry.playlistId || entry.collectionId || index;
+
           return (
             <ListEntry
-              key={index}
+              key={entryKey}
               variant={variant}
               isCurrentlyLoaded={isCurrentlyLoaded}
               isCurrentlyPlaying={playerPlaying}
