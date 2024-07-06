@@ -11,8 +11,6 @@ import { useGetAllAlbumCollections } from 'js/hooks';
 // COMPONENT
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
-
 const AlbumCollectionList = () => {
   const dispatch = useDispatch();
 
@@ -33,21 +31,19 @@ const AlbumCollectionList = () => {
         }
       />
       <FilterWrap>
-        {isLocal && (
-          <FilterToggle
-            value={viewAlbumCollections}
-            options={[
-              { value: 'grid', label: 'Grid view' },
-              { value: 'list', label: 'List view' },
-            ]}
-            setter={(viewAlbumCollections) => {
-              dispatch.sessionModel.setSessionState({
-                viewAlbumCollections,
-              });
-            }}
-            icon={viewAlbumCollections === 'grid' ? 'GridIcon' : 'ListIcon'}
-          />
-        )}
+        <FilterToggle
+          value={viewAlbumCollections}
+          options={[
+            { value: 'grid', label: 'Grid view' },
+            { value: 'list', label: 'List view' },
+          ]}
+          setter={(viewAlbumCollections) => {
+            dispatch.sessionModel.setSessionState({
+              viewAlbumCollections,
+            });
+          }}
+          icon={viewAlbumCollections === 'grid' ? 'GridIcon' : 'ListIcon'}
+        />
         {viewAlbumCollections === 'grid' && (
           <>
             <FilterSelect
