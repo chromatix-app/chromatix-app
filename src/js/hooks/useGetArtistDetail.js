@@ -15,6 +15,9 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const allArtistRelated = useSelector(({ appModel }) => appModel.allArtistRelated);
   const artistRelated = allArtistRelated[libraryId + '-' + artistId];
 
+  const allArtistCompilationAlbums = useSelector(({ appModel }) => appModel.allArtistCompilationAlbums);
+  const artistCompilations = allArtistCompilationAlbums[libraryId + '-' + artistId];
+
   const artistThumb = artistInfo?.thumb;
   const artistName = artistInfo?.title;
   const artistAlbumTotal = artistAlbums?.length || 0;
@@ -24,12 +27,14 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const artistGenre = artistInfo?.genre;
   const artistRating = artistInfo?.userRating;
 
+  // Get the required artist data
   useEffect(() => {
     plex.getAllArtists();
     plex.getAllArtistAlbums(libraryId, artistId);
     plex.getAllArtistRelated(libraryId, artistId);
   }, [artistId, libraryId]);
 
+  // Fallback in case artist data is not included in the allArtists array
   useEffect(() => {
     if (allArtists && !artistInfo) {
       plex.getArtistDetails(libraryId, artistId);
@@ -37,11 +42,19 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allArtists, artistInfo]);
 
+  // Get the artist compilation albums
+  useEffect(() => {
+    if (artistName && artistId && libraryId) {
+      plex.getAllArtistCompilationAlbums(libraryId, artistId, artistName);
+    }
+  }, [artistName, artistId, libraryId]);
+
   return {
     artistInfo,
 
-    artistAlbums: artistAlbums,
-    artistRelated: artistRelated,
+    artistAlbums,
+    artistRelated,
+    artistCompilations,
 
     artistThumb,
     artistName,

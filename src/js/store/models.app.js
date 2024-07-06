@@ -42,6 +42,7 @@ const plexLibraryState = {
   allArtists: null,
   allArtistAlbums: {},
   allArtistRelated: {},
+  allArtistCompilationAlbums: {},
   // albums
   allAlbums: null,
   allAlbumTracks: {},
@@ -268,6 +269,22 @@ const effects = (dispatch) => ({
     });
   },
 
+  storeArtistCompilationAlbums(payload, rootState) {
+    console.log('%c--- storeArtistCompilationAlbums ---', 'color:#07a098');
+    const { libraryId, artistId, artistCompilationAlbums } = payload;
+    const allArtistCompilationAlbums = { ...rootState.appModel.allArtistCompilationAlbums };
+    // limit recent entries
+    const keys = Object.keys(allArtistCompilationAlbums);
+    if (keys.length >= maxDataLength) {
+      delete allArtistCompilationAlbums[keys[0]];
+    }
+    // add the new entry and save
+    allArtistCompilationAlbums[libraryId + '-' + artistId] = artistCompilationAlbums;
+    dispatch.appModel.setAppState({
+      allArtistCompilationAlbums,
+    });
+  },
+
   setArtistRating(payload, rootState) {
     console.log('%c--- setArtistRating ---', 'color:#07a098');
     const { ratingKey, rating } = payload;
@@ -346,7 +363,7 @@ const effects = (dispatch) => ({
 
   storeAlbumDetails(payload, rootState) {
     console.log('%c--- storeAlbumDetails ---', 'color:#07a098');
-    const allAlbums = [...rootState.appModel.allAlbums];
+    const allAlbums = [...(rootState.appModel.allAlbums || [])];
     const albumIndex = allAlbums.findIndex((album) => album.albumId === payload.albumId);
     if (albumIndex === -1) {
       // limit recent entries

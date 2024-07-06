@@ -24,6 +24,8 @@ const endpointConfig = {
     getAllAlbums: (base, artistId) => `${base}/library/metadata/${artistId}/children?excludeAllLeaves=1`,
     getAllRelated: (base, artistId) =>
       `${base}/library/metadata/${artistId}/related?includeAugmentations=1&includeExternalMetadata=1&includeMeta=1`,
+    getCompilationTracks: (base, libraryId, artistName) =>
+      `${base}/library/sections/${libraryId}/all?type=10&track.originalTitle=${artistName}&artist.title!=${artistName}`,
   },
   album: {
     getAllAlbums: (base, libraryId) => `${base}/library/sections/${libraryId}/all?type=9`,
@@ -380,6 +382,73 @@ export const getAllArtistRelated = async (libraryId, artistId) => {
       getAllArtistRelatedRunning = false;
     }
   }
+};
+
+// ======================================================================
+// GET ARTIST COMPILATION ALBUMS
+// ======================================================================
+
+let getAllArtistCompilationAlbumsRunning;
+
+export const getAllArtistCompilationAlbums = async (libraryId, artistId, artistName) => {
+  if (!getAllArtistCompilationAlbumsRunning) {
+    const prevAllCompilationAlbums = store.getState().appModel.allArtistCompilationAlbums[libraryId + '-' + artistId];
+    if (!prevAllCompilationAlbums) {
+      getAllArtistCompilationAlbumsRunning = true;
+
+      const albumIds = await getAllArtistCompilationAlbumIds(libraryId, artistId, artistName);
+      let artistCompilationAlbums = [];
+
+      if (albumIds.length > 0) {
+        const allAlbums = store.getState().appModel.allAlbums;
+
+        for (let i in albumIds) {
+          const albumId = albumIds[i];
+
+          // Check to see if we already have the album info
+          const albumInfo = allAlbums ? allAlbums?.find((album) => album.albumId === albumId) : null;
+          if (albumInfo) {
+            artistCompilationAlbums.push(albumInfo);
+          }
+
+          // If not, get the album details
+          if (!albumInfo) {
+            await getAlbumDetails(libraryId, albumId);
+            const allAlbums2 = store.getState().appModel.allAlbums;
+            const albumInfo2 = allAlbums2?.find((album) => album.albumId === albumId);
+            if (albumInfo2) {
+              artistCompilationAlbums.push(albumInfo2);
+            }
+          }
+        }
+      }
+
+      // console.log('artistCompilationAlbums', artistCompilationAlbums);
+
+      store.dispatch.appModel.storeArtistCompilationAlbums({ libraryId, artistId, artistCompilationAlbums });
+
+      getAllArtistCompilationAlbumsRunning = false;
+    }
+  }
+};
+
+const getAllArtistCompilationAlbumIds = async (libraryId, artistId, artistName) => {
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+  const endpoint = endpointConfig.artist.getCompilationTracks(plexBaseUrl, libraryId, artistName);
+  const data = await fetchData(endpoint, accessToken);
+
+  // console.log(data.MediaContainer.Metadata);
+
+  const artistCompilationTracks =
+    data.MediaContainer.Metadata?.map((track) => transposeTrackData(track, libraryId, plexBaseUrl, accessToken)) || [];
+
+  // get a unique list of album IDs using the albumId key of each track
+  const artistCompilationAlbums = [...new Set(artistCompilationTracks.map((track) => track.albumId))];
+
+  // console.log('artistCompilationTracks', artistCompilationTracks);
+
+  return artistCompilationAlbums;
 };
 
 // ======================================================================
@@ -1254,6 +1323,7 @@ const transposeTrackData = (track, libraryId, plexBaseUrl, accessToken) => {
     artist: artistTitle,
     artistLink: artistLink,
     album: track.parentTitle,
+    albumId: track.parentRatingKey,
     albumLink: '/albums/' + libraryId + '/' + track.parentRatingKey,
     trackNumber: track.index,
     discNumber: track.parentIndex,

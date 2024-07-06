@@ -22,6 +22,7 @@ const ArtistDetail = () => {
     artistInfo,
     artistAlbums,
     artistRelated,
+    artistCompilations,
     artistThumb,
     artistName,
     artistReleases,
@@ -62,7 +63,7 @@ const ArtistDetail = () => {
       {!(artistInfo && artistAlbums && artistRelated) && <Loading forceVisible inline />}
       {artistInfo && artistAlbums && artistRelated && (
         <>
-          {artistAlbums.length > 0 && (
+          {artistAlbums && artistAlbums.length > 0 && (
             <>
               <TitleSection title="Albums" />
               <ListCards variant="albums" entries={artistAlbums} />
@@ -75,6 +76,12 @@ const ArtistDetail = () => {
                 <ListCards variant="albums" entries={entry.related} />
               </React.Fragment>
             ))}
+          {artistCompilations && artistCompilations.length > 0 && (
+            <>
+              <TitleSection title="Appears On" />
+              <ListCards variant="albums" entries={artistCompilations} />
+            </>
+          )}
         </>
       )}
     </>
