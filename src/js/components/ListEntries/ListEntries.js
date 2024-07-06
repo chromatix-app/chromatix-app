@@ -677,7 +677,8 @@ const ListTrackEntry = React.memo(
           <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
 
           <div className={clsx(style.artist, { 'text-trim': !optionShowFullTitles })}>
-            <NavLink to={entry.artistLink}>{entry.artist}</NavLink>
+            {entry.artistLink && <NavLink to={entry.artistLink}>{entry.artist}</NavLink>}
+            {!entry.artistLink && entry.artist}
           </div>
 
           {variant === 'playlistTracks' && (

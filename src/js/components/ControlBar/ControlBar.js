@@ -96,7 +96,8 @@ const ControlBar = () => {
             <>
               <div className={style.title}>{trackCurrent.title}</div>
               <div className={style.artist}>
-                <NavLink to={trackCurrent.artistLink}>{trackCurrent.artist}</NavLink>
+                {trackCurrent.artistLink && <NavLink to={trackCurrent.artistLink}>{trackCurrent.artist}</NavLink>}
+                {!trackCurrent.artistLink && trackCurrent.artist}
               </div>
             </>
           )}
