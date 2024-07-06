@@ -8,8 +8,9 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   const sortPlaylistTracks = useSelector(({ sessionModel }) => sessionModel.sortPlaylistTracks);
-  const currentSortKey = sortPlaylistTracks[playlistId] || null;
-  const sortKey = !optionShowStarRatings && currentSortKey?.startsWith('userRating') ? null : currentSortKey;
+  const currentSortString = sortPlaylistTracks[playlistId] || null;
+  const playlistSortString =
+    !optionShowStarRatings && currentSortString?.startsWith('userRating') ? null : currentSortString;
 
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
   const playlistInfo = allPlaylists?.filter((playlist) => playlist.playlistId === playlistId)[0];
@@ -26,26 +27,26 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
 
   const sortedPlaylistTracks = useMemo(() => {
     if (!playlistTracks) return null;
-    if (sortKey) {
+    if (playlistSortString) {
       // Add originalIndex to each entry
       const entriesWithOriginalIndex = playlistTracks.map((entry, index) => ({
         ...entry,
         originalIndex: index,
       }));
       // Sort entries
-      if (sortKey === 'sortOrder-desc') {
+      if (playlistSortString === 'sortOrder-desc') {
         return entriesWithOriginalIndex.slice().reverse();
       } else {
-        return sortList(entriesWithOriginalIndex, sortKey);
+        return sortList(entriesWithOriginalIndex, playlistSortString);
       }
     }
-    // If not a playlist or no sortKey, return original entries
+    // If not a playlist or no playlistSortString, return original entries
     return playlistTracks.map((entry, index) => ({
       ...entry,
       originalIndex: index,
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allPlaylistTracks, playlistTracks, sortKey]);
+  }, [allPlaylistTracks, playlistTracks, playlistSortString]);
 
   const playlistOrder = useMemo(() => {
     return sortedPlaylistTracks?.map((entry) => entry.originalIndex);
@@ -74,7 +75,7 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
 
     playlistTracks: sortedPlaylistTracks,
     playlistOrder,
-    playlistSortKey: sortKey,
+    playlistSortString,
   };
 };
 

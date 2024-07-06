@@ -13,7 +13,7 @@ import style from './FilterSelect.module.scss';
 // RENDER
 // ======================================================================
 
-export const FilterSelect = ({ value, options, setter }) => {
+export const FilterSelect = ({ value, options, setter, icon = 'ArrowsVerticalIcon' }) => {
   const handleValueChange = (newValue) => {
     setter(newValue);
   };
@@ -25,9 +25,9 @@ export const FilterSelect = ({ value, options, setter }) => {
         onValueChange={handleValueChange}
         // open
       >
-        <RadixSelect.Trigger className={style.trigger} aria-label="Food">
+        <RadixSelect.Trigger className={style.trigger}>
           <span className={style.icon}>
-            <Icon icon="ArrowsVerticalIcon" cover stroke />
+            <Icon icon={icon} cover stroke />
           </span>
           <RadixSelect.Value />
         </RadixSelect.Trigger>

@@ -2,12 +2,10 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { FilterSelect, FilterWrap, ListCards, Loading, TitleHeading } from 'js/components';
-import { sortList } from 'js/utils';
-import * as plex from 'js/services/plex';
+import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
+import { useGetAllPlaylists } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
@@ -16,53 +14,71 @@ import * as plex from 'js/services/plex';
 const PlaylistList = () => {
   const dispatch = useDispatch();
 
-  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
-  const currentLibraryId = currentLibrary?.libraryId;
-  const sortPlaylists = useSelector(({ sessionModel }) => sessionModel.sortPlaylists);
-  const orderPlaylists = useSelector(({ sessionModel }) => sessionModel.orderPlaylists);
-
-  const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists)?.filter(
-    (playlist) => playlist.libraryId === currentLibraryId
-  );
-  const sortedPlaylists = allPlaylists ? sortList(allPlaylists, sortPlaylists, orderPlaylists) : null;
-
-  useEffect(() => {
-    plex.getAllPlaylists();
-  }, []);
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+  const { viewPlaylists, sortPlaylists, orderPlaylists, sortedPlaylists } = useGetAllPlaylists();
 
   return (
     <>
-      <TitleHeading title="Playlists" subtitle={sortedPlaylists ? sortedPlaylists?.length + ' Playlists' : null} />
+      <TitleHeading
+        title="Playlists"
+        subtitle={
+          sortedPlaylists ? sortedPlaylists?.length + ' Playlist' + (sortedPlaylists?.length !== 1 ? 's' : '') : null
+        }
+      />
       <FilterWrap>
-        <FilterSelect
-          value={sortPlaylists}
+        <FilterToggle
+          value={viewPlaylists}
           options={[
-            { value: 'title', label: 'Alphabetical' },
-            { value: 'userRating', label: 'Rating' },
-            { value: 'addedAt', label: 'Recently Added' },
-            { value: 'lastPlayed', label: 'Recently Played' },
+            { value: 'grid', label: 'Grid view' },
+            { value: 'list', label: 'List view' },
           ]}
-          setter={(sortPlaylists) => {
+          setter={(viewPlaylists) => {
             dispatch.sessionModel.setSessionState({
-              sortPlaylists,
+              viewPlaylists,
             });
           }}
+          icon={viewPlaylists === 'grid' ? 'GridIcon' : 'ListIcon'}
         />
-        <FilterSelect
-          value={orderPlaylists}
-          options={[
-            { value: 'asc', label: 'Ascending' },
-            { value: 'desc', label: 'Descending' },
-          ]}
-          setter={(orderPlaylists) => {
-            dispatch.sessionModel.setSessionState({
-              orderPlaylists,
-            });
-          }}
-        />
+        {viewPlaylists === 'grid' && (
+          <>
+            <FilterSelect
+              value={sortPlaylists}
+              options={[
+                { value: 'title', label: 'Alphabetical' },
+                { value: 'addedAt', label: 'Date added' },
+                { value: 'lastPlayed', label: 'Date played' },
+                { value: 'duration', label: 'Duration' },
+                // only allow sorting by rating if the option is enabled
+                ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
+                { value: 'totalTracks', label: 'Track count' },
+              ]}
+              setter={(sortPlaylists) => {
+                dispatch.sessionModel.setSessionState({
+                  sortPlaylists,
+                });
+              }}
+            />
+            <FilterToggle
+              value={orderPlaylists}
+              options={[
+                { value: 'asc', label: 'Ascending' },
+                { value: 'desc', label: 'Descending' },
+              ]}
+              setter={(orderPlaylists) => {
+                dispatch.sessionModel.setSessionState({
+                  orderPlaylists,
+                });
+              }}
+              icon={orderPlaylists === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+            />
+          </>
+        )}
       </FilterWrap>
       {!sortedPlaylists && <Loading forceVisible inline />}
-      {sortedPlaylists && <ListCards variant="playlists" entries={sortedPlaylists} />}
+      {sortedPlaylists && viewPlaylists === 'grid' && <ListCards variant="playlists" entries={sortedPlaylists} />}
+      {sortedPlaylists && viewPlaylists === 'list' && (
+        <ListEntries variant="playlists" entries={sortedPlaylists} sortKey={sortPlaylists} orderKey={orderPlaylists} />
+      )}
     </>
   );
 };

@@ -45,7 +45,7 @@ const TitleHeading = ({ title, subtitle, detail, thumb, handlePlay }) => {
               </button>
               <button className={style.shuffleButton} onClick={() => handlePlay(true)}>
                 <span className={style.shuffleIcon}>
-                  <Icon icon="ShuffleIcon" cover stroke strokeWidth={3} />
+                  <Icon icon="ShuffleIcon" cover stroke strokeWidth={1.4} />
                 </span>
                 <span className={style.shuffleText}>Shuffle</span>
               </button>

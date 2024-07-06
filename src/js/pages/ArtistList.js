@@ -2,12 +2,10 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { FilterSelect, FilterWrap, ListCards, Loading, TitleHeading } from 'js/components';
-import { sortList } from 'js/utils';
-import * as plex from 'js/services/plex';
+import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
+import { useGetAllArtists } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
@@ -16,19 +14,8 @@ import * as plex from 'js/services/plex';
 const ArtistList = () => {
   const dispatch = useDispatch();
 
-  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
-  const currentLibraryId = currentLibrary?.libraryId;
-  const sortArtists = useSelector(({ sessionModel }) => sessionModel.sortArtists);
-  const orderArtists = useSelector(({ sessionModel }) => sessionModel.orderArtists);
-
-  const allArtists = useSelector(({ appModel }) => appModel.allArtists)?.filter(
-    (artist) => artist.libraryId === currentLibraryId
-  );
-  const sortedArtists = allArtists ? sortList(allArtists, sortArtists, orderArtists) : null;
-
-  useEffect(() => {
-    plex.getAllArtists();
-  }, []);
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+  const { viewArtists, sortArtists, orderArtists, sortedArtists } = useGetAllArtists();
 
   return (
     <>
@@ -37,35 +24,57 @@ const ArtistList = () => {
         subtitle={sortedArtists ? sortedArtists?.length + ' Artist' + (sortedArtists?.length !== 1 ? 's' : '') : null}
       />
       <FilterWrap>
-        <FilterSelect
-          value={sortArtists}
+        <FilterToggle
+          value={viewArtists}
           options={[
-            { value: 'title', label: 'Alphabetical' },
-            { value: 'userRating', label: 'Rating' },
-            { value: 'addedAt', label: 'Recently Added' },
-            { value: 'lastPlayed', label: 'Recently Played' },
+            { value: 'grid', label: 'Grid view' },
+            { value: 'list', label: 'List view' },
           ]}
-          setter={(sortArtists) => {
+          setter={(viewArtists) => {
             dispatch.sessionModel.setSessionState({
-              sortArtists,
+              viewArtists,
             });
           }}
+          icon={viewArtists === 'grid' ? 'GridIcon' : 'ListIcon'}
         />
-        <FilterSelect
-          value={orderArtists}
-          options={[
-            { value: 'asc', label: 'Ascending' },
-            { value: 'desc', label: 'Descending' },
-          ]}
-          setter={(orderArtists) => {
-            dispatch.sessionModel.setSessionState({
-              orderArtists,
-            });
-          }}
-        />
+        {viewArtists === 'grid' && (
+          <>
+            <FilterSelect
+              value={sortArtists}
+              options={[
+                { value: 'title', label: 'Alphabetical' },
+                { value: 'addedAt', label: 'Date added' },
+                { value: 'lastPlayed', label: 'Date played' },
+                // only allow sorting by rating if the option is enabled
+                ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
+              ]}
+              setter={(sortArtists) => {
+                dispatch.sessionModel.setSessionState({
+                  sortArtists,
+                });
+              }}
+            />
+            <FilterToggle
+              value={orderArtists}
+              options={[
+                { value: 'asc', label: 'Ascending' },
+                { value: 'desc', label: 'Descending' },
+              ]}
+              setter={(orderArtists) => {
+                dispatch.sessionModel.setSessionState({
+                  orderArtists,
+                });
+              }}
+              icon={orderArtists === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+            />
+          </>
+        )}
       </FilterWrap>
       {!sortedArtists && <Loading forceVisible inline />}
-      {sortedArtists && <ListCards variant="artists" entries={sortedArtists} />}
+      {sortedArtists && viewArtists === 'grid' && <ListCards variant="artists" entries={sortedArtists} />}
+      {sortedArtists && viewArtists === 'list' && (
+        <ListEntries variant="artists" entries={sortedArtists} sortKey={sortArtists} orderKey={orderArtists} />
+      )}
     </>
   );
 };
