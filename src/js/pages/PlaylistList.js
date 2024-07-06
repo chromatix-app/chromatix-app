@@ -11,8 +11,6 @@ import { useGetAllPlaylists } from 'js/hooks';
 // COMPONENT
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
-
 const PlaylistList = () => {
   const dispatch = useDispatch();
 
@@ -28,21 +26,19 @@ const PlaylistList = () => {
         }
       />
       <FilterWrap>
-        {isLocal && (
-          <FilterToggle
-            value={viewPlaylists}
-            options={[
-              { value: 'grid', label: 'Grid view' },
-              { value: 'list', label: 'List view' },
-            ]}
-            setter={(viewPlaylists) => {
-              dispatch.sessionModel.setSessionState({
-                viewPlaylists,
-              });
-            }}
-            icon={viewPlaylists === 'grid' ? 'GridIcon' : 'ListIcon'}
-          />
-        )}
+        <FilterToggle
+          value={viewPlaylists}
+          options={[
+            { value: 'grid', label: 'Grid view' },
+            { value: 'list', label: 'List view' },
+          ]}
+          setter={(viewPlaylists) => {
+            dispatch.sessionModel.setSessionState({
+              viewPlaylists,
+            });
+          }}
+          icon={viewPlaylists === 'grid' ? 'GridIcon' : 'ListIcon'}
+        />
         {viewPlaylists === 'grid' && (
           <>
             <FilterSelect

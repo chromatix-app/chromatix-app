@@ -11,8 +11,6 @@ import { useGetAllArtistCollections } from 'js/hooks';
 // COMPONENT
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
-
 const ArtistCollectionList = () => {
   const dispatch = useDispatch();
 
@@ -33,21 +31,19 @@ const ArtistCollectionList = () => {
         }
       />
       <FilterWrap>
-        {isLocal && (
-          <FilterToggle
-            value={viewArtistCollections}
-            options={[
-              { value: 'grid', label: 'Grid view' },
-              { value: 'list', label: 'List view' },
-            ]}
-            setter={(viewArtistCollections) => {
-              dispatch.sessionModel.setSessionState({
-                viewArtistCollections,
-              });
-            }}
-            icon={viewArtistCollections === 'grid' ? 'GridIcon' : 'ListIcon'}
-          />
-        )}
+        <FilterToggle
+          value={viewArtistCollections}
+          options={[
+            { value: 'grid', label: 'Grid view' },
+            { value: 'list', label: 'List view' },
+          ]}
+          setter={(viewArtistCollections) => {
+            dispatch.sessionModel.setSessionState({
+              viewArtistCollections,
+            });
+          }}
+          icon={viewArtistCollections === 'grid' ? 'GridIcon' : 'ListIcon'}
+        />
         {viewArtistCollections === 'grid' && (
           <>
             <FilterSelect

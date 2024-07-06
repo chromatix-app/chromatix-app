@@ -1,4 +1,12 @@
 <a name="0.17.0"></a>
+# 0.18.0 (2024-07-06)
+Features:
+- Added list view for albums, artists, playlists, and collections.
+- Tweaked sorting options and styling for compatability with list views.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
+<a name="0.17.0"></a>
 # 0.17.0 (2024-06-21)
 Features:
 - Added sorting of album tracks, by clicking table headings.
