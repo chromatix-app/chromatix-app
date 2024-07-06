@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { FilterSelect, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
 import { useGetAllAlbums } from 'js/hooks';
@@ -16,6 +16,7 @@ const isLocal = process.env.REACT_APP_ENV === 'local';
 const AlbumList = () => {
   const dispatch = useDispatch();
 
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
   const { viewAlbums, sortAlbums, orderAlbums, sortedAlbums } = useGetAllAlbums();
 
   return (
@@ -40,19 +41,25 @@ const AlbumList = () => {
             icon={viewAlbums === 'grid' ? 'GridIcon' : 'ListIcon'}
           />
         )}
-        {viewAlbums !== 'grid2' && (
+        {viewAlbums === 'grid' && (
           <>
             <FilterSelect
               value={sortAlbums}
               options={[
                 { value: 'title', label: 'Alphabetical' },
                 { value: 'artist', label: 'Artist' },
-                { value: 'artist-asc-releaseDate-asc', label: 'Artist, newest release first' },
-                { value: 'artist-asc-releaseDate-desc', label: 'Artist, oldest release first' },
-                { value: 'userRating', label: 'Rating' },
-                { value: 'releaseDate', label: 'Release date' },
-                { value: 'addedAt', label: 'Recently added' },
-                { value: 'lastPlayed', label: 'Recently played' },
+                // only allow sub-sorting in grid view
+                ...(viewAlbums === 'grid'
+                  ? [
+                      { value: 'artist-asc-releaseDate-asc', label: 'Artist, newest release first' },
+                      { value: 'artist-asc-releaseDate-desc', label: 'Artist, oldest release first' },
+                    ]
+                  : []),
+                { value: 'addedAt', label: 'Date added' },
+                { value: 'lastPlayed', label: 'Date played' },
+                { value: 'releaseDate', label: 'Date released' },
+                // only allow sorting by rating if the option is enabled
+                ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
               ]}
               setter={(sortAlbums) => {
                 dispatch.sessionModel.setSessionState({

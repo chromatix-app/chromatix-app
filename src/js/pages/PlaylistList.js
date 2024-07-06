@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { FilterSelect, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
 import { useGetAllPlaylists } from 'js/hooks';
@@ -16,6 +16,7 @@ const isLocal = process.env.REACT_APP_ENV === 'local';
 const PlaylistList = () => {
   const dispatch = useDispatch();
 
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
   const { viewPlaylists, sortPlaylists, orderPlaylists, sortedPlaylists } = useGetAllPlaylists();
 
   return (
@@ -42,17 +43,18 @@ const PlaylistList = () => {
             icon={viewPlaylists === 'grid' ? 'GridIcon' : 'ListIcon'}
           />
         )}
-        {viewPlaylists !== 'grid2' && (
+        {viewPlaylists === 'grid' && (
           <>
             <FilterSelect
               value={sortPlaylists}
               options={[
                 { value: 'title', label: 'Alphabetical' },
-                { value: 'userRating', label: 'Rating' },
-                { value: 'addedAt', label: 'Recently added' },
-                { value: 'lastPlayed', label: 'Recently played' },
-                { value: 'totalTracks', label: 'Track count' },
+                { value: 'addedAt', label: 'Date added' },
+                { value: 'lastPlayed', label: 'Date played' },
                 { value: 'duration', label: 'Duration' },
+                // only allow sorting by rating if the option is enabled
+                ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
+                { value: 'totalTracks', label: 'Track count' },
               ]}
               setter={(sortPlaylists) => {
                 dispatch.sessionModel.setSessionState({

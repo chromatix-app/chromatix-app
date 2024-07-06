@@ -235,7 +235,6 @@ const reducers = {
         newOrderKey = sessionState[orderIndex];
       }
     }
-    console.log(newSortKey, newOrderKey);
     return {
       ...rootState,
       [sortIndex]: newSortKey,

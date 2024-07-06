@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { FilterSelect, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
 import { useGetAllArtistCollections } from 'js/hooks';
@@ -16,6 +16,7 @@ const isLocal = process.env.REACT_APP_ENV === 'local';
 const ArtistCollectionList = () => {
   const dispatch = useDispatch();
 
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
   const { viewArtistCollections, sortArtistCollections, orderArtistCollections, sortedArtistCollections } =
     useGetAllArtistCollections();
 
@@ -47,14 +48,15 @@ const ArtistCollectionList = () => {
             icon={viewArtistCollections === 'grid' ? 'GridIcon' : 'ListIcon'}
           />
         )}
-        {viewArtistCollections !== 'grid2' && (
+        {viewArtistCollections === 'grid' && (
           <>
             <FilterSelect
               value={sortArtistCollections}
               options={[
                 { value: 'title', label: 'Alphabetical' },
-                { value: 'userRating', label: 'Rating' },
-                { value: 'addedAt', label: 'Recently added' },
+                { value: 'addedAt', label: 'Date added' },
+                // only allow sorting by rating if the option is enabled
+                ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
               ]}
               setter={(sortArtistCollections) => {
                 dispatch.sessionModel.setSessionState({

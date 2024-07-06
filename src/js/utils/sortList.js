@@ -59,7 +59,7 @@ const sortFunctions = {
   sortOrder: (a, b) => (parseInt(a.sortOrder) || 0) - (parseInt(b.sortOrder) || 0),
   totalTracks: (a, b) => (parseInt(a.totalTracks) || 0) - (parseInt(b.totalTracks) || 0),
   trackNumber: (a, b) => (parseInt(a.trackNumber) || 0) - (parseInt(b.trackNumber) || 0),
-  userRating: (a, b) => (parseInt(b.userRating) || 0) - (parseInt(a.userRating) || 0),
+  userRating: (a, b) => (parseInt(a.userRating) || 0) - (parseInt(b.userRating) || 0),
 
   // Dates
   addedAt: (a, b) => new Date(b.addedAt || '1970-01-01') - new Date(a.addedAt || '1970-01-01'),

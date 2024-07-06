@@ -5,13 +5,20 @@ import { sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 const useGetAllArtistCollections = () => {
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+
   const viewArtistCollections = useSelector(({ sessionModel }) => sessionModel.viewArtistCollections);
   const sortArtistCollections = useSelector(({ sessionModel }) => sessionModel.sortArtistCollections);
   const orderArtistCollections = useSelector(({ sessionModel }) => sessionModel.orderArtistCollections);
 
+  const actualSortArtistCollections =
+    !optionShowStarRatings && sortArtistCollections === 'userRating' ? 'title' : sortArtistCollections;
+  const actualOrderArtistCollections =
+    !optionShowStarRatings && sortArtistCollections === 'userRating' ? 'asc' : orderArtistCollections;
+
   const allArtistCollections = useSelector(({ appModel }) => appModel.allArtistCollections);
   const sortedArtistCollections = allArtistCollections
-    ? sortList(allArtistCollections, sortArtistCollections, orderArtistCollections)
+    ? sortList(allArtistCollections, actualSortArtistCollections, actualOrderArtistCollections)
     : null;
 
   useEffect(() => {
@@ -20,8 +27,8 @@ const useGetAllArtistCollections = () => {
 
   return {
     viewArtistCollections,
-    sortArtistCollections,
-    orderArtistCollections,
+    sortArtistCollections: actualSortArtistCollections,
+    orderArtistCollections: actualOrderArtistCollections,
     sortedArtistCollections,
   };
 };

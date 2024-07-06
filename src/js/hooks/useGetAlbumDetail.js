@@ -10,6 +10,8 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
 
   const sortAlbumTracks = useSelector(({ sessionModel }) => sessionModel.sortAlbumTracks);
   const currentSortString = sortAlbumTracks[albumId] || null;
+
+  // If star ratings are hidden and the current sort string is a userRating sort, set it to null
   const albumSortString =
     !optionShowStarRatings && currentSortString?.startsWith('userRating') ? null : currentSortString;
 
