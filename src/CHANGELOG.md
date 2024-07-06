@@ -3,6 +3,7 @@
 Features:
 - Added list view for albums, artists, playlists, and collections.
 - Tweaked sorting options and styling for compatability with list views.
+- Better handling of various artists.
 
 <!-- CHANGELOG SPLIT MARKER -->
 

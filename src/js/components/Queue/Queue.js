@@ -127,7 +127,8 @@ const QueueEntry = ({
         <div className={clsx(style.content, { 'text-trim': !optionShowFullTitles })}>
           <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
           <div className={clsx(style.artist, { 'text-trim': !optionShowFullTitles })}>
-            <NavLink to={entry.artistLink}>{entry.artist}</NavLink>
+            {entry.artistLink && <NavLink to={entry.artistLink}>{entry.artist}</NavLink>}
+            {!entry.artistLink && entry.artist}
           </div>
         </div>
       </div>
