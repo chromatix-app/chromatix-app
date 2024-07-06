@@ -1240,8 +1240,10 @@ const transposePlaylistData = (playlist, libraryId, plexBaseUrl, accessToken) =>
 };
 
 const transposeTrackData = (track, libraryId, plexBaseUrl, accessToken) => {
-  const artistTitle = track.originalTitle ? track.originalTitle : track.grandparentTitle;
-  const artistLink = track.originalTitle ? null : '/artists/' + libraryId + '/' + track.grandparentRatingKey;
+  const isLikelyCompilation = track.originalTitle && track.originalTitle !== track.grandparentTitle;
+
+  const artistTitle = isLikelyCompilation ? track.originalTitle : track.grandparentTitle;
+  const artistLink = isLikelyCompilation ? null : '/artists/' + libraryId + '/' + track.grandparentRatingKey;
 
   return {
     libraryId: libraryId,
