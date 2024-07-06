@@ -4,13 +4,13 @@ export const themes = {
   //
 
   chromatix: {
-    background: '#111111',
+    background: '#021C27',
     text: '#ffffff',
     primary: '#f7277a',
     group: 'favourites',
   },
   plex: {
-    background: '#111111',
+    background: '#021C27',
     text: '#ffffff',
     primary: '#e5a00d',
     group: 'favourites',
