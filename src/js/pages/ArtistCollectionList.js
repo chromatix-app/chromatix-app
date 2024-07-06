@@ -4,7 +4,7 @@
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { FilterSelect, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
 import { useGetAllArtistCollections } from 'js/hooks';
 
 // ======================================================================
@@ -34,7 +34,7 @@ const ArtistCollectionList = () => {
       />
       <FilterWrap>
         {isLocal && (
-          <FilterSelect
+          <FilterToggle
             value={viewArtistCollections}
             options={[
               { value: 'grid', label: 'Grid view' },
@@ -64,7 +64,7 @@ const ArtistCollectionList = () => {
                 });
               }}
             />
-            <FilterSelect
+            <FilterToggle
               value={orderArtistCollections}
               options={[
                 { value: 'asc', label: 'Ascending' },
@@ -75,6 +75,7 @@ const ArtistCollectionList = () => {
                   orderArtistCollections,
                 });
               }}
+              icon={orderArtistCollections === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
           </>
         )}

@@ -1,6 +1,7 @@
 export { default as Button } from './Button/Button';
 export { default as ControlBar } from './ControlBar/ControlBar';
 export { default as FilterSelect } from './FilterSelect/FilterSelect';
+export { default as FilterToggle } from './FilterToggle/FilterToggle';
 export { default as FilterWrap } from './FilterWrap/FilterWrap';
 export { default as Icon } from './Icon/Icon';
 export { default as ListCards } from './ListCards/ListCards';

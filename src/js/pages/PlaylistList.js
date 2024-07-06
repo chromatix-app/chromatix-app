@@ -4,7 +4,7 @@
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { FilterSelect, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
 import { useGetAllPlaylists } from 'js/hooks';
 
 // ======================================================================
@@ -29,7 +29,7 @@ const PlaylistList = () => {
       />
       <FilterWrap>
         {isLocal && (
-          <FilterSelect
+          <FilterToggle
             value={viewPlaylists}
             options={[
               { value: 'grid', label: 'Grid view' },
@@ -62,7 +62,7 @@ const PlaylistList = () => {
                 });
               }}
             />
-            <FilterSelect
+            <FilterToggle
               value={orderPlaylists}
               options={[
                 { value: 'asc', label: 'Ascending' },
@@ -73,6 +73,7 @@ const PlaylistList = () => {
                   orderPlaylists,
                 });
               }}
+              icon={orderPlaylists === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
           </>
         )}

@@ -25,7 +25,7 @@ export const FilterSelect = ({ value, options, setter, icon = 'ArrowsVerticalIco
         onValueChange={handleValueChange}
         // open
       >
-        <RadixSelect.Trigger className={style.trigger} aria-label="Food">
+        <RadixSelect.Trigger className={style.trigger}>
           <span className={style.icon}>
             <Icon icon={icon} cover stroke />
           </span>

@@ -4,7 +4,7 @@
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { FilterSelect, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
 import { useGetAllAlbumCollections } from 'js/hooks';
 
 // ======================================================================
@@ -34,7 +34,7 @@ const AlbumCollectionList = () => {
       />
       <FilterWrap>
         {isLocal && (
-          <FilterSelect
+          <FilterToggle
             value={viewAlbumCollections}
             options={[
               { value: 'grid', label: 'Grid view' },
@@ -64,7 +64,7 @@ const AlbumCollectionList = () => {
                 });
               }}
             />
-            <FilterSelect
+            <FilterToggle
               value={orderAlbumCollections}
               options={[
                 { value: 'asc', label: 'Ascending' },
@@ -75,6 +75,7 @@ const AlbumCollectionList = () => {
                   orderAlbumCollections,
                 });
               }}
+              icon={orderAlbumCollections === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
           </>
         )}
