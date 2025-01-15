@@ -224,16 +224,23 @@ export const authRoutes = [
 // ROUTE CONTENT
 // ======================================================================
 
-const formatConfig = (routes) => {
-  let configObject = {};
-  for (let i in routes) {
-    let route = routes[i];
-    if (route.path) {
-      configObject[route.path] = { ...route };
-    }
-  }
-  return configObject;
-};
+// type Route = {
+//   path?: string;
+//   exact?: boolean;
+//   component?: string;
+//   redirect?: string;
+// };
 
-export const defaultRouteConfig = formatConfig(defaultRoutes);
-export const authRouteConfig = formatConfig(authRoutes);
+// const formatConfig = (routes: Route[]): { [key: string]: Route } => {
+//   let configObject: { [key: string]: Route } = {};
+//   for (let i in routes) {
+//     let route = routes[i];
+//     if (route.path) {
+//       configObject[route.path] = { ...route };
+//     }
+//   }
+//   return configObject;
+// };
+
+// export const defaultRouteConfig = formatConfig(defaultRoutes);
+// export const authRouteConfig = formatConfig(authRoutes);
