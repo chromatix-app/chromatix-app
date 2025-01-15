@@ -8,6 +8,7 @@
   "scripts": {
     "start": "REACT_APP_VERSION=$npm_package_version REACT_APP_ENV=local REACT_APP_DATE=$(date +%s) react-scripts start",
     "start-https": "REACT_APP_VERSION=$npm_package_version REACT_APP_ENV=local REACT_APP_DATE=$(date +%s) HTTPS=true react-scripts start",
+    "test": "react-scripts test",
     "build": "REACT_APP_VERSION=$npm_package_version REACT_APP_ENV=$REACT_APP_ENV REACT_APP_DATE=$(date +%s) react-scripts build",
     "release:dev": "release-it --preReleaseId=beta --config .release-it.dev.json"
   },
@@ -30,12 +31,19 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^18.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@types/react-redux": "^7.1.25",
     "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.34.1",
     "prettier": "^2.8.8",
     "release-it": "^17.1.1",
     "sass-resources-loader": "^2.2.5",
+    "tslib": "^2.4.0",
+    "typescript": "4.9.5",
     "webpack": "^5.91.0"
   },
   "overrides": {
