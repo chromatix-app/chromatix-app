@@ -2,7 +2,7 @@
 
 .wrap {
   display: grid;
-  overflow: hidden;
+  // overflow: hidden;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 20px 10px;
   padding: 0 20px 50px;
@@ -24,6 +24,8 @@
   border: 1px solid transparent;
   border-radius: 13px;
   cursor: pointer;
+
+  @include focus-self;
 
   &:hover {
     background: var(--color-opacity-01);

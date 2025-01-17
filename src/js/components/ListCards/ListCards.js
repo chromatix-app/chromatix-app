@@ -97,6 +97,15 @@ const ListEntry = React.memo(
       [link, history]
     );
 
+    const handleKeyDown = useCallback(
+      (event) => {
+        if (event.key === 'Enter') {
+          handleCardClick(event);
+        }
+      },
+      [handleCardClick]
+    );
+
     const handleLinkClick = useCallback((event) => {
       event.stopPropagation();
     }, []);
@@ -128,7 +137,12 @@ const ListEntry = React.memo(
     // const albumRelease = releaseDate ? moment(releaseDate).format('YYYY') : null;
 
     return (
-      <div className={clsx(style.card, { [style.cardCurrent]: isCurrentlyLoaded })} onClick={handleCardClick}>
+      <div
+        className={clsx(style.card, { [style.cardCurrent]: isCurrentlyLoaded })}
+        onClick={handleCardClick}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
+      >
         <div className={style.thumb}>
           {thumb && <img src={thumb} alt={title} loading="lazy" />}
 
@@ -141,12 +155,12 @@ const ListEntry = React.memo(
           {(variant === 'albums' || variant === 'playlists') && (
             <div className={style.controlButtonWrap}>
               {isCurrentlyLoaded && isCurrentlyPlaying && (
-                <button className={style.pauseButton} onClick={handlePause}>
+                <button className={style.pauseButton} onClick={handlePause} tabIndex={-1}>
                   <Icon icon="PauseFilledIcon" cover />
                 </button>
               )}
               {!(isCurrentlyLoaded && isCurrentlyPlaying) && (
-                <button className={style.playButton} onClick={handlePlay}>
+                <button className={style.playButton} onClick={handlePlay} tabIndex={-1}>
                   <Icon icon="PlayFilledIcon" cover />
                 </button>
               )}
@@ -166,6 +180,7 @@ const ListEntry = React.memo(
               className={clsx(style.subtitle, { 'text-trim': !optionShowFullTitles })}
               to={artistLink}
               onClick={handleLinkClick}
+              tabIndex={-1}
             >
               {artist}
             </NavLink>
