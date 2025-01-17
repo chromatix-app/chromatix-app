@@ -80,7 +80,7 @@ const ControlBar = () => {
         <div className={style.cover}>
           {trackCurrent && trackCurrent.thumb && (
             <NavLink
-              className={style.cover}
+              className={style.coverLink}
               to={playingLink}
               onClick={() => {
                 dispatch.appModel.setAppState({ scrollToPlaying: true });

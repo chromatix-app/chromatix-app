@@ -30,6 +30,9 @@
   width: 50%;
   height: 100%;
   padding: 17px 7px 17px 17px;
+  border-radius: 6px;
+
+  @include focus-self;
 
   &:disabled {
     opacity: 0.25;
@@ -62,6 +65,8 @@
   @media (min-width: 1024px) {
     padding: 6px 13px;
   }
+
+  @include focus-self;
 
   &:hover,
   &:focus {

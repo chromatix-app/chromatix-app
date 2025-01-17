@@ -66,7 +66,9 @@ import { ReactComponent as VolOffIcon } from './icons/music/vol-off.svg';
 import { ReactComponent as VolUpIcon } from './icons/music/vol-up.svg';
 import { ReactComponent as VolXIcon } from './icons/music/vol-x.svg';
 
-import { ReactComponent as AppleIcon } from './icons/site/apple.svg';
+import { ReactComponent as AppleSiteIcon } from './icons/site/apple.svg';
+import { ReactComponent as GithubSiteIcon } from './icons/site/github.svg';
+import { ReactComponent as RedditSiteIcon } from './icons/site/reddit.svg';
 
 // ======================================================================
 // COMPONENT
@@ -132,7 +134,9 @@ const customIcons = {
   VolUpIcon,
   VolXIcon,
 
-  AppleIcon,
+  AppleSiteIcon,
+  GithubSiteIcon,
+  RedditSiteIcon,
 };
 
 const getIconComponent = (icon) => {

@@ -16,6 +16,9 @@
     width: 100%;
     height: 100%;
     background: transparent;
+    border-radius: 6px;
+
+    @include focus-self;
 
     // annoyingly these must be duplicated, and
     // won't work if you comma separate them

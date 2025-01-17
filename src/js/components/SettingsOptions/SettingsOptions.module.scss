@@ -27,6 +27,8 @@
 }
 
 .menuEntry {
+  @include focus-parent;
+
   + .menuEntry {
     margin-top: 4px;
   }

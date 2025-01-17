@@ -40,64 +40,97 @@
   opacity: 0;
 }
 
-@mixin outline-base() {
-  @media (hover: hover) {
-    outline: 2px solid var(--color-font-primary);
-    outline-offset: 2px;
-  }
-}
+// @mixin focus-base() {
+//   @media (hover: hover) {
+//     outline: 2px solid var(--color-text);
+//     outline-offset: 2px;
+//   }
+// }
 
-@mixin outline-self() {
+@mixin focus-self() {
   &:focus-visible:not(:active):not(:disabled) {
     @media (hover: hover) {
-      outline: 2px solid var(--color-font-primary);
+      outline: 2px solid var(--color-text);
       outline-offset: 2px;
     }
   }
 }
 
-@mixin outline-row() {
-  a:focus-visible:not(:active):not(:disabled) &,
-  button:focus-visible:not(:active):not(:disabled) & {
+@mixin focus-fill-self() {
+  &:focus-visible:not(:active):not(:disabled) {
     @media (hover: hover) {
-      outline: 2px solid var(--color-font-primary);
-      outline-offset: -2px;
+      background: var(--color-opacity-01);
     }
   }
 }
 
-@mixin outline-parent() {
+@mixin focus-underline-self() {
+  &:focus-visible:not(:active):not(:disabled) {
+    @media (hover: hover) {
+      text-decoration: underline;
+      color: var(--color-text) !important;
+    }
+  }
+}
+
+// @mixin focus-custom-self() {
+//   &:focus-visible:not(:active):not(:disabled) {
+//     @media (hover: hover) {
+//       @content;
+//     }
+//   }
+// }
+
+// @mixin focus-row() {
+//   a:focus-visible:not(:active):not(:disabled) &,
+//   button:focus-visible:not(:active):not(:disabled) & {
+//     @media (hover: hover) {
+//       outline: 2px solid var(--color-text);
+//       outline-offset: -2px;
+//     }
+//   }
+// }
+
+@mixin focus-parent() {
   &:has(*:focus-visible:not(:active):not(:disabled)) {
     @media (hover: hover) {
-      outline: 2px solid var(--color-font-primary);
+      outline: 2px solid var(--color-text);
       outline-offset: 2px;
     }
   }
 }
 
-@mixin outline-sibling() {
-  input:focus-visible:not(:active):not(:disabled) ~ & {
-    @media (hover: hover) {
-      outline: 2px solid var(--color-font-primary);
-      outline-offset: 2px;
-    }
-  }
-}
+// @mixin focus-sibling() {
+//   input:focus-visible:not(:active):not(:disabled) ~ & {
+//     @media (hover: hover) {
+//       outline: 2px solid var(--color-text);
+//       outline-offset: 2px;
+//     }
+//   }
+// }
 
-@mixin outline-child() {
-  a:focus-visible:not(:active):not(:disabled) &,
-  button:focus-visible:not(:active):not(:disabled) & {
-    @media (hover: hover) {
-      outline: 2px solid var(--color-font-primary);
-      outline-offset: 2px;
-    }
-  }
-}
+// @mixin focus-child() {
+//   a:focus-visible:not(:active):not(:disabled) &,
+//   button:focus-visible:not(:active):not(:disabled) & {
+//     @media (hover: hover) {
+//       outline: 2px solid var(--color-text);
+//       outline-offset: 2px;
+//     }
+//   }
+// }
 
-// @mixin outline-within() {
+// @mixin focus-custom-child() {
+//   *:focus-visible:not(:active):not(:disabled) & {
+//     @media (hover: hover) {
+//       @content;
+//     }
+//   }
+// }
+
+// @mixin focus-within() {
 //   &:focus-within:focus-visible {
 //     @media (hover: hover) {
-//       outline: 2px solid var(--color-font-primary);
+//       outline: 2px solid var(--color-text);
 //       outline-offset: 2px;
 //     }
 //   }

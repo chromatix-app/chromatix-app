@@ -63,6 +63,16 @@
   }
 }
 
+.title,
+.subtitle,
+.detail {
+  a {
+    border-radius: 3px;
+
+    @include focus-self;
+  }
+}
+
 .title {
   width: 100%;
   margin-left: -1px;
@@ -185,6 +195,8 @@
   :global(.cq-800) & {
     padding: 4px 12px;
   }
+
+  @include focus-self;
 }
 
 .playIcon,
@@ -250,8 +262,8 @@
     font-size: 28px;
   }
   :global(.cq-800) & {
-    font-size: 30px;
     padding-right: 200px;
+    font-size: 30px;
   }
 
   .stickyWrapVisible & {

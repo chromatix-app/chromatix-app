@@ -1,3 +1,5 @@
+@import '../../../css/global';
+
 .wrap {
   padding: 80px 15px 50px;
   z-index: 2;
@@ -145,6 +147,9 @@
   display: block;
   width: 48px;
   height: 48px;
+  border-radius: 50%;
+
+  @include focus-self;
 }
 
 .kofi {
@@ -167,6 +172,8 @@
     width: 280px;
     height: 44px;
   }
+
+  @include focus-self;
 }
 
 //

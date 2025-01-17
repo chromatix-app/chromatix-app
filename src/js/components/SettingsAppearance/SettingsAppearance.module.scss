@@ -23,6 +23,8 @@
   border-radius: 8px;
   outline: 1px solid var(--color-opacity-02);
 
+  @include focus-self;
+
   &Current {
     outline: 4px solid var(--color-opacity-02);
   }
@@ -76,4 +78,7 @@
 .customInput {
   width: 60px;
   height: 30px;
+  border-radius: 2px;
+
+  @include focus-self;
 }

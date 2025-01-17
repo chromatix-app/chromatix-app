@@ -21,6 +21,8 @@
   border-radius: 8px;
   text-align: left;
 
+  @include focus-self;
+
   &:hover {
     background: var(--color-opacity-01);
     border: 1px solid var(--color-opacity-005);

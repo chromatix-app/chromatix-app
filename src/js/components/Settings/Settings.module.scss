@@ -30,6 +30,8 @@
   gap: 20px;
   padding: 12px 0 12px 1px;
   border-bottom: 1px solid var(--color-opacity-015);
+
+  @include focus-self;
 }
 
 .entryIcon,
@@ -83,6 +85,8 @@
   font-size: 0;
   line-height: 0;
   text-indent: -9999px;
+
+  @include focus-self;
 }
 
 .legal {
