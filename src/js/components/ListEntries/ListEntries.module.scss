@@ -95,7 +95,10 @@
   }
 
   > * {
+    border-radius: 2px;
     opacity: 0.5;
+
+    @include focus-self;
   }
 
   &:after {
@@ -122,6 +125,8 @@
   background: transparent;
   border: 1px solid transparent;
   border-radius: 8px;
+
+  @include focus-self;
 
   .wrap.wrapAlbumTracks & {
     padding: 10px 14px;
