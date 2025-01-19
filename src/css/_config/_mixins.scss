@@ -100,6 +100,14 @@
   }
 }
 
+// @mixin focus-custom-parent() {
+//   &:has(*:focus-visible:not(:active):not(:disabled)) {
+//     @media (hover: hover) {
+//       @content;
+//     }
+//   }
+// }
+
 // @mixin focus-sibling() {
 //   input:focus-visible:not(:active):not(:disabled) ~ & {
 //     @media (hover: hover) {
@@ -119,13 +127,13 @@
 //   }
 // }
 
-// @mixin focus-custom-child() {
-//   *:focus-visible:not(:active):not(:disabled) & {
-//     @media (hover: hover) {
-//       @content;
-//     }
-//   }
-// }
+@mixin focus-custom-child() {
+  *:focus-visible:not(:active):not(:disabled) & {
+    @media (hover: hover) {
+      @content;
+    }
+  }
+}
 
 // @mixin focus-within() {
 //   &:focus-within:focus-visible {

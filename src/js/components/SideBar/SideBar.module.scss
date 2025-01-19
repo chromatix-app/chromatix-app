@@ -44,10 +44,42 @@
 }
 
 .label {
-  padding: 24px 8px 8px;
-  opacity: 0.5;
+  display: block;
+  position: relative;
+  width: 100%;
+  padding: 8px;
+  margin-top: 16px;
+  background: transparent;
+  border-radius: 6px;
   font-size: 11px;
   font-weight: 700;
+  text-align: left;
+  color: var(--color-opacity-05);
+
+  @include focus-self;
+
+  .nav + & {
+    margin-top: 20px;
+  }
+}
+
+.labelIcon {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  opacity: 0;
+  color: var(--color-opacity-05);
+
+  .label:hover & {
+    opacity: 1;
+  }
+
+  @include focus-custom-child() {
+    opacity: 1;
+  }
 }
 
 .link {

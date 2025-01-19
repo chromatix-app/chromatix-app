@@ -42,12 +42,12 @@ const GeneralSettings = () => {
 
   const menuItems = [
     { key: 'menuShowIcons', label: 'Show icons', state: menuShowIcons },
-    { key: 'menuShowAllPlaylists', label: 'Show playlists', state: menuShowAllPlaylists },
     {
       key: 'menuShowSeparateBrowseSection',
       label: 'Show separate "Browse" section',
       state: menuShowSeparateBrowseSection,
     },
+    { key: 'menuShowAllPlaylists', label: 'Show playlists', state: menuShowAllPlaylists },
   ];
 
   return (

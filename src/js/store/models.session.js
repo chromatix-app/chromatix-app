@@ -27,6 +27,10 @@ const sessionState = {
   menuShowAllPlaylists: true,
   menuShowSeparateBrowseSection: true,
 
+  menuOpenLibrary: true,
+  menuOpenBrowse: true,
+  menuOpenPlaylists: true,
+
   menuShowArtists: true,
   menuShowAlbums: true,
   menuShowPlaylists: true,
