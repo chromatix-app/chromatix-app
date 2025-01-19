@@ -51,7 +51,19 @@ const SideBar = () => {
     (playlist) => playlist.libraryId === currentLibraryId
   );
 
-  const browseSectionIsVisible = menuShowSeparateBrowseSection ? menuOpenBrowse : menuOpenLibrary;
+  const libraryIsVisible = menuShowArtists || menuShowAlbums || menuShowPlaylists;
+  const browseIsVisible =
+    menuShowArtistCollections ||
+    menuShowAlbumCollections ||
+    menuShowArtistGenres ||
+    menuShowAlbumGenres ||
+    menuShowArtistMoods ||
+    menuShowAlbumMoods ||
+    menuShowArtistStyles ||
+    menuShowAlbumStyles;
+  const playlistsIsVisible = menuShowAllPlaylists && allPlaylists && allPlaylists.length > 0;
+
+  const browseIsOpen = menuShowSeparateBrowseSection ? menuOpenBrowse : menuOpenLibrary;
 
   useEffect(() => {
     plex.getAllPlaylists();
@@ -68,7 +80,7 @@ const SideBar = () => {
         </button>
       </div>
 
-      {(menuShowArtists || menuShowAlbums || menuShowPlaylists) && (
+      {(libraryIsVisible || (browseIsVisible && !menuShowSeparateBrowseSection)) && (
         <>
           <button
             className={style.label}
@@ -85,7 +97,7 @@ const SideBar = () => {
               )}
             </span>
           </button>
-          {menuOpenLibrary && (
+          {libraryIsVisible && menuOpenLibrary && (
             <>
               {menuShowArtists && (
                 <NavLink className={style.link} activeClassName={style.linkActive} to="/artists">
@@ -122,14 +134,7 @@ const SideBar = () => {
         </>
       )}
 
-      {(menuShowArtistCollections ||
-        menuShowAlbumCollections ||
-        menuShowArtistGenres ||
-        menuShowAlbumGenres ||
-        menuShowArtistMoods ||
-        menuShowAlbumMoods ||
-        menuShowArtistStyles ||
-        menuShowAlbumStyles) && (
+      {browseIsVisible && (
         <>
           {menuShowSeparateBrowseSection && (
             <button
@@ -140,7 +145,7 @@ const SideBar = () => {
             >
               Browse
               <span className={style.labelIcon}>
-                {browseSectionIsVisible ? (
+                {browseIsOpen ? (
                   <Icon icon="ArrowDownIcon" cover stroke strokeWidth={1.4} />
                 ) : (
                   <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.4} />
@@ -148,7 +153,7 @@ const SideBar = () => {
               </span>
             </button>
           )}
-          {browseSectionIsVisible && (
+          {browseIsOpen && (
             <>
               {menuShowArtistCollections && (
                 <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-collections">
@@ -235,7 +240,7 @@ const SideBar = () => {
         </>
       )}
 
-      {menuShowAllPlaylists && allPlaylists && allPlaylists.length > 0 && (
+      {playlistsIsVisible && (
         <>
           <button
             className={style.label}
