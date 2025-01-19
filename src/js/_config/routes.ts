@@ -194,9 +194,9 @@ export const authRoutes = [
     component: 'Settings',
   },
   {
-    path: '/settings/options',
+    path: '/settings/general',
     exact: true,
-    component: 'SettingsOptions',
+    component: 'SettingsGeneral',
   },
   {
     path: '/settings/appearance',
@@ -204,9 +204,14 @@ export const authRoutes = [
     component: 'SettingsAppearance',
   },
   {
-    path: '/settings/appearance',
+    path: '/settings/menu',
     exact: true,
-    component: 'SettingsAppearance',
+    component: 'SettingsMenu',
+  },
+  {
+    path: '/settings/lastfm',
+    exact: true,
+    component: 'SettingsLastFM',
   },
   {
     path: '/settings/changelog',

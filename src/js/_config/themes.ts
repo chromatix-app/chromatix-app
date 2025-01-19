@@ -1,25 +1,25 @@
 export const themes = {
   //
-  // FABOURITES
+  // FAVOURITES
   //
 
   chromatix: {
     background: '#021C27',
     text: '#ffffff',
     primary: '#f7277a',
-    group: 'favourites',
+    group: 'Chromatix',
   },
   plex: {
     background: '#021C27',
     text: '#ffffff',
     primary: '#e5a00d',
-    group: 'favourites',
+    group: 'Plex',
   },
   // spotify: {
   //   background: '#111111',
   //   text: '#ffffff',
   //   primary: '#1ed760',
-  //   group: 'favourites',
+  //   group: 'Chromatix themes',
   // },
 
   //
@@ -30,67 +30,67 @@ export const themes = {
     background: '#111111',
     text: '#ffffff',
     primary: '#f7277a',
-    group: 'dark',
+    group: 'Dark themes',
   },
   'black-red': {
     background: '#111111',
     text: '#ffffff',
     primary: '#ff0000',
-    group: 'dark',
+    group: 'Dark themes',
   },
   'black-orange': {
     background: '#111111',
     text: '#ffffff',
     primary: '#ff6f10',
-    group: 'dark',
+    group: 'Dark themes',
   },
   'black-yellow': {
     background: '#111111',
     text: '#ffffff',
     primary: '#e5a00d',
-    group: 'dark',
+    group: 'Dark themes',
   },
   'black-green-1': {
     background: '#111111',
     text: '#ffffff',
     primary: '#9de50d',
-    group: 'dark',
+    group: 'Dark themes',
   },
   'black-green-2': {
     background: '#111111',
     text: '#ffffff',
     primary: '#1ed760',
-    group: 'dark',
+    group: 'Dark themes',
   },
   'black-teal': {
     background: '#111111',
     text: '#ffffff',
     primary: '#109dad',
-    group: 'dark',
+    group: 'Dark themes',
   },
   'black-blue-1': {
     background: '#111111',
     text: '#ffffff',
     primary: '#169cfc',
-    group: 'dark',
+    group: 'Dark themes',
   },
   'black-blue-2': {
     background: '#111111',
     text: '#ffffff',
     primary: '#3768f0',
-    group: 'dark',
+    group: 'Dark themes',
   },
   'black-indigo': {
     background: '#111111',
     text: '#ffffff',
     primary: '#7e5aff',
-    group: 'dark',
+    group: 'Dark themes',
   },
   'black-purple': {
     background: '#111111',
     text: '#ffffff',
     primary: '#ab5dff',
-    group: 'dark',
+    group: 'Dark themes',
   },
 
   //
@@ -101,66 +101,66 @@ export const themes = {
     background: '#ffffff',
     text: '#111111',
     primary: '#f7277a',
-    group: 'light',
+    group: 'Light themes',
   },
   'white-red': {
     background: '#ffffff',
     text: '#111111',
     primary: '#e50000',
-    group: 'light',
+    group: 'Light themes',
   },
   'white-orange': {
     background: '#ffffff',
     text: '#111111',
     primary: '#ed670d',
-    group: 'light',
+    group: 'Light themes',
   },
   'white-yellow': {
     background: '#ffffff',
     text: '#111111',
     primary: '#aa9000',
-    group: 'light',
+    group: 'Light themes',
   },
   'white-green-1': {
     background: '#ffffff',
     text: '#111111',
     primary: '#7fbb09',
-    group: 'light',
+    group: 'Light themes',
   },
   'white-green-2': {
     background: '#ffffff',
     text: '#111111',
     primary: '#10993e',
-    group: 'light',
+    group: 'Light themes',
   },
   'white-teal': {
     background: '#ffffff',
     text: '#111111',
     primary: '#0b7b87',
-    group: 'light',
+    group: 'Light themes',
   },
   'white-blue-1': {
     background: '#ffffff',
     text: '#111111',
     primary: '#127fce',
-    group: 'light',
+    group: 'Light themes',
   },
   'white-blue-2': {
     background: '#ffffff',
     text: '#111111',
     primary: '#345ed0',
-    group: 'light',
+    group: 'Light themes',
   },
   'white-indigo': {
     background: '#ffffff',
     text: '#111111',
     primary: '#6b4cda',
-    group: 'light',
+    group: 'Light themes',
   },
   'white-purple': {
     background: '#ffffff',
     text: '#111111',
     primary: '#8748ca',
-    group: 'light',
+    group: 'Light themes',
   },
 };

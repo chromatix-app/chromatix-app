@@ -21,7 +21,11 @@ const SideBar = () => {
 
   const {
     currentLibrary,
+
     menuShowIcons,
+    menuShowAllPlaylists,
+    menuShowSeparateBrowseSection,
+
     menuShowArtists,
     menuShowAlbums,
     menuShowPlaylists,
@@ -33,7 +37,6 @@ const SideBar = () => {
     menuShowAlbumStyles,
     menuShowArtistMoods,
     menuShowAlbumMoods,
-    menuShowAllPlaylists,
   } = useSelector(({ sessionModel }) => sessionModel);
 
   const currentLibraryId = currentLibrary?.libraryId;
@@ -56,117 +59,136 @@ const SideBar = () => {
           <Icon icon="NextIcon" cover stroke />
         </button>
       </div>
-      <div className={style.label}>Library</div>
-      {menuShowArtists && (
-        <NavLink className={style.link} activeClassName={style.linkActive} to="/artists">
-          {menuShowIcons && (
-            <span className={style.icon}>
-              <Icon icon="PeopleIcon" cover stroke />
-            </span>
+
+      {(menuShowArtists || menuShowAlbums || menuShowPlaylists) && (
+        <>
+          <div className={style.label}>Library</div>
+          {menuShowArtists && (
+            <NavLink className={style.link} activeClassName={style.linkActive} to="/artists">
+              {menuShowIcons && (
+                <span className={style.icon}>
+                  <Icon icon="PeopleIcon" cover stroke />
+                </span>
+              )}
+              Artists
+            </NavLink>
           )}
-          Artists
-        </NavLink>
-      )}
-      {menuShowAlbums && (
-        <NavLink className={style.link} activeClassName={style.linkActive} to="/albums">
-          {menuShowIcons && (
-            <span className={style.icon}>
-              <Icon icon="PlayCircleIcon" cover stroke />
-            </span>
+          {menuShowAlbums && (
+            <NavLink className={style.link} activeClassName={style.linkActive} to="/albums">
+              {menuShowIcons && (
+                <span className={style.icon}>
+                  <Icon icon="PlayCircleIcon" cover stroke />
+                </span>
+              )}
+              Albums
+            </NavLink>
           )}
-          Albums
-        </NavLink>
-      )}
-      {menuShowPlaylists && (
-        <NavLink className={style.link} activeClassName={style.linkActive} to="/playlists" exact>
-          {menuShowIcons && (
-            <span className={style.icon}>
-              <Icon icon="MusicNoteIcon" cover stroke />
-            </span>
+          {menuShowPlaylists && (
+            <NavLink className={style.link} activeClassName={style.linkActive} to="/playlists" exact>
+              {menuShowIcons && (
+                <span className={style.icon}>
+                  <Icon icon="MusicNoteIcon" cover stroke />
+                </span>
+              )}
+              Playlists
+            </NavLink>
           )}
-          Playlists
-        </NavLink>
+        </>
       )}
-      {menuShowArtistCollections && (
-        <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-collections">
-          {menuShowIcons && (
-            <span className={style.icon}>
-              <Icon icon="ArtistCollectionsIcon" cover stroke />
-            </span>
+
+      {(menuShowArtistCollections ||
+        menuShowAlbumCollections ||
+        menuShowArtistGenres ||
+        menuShowAlbumGenres ||
+        menuShowArtistMoods ||
+        menuShowAlbumMoods ||
+        menuShowArtistStyles ||
+        menuShowAlbumStyles) && (
+        <>
+          {menuShowSeparateBrowseSection && <div className={style.label}>Browse</div>}
+          {menuShowArtistCollections && (
+            <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-collections">
+              {menuShowIcons && (
+                <span className={style.icon}>
+                  <Icon icon="ArtistCollectionsIcon" cover stroke />
+                </span>
+              )}
+              Artist Collections
+            </NavLink>
           )}
-          Artist Collections
-        </NavLink>
-      )}
-      {menuShowAlbumCollections && (
-        <NavLink className={style.link} activeClassName={style.linkActive} to="/album-collections">
-          {menuShowIcons && (
-            <span className={style.icon}>
-              <Icon icon="AlbumCollectionsIcon" cover stroke />
-            </span>
+          {menuShowAlbumCollections && (
+            <NavLink className={style.link} activeClassName={style.linkActive} to="/album-collections">
+              {menuShowIcons && (
+                <span className={style.icon}>
+                  <Icon icon="AlbumCollectionsIcon" cover stroke />
+                </span>
+              )}
+              Album Collections
+            </NavLink>
           )}
-          Album Collections
-        </NavLink>
-      )}
-      {menuShowArtistGenres && (
-        <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-genres">
-          {menuShowIcons && (
-            <span className={style.icon}>
-              <Icon icon="ArtistGenresIcon" cover stroke />
-            </span>
+          {menuShowArtistGenres && (
+            <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-genres">
+              {menuShowIcons && (
+                <span className={style.icon}>
+                  <Icon icon="ArtistGenresIcon" cover stroke />
+                </span>
+              )}
+              Artist Genres
+            </NavLink>
           )}
-          Artist Genres
-        </NavLink>
-      )}
-      {menuShowAlbumGenres && (
-        <NavLink className={style.link} activeClassName={style.linkActive} to="/album-genres">
-          {menuShowIcons && (
-            <span className={style.icon}>
-              <Icon icon="AlbumGenresIcon" cover stroke />
-            </span>
+          {menuShowAlbumGenres && (
+            <NavLink className={style.link} activeClassName={style.linkActive} to="/album-genres">
+              {menuShowIcons && (
+                <span className={style.icon}>
+                  <Icon icon="AlbumGenresIcon" cover stroke />
+                </span>
+              )}
+              Album Genres
+            </NavLink>
           )}
-          Album Genres
-        </NavLink>
-      )}
-      {menuShowArtistStyles && (
-        <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-styles">
-          {menuShowIcons && (
-            <span className={style.icon}>
-              <Icon icon="ArtistStylesIcon" cover stroke />
-            </span>
+          {menuShowArtistMoods && (
+            <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-moods">
+              {menuShowIcons && (
+                <span className={style.icon}>
+                  <Icon icon="ArtistMoodsIcon" cover stroke />
+                </span>
+              )}
+              Artist Moods
+            </NavLink>
           )}
-          Artist Styles
-        </NavLink>
-      )}
-      {menuShowAlbumStyles && (
-        <NavLink className={style.link} activeClassName={style.linkActive} to="/album-styles">
-          {menuShowIcons && (
-            <span className={style.icon}>
-              <Icon icon="AlbumStylesIcon" cover stroke />
-            </span>
+          {menuShowAlbumMoods && (
+            <NavLink className={style.link} activeClassName={style.linkActive} to="/album-moods">
+              {menuShowIcons && (
+                <span className={style.icon}>
+                  <Icon icon="AlbumMoodsIcon" cover stroke />
+                </span>
+              )}
+              Album Moods
+            </NavLink>
           )}
-          Album Styles
-        </NavLink>
-      )}
-      {menuShowArtistMoods && (
-        <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-moods">
-          {menuShowIcons && (
-            <span className={style.icon}>
-              <Icon icon="ArtistMoodsIcon" cover stroke />
-            </span>
+          {menuShowArtistStyles && (
+            <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-styles">
+              {menuShowIcons && (
+                <span className={style.icon}>
+                  <Icon icon="ArtistStylesIcon" cover stroke />
+                </span>
+              )}
+              Artist Styles
+            </NavLink>
           )}
-          Artist Moods
-        </NavLink>
-      )}
-      {menuShowAlbumMoods && (
-        <NavLink className={style.link} activeClassName={style.linkActive} to="/album-moods">
-          {menuShowIcons && (
-            <span className={style.icon}>
-              <Icon icon="AlbumMoodsIcon" cover stroke />
-            </span>
+          {menuShowAlbumStyles && (
+            <NavLink className={style.link} activeClassName={style.linkActive} to="/album-styles">
+              {menuShowIcons && (
+                <span className={style.icon}>
+                  <Icon icon="AlbumStylesIcon" cover stroke />
+                </span>
+              )}
+              Album Styles
+            </NavLink>
           )}
-          Album Moods
-        </NavLink>
+        </>
       )}
+
       {menuShowAllPlaylists && allPlaylists && allPlaylists.length > 0 && (
         <>
           <div className={style.label}>Playlists</div>

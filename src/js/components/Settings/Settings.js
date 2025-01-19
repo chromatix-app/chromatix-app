@@ -18,11 +18,11 @@ export const Settings = () => {
       <div className={style.group}>
         <div className={style.title}>General</div>
 
-        <NavLink className={style.entry} to={'/settings/options'}>
+        <NavLink className={style.entry} to={'/settings/general'}>
           <div className={style.entryIcon}>
             <Icon icon="CogIcon" cover stroke strokeWidth={1.5} />
           </div>
-          <div>Options</div>
+          <div>General</div>
           <div className={style.entryArrow}>
             <Icon icon="ArrowRightIcon" cover stroke />
           </div>
@@ -33,6 +33,26 @@ export const Settings = () => {
             <Icon icon="PaintPaletteIcon" cover stroke strokeWidth={1.5} />
           </div>
           <div>Appearance</div>
+          <div className={style.entryArrow}>
+            <Icon icon="ArrowRightIcon" cover stroke />
+          </div>
+        </NavLink>
+
+        <NavLink className={style.entry} to={'/settings/menu'}>
+          <div className={style.entryIconSmall}>
+            <Icon icon="SideBarSmallIcon" cover stroke strokeWidth={1.5} />
+          </div>
+          <div>Menu</div>
+          <div className={style.entryArrow}>
+            <Icon icon="ArrowRightIcon" cover stroke />
+          </div>
+        </NavLink>
+
+        <NavLink className={style.entry} to={'/settings/lastfm'}>
+          <div className={style.entryIconSmall}>
+            <Icon icon="LastFMIcon" cover stroke strokeWidth={1.5} />
+          </div>
+          <div>Last.fm</div>
           <div className={style.entryArrow}>
             <Icon icon="ArrowRightIcon" cover stroke />
           </div>

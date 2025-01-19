@@ -2,23 +2,20 @@
 // IMPORTS
 // ======================================================================
 
-import { SettingsOptions, TitleHeading } from 'js/components';
+import clsx from 'clsx';
+
+import style from './PageText.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const Component = () => {
-  return (
-    <>
-      <TitleHeading title="Options" />
-      <SettingsOptions />
-    </>
-  );
+export const PageText = ({ children }) => {
+  return <div className={clsx(style.wrap, 'font-wysiwyg')}>{children}</div>;
 };
 
 // ======================================================================
 // EXPORT
 // ======================================================================
 
-export default Component;
+export default PageText;

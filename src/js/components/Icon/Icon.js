@@ -32,6 +32,7 @@ import { ReactComponent as FastForwardIcon } from './icons/music/fast-forward.sv
 import { ReactComponent as GithubIcon } from './icons/music/github.svg';
 import { ReactComponent as GridIcon } from './icons/music/grid.svg';
 import { ReactComponent as InfoIcon } from './icons/music/info.svg';
+import { ReactComponent as LastFMIcon } from './icons/music/lastfm.svg';
 import { ReactComponent as ListIcon } from './icons/music/list.svg';
 import { ReactComponent as LogoutIcon } from './icons/music/logout.svg';
 import { ReactComponent as MusicNoteIcon } from './icons/music/music-note.svg';
@@ -53,6 +54,7 @@ import { ReactComponent as RewindIcon } from './icons/music/rewind.svg';
 import { ReactComponent as SearchIcon } from './icons/music/search.svg';
 import { ReactComponent as ServerIcon } from './icons/music/server.svg';
 import { ReactComponent as ShuffleIcon } from './icons/music/shuffle.svg';
+import { ReactComponent as SideBarSmallIcon } from './icons/music/side-bar-small.svg';
 import { ReactComponent as SkipBackIcon } from './icons/music/skip-back.svg';
 import { ReactComponent as SkipForwardIcon } from './icons/music/skip-forward.svg';
 import { ReactComponent as StarEmptyIcon } from './icons/music/star-empty.svg';
@@ -100,6 +102,7 @@ const customIcons = {
   GithubIcon,
   GridIcon,
   InfoIcon,
+  LastFMIcon,
   ListIcon,
   LogoutIcon,
   MusicNoteIcon,
@@ -121,6 +124,7 @@ const customIcons = {
   SearchIcon,
   ServerIcon,
   ShuffleIcon,
+  SideBarSmallIcon,
   SkipBackIcon,
   SkipForwardIcon,
   StarEmptyIcon,
