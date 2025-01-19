@@ -18,7 +18,7 @@
     background: transparent;
     border-radius: 6px;
 
-    @include focus-self;
+    @include focus-self-outline;
 
     // annoyingly these must be duplicated, and
     // won't work if you comma separate them

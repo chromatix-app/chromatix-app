@@ -23,7 +23,7 @@
   text-decoration: none;
   color: $color-background;
 
-  @include focus-self;
+  @include focus-self-outline;
 
   @media (min-width: 1024px) {
     max-width: 260px;

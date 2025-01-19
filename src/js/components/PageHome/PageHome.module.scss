@@ -149,7 +149,7 @@
   height: 48px;
   border-radius: 50%;
 
-  @include focus-self;
+  @include focus-self-outline;
 }
 
 .kofi {
@@ -173,7 +173,7 @@
     height: 44px;
   }
 
-  @include focus-self;
+  @include focus-self-outline;
 }
 
 //

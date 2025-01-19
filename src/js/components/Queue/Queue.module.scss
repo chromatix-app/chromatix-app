@@ -51,7 +51,7 @@
   border: 1px solid transparent;
   border-radius: 8px;
 
-  @include focus-self();
+  @include focus-self-outline();
 
   &:hover {
     background: var(--color-opacity-01);

@@ -127,7 +127,7 @@ sup {
     text-decoration: underline;
     color: var(--color-primary);
 
-    @include focus-self();
+    @include focus-self-outline();
   }
 }
 

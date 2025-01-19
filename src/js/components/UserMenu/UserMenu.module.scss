@@ -46,7 +46,7 @@
     padding: 6px 6px 6px 15px;
   }
 
-  @include focus-self;
+  @include focus-self-outline;
 
   &:hover {
     background: var(--color-hover);
@@ -122,7 +122,7 @@
   border: 1px solid var(--color-border);
   text-align: left;
 
-  @include focus-fill-self;
+  @include focus-self-fill;
 
   &:first-child {
     border-top-left-radius: 9px;

@@ -37,7 +37,7 @@
   border-radius: 8px;
   outline: 1px solid var(--color-opacity-02);
 
-  @include focus-self;
+  @include focus-self-outline;
 
   &Current {
     outline: 4px solid var(--color-opacity-04);
@@ -98,7 +98,7 @@
   height: 30px;
   border-radius: 2px;
 
-  @include focus-self;
+  @include focus-self-outline;
 }
 
 .button {
@@ -108,5 +108,5 @@
   border-radius: 50px;
   font-size: 14px;
 
-  @include focus-self;
+  @include focus-self-outline;
 }

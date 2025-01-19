@@ -15,7 +15,7 @@
   line-height: 1;
   color: var(--color-opacity-06);
 
-  @include focus-self;
+  @include focus-self-outline;
 }
 
 .icon {

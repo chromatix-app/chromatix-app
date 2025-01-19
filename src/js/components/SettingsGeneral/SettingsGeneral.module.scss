@@ -27,7 +27,7 @@
 }
 
 .menuEntry {
-  @include focus-parent;
+  @include focus-parent-outline;
 
   + .menuEntry {
     margin-top: 4px;

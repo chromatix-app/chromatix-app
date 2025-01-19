@@ -54,7 +54,7 @@
   height: 100%;
   object-fit: cover;
 
-  @include focus-self;
+  @include focus-self-outline;
 
   img {
     position: absolute;
@@ -103,7 +103,7 @@
   }
 
   a {
-    @include focus-underline-self;
+    @include focus-self-underline;
   }
 }
 
@@ -143,7 +143,7 @@ button.volume {
   border-radius: 50%;
   cursor: pointer;
 
-  @include focus-self;
+  @include focus-self-outline;
 
   &:disabled {
     opacity: 0.4;

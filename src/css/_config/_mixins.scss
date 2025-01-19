@@ -47,7 +47,7 @@
 //   }
 // }
 
-@mixin focus-self() {
+@mixin focus-self-outline() {
   &:focus-visible:not(:active):not(:disabled) {
     @media (hover: hover) {
       outline: 2px solid var(--color-text);
@@ -56,7 +56,7 @@
   }
 }
 
-@mixin focus-fill-self() {
+@mixin focus-self-fill() {
   &:focus-visible:not(:active):not(:disabled) {
     @media (hover: hover) {
       background: var(--color-opacity-01);
@@ -64,7 +64,7 @@
   }
 }
 
-@mixin focus-underline-self() {
+@mixin focus-self-underline() {
   &:focus-visible:not(:active):not(:disabled) {
     @media (hover: hover) {
       text-decoration: underline;
@@ -73,7 +73,7 @@
   }
 }
 
-// @mixin focus-custom-self() {
+// @mixin focus-self-custom() {
 //   &:focus-visible:not(:active):not(:disabled) {
 //     @media (hover: hover) {
 //       @content;
@@ -81,7 +81,7 @@
 //   }
 // }
 
-// @mixin focus-row() {
+// @mixin focus-row-outline() {
 //   a:focus-visible:not(:active):not(:disabled) &,
 //   button:focus-visible:not(:active):not(:disabled) & {
 //     @media (hover: hover) {
@@ -91,7 +91,7 @@
 //   }
 // }
 
-@mixin focus-parent() {
+@mixin focus-parent-outline() {
   &:has(*:focus-visible:not(:active):not(:disabled)) {
     @media (hover: hover) {
       outline: 2px solid var(--color-text);
@@ -100,7 +100,7 @@
   }
 }
 
-// @mixin focus-custom-parent() {
+// @mixin focus-parent-custom() {
 //   &:has(*:focus-visible:not(:active):not(:disabled)) {
 //     @media (hover: hover) {
 //       @content;
@@ -108,7 +108,7 @@
 //   }
 // }
 
-// @mixin focus-sibling() {
+// @mixin focus-sibling-outline() {
 //   input:focus-visible:not(:active):not(:disabled) ~ & {
 //     @media (hover: hover) {
 //       outline: 2px solid var(--color-text);
@@ -117,7 +117,7 @@
 //   }
 // }
 
-// @mixin focus-child() {
+// @mixin focus-child-outline() {
 //   a:focus-visible:not(:active):not(:disabled) &,
 //   button:focus-visible:not(:active):not(:disabled) & {
 //     @media (hover: hover) {
@@ -127,7 +127,7 @@
 //   }
 // }
 
-@mixin focus-custom-child() {
+@mixin focus-child-custom() {
   *:focus-visible:not(:active):not(:disabled) & {
     @media (hover: hover) {
       @content;
@@ -135,7 +135,7 @@
   }
 }
 
-// @mixin focus-within() {
+// @mixin focus-within-outline() {
 //   &:focus-within:focus-visible {
 //     @media (hover: hover) {
 //       outline: 2px solid var(--color-text);
