@@ -6,11 +6,33 @@
 }
 
 .section {
-  padding: 15px 10px 10px;
+  display: block;
+  position: relative;
+  width: 100%;
+  padding: 8px 10px;
+  margin: 7px 0 2px;
+  border-radius: 6px;
   font-weight: bold;
+  text-align: left;
 
-  &:first-child {
-    padding-top: 0;
+  @include focus-self-outline();
+}
+
+.expandIcon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  opacity: 0;
+
+  .section:hover & {
+    opacity: 0.5;
+  }
+
+  @include focus-child-custom() {
+    opacity: 0.5;
   }
 }
 
@@ -65,9 +87,9 @@
   }
 }
 
-.entryCurrent {
-  color: var(--color-primary);
-}
+// .entryCurrent {
+//   color: var(--color-primary);
+// }
 
 .thumb {
   overflow: hidden;
@@ -98,10 +120,86 @@
   opacity: 0.5;
   font-size: 11px;
 
-  .entryCurrent & {
-    opacity: 1;
-  }
+  // .entryCurrent & {
+  //   opacity: 1;
+  // }
   .entry:hover & {
     opacity: 1;
+  }
+}
+
+.expandedEntry {
+  padding: 4px 10px 20px;
+
+  a {
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.expandedThumb {
+  overflow: hidden;
+  margin: 15px 1px 12px;
+  background: var(--color-background);
+  border-radius: 6px;
+  outline: 1px solid var(--color-opacity-01);
+
+  img {
+    aspect-ratio: 1 / 1;
+  }
+}
+
+.expandedTitle {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.expandedArtist {
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--color-opacity-06);
+}
+
+.expandedCollapse {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  padding: 5px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: all ease-in-out 0.25s;
+
+  .expandedThumb:hover & {
+    opacity: 1;
+  }
+
+  .expandedThumb:hover &:hover {
+    transform: scale(1.1);
+  }
+
+  @include focus-self-outline;
+
+  @include focus-self-custom() {
+    opacity: 1;
+  }
+
+  > span {
+    display: block;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    padding: 12px;
+    background: var(--color-primary);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    color: var(--color-panel-background);
+
+    > span {
+      display: block;
+      position: relative;
+      width: 16px;
+      height: 16px;
+    }
   }
 }

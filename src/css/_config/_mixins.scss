@@ -73,13 +73,13 @@
   }
 }
 
-// @mixin focus-self-custom() {
-//   &:focus-visible:not(:active):not(:disabled) {
-//     @media (hover: hover) {
-//       @content;
-//     }
-//   }
-// }
+@mixin focus-self-custom() {
+  &:focus-visible:not(:active):not(:disabled) {
+    @media (hover: hover) {
+      @content;
+    }
+  }
+}
 
 // @mixin focus-row-outline() {
 //   a:focus-visible:not(:active):not(:disabled) &,
@@ -117,15 +117,15 @@
 //   }
 // }
 
-// @mixin focus-child-outline() {
-//   a:focus-visible:not(:active):not(:disabled) &,
-//   button:focus-visible:not(:active):not(:disabled) & {
-//     @media (hover: hover) {
-//       outline: 2px solid var(--color-text);
-//       outline-offset: 2px;
-//     }
-//   }
-// }
+@mixin focus-child-outline() {
+  a:focus-visible:not(:active):not(:disabled) &,
+  button:focus-visible:not(:active):not(:disabled) & {
+    @media (hover: hover) {
+      outline: 2px solid var(--color-text);
+      outline-offset: 2px;
+    }
+  }
+}
 
 @mixin focus-child-custom() {
   *:focus-visible:not(:active):not(:disabled) & {

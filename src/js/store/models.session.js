@@ -48,6 +48,7 @@ const sessionState = {
   optionLogPlexPlayback: true,
 
   queueIsVisible: false,
+  queueExpandArtwork: true,
 
   viewArtists: 'grid',
   viewAlbums: 'grid',
