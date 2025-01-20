@@ -14,7 +14,10 @@
   border-radius: 6px;
   font-weight: bold;
   text-align: left;
+}
 
+button.section {
+  @include electron-no-drag;
   @include focus-self-outline();
 }
 
@@ -144,6 +147,8 @@
   background: var(--color-background);
   border-radius: 6px;
   outline: 1px solid var(--color-opacity-01);
+
+  @include electron-no-drag;
 
   img {
     aspect-ratio: 1 / 1;
