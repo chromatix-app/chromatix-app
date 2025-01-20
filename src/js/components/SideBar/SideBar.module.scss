@@ -71,14 +71,14 @@
   height: 14px;
   margin-top: -7px;
   opacity: 0;
-  color: var(--color-opacity-05);
+  color: var(--color-text);
 
   .label:hover & {
-    opacity: 1;
+    opacity: 0.5;
   }
 
   @include focus-child-custom() {
-    opacity: 1;
+    opacity: 0.5;
   }
 }
 
