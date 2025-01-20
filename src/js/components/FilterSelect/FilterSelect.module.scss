@@ -2,16 +2,20 @@
 
 .wrap {
   display: inline-block;
-  margin-right: 30px;
+  margin-right: 24px;
+  margin-left: -6px;
 }
 
 .trigger {
   display: flex;
   align-items: center;
   padding: 6px 0;
+  border-radius: 6px;
   font-size: 12px;
   line-height: 1;
   color: var(--color-opacity-06);
+
+  @include focus-self-outline;
 }
 
 .icon {
@@ -45,8 +49,12 @@
 }
 
 .item {
+  display: block;
+  position: relative;
   padding: 5px 14px;
   cursor: pointer;
+
+  @include focus-self-fill;
 
   &[data-state='checked'] {
     color: var(--color-primary);

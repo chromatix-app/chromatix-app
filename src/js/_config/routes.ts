@@ -194,9 +194,9 @@ export const authRoutes = [
     component: 'Settings',
   },
   {
-    path: '/settings/options',
+    path: '/settings/general',
     exact: true,
-    component: 'SettingsOptions',
+    component: 'SettingsGeneral',
   },
   {
     path: '/settings/appearance',
@@ -204,9 +204,14 @@ export const authRoutes = [
     component: 'SettingsAppearance',
   },
   {
-    path: '/settings/appearance',
+    path: '/settings/menu',
     exact: true,
-    component: 'SettingsAppearance',
+    component: 'SettingsMenu',
+  },
+  {
+    path: '/settings/lastfm',
+    exact: true,
+    component: 'SettingsLastFM',
   },
   {
     path: '/settings/changelog',
@@ -224,16 +229,23 @@ export const authRoutes = [
 // ROUTE CONTENT
 // ======================================================================
 
-const formatConfig = (routes) => {
-  let configObject = {};
-  for (let i in routes) {
-    let route = routes[i];
-    if (route.path) {
-      configObject[route.path] = { ...route };
-    }
-  }
-  return configObject;
-};
+// type Route = {
+//   path?: string;
+//   exact?: boolean;
+//   component?: string;
+//   redirect?: string;
+// };
 
-export const defaultRouteConfig = formatConfig(defaultRoutes);
-export const authRouteConfig = formatConfig(authRoutes);
+// const formatConfig = (routes: Route[]): { [key: string]: Route } => {
+//   let configObject: { [key: string]: Route } = {};
+//   for (let i in routes) {
+//     let route = routes[i];
+//     if (route.path) {
+//       configObject[route.path] = { ...route };
+//     }
+//   }
+//   return configObject;
+// };
+
+// export const defaultRouteConfig = formatConfig(defaultRoutes);
+// export const authRouteConfig = formatConfig(authRoutes);

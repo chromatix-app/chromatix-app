@@ -1,5 +1,10 @@
 // Function to get track keys
-const getTrackKeys = (trackCount, playingOrder, isShuffle, firstValue) => {
+const getTrackKeys = (
+  trackCount: number,
+  playingOrder: number[] | null,
+  isShuffle: boolean,
+  firstValue: number | null
+): number[] => {
   // If shuffle is true, return shuffled track keys
   if (isShuffle) {
     return getShuffledTrackKeys(trackCount, firstValue);
@@ -15,7 +20,7 @@ const getTrackKeys = (trackCount, playingOrder, isShuffle, firstValue) => {
 };
 
 // Function to get shuffled track keys
-const getShuffledTrackKeys = (n, firstValue) => {
+const getShuffledTrackKeys = (n: number, firstValue: number | null): number[] => {
   // Create an array from 0 to n-1
   const array = Array.from({ length: n }, (_, i) => i);
   // Return the shuffled array
@@ -23,7 +28,7 @@ const getShuffledTrackKeys = (n, firstValue) => {
 };
 
 // Function to shuffle the array and avoid adjacent elements
-const doShuffle = (originalArray, firstValue) => {
+const doShuffle = (originalArray: number[], firstValue: number | null): number[] => {
   // Create a new copy of the original array
   let newArray = [...originalArray];
 
@@ -86,10 +91,10 @@ const doShuffle = (originalArray, firstValue) => {
 };
 
 // Fisher-Yates (aka Knuth) Shuffle
-const shuffleArray = (array) => {
+const shuffleArray = <T>(array: T[]): T[] => {
   let currentIndex = array.length,
-    temporaryValue,
-    randomIndex;
+    temporaryValue: T,
+    randomIndex: number;
 
   // While there remain elements to shuffle...
   while (0 !== currentIndex) {

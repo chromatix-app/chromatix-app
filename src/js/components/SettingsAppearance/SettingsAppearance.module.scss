@@ -8,8 +8,22 @@
   }
 }
 
+.section {
+  + .section {
+    margin-top: 20px;
+  }
+}
+
+.title {
+  margin: 0 0 15px;
+  opacity: 0.5;
+  font-size: 14px;
+  font-weight: bold;
+}
+
 .themes {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
 }
 
@@ -23,8 +37,10 @@
   border-radius: 8px;
   outline: 1px solid var(--color-opacity-02);
 
+  @include focus-self-outline;
+
   &Current {
-    outline: 4px solid var(--color-opacity-02);
+    outline: 4px solid var(--color-opacity-04);
   }
 }
 
@@ -58,13 +74,17 @@
 
 .custom {
   display: flex;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+  align-items: center;
   margin: 0 0 15px 10px;
 }
 
 .customField {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  margin-right: 20px;
+  margin-right: 25px;
 }
 
 .customLabel {
@@ -76,4 +96,17 @@
 .customInput {
   width: 60px;
   height: 30px;
+  border-radius: 2px;
+
+  @include focus-self-outline;
+}
+
+.button {
+  display: inline-block;
+  padding: 5px 25px;
+  background: var(--color-opacity-02);
+  border-radius: 50px;
+  font-size: 14px;
+
+  @include focus-self-outline;
 }

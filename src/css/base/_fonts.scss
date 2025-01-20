@@ -48,8 +48,8 @@ a {
 }
 
 sup {
-  font-size: 0.8em;
   vertical-align: top;
+  font-size: 0.8em;
 }
 
 .text-center {
@@ -68,7 +68,8 @@ sup {
   text-indent: -9999px;
 }
 
-.font-markdown {
+.font-markdown,
+.font-wysiwyg {
   font-size: 15px;
 
   // pre {
@@ -92,8 +93,8 @@ sup {
   h4,
   h5,
   h6 {
-    font-weight: bold;
     font-size: 1.1em;
+    font-weight: bold;
   }
 
   h1,
@@ -119,5 +120,39 @@ sup {
   ul,
   ol {
     margin-left: 20px;
+  }
+
+  a {
+    border-radius: 2px;
+    text-decoration: underline;
+    color: var(--color-primary);
+
+    @include focus-self-outline();
+  }
+}
+
+.font-wysiwyg {
+  max-width: 800px;
+  font-size: 16px;
+  line-height: 1.6;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  ul,
+  ol {
+    margin-top: 1em;
+    margin-bottom: 1em;
+
+    &:first-child {
+      margin-top: 0;
+    }
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 }

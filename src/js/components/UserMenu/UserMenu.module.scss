@@ -46,6 +46,8 @@
     padding: 6px 6px 6px 15px;
   }
 
+  @include focus-self-outline;
+
   &:hover {
     background: var(--color-hover);
   }
@@ -103,6 +105,7 @@
   max-height: calc(100vh - 95px);
   max-height: calc(100svh - 95px);
   margin: 5px 0 0 auto;
+  background: var(--color-panel-background);
   border-radius: 9px;
   box-shadow: 0 0 10px var(--color-shadow);
   font-size: 12px;
@@ -118,6 +121,8 @@
   background: var(--color-panel-background);
   border: 1px solid var(--color-border);
   text-align: left;
+
+  @include focus-self-fill;
 
   &:first-child {
     border-top-left-radius: 9px;

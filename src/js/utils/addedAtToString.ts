@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-const addedAtToString = (addedAtSecs) => {
+const addedAtToString = (addedAtSecs: number): string => {
   const addedAtMoment = moment(addedAtSecs * 1000);
   const now = moment();
   const diffInMinutes = now.diff(addedAtMoment, 'minutes');

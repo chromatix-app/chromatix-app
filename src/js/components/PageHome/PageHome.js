@@ -120,11 +120,11 @@ export const PageHome = () => {
             target="_blank"
             rel="noreferrer nofollow"
           >
-            <Icon icon="RedditIcon" cover />
+            <Icon icon="RedditSiteIcon" cover />
             <span className="u-hide-text">Join us on Reddit</span>
           </a>
           <a className={style.icon} href="https://github.com/chromatix-app" target="_blank" rel="noreferrer nofollow">
-            <Icon icon="GithubIcon" cover />
+            <Icon icon="GithubSiteIcon" cover />
             <span className="u-hide-text">View us on Github</span>
           </a>
         </div>

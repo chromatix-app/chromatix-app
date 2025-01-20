@@ -77,6 +77,7 @@ const StarRating = ({ type, ratingKey, rating = 0, inline, size = 14, editable =
               onClick={handleEdit}
               onMouseEnter={handleMouseEnter}
               data-value={i}
+              tabIndex={-1}
             />
           ))}
         </div>

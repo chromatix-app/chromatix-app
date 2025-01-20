@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-const formatRecentDate = (timeStamp) => {
+const formatRecentDate = (timeStamp: number): string | null => {
   // Convert timestamp to milliseconds and create a moment object
   const timeMoment = moment(timeStamp * 1000);
 

@@ -143,18 +143,18 @@ const AppMain = () => {
         <div className="layout-sidebar">
           <SideBar />
         </div>
+        <div className="layout-controls">
+          <ControlBar />
+        </div>
         <div ref={contentRef} id="content" className={clsx('layout-content', contentContainerClass)}>
-          <BrowserRouteSwitch />
           <UserMenu />
+          <BrowserRouteSwitch />
         </div>
         {queueIsVisible && (
           <div className="layout-rightbar">
             <RightBar />
           </div>
         )}
-        <div className="layout-controls">
-          <ControlBar />
-        </div>
         {/* <Blocker /> */}
       </div>
     </div>
