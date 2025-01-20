@@ -16,6 +16,8 @@ import style from './Queue.module.scss';
 
 const Queue = () => {
   const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+  const queueExpandArtwork = useSelector(({ sessionModel }) => sessionModel.queueExpandArtwork);
+
   const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
   const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
   const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
@@ -38,8 +40,9 @@ const Queue = () => {
           initialIndex={playingTrackIndex}
           isRepeat={false}
           optionShowFullTitles={optionShowFullTitles}
-          totalTracksRemaining={totalTracksRemaining}
           playingShuffle={playingShuffle}
+          queueExpandArtwork={queueExpandArtwork}
+          totalTracksRemaining={totalTracksRemaining}
         />
       )}
       {playingRepeat && (
@@ -69,8 +72,9 @@ const QueueList = ({
   initialIndex = 0,
   isRepeat,
   optionShowFullTitles,
-  totalTracksRemaining,
   playingShuffle,
+  queueExpandArtwork,
+  totalTracksRemaining,
 }) => {
   return entries.map((entry, index) => {
     const isCurrentlyPlaying = index === 0;
@@ -82,8 +86,9 @@ const QueueList = ({
         entry={entry}
         isRepeat={isRepeat}
         isCurrentlyPlaying={isCurrentlyPlaying}
-        optionShowFullTitles={optionShowFullTitles}
         totalTracksRemaining={totalTracksRemaining}
+        optionShowFullTitles={optionShowFullTitles}
+        queueExpandArtwork={queueExpandArtwork}
         playingShuffle={playingShuffle}
       />
     );
@@ -96,8 +101,9 @@ const QueueEntry = ({
   isRepeat,
   isCurrentlyPlaying,
   optionShowFullTitles,
-  totalTracksRemaining,
   playingShuffle,
+  queueExpandArtwork = false,
+  totalTracksRemaining,
 }) => {
   const dispatch = useDispatch();
 
@@ -107,41 +113,59 @@ const QueueEntry = ({
     }
   };
 
+  const expandArtwork = () => {
+    dispatch.sessionModel.setSessionState({ queueExpandArtwork: true });
+  };
+
   return (
     <>
-      {!isRepeat && isCurrentlyPlaying && <div className={style.section}>Now playing</div>}
+      {!isRepeat && isCurrentlyPlaying && (
+        <>
+          {queueExpandArtwork && <QueueEntryExpanded entry={entry} optionShowFullTitles={optionShowFullTitles} />}
+          {!queueExpandArtwork && (
+            <button className={style.section} onClick={expandArtwork}>
+              Now playing
+              <span className={style.expandIcon}>
+                <Icon icon="ExpandIcon" cover stroke strokeWidth={1.4} />
+              </span>
+            </button>
+          )}
+        </>
+      )}
 
-      <div
-        className={clsx(style.entry, {
-          [style.entryCurrent]: !isRepeat && isCurrentlyPlaying,
-          'text-trim': !optionShowFullTitles,
-        })}
-        onDoubleClick={() => {
-          doPlay(true);
-        }}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter') {
+      {(!isCurrentlyPlaying || !queueExpandArtwork) && (
+        <div
+          className={clsx(style.entry, {
+            [style.entryCurrent]: !isRepeat && isCurrentlyPlaying,
+            'text-trim': !optionShowFullTitles,
+          })}
+          onDoubleClick={() => {
             doPlay(true);
-          }
-        }}
-        tabIndex={0}
-      >
-        <div className={style.thumb}>
-          <img src={entry.thumb} alt={entry.title} loading="lazy" />
-        </div>
+          }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              doPlay(true);
+            }
+          }}
+          tabIndex={0}
+        >
+          <div className={style.thumb}>
+            <img src={entry.thumb} alt={entry.title} loading="lazy" />
+          </div>
 
-        <div className={clsx(style.content, { 'text-trim': !optionShowFullTitles })}>
-          <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
-          <div className={clsx(style.artist, { 'text-trim': !optionShowFullTitles })}>
-            {entry.artistLink && (
-              <NavLink to={entry.artistLink} tabIndex={-1}>
-                {entry.artist}
-              </NavLink>
-            )}
-            {!entry.artistLink && entry.artist}
+          <div className={clsx(style.content, { 'text-trim': !optionShowFullTitles })}>
+            <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
+            <div className={clsx(style.artist, { 'text-trim': !optionShowFullTitles })}>
+              {entry.artistLink && (
+                <NavLink to={entry.artistLink} tabIndex={-1}>
+                  {entry.artist}
+                </NavLink>
+              )}
+              {!entry.artistLink && entry.artist}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {!isRepeat && isCurrentlyPlaying && totalTracksRemaining > 1 && (
         <div className={style.section}>
@@ -157,6 +181,40 @@ const QueueEntry = ({
         </div>
       )}
     </>
+  );
+};
+
+const QueueEntryExpanded = ({ entry, optionShowFullTitles }) => {
+  const dispatch = useDispatch();
+
+  const collapseArtwork = () => {
+    dispatch.sessionModel.setSessionState({ queueExpandArtwork: false });
+  };
+
+  return (
+    <div className={style.expandedEntry}>
+      <div className={style.expandedThumb}>
+        <img src={entry.thumbMedium ? entry.thumbMedium : entry.thumb} alt={entry.title} loading="lazy" />
+        <button className={style.expandedCollapse} onClick={collapseArtwork}>
+          <span>
+            <span>
+              <Icon icon="CollapseIcon" cover stroke strokeWidth={1.5} />
+            </span>
+          </span>
+        </button>
+      </div>
+
+      <div className={clsx(style.expandedTitle, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
+
+      <div className={clsx(style.expandedArtist, { 'text-trim': !optionShowFullTitles })}>
+        {entry.artistLink && (
+          <NavLink to={entry.artistLink} tabIndex={-1}>
+            {entry.artist}
+          </NavLink>
+        )}
+        {!entry.artistLink && entry.artist}
+      </div>
+    </div>
   );
 };
 

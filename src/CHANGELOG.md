@@ -1,3 +1,10 @@
+<a name="0.20.0"></a>
+# 0.20.0 (2025-01-20)
+Features:
+- Added expanded "now playing" artwork option to queue.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.19.0"></a>
 # 0.19.0 (2025-01-19)
 Features:

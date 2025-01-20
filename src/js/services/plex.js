@@ -14,7 +14,8 @@ import store from 'js/store/store';
 const isProduction = process.env.REACT_APP_ENV === 'production';
 
 const mockData = isProduction ? false : false;
-const thumbSize = 480;
+const thumbSizeSmall = 400;
+const thumbSizeMedium = 600;
 const thumbPlaceholder = '/images/artwork-placeholder.png';
 
 const endpointConfig = {
@@ -1256,7 +1257,14 @@ const transposeArtistData = (artist, libraryId, plexBaseUrl, accessToken) => {
     thumb: artist.thumb
       ? mockData
         ? artist.thumb
-        : `${plexBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+        : `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
+            artist.thumb
+          )}&X-Plex-Token=${accessToken}`
+      : thumbPlaceholder,
+    thumbMedium: artist.thumb
+      ? mockData
+        ? artist.thumb
+        : `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeMedium}&height=${thumbSizeMedium}&url=${encodeURIComponent(
             artist.thumb
           )}&X-Plex-Token=${accessToken}`
       : thumbPlaceholder,
@@ -1279,7 +1287,14 @@ const transposeAlbumData = (album, libraryId, plexBaseUrl, accessToken) => {
     thumb: album.thumb
       ? mockData
         ? album.thumb
-        : `${plexBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+        : `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
+            album.thumb
+          )}&X-Plex-Token=${accessToken}`
+      : thumbPlaceholder,
+    thumbMedium: album.thumb
+      ? mockData
+        ? album.thumb
+        : `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeMedium}&height=${thumbSizeMedium}&url=${encodeURIComponent(
             album.thumb
           )}&X-Plex-Token=${accessToken}`
       : thumbPlaceholder,
@@ -1301,7 +1316,14 @@ const transposePlaylistData = (playlist, libraryId, plexBaseUrl, accessToken) =>
     thumb: playlistThumb
       ? mockData
         ? playlistThumb
-        : `${plexBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+        : `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
+            playlistThumb
+          )}&X-Plex-Token=${accessToken}`
+      : thumbPlaceholder,
+    thumbMedium: playlistThumb
+      ? mockData
+        ? playlistThumb
+        : `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeMedium}&height=${thumbSizeMedium}&url=${encodeURIComponent(
             playlistThumb
           )}&X-Plex-Token=${accessToken}`
       : thumbPlaceholder,
@@ -1330,7 +1352,12 @@ const transposeTrackData = (track, libraryId, plexBaseUrl, accessToken) => {
     duration: track.Media[0].duration,
     userRating: track.userRating,
     thumb: track.thumb
-      ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+      ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
+          track.thumb
+        )}&X-Plex-Token=${accessToken}`
+      : thumbPlaceholder,
+    thumbMedium: track.thumb
+      ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeMedium}&height=${thumbSizeMedium}&url=${encodeURIComponent(
           track.thumb
         )}&X-Plex-Token=${accessToken}`
       : thumbPlaceholder,
@@ -1353,7 +1380,12 @@ const transposeCollectionData = (collection, libraryId, plexBaseUrl, accessToken
       '/' +
       collection.ratingKey,
     thumb: collectionThumb
-      ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSize}&height=${thumbSize}&url=${encodeURIComponent(
+      ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
+          collectionThumb
+        )}&X-Plex-Token=${accessToken}`
+      : thumbPlaceholder,
+    thumbMedium: collectionThumb
+      ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeMedium}&height=${thumbSizeMedium}&url=${encodeURIComponent(
           collectionThumb
         )}&X-Plex-Token=${accessToken}`
       : thumbPlaceholder,
