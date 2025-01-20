@@ -18,12 +18,19 @@ const sessionState = {
   currentServer: null,
   currentLibrary: null,
 
-  currentTheme: 'black-pink',
+  currentTheme: 'chromatix',
   currentColorBackground: '#021C27',
   currentColorText: '#ffffff',
   currentColorPrimary: '#f7277a',
 
   menuShowIcons: true,
+  menuShowAllPlaylists: true,
+  menuShowSeparateBrowseSection: true,
+
+  menuOpenLibrary: true,
+  menuOpenBrowse: true,
+  menuOpenPlaylists: true,
+
   menuShowArtists: true,
   menuShowAlbums: true,
   menuShowPlaylists: true,
@@ -31,12 +38,10 @@ const sessionState = {
   menuShowAlbumCollections: true,
   menuShowArtistGenres: true,
   menuShowAlbumGenres: true,
-  menuShowArtistStyles: true,
-  menuShowAlbumStyles: true,
   menuShowArtistMoods: true,
   menuShowAlbumMoods: true,
-
-  menuShowAllPlaylists: true,
+  menuShowArtistStyles: true,
+  menuShowAlbumStyles: true,
 
   optionShowFullTitles: false,
   optionShowStarRatings: true,

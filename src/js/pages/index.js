@@ -28,9 +28,11 @@ export { default as PlaylistList } from './PlaylistList';
 export { default as PlaylistDetail } from './PlaylistDetail';
 
 export { default as Settings } from './Settings';
+export { default as SettingsGeneral } from './SettingsGeneral';
 export { default as SettingsAppearance } from './SettingsAppearance';
+export { default as SettingsLastFM } from './SettingsLastFM';
+export { default as SettingsMenu } from './SettingsMenu';
 export { default as SettingsChangelog } from './SettingsChangelog';
-export { default as SettingsOptions } from './SettingsOptions';
 
 export { default as Error404Auth } from './Error404Auth';
 export { default as Error404Default } from './Error404Default';

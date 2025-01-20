@@ -50,7 +50,7 @@ const ControlBar = () => {
   const controlHandlers = useMemo(
     () => ({
       playPause: () =>
-        !isDisabled && !playerPlaying ? dispatch.playerModel.playerPlay() : dispatch.playerModel.playerPause(),
+        !isDisabled && (!playerPlaying ? dispatch.playerModel.playerPlay() : dispatch.playerModel.playerPause()),
       play: () => !isDisabled && dispatch.playerModel.playerPlay(),
       pause: () => !isDisabled && dispatch.playerModel.playerPause(),
       prev: () => !isDisabled && dispatch.playerModel.playerPrev(),
@@ -80,7 +80,7 @@ const ControlBar = () => {
         <div className={style.cover}>
           {trackCurrent && trackCurrent.thumb && (
             <NavLink
-              className={style.cover}
+              className={style.coverLink}
               to={playingLink}
               onClick={() => {
                 dispatch.appModel.setAppState({ scrollToPlaying: true });

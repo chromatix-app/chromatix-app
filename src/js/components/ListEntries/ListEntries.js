@@ -388,8 +388,22 @@ const SortableHeading = ({
   const isDefault = defaultKey && currentSortKey === sortKey && currentOrderKey === 'asc';
   const isAsc = !isDefault && currentSortKey === sortKey && currentOrderKey === 'asc';
   const isDesc = !isDefault && currentSortKey === sortKey && currentOrderKey === 'desc';
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSortCallback(event);
+    }
+  };
+
   return (
-    <div className={className} onClick={handleSortCallback} data-sort={sortKey} {...props}>
+    <div
+      className={className}
+      onClick={handleSortCallback}
+      onKeyDown={handleKeyDown}
+      data-sort={sortKey}
+      tabIndex={0}
+      {...props}
+    >
       <span>{label}</span>
       {showArrows && (
         <>
@@ -639,6 +653,12 @@ const ListTrackEntry = React.memo(
           onDoubleClick={() => {
             doPlay(true);
           }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              doPlay(true);
+            }
+          }}
+          tabIndex={0}
         >
           {!isCurrentlyPlaying && (
             <div className={clsx(style.trackNumber, style.labelCenter)}>
@@ -677,13 +697,19 @@ const ListTrackEntry = React.memo(
           <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
 
           <div className={clsx(style.artist, { 'text-trim': !optionShowFullTitles })}>
-            {entry.artistLink && <NavLink to={entry.artistLink}>{entry.artist}</NavLink>}
+            {entry.artistLink && (
+              <NavLink to={entry.artistLink} tabIndex={-1}>
+                {entry.artist}
+              </NavLink>
+            )}
             {!entry.artistLink && entry.artist}
           </div>
 
           {variant === 'playlistTracks' && (
             <div className={clsx(style.album, { 'text-trim': !optionShowFullTitles })}>
-              <NavLink to={entry.albumLink}>{entry.album} </NavLink>
+              <NavLink to={entry.albumLink} tabIndex={-1}>
+                {entry.album}{' '}
+              </NavLink>
             </div>
           )}
 

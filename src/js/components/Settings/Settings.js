@@ -18,13 +18,13 @@ export const Settings = () => {
       <div className={style.group}>
         <div className={style.title}>General</div>
 
-        <NavLink className={style.entry} to={'/settings/options'}>
+        <NavLink className={style.entry} to={'/settings/general'}>
           <div className={style.entryIcon}>
             <Icon icon="CogIcon" cover stroke strokeWidth={1.5} />
           </div>
-          <div>Options</div>
+          <div>General</div>
           <div className={style.entryArrow}>
-            <Icon icon="ArrowRightIcon" cover stroke />
+            <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
           </div>
         </NavLink>
 
@@ -34,7 +34,27 @@ export const Settings = () => {
           </div>
           <div>Appearance</div>
           <div className={style.entryArrow}>
-            <Icon icon="ArrowRightIcon" cover stroke />
+            <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
+          </div>
+        </NavLink>
+
+        <NavLink className={style.entry} to={'/settings/menu'}>
+          <div className={style.entryIconSmall}>
+            <Icon icon="SideBarSmallIcon" cover stroke strokeWidth={1.5} />
+          </div>
+          <div>Menu</div>
+          <div className={style.entryArrow}>
+            <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
+          </div>
+        </NavLink>
+
+        <NavLink className={style.entry} to={'/settings/lastfm'}>
+          <div className={style.entryIconSmall}>
+            <Icon icon="LastFMIcon" cover stroke strokeWidth={1.5} />
+          </div>
+          <div>Last.fm</div>
+          <div className={style.entryArrow}>
+            <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
           </div>
         </NavLink>
       </div>
@@ -48,7 +68,7 @@ export const Settings = () => {
           </div>
           <div>About Chromatix</div>
           <div className={style.entryArrow}>
-            <Icon icon="ArrowRightIcon" cover stroke />
+            <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
           </div>
         </NavLink> */}
 
@@ -58,7 +78,7 @@ export const Settings = () => {
           </div>
           <div>Changelog</div>
           <div className={style.entryArrow}>
-            <Icon icon="ArrowRightIcon" cover stroke />
+            <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
           </div>
         </NavLink>
 
@@ -73,7 +93,7 @@ export const Settings = () => {
             </div>
           </div>
           <div className={style.entryArrow}>
-            <Icon icon="ArrowRightIcon" cover stroke />
+            <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
           </div>
         </a>
 
@@ -88,7 +108,7 @@ export const Settings = () => {
             </div>
           </div>
           <div className={style.entryArrow}>
-            <Icon icon="ArrowRightIcon" cover stroke />
+            <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
           </div>
         </a>
       </div>

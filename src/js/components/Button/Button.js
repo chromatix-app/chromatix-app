@@ -37,7 +37,7 @@ export const Button = forwardRef(
       >
         {variant === 'downloadMac' && (
           <span className={style.icon}>
-            <Icon icon="AppleIcon" cover />
+            <Icon icon="AppleSiteIcon" cover />
           </span>
         )}
         {children}

@@ -41,7 +41,7 @@ root.render(
   <Provider store={store}>
     <BrowserRouter>
       <App />
-      <Analytics />
+      <Analytics debug={false} />
     </BrowserRouter>
   </Provider>
 );

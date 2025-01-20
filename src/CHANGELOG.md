@@ -1,4 +1,18 @@
-<a name="0.17.0"></a>
+<a name="0.19.0"></a>
+# 0.19.0 (2025-01-19)
+Features:
+- Added "browse" category to sidebar.
+- Added collapsible sections to sidebar.
+- Updated settings pages.
+- Added keyboard focus highlighting for accessibility.
+Fixed:
+- Handle space key when no track is currently selected.
+Refactor:
+- Converted some utility functions to typescript.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
+<a name="0.18.0"></a>
 # 0.18.0 (2024-07-06)
 Features:
 - Added list view for albums, artists, playlists, and collections.

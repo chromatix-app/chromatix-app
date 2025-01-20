@@ -2,16 +2,20 @@
 
 .wrap {
   display: inline-block;
-  margin-right: 30px;
+  margin-right: 24px;
+  margin-left: -6px;
 }
 
 .trigger {
   display: flex;
   align-items: center;
-  padding: 6px 0;
+  padding: 6px 6px;
+  border-radius: 6px;
   font-size: 12px;
   line-height: 1;
   color: var(--color-opacity-06);
+
+  @include focus-self-outline;
 }
 
 .icon {
