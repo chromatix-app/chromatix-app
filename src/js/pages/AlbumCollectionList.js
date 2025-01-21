@@ -5,7 +5,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
-import { useGetAllAlbumCollections } from 'js/hooks';
+import { useGetAllCollections } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
@@ -15,16 +15,16 @@ const AlbumCollectionList = () => {
   const dispatch = useDispatch();
 
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-  const { viewAlbumCollections, sortAlbumCollections, orderAlbumCollections, sortedAlbumCollections } =
-    useGetAllAlbumCollections();
+  const { viewCollections, sortCollections, orderCollections, sortedCollections } =
+    useGetAllCollections('AlbumCollections');
 
   return (
     <>
       <TitleHeading
         title="Album Collections"
         subtitle={
-          sortedAlbumCollections ? (
-            sortedAlbumCollections?.length + ' Album Collection' + (sortedAlbumCollections?.length !== 1 ? 's' : '')
+          sortedCollections ? (
+            sortedCollections?.length + ' Album Collection' + (sortedCollections?.length !== 1 ? 's' : '')
           ) : (
             <>&nbsp;</>
           )
@@ -32,60 +32,60 @@ const AlbumCollectionList = () => {
       />
       <FilterWrap>
         <FilterToggle
-          value={viewAlbumCollections}
+          value={viewCollections}
           options={[
             { value: 'grid', label: 'Grid view' },
             { value: 'list', label: 'List view' },
           ]}
-          setter={(viewAlbumCollections) => {
+          setter={(viewCollections) => {
             dispatch.sessionModel.setSessionState({
-              viewAlbumCollections,
+              viewAlbumCollections: viewCollections,
             });
           }}
-          icon={viewAlbumCollections === 'grid' ? 'GridIcon' : 'ListIcon'}
+          icon={viewCollections === 'grid' ? 'GridIcon' : 'ListIcon'}
         />
-        {viewAlbumCollections === 'grid' && (
+        {viewCollections === 'grid' && (
           <>
             <FilterSelect
-              value={sortAlbumCollections}
+              value={sortCollections}
               options={[
                 { value: 'title', label: 'Alphabetical' },
                 { value: 'addedAt', label: 'Date added' },
                 // only allow sorting by rating if the option is enabled
                 ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
               ]}
-              setter={(sortAlbumCollections) => {
+              setter={(sortCollections) => {
                 dispatch.sessionModel.setSessionState({
-                  sortAlbumCollections,
+                  sortAlbumCollections: sortCollections,
                 });
               }}
             />
             <FilterToggle
-              value={orderAlbumCollections}
+              value={orderCollections}
               options={[
                 { value: 'asc', label: 'Ascending' },
                 { value: 'desc', label: 'Descending' },
               ]}
-              setter={(orderAlbumCollections) => {
+              setter={(orderCollections) => {
                 dispatch.sessionModel.setSessionState({
-                  orderAlbumCollections,
+                  orderAlbumCollections: orderCollections,
                 });
               }}
-              icon={orderAlbumCollections === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+              icon={orderCollections === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
           </>
         )}
       </FilterWrap>
-      {!sortedAlbumCollections && <Loading forceVisible inline />}
-      {sortedAlbumCollections && viewAlbumCollections === 'grid' && (
-        <ListCards variant="collections" entries={sortedAlbumCollections} />
+      {!sortedCollections && <Loading forceVisible inline />}
+      {sortedCollections && viewCollections === 'grid' && (
+        <ListCards variant="collections" entries={sortedCollections} />
       )}
-      {sortedAlbumCollections && viewAlbumCollections === 'list' && (
+      {sortedCollections && viewCollections === 'list' && (
         <ListEntries
           variant="albumCollections"
-          entries={sortedAlbumCollections}
-          sortKey={sortAlbumCollections}
-          orderKey={orderAlbumCollections}
+          entries={sortedCollections}
+          sortKey={sortCollections}
+          orderKey={orderCollections}
         />
       )}
     </>

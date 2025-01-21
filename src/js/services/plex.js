@@ -653,8 +653,9 @@ let getAllCollectionsRunning;
 
 export const getAllCollections = async () => {
   if (!getAllCollectionsRunning) {
-    const prevAllCollections = store.getState().appModel.allCollections;
-    if (!prevAllCollections) {
+    const prevAllArtistCollections = store.getState().appModel.allArtistCollections;
+    const prevAllAlbumCollections = store.getState().appModel.allAlbumCollections;
+    if (!prevAllArtistCollections || !prevAllAlbumCollections) {
       console.log('%c--- plex - getAllCollections ---', 'color:#f9743b;');
       getAllCollectionsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
