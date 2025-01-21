@@ -32,7 +32,7 @@ const ArtistStyleList = () => {
         }
       />
       {!allArtistStyles && <Loading forceVisible inline />}
-      {allArtistStyles && <ListCards variant="styles" entries={allArtistStyles} />}
+      {allArtistStyles && <ListCards variant="artistStyles" entries={allArtistStyles} />}
     </>
   );
 };
