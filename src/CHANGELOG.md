@@ -1,3 +1,10 @@
+<a name="0.21.0"></a>
+# 0.21.0 (2025-01-21)
+Features:
+- Added custom icons to genre/mood/style listings to match sidebar icons.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.20.0"></a>
 # 0.20.0 (2025-01-20)
 Features:
