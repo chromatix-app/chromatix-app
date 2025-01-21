@@ -66,9 +66,9 @@ const ListEntry = React.memo(
     link,
     totalTracks,
     variant,
-    addedAt,
-    lastPlayed,
-    releaseDate,
+    // addedAt,
+    // lastPlayed,
+    // releaseDate,
     isCurrentlyLoaded,
     isCurrentlyPlaying,
   }) => {
@@ -146,9 +146,39 @@ const ListEntry = React.memo(
         <div className={style.thumb}>
           {thumb && <img src={thumb} alt={title} loading="lazy" />}
 
-          {(variant === 'genres' || variant === 'styles' || variant === 'moods') && (
+          {variant === 'artistGenres' && (
             <div className={style.icon}>
-              <Icon icon="MusicNoteIcon" cover stroke strokeWidth={1.3} />
+              <Icon icon="ArtistGenresIcon" cover stroke strokeWidth={1.6} />
+            </div>
+          )}
+
+          {variant === 'artistMoods' && (
+            <div className={style.icon}>
+              <Icon icon="ArtistMoodsIcon" cover stroke strokeWidth={1.6} />
+            </div>
+          )}
+
+          {variant === 'artistStyles' && (
+            <div className={style.icon}>
+              <Icon icon="ArtistStylesIcon" cover stroke strokeWidth={1.6} />
+            </div>
+          )}
+
+          {variant === 'albumGenres' && (
+            <div className={style.icon}>
+              <Icon icon="AlbumGenresIcon" cover stroke strokeWidth={1.6} />
+            </div>
+          )}
+
+          {variant === 'albumMoods' && (
+            <div className={style.icon}>
+              <Icon icon="AlbumMoodsIcon" cover stroke strokeWidth={1.6} />
+            </div>
+          )}
+
+          {variant === 'albumStyles' && (
+            <div className={style.icon}>
+              <Icon icon="AlbumStylesIcon" cover stroke strokeWidth={1.6} />
             </div>
           )}
 

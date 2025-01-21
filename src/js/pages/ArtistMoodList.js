@@ -32,7 +32,7 @@ const ArtistMoodList = () => {
         }
       />
       {!allArtistMoods && <Loading forceVisible inline />}
-      {allArtistMoods && <ListCards variant="moods" entries={allArtistMoods} />}
+      {allArtistMoods && <ListCards variant="artistMoods" entries={allArtistMoods} />}
     </>
   );
 };
