@@ -55,6 +55,12 @@ const sessionState = {
   viewPlaylists: 'grid',
   viewArtistCollections: 'grid',
   viewAlbumCollections: 'grid',
+  viewArtistGenres: 'grid',
+  viewAlbumGenres: 'grid',
+  viewArtistMoods: 'grid',
+  viewAlbumMoods: 'grid',
+  viewArtistStyles: 'grid',
+  viewAlbumStyles: 'grid',
 
   sortArtists: 'title',
   sortAlbums: 'title',
@@ -63,12 +69,24 @@ const sessionState = {
   sortPlaylistTracks: {},
   sortArtistCollections: 'title',
   sortAlbumCollections: 'title',
+  sortArtistGenres: 'title',
+  sortAlbumGenres: 'title',
+  sortArtistMoods: 'title',
+  sortAlbumMoods: 'title',
+  sortArtistStyles: 'title',
+  sortAlbumStyles: 'title',
 
   orderArtists: 'asc',
   orderAlbums: 'asc',
   orderPlaylists: 'asc',
   orderArtistCollections: 'asc',
   orderAlbumCollections: 'asc',
+  orderArtistGenres: 'asc',
+  orderAlbumGenres: 'asc',
+  orderArtistMoods: 'asc',
+  orderAlbumMoods: 'asc',
+  orderArtistStyles: 'asc',
+  orderAlbumStyles: 'asc',
 };
 
 const playingState = {

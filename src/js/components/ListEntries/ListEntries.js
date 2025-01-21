@@ -36,7 +36,7 @@ const ListEntries = ({
 
   const handleSortList = (event) => {
     const sortKey = event.currentTarget.dataset.sort;
-    console.log(sortKey);
+    // console.log(sortKey);
     dispatch.sessionModel.setSortList({
       variant,
       sortKey,
@@ -45,7 +45,7 @@ const ListEntries = ({
 
   const handleSortTracks = (event) => {
     const sortKey = event.currentTarget.dataset.sort;
-    console.log(sortKey);
+    // console.log(sortKey);
     dispatch.sessionModel.setSortTracks({
       variant,
       sortId,
@@ -249,6 +249,28 @@ const ListEntries = ({
             </>
           )}
 
+          {(variant === 'artistGenres' ||
+            variant === 'albumGenres' ||
+            variant === 'artistMoods' ||
+            variant === 'albumMoods' ||
+            variant === 'artistStyles' ||
+            variant === 'albumStyles') && (
+            <>
+              <SortableHeading
+                defaultKey
+                sortKey="title"
+                currentSortKey={sortKey}
+                currentOrderKey={orderKey}
+                label="Title"
+                handleSortCallback={handleSortList}
+                style={{
+                  gridColumn: '1 / span 2',
+                }}
+              />
+              <div></div>
+            </>
+          )}
+
           {variant === 'albumTracks' && (
             <>
               <SortableHeading
@@ -354,9 +376,32 @@ const ListEntries = ({
           {variant === 'artists' && <ListArtists entries={entries} />}
           {variant === 'albums' && <ListAlbums entries={entries} />}
           {variant === 'playlists' && <ListPlaylists entries={entries} />}
+
           {(variant === 'artistCollections' || variant === 'albumCollections') && (
             <ListArtistCollections entries={entries} />
           )}
+
+          {variant === 'artistGenres' && (
+            <ListGenresMoodsStyles entryKey={'genreId'} entries={entries} icon={'ArtistGenresIcon'} />
+          )}
+          {variant === 'albumGenres' && (
+            <ListGenresMoodsStyles entryKey={'genreId'} entries={entries} icon={'AlbumGenresIcon'} />
+          )}
+
+          {variant === 'artistMoods' && (
+            <ListGenresMoodsStyles entryKey={'moodId'} entries={entries} icon={'ArtistMoodsIcon'} />
+          )}
+          {variant === 'albumMoods' && (
+            <ListGenresMoodsStyles entryKey={'moodId'} entries={entries} icon={'AlbumMoodsIcon'} />
+          )}
+
+          {variant === 'artistStyles' && (
+            <ListGenresMoodsStyles entryKey={'styleId'} entries={entries} icon={'ArtistStylesIcon'} />
+          )}
+          {variant === 'albumStyles' && (
+            <ListGenresMoodsStyles entryKey={'styleId'} entries={entries} icon={'AlbumStylesIcon'} />
+          )}
+
           {(variant === 'albumTracks' || variant === 'playlistTracks') && (
             <ListTracks
               variant={variant}
@@ -535,6 +580,24 @@ const ListArtistCollections = ({ entries }) => {
             <StarRating type="collection" ratingKey={entry.collectionId} rating={entry.userRating} inline editable />
           </div>
         )}
+      </NavLink>
+    );
+  });
+};
+
+const ListGenresMoodsStyles = ({ entryKey, entries, icon }) => {
+  const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+
+  return entries.map((entry) => {
+    return (
+      <NavLink key={entry[entryKey]} className={style.entry} to={entry.link}>
+        <div className={style.thumb}>
+          <span className={style.thumbIcon}>
+            <Icon icon={icon} cover stroke strokeWidth={1.2} />
+          </span>
+        </div>
+        <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
+        <div></div>
       </NavLink>
     );
   });

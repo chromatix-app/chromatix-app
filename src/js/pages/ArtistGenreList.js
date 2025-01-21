@@ -2,37 +2,74 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-import { ListCards, Loading, TitleHeading } from 'js/components';
-import * as plex from 'js/services/plex';
+import { FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
+import { useGetAllSetEntries } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
 const ArtistGenreList = () => {
-  const allArtistGenres = useSelector(({ appModel }) => appModel.allArtistGenres);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    plex.getAllArtistGenres();
-  }, []);
+  const { viewSetEntries, sortSetEntries, orderSetEntries, sortedSetEntries } = useGetAllSetEntries('ArtistGenres');
 
   return (
     <>
       <TitleHeading
         title="Artist Genres"
         subtitle={
-          allArtistGenres ? (
-            allArtistGenres?.length + ' Artist Genre' + (allArtistGenres?.length !== 1 ? 's' : '')
+          sortedSetEntries ? (
+            sortedSetEntries?.length + ' Artist Genre' + (sortedSetEntries?.length !== 1 ? 's' : '')
           ) : (
             <>&nbsp;</>
           )
         }
       />
-      {!allArtistGenres && <Loading forceVisible inline />}
-      {allArtistGenres && <ListCards variant="artistGenres" entries={allArtistGenres} />}
+      <FilterWrap>
+        <FilterToggle
+          value={viewSetEntries}
+          options={[
+            { value: 'grid', label: 'Grid view' },
+            { value: 'list', label: 'List view' },
+          ]}
+          setter={(viewSetEntries) => {
+            dispatch.sessionModel.setSessionState({
+              viewArtistGenres: viewSetEntries,
+            });
+          }}
+          icon={viewSetEntries === 'grid' ? 'GridIcon' : 'ListIcon'}
+        />
+        {viewSetEntries === 'grid' && (
+          <>
+            <FilterToggle
+              value={orderSetEntries}
+              options={[
+                { value: 'asc', label: 'Ascending' },
+                { value: 'desc', label: 'Descending' },
+              ]}
+              setter={(orderSetEntries) => {
+                dispatch.sessionModel.setSessionState({
+                  orderArtistGenres: orderSetEntries,
+                });
+              }}
+              icon={orderSetEntries === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+            />
+          </>
+        )}
+      </FilterWrap>
+      {!sortedSetEntries && <Loading forceVisible inline />}
+      {sortedSetEntries && viewSetEntries === 'grid' && <ListCards variant="artistGenres" entries={sortedSetEntries} />}
+      {sortSetEntries && viewSetEntries === 'list' && (
+        <ListEntries
+          variant="artistGenres"
+          entries={sortedSetEntries}
+          sortKey={sortSetEntries}
+          orderKey={orderSetEntries}
+        />
+      )}
     </>
   );
 };

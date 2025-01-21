@@ -1,3 +1,10 @@
+<a name="0.22.0"></a>
+# 0.22.0 (2025-01-21)
+Features:
+- Added list view and sorting for genres, moods, and styles.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.21.0"></a>
 # 0.21.0 (2025-01-21)
 Features:
