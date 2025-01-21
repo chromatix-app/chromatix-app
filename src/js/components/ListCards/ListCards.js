@@ -34,7 +34,15 @@ const ListCards = ({ entries, variant }) => {
             (playingAlbumId === entry.albumId || (!playingAlbumId && !entry.albumId)) &&
             (playingPlaylistId === entry.playlistId || (!playingPlaylistId && !entry.playlistId));
 
-          const entryKey = entry.albumId || entry.artistId || entry.playlistId || entry.collectionId || index;
+          const entryKey =
+            entry.albumId ||
+            entry.artistId ||
+            entry.playlistId ||
+            entry.collectionId ||
+            entry.genreId ||
+            entry.moodId ||
+            entry.styleId ||
+            index;
 
           return (
             <ListEntry

@@ -2,33 +2,74 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-import { ListCards, Loading, TitleHeading } from 'js/components';
-import * as plex from 'js/services/plex';
+import { FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
+import { useGetAllSetEntries } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
 const AlbumMoodList = () => {
-  const allAlbumMoods = useSelector(({ appModel }) => appModel.allAlbumMoods);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    plex.getAllAlbumMoods();
-  }, []);
+  const { viewSetEntries, sortSetEntries, orderSetEntries, sortedSetEntries } = useGetAllSetEntries('AlbumMoods');
 
   return (
     <>
       <TitleHeading
         title="Album Moods"
         subtitle={
-          allAlbumMoods ? allAlbumMoods?.length + ' Album Mood' + (allAlbumMoods?.length !== 1 ? 's' : '') : <>&nbsp;</>
+          sortedSetEntries ? (
+            sortedSetEntries?.length + ' Album Mood' + (sortedSetEntries?.length !== 1 ? 's' : '')
+          ) : (
+            <>&nbsp;</>
+          )
         }
       />
-      {!allAlbumMoods && <Loading forceVisible inline />}
-      {allAlbumMoods && <ListCards variant="albumMoods" entries={allAlbumMoods} />}
+      <FilterWrap>
+        <FilterToggle
+          value={viewSetEntries}
+          options={[
+            { value: 'grid', label: 'Grid view' },
+            { value: 'list', label: 'List view' },
+          ]}
+          setter={(viewSetEntries) => {
+            dispatch.sessionModel.setSessionState({
+              viewAlbumMoods: viewSetEntries,
+            });
+          }}
+          icon={viewSetEntries === 'grid' ? 'GridIcon' : 'ListIcon'}
+        />
+        {viewSetEntries === 'grid' && (
+          <>
+            <FilterToggle
+              value={orderSetEntries}
+              options={[
+                { value: 'asc', label: 'Ascending' },
+                { value: 'desc', label: 'Descending' },
+              ]}
+              setter={(orderSetEntries) => {
+                dispatch.sessionModel.setSessionState({
+                  orderAlbumMoods: orderSetEntries,
+                });
+              }}
+              icon={orderSetEntries === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+            />
+          </>
+        )}
+      </FilterWrap>
+      {!sortedSetEntries && <Loading forceVisible inline />}
+      {sortedSetEntries && viewSetEntries === 'grid' && <ListCards variant="albumMoods" entries={sortedSetEntries} />}
+      {sortSetEntries && viewSetEntries === 'list' && (
+        <ListEntries
+          variant="albumMoods"
+          entries={sortedSetEntries}
+          sortKey={sortSetEntries}
+          orderKey={orderSetEntries}
+        />
+      )}
     </>
   );
 };

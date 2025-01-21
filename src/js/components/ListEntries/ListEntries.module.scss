@@ -62,6 +62,15 @@
     }
   }
 
+  .wrap.wrapArtistGenres &,
+  .wrap.wrapAlbumGenres &,
+  .wrap.wrapArtistMoods &,
+  .wrap.wrapAlbumMoods &,
+  .wrap.wrapArtistStyles &,
+  .wrap.wrapAlbumStyles & {
+    grid-template-columns: 41px 1.2fr 1fr;
+  }
+
   .wrap.wrapAlbumTracks & {
     grid-template-columns: 30px 1.2fr 1fr minmax(72px, auto);
   }
@@ -141,6 +150,12 @@
   .wrap.wrapPlaylists &,
   .wrap.wrapArtistCollections &,
   .wrap.wrapAlbumCollections &,
+  .wrap.wrapArtistGenres &,
+  .wrap.wrapAlbumGenres &,
+  .wrap.wrapArtistMoods &,
+  .wrap.wrapAlbumMoods &,
+  .wrap.wrapArtistStyles &,
+  .wrap.wrapAlbumStyles &,
   .wrap.wrapPlaylistTracks & {
     padding: 6px 14px;
 
@@ -245,6 +260,17 @@
   background: var(--color-opacity-01);
   border-radius: 3px;
 
+  .wrap.wrapArtistGenres &,
+  .wrap.wrapAlbumGenres &,
+  .wrap.wrapArtistMoods &,
+  .wrap.wrapAlbumMoods &,
+  .wrap.wrapArtistStyles &,
+  .wrap.wrapAlbumStyles & {
+    background: var(--color-primary);
+    background: linear-gradient(to bottom, var(--color-primary) 0%, var(--color-background) 400%);
+    color: var(--color-background);
+  }
+
   img {
     position: absolute;
     top: 0;
@@ -253,6 +279,15 @@
     height: 100%;
     object-fit: cover;
   }
+}
+
+.thumbIcon {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .title {
