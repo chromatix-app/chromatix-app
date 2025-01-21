@@ -32,7 +32,7 @@ const AlbumStyleList = () => {
         }
       />
       {!allAlbumStyles && <Loading forceVisible inline />}
-      {allAlbumStyles && <ListCards variant="styles" entries={allAlbumStyles} />}
+      {allAlbumStyles && <ListCards variant="albumStyles" entries={allAlbumStyles} />}
     </>
   );
 };

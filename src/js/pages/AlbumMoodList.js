@@ -28,7 +28,7 @@ const AlbumMoodList = () => {
         }
       />
       {!allAlbumMoods && <Loading forceVisible inline />}
-      {allAlbumMoods && <ListCards variant="moods" entries={allAlbumMoods} />}
+      {allAlbumMoods && <ListCards variant="albumMoods" entries={allAlbumMoods} />}
     </>
   );
 };
