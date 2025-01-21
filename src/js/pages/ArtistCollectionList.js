@@ -5,7 +5,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
-import { useGetAllArtistCollections } from 'js/hooks';
+import { useGetAllCollections } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
@@ -15,16 +15,16 @@ const ArtistCollectionList = () => {
   const dispatch = useDispatch();
 
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-  const { viewArtistCollections, sortArtistCollections, orderArtistCollections, sortedArtistCollections } =
-    useGetAllArtistCollections();
+  const { viewCollections, sortCollections, orderCollections, sortedCollections } =
+    useGetAllCollections('ArtistCollections');
 
   return (
     <>
       <TitleHeading
         title="Artist Collections"
         subtitle={
-          sortedArtistCollections ? (
-            sortedArtistCollections?.length + ' Artist Collection' + (sortedArtistCollections?.length !== 1 ? 's' : '')
+          sortedCollections ? (
+            sortedCollections?.length + ' Artist Collection' + (sortedCollections?.length !== 1 ? 's' : '')
           ) : (
             <>&nbsp;</>
           )
@@ -32,60 +32,60 @@ const ArtistCollectionList = () => {
       />
       <FilterWrap>
         <FilterToggle
-          value={viewArtistCollections}
+          value={viewCollections}
           options={[
             { value: 'grid', label: 'Grid view' },
             { value: 'list', label: 'List view' },
           ]}
-          setter={(viewArtistCollections) => {
+          setter={(viewCollections) => {
             dispatch.sessionModel.setSessionState({
-              viewArtistCollections,
+              viewArtistCollections: viewCollections,
             });
           }}
-          icon={viewArtistCollections === 'grid' ? 'GridIcon' : 'ListIcon'}
+          icon={viewCollections === 'grid' ? 'GridIcon' : 'ListIcon'}
         />
-        {viewArtistCollections === 'grid' && (
+        {viewCollections === 'grid' && (
           <>
             <FilterSelect
-              value={sortArtistCollections}
+              value={sortCollections}
               options={[
                 { value: 'title', label: 'Alphabetical' },
                 { value: 'addedAt', label: 'Date added' },
                 // only allow sorting by rating if the option is enabled
                 ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
               ]}
-              setter={(sortArtistCollections) => {
+              setter={(sortCollections) => {
                 dispatch.sessionModel.setSessionState({
-                  sortArtistCollections,
+                  sortArtistCollections: sortCollections,
                 });
               }}
             />
             <FilterToggle
-              value={orderArtistCollections}
+              value={orderCollections}
               options={[
                 { value: 'asc', label: 'Ascending' },
                 { value: 'desc', label: 'Descending' },
               ]}
-              setter={(orderArtistCollections) => {
+              setter={(orderCollections) => {
                 dispatch.sessionModel.setSessionState({
-                  orderArtistCollections,
+                  orderArtistCollections: orderCollections,
                 });
               }}
-              icon={orderArtistCollections === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+              icon={orderCollections === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
           </>
         )}
       </FilterWrap>
-      {!sortedArtistCollections && <Loading forceVisible inline />}
-      {sortedArtistCollections && viewArtistCollections === 'grid' && (
-        <ListCards variant="collections" entries={sortedArtistCollections} />
+      {!sortedCollections && <Loading forceVisible inline />}
+      {sortedCollections && viewCollections === 'grid' && (
+        <ListCards variant="collections" entries={sortedCollections} />
       )}
-      {sortedArtistCollections && viewArtistCollections === 'list' && (
+      {sortedCollections && viewCollections === 'list' && (
         <ListEntries
           variant="artistCollections"
-          entries={sortedArtistCollections}
-          sortKey={sortArtistCollections}
-          orderKey={orderArtistCollections}
+          entries={sortedCollections}
+          sortKey={sortCollections}
+          orderKey={orderCollections}
         />
       )}
     </>
