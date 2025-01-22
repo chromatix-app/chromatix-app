@@ -14,7 +14,7 @@ import style from './TitleHeading.module.scss';
 // COMPONENT
 // ======================================================================
 
-const TitleHeading = ({ title, subtitle, detail, thumb, handlePlay }) => {
+const TitleHeading = ({ title, subtitle, detail, thumb, icon, handlePlay }) => {
   const triggerRef = useRef(null);
   const isNearTop = useNearTop(triggerRef, 90);
 
@@ -29,6 +29,13 @@ const TitleHeading = ({ title, subtitle, detail, thumb, handlePlay }) => {
         {thumb && (
           <div className={style.thumb}>
             <img src={thumb} alt={title} />
+          </div>
+        )}
+        {icon && (
+          <div className={style.thumbBg}>
+            <div className={style.thumbIcon}>
+              <Icon icon={icon} cover stroke strokeWidth={1.6} />
+            </div>
           </div>
         )}
         <div className={style.content}>

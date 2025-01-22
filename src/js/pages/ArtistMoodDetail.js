@@ -43,6 +43,7 @@ const ArtistMoodDetail = () => {
               <>&nbsp;</>
             )
           }
+          icon={'ArtistMoodsIcon'}
         />
       )}
       {!(currentArtistMood && currentArtistMoodItems) && <Loading forceVisible inline />}

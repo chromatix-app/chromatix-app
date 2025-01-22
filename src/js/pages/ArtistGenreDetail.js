@@ -43,6 +43,7 @@ const ArtistGenreDetail = () => {
               <>&nbsp;</>
             )
           }
+          icon={'ArtistGenresIcon'}
         />
       )}
       {!(currentArtistGenre && currentArtistGenreItems) && <Loading forceVisible inline />}
