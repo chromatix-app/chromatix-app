@@ -123,7 +123,7 @@ const SideBar = () => {
                 </NavLink>
               )}
               {isLocal && menuShowFolders && (
-                <NavLink className={style.link} activeClassName={style.linkActive} to="/folders" exact>
+                <NavLink className={style.link} activeClassName={style.linkActive} to="/folders">
                   {menuShowIcons && (
                     <span className={style.icon}>
                       <Icon icon="FolderIcon" cover stroke />
@@ -133,7 +133,12 @@ const SideBar = () => {
                 </NavLink>
               )}
               {menuShowPlaylists && (
-                <NavLink className={style.link} activeClassName={style.linkActive} to="/playlists" exact>
+                <NavLink
+                  className={style.link}
+                  activeClassName={style.linkActive}
+                  to="/playlists"
+                  exact={playlistsIsVisible}
+                >
                   {menuShowIcons && (
                     <span className={style.icon}>
                       <Icon icon="MusicNoteIcon" cover stroke />

@@ -77,12 +77,21 @@ export const transposeAlbumData = (album, libraryId, plexBaseUrl, accessToken) =
   };
 };
 
-export const transposeFolderData = (folder, libraryId, plexBaseUrl) => {
+export const transposeFolderData = (folder, libraryId, plexBaseUrl, accessToken) => {
+  if (folder.ratingKey) {
+    if (folder.type !== 'track') {
+      return null;
+    }
+    return null;
+    // return transposeTrackData(folder, libraryId, plexBaseUrl, accessToken);
+  }
+
+  const folderId = folder.key.split('?parent=')[1];
   return {
     libraryId: libraryId,
-    folderId: folder.key.split('?parent=')[1],
+    folderId: folderId,
     title: folder.title,
-    link: '#',
+    link: '/folders/' + libraryId + '/' + folderId,
   };
 };
 

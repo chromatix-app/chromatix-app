@@ -3,9 +3,10 @@
 // ======================================================================
 
 import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 import { FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
-import { useGetAllFolders } from 'js/hooks';
+import { useGetFolderItems } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
@@ -14,7 +15,8 @@ import { useGetAllFolders } from 'js/hooks';
 const FolderList = () => {
   const dispatch = useDispatch();
 
-  const { viewFolders, sortFolders, orderFolders, sortedFolders } = useGetAllFolders();
+  const { folderId } = useParams();
+  const { viewFolders, sortFolders, orderFolders, sortedFolders } = useGetFolderItems(folderId);
 
   return (
     <>

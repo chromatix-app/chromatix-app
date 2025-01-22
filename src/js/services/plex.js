@@ -42,7 +42,7 @@ const endpointConfig = {
     getTracks: (base, albumId) => `${base}/library/metadata/${albumId}/children`,
   },
   folder: {
-    getAllFolders: (base, libraryId) => `${base}/library/sections/${libraryId}/folder`,
+    getFolderItems: (base, libraryId, folderId) => `${base}/library/sections/${libraryId}/folder?parent=${folderId}`,
   },
   playlist: {
     getAllPlaylists: (base, libraryId) => `${base}/playlists?playlistType=audio&sectionID=${libraryId}`,
@@ -557,33 +557,35 @@ export const getAlbumTracks = async (libraryId, albumId) => {
 };
 
 // ======================================================================
-// GET ALL FOLDERS
+// GET FOLDER ITEMS
 // ======================================================================
 
-let getAllFoldersRunning;
+let getFolderItemsRunning;
 
-export const getAllFolders = async () => {
-  if (!getAllFoldersRunning) {
-    const prevAllFolders = store.getState().appModel.allFolders;
-    if (!prevAllFolders) {
-      getAllFoldersRunning = true;
+export const getFolderItems = async (folderId) => {
+  if (!getFolderItemsRunning) {
+    const { libraryId } = store.getState().sessionModel.currentLibrary;
+    const prevFolderItems = store.getState().appModel.allFolderItems[libraryId + '-' + folderId];
+    if (!prevFolderItems) {
+      getFolderItemsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-      const { libraryId } = store.getState().sessionModel.currentLibrary;
 
-      const endpoint = endpointConfig.folder.getAllFolders(plexBaseUrl, libraryId);
+      const endpoint = endpointConfig.folder.getFolderItems(plexBaseUrl, libraryId, folderId);
       const data = await fetchData(endpoint, accessToken);
 
       // console.log(data.MediaContainer.Metadata);
 
-      const allFolders =
-        data.MediaContainer.Metadata?.map((artist) => transposeFolderData(artist, libraryId, plexBaseUrl)) || [];
+      const folderItems =
+        data.MediaContainer.Metadata?.map((item) => transposeFolderData(item, libraryId, plexBaseUrl)).filter(
+          (item) => item !== null
+        ) || [];
 
-      console.log('allFolders', allFolders);
+      // console.log('folderItems', folderItems);
 
-      store.dispatch.appModel.setAppState({ allFolders });
+      store.dispatch.appModel.storeFolderItems({ libraryId, folderId, folderItems });
 
-      getAllFoldersRunning = false;
+      getFolderItemsRunning = false;
     }
   }
 };

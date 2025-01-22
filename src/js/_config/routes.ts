@@ -97,6 +97,11 @@ export const authRoutes = [
     exact: true,
     component: 'FolderList',
   },
+  {
+    path: '/folders/:libraryId/:folderId',
+    exact: true,
+    component: 'FolderList',
+  },
 
   // artist collections
   {

@@ -47,7 +47,6 @@ const plexLibraryState = {
   allAlbums: null,
   allAlbumTracks: {},
   // folders
-  allFolders: null,
   allFolderItems: {},
   // playlists
   allPlaylists: null,
@@ -499,6 +498,26 @@ const effects = (dispatch) => ({
       allAlbumGenreItems,
       allAlbumStyleItems,
       allAlbumMoodItems,
+    });
+  },
+
+  //
+  // PLEX - FOLDERS
+  //
+
+  storeFolderItems(payload, rootState) {
+    console.log('%c--- storeFolderItems ---', 'color:#07a098');
+    const { libraryId, folderId, folderItems } = payload;
+    const allFolderItems = { ...rootState.appModel.allFolderItems };
+    // limit recent entries
+    const keys = Object.keys(allFolderItems);
+    if (keys.length >= maxDataLength) {
+      delete allFolderItems[keys[0]];
+    }
+    // add the new entry and save
+    allFolderItems[libraryId + '-' + folderId] = folderItems;
+    dispatch.appModel.setAppState({
+      allFolderItems,
     });
   },
 
