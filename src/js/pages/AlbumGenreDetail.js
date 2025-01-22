@@ -43,6 +43,7 @@ const AlbumGenreDetail = () => {
               <>&nbsp;</>
             )
           }
+          icon={'AlbumGenresIcon'}
         />
       )}
       {!(currentAlbumGenre && currentAlbumGenreItems) && <Loading forceVisible inline />}

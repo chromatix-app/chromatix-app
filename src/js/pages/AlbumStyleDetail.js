@@ -43,6 +43,7 @@ const AlbumStyleDetail = () => {
               <>&nbsp;</>
             )
           }
+          icon={'AlbumStylesIcon'}
         />
       )}
       {!(currentAlbumStyle && currentAlbumStyleItems) && <Loading forceVisible inline />}
