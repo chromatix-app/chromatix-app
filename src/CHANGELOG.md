@@ -1,3 +1,12 @@
+<a name="0.23.0"></a>
+# 0.23.0 (2025-01-22)
+Features:
+- Icon artwork added when viewing a specific genre, mood or style.
+Updated:
+- Improved keyboard handling when an input is focused.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.22.0"></a>
 # 0.22.0 (2025-01-21)
 Features:
