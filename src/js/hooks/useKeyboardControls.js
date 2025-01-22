@@ -10,8 +10,6 @@ const useKeyboardControls = (handlers) => {
           activeElement.tagName === 'TEXTAREA' ||
           activeElement.isContentEditable);
 
-      console.log(isActiveInput, activeElement);
-
       switch (event.key) {
         case 'MediaPlayPause':
           event.preventDefault();
