@@ -43,6 +43,7 @@ const ArtistStyleDetail = () => {
               <>&nbsp;</>
             )
           }
+          icon={'ArtistStylesIcon'}
         />
       )}
       {!(currentArtistStyle && currentArtistStyleItems) && <Loading forceVisible inline />}

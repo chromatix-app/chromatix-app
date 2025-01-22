@@ -43,6 +43,7 @@ const AlbumMoodDetail = () => {
               <>&nbsp;</>
             )
           }
+          icon={'AlbumMoodsIcon'}
         />
       )}
       {!(currentAlbumMood && currentAlbumMoodItems) && <Loading forceVisible inline />}

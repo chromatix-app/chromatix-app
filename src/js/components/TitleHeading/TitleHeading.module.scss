@@ -16,7 +16,8 @@
   }
 }
 
-.thumb {
+.thumb,
+.thumbBg {
   overflow: hidden;
   flex: 0 0 auto;
   align-self: flex-start;
@@ -51,6 +52,30 @@
     height: 100%;
     object-fit: cover;
   }
+}
+
+.thumbBg {
+  :global(.cq-800) &,
+  :global(.cq-920) &,
+  :global(.cq-980) & {
+    width: 160px;
+    height: 160px;
+    margin-right: 25px;
+  }
+
+  background: var(--color-primary);
+  background: linear-gradient(to bottom, var(--color-primary) 0%, var(--color-background) 400%);
+  outline: none;
+  color: var(--color-background);
+}
+
+.thumbIcon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 56px;
+  height: 56px;
+  transform: translate(-50%, -50%);
 }
 
 .content {
