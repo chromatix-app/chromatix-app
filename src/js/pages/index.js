@@ -27,6 +27,8 @@ export { default as AlbumMoodDetail } from './AlbumMoodDetail';
 export { default as PlaylistList } from './PlaylistList';
 export { default as PlaylistDetail } from './PlaylistDetail';
 
+export { default as FolderList } from './FolderList';
+
 export { default as Settings } from './Settings';
 export { default as SettingsGeneral } from './SettingsGeneral';
 export { default as SettingsAppearance } from './SettingsAppearance';

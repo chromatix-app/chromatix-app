@@ -62,6 +62,7 @@
     }
   }
 
+  .wrap.wrapFolders &,
   .wrap.wrapArtistGenres &,
   .wrap.wrapAlbumGenres &,
   .wrap.wrapArtistMoods &,
@@ -150,6 +151,7 @@
   .wrap.wrapPlaylists &,
   .wrap.wrapArtistCollections &,
   .wrap.wrapAlbumCollections &,
+  .wrap.wrapFolders &,
   .wrap.wrapArtistGenres &,
   .wrap.wrapAlbumGenres &,
   .wrap.wrapArtistMoods &,
@@ -260,6 +262,7 @@
   background: var(--color-opacity-01);
   border-radius: 3px;
 
+  .wrap.wrapFolders &,
   .wrap.wrapArtistGenres &,
   .wrap.wrapAlbumGenres &,
   .wrap.wrapArtistMoods &,

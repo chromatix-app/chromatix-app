@@ -46,6 +46,9 @@ const plexLibraryState = {
   // albums
   allAlbums: null,
   allAlbumTracks: {},
+  // folders
+  allFolders: null,
+  allFolderItems: {},
   // playlists
   allPlaylists: null,
   allPlaylistTracks: {},

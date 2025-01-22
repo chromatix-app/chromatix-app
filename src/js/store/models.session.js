@@ -33,6 +33,7 @@ const sessionState = {
 
   menuShowArtists: true,
   menuShowAlbums: true,
+  menuShowFolders: true,
   menuShowPlaylists: true,
   menuShowArtistCollections: true,
   menuShowAlbumCollections: true,
@@ -52,6 +53,7 @@ const sessionState = {
 
   viewArtists: 'grid',
   viewAlbums: 'grid',
+  viewFolders: 'grid',
   viewPlaylists: 'grid',
   viewArtistCollections: 'grid',
   viewAlbumCollections: 'grid',
@@ -65,6 +67,7 @@ const sessionState = {
   sortArtists: 'title',
   sortAlbums: 'title',
   sortAlbumTracks: {},
+  sortFolders: 'title',
   sortPlaylists: 'title',
   sortPlaylistTracks: {},
   sortArtistCollections: 'title',
@@ -78,6 +81,7 @@ const sessionState = {
 
   orderArtists: 'asc',
   orderAlbums: 'asc',
+  orderFolders: 'asc',
   orderPlaylists: 'asc',
   orderArtistCollections: 'asc',
   orderAlbumCollections: 'asc',

@@ -16,6 +16,8 @@ import style from './SideBar.module.scss';
 // COMPONENT
 // ======================================================================
 
+const isLocal = process.env.REACT_APP_ENV === 'local';
+
 const SideBar = () => {
   const { canGoBack, canGoForward, goBack, goForward } = useNavigationHistory();
 
@@ -32,6 +34,7 @@ const SideBar = () => {
 
     menuShowArtists,
     menuShowAlbums,
+    menuShowFolders,
     menuShowPlaylists,
     menuShowArtistCollections,
     menuShowAlbumCollections,
@@ -117,6 +120,16 @@ const SideBar = () => {
                     </span>
                   )}
                   Albums
+                </NavLink>
+              )}
+              {isLocal && menuShowFolders && (
+                <NavLink className={style.link} activeClassName={style.linkActive} to="/folders" exact>
+                  {menuShowIcons && (
+                    <span className={style.icon}>
+                      <Icon icon="FolderIcon" cover stroke />
+                    </span>
+                  )}
+                  Folders
                 </NavLink>
               )}
               {menuShowPlaylists && (

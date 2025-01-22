@@ -249,7 +249,8 @@ const ListEntries = ({
             </>
           )}
 
-          {(variant === 'artistGenres' ||
+          {(variant === 'folders' ||
+            variant === 'artistGenres' ||
             variant === 'albumGenres' ||
             variant === 'artistMoods' ||
             variant === 'albumMoods' ||
@@ -379,6 +380,10 @@ const ListEntries = ({
 
           {(variant === 'artistCollections' || variant === 'albumCollections') && (
             <ListArtistCollections entries={entries} />
+          )}
+
+          {variant === 'folders' && (
+            <ListGenresMoodsStyles entryKey={'folderId'} entries={entries} icon={'FolderIcon'} />
           )}
 
           {variant === 'artistGenres' && (

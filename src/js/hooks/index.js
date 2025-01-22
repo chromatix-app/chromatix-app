@@ -4,6 +4,7 @@ export { default as useGetArtistDetail } from './useGetArtistDetail';
 export { default as useGetAllAlbums } from './useGetAllAlbums';
 export { default as useGetAllArtists } from './useGetAllArtists';
 export { default as useGetAllCollections } from './useGetAllCollections';
+export { default as useGetAllFolders } from './useGetAllFolders';
 export { default as useGetAllPlaylists } from './useGetAllPlaylists';
 export { default as useGetAllSetEntries } from './useGetAllSetEntries';
 export { default as useGetPlaylistDetail } from './useGetPlaylistDetail';

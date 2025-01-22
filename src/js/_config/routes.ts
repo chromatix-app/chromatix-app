@@ -91,6 +91,13 @@ export const authRoutes = [
     component: 'PlaylistDetail',
   },
 
+  // folders
+  {
+    path: '/folders',
+    exact: true,
+    component: 'FolderList',
+  },
+
   // artist collections
   {
     path: '/artist-collections',

@@ -31,6 +31,7 @@ import { ReactComponent as DiscIcon } from './icons/music/disc.svg';
 import { ReactComponent as ExpandIcon } from './icons/music/expand.svg';
 import { ReactComponent as ExternalLinkIcon } from './icons/music/external-link.svg';
 import { ReactComponent as FastForwardIcon } from './icons/music/fast-forward.svg';
+import { ReactComponent as FolderIcon } from './icons/music/folder.svg';
 import { ReactComponent as GithubIcon } from './icons/music/github.svg';
 import { ReactComponent as GridIcon } from './icons/music/grid.svg';
 import { ReactComponent as InfoIcon } from './icons/music/info.svg';
@@ -103,6 +104,7 @@ const customIcons = {
   ExpandIcon,
   ExternalLinkIcon,
   FastForwardIcon,
+  FolderIcon,
   GithubIcon,
   GridIcon,
   InfoIcon,
