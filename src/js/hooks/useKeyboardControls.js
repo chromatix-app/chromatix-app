@@ -3,6 +3,15 @@ import { useEffect } from 'react';
 const useKeyboardControls = (handlers) => {
   useEffect(() => {
     function handleKeyDown(event) {
+      const activeElement = document.activeElement;
+      const isActiveInput =
+        activeElement &&
+        ((activeElement.tagName === 'INPUT' && activeElement.type !== 'range') ||
+          activeElement.tagName === 'TEXTAREA' ||
+          activeElement.isContentEditable);
+
+      console.log(isActiveInput, activeElement);
+
       switch (event.key) {
         case 'MediaPlayPause':
           event.preventDefault();
@@ -17,16 +26,22 @@ const useKeyboardControls = (handlers) => {
           handlers.next();
           break;
         case ' ':
-          event.preventDefault();
-          handlers.playPause();
+          if (!isActiveInput) {
+            event.preventDefault();
+            handlers.playPause();
+          }
           break;
         case 'ArrowLeft':
-          event.preventDefault();
-          handlers.prev();
+          if (!isActiveInput) {
+            event.preventDefault();
+            handlers.prev();
+          }
           break;
         case 'ArrowRight':
-          event.preventDefault();
-          handlers.next();
+          if (!isActiveInput) {
+            event.preventDefault();
+            handlers.next();
+          }
           break;
         default:
           break;
