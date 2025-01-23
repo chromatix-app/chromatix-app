@@ -591,21 +591,24 @@ const ListArtistCollections = ({ entries }) => {
 };
 
 const ListGenresMoodsStyles = ({ entryKey, entries, icon }) => {
+  return entries.map((entry) => <GenresMoodsStylesEntry key={entry[entryKey]} entry={entry} icon={icon} />);
+};
+
+const GenresMoodsStylesEntry = ({ entry, icon, trackList }) => {
   const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
 
-  return entries.map((entry) => {
-    return (
-      <NavLink key={entry[entryKey]} className={style.entry} to={entry.link}>
-        <div className={style.thumb}>
-          <span className={style.thumbIcon}>
-            <Icon icon={icon} cover stroke strokeWidth={1.2} />
-          </span>
-        </div>
-        <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
-        <div></div>
-      </NavLink>
-    );
-  });
+  return (
+    <NavLink className={style.entry} to={entry.link}>
+      {trackList && <div></div>}
+      <div className={clsx(style.thumb, style.thumbFolder)}>
+        <span className={style.thumbIcon}>
+          <Icon icon={icon} cover stroke strokeWidth={1.2} />
+        </span>
+      </div>
+      <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
+      <div></div>
+    </NavLink>
+  );
 };
 
 const ListTracks = ({ variant, albumId, playlistId, discCount, entries, playingOrder, sortKey }) => {
@@ -670,6 +673,18 @@ const ListTracks = ({ variant, albumId, playlistId, discCount, entries, playingO
         dispatch.playerModel.playerPlay();
       }
     };
+
+    if (entry.folderId) {
+      return (
+        <GenresMoodsStylesEntry
+          key={entry.folderId}
+          entry={entry}
+          entryKey={'folderId'}
+          icon={'FolderIcon'}
+          trackList={true}
+        />
+      );
+    }
 
     return (
       <ListTrackEntry
@@ -756,9 +771,9 @@ const ListTrackEntry = React.memo(
             </div>
           )}
 
-          {variant === 'playlistTracks' && entry.thumb && (
+          {variant === 'playlistTracks' && (
             <div className={style.thumb}>
-              <img src={entry.thumb} alt={entry.title} loading="lazy" />
+              {entry.thumb && <img src={entry.thumb} alt={entry.title} loading="lazy" />}
             </div>
           )}
 
@@ -775,9 +790,12 @@ const ListTrackEntry = React.memo(
 
           {variant === 'playlistTracks' && (
             <div className={clsx(style.album, { 'text-trim': !optionShowFullTitles })}>
-              <NavLink to={entry.albumLink} tabIndex={-1}>
-                {entry.album}{' '}
-              </NavLink>
+              {entry.albumLink && (
+                <NavLink to={entry.albumLink} tabIndex={-1}>
+                  {entry.album}{' '}
+                </NavLink>
+              )}
+              {!entry.albumLink && entry.album}
             </div>
           )}
 

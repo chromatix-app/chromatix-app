@@ -13,7 +13,13 @@ const useGetFolderItems = (folderId = 'root') => {
   const libraryId = currentLibrary?.libraryId;
   const allFolderItems = useSelector(({ appModel }) => appModel.allFolderItems);
   const folderItems = allFolderItems ? allFolderItems[libraryId + '-' + folderId] : null;
-  const sortedFolders = folderItems ? sortList(folderItems, sortFolders, orderFolders) : null;
+  const sortedFolders = folderItems
+    ? sortList(folderItems, sortFolders, orderFolders).sort((a, b) => {
+        if (a.folderId && !b.folderId) return -1;
+        if (!a.folderId && b.folderId) return 1;
+        return 0;
+      })
+    : null;
 
   useEffect(() => {
     plex.getFolderItems(folderId);

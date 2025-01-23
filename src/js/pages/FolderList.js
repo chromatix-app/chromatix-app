@@ -18,6 +18,8 @@ const FolderList = () => {
   const { folderId } = useParams();
   const { viewFolders, sortFolders, orderFolders, sortedFolders } = useGetFolderItems(folderId);
 
+  const trackEntries = sortedFolders?.filter((entry) => entry.trackId);
+
   return (
     <>
       <TitleHeading
@@ -61,7 +63,12 @@ const FolderList = () => {
       {!sortedFolders && <Loading forceVisible inline />}
       {sortedFolders && viewFolders === 'grid' && <ListCards variant="folders" entries={sortedFolders} />}
       {sortFolders && viewFolders === 'list' && (
-        <ListEntries variant="folders" entries={sortedFolders} sortKey={sortFolders} orderKey={orderFolders} />
+        <ListEntries
+          variant={trackEntries?.length > 0 ? 'playlistTracks' : 'folders'}
+          entries={sortedFolders}
+          sortKey={sortFolders}
+          orderKey={orderFolders}
+        />
       )}
     </>
   );

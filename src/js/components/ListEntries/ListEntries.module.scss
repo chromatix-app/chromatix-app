@@ -262,6 +262,7 @@
   background: var(--color-opacity-01);
   border-radius: 3px;
 
+  &.thumbFolder,
   .wrap.wrapFolders &,
   .wrap.wrapArtistGenres &,
   .wrap.wrapAlbumGenres &,

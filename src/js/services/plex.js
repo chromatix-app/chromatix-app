@@ -577,9 +577,9 @@ export const getFolderItems = async (folderId) => {
       // console.log(data.MediaContainer.Metadata);
 
       const folderItems =
-        data.MediaContainer.Metadata?.map((item) => transposeFolderData(item, libraryId, plexBaseUrl)).filter(
-          (item) => item !== null
-        ) || [];
+        data.MediaContainer.Metadata?.map((item, index) =>
+          transposeFolderData(item, index, libraryId, plexBaseUrl, accessToken)
+        ).filter((item) => item !== null) || [];
 
       // console.log('folderItems', folderItems);
 
