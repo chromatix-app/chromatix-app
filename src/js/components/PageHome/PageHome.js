@@ -81,7 +81,7 @@ export const PageHome = () => {
       </div>
 
       <div className={clsx(style.image, style.margin)}>
-        <img src="/images/chromatix002.jpg" alt="Chromatix music player for Plex" width="2000" height="1484" />
+        <img src="/images/chromatix003.jpg" alt="Chromatix music player for Plex" width="2000" height="1484" />
       </div>
 
       <div className={style.intro}>
