@@ -1,11 +1,12 @@
 export { default as useColorTheme } from './useColorTheme';
 export { default as useGetAlbumDetail } from './useGetAlbumDetail';
-export { default as useGetArtistDetail } from './useGetArtistDetail';
 export { default as useGetAllAlbums } from './useGetAllAlbums';
 export { default as useGetAllArtists } from './useGetAllArtists';
 export { default as useGetAllCollections } from './useGetAllCollections';
 export { default as useGetAllPlaylists } from './useGetAllPlaylists';
 export { default as useGetAllSetEntries } from './useGetAllSetEntries';
+export { default as useGetArtistDetail } from './useGetArtistDetail';
+export { default as useGetCollectionItems } from './useGetCollectionItems';
 export { default as useGetFolderItems } from './useGetFolderItems';
 export { default as useGetPlaylistDetail } from './useGetPlaylistDetail';
 export { default as useGotRequiredData } from './useGotRequiredData';

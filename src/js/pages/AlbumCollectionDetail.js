@@ -2,12 +2,11 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { ListCards, Loading, StarRating, TitleHeading } from 'js/components';
-import * as plex from 'js/services/plex';
+import { useGetCollectionItems } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
@@ -18,26 +17,16 @@ const AlbumCollectionDetail = () => {
 
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
-  const allAlbumCollections = useSelector(({ appModel }) => appModel.allAlbumCollections);
-  const currentAlbumCollection = allAlbumCollections?.filter(
-    (collection) => collection.collectionId === collectionId
-  )[0];
-
-  const allAlbumCollectionItems = useSelector(({ appModel }) => appModel.allAlbumCollectionItems);
-  const currentAlbumCollectionItems = allAlbumCollectionItems[libraryId + '-' + collectionId];
-
-  const collectionThumb = currentAlbumCollection?.thumb;
-  const collectionTitle = currentAlbumCollection?.title;
-  const collectionRating = currentAlbumCollection?.userRating;
-
-  useEffect(() => {
-    plex.getAllCollections();
-    plex.getAlbumCollectionItems(libraryId, collectionId);
-  }, [collectionId, libraryId]);
+  const { currentCollectionItems, collectionThumb, collectionTitle, collectionRating } = useGetCollectionItems({
+    collectionId,
+    libraryId,
+    collectionKey: 'AlbumCollections',
+    itemsKey: 'AlbumCollectionItems',
+  });
 
   return (
     <>
-      {currentAlbumCollection && (
+      {currentCollectionItems && (
         <TitleHeading
           thumb={collectionThumb}
           title={collectionTitle}
@@ -53,19 +42,11 @@ const AlbumCollectionDetail = () => {
               />
             )
           }
-          subtitle={
-            currentAlbumCollectionItems ? (
-              currentAlbumCollectionItems?.length + ' Album' + (currentAlbumCollectionItems?.length !== 1 ? 's' : '')
-            ) : (
-              <>&nbsp;</>
-            )
-          }
+          subtitle={currentCollectionItems?.length + ' Album' + (currentCollectionItems?.length !== 1 ? 's' : '')}
         />
       )}
-      {!(currentAlbumCollection && currentAlbumCollectionItems) && <Loading forceVisible inline />}
-      {currentAlbumCollection && currentAlbumCollectionItems && (
-        <ListCards variant={'albums'} entries={currentAlbumCollectionItems} />
-      )}
+      {!currentCollectionItems && <Loading forceVisible inline />}
+      {currentCollectionItems && <ListCards variant={'albums'} entries={currentCollectionItems} />}
     </>
   );
 };
