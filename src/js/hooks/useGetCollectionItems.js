@@ -19,15 +19,14 @@ const useGetCollectionItems = ({
   const sortCollectionItems = useSelector(({ sessionModel }) => sessionModel[`sort${itemsKey}`]);
   const orderCollectionItems = useSelector(({ sessionModel }) => sessionModel[`order${itemsKey}`]);
 
-  const actualSortCollectionItems =
-    // only allow sorting by rating if the option is enabled
-    !optionShowStarRatings && sortCollectionItems === 'userRating'
-      ? 'title'
-      : // default
-        sortCollectionItems;
+  // prevent sorting by rating if ratings are hidden
+  const isRatingSortHidden = !optionShowStarRatings && sortCollectionItems === 'userRating';
 
-  const actualOrderCollectionItems =
-    !optionShowStarRatings && sortCollectionItems === 'userRating' ? 'asc' : orderCollectionItems;
+  // prevent sub-sorting in list view
+  const isSubSortList = viewCollectionItems === 'list' && sortCollectionItems.split('-').length > 2;
+
+  const actualSortCollectionItems = isRatingSortHidden ? 'title' : isSubSortList ? 'artist' : sortCollectionItems;
+  const actualOrderCollectionItems = isRatingSortHidden ? 'asc' : orderCollectionItems;
 
   const allCollections = useSelector(({ appModel }) => appModel[`all${collectionKey}`]);
   const currentCollection = allCollections?.filter((collection) => collection[collectionFilter] === collectionId)[0];

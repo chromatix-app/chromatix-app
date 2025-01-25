@@ -9,8 +9,11 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
 
   const sortPlaylistTracks = useSelector(({ sessionModel }) => sessionModel.sortPlaylistTracks);
   const currentSortString = sortPlaylistTracks[playlistId] || null;
-  const playlistSortString =
-    !optionShowStarRatings && currentSortString?.startsWith('userRating') ? null : currentSortString;
+
+  // prevent sorting by rating if ratings are hidden
+  const isRatingSortHidden = !optionShowStarRatings && currentSortString?.startsWith('userRating');
+
+  const playlistSortString = isRatingSortHidden ? null : currentSortString;
 
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
   const playlistInfo = allPlaylists?.filter((playlist) => playlist.playlistId === playlistId)[0];

@@ -13,8 +13,11 @@ const useGetAllCollections = (collectionKey) => {
   const sortCollections = useSelector(({ sessionModel }) => sessionModel[`sort${collectionKey}`]);
   const orderCollections = useSelector(({ sessionModel }) => sessionModel[`order${collectionKey}`]);
 
-  const actualSortCollections = !optionShowStarRatings && sortCollections === 'userRating' ? 'title' : sortCollections;
-  const actualOrderCollections = !optionShowStarRatings && sortCollections === 'userRating' ? 'asc' : orderCollections;
+  // prevent sorting by rating if ratings are hidden
+  const isRatingSortHidden = !optionShowStarRatings && sortCollections === 'userRating';
+
+  const actualSortCollections = isRatingSortHidden ? 'title' : sortCollections;
+  const actualOrderCollections = isRatingSortHidden ? 'asc' : orderCollections;
 
   const allCollections = useSelector(({ appModel }) => appModel[`all${collectionKey}`]);
   const sortedCollections = allCollections

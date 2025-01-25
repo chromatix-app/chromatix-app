@@ -16,8 +16,11 @@ const useGetAllArtists = () => {
   const sortArtists = useSelector(({ sessionModel }) => sessionModel.sortArtists);
   const orderArtists = useSelector(({ sessionModel }) => sessionModel.orderArtists);
 
-  const actualSortArtists = !optionShowStarRatings && sortArtists === 'userRating' ? 'title' : sortArtists;
-  const actualOrderArtists = !optionShowStarRatings && sortArtists === 'userRating' ? 'asc' : orderArtists;
+  // prevent sorting by rating if ratings are hidden
+  const isRatingSortHidden = !optionShowStarRatings && sortArtists === 'userRating';
+
+  const actualSortArtists = isRatingSortHidden ? 'title' : sortArtists;
+  const actualOrderArtists = isRatingSortHidden ? 'asc' : orderArtists;
 
   const allArtists = useSelector(({ appModel }) => appModel.allArtists)?.filter(
     (artist) => artist.libraryId === currentLibraryId

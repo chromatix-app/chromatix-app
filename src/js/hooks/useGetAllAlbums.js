@@ -16,17 +16,14 @@ const useGetAllAlbums = () => {
   const sortAlbums = useSelector(({ sessionModel }) => sessionModel.sortAlbums);
   const orderAlbums = useSelector(({ sessionModel }) => sessionModel.orderAlbums);
 
-  const actualSortAlbums =
-    // only allow sorting by rating if the option is enabled
-    !optionShowStarRatings && sortAlbums === 'userRating'
-      ? 'title'
-      : // prevent sub-sorting in list view
-      viewAlbums === 'list' && sortAlbums.startsWith('artist-asc-releaseDate-')
-      ? 'artist'
-      : // default
-        sortAlbums;
+  // prevent sorting by rating if ratings are hidden
+  const isRatingSortHidden = !optionShowStarRatings && sortAlbums === 'userRating';
 
-  const actualOrderAlbums = !optionShowStarRatings && sortAlbums === 'userRating' ? 'asc' : orderAlbums;
+  // prevent sub-sorting in list view
+  const isSubSortList = viewAlbums === 'list' && sortAlbums.split('-').length > 2;
+
+  const actualSortAlbums = isRatingSortHidden ? 'title' : isSubSortList ? 'artist' : sortAlbums;
+  const actualOrderAlbums = isRatingSortHidden ? 'asc' : orderAlbums;
 
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums)?.filter(
     (album) => album.libraryId === currentLibraryId
