@@ -22,6 +22,7 @@ import { ReactComponent as ArtistCollectionsIcon } from './icons/music/artist-co
 import { ReactComponent as ArtistGenresIcon } from './icons/music/artist-genres.svg';
 import { ReactComponent as ArtistMoodsIcon } from './icons/music/artist-moods.svg';
 import { ReactComponent as ArtistStylesIcon } from './icons/music/artist-styles.svg';
+import { ReactComponent as BlueskyIcon } from './icons/music/bluesky.svg';
 import { ReactComponent as CheckIcon } from './icons/music/check.svg';
 import { ReactComponent as CheckCircleIcon } from './icons/music/check-circle.svg';
 import { ReactComponent as ClockRewindIcon } from './icons/music/clock-rewind.svg';
@@ -31,6 +32,7 @@ import { ReactComponent as DiscIcon } from './icons/music/disc.svg';
 import { ReactComponent as ExpandIcon } from './icons/music/expand.svg';
 import { ReactComponent as ExternalLinkIcon } from './icons/music/external-link.svg';
 import { ReactComponent as FastForwardIcon } from './icons/music/fast-forward.svg';
+import { ReactComponent as FolderIcon } from './icons/music/folder.svg';
 import { ReactComponent as GithubIcon } from './icons/music/github.svg';
 import { ReactComponent as GridIcon } from './icons/music/grid.svg';
 import { ReactComponent as InfoIcon } from './icons/music/info.svg';
@@ -94,6 +96,7 @@ const customIcons = {
   ArtistGenresIcon,
   ArtistMoodsIcon,
   ArtistStylesIcon,
+  BlueskyIcon,
   CheckIcon,
   CheckCircleIcon,
   ClockRewindIcon,
@@ -103,6 +106,7 @@ const customIcons = {
   ExpandIcon,
   ExternalLinkIcon,
   FastForwardIcon,
+  FolderIcon,
   GithubIcon,
   GridIcon,
   InfoIcon,

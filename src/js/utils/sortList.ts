@@ -79,11 +79,11 @@ const sortFunctions: Record<string, SortFunction> = {
   userRating: (a, b) => (a.userRating ?? 0) - (b.userRating ?? 0),
 
   // Dates
-  addedAt: (a, b) => new Date(b.addedAt ?? '1970-01-01').getTime() - new Date(a.addedAt ?? '1970-01-01').getTime(),
+  addedAt: (a, b) => new Date(a.addedAt ?? '1970-01-01').getTime() - new Date(b.addedAt ?? '1970-01-01').getTime(),
   lastPlayed: (a, b) =>
-    new Date(b.lastPlayed ?? '1970-01-01').getTime() - new Date(a.lastPlayed ?? '1970-01-01').getTime(),
+    new Date(a.lastPlayed ?? '1970-01-01').getTime() - new Date(b.lastPlayed ?? '1970-01-01').getTime(),
   releaseDate: (a, b) =>
-    new Date(b.releaseDate ?? '1970-01-01').getTime() - new Date(a.releaseDate ?? '1970-01-01').getTime(),
+    new Date(a.releaseDate ?? '1970-01-01').getTime() - new Date(b.releaseDate ?? '1970-01-01').getTime(),
 };
 
 export default sortList;

@@ -1,10 +1,13 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 const useGetArtistDetail = ({ libraryId, artistId }) => {
-  // const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+  const dispatch = useDispatch();
+
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   const allArtists = useSelector(({ appModel }) => appModel.allArtists);
   const artistInfo = allArtists?.filter((artist) => artist.artistId === artistId)[0];
@@ -26,6 +29,55 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const artistCountry = artistInfo?.country;
   const artistGenre = artistInfo?.genre;
   const artistRating = artistInfo?.userRating;
+
+  const viewArtistAlbums = useSelector(({ sessionModel }) => sessionModel.viewArtistAlbums);
+  const sortArtistAlbums = useSelector(({ sessionModel }) => sessionModel.sortArtistAlbums);
+  const orderArtistAlbums = useSelector(({ sessionModel }) => sessionModel.orderArtistAlbums);
+
+  // prevent sorting by rating if ratings are hidden
+  const isRatingSortHidden = !optionShowStarRatings && sortArtistAlbums === 'userRating';
+
+  // prevent sub-sorting in list view
+  const isSubSortList = viewArtistAlbums === 'list' && sortArtistAlbums.split('-').length > 2;
+
+  const actualSortArtistAlbums = isRatingSortHidden ? 'title' : isSubSortList ? 'artist' : sortArtistAlbums;
+  const actualOrderArtistAlbums = isRatingSortHidden ? 'asc' : orderArtistAlbums;
+
+  const sortedArtistAlbums = artistAlbums
+    ? sortList(artistAlbums, actualSortArtistAlbums, actualOrderArtistAlbums)
+    : null;
+
+  const sortedArtistRelated = artistRelated?.map((entry) => {
+    const sortedEntry =
+      entry && entry.related ? sortList(entry.related, actualSortArtistAlbums, actualOrderArtistAlbums) : null;
+    return {
+      ...entry,
+      related: sortedEntry,
+    };
+  });
+
+  const sortedArtistCompilations = artistCompilations
+    ? sortList(artistCompilations, actualSortArtistAlbums, actualOrderArtistAlbums)
+    : null;
+
+  const setViewArtistAlbums = (viewArtistAlbums) => {
+    dispatch.sessionModel.setSessionState({
+      viewArtistAlbums,
+    });
+  };
+
+  const setSortArtistAlbums = (sortArtistAlbums) => {
+    dispatch.sessionModel.setSessionState({
+      sortArtistAlbums,
+    });
+  };
+
+  const setOrderArtistAlbums = (orderArtistAlbums) => {
+    dispatch.sessionModel.setSessionState({
+      sortArtistAlbums: actualSortArtistAlbums,
+      orderArtistAlbums,
+    });
+  };
 
   // Get the required artist data
   useEffect(() => {
@@ -52,9 +104,9 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   return {
     artistInfo,
 
-    artistAlbums,
-    artistRelated,
-    artistCompilations,
+    artistAlbums: sortedArtistAlbums,
+    artistRelated: sortedArtistRelated,
+    artistCompilations: sortedArtistCompilations,
 
     artistThumb,
     artistName,
@@ -64,6 +116,14 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     artistCountry,
     artistGenre,
     artistRating,
+
+    viewArtistAlbums,
+    sortArtistAlbums: actualSortArtistAlbums,
+    orderArtistAlbums: actualOrderArtistAlbums,
+
+    setViewArtistAlbums,
+    setSortArtistAlbums,
+    setOrderArtistAlbums,
   };
 };
 

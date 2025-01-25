@@ -5,27 +5,29 @@ export { default as LibraryList } from './LibraryList';
 export { default as ArtistList } from './ArtistList';
 export { default as ArtistDetail } from './ArtistDetail';
 export { default as ArtistCollectionList } from './ArtistCollectionList';
-export { default as ArtistCollectionDetail } from './ArtistCollectionDetail';
+export { default as ArtistCollectionItems } from './ArtistCollectionItems';
 export { default as ArtistGenreList } from './ArtistGenreList';
-export { default as ArtistGenreDetail } from './ArtistGenreDetail';
+export { default as ArtistGenreItems } from './ArtistGenreItems';
 export { default as ArtistStyleList } from './ArtistStyleList';
-export { default as ArtistStyleDetail } from './ArtistStyleDetail';
+export { default as ArtistStyleItems } from './ArtistStyleItems';
 export { default as ArtistMoodList } from './ArtistMoodList';
-export { default as ArtistMoodDetail } from './ArtistMoodDetail';
+export { default as ArtistMoodItems } from './ArtistMoodItems';
 
 export { default as AlbumList } from './AlbumList';
 export { default as AlbumDetail } from './AlbumDetail';
 export { default as AlbumCollectionList } from './AlbumCollectionList';
-export { default as AlbumCollectionDetail } from './AlbumCollectionDetail';
+export { default as AlbumCollectionItems } from './AlbumCollectionItems';
 export { default as AlbumGenreList } from './AlbumGenreList';
-export { default as AlbumGenreDetail } from './AlbumGenreDetail';
+export { default as AlbumGenreItems } from './AlbumGenreItems';
 export { default as AlbumStyleList } from './AlbumStyleList';
-export { default as AlbumStyleDetail } from './AlbumStyleDetail';
+export { default as AlbumStyleItems } from './AlbumStyleItems';
 export { default as AlbumMoodList } from './AlbumMoodList';
-export { default as AlbumMoodDetail } from './AlbumMoodDetail';
+export { default as AlbumMoodItems } from './AlbumMoodItems';
 
 export { default as PlaylistList } from './PlaylistList';
 export { default as PlaylistDetail } from './PlaylistDetail';
+
+export { default as FolderList } from './FolderList';
 
 export { default as Settings } from './Settings';
 export { default as SettingsGeneral } from './SettingsGeneral';

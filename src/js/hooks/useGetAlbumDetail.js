@@ -11,9 +11,10 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const sortAlbumTracks = useSelector(({ sessionModel }) => sessionModel.sortAlbumTracks);
   const currentSortString = sortAlbumTracks[albumId] || null;
 
-  // If star ratings are hidden and the current sort string is a userRating sort, set it to null
-  const albumSortString =
-    !optionShowStarRatings && currentSortString?.startsWith('userRating') ? null : currentSortString;
+  // prevent sorting by rating if ratings are hidden
+  const isRatingSortHidden = !optionShowStarRatings && currentSortString?.startsWith('userRating');
+
+  const albumSortString = isRatingSortHidden ? null : currentSortString;
 
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums);
   const albumInfo = allAlbums?.filter((album) => album.albumId === albumId)[0];

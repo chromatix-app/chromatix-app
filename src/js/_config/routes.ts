@@ -91,6 +91,18 @@ export const authRoutes = [
     component: 'PlaylistDetail',
   },
 
+  // folders
+  {
+    path: '/folders',
+    exact: true,
+    component: 'FolderList',
+  },
+  {
+    path: '/folders/:libraryId/:folderId',
+    exact: true,
+    component: 'FolderList',
+  },
+
   // artist collections
   {
     path: '/artist-collections',
@@ -100,7 +112,7 @@ export const authRoutes = [
   {
     path: '/artist-collections/:libraryId/:collectionId',
     exact: true,
-    component: 'ArtistCollectionDetail',
+    component: 'ArtistCollectionItems',
   },
 
   // album collections
@@ -112,7 +124,7 @@ export const authRoutes = [
   {
     path: '/album-collections/:libraryId/:collectionId',
     exact: true,
-    component: 'AlbumCollectionDetail',
+    component: 'AlbumCollectionItems',
   },
 
   // artist genres
@@ -124,7 +136,7 @@ export const authRoutes = [
   {
     path: '/artist-genres/:libraryId/:genreId',
     exact: true,
-    component: 'ArtistGenreDetail',
+    component: 'ArtistGenreItems',
   },
 
   // album genres
@@ -136,7 +148,7 @@ export const authRoutes = [
   {
     path: '/album-genres/:libraryId/:genreId',
     exact: true,
-    component: 'AlbumGenreDetail',
+    component: 'AlbumGenreItems',
   },
 
   // artist styles
@@ -148,7 +160,7 @@ export const authRoutes = [
   {
     path: '/artist-styles/:libraryId/:styleId',
     exact: true,
-    component: 'ArtistStyleDetail',
+    component: 'ArtistStyleItems',
   },
 
   // album styles
@@ -160,7 +172,7 @@ export const authRoutes = [
   {
     path: '/album-styles/:libraryId/:styleId',
     exact: true,
-    component: 'AlbumStyleDetail',
+    component: 'AlbumStyleItems',
   },
 
   // artist moods
@@ -172,7 +184,7 @@ export const authRoutes = [
   {
     path: '/artist-moods/:libraryId/:moodId',
     exact: true,
-    component: 'ArtistMoodDetail',
+    component: 'ArtistMoodItems',
   },
 
   // album moods
@@ -184,7 +196,7 @@ export const authRoutes = [
   {
     path: '/album-moods/:libraryId/:moodId',
     exact: true,
-    component: 'AlbumMoodDetail',
+    component: 'AlbumMoodItems',
   },
 
   // settings

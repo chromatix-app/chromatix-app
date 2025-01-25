@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 const useGetAllAlbums = () => {
+  const dispatch = useDispatch();
+
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
@@ -14,22 +16,38 @@ const useGetAllAlbums = () => {
   const sortAlbums = useSelector(({ sessionModel }) => sessionModel.sortAlbums);
   const orderAlbums = useSelector(({ sessionModel }) => sessionModel.orderAlbums);
 
-  const actualSortAlbums =
-    // only allow sorting by rating if the option is enabled
-    !optionShowStarRatings && sortAlbums === 'userRating'
-      ? 'title'
-      : // prevent sub-sorting in list view
-      viewAlbums === 'list' && sortAlbums.startsWith('artist-asc-releaseDate-')
-      ? 'artist'
-      : // default
-        sortAlbums;
+  // prevent sorting by rating if ratings are hidden
+  const isRatingSortHidden = !optionShowStarRatings && sortAlbums === 'userRating';
 
-  const actualOrderAlbums = !optionShowStarRatings && sortAlbums === 'userRating' ? 'asc' : orderAlbums;
+  // prevent sub-sorting in list view
+  const isSubSortList = viewAlbums === 'list' && sortAlbums.split('-').length > 2;
+
+  const actualSortAlbums = isRatingSortHidden ? 'title' : isSubSortList ? 'artist' : sortAlbums;
+  const actualOrderAlbums = isRatingSortHidden ? 'asc' : orderAlbums;
 
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums)?.filter(
     (album) => album.libraryId === currentLibraryId
   );
   const sortedAlbums = allAlbums ? sortList(allAlbums, actualSortAlbums, actualOrderAlbums) : null;
+
+  const setViewAlbums = (viewAlbums) => {
+    dispatch.sessionModel.setSessionState({
+      viewAlbums,
+    });
+  };
+
+  const setSortAlbums = (sortAlbums) => {
+    dispatch.sessionModel.setSessionState({
+      sortAlbums,
+    });
+  };
+
+  const setOrderAlbums = (orderAlbums) => {
+    dispatch.sessionModel.setSessionState({
+      sortAlbums: actualSortAlbums,
+      orderAlbums,
+    });
+  };
 
   useEffect(() => {
     plex.getAllAlbums();
@@ -39,6 +57,11 @@ const useGetAllAlbums = () => {
     viewAlbums,
     sortAlbums: actualSortAlbums,
     orderAlbums: actualOrderAlbums,
+
+    setViewAlbums,
+    setSortAlbums,
+    setOrderAlbums,
+
     sortedAlbums,
   };
 };

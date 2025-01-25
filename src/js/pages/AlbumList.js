@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
 import { useGetAllAlbums } from 'js/hooks';
@@ -12,10 +12,9 @@ import { useGetAllAlbums } from 'js/hooks';
 // ======================================================================
 
 const AlbumList = () => {
-  const dispatch = useDispatch();
-
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-  const { viewAlbums, sortAlbums, orderAlbums, sortedAlbums } = useGetAllAlbums();
+  const { viewAlbums, sortAlbums, orderAlbums, setViewAlbums, setSortAlbums, setOrderAlbums, sortedAlbums } =
+    useGetAllAlbums();
 
   return (
     <>
@@ -30,11 +29,7 @@ const AlbumList = () => {
             { value: 'grid', label: 'Grid view' },
             { value: 'list', label: 'List view' },
           ]}
-          setter={(viewAlbums) => {
-            dispatch.sessionModel.setSessionState({
-              viewAlbums,
-            });
-          }}
+          setter={setViewAlbums}
           icon={viewAlbums === 'grid' ? 'GridIcon' : 'ListIcon'}
         />
         {viewAlbums === 'grid' && (
@@ -44,24 +39,15 @@ const AlbumList = () => {
               options={[
                 { value: 'title', label: 'Alphabetical' },
                 { value: 'artist', label: 'Artist' },
-                // only allow sub-sorting in grid view
-                ...(viewAlbums === 'grid'
-                  ? [
-                      { value: 'artist-asc-releaseDate-asc', label: 'Artist, newest release first' },
-                      { value: 'artist-asc-releaseDate-desc', label: 'Artist, oldest release first' },
-                    ]
-                  : []),
+                { value: 'artist-asc-releaseDate-desc', label: 'Artist, newest release first' },
+                { value: 'artist-asc-releaseDate-asc', label: 'Artist, oldest release first' },
                 { value: 'addedAt', label: 'Date added' },
                 { value: 'lastPlayed', label: 'Date played' },
                 { value: 'releaseDate', label: 'Date released' },
                 // only allow sorting by rating if the option is enabled
                 ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
               ]}
-              setter={(sortAlbums) => {
-                dispatch.sessionModel.setSessionState({
-                  sortAlbums,
-                });
-              }}
+              setter={setSortAlbums}
             />
             <FilterToggle
               value={orderAlbums}
@@ -69,11 +55,7 @@ const AlbumList = () => {
                 { value: 'asc', label: 'Ascending' },
                 { value: 'desc', label: 'Descending' },
               ]}
-              setter={(orderAlbums) => {
-                dispatch.sessionModel.setSessionState({
-                  orderAlbums,
-                });
-              }}
+              setter={setOrderAlbums}
               icon={orderAlbums === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
           </>

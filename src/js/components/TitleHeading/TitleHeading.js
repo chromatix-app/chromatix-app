@@ -14,7 +14,7 @@ import style from './TitleHeading.module.scss';
 // COMPONENT
 // ======================================================================
 
-const TitleHeading = ({ title, subtitle, detail, thumb, icon, handlePlay }) => {
+const TitleHeading = ({ title, subtitle, detail, thumb, icon, handlePlay, filters }) => {
   const triggerRef = useRef(null);
   const isNearTop = useNearTop(triggerRef, 90);
 
@@ -58,6 +58,7 @@ const TitleHeading = ({ title, subtitle, detail, thumb, icon, handlePlay }) => {
               </button>
             </div>
           )}
+          {filters && <div className={style.filters}>{filters}</div>}
         </div>
         <div ref={triggerRef} className={style.stickyTrigger}></div>
       </div>
