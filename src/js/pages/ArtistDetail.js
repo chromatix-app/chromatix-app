@@ -6,7 +6,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { ListCards, Loading, StarRating, TitleHeading, TitleSection } from 'js/components';
+import { FilterSelect, FilterToggle, ListCards, Loading, StarRating, TitleHeading, TitleSection } from 'js/components';
 import { useGetArtistDetail } from 'js/hooks';
 
 // ======================================================================
@@ -20,19 +20,31 @@ const ArtistDetail = () => {
 
   const {
     artistInfo,
+
     artistAlbums,
     artistRelated,
     artistCompilations,
+
     artistThumb,
     artistName,
     artistReleases,
     artistCountry,
     artistGenre,
     artistRating,
+
+    viewArtistAlbums,
+    sortArtistAlbums,
+    orderArtistAlbums,
+
+    // setViewArtistAlbums,
+    setSortArtistAlbums,
+    setOrderArtistAlbums,
   } = useGetArtistDetail({
     libraryId,
     artistId,
   });
+
+  const gotArtistData = artistInfo && artistAlbums && artistRelated;
 
   return (
     <>
@@ -58,10 +70,51 @@ const ArtistDetail = () => {
               <>&nbsp;</>
             )
           }
+          filters={
+            <>
+              {/* <FilterToggle
+                value={viewArtistAlbums}
+                options={[
+                  { value: 'grid', label: 'Grid view' },
+                  { value: 'list', label: 'List view' },
+                ]}
+                setter={setViewArtistAlbums}
+                icon={viewArtistAlbums === 'grid' ? 'GridIcon' : 'ListIcon'}
+              /> */}
+              {viewArtistAlbums === 'grid' && (
+                <>
+                  <FilterSelect
+                    value={sortArtistAlbums}
+                    options={[
+                      { value: 'title', label: 'Alphabetical' },
+                      // { value: 'artist', label: 'Artist' },
+                      // { value: 'artist-asc-releaseDate-desc', label: 'Artist, newest release first' },
+                      // { value: 'artist-asc-releaseDate-asc', label: 'Artist, oldest release first' },
+                      { value: 'addedAt', label: 'Date added' },
+                      { value: 'lastPlayed', label: 'Date played' },
+                      { value: 'releaseDate', label: 'Date released' },
+                      // only allow sorting by rating if the option is enabled
+                      ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
+                    ]}
+                    setter={setSortArtistAlbums}
+                  />
+                  <FilterToggle
+                    value={orderArtistAlbums}
+                    options={[
+                      { value: 'asc', label: 'Ascending' },
+                      { value: 'desc', label: 'Descending' },
+                    ]}
+                    setter={setOrderArtistAlbums}
+                    icon={orderArtistAlbums === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+                  />
+                </>
+              )}
+            </>
+          }
         />
       )}
-      {!(artistInfo && artistAlbums && artistRelated) && <Loading forceVisible inline />}
-      {artistInfo && artistAlbums && artistRelated && (
+      {!gotArtistData && <Loading forceVisible inline />}
+      {gotArtistData && viewArtistAlbums === 'grid' && (
         <>
           {artistAlbums && artistAlbums.length > 0 && (
             <>

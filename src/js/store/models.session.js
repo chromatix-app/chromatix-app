@@ -52,6 +52,7 @@ const sessionState = {
   queueExpandArtwork: true,
 
   viewArtists: 'grid',
+  viewArtistAlbums: 'grid',
   viewAlbums: 'grid',
   viewFolders: 'grid',
   viewPlaylists: 'grid',
@@ -73,6 +74,7 @@ const sessionState = {
   viewAlbumStyleItems: 'grid',
 
   sortArtists: 'title',
+  sortArtistAlbums: 'title',
   sortAlbums: 'title',
   sortAlbumTracks: {},
   sortFolders: 'title',
@@ -96,6 +98,7 @@ const sessionState = {
   sortAlbumStyleItems: 'title',
 
   orderArtists: 'asc',
+  orderArtistAlbums: 'asc',
   orderAlbums: 'asc',
   orderFolders: 'asc',
   orderPlaylists: 'asc',

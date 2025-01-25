@@ -382,7 +382,9 @@ export const getAllArtistRelated = async (libraryId, artistId) => {
       // console.log(data.MediaContainer.Hub);
 
       const artistRelated =
-        data.MediaContainer.Hub?.filter((hub) => hub.type === 'album' && hub.Metadata).map((hub) => ({
+        data.MediaContainer.Hub?.filter(
+          (hub) => hub.type === 'album' && hub.Metadata && hub.context && hub.context.includes('hub.artist.albums')
+        ).map((hub) => ({
           title: hub.title,
           related: hub.Metadata.map((album) => transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)),
         })) || [];
