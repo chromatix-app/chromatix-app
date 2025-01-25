@@ -34,7 +34,9 @@ const endpointConfig = {
     getAllRelated: (base, artistId) =>
       `${base}/library/metadata/${artistId}/related?includeAugmentations=1&includeExternalMetadata=1&includeMeta=1`,
     getCompilationTracks: (base, libraryId, artistName) =>
-      `${base}/library/sections/${libraryId}/all?type=10&track.originalTitle=${artistName}&artist.title!=${artistName}`,
+      `${base}/library/sections/${libraryId}/all?type=10&track.originalTitle=${slugify(
+        artistName
+      )}&artist.title!=${slugify(artistName)}`,
   },
   album: {
     getAllAlbums: (base, libraryId) => `${base}/library/sections/${libraryId}/all?type=9`,
@@ -1280,4 +1282,14 @@ async function fetchData(endpoint, accessToken) {
 
   const data = await response.json();
   return data;
+}
+
+function slugify(text) {
+  return (
+    text
+      // replace ampersands with html entity
+      .replace(/&/g, '%26')
+      // replace commas with html entity
+      .replace(/,/g, '%2C')
+  );
 }
