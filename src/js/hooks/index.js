@@ -8,6 +8,7 @@ export { default as useGetArtistDetail } from './useGetArtistDetail';
 export { default as useGetCollectionItems } from './useGetCollectionItems';
 export { default as useGetFolderItems } from './useGetFolderItems';
 export { default as useGetPlaylistDetail } from './useGetPlaylistDetail';
+export { default as useGetQueuedTracks } from './useGetQueuedTracks';
 export { default as useGotRequiredData } from './useGotRequiredData';
 export { default as useKeyboardControls } from './useKeyboardControls';
 export { default as useMediaControls } from './useMediaControls';
