@@ -2,12 +2,10 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { ListCards, Loading, TitleHeading } from 'js/components';
-import * as plex from 'js/services/plex';
+import { useGetCollectionItems } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
@@ -16,29 +14,36 @@ import * as plex from 'js/services/plex';
 const ArtistStyleDetail = () => {
   const { styleId, libraryId } = useParams();
 
-  const allArtistStyles = useSelector(({ appModel }) => appModel.allArtistStyles);
-  const currentArtistStyle = allArtistStyles?.filter((style) => style.styleId === styleId)[0];
+  const {
+    sortedCollectionItems,
 
-  const allArtistStyleItems = useSelector(({ appModel }) => appModel.allArtistStyleItems);
-  const currentArtistStyleItems = allArtistStyleItems[libraryId + '-' + styleId];
+    // viewCollectionItems,
+    // sortCollectionItems,
+    // orderCollectionItems,
 
-  const styleThumb = currentArtistStyle?.thumb;
-  const styleTitle = currentArtistStyle?.title;
+    // setViewCollectionItems,
+    // setSortCollectionItems,
+    // setOrderCollectionItems,
 
-  useEffect(() => {
-    plex.getAllArtistStyles();
-    plex.getArtistStyleItems(libraryId, styleId);
-  }, [styleId, libraryId]);
+    collectionThumb,
+    collectionTitle,
+  } = useGetCollectionItems({
+    libraryId,
+    collectionId: styleId,
+    collectionFilter: 'styleId',
+    collectionKey: 'ArtistStyles',
+    itemsKey: 'ArtistStyleItems',
+  });
 
   return (
     <>
-      {currentArtistStyle && (
+      {sortedCollectionItems && (
         <TitleHeading
-          thumb={styleThumb}
-          title={styleTitle}
+          thumb={collectionThumb}
+          title={collectionTitle}
           subtitle={
-            currentArtistStyleItems ? (
-              currentArtistStyleItems?.length + ' Artist' + (currentArtistStyleItems?.length !== 1 ? 's' : '')
+            sortedCollectionItems ? (
+              sortedCollectionItems?.length + ' Artist' + (sortedCollectionItems?.length !== 1 ? 's' : '')
             ) : (
               <>&nbsp;</>
             )
@@ -46,10 +51,8 @@ const ArtistStyleDetail = () => {
           icon={'ArtistStylesIcon'}
         />
       )}
-      {!(currentArtistStyle && currentArtistStyleItems) && <Loading forceVisible inline />}
-      {currentArtistStyle && currentArtistStyleItems && (
-        <ListCards variant="artists" entries={currentArtistStyleItems} />
-      )}
+      {!sortedCollectionItems && <Loading forceVisible inline />}
+      {sortedCollectionItems && <ListCards variant="artists" entries={sortedCollectionItems} />}
     </>
   );
 };

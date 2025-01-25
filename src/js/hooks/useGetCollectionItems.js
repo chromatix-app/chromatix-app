@@ -4,7 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
-const useGetCollectionItems = ({ collectionId, libraryId, collectionKey, itemsKey }) => {
+const useGetCollectionItems = ({
+  libraryId,
+  collectionId,
+  collectionFilter = 'collectionId',
+  collectionKey,
+  itemsKey,
+}) => {
   const dispatch = useDispatch();
 
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
@@ -24,7 +30,7 @@ const useGetCollectionItems = ({ collectionId, libraryId, collectionKey, itemsKe
     !optionShowStarRatings && sortCollectionItems === 'userRating' ? 'asc' : orderCollectionItems;
 
   const allCollections = useSelector(({ appModel }) => appModel[`all${collectionKey}`]);
-  const currentCollection = allCollections?.filter((collection) => collection.collectionId === collectionId)[0];
+  const currentCollection = allCollections?.filter((collection) => collection[collectionFilter] === collectionId)[0];
 
   const allCollectionItems = useSelector(({ appModel }) => appModel[`all${itemsKey}`]);
   const currentCollectionItems = allCollectionItems[libraryId + '-' + collectionId];
@@ -56,9 +62,13 @@ const useGetCollectionItems = ({ collectionId, libraryId, collectionKey, itemsKe
   };
 
   useEffect(() => {
-    plex.getAllCollections();
+    if (collectionKey.includes('Collections')) {
+      plex.getAllCollections();
+    } else {
+      plex[`getAll${collectionKey}`]();
+    }
     plex[`get${itemsKey}`](libraryId, collectionId);
-  }, [itemsKey, collectionId, libraryId]);
+  }, [itemsKey, collectionId, collectionKey, libraryId]);
 
   return {
     sortedCollectionItems,

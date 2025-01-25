@@ -40,7 +40,11 @@ const useGetAllCollections = (collectionKey) => {
   };
 
   useEffect(() => {
-    plex.getAllCollections();
+    if (collectionKey.includes('Collections')) {
+      plex.getAllCollections();
+    } else {
+      plex[`getAll${collectionKey}`]();
+    }
   }, [collectionKey]);
 
   return {

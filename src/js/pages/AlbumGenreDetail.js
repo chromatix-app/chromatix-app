@@ -2,12 +2,10 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { ListCards, Loading, TitleHeading } from 'js/components';
-import * as plex from 'js/services/plex';
+import { useGetCollectionItems } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
@@ -16,29 +14,36 @@ import * as plex from 'js/services/plex';
 const AlbumGenreDetail = () => {
   const { genreId, libraryId } = useParams();
 
-  const allAlbumGenres = useSelector(({ appModel }) => appModel.allAlbumGenres);
-  const currentAlbumGenre = allAlbumGenres?.filter((genre) => genre.genreId === genreId)[0];
+  const {
+    sortedCollectionItems,
 
-  const allAlbumGenreItems = useSelector(({ appModel }) => appModel.allAlbumGenreItems);
-  const currentAlbumGenreItems = allAlbumGenreItems[libraryId + '-' + genreId];
+    // viewCollectionItems,
+    // sortCollectionItems,
+    // orderCollectionItems,
 
-  const genreThumb = currentAlbumGenre?.thumb;
-  const genreTitle = currentAlbumGenre?.title;
+    // setViewCollectionItems,
+    // setSortCollectionItems,
+    // setOrderCollectionItems,
 
-  useEffect(() => {
-    plex.getAllAlbumGenres();
-    plex.getAlbumGenreItems(libraryId, genreId);
-  }, [genreId, libraryId]);
+    collectionThumb,
+    collectionTitle,
+  } = useGetCollectionItems({
+    libraryId,
+    collectionId: genreId,
+    collectionFilter: 'genreId',
+    collectionKey: 'AlbumGenres',
+    itemsKey: 'AlbumGenreItems',
+  });
 
   return (
     <>
-      {currentAlbumGenre && (
+      {sortedCollectionItems && (
         <TitleHeading
-          thumb={genreThumb}
-          title={genreTitle}
+          thumb={collectionThumb}
+          title={collectionTitle}
           subtitle={
-            currentAlbumGenreItems ? (
-              currentAlbumGenreItems?.length + ' Album' + (currentAlbumGenreItems?.length !== 1 ? 's' : '')
+            sortedCollectionItems ? (
+              sortedCollectionItems?.length + ' Album' + (sortedCollectionItems?.length !== 1 ? 's' : '')
             ) : (
               <>&nbsp;</>
             )
@@ -46,8 +51,8 @@ const AlbumGenreDetail = () => {
           icon={'AlbumGenresIcon'}
         />
       )}
-      {!(currentAlbumGenre && currentAlbumGenreItems) && <Loading forceVisible inline />}
-      {currentAlbumGenre && currentAlbumGenreItems && <ListCards variant="albums" entries={currentAlbumGenreItems} />}
+      {!sortedCollectionItems && <Loading forceVisible inline />}
+      {sortedCollectionItems && <ListCards variant="albums" entries={sortedCollectionItems} />}
     </>
   );
 };

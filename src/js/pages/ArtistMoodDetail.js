@@ -2,12 +2,10 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { ListCards, Loading, TitleHeading } from 'js/components';
-import * as plex from 'js/services/plex';
+import { useGetCollectionItems } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
@@ -16,29 +14,36 @@ import * as plex from 'js/services/plex';
 const ArtistMoodDetail = () => {
   const { moodId, libraryId } = useParams();
 
-  const allArtistMoods = useSelector(({ appModel }) => appModel.allArtistMoods);
-  const currentArtistMood = allArtistMoods?.filter((mood) => mood.moodId === moodId)[0];
+  const {
+    sortedCollectionItems,
 
-  const allArtistMoodItems = useSelector(({ appModel }) => appModel.allArtistMoodItems);
-  const currentArtistMoodItems = allArtistMoodItems[libraryId + '-' + moodId];
+    // viewCollectionItems,
+    // sortCollectionItems,
+    // orderCollectionItems,
 
-  const moodThumb = currentArtistMood?.thumb;
-  const moodTitle = currentArtistMood?.title;
+    // setViewCollectionItems,
+    // setSortCollectionItems,
+    // setOrderCollectionItems,
 
-  useEffect(() => {
-    plex.getAllArtistMoods();
-    plex.getArtistMoodItems(libraryId, moodId);
-  }, [moodId, libraryId]);
+    collectionThumb,
+    collectionTitle,
+  } = useGetCollectionItems({
+    libraryId,
+    collectionId: moodId,
+    collectionFilter: 'moodId',
+    collectionKey: 'ArtistMoods',
+    itemsKey: 'ArtistMoodItems',
+  });
 
   return (
     <>
-      {currentArtistMood && (
+      {sortedCollectionItems && (
         <TitleHeading
-          thumb={moodThumb}
-          title={moodTitle}
+          thumb={collectionThumb}
+          title={collectionTitle}
           subtitle={
-            currentArtistMoodItems ? (
-              currentArtistMoodItems?.length + ' Artist' + (currentArtistMoodItems?.length !== 1 ? 's' : '')
+            sortedCollectionItems ? (
+              sortedCollectionItems?.length + ' Artist' + (sortedCollectionItems?.length !== 1 ? 's' : '')
             ) : (
               <>&nbsp;</>
             )
@@ -46,8 +51,8 @@ const ArtistMoodDetail = () => {
           icon={'ArtistMoodsIcon'}
         />
       )}
-      {!(currentArtistMood && currentArtistMoodItems) && <Loading forceVisible inline />}
-      {currentArtistMood && currentArtistMoodItems && <ListCards variant="artists" entries={currentArtistMoodItems} />}
+      {!sortedCollectionItems && <Loading forceVisible inline />}
+      {sortedCollectionItems && <ListCards variant="artists" entries={sortedCollectionItems} />}
     </>
   );
 };

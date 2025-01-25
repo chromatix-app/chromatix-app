@@ -2,12 +2,10 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { ListCards, Loading, TitleHeading } from 'js/components';
-import * as plex from 'js/services/plex';
+import { useGetCollectionItems } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
@@ -16,29 +14,36 @@ import * as plex from 'js/services/plex';
 const ArtistGenreDetail = () => {
   const { genreId, libraryId } = useParams();
 
-  const allArtistGenres = useSelector(({ appModel }) => appModel.allArtistGenres);
-  const currentArtistGenre = allArtistGenres?.filter((genre) => genre.genreId === genreId)[0];
+  const {
+    sortedCollectionItems,
 
-  const allArtistGenreItems = useSelector(({ appModel }) => appModel.allArtistGenreItems);
-  const currentArtistGenreItems = allArtistGenreItems[libraryId + '-' + genreId];
+    // viewCollectionItems,
+    // sortCollectionItems,
+    // orderCollectionItems,
 
-  const genreThumb = currentArtistGenre?.thumb;
-  const genreTitle = currentArtistGenre?.title;
+    // setViewCollectionItems,
+    // setSortCollectionItems,
+    // setOrderCollectionItems,
 
-  useEffect(() => {
-    plex.getAllArtistGenres();
-    plex.getArtistGenreItems(libraryId, genreId);
-  }, [genreId, libraryId]);
+    collectionThumb,
+    collectionTitle,
+  } = useGetCollectionItems({
+    libraryId,
+    collectionId: genreId,
+    collectionFilter: 'genreId',
+    collectionKey: 'ArtistGenres',
+    itemsKey: 'ArtistGenreItems',
+  });
 
   return (
     <>
-      {currentArtistGenre && (
+      {sortedCollectionItems && (
         <TitleHeading
-          thumb={genreThumb}
-          title={genreTitle}
+          thumb={collectionThumb}
+          title={collectionTitle}
           subtitle={
-            currentArtistGenreItems ? (
-              currentArtistGenreItems?.length + ' Artist' + (currentArtistGenreItems?.length !== 1 ? 's' : '')
+            sortedCollectionItems ? (
+              sortedCollectionItems?.length + ' Artist' + (sortedCollectionItems?.length !== 1 ? 's' : '')
             ) : (
               <>&nbsp;</>
             )
@@ -46,10 +51,8 @@ const ArtistGenreDetail = () => {
           icon={'ArtistGenresIcon'}
         />
       )}
-      {!(currentArtistGenre && currentArtistGenreItems) && <Loading forceVisible inline />}
-      {currentArtistGenre && currentArtistGenreItems && (
-        <ListCards variant="artists" entries={currentArtistGenreItems} />
-      )}
+      {!sortedCollectionItems && <Loading forceVisible inline />}
+      {sortedCollectionItems && <ListCards variant="artists" entries={sortedCollectionItems} />}
     </>
   );
 };

@@ -2,12 +2,10 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { ListCards, Loading, TitleHeading } from 'js/components';
-import * as plex from 'js/services/plex';
+import { useGetCollectionItems } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
@@ -16,29 +14,36 @@ import * as plex from 'js/services/plex';
 const AlbumStyleDetail = () => {
   const { styleId, libraryId } = useParams();
 
-  const allAlbumStyles = useSelector(({ appModel }) => appModel.allAlbumStyles);
-  const currentAlbumStyle = allAlbumStyles?.filter((style) => style.styleId === styleId)[0];
+  const {
+    sortedCollectionItems,
 
-  const allAlbumStyleItems = useSelector(({ appModel }) => appModel.allAlbumStyleItems);
-  const currentAlbumStyleItems = allAlbumStyleItems[libraryId + '-' + styleId];
+    // viewCollectionItems,
+    // sortCollectionItems,
+    // orderCollectionItems,
 
-  const styleThumb = currentAlbumStyle?.thumb;
-  const styleTitle = currentAlbumStyle?.title;
+    // setViewCollectionItems,
+    // setSortCollectionItems,
+    // setOrderCollectionItems,
 
-  useEffect(() => {
-    plex.getAllAlbumStyles();
-    plex.getAlbumStyleItems(libraryId, styleId);
-  }, [styleId, libraryId]);
+    collectionThumb,
+    collectionTitle,
+  } = useGetCollectionItems({
+    libraryId,
+    collectionId: styleId,
+    collectionFilter: 'styleId',
+    collectionKey: 'AlbumStyles',
+    itemsKey: 'AlbumStyleItems',
+  });
 
   return (
     <>
-      {currentAlbumStyle && (
+      {sortedCollectionItems && (
         <TitleHeading
-          thumb={styleThumb}
-          title={styleTitle}
+          thumb={collectionThumb}
+          title={collectionTitle}
           subtitle={
-            currentAlbumStyleItems ? (
-              currentAlbumStyleItems?.length + ' Album' + (currentAlbumStyleItems?.length !== 1 ? 's' : '')
+            sortedCollectionItems ? (
+              sortedCollectionItems?.length + ' Album' + (sortedCollectionItems?.length !== 1 ? 's' : '')
             ) : (
               <>&nbsp;</>
             )
@@ -46,8 +51,8 @@ const AlbumStyleDetail = () => {
           icon={'AlbumStylesIcon'}
         />
       )}
-      {!(currentAlbumStyle && currentAlbumStyleItems) && <Loading forceVisible inline />}
-      {currentAlbumStyle && currentAlbumStyleItems && <ListCards variant="albums" entries={currentAlbumStyleItems} />}
+      {!sortedCollectionItems && <Loading forceVisible inline />}
+      {sortedCollectionItems && <ListCards variant="albums" entries={sortedCollectionItems} />}
     </>
   );
 };

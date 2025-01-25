@@ -3,23 +3,29 @@
 // ======================================================================
 
 import { FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
-import { useGetAllSetEntries } from 'js/hooks';
+import { useGetAllCollections } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
 const AlbumStyleList = () => {
-  const { viewSetEntries, sortSetEntries, orderSetEntries, setViewSetEntries, setOrderSetEntries, sortedSetEntries } =
-    useGetAllSetEntries('AlbumStyles');
+  const {
+    viewCollections,
+    sortCollections,
+    orderCollections,
+    setViewCollections,
+    setOrderCollections,
+    sortedCollections,
+  } = useGetAllCollections('AlbumStyles');
 
   return (
     <>
       <TitleHeading
         title="Album Styles"
         subtitle={
-          sortedSetEntries ? (
-            sortedSetEntries?.length + ' Album Style' + (sortedSetEntries?.length !== 1 ? 's' : '')
+          sortedCollections ? (
+            sortedCollections?.length + ' Album Style' + (sortedCollections?.length !== 1 ? 's' : '')
           ) : (
             <>&nbsp;</>
           )
@@ -27,36 +33,38 @@ const AlbumStyleList = () => {
       />
       <FilterWrap>
         <FilterToggle
-          value={viewSetEntries}
+          value={viewCollections}
           options={[
             { value: 'grid', label: 'Grid view' },
             { value: 'list', label: 'List view' },
           ]}
-          setter={setViewSetEntries}
-          icon={viewSetEntries === 'grid' ? 'GridIcon' : 'ListIcon'}
+          setter={setViewCollections}
+          icon={viewCollections === 'grid' ? 'GridIcon' : 'ListIcon'}
         />
-        {viewSetEntries === 'grid' && (
+        {viewCollections === 'grid' && (
           <>
             <FilterToggle
-              value={orderSetEntries}
+              value={orderCollections}
               options={[
                 { value: 'asc', label: 'Ascending' },
                 { value: 'desc', label: 'Descending' },
               ]}
-              setter={setOrderSetEntries}
-              icon={orderSetEntries === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+              setter={setOrderCollections}
+              icon={orderCollections === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
           </>
         )}
       </FilterWrap>
-      {!sortedSetEntries && <Loading forceVisible inline />}
-      {sortedSetEntries && viewSetEntries === 'grid' && <ListCards variant="albumStyles" entries={sortedSetEntries} />}
-      {sortSetEntries && viewSetEntries === 'list' && (
+      {!sortedCollections && <Loading forceVisible inline />}
+      {sortedCollections && viewCollections === 'grid' && (
+        <ListCards variant="albumStyles" entries={sortedCollections} />
+      )}
+      {sortCollections && viewCollections === 'list' && (
         <ListEntries
           variant="albumStyles"
-          entries={sortedSetEntries}
-          sortKey={sortSetEntries}
-          orderKey={orderSetEntries}
+          entries={sortedCollections}
+          sortKey={sortCollections}
+          orderKey={orderCollections}
         />
       )}
     </>
