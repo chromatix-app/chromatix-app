@@ -1,6 +1,7 @@
 <a name="0.24.0"></a>
 # 0.24.0 (2025-01-25)
 Features:
+- Download links added to home page for macOS universal build.
 - Added album sorting options to artist pages.
 - Added list view and sorting for all other remaining sections.
 - Updated home page screenshot to reflect recent changes.
