@@ -61,7 +61,11 @@ const ListEntries = ({
         })}
       >
         <div className={style.header}>
-          {(variant === 'artists' || variant === 'artistCollectionItems') && (
+          {(variant === 'artists' ||
+            variant === 'artistCollectionItems' ||
+            variant === 'artistGenreItems' ||
+            variant === 'artistMoodItems' ||
+            variant === 'artistStyleItems') && (
             <>
               <SortableHeading
                 defaultKey
@@ -108,7 +112,11 @@ const ListEntries = ({
             </>
           )}
 
-          {(variant === 'albums' || variant === 'albumCollectionItems') && (
+          {(variant === 'albums' ||
+            variant === 'albumCollectionItems' ||
+            variant === 'albumGenreItems' ||
+            variant === 'albumMoodItems' ||
+            variant === 'albumStyleItems') && (
             <>
               <SortableHeading
                 defaultKey
@@ -374,8 +382,18 @@ const ListEntries = ({
         </div>
 
         <div className={style.entries}>
-          {(variant === 'artists' || variant === 'artistCollectionItems') && <ListArtists entries={entries} />}
-          {(variant === 'albums' || variant === 'albumCollectionItems') && <ListAlbums entries={entries} />}
+          {(variant === 'artists' ||
+            variant === 'artistCollectionItems' ||
+            variant === 'artistGenreItems' ||
+            variant === 'artistMoodItems' ||
+            variant === 'artistStyleItems') && <ListArtists entries={entries} />}
+
+          {(variant === 'albums' ||
+            variant === 'albumCollectionItems' ||
+            variant === 'albumGenreItems' ||
+            variant === 'albumMoodItems' ||
+            variant === 'albumStyleItems') && <ListAlbums entries={entries} />}
+
           {variant === 'playlists' && <ListPlaylists entries={entries} />}
 
           {(variant === 'artistCollections' || variant === 'albumCollections') && (

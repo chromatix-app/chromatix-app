@@ -2,9 +2,10 @@
 // IMPORTS
 // ======================================================================
 
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { ListCards, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
 import { useGetCollectionItems } from 'js/hooks';
 
 // ======================================================================
@@ -14,16 +15,18 @@ import { useGetCollectionItems } from 'js/hooks';
 const AlbumStyleDetail = () => {
   const { styleId, libraryId } = useParams();
 
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+
   const {
     sortedCollectionItems,
 
-    // viewCollectionItems,
-    // sortCollectionItems,
-    // orderCollectionItems,
+    viewCollectionItems,
+    sortCollectionItems,
+    orderCollectionItems,
 
-    // setViewCollectionItems,
-    // setSortCollectionItems,
-    // setOrderCollectionItems,
+    setViewCollectionItems,
+    setSortCollectionItems,
+    setOrderCollectionItems,
 
     collectionThumb,
     collectionTitle,
@@ -49,10 +52,61 @@ const AlbumStyleDetail = () => {
             )
           }
           icon={'AlbumStylesIcon'}
+          filters={
+            <>
+              <FilterToggle
+                value={viewCollectionItems}
+                options={[
+                  { value: 'grid', label: 'Grid view' },
+                  { value: 'list', label: 'List view' },
+                ]}
+                setter={setViewCollectionItems}
+                icon={viewCollectionItems === 'grid' ? 'GridIcon' : 'ListIcon'}
+              />
+              {viewCollectionItems === 'grid' && (
+                <>
+                  <FilterSelect
+                    value={sortCollectionItems}
+                    options={[
+                      { value: 'title', label: 'Alphabetical' },
+                      { value: 'artist', label: 'Artist' },
+                      { value: 'artist-asc-releaseDate-asc', label: 'Artist, newest release first' },
+                      { value: 'artist-asc-releaseDate-desc', label: 'Artist, oldest release first' },
+                      { value: 'addedAt', label: 'Date added' },
+                      { value: 'lastPlayed', label: 'Date played' },
+                      { value: 'releaseDate', label: 'Date released' },
+                      // only allow sorting by rating if the option is enabled
+                      ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
+                    ]}
+                    setter={setSortCollectionItems}
+                  />
+                  <FilterToggle
+                    value={orderCollectionItems}
+                    options={[
+                      { value: 'asc', label: 'Ascending' },
+                      { value: 'desc', label: 'Descending' },
+                    ]}
+                    setter={setOrderCollectionItems}
+                    icon={orderCollectionItems === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+                  />
+                </>
+              )}
+            </>
+          }
         />
       )}
       {!sortedCollectionItems && <Loading forceVisible inline />}
-      {sortedCollectionItems && <ListCards variant="albums" entries={sortedCollectionItems} />}
+      {sortedCollectionItems && viewCollectionItems === 'grid' && (
+        <ListCards variant={'albums'} entries={sortedCollectionItems} />
+      )}
+      {sortedCollectionItems && viewCollectionItems === 'list' && (
+        <ListEntries
+          variant="albumStyleItems"
+          entries={sortedCollectionItems}
+          sortKey={sortCollectionItems}
+          orderKey={orderCollectionItems}
+        />
+      )}
     </>
   );
 };
