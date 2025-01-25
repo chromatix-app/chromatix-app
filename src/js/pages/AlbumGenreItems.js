@@ -12,8 +12,8 @@ import { useGetCollectionItems } from 'js/hooks';
 // COMPONENT
 // ======================================================================
 
-const AlbumMoodDetail = () => {
-  const { moodId, libraryId } = useParams();
+const AlbumGenreItems = () => {
+  const { genreId, libraryId } = useParams();
 
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
@@ -32,10 +32,10 @@ const AlbumMoodDetail = () => {
     collectionTitle,
   } = useGetCollectionItems({
     libraryId,
-    collectionId: moodId,
-    collectionFilter: 'moodId',
-    collectionKey: 'AlbumMoods',
-    itemsKey: 'AlbumMoodItems',
+    collectionId: genreId,
+    collectionFilter: 'genreId',
+    collectionKey: 'AlbumGenres',
+    itemsKey: 'AlbumGenreItems',
   });
 
   return (
@@ -51,7 +51,7 @@ const AlbumMoodDetail = () => {
               <>&nbsp;</>
             )
           }
-          icon={'AlbumMoodsIcon'}
+          icon={'AlbumGenresIcon'}
           filters={
             <>
               <FilterToggle
@@ -101,7 +101,7 @@ const AlbumMoodDetail = () => {
       )}
       {sortedCollectionItems && viewCollectionItems === 'list' && (
         <ListEntries
-          variant="albumMoodItems"
+          variant="albumGenreItems"
           entries={sortedCollectionItems}
           sortKey={sortCollectionItems}
           orderKey={orderCollectionItems}
@@ -115,4 +115,4 @@ const AlbumMoodDetail = () => {
 // EXPORT
 // ======================================================================
 
-export default AlbumMoodDetail;
+export default AlbumGenreItems;

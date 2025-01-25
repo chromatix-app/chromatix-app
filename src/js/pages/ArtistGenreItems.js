@@ -12,8 +12,8 @@ import { useGetCollectionItems } from 'js/hooks';
 // COMPONENT
 // ======================================================================
 
-const AlbumStyleDetail = () => {
-  const { styleId, libraryId } = useParams();
+const ArtistGenreItems = () => {
+  const { genreId, libraryId } = useParams();
 
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
@@ -32,10 +32,10 @@ const AlbumStyleDetail = () => {
     collectionTitle,
   } = useGetCollectionItems({
     libraryId,
-    collectionId: styleId,
-    collectionFilter: 'styleId',
-    collectionKey: 'AlbumStyles',
-    itemsKey: 'AlbumStyleItems',
+    collectionId: genreId,
+    collectionFilter: 'genreId',
+    collectionKey: 'ArtistGenres',
+    itemsKey: 'ArtistGenreItems',
   });
 
   return (
@@ -46,12 +46,12 @@ const AlbumStyleDetail = () => {
           title={collectionTitle}
           subtitle={
             sortedCollectionItems ? (
-              sortedCollectionItems?.length + ' Album' + (sortedCollectionItems?.length !== 1 ? 's' : '')
+              sortedCollectionItems?.length + ' Artist' + (sortedCollectionItems?.length !== 1 ? 's' : '')
             ) : (
               <>&nbsp;</>
             )
           }
-          icon={'AlbumStylesIcon'}
+          icon={'ArtistGenresIcon'}
           filters={
             <>
               <FilterToggle
@@ -69,12 +69,8 @@ const AlbumStyleDetail = () => {
                     value={sortCollectionItems}
                     options={[
                       { value: 'title', label: 'Alphabetical' },
-                      { value: 'artist', label: 'Artist' },
-                      { value: 'artist-asc-releaseDate-asc', label: 'Artist, newest release first' },
-                      { value: 'artist-asc-releaseDate-desc', label: 'Artist, oldest release first' },
                       { value: 'addedAt', label: 'Date added' },
                       { value: 'lastPlayed', label: 'Date played' },
-                      { value: 'releaseDate', label: 'Date released' },
                       // only allow sorting by rating if the option is enabled
                       ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
                     ]}
@@ -97,11 +93,11 @@ const AlbumStyleDetail = () => {
       )}
       {!sortedCollectionItems && <Loading forceVisible inline />}
       {sortedCollectionItems && viewCollectionItems === 'grid' && (
-        <ListCards variant={'albums'} entries={sortedCollectionItems} />
+        <ListCards variant={'artists'} entries={sortedCollectionItems} />
       )}
       {sortedCollectionItems && viewCollectionItems === 'list' && (
         <ListEntries
-          variant="albumStyleItems"
+          variant="artistGenreItems"
           entries={sortedCollectionItems}
           sortKey={sortCollectionItems}
           orderKey={orderCollectionItems}
@@ -115,4 +111,4 @@ const AlbumStyleDetail = () => {
 // EXPORT
 // ======================================================================
 
-export default AlbumStyleDetail;
+export default ArtistGenreItems;

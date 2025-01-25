@@ -12,7 +12,7 @@ import { useGetCollectionItems } from 'js/hooks';
 // COMPONENT
 // ======================================================================
 
-const AlbumCollectionDetail = () => {
+const AlbumCollectionItems = () => {
   const { collectionId, libraryId } = useParams();
 
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
@@ -120,4 +120,4 @@ const AlbumCollectionDetail = () => {
 // EXPORT
 // ======================================================================
 
-export default AlbumCollectionDetail;
+export default AlbumCollectionItems;

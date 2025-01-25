@@ -12,7 +12,7 @@ import { useGetCollectionItems } from 'js/hooks';
 // COMPONENT
 // ======================================================================
 
-const ArtistStyleDetail = () => {
+const AlbumStyleItems = () => {
   const { styleId, libraryId } = useParams();
 
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
@@ -34,8 +34,8 @@ const ArtistStyleDetail = () => {
     libraryId,
     collectionId: styleId,
     collectionFilter: 'styleId',
-    collectionKey: 'ArtistStyles',
-    itemsKey: 'ArtistStyleItems',
+    collectionKey: 'AlbumStyles',
+    itemsKey: 'AlbumStyleItems',
   });
 
   return (
@@ -46,12 +46,12 @@ const ArtistStyleDetail = () => {
           title={collectionTitle}
           subtitle={
             sortedCollectionItems ? (
-              sortedCollectionItems?.length + ' Artist' + (sortedCollectionItems?.length !== 1 ? 's' : '')
+              sortedCollectionItems?.length + ' Album' + (sortedCollectionItems?.length !== 1 ? 's' : '')
             ) : (
               <>&nbsp;</>
             )
           }
-          icon={'ArtistStylesIcon'}
+          icon={'AlbumStylesIcon'}
           filters={
             <>
               <FilterToggle
@@ -69,8 +69,12 @@ const ArtistStyleDetail = () => {
                     value={sortCollectionItems}
                     options={[
                       { value: 'title', label: 'Alphabetical' },
+                      { value: 'artist', label: 'Artist' },
+                      { value: 'artist-asc-releaseDate-asc', label: 'Artist, newest release first' },
+                      { value: 'artist-asc-releaseDate-desc', label: 'Artist, oldest release first' },
                       { value: 'addedAt', label: 'Date added' },
                       { value: 'lastPlayed', label: 'Date played' },
+                      { value: 'releaseDate', label: 'Date released' },
                       // only allow sorting by rating if the option is enabled
                       ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
                     ]}
@@ -93,11 +97,11 @@ const ArtistStyleDetail = () => {
       )}
       {!sortedCollectionItems && <Loading forceVisible inline />}
       {sortedCollectionItems && viewCollectionItems === 'grid' && (
-        <ListCards variant={'artists'} entries={sortedCollectionItems} />
+        <ListCards variant={'albums'} entries={sortedCollectionItems} />
       )}
       {sortedCollectionItems && viewCollectionItems === 'list' && (
         <ListEntries
-          variant="artistStyleItems"
+          variant="albumStyleItems"
           entries={sortedCollectionItems}
           sortKey={sortCollectionItems}
           orderKey={orderCollectionItems}
@@ -111,4 +115,4 @@ const ArtistStyleDetail = () => {
 // EXPORT
 // ======================================================================
 
-export default ArtistStyleDetail;
+export default AlbumStyleItems;

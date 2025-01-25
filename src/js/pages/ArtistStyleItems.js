@@ -12,8 +12,8 @@ import { useGetCollectionItems } from 'js/hooks';
 // COMPONENT
 // ======================================================================
 
-const ArtistMoodDetail = () => {
-  const { moodId, libraryId } = useParams();
+const ArtistStyleItems = () => {
+  const { styleId, libraryId } = useParams();
 
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
@@ -32,10 +32,10 @@ const ArtistMoodDetail = () => {
     collectionTitle,
   } = useGetCollectionItems({
     libraryId,
-    collectionId: moodId,
-    collectionFilter: 'moodId',
-    collectionKey: 'ArtistMoods',
-    itemsKey: 'ArtistMoodItems',
+    collectionId: styleId,
+    collectionFilter: 'styleId',
+    collectionKey: 'ArtistStyles',
+    itemsKey: 'ArtistStyleItems',
   });
 
   return (
@@ -51,7 +51,7 @@ const ArtistMoodDetail = () => {
               <>&nbsp;</>
             )
           }
-          icon={'ArtistMoodsIcon'}
+          icon={'ArtistStylesIcon'}
           filters={
             <>
               <FilterToggle
@@ -97,7 +97,7 @@ const ArtistMoodDetail = () => {
       )}
       {sortedCollectionItems && viewCollectionItems === 'list' && (
         <ListEntries
-          variant="artistMoodItems"
+          variant="artistStyleItems"
           entries={sortedCollectionItems}
           sortKey={sortCollectionItems}
           orderKey={orderCollectionItems}
@@ -111,4 +111,4 @@ const ArtistMoodDetail = () => {
 // EXPORT
 // ======================================================================
 
-export default ArtistMoodDetail;
+export default ArtistStyleItems;
