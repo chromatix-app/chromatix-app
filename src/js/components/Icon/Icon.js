@@ -29,6 +29,7 @@ import { ReactComponent as ClockRewindIcon } from './icons/music/clock-rewind.sv
 import { ReactComponent as CogIcon } from './icons/music/cog.svg';
 import { ReactComponent as CollapseIcon } from './icons/music/collapse.svg';
 import { ReactComponent as DiscIcon } from './icons/music/disc.svg';
+import { ReactComponent as DownloadIcon } from './icons/music/download.svg';
 import { ReactComponent as ExpandIcon } from './icons/music/expand.svg';
 import { ReactComponent as ExternalLinkIcon } from './icons/music/external-link.svg';
 import { ReactComponent as FastForwardIcon } from './icons/music/fast-forward.svg';
@@ -74,7 +75,9 @@ import { ReactComponent as VolXIcon } from './icons/music/vol-x.svg';
 
 import { ReactComponent as AppleSiteIcon } from './icons/site/apple.svg';
 import { ReactComponent as GithubSiteIcon } from './icons/site/github.svg';
+import { ReactComponent as LinuxSiteIcon } from './icons/site/linux.svg';
 import { ReactComponent as RedditSiteIcon } from './icons/site/reddit.svg';
+import { ReactComponent as WindowsSiteIcon } from './icons/site/windows.svg';
 
 // ======================================================================
 // COMPONENT
@@ -103,6 +106,7 @@ const customIcons = {
   CogIcon,
   CollapseIcon,
   DiscIcon,
+  DownloadIcon,
   ExpandIcon,
   ExternalLinkIcon,
   FastForwardIcon,
@@ -148,7 +152,9 @@ const customIcons = {
 
   AppleSiteIcon,
   GithubSiteIcon,
+  LinuxSiteIcon,
   RedditSiteIcon,
+  WindowsSiteIcon,
 };
 
 const getIconComponent = (icon) => {
