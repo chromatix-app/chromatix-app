@@ -78,8 +78,9 @@
   }
 }
 
+.download,
 .downloadMac {
-  max-width: 220px;
+  max-width: 180px;
   padding: 16px 10px;
   font-size: 14px;
   line-height: 1;
@@ -87,6 +88,15 @@
   .icon {
     display: inline-block;
     position: relative;
+    width: 18px;
+    height: 18px;
+    margin: 0 7px -8px -1px;
+    top: -2px;
+  }
+}
+
+.downloadMac {
+  .icon {
     width: 22px;
     height: 22px;
     margin: 0 7px -8px -3px;

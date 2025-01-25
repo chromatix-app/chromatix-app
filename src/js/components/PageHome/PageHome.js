@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { track } from '@vercel/analytics';
 import axios from 'axios';
@@ -21,20 +21,37 @@ export const PageHome = () => {
   const isElectron = window.isElectron;
   const dispatch = useDispatch();
 
-  const [macDownloadUrl, setMacDownloadUrl] = useState(
+  const downloadsRef = useRef(null);
+
+  const [macSiliconDownloadUrl, setMacSiliconDownloadUrl] = useState(
+    'https://github.com/chromatix-app/chromatix-release/releases/latest'
+  );
+  const [macUniversalDownloadUrl, setMacUniversalDownloadUrl] = useState(
     'https://github.com/chromatix-app/chromatix-release/releases/latest'
   );
 
-  const handleDownloadMac = () => {
+  const scrollToDownloads = () => {
+    downloadsRef.current.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleDownloadMacSilicon = () => {
     track('Download: macOS');
+  };
+
+  const handleDownloadMacUniversal = () => {
+    track('Download: macOS (Universal)');
   };
 
   useEffect(() => {
     axios.get('https://api.github.com/repos/chromatix-app/chromatix-release/releases/latest').then((response) => {
       const assets = response.data.assets;
-      const dmgAsset = assets.find((asset) => asset.name.endsWith('.dmg'));
-      if (dmgAsset) {
-        setMacDownloadUrl(dmgAsset.browser_download_url);
+      const macSiliconAsset = assets.find((asset) => asset.name.endsWith('arm64.dmg'));
+      const macUniversalAsset = assets.find((asset) => asset.name.endsWith('universal.dmg'));
+      if (macSiliconAsset) {
+        setMacSiliconDownloadUrl(macSiliconAsset.browser_download_url);
+      }
+      if (macUniversalAsset) {
+        setMacUniversalDownloadUrl(macUniversalAsset.browser_download_url);
       }
     });
   }, []);
@@ -46,7 +63,7 @@ export const PageHome = () => {
 
         <div className="mt-30 mt-lg-40"></div>
 
-        <h1 className={style.title}>Chromatix</h1>
+        <h1 className={style.h1}>Chromatix</h1>
 
         <div className="mt-35 mt-lg-50"></div>
 
@@ -69,13 +86,9 @@ export const PageHome = () => {
           <>
             <div className="mt-10"></div>
 
-            <Button variant="downloadMac" href={macDownloadUrl} target="_blank" onClick={handleDownloadMac}>
-              Download for macOS
+            <Button variant={'download'} onClick={scrollToDownloads}>
+              Download
             </Button>
-
-            <div className="mt-25"></div>
-
-            <div className={style.note}>Coming soon for Windows</div>
           </>
         )}
       </div>
@@ -85,7 +98,7 @@ export const PageHome = () => {
       </div>
 
       <div className={style.intro}>
-        <h1 className={style.title}>Get Started</h1>
+        <h1 className={style.h1}>Get Started</h1>
 
         <div className="mt-40"></div>
 
@@ -99,15 +112,63 @@ export const PageHome = () => {
 
         {!isElectron && (
           <>
-            <div className="mt-10"></div>
+            <div className="mt-100"></div>
 
-            <Button variant="downloadMac" href={macDownloadUrl} target="_blank" onClick={handleDownloadMac}>
-              Download for macOS
-            </Button>
+            <div className={style.downloads} ref={downloadsRef}>
+              <h2 className={style.h2}>Downloads</h2>
+
+              <div className={style.borderSmall}></div>
+
+              <div className={style.downloadsFlex}>
+                <div>
+                  <a
+                    href={macSiliconDownloadUrl}
+                    target="_blank"
+                    rel="noreferrer nofollow"
+                    onClick={handleDownloadMacSilicon}
+                  >
+                    <span className={style.downloadsIcon}>
+                      <Icon icon="AppleSiteIcon" cover />
+                    </span>
+                    Download for macOS (Apple Silicon)
+                  </a>
+
+                  <br />
+
+                  <a
+                    href={macUniversalDownloadUrl}
+                    target="_blank"
+                    rel="noreferrer nofollow"
+                    onClick={handleDownloadMacUniversal}
+                  >
+                    <span className={style.downloadsIcon}>
+                      <Icon icon="AppleSiteIcon" cover />
+                    </span>
+                    Download for macOS (Intel)
+                  </a>
+
+                  <br />
+
+                  <div className={style.note}>
+                    <span className={style.downloadsIcon}>
+                      <Icon icon="WindowsSiteIcon" cover />
+                    </span>
+                    Windows coming soon
+                  </div>
+
+                  <br />
+
+                  <div className={style.note}>
+                    <span className={style.downloadsIcon}>
+                      <Icon icon="LinuxSiteIcon" cover />
+                    </span>
+                    Linux coming soon
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <div className="mt-25"></div>
-
-            <div className={style.note}>Coming soon for Windows</div>
           </>
         )}
       </div>
