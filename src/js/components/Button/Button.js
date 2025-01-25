@@ -35,6 +35,11 @@ export const Button = forwardRef(
         type={type}
         {...props}
       >
+        {variant === 'download' && (
+          <span className={style.icon}>
+            <Icon icon="DownloadIcon" cover stroke strokeWidth={1.4} />
+          </span>
+        )}
         {variant === 'downloadMac' && (
           <span className={style.icon}>
             <Icon icon="AppleSiteIcon" cover />
