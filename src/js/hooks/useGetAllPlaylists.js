@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 const useGetAllPlaylists = () => {
+  const dispatch = useDispatch();
+
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
@@ -14,13 +16,35 @@ const useGetAllPlaylists = () => {
   const sortPlaylists = useSelector(({ sessionModel }) => sessionModel.sortPlaylists);
   const orderPlaylists = useSelector(({ sessionModel }) => sessionModel.orderPlaylists);
 
-  const actualSortPlaylists = !optionShowStarRatings && sortPlaylists === 'userRating' ? 'title' : sortPlaylists;
-  const actualOrderPlaylists = !optionShowStarRatings && sortPlaylists === 'userRating' ? 'asc' : orderPlaylists;
+  // prevent sorting by rating if ratings are hidden
+  const isRatingSortHidden = !optionShowStarRatings && sortPlaylists === 'userRating';
+
+  const actualSortPlaylists = isRatingSortHidden ? 'title' : sortPlaylists;
+  const actualOrderPlaylists = isRatingSortHidden ? 'asc' : orderPlaylists;
 
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists)?.filter(
     (playlist) => playlist.libraryId === currentLibraryId
   );
   const sortedPlaylists = allPlaylists ? sortList(allPlaylists, actualSortPlaylists, actualOrderPlaylists) : null;
+
+  const setViewPlaylists = (viewPlaylists) => {
+    dispatch.sessionModel.setSessionState({
+      viewPlaylists,
+    });
+  };
+
+  const setSortPlaylists = (sortPlaylists) => {
+    dispatch.sessionModel.setSessionState({
+      sortPlaylists,
+    });
+  };
+
+  const setOrderPlaylists = (orderPlaylists) => {
+    dispatch.sessionModel.setSessionState({
+      sortPlaylists: actualSortPlaylists,
+      orderPlaylists,
+    });
+  };
 
   useEffect(() => {
     plex.getAllPlaylists();
@@ -30,6 +54,11 @@ const useGetAllPlaylists = () => {
     viewPlaylists,
     sortPlaylists: actualSortPlaylists,
     orderPlaylists: actualOrderPlaylists,
+
+    setViewPlaylists,
+    setSortPlaylists,
+    setOrderPlaylists,
+
     sortedPlaylists,
   };
 };

@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
 import { useGetAllArtists } from 'js/hooks';
@@ -12,10 +12,9 @@ import { useGetAllArtists } from 'js/hooks';
 // ======================================================================
 
 const ArtistList = () => {
-  const dispatch = useDispatch();
-
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-  const { viewArtists, sortArtists, orderArtists, sortedArtists } = useGetAllArtists();
+  const { viewArtists, sortArtists, orderArtists, setViewArtists, setSortArtists, setOrderArtists, sortedArtists } =
+    useGetAllArtists();
 
   return (
     <>
@@ -30,11 +29,7 @@ const ArtistList = () => {
             { value: 'grid', label: 'Grid view' },
             { value: 'list', label: 'List view' },
           ]}
-          setter={(viewArtists) => {
-            dispatch.sessionModel.setSessionState({
-              viewArtists,
-            });
-          }}
+          setter={setViewArtists}
           icon={viewArtists === 'grid' ? 'GridIcon' : 'ListIcon'}
         />
         {viewArtists === 'grid' && (
@@ -48,11 +43,7 @@ const ArtistList = () => {
                 // only allow sorting by rating if the option is enabled
                 ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
               ]}
-              setter={(sortArtists) => {
-                dispatch.sessionModel.setSessionState({
-                  sortArtists,
-                });
-              }}
+              setter={setSortArtists}
             />
             <FilterToggle
               value={orderArtists}
@@ -60,11 +51,7 @@ const ArtistList = () => {
                 { value: 'asc', label: 'Ascending' },
                 { value: 'desc', label: 'Descending' },
               ]}
-              setter={(orderArtists) => {
-                dispatch.sessionModel.setSessionState({
-                  orderArtists,
-                });
-              }}
+              setter={setOrderArtists}
               icon={orderArtists === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
           </>

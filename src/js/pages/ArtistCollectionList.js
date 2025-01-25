@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
 import { useGetAllCollections } from 'js/hooks';
@@ -12,11 +12,16 @@ import { useGetAllCollections } from 'js/hooks';
 // ======================================================================
 
 const ArtistCollectionList = () => {
-  const dispatch = useDispatch();
-
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-  const { viewCollections, sortCollections, orderCollections, sortedCollections } =
-    useGetAllCollections('ArtistCollections');
+  const {
+    viewCollections,
+    sortCollections,
+    orderCollections,
+    setViewCollections,
+    setSortCollections,
+    setOrderCollections,
+    sortedCollections,
+  } = useGetAllCollections('ArtistCollections');
 
   return (
     <>
@@ -37,11 +42,7 @@ const ArtistCollectionList = () => {
             { value: 'grid', label: 'Grid view' },
             { value: 'list', label: 'List view' },
           ]}
-          setter={(viewCollections) => {
-            dispatch.sessionModel.setSessionState({
-              viewArtistCollections: viewCollections,
-            });
-          }}
+          setter={setViewCollections}
           icon={viewCollections === 'grid' ? 'GridIcon' : 'ListIcon'}
         />
         {viewCollections === 'grid' && (
@@ -54,11 +55,7 @@ const ArtistCollectionList = () => {
                 // only allow sorting by rating if the option is enabled
                 ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
               ]}
-              setter={(sortCollections) => {
-                dispatch.sessionModel.setSessionState({
-                  sortArtistCollections: sortCollections,
-                });
-              }}
+              setter={setSortCollections}
             />
             <FilterToggle
               value={orderCollections}
@@ -66,11 +63,7 @@ const ArtistCollectionList = () => {
                 { value: 'asc', label: 'Ascending' },
                 { value: 'desc', label: 'Descending' },
               ]}
-              setter={(orderCollections) => {
-                dispatch.sessionModel.setSessionState({
-                  orderArtistCollections: orderCollections,
-                });
-              }}
+              setter={setOrderCollections}
               icon={orderCollections === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
           </>

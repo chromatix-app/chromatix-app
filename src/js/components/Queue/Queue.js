@@ -7,6 +7,7 @@ import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 
 import { Icon } from 'js/components';
+import { useGetQueuedTracks } from 'js/hooks';
 
 import style from './Queue.module.scss';
 
@@ -18,18 +19,19 @@ const Queue = () => {
   const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
   const queueExpandArtwork = useSelector(({ sessionModel }) => sessionModel.queueExpandArtwork);
 
-  const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
-  const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
-  const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
-  const playingRepeat = useSelector(({ sessionModel }) => sessionModel.playingRepeat);
-  const playingShuffle = useSelector(({ sessionModel }) => sessionModel.playingShuffle);
+  const {
+    // playingTrackList,
+    playingTrackIndex,
+    playingTrackKeys,
+    playingRepeat,
+    playingShuffle,
 
-  const upcomingTrackKeys = playingTrackKeys ? playingTrackKeys.filter((_, index) => index >= playingTrackIndex) : [];
-  const upcomingEntries = upcomingTrackKeys.map((key) => playingTrackList[key]);
+    // upcomingTrackKeys,
+    upcomingEntries,
 
-  const repeatEntries = playingRepeat && playingTrackKeys ? playingTrackKeys.map((key) => playingTrackList[key]) : [];
-
-  const totalTracksRemaining = playingTrackKeys ? playingTrackKeys.length - playingTrackIndex : 0;
+    repeatEntries,
+    totalTracksRemaining,
+  } = useGetQueuedTracks();
 
   return (
     <div className={style.wrap}>

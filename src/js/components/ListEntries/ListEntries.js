@@ -61,7 +61,11 @@ const ListEntries = ({
         })}
       >
         <div className={style.header}>
-          {variant === 'artists' && (
+          {(variant === 'artists' ||
+            variant === 'artistCollectionItems' ||
+            variant === 'artistGenreItems' ||
+            variant === 'artistMoodItems' ||
+            variant === 'artistStyleItems') && (
             <>
               <SortableHeading
                 defaultKey
@@ -108,7 +112,11 @@ const ListEntries = ({
             </>
           )}
 
-          {variant === 'albums' && (
+          {(variant === 'albums' ||
+            variant === 'albumCollectionItems' ||
+            variant === 'albumGenreItems' ||
+            variant === 'albumMoodItems' ||
+            variant === 'albumStyleItems') && (
             <>
               <SortableHeading
                 defaultKey
@@ -249,7 +257,8 @@ const ListEntries = ({
             </>
           )}
 
-          {(variant === 'artistGenres' ||
+          {(variant === 'folders' ||
+            variant === 'artistGenres' ||
             variant === 'albumGenres' ||
             variant === 'artistMoods' ||
             variant === 'albumMoods' ||
@@ -373,12 +382,26 @@ const ListEntries = ({
         </div>
 
         <div className={style.entries}>
-          {variant === 'artists' && <ListArtists entries={entries} />}
-          {variant === 'albums' && <ListAlbums entries={entries} />}
+          {(variant === 'artists' ||
+            variant === 'artistCollectionItems' ||
+            variant === 'artistGenreItems' ||
+            variant === 'artistMoodItems' ||
+            variant === 'artistStyleItems') && <ListArtists entries={entries} />}
+
+          {(variant === 'albums' ||
+            variant === 'albumCollectionItems' ||
+            variant === 'albumGenreItems' ||
+            variant === 'albumMoodItems' ||
+            variant === 'albumStyleItems') && <ListAlbums entries={entries} />}
+
           {variant === 'playlists' && <ListPlaylists entries={entries} />}
 
           {(variant === 'artistCollections' || variant === 'albumCollections') && (
             <ListArtistCollections entries={entries} />
+          )}
+
+          {variant === 'folders' && (
+            <ListGenresMoodsStyles entryKey={'folderId'} entries={entries} icon={'FolderIcon'} />
           )}
 
           {variant === 'artistGenres' && (
@@ -586,21 +609,24 @@ const ListArtistCollections = ({ entries }) => {
 };
 
 const ListGenresMoodsStyles = ({ entryKey, entries, icon }) => {
+  return entries.map((entry) => <GenresMoodsStylesEntry key={entry[entryKey]} entry={entry} icon={icon} />);
+};
+
+const GenresMoodsStylesEntry = ({ entry, icon, trackList }) => {
   const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
 
-  return entries.map((entry) => {
-    return (
-      <NavLink key={entry[entryKey]} className={style.entry} to={entry.link}>
-        <div className={style.thumb}>
-          <span className={style.thumbIcon}>
-            <Icon icon={icon} cover stroke strokeWidth={1.2} />
-          </span>
-        </div>
-        <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
-        <div></div>
-      </NavLink>
-    );
-  });
+  return (
+    <NavLink className={style.entry} to={entry.link}>
+      {trackList && <div></div>}
+      <div className={clsx(style.thumb, style.thumbFolder)}>
+        <span className={style.thumbIcon}>
+          <Icon icon={icon} cover stroke strokeWidth={1.2} />
+        </span>
+      </div>
+      <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
+      <div></div>
+    </NavLink>
+  );
 };
 
 const ListTracks = ({ variant, albumId, playlistId, discCount, entries, playingOrder, sortKey }) => {
@@ -665,6 +691,18 @@ const ListTracks = ({ variant, albumId, playlistId, discCount, entries, playingO
         dispatch.playerModel.playerPlay();
       }
     };
+
+    if (entry.folderId) {
+      return (
+        <GenresMoodsStylesEntry
+          key={entry.folderId}
+          entry={entry}
+          entryKey={'folderId'}
+          icon={'FolderIcon'}
+          trackList={true}
+        />
+      );
+    }
 
     return (
       <ListTrackEntry
@@ -751,9 +789,9 @@ const ListTrackEntry = React.memo(
             </div>
           )}
 
-          {variant === 'playlistTracks' && entry.thumb && (
+          {variant === 'playlistTracks' && (
             <div className={style.thumb}>
-              <img src={entry.thumb} alt={entry.title} loading="lazy" />
+              {entry.thumb && <img src={entry.thumb} alt={entry.title} loading="lazy" />}
             </div>
           )}
 
@@ -770,9 +808,12 @@ const ListTrackEntry = React.memo(
 
           {variant === 'playlistTracks' && (
             <div className={clsx(style.album, { 'text-trim': !optionShowFullTitles })}>
-              <NavLink to={entry.albumLink} tabIndex={-1}>
-                {entry.album}{' '}
-              </NavLink>
+              {entry.albumLink && (
+                <NavLink to={entry.albumLink} tabIndex={-1}>
+                  {entry.album}{' '}
+                </NavLink>
+              )}
+              {!entry.albumLink && entry.album}
             </div>
           )}
 

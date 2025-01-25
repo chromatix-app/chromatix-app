@@ -154,6 +154,12 @@ const ListEntry = React.memo(
         <div className={style.thumb}>
           {thumb && <img src={thumb} alt={title} loading="lazy" />}
 
+          {variant === 'folders' && (
+            <div className={style.icon}>
+              <Icon icon="FolderIcon" cover stroke strokeWidth={1.6} />
+            </div>
+          )}
+
           {variant === 'artistGenres' && (
             <div className={style.icon}>
               <Icon icon="ArtistGenresIcon" cover stroke strokeWidth={1.6} />

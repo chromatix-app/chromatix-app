@@ -98,8 +98,8 @@
         ]
       },
       {
-        "ratingKey": "149255",
-        "key": "/library/metadata/149255/children",
+        "ratingKey": "149256",
+        "key": "/library/metadata/149256/children",
         "guid": "plex://artist/5d07bc1b403c6402904bc787",
         "type": "artist",
         "title": "Amy Winehouse",
@@ -111,7 +111,7 @@
         "lastViewedAt": 1711581275,
         "lastRatedAt": 1711986780,
         "thumb": "/api/images/amy-winehouse.jpg",
-        "art": "/library/metadata/149255/art/1711947108",
+        "art": "/library/metadata/149256/art/1711947108",
         "addedAt": 1503082062,
         "updatedAt": 1711947108,
         "Genre": [
@@ -126,8 +126,8 @@
         ]
       },
       {
-        "ratingKey": "149255",
-        "key": "/library/metadata/149255/children",
+        "ratingKey": "149257",
+        "key": "/library/metadata/149257/children",
         "guid": "plex://artist/5d07bc1b403c6402904bc787",
         "type": "artist",
         "title": "Anastacia",
@@ -139,7 +139,7 @@
         "lastViewedAt": 1711581275,
         "lastRatedAt": 1711986780,
         "thumb": "/api/images/anastacia.jpg",
-        "art": "/library/metadata/149255/art/1711947108",
+        "art": "/library/metadata/149257/art/1711947108",
         "addedAt": 1503082062,
         "updatedAt": 1711947108,
         "Genre": [
@@ -154,8 +154,8 @@
         ]
       },
       {
-        "ratingKey": "149255",
-        "key": "/library/metadata/149255/children",
+        "ratingKey": "149258",
+        "key": "/library/metadata/149258/children",
         "guid": "plex://artist/5d07bc1b403c6402904bc787",
         "type": "artist",
         "title": "Apocalyptica",
@@ -167,7 +167,7 @@
         "lastViewedAt": 1711581275,
         "lastRatedAt": 1711986780,
         "thumb": "/api/images/apocalyptica.jpg",
-        "art": "/library/metadata/149255/art/1711947108",
+        "art": "/library/metadata/149258/art/1711947108",
         "addedAt": 1503082062,
         "updatedAt": 1711947108,
         "Genre": [
@@ -182,8 +182,8 @@
         ]
       },
       {
-        "ratingKey": "149255",
-        "key": "/library/metadata/149255/children",
+        "ratingKey": "149259",
+        "key": "/library/metadata/149259/children",
         "guid": "plex://artist/5d07bc1b403c6402904bc787",
         "type": "artist",
         "title": "Arctic Monkeys",
@@ -195,7 +195,7 @@
         "lastViewedAt": 1711581275,
         "lastRatedAt": 1711986780,
         "thumb": "/api/images/arctic-monkeys.jpg",
-        "art": "/library/metadata/149255/art/1711947108",
+        "art": "/library/metadata/149259/art/1711947108",
         "addedAt": 1503082062,
         "updatedAt": 1711947108,
         "Genre": [
@@ -210,8 +210,8 @@
         ]
       },
       {
-        "ratingKey": "149255",
-        "key": "/library/metadata/149255/children",
+        "ratingKey": "149260",
+        "key": "/library/metadata/149260/children",
         "guid": "plex://artist/5d07bc1b403c6402904bc787",
         "type": "artist",
         "title": "Avenged Sevenfold",
@@ -223,7 +223,7 @@
         "lastViewedAt": 1711581275,
         "lastRatedAt": 1711986780,
         "thumb": "/api/images/avenged-sevenfold.jpg",
-        "art": "/library/metadata/149255/art/1711947108",
+        "art": "/library/metadata/149260/art/1711947108",
         "addedAt": 1503082062,
         "updatedAt": 1711947108,
         "Genre": [
@@ -389,8 +389,8 @@
         ]
       },
       {
-        "ratingKey": "157090",
-        "key": "/library/metadata/157090/children",
+        "ratingKey": "157091",
+        "key": "/library/metadata/157091/children",
         "guid": "plex://artist/5d07bc23403c6402904c3766",
         "type": "artist",
         "title": "The Cranberries",
@@ -401,7 +401,7 @@
         "skipCount": 12,
         "lastViewedAt": 1614889176,
         "thumb": "/api/images/the-cranberries.jpg",
-        "art": "/library/metadata/157090/art/1711947131",
+        "art": "/library/metadata/157091/art/1711947131",
         "addedAt": 1615651341,
         "updatedAt": 1711947131,
         "Genre": [
@@ -416,8 +416,8 @@
         ]
       },
       {
-        "ratingKey": "157090",
-        "key": "/library/metadata/157090/children",
+        "ratingKey": "157092",
+        "key": "/library/metadata/157092/children",
         "guid": "plex://artist/5d07bc23403c6402904c3766",
         "type": "artist",
         "title": "Doja Cat",
@@ -428,7 +428,7 @@
         "skipCount": 12,
         "lastViewedAt": 1614889176,
         "thumb": "/api/images/doja-cat.jpg",
-        "art": "/library/metadata/157090/art/1711947131",
+        "art": "/library/metadata/157092/art/1711947131",
         "addedAt": 1615651341,
         "updatedAt": 1711947131,
         "Genre": [
@@ -443,8 +443,8 @@
         ]
       },
       {
-        "ratingKey": "157090",
-        "key": "/library/metadata/157090/children",
+        "ratingKey": "157093",
+        "key": "/library/metadata/157093/children",
         "guid": "plex://artist/5d07bc23403c6402904c3766",
         "type": "artist",
         "title": "Dua Lipa",
@@ -455,7 +455,7 @@
         "skipCount": 12,
         "lastViewedAt": 1614889176,
         "thumb": "/api/images/dua-lipa.jpg",
-        "art": "/library/metadata/157090/art/1711947131",
+        "art": "/library/metadata/157093/art/1711947131",
         "addedAt": 1615651341,
         "updatedAt": 1711947131,
         "Genre": [
@@ -470,8 +470,8 @@
         ]
       },
       {
-        "ratingKey": "157090",
-        "key": "/library/metadata/157090/children",
+        "ratingKey": "157094",
+        "key": "/library/metadata/157094/children",
         "guid": "plex://artist/5d07bc23403c6402904c3766",
         "type": "artist",
         "title": "Ed Sheeran",
@@ -482,7 +482,7 @@
         "skipCount": 12,
         "lastViewedAt": 1614889176,
         "thumb": "/api/images/ed-sheeran.jpg",
-        "art": "/library/metadata/157090/art/1711947131",
+        "art": "/library/metadata/157094/art/1711947131",
         "addedAt": 1615651341,
         "updatedAt": 1711947131,
         "Genre": [
@@ -497,8 +497,8 @@
         ]
       },
       {
-        "ratingKey": "157090",
-        "key": "/library/metadata/157090/children",
+        "ratingKey": "157095",
+        "key": "/library/metadata/157095/children",
         "guid": "plex://artist/5d07bc23403c6402904c3766",
         "type": "artist",
         "title": "Eminem",
@@ -509,7 +509,7 @@
         "skipCount": 12,
         "lastViewedAt": 1614889176,
         "thumb": "/api/images/eminem.jpg",
-        "art": "/library/metadata/157090/art/1711947131",
+        "art": "/library/metadata/157095/art/1711947131",
         "addedAt": 1615651341,
         "updatedAt": 1711947131,
         "Genre": [

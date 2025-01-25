@@ -24,19 +24,35 @@
     text-align: right;
   }
 
-  .wrap.wrapArtists & {
+  .wrap.wrapArtists &,
+  .wrap.wrapArtistCollectionItems &,
+  .wrap.wrapArtistGenreItems &,
+  .wrap.wrapArtistMoodItems &,
+  .wrap.wrapArtistStyleItems & {
     grid-template-columns: 41px 1.2fr 0.8fr 0.8fr;
   }
-  .wrap.wrapArtists.wrapWithRatings & {
+  .wrap.wrapArtists.wrapWithRatings &,
+  .wrap.wrapArtistCollectionItems.wrapWithRatings &,
+  .wrap.wrapArtistGenreItems.wrapWithRatings &,
+  .wrap.wrapArtistMoodItems.wrapWithRatings &,
+  .wrap.wrapArtistStyleItems.wrapWithRatings & {
     :global(.cq-800) & {
       grid-template-columns: 41px 1.2fr 0.8fr 0.8fr 0.5fr;
     }
   }
 
-  .wrap.wrapAlbums & {
+  .wrap.wrapAlbums &,
+  .wrap.wrapAlbumCollectionItems &,
+  .wrap.wrapAlbumGenreItems &,
+  .wrap.wrapAlbumMoodItems &,
+  .wrap.wrapAlbumStyleItems & {
     grid-template-columns: 41px 1.2fr 1fr 0.8fr 0.8fr 0.8fr;
   }
-  .wrap.wrapAlbums.wrapWithRatings & {
+  .wrap.wrapAlbums.wrapWithRatings &,
+  .wrap.wrapAlbumCollectionItems.wrapWithRatings &,
+  .wrap.wrapAlbumGenreItems.wrapWithRatings &,
+  .wrap.wrapAlbumMoodItems.wrapWithRatings &,
+  .wrap.wrapAlbumStyleItems.wrapWithRatings & {
     :global(.cq-800) & {
       grid-template-columns: 41px 1.2fr 1fr 0.8fr 0.8fr 0.8fr 0.5fr;
     }
@@ -62,6 +78,7 @@
     }
   }
 
+  .wrap.wrapFolders &,
   .wrap.wrapArtistGenres &,
   .wrap.wrapAlbumGenres &,
   .wrap.wrapArtistMoods &,
@@ -146,10 +163,19 @@
   }
 
   .wrap.wrapArtists &,
+  .wrap.wrapArtistCollectionItems &,
+  .wrap.wrapArtistGenreItems &,
+  .wrap.wrapArtistMoodItems &,
+  .wrap.wrapArtistStyleItems &,
   .wrap.wrapAlbums &,
+  .wrap.wrapAlbumCollectionItems &,
+  .wrap.wrapAlbumGenreItems &,
+  .wrap.wrapAlbumMoodItems &,
+  .wrap.wrapAlbumStyleItems &,
   .wrap.wrapPlaylists &,
   .wrap.wrapArtistCollections &,
   .wrap.wrapAlbumCollections &,
+  .wrap.wrapFolders &,
   .wrap.wrapArtistGenres &,
   .wrap.wrapAlbumGenres &,
   .wrap.wrapArtistMoods &,
@@ -260,6 +286,8 @@
   background: var(--color-opacity-01);
   border-radius: 3px;
 
+  &.thumbFolder,
+  .wrap.wrapFolders &,
   .wrap.wrapArtistGenres &,
   .wrap.wrapAlbumGenres &,
   .wrap.wrapArtistMoods &,

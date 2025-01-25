@@ -1,3 +1,17 @@
+<a name="0.24.0"></a>
+# 0.24.0 (2025-01-25)
+Features:
+- Added album sorting options to artist pages.
+- Added list view and sorting for all other remaining sections.
+- Updated home page screenshot to reflect recent changes.
+- Added Bluesky link to settings page.
+Fixed:
+- Some edge case sorting issues have been resolved.
+Refactor:
+- Used consistent hooks for fetching and managing most list view states.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.23.0"></a>
 # 0.23.0 (2025-01-22)
 Features:

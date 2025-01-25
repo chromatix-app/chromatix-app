@@ -2,14 +2,14 @@
 
 .wrap {
   display: inline-block;
-  margin-right: 24px;
+  margin-right: 18px;
   margin-left: -6px;
 }
 
 .trigger {
   display: flex;
   align-items: center;
-  padding: 6px 0;
+  padding: 6px 6px;
   border-radius: 6px;
   font-size: 12px;
   line-height: 1;
@@ -34,7 +34,7 @@
 }
 
 .content {
-  left: 8px;
+  left: 14px;
   padding: 6px 0;
   background: var(--color-panel-background);
   border: 1px solid var(--color-border);
