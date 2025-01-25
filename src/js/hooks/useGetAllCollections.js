@@ -38,6 +38,7 @@ const useGetAllCollections = (collectionKey) => {
 
   const setOrderCollections = (orderCollections) => {
     dispatch.sessionModel.setSessionState({
+      [`sort${collectionKey}`]: actualSortCollections,
       [`order${collectionKey}`]: orderCollections,
     });
   };

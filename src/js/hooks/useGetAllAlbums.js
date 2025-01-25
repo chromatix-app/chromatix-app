@@ -44,6 +44,7 @@ const useGetAllAlbums = () => {
 
   const setOrderAlbums = (orderAlbums) => {
     dispatch.sessionModel.setSessionState({
+      sortAlbums: actualSortAlbums,
       orderAlbums,
     });
   };

@@ -41,6 +41,7 @@ const useGetAllArtists = () => {
 
   const setOrderArtists = (orderArtists) => {
     dispatch.sessionModel.setSessionState({
+      sortArtists: actualSortArtists,
       orderArtists,
     });
   };

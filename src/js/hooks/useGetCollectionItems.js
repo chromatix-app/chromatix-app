@@ -56,6 +56,7 @@ const useGetCollectionItems = ({
 
   const setOrderCollectionItems = (orderCollectionItems) => {
     dispatch.sessionModel.setSessionState({
+      [`sort${itemsKey}`]: actualSortCollectionItems,
       [`order${itemsKey}`]: orderCollectionItems,
     });
   };

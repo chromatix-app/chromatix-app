@@ -41,6 +41,7 @@ const useGetAllPlaylists = () => {
 
   const setOrderPlaylists = (orderPlaylists) => {
     dispatch.sessionModel.setSessionState({
+      sortPlaylists: actualSortPlaylists,
       orderPlaylists,
     });
   };
