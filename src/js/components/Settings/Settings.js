@@ -87,7 +87,7 @@ export const Settings = () => {
             <Icon icon="RedditIcon" cover stroke strokeWidth={1.5} />
           </div>
           <div>
-            Join us on Reddit
+            Join Chromatix on Reddit
             <div className={style.externalIcon}>
               <Icon icon="ExternalLinkIcon" cover stroke />
             </div>
@@ -102,7 +102,27 @@ export const Settings = () => {
             <Icon icon="GithubIcon" cover stroke strokeWidth={1.5} />
           </div>
           <div>
-            View us on GitHub
+            View Chromatix on GitHub
+            <div className={style.externalIcon}>
+              <Icon icon="ExternalLinkIcon" cover stroke />
+            </div>
+          </div>
+          <div className={style.entryArrow}>
+            <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
+          </div>
+        </a>
+
+        <a
+          className={style.entry}
+          href="https://bsky.app/profile/chromaticnova.com"
+          target="_blank"
+          rel="noreferrer nofollow"
+        >
+          <div className={style.entryIcon}>
+            <Icon icon="BlueskyIcon" cover stroke strokeWidth={1.5} />
+          </div>
+          <div>
+            Follow the developer on Bluesky
             <div className={style.externalIcon}>
               <Icon icon="ExternalLinkIcon" cover stroke />
             </div>

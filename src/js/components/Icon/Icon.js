@@ -22,6 +22,7 @@ import { ReactComponent as ArtistCollectionsIcon } from './icons/music/artist-co
 import { ReactComponent as ArtistGenresIcon } from './icons/music/artist-genres.svg';
 import { ReactComponent as ArtistMoodsIcon } from './icons/music/artist-moods.svg';
 import { ReactComponent as ArtistStylesIcon } from './icons/music/artist-styles.svg';
+import { ReactComponent as BlueskyIcon } from './icons/music/bluesky.svg';
 import { ReactComponent as CheckIcon } from './icons/music/check.svg';
 import { ReactComponent as CheckCircleIcon } from './icons/music/check-circle.svg';
 import { ReactComponent as ClockRewindIcon } from './icons/music/clock-rewind.svg';
@@ -95,6 +96,7 @@ const customIcons = {
   ArtistGenresIcon,
   ArtistMoodsIcon,
   ArtistStylesIcon,
+  BlueskyIcon,
   CheckIcon,
   CheckCircleIcon,
   ClockRewindIcon,
