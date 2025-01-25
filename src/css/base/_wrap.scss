@@ -109,3 +109,65 @@
 
   @include electron-drag;
 }
+
+::-webkit-scrollbar {
+  width: 8px; /* For vertical scrollbar */
+  height: 8px; /* For horizontal scrollbar */
+  background: var(--color-opacity-01);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  // background: var(--color-opacity-005);
+}
+
+::-webkit-scrollbar-thumb {
+  width: 8px;
+  background: var(--color-opacity-02);
+  border-radius: 50px;
+}
+
+// .layout-sidebar,
+// .layout-content,
+// .layout-controls,
+// .layout-rightbar {
+//   &::-webkit-scrollbar {
+//     width: 8px; /* For vertical scrollbar */
+//     height: 8px; /* For horizontal scrollbar */
+//     background: var(--color-opacity-01);
+//   }
+
+//   &::-webkit-scrollbar-track {
+//     background: transparent;
+//     // background: var(--color-opacity-005);
+//   }
+
+//   &::-webkit-scrollbar-thumb {
+//     width: 8px;
+//     background: var(--color-opacity-02);
+//     border-radius: 50px;
+//   }
+// }
+
+/* Show scrollbar on hover */
+// .your-scrollable-element:hover::-webkit-scrollbar {
+//   width: 8px; /* Adjust width for vertical scrollbar */
+//   height: 8px; /* Adjust height for horizontal scrollbar */
+// }
+
+/* Style the scrollbar track */
+// .your-scrollable-element::-webkit-scrollbar-track {
+//   background: transparent; /* Set track background */
+// }
+
+/* Style the scrollbar thumb */
+// ::-webkit-scrollbar-thumb {
+//   width: 10px;
+//   background: #f00; /* Adjust thumb color */
+//   border-radius: 10px; /* Rounded corners */
+// }
+
+/* Optional: Style the scrollbar thumb on hover */
+// .your-scrollable-element::-webkit-scrollbar-thumb:hover {
+//   background: rgba(0, 0, 0, 0.8); /* Darker thumb on hover */
+// }
