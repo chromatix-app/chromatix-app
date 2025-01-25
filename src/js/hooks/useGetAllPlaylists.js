@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 const useGetAllPlaylists = () => {
+  const dispatch = useDispatch();
+
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
@@ -22,6 +24,24 @@ const useGetAllPlaylists = () => {
   );
   const sortedPlaylists = allPlaylists ? sortList(allPlaylists, actualSortPlaylists, actualOrderPlaylists) : null;
 
+  const setViewPlaylists = (viewPlaylists) => {
+    dispatch.sessionModel.setSessionState({
+      viewPlaylists,
+    });
+  };
+
+  const setSortPlaylists = (sortPlaylists) => {
+    dispatch.sessionModel.setSessionState({
+      sortPlaylists,
+    });
+  };
+
+  const setOrderPlaylists = (orderPlaylists) => {
+    dispatch.sessionModel.setSessionState({
+      orderPlaylists,
+    });
+  };
+
   useEffect(() => {
     plex.getAllPlaylists();
   }, []);
@@ -30,6 +50,11 @@ const useGetAllPlaylists = () => {
     viewPlaylists,
     sortPlaylists: actualSortPlaylists,
     orderPlaylists: actualOrderPlaylists,
+
+    setViewPlaylists,
+    setSortPlaylists,
+    setOrderPlaylists,
+
     sortedPlaylists,
   };
 };

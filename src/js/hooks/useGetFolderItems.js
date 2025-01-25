@@ -1,11 +1,14 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 const useGetFolderItems = (folderId = 'root') => {
+  const dispatch = useDispatch();
+
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
+
   const viewFolders = useSelector(({ sessionModel }) => sessionModel.viewFolders);
   const sortFolders = useSelector(({ sessionModel }) => sessionModel.sortFolders);
   const orderFolders = useSelector(({ sessionModel }) => sessionModel.orderFolders);
@@ -21,6 +24,24 @@ const useGetFolderItems = (folderId = 'root') => {
       })
     : null;
 
+  const setViewFolders = (viewFolders) => {
+    dispatch.sessionModel.setSessionState({
+      viewFolders,
+    });
+  };
+
+  const setSortFolders = (sortFolders) => {
+    dispatch.sessionModel.setSessionState({
+      sortFolders,
+    });
+  };
+
+  const setOrderFolders = (orderFolders) => {
+    dispatch.sessionModel.setSessionState({
+      orderFolders,
+    });
+  };
+
   useEffect(() => {
     plex.getFolderItems(folderId);
   }, [folderId]);
@@ -29,6 +50,11 @@ const useGetFolderItems = (folderId = 'root') => {
     viewFolders,
     sortFolders,
     orderFolders,
+
+    setViewFolders,
+    setSortFolders,
+    setOrderFolders,
+
     sortedFolders,
   };
 };

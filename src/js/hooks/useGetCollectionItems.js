@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 const useGetCollectionItems = ({ collectionId, libraryId, collectionKey, itemsKey }) => {
+  const dispatch = useDispatch();
+
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   const viewCollectionItems = useSelector(({ sessionModel }) => sessionModel[`view${itemsKey}`]);
@@ -17,8 +19,6 @@ const useGetCollectionItems = ({ collectionId, libraryId, collectionKey, itemsKe
       ? 'title'
       : // default
         sortCollectionItems;
-
-  console.log(sortCollectionItems);
 
   const actualOrderCollectionItems =
     !optionShowStarRatings && sortCollectionItems === 'userRating' ? 'asc' : orderCollectionItems;
@@ -37,6 +37,24 @@ const useGetCollectionItems = ({ collectionId, libraryId, collectionKey, itemsKe
   const collectionTitle = currentCollection?.title;
   const collectionRating = currentCollection?.userRating;
 
+  const setViewCollectionItems = (viewCollectionItems) => {
+    dispatch.sessionModel.setSessionState({
+      [`view${itemsKey}`]: viewCollectionItems,
+    });
+  };
+
+  const setSortCollectionItems = (sortCollectionItems) => {
+    dispatch.sessionModel.setSessionState({
+      [`sort${itemsKey}`]: sortCollectionItems,
+    });
+  };
+
+  const setOrderCollectionItems = (orderCollectionItems) => {
+    dispatch.sessionModel.setSessionState({
+      [`order${itemsKey}`]: orderCollectionItems,
+    });
+  };
+
   useEffect(() => {
     plex.getAllCollections();
     plex[`get${itemsKey}`](libraryId, collectionId);
@@ -48,6 +66,10 @@ const useGetCollectionItems = ({ collectionId, libraryId, collectionKey, itemsKe
     viewCollectionItems,
     sortCollectionItems: actualSortCollectionItems,
     orderCollectionItems: actualOrderCollectionItems,
+
+    setViewCollectionItems,
+    setSortCollectionItems,
+    setOrderCollectionItems,
 
     collectionThumb,
     collectionTitle,

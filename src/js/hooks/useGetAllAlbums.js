@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 const useGetAllAlbums = () => {
+  const dispatch = useDispatch();
+
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
@@ -31,6 +33,24 @@ const useGetAllAlbums = () => {
   );
   const sortedAlbums = allAlbums ? sortList(allAlbums, actualSortAlbums, actualOrderAlbums) : null;
 
+  const setViewAlbums = (viewAlbums) => {
+    dispatch.sessionModel.setSessionState({
+      viewAlbums,
+    });
+  };
+
+  const setSortAlbums = (sortAlbums) => {
+    dispatch.sessionModel.setSessionState({
+      sortAlbums,
+    });
+  };
+
+  const setOrderAlbums = (orderAlbums) => {
+    dispatch.sessionModel.setSessionState({
+      orderAlbums,
+    });
+  };
+
   useEffect(() => {
     plex.getAllAlbums();
   }, []);
@@ -39,6 +59,11 @@ const useGetAllAlbums = () => {
     viewAlbums,
     sortAlbums: actualSortAlbums,
     orderAlbums: actualOrderAlbums,
+
+    setViewAlbums,
+    setSortAlbums,
+    setOrderAlbums,
+
     sortedAlbums,
   };
 };

@@ -2,8 +2,6 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch } from 'react-redux';
-
 import { FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
 import { useGetAllSetEntries } from 'js/hooks';
 
@@ -12,9 +10,8 @@ import { useGetAllSetEntries } from 'js/hooks';
 // ======================================================================
 
 const AlbumGenreList = () => {
-  const dispatch = useDispatch();
-
-  const { viewSetEntries, sortSetEntries, orderSetEntries, sortedSetEntries } = useGetAllSetEntries('AlbumGenres');
+  const { viewSetEntries, sortSetEntries, orderSetEntries, setViewSetEntries, setOrderSetEntries, sortedSetEntries } =
+    useGetAllSetEntries('AlbumGenres');
 
   return (
     <>
@@ -35,11 +32,7 @@ const AlbumGenreList = () => {
             { value: 'grid', label: 'Grid view' },
             { value: 'list', label: 'List view' },
           ]}
-          setter={(viewSetEntries) => {
-            dispatch.sessionModel.setSessionState({
-              viewAlbumGenres: viewSetEntries,
-            });
-          }}
+          setter={setViewSetEntries}
           icon={viewSetEntries === 'grid' ? 'GridIcon' : 'ListIcon'}
         />
         {viewSetEntries === 'grid' && (
@@ -50,11 +43,7 @@ const AlbumGenreList = () => {
                 { value: 'asc', label: 'Ascending' },
                 { value: 'desc', label: 'Descending' },
               ]}
-              setter={(orderSetEntries) => {
-                dispatch.sessionModel.setSessionState({
-                  orderAlbumGenres: orderSetEntries,
-                });
-              }}
+              setter={setOrderSetEntries}
               icon={orderSetEntries === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
           </>

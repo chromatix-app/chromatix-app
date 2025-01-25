@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 const useGetAllCollections = (collectionKey) => {
+  const dispatch = useDispatch();
+
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   const viewCollections = useSelector(({ sessionModel }) => sessionModel[`view${collectionKey}`]);
@@ -19,6 +21,24 @@ const useGetAllCollections = (collectionKey) => {
     ? sortList(allCollections, actualSortCollections, actualOrderCollections)
     : null;
 
+  const setViewCollections = (viewCollections) => {
+    dispatch.sessionModel.setSessionState({
+      [`view${collectionKey}`]: viewCollections,
+    });
+  };
+
+  const setSortCollections = (sortCollections) => {
+    dispatch.sessionModel.setSessionState({
+      [`sort${collectionKey}`]: sortCollections,
+    });
+  };
+
+  const setOrderCollections = (orderCollections) => {
+    dispatch.sessionModel.setSessionState({
+      [`order${collectionKey}`]: orderCollections,
+    });
+  };
+
   useEffect(() => {
     plex.getAllCollections();
   }, [collectionKey]);
@@ -27,6 +47,11 @@ const useGetAllCollections = (collectionKey) => {
     viewCollections,
     sortCollections: actualSortCollections,
     orderCollections: actualOrderCollections,
+
+    setViewCollections,
+    setSortCollections,
+    setOrderCollections,
+
     sortedCollections,
   };
 };

@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
 import { useGetAllPlaylists } from 'js/hooks';
@@ -12,10 +12,16 @@ import { useGetAllPlaylists } from 'js/hooks';
 // ======================================================================
 
 const PlaylistList = () => {
-  const dispatch = useDispatch();
-
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-  const { viewPlaylists, sortPlaylists, orderPlaylists, sortedPlaylists } = useGetAllPlaylists();
+  const {
+    viewPlaylists,
+    sortPlaylists,
+    orderPlaylists,
+    setViewPlaylists,
+    setSortPlaylists,
+    setOrderPlaylists,
+    sortedPlaylists,
+  } = useGetAllPlaylists();
 
   return (
     <>
@@ -32,11 +38,7 @@ const PlaylistList = () => {
             { value: 'grid', label: 'Grid view' },
             { value: 'list', label: 'List view' },
           ]}
-          setter={(viewPlaylists) => {
-            dispatch.sessionModel.setSessionState({
-              viewPlaylists,
-            });
-          }}
+          setter={setViewPlaylists}
           icon={viewPlaylists === 'grid' ? 'GridIcon' : 'ListIcon'}
         />
         {viewPlaylists === 'grid' && (
@@ -52,11 +54,7 @@ const PlaylistList = () => {
                 ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
                 { value: 'totalTracks', label: 'Track count' },
               ]}
-              setter={(sortPlaylists) => {
-                dispatch.sessionModel.setSessionState({
-                  sortPlaylists,
-                });
-              }}
+              setter={setSortPlaylists}
             />
             <FilterToggle
               value={orderPlaylists}
@@ -64,11 +62,7 @@ const PlaylistList = () => {
                 { value: 'asc', label: 'Ascending' },
                 { value: 'desc', label: 'Descending' },
               ]}
-              setter={(orderPlaylists) => {
-                dispatch.sessionModel.setSessionState({
-                  orderPlaylists,
-                });
-              }}
+              setter={setOrderPlaylists}
               icon={orderPlaylists === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
           </>

@@ -2,7 +2,6 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
@@ -13,10 +12,16 @@ import { useGetFolderItems } from 'js/hooks';
 // ======================================================================
 
 const FolderList = () => {
-  const dispatch = useDispatch();
-
   const { folderId } = useParams();
-  const { viewFolders, sortFolders, orderFolders, sortedFolders } = useGetFolderItems(folderId);
+  const {
+    viewFolders,
+    sortFolders,
+    orderFolders,
+    setViewFolders,
+
+    setOrderFolders,
+    sortedFolders,
+  } = useGetFolderItems(folderId);
 
   const trackEntries = sortedFolders?.filter((entry) => entry.trackId);
 
@@ -35,11 +40,7 @@ const FolderList = () => {
             { value: 'grid', label: 'Grid view' },
             { value: 'list', label: 'List view' },
           ]}
-          setter={(viewFolders) => {
-            dispatch.sessionModel.setSessionState({
-              viewFolders,
-            });
-          }}
+          setter={setViewFolders}
           icon={viewFolders === 'grid' ? 'GridIcon' : 'ListIcon'}
         />
         {viewFolders === 'grid' && (
@@ -50,11 +51,7 @@ const FolderList = () => {
                 { value: 'asc', label: 'Ascending' },
                 { value: 'desc', label: 'Descending' },
               ]}
-              setter={(orderFolders) => {
-                dispatch.sessionModel.setSessionState({
-                  orderFolders,
-                });
-              }}
+              setter={setOrderFolders}
               icon={orderFolders === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
           </>
