@@ -7,7 +7,12 @@ import { themes } from 'js/_config/themes';
 function useColorTheme() {
   const defaultTheme = 'chromatix';
 
+  const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
+  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
+
+  const hasSelectedLibrary = currentServer && currentLibrary;
+  const hasQueueVisible = queueIsVisible && hasSelectedLibrary;
 
   const currentTheme = useSelector(({ sessionModel }) => sessionModel.currentTheme);
   const actualTheme = themes[currentTheme] ? currentTheme : defaultTheme;
@@ -77,7 +82,7 @@ function useColorTheme() {
     }
 
     sendToElectron('color-theme', {
-      background: queueIsVisible ? colorPanelBackground : colorBackground,
+      background: hasQueueVisible ? colorPanelBackground : colorBackground,
       text: colorText,
       primary: colorPrimary,
     });
@@ -104,7 +109,7 @@ function useColorTheme() {
 
     colorShadow,
 
-    queueIsVisible,
+    hasQueueVisible,
   ]);
 }
 

@@ -28,33 +28,50 @@ const UserMenu = () => {
   const allServers = useSelector(({ appModel }) => appModel.allServers);
   const allLibraries = useSelector(({ appModel }) => appModel.allLibraries);
 
+  const hasSelectedLibrary = currentServer && currentLibrary;
+  const hasQueueVisible = queueIsVisible && hasSelectedLibrary;
+
+  const isElectronWindows = window.isElectron && window.electronProcess.platform !== 'darwin';
+
   const toggleMenu = () => {
     setShowMenu(!showMenu);
   };
+
+  // if (isElectronWindows && hasSelectedLibrary) {
+  //   return null;
+  // }
 
   return (
     <>
       {showMenu && <div className={style.overlay} onClick={toggleMenu}></div>}
 
-      <div className={clsx(style.wrap, { [style.wrapWithQueue]: queueIsVisible })}>
+      <div
+        className={clsx(style.wrap, {
+          [style.wrapWithoutLibrary]: !hasSelectedLibrary,
+          [style.wrapWithLibrary]: hasSelectedLibrary,
+          [style.wrapWithQueue]: hasQueueVisible,
+        })}
+      >
         <button className={style.status} onClick={toggleMenu}>
-          <div className={style.content}>
-            {currentLibrary && currentServer && (
-              <>
-                <div className={style.library}>{currentLibrary.title}</div>
-                <div className={style.server}>{currentServer.name}</div>
-              </>
-            )}
-            {!(currentLibrary && currentServer) && <div className={style.library}>{currentUser.title}</div>}
-          </div>
+          {hasSelectedLibrary && (
+            <div className={style.content}>
+              <div className={style.library}>{currentLibrary.title}</div>
+              <div className={style.server}>{currentServer.name}</div>
+            </div>
+          )}
           <div className={style.thumb}>
+            {!currentUser.thumb && (
+              <span className={style.thumbIcon}>
+                <Icon icon="ArtistCollectionsIcon" cover stroke strokeWidth={1.4} />
+              </span>
+            )}
             {currentUser.thumb && <img src={currentUser.thumb} alt={currentUser.title} />}
           </div>
         </button>
 
         {showMenu && (
           <div className={style.menu}>
-            {currentLibrary && currentServer && (
+            {hasSelectedLibrary && (
               <>
                 {allServers &&
                   allServers.map((server) => (

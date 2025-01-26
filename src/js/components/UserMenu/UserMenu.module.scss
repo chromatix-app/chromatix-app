@@ -16,6 +16,13 @@
       right: 340px;
     }
   }
+
+  &WithoutLibrary {
+    :global(html.electron.electron-platform-win) & {
+      right: auto;
+      left: 20px;
+    }
+  }
 }
 
 .overlay {
@@ -50,6 +57,13 @@
 
   &:hover {
     background: var(--color-hover);
+  }
+
+  .wrapWithoutLibrary & {
+    :global(html.electron.electron-platform-win) & {
+      margin: 0 auto 0 0;
+      justify-content: flex-start;
+    }
   }
 }
 
@@ -93,6 +107,15 @@
     height: 100%;
     object-fit: cover;
   }
+}
+
+.thumbIcon {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 28px;
+  height: 28px;
+  opacity: 0.1;
 }
 
 //
