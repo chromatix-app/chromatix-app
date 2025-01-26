@@ -7,7 +7,7 @@ import { Icon } from 'js/components';
 import style from './FilterToggle.module.scss';
 
 // ======================================================================
-// RENDER
+// COMPONENT
 // ======================================================================
 
 export const FilterToggle = ({ value, options, setter, icon = 'ArrowsVerticalIcon' }) => {

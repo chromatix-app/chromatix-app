@@ -10,7 +10,7 @@ import { Icon } from 'js/components';
 import style from './FilterSelect.module.scss';
 
 // ======================================================================
-// RENDER
+// COMPONENT
 // ======================================================================
 
 export const FilterSelect = ({ value, options, setter, icon = 'ArrowsVerticalIcon' }) => {
