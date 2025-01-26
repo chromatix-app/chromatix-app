@@ -1,17 +1,41 @@
+$scrollbar-width: 6px;
+
 html.electron.electron-platform-win {
   ::-webkit-scrollbar {
-    width: 6px; // For vertical scrollbar
-    height: 6px; // For horizontal scrollbar
+    width: $scrollbar-width; // For vertical scrollbar
+    height: $scrollbar-width; // For horizontal scrollbar
     background: var(--color-opacity-01);
+    visibility: hidden;
   }
 
   ::-webkit-scrollbar-track {
     background: transparent;
+    visibility: hidden;
   }
 
   ::-webkit-scrollbar-thumb {
-    width: 6px;
+    width: $scrollbar-width;
     background: var(--color-opacity-015);
     border-radius: 0;
+    visibility: hidden;
+  }
+
+  .layout-sidebar,
+  .layout-content,
+  .layout-controls,
+  .layout-rightbar {
+    &:hover {
+      &::-webkit-scrollbar {
+        visibility: visible;
+      }
+
+      &::-webkit-scrollbar-track {
+        visibility: visible;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        visibility: visible;
+      }
+    }
   }
 }

@@ -6,4 +6,8 @@
   padding: 17px 0 20px;
   background: var(--color-panel-background);
   border-left: 1px solid var(--color-border);
+
+  :global(html.electron.electron-platform-win) & {
+    padding-top: 30px;
+  }
 }
