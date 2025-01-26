@@ -7,6 +7,8 @@ import { themes } from 'js/_config/themes';
 function useColorTheme() {
   const defaultTheme = 'chromatix';
 
+  const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
+
   const currentTheme = useSelector(({ sessionModel }) => sessionModel.currentTheme);
   const actualTheme = themes[currentTheme] ? currentTheme : defaultTheme;
 
@@ -75,7 +77,7 @@ function useColorTheme() {
     }
 
     sendToElectron('color-theme', {
-      background: colorBackground,
+      background: queueIsVisible ? colorPanelBackground : colorBackground,
       text: colorText,
       primary: colorPrimary,
     });
@@ -101,6 +103,8 @@ function useColorTheme() {
     colorOpacity08,
 
     colorShadow,
+
+    queueIsVisible,
   ]);
 }
 
