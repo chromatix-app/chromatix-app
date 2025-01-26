@@ -8,7 +8,7 @@ import clsx from 'clsx';
 import style from './RangeSlider.module.scss';
 
 // ======================================================================
-// RENDER
+// COMPONENT
 // ======================================================================
 
 export const RangeSlider = ({

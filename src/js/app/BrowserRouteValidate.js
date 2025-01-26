@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { Redirect, useRouteMatch } from 'react-router-dom';
 
 // ======================================================================
-// RENDER
+// COMPONENT
 // ======================================================================
 
 const BrowserRouteValidate = ({ children }) => {

@@ -14,11 +14,12 @@ import style from './PageHome.module.scss';
 import { useEffect } from 'react';
 
 // ======================================================================
-// RENDER
+// COMPONENT
 // ======================================================================
 
+const isElectron = window?.isElectron;
+
 export const PageHome = () => {
-  const isElectron = window.isElectron;
   const dispatch = useDispatch();
 
   const downloadsRef = useRef(null);

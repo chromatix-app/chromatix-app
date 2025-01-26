@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
-import { Icon } from 'js/components';
+import { Icon, UserMenu } from 'js/components';
 import { useNavigationHistory } from 'js/hooks';
 import * as plex from 'js/services/plex';
 
@@ -17,6 +17,9 @@ import style from './SideBar.module.scss';
 // ======================================================================
 
 const isLocal = process.env.REACT_APP_ENV === 'local';
+
+const isElectron = window?.isElectron;
+const electronPlatform = isElectron ? (window?.electronProcess?.platform === 'darwin' ? 'mac' : 'win') : null;
 
 const SideBar = () => {
   const { canGoBack, canGoForward, goBack, goForward } = useNavigationHistory();
@@ -82,6 +85,8 @@ const SideBar = () => {
           <Icon icon="NextIcon" cover stroke />
         </button>
       </div>
+
+      {electronPlatform === 'win' && <UserMenu variant="Inline" />}
 
       {(libraryIsVisible || (browseIsVisible && !menuShowSeparateBrowseSection)) && (
         <>

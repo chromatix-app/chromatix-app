@@ -13,11 +13,14 @@ import { ErrorPlexGeneral, ErrorPlexLogin } from 'js/pages';
 import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 
 // ======================================================================
-// RENDER
+// COMPONENT
 // ======================================================================
 
 const isProduction = process.env.REACT_APP_ENV === 'production';
 // const isLocal = process.env.REACT_APP_ENV === 'local';
+
+const isElectron = window?.isElectron;
+const electronPlatform = isElectron ? (window?.electronProcess?.platform === 'darwin' ? 'mac' : 'win') : null;
 
 const App = () => {
   const inited = useSelector(({ appModel }) => appModel.inited);
@@ -49,6 +52,12 @@ const App = () => {
 
   // initialise on load
   useEffect(() => {
+    // add electron classes to html
+    if (isElectron) {
+      document.documentElement.classList.add('electron');
+      document.documentElement.classList.add('electron-platform-' + electronPlatform);
+    }
+
     // save history for reference within models
     dispatch.appModel.init({
       history: history,
@@ -70,12 +79,14 @@ const App = () => {
   if (plexErrorLogin) {
     return (
       <div className="wrap">
+        <div className="electron-drag"></div>
         <ErrorPlexLogin />
       </div>
     );
   } else if (plexErrorGeneral) {
     return (
       <div className="wrap">
+        <div className="electron-drag"></div>
         <ErrorPlexGeneral />
       </div>
     );
@@ -85,6 +96,7 @@ const App = () => {
   else if (!inited || (loggedIn && !gotRequiredData)) {
     return (
       <div className="wrap">
+        <div className="electron-drag"></div>
         <div className="loading"></div>
       </div>
     );
@@ -94,8 +106,8 @@ const App = () => {
   else if (!loggedIn) {
     return (
       <div className="wrap wrap--home">
+        <div className="electron-drag"></div>
         <BrowserRouteSwitch />
-        {/* <Blocker /> */}
       </div>
     );
   }
@@ -105,9 +117,9 @@ const App = () => {
     if (!currentServer || !currentLibrary) {
       return (
         <div className="wrap">
+          <div className="electron-drag"></div>
           <BrowserRouteSwitch />
           <UserMenu />
-          {/* <Blocker /> */}
         </div>
       );
     } else {
@@ -147,7 +159,7 @@ const AppMain = () => {
           <ControlBar />
         </div>
         <div ref={contentRef} id="content" className={clsx('layout-content', contentContainerClass)}>
-          <UserMenu />
+          {electronPlatform !== 'win' && <UserMenu />}
           <BrowserRouteSwitch />
         </div>
         {queueIsVisible && (
@@ -155,7 +167,6 @@ const AppMain = () => {
             <RightBar />
           </div>
         )}
-        {/* <Blocker /> */}
       </div>
     </div>
   );
