@@ -49,6 +49,14 @@ const App = () => {
 
   // initialise on load
   useEffect(() => {
+    // add electron classes to html
+    const isElectron = window.isElectron;
+    const electronPlatform = isElectron && (window.electronPlatform === 'darwin' ? 'mac' : 'win');
+    if (isElectron) {
+      document.documentElement.classList.add('electron');
+      document.documentElement.classList.add('electron-platform-' + electronPlatform);
+    }
+
     // save history for reference within models
     dispatch.appModel.init({
       history: history,
