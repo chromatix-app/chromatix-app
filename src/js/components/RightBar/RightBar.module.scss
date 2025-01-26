@@ -2,13 +2,8 @@
 
 .wrap {
   overflow-x: hidden;
-  width: 280px;
   min-height: 100%;
   padding: 17px 0 20px;
   background: var(--color-panel-background);
   border-left: 1px solid var(--color-border);
-
-  @media (min-width: 1024px) {
-    width: 320px;
-  }
 }

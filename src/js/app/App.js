@@ -51,7 +51,7 @@ const App = () => {
   useEffect(() => {
     // add electron classes to html
     const isElectron = window.isElectron;
-    const electronPlatform = isElectron && (window.electronPlatform === 'darwin' ? 'mac' : 'win');
+    const electronPlatform = isElectron && (window.electronProcess?.platform === 'darwin' ? 'mac' : 'win');
     if (isElectron) {
       document.documentElement.classList.add('electron');
       document.documentElement.classList.add('electron-platform-' + electronPlatform);

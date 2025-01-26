@@ -1,0 +1,17 @@
+html.electron.electron-platform-win {
+  ::-webkit-scrollbar {
+    width: 6px; // For vertical scrollbar
+    height: 6px; // For horizontal scrollbar
+    background: var(--color-opacity-01);
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    width: 6px;
+    background: var(--color-opacity-015);
+    border-radius: 0;
+  }
+}

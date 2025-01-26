@@ -1,0 +1,15 @@
+.electron-drag {
+  display: none;
+
+  html.electron & {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 46px;
+    background: rgba(255, 0, 0, 0.1);
+
+    @include electron-drag;
+  }
+}
