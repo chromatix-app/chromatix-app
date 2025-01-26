@@ -1,3 +1,12 @@
+<a name="0.25.0"></a>
+# 0.25.0 (2025-01-26)
+Features:
+- Added styling and functionality specific to Windows app.
+Fixed:
+- Ensure electron-drag element is always available.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.24.0"></a>
 # 0.24.0 (2025-01-25)
 Features:

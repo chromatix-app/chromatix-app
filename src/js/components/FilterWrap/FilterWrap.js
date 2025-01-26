@@ -5,7 +5,7 @@
 import style from './FilterWrap.module.scss';
 
 // ======================================================================
-// RENDER
+// COMPONENT
 // ======================================================================
 
 export const FilterWrap = ({ children }) => {

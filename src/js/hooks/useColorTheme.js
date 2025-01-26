@@ -4,8 +4,18 @@ import chroma from 'chroma-js';
 
 import { themes } from 'js/_config/themes';
 
+const isElectron = window?.isElectron;
+const electronPlatform = isElectron ? (window?.electronProcess?.platform === 'darwin' ? 'mac' : 'win') : null;
+
 function useColorTheme() {
   const defaultTheme = 'chromatix';
+
+  const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
+  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
+  const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
+
+  const hasSelectedLibrary = currentServer && currentLibrary;
+  const hasQueueVisible = queueIsVisible && hasSelectedLibrary;
 
   const currentTheme = useSelector(({ sessionModel }) => sessionModel.currentTheme);
   const actualTheme = themes[currentTheme] ? currentTheme : defaultTheme;
@@ -73,6 +83,12 @@ function useColorTheme() {
     for (const color in colors) {
       document.documentElement.style.setProperty(color, colors[color]);
     }
+
+    sendToElectron('color-theme', {
+      background: hasQueueVisible ? colorPanelBackground : colorBackground,
+      text: colorText,
+      primary: colorPrimary,
+    });
   }, [
     colorBackground,
     colorText,
@@ -95,7 +111,15 @@ function useColorTheme() {
     colorOpacity08,
 
     colorShadow,
+
+    hasQueueVisible,
   ]);
 }
+
+const sendToElectron = (key, data) => {
+  if (isElectron && electronPlatform === 'win' && window?.ipcRenderer) {
+    window.ipcRenderer.send(key, data);
+  }
+};
 
 export default useColorTheme;

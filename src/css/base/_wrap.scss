@@ -49,7 +49,20 @@
 .layout-sidebar {
   overflow: auto;
   grid-area: sidebar;
+  width: 200px;
   background: var(--color-background);
+
+  @media (min-width: 1024px) {
+    width: 220px;
+  }
+
+  html.electron.electron-platform-win & {
+    width: 207px;
+
+    @media (min-width: 1024px) {
+      width: 227px;
+    }
+  }
 }
 
 .layout-content {
@@ -61,13 +74,34 @@
 
 .layout-controls {
   grid-area: controls;
-  background: var(--color-background);
+  background: var(--color-panel-background);
 }
 
 .layout-rightbar {
   overflow: auto;
   grid-area: rightbar;
-  background: var(--color-background);
+  width: 280px;
+  background: var(--color-panel-background);
+
+  @media (min-width: 1024px) {
+    width: 320px;
+  }
+
+  html.electron.electron-platform-win & {
+    &:after {
+      content: '';
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 279px;
+      height: 30px;
+      background: var(--color-panel-background);
+
+      @media (min-width: 1024px) {
+        width: 319px;
+      }
+    }
+  }
 }
 
 .loading {
@@ -97,15 +131,4 @@
   > div {
     width: 100%;
   }
-}
-
-.electron-drag {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 50px;
-  // background: rgba(255, 0, 0, 0.1);
-
-  @include electron-drag;
 }

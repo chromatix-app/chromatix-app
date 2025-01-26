@@ -11,7 +11,7 @@ import { Icon } from 'js/components';
 import style from './Button.module.scss';
 
 // ======================================================================
-// RENDER
+// COMPONENT
 // ======================================================================
 
 const getComponentType = (props) => {

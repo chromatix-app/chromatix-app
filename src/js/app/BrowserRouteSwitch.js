@@ -10,7 +10,7 @@ import BrowserRouteValidate from 'js/app/BrowserRouteValidate';
 import * as pages from 'js/pages';
 
 // ======================================================================
-// RENDER
+// COMPONENT
 // ======================================================================
 
 const renderRoutes = (routes) => {
