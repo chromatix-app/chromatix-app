@@ -73,6 +73,12 @@ function useColorTheme() {
     for (const color in colors) {
       document.documentElement.style.setProperty(color, colors[color]);
     }
+
+    sendToElectron('color-theme', {
+      background: colorBackground,
+      text: colorText,
+      primary: colorPrimary,
+    });
   }, [
     colorBackground,
     colorText,
@@ -97,5 +103,17 @@ function useColorTheme() {
     colorShadow,
   ]);
 }
+
+const sendToElectron = (key, data) => {
+  if (
+    window &&
+    window.isElectron &&
+    window.electronProcess &&
+    window.electronProcess.platform !== 'darwin' &&
+    window.ipcRenderer
+  ) {
+    window.ipcRenderer.send(key, data);
+  }
+};
 
 export default useColorTheme;
