@@ -15,7 +15,10 @@ import style from './UserMenu.module.scss';
 // COMPONENT
 // ======================================================================
 
-const UserMenu = () => {
+const isElectron = window?.isElectron;
+const electronPlatform = isElectron ? (window?.electronProcess?.platform === 'darwin' ? 'mac' : 'win') : null;
+
+const UserMenu = ({ variant = 'default' }) => {
   const dispatch = useDispatch();
 
   const [showMenu, setShowMenu] = useState(false);
@@ -31,22 +34,16 @@ const UserMenu = () => {
   const hasSelectedLibrary = currentServer && currentLibrary;
   const hasQueueVisible = queueIsVisible && hasSelectedLibrary;
 
-  const isElectronWindows = window.isElectron && window.electronProcess.platform !== 'darwin';
-
   const toggleMenu = () => {
     setShowMenu(!showMenu);
   };
 
-  // if (isElectronWindows && hasSelectedLibrary) {
-  //   return null;
-  // }
-
   return (
     <>
-      {showMenu && <div className={style.overlay} onClick={toggleMenu}></div>}
+      {showMenu && electronPlatform !== 'win' && <div className={style.overlay} onClick={toggleMenu}></div>}
 
       <div
-        className={clsx(style.wrap, {
+        className={clsx(style.wrap, style[`wrap${variant}`], {
           [style.wrapWithoutLibrary]: !hasSelectedLibrary,
           [style.wrapWithLibrary]: hasSelectedLibrary,
           [style.wrapWithQueue]: hasQueueVisible,

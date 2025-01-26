@@ -4,6 +4,9 @@ import chroma from 'chroma-js';
 
 import { themes } from 'js/_config/themes';
 
+const isElectron = window?.isElectron;
+const electronPlatform = isElectron ? (window?.electronProcess?.platform === 'darwin' ? 'mac' : 'win') : null;
+
 function useColorTheme() {
   const defaultTheme = 'chromatix';
 
@@ -114,13 +117,7 @@ function useColorTheme() {
 }
 
 const sendToElectron = (key, data) => {
-  if (
-    window &&
-    window.isElectron &&
-    window.electronProcess &&
-    window.electronProcess.platform !== 'darwin' &&
-    window.ipcRenderer
-  ) {
+  if (isElectron && electronPlatform === 'win' && window?.ipcRenderer) {
     window.ipcRenderer.send(key, data);
   }
 };

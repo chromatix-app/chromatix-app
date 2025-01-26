@@ -9,18 +9,27 @@
 
   @include electron-no-drag;
 
+  &Inline {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: auto;
+    margin-top: 16px;
+    margin-bottom: 20px;
+  }
+
+  &WithoutLibrary {
+    :global(html.electron.electron-platform-win) & {
+      left: 20px;
+      right: auto;
+    }
+  }
+
   &WithQueue {
     right: 300px;
 
     @media (min-width: 1024px) {
       right: 340px;
-    }
-  }
-
-  &WithoutLibrary {
-    :global(html.electron.electron-platform-win) & {
-      right: auto;
-      left: 20px;
     }
   }
 }
@@ -49,7 +58,7 @@
   border-radius: 9px;
   box-shadow: 0 0 10px var(--color-shadow);
 
-  :global(.cq-800) & {
+  :global(.layout-content.cq-800) & {
     padding: 6px 6px 6px 15px;
   }
 
@@ -59,44 +68,37 @@
     background: var(--color-hover);
   }
 
+  .wrapInline & {
+    flex-direction: row-reverse;
+    width: 100%;
+    background: var(--color-opacity-0025);
+    box-shadow: none;
+  }
+
   .wrapWithoutLibrary & {
     :global(html.electron.electron-platform-win) & {
-      margin: 0 auto 0 0;
       justify-content: flex-start;
+      margin: 0 auto 0 0;
     }
   }
 }
 
-.content {
-  display: none;
-  font-weight: 500;
-  text-align: right;
-
-  :global(.cq-800) & {
-    display: block;
-  }
-}
-
-.library {
-  font-size: 12px;
-  white-space: nowrap;
-}
-
-.server {
-  opacity: 0.5;
-  font-size: 10px;
-  white-space: nowrap;
-}
-
 .thumb {
   overflow: hidden;
+  flex: 0 0 auto;
   width: 40px;
   height: 40px;
   background: var(--color-opacity-01);
   border-radius: 4px;
 
-  :global(.cq-800) & {
+  :global(.layout-content.cq-800) & {
     margin-left: 12px;
+  }
+
+  .wrapInline & {
+    width: 36px;
+    height: 36px;
+    margin-right: 12px;
   }
 
   img {
@@ -118,6 +120,40 @@
   opacity: 0.1;
 }
 
+.content {
+  max-width: 160px;
+  font-weight: 500;
+  text-align: right;
+
+  :global(.layout-content) & {
+    display: none;
+  }
+  :global(.layout-content.cq-800) & {
+    display: block;
+  }
+
+  .wrapInline & {
+    flex: 0 0 auto;
+    width: calc(100% - 48px);
+    text-align: left;
+  }
+}
+
+.library {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.server {
+  overflow: hidden;
+  opacity: 0.5;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 //
 //
 //
@@ -133,6 +169,11 @@
   box-shadow: 0 0 10px var(--color-shadow);
   font-size: 12px;
   text-align: left;
+
+  .wrapInline & {
+    max-height: none;
+    box-shadow: none;
+  }
 }
 
 .button {
@@ -163,6 +204,15 @@
   &:hover {
     background: var(--color-hover);
   }
+
+  .wrapInline & {
+    padding-right: 36px;
+    background: var(--color-opacity-0025);
+
+    &:hover {
+      background: var(--color-hover);
+    }
+  }
 }
 
 .button + .button {
@@ -171,6 +221,7 @@
 
 .iconBefore {
   display: block;
+  flex: 0 0 auto;
   width: 14px;
   height: 14px;
   margin-right: 10px;

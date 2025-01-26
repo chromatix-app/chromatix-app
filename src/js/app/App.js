@@ -13,11 +13,14 @@ import { ErrorPlexGeneral, ErrorPlexLogin } from 'js/pages';
 import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 
 // ======================================================================
-// RENDER
+// COMPONENT
 // ======================================================================
 
 const isProduction = process.env.REACT_APP_ENV === 'production';
 // const isLocal = process.env.REACT_APP_ENV === 'local';
+
+const isElectron = window?.isElectron;
+const electronPlatform = isElectron ? (window?.electronProcess?.platform === 'darwin' ? 'mac' : 'win') : null;
 
 const App = () => {
   const inited = useSelector(({ appModel }) => appModel.inited);
@@ -50,8 +53,6 @@ const App = () => {
   // initialise on load
   useEffect(() => {
     // add electron classes to html
-    const isElectron = window.isElectron;
-    const electronPlatform = isElectron && (window.electronProcess?.platform === 'darwin' ? 'mac' : 'win');
     if (isElectron) {
       document.documentElement.classList.add('electron');
       document.documentElement.classList.add('electron-platform-' + electronPlatform);
@@ -107,7 +108,6 @@ const App = () => {
       <div className="wrap wrap--home">
         <div className="electron-drag"></div>
         <BrowserRouteSwitch />
-        {/* <Blocker /> */}
       </div>
     );
   }
@@ -120,7 +120,6 @@ const App = () => {
           <div className="electron-drag"></div>
           <BrowserRouteSwitch />
           <UserMenu />
-          {/* <Blocker /> */}
         </div>
       );
     } else {
@@ -160,7 +159,7 @@ const AppMain = () => {
           <ControlBar />
         </div>
         <div ref={contentRef} id="content" className={clsx('layout-content', contentContainerClass)}>
-          <UserMenu />
+          {electronPlatform !== 'win' && <UserMenu />}
           <BrowserRouteSwitch />
         </div>
         {queueIsVisible && (
@@ -168,7 +167,6 @@ const AppMain = () => {
             <RightBar />
           </div>
         )}
-        {/* <Blocker /> */}
       </div>
     </div>
   );
