@@ -100,31 +100,38 @@
 }
 
 .electron-drag {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 50px;
-  // background: rgba(255, 0, 0, 0.1);
+  display: none;
 
-  @include electron-drag;
+  html.electron & {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 46px;
+    background: rgba(255, 0, 0, 0.1);
+
+    @include electron-drag;
+  }
 }
 
-::-webkit-scrollbar {
-  width: 8px; /* For vertical scrollbar */
-  height: 8px; /* For horizontal scrollbar */
-  background: var(--color-opacity-01);
-}
+html {
+  ::-webkit-scrollbar {
+    width: 8px; /* For vertical scrollbar */
+    height: 8px; /* For horizontal scrollbar */
+    background: var(--color-opacity-01);
+  }
 
-::-webkit-scrollbar-track {
-  background: transparent;
-  // background: var(--color-opacity-005);
-}
+  ::-webkit-scrollbar-track {
+    background: transparent;
+    // background: var(--color-opacity-005);
+  }
 
-::-webkit-scrollbar-thumb {
-  width: 8px;
-  background: var(--color-opacity-02);
-  border-radius: 50px;
+  ::-webkit-scrollbar-thumb {
+    width: 8px;
+    background: var(--color-opacity-02);
+    border-radius: 0;
+  }
 }
 
 // .layout-sidebar,

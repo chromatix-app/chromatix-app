@@ -78,12 +78,14 @@ const App = () => {
   if (plexErrorLogin) {
     return (
       <div className="wrap">
+        <div className="electron-drag"></div>
         <ErrorPlexLogin />
       </div>
     );
   } else if (plexErrorGeneral) {
     return (
       <div className="wrap">
+        <div className="electron-drag"></div>
         <ErrorPlexGeneral />
       </div>
     );
@@ -93,6 +95,7 @@ const App = () => {
   else if (!inited || (loggedIn && !gotRequiredData)) {
     return (
       <div className="wrap">
+        <div className="electron-drag"></div>
         <div className="loading"></div>
       </div>
     );
@@ -102,6 +105,7 @@ const App = () => {
   else if (!loggedIn) {
     return (
       <div className="wrap wrap--home">
+        <div className="electron-drag"></div>
         <BrowserRouteSwitch />
         {/* <Blocker /> */}
       </div>
@@ -113,6 +117,7 @@ const App = () => {
     if (!currentServer || !currentLibrary) {
       return (
         <div className="wrap">
+          <div className="electron-drag"></div>
           <BrowserRouteSwitch />
           <UserMenu />
           {/* <Blocker /> */}
