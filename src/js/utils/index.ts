@@ -1,4 +1,5 @@
 export { default as addedAtToString } from './addedAtToString';
+export { default as analyticsEvent } from './analyticsEvent';
 export { default as durationToStringLong } from './durationToStringLong';
 export { default as durationToStringShort } from './durationToStringShort';
 export { default as formatRecentDate } from './formatRecentDate';

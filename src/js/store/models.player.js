@@ -2,9 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { track } from '@vercel/analytics';
-
-import { getTrackKeys } from 'js/utils';
+import { analyticsEvent, getTrackKeys } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
@@ -193,7 +191,7 @@ const effects = (dispatch) => ({
       playingShuffle: isShuffle,
     });
 
-    track('Plex: Load Album');
+    analyticsEvent('Plex: Load Album');
   },
 
   async playerLoadPlaylist(payload, rootState) {
@@ -228,7 +226,7 @@ const effects = (dispatch) => ({
       playingShuffle: isShuffle,
     });
 
-    track('Plex: Load Playlist');
+    analyticsEvent('Plex: Load Playlist');
   },
 
   playerLoadTrackList(payload, rootState) {
@@ -301,7 +299,7 @@ const effects = (dispatch) => ({
       playerPlaying: true,
     });
     plex.logPlaybackPlay(currentTrack, playingTrackProgress);
-    track('Plex: Play');
+    analyticsEvent('Plex: Play');
   },
 
   playerProgress(payload, rootState) {
@@ -330,7 +328,7 @@ const effects = (dispatch) => ({
       playerPlaying: false,
     });
     plex.logPlaybackPause(currentTrack, playingTrackProgress);
-    track('Plex: Pause');
+    analyticsEvent('Plex: Pause');
   },
 
   playerRestart(payload, rootState) {
@@ -362,7 +360,7 @@ const effects = (dispatch) => ({
     else {
       dispatch.playerModel.playerRestart();
     }
-    track('Plex: Previous Track');
+    analyticsEvent('Plex: Previous Track');
   },
 
   playerNext(payload, rootState) {
@@ -377,18 +375,18 @@ const effects = (dispatch) => ({
     if (playingTrackIndex < playingTrackCount - 1) {
       dispatch.playerModel.playerLoadIndex({ index: playingTrackIndex + 1, play: true });
       if (payload === true) {
-        track('Plex: Next Track (Auto)');
+        analyticsEvent('Plex: Next Track (Auto)');
       } else {
-        track('Plex: Next Track');
+        analyticsEvent('Plex: Next Track');
       }
     }
     // else play first track, if on repeat
     else if (playingRepeat) {
       dispatch.playerModel.playerLoadIndex({ index: 0, play: true });
       if (payload === true) {
-        track('Plex: Next Track (Restart) (Auto)');
+        analyticsEvent('Plex: Next Track (Restart) (Auto)');
       } else {
-        track('Plex: Next Track (Restart)');
+        analyticsEvent('Plex: Next Track (Restart)');
       }
     }
     // else load first track, but don't play
@@ -404,7 +402,7 @@ const effects = (dispatch) => ({
     dispatch.sessionModel.setSessionState({
       playingRepeat: !playingRepeat,
     });
-    track('Plex: Repeat ' + (!playingRepeat ? 'On' : 'Off'));
+    analyticsEvent('Plex: Repeat ' + (!playingRepeat ? 'On' : 'Off'));
   },
 
   playerShuffleToggle(payload, rootState) {
@@ -424,7 +422,7 @@ const effects = (dispatch) => ({
       playingTrackIndex: newIndex,
       playingTrackKeys: trackKeys,
     });
-    track('Plex: Shuffle ' + (isShuffle ? 'On' : 'Off'));
+    analyticsEvent('Plex: Shuffle ' + (isShuffle ? 'On' : 'Off'));
   },
 
   //
@@ -474,7 +472,7 @@ const effects = (dispatch) => ({
     });
     const playerElement = rootState.playerModel.playerElement;
     playerElement.volume = newMuted ? 0 : newVolume / 100;
-    track('Plex: Mute ' + (newMuted ? 'On' : 'Off'));
+    analyticsEvent('Plex: Mute ' + (newMuted ? 'On' : 'Off'));
   },
 });
 
