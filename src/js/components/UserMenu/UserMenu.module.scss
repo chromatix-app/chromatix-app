@@ -117,7 +117,7 @@
   left: 6px;
   width: 28px;
   height: 28px;
-  opacity: 0.1;
+  color: var(--color-opacity-01);
 }
 
 .content {
@@ -148,10 +148,10 @@
 
 .server {
   overflow: hidden;
-  opacity: 0.5;
   font-size: 10px;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: var(--color-opacity-05);
 }
 
 //
@@ -225,7 +225,7 @@
   width: 14px;
   height: 14px;
   margin-right: 10px;
-  opacity: 0.5;
+  opacity: var(--opacity-05);
 }
 
 .iconAfter {
@@ -235,7 +235,7 @@
   right: 15px;
   width: 14px;
   height: 14px;
-  opacity: 0.5;
+  opacity: var(--opacity-05);
   transform: translateY(-50%);
 }
 
@@ -246,7 +246,7 @@
   right: 16px;
   width: 10px;
   height: 10px;
-  opacity: 0.5;
+  opacity: var(--opacity-05);
   transform: translateY(-50%);
 }
 

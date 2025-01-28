@@ -8,19 +8,19 @@
   }
 }
 
-.entry {
+.group {
   font-size: 14px;
 
-  + .entry {
+  + .group {
     margin-top: 35px;
   }
 }
 
 .title {
   margin: 0 0 15px;
-  opacity: 0.5;
   font-size: 14px;
   font-weight: bold;
+  color: var(--color-opacity-05);
 }
 
 .menu {
@@ -50,5 +50,5 @@
 .description {
   display: block;
   font-size: 12px;
-  opacity: 0.7;
+  color: var(--color-opacity-07);
 }

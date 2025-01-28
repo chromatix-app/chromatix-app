@@ -40,7 +40,7 @@ export const SettingsAppearance = () => {
   return (
     <div className={style.wrap}>
       {Object.entries(groupedThemes).map(([groupName, groupThemes], groupIndex) => (
-        <div key={groupIndex} className={style.section}>
+        <div key={groupIndex} className={style.group}>
           <div className={style.title}>{groupName}</div>
           <div className={style.themes}>
             {groupThemes.map(([themeName, themeDetails], themeIndex) => (
@@ -65,7 +65,7 @@ export const SettingsAppearance = () => {
         </div>
       ))}
 
-      <div className={style.section}>
+      <div className={style.group}>
         <div className={style.title}>Custom</div>
         <div className={style.themes}>
           <button
@@ -131,6 +131,51 @@ export const SettingsAppearance = () => {
           )}
         </div>
       </div>
+
+      <div className={style.group}>
+        <div className={style.title}>Options</div>
+        <InterfaceSettings />
+      </div>
+    </div>
+  );
+};
+
+//
+// INTERFACE
+//
+
+const InterfaceSettings = () => {
+  const dispatch = useDispatch();
+
+  const { accessibilityContrast } = useSelector(({ sessionModel }) => sessionModel);
+
+  const menuItems = [
+    {
+      key: 'accessibilityContrast',
+      label: 'Increase contrast',
+      // description:
+      //   'This will increase the contrast of the interface, making it easier to read and interact with. This is particularly useful for users with visual impairments.',
+      state: accessibilityContrast,
+    },
+  ];
+
+  return (
+    <div className={style.menu}>
+      {menuItems.map(({ key, label, description, state }) => (
+        <div key={key} className={style.menuEntry}>
+          <label>
+            <input
+              type="checkbox"
+              checked={state}
+              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
+            />
+            <div>
+              {label && <div className={style.label}>{label}</div>}
+              {description && <div className={style.description}>{description}</div>}
+            </div>
+          </label>
+        </div>
+      ))}
     </div>
   );
 };

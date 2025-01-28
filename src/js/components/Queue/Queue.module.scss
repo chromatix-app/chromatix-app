@@ -31,11 +31,11 @@ button.section {
   opacity: 0;
 
   .section:hover & {
-    opacity: 0.5;
+    opacity: var(--opacity-05);
   }
 
   @include focus-child-custom() {
-    opacity: 0.5;
+    opacity: var(--opacity-05);
   }
 }
 
@@ -120,14 +120,14 @@ button.section {
 }
 
 .artist {
-  opacity: 0.5;
   font-size: 11px;
+  color: var(--color-opacity-05);
 
   // .entryCurrent & {
   //   opacity: 1;
   // }
   .entry:hover & {
-    opacity: 1;
+    color: var(--color-text);
   }
 }
 

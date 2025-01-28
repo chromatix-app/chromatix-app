@@ -30,11 +30,13 @@ export { default as PlaylistDetail } from './PlaylistDetail';
 export { default as FolderList } from './FolderList';
 
 export { default as Settings } from './Settings';
-export { default as SettingsGeneral } from './SettingsGeneral';
+export { default as SettingsAccessibility } from './SettingsAccessibility';
 export { default as SettingsAppearance } from './SettingsAppearance';
+export { default as SettingsChangelog } from './SettingsChangelog';
+export { default as SettingsDownloads } from './SettingsDownloads';
+export { default as SettingsGeneral } from './SettingsGeneral';
 export { default as SettingsLastFM } from './SettingsLastFM';
 export { default as SettingsMenu } from './SettingsMenu';
-export { default as SettingsChangelog } from './SettingsChangelog';
 
 export { default as Error404Auth } from './Error404Auth';
 export { default as Error404Default } from './Error404Default';

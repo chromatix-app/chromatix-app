@@ -23,6 +23,9 @@ const sessionState = {
   currentColorText: '#ffffff',
   currentColorPrimary: '#f7277a',
 
+  accessibilityFocus: false,
+  accessibilityContrast: false,
+
   menuShowIcons: true,
   menuShowAllPlaylists: true,
   menuShowSeparateBrowseSection: true,

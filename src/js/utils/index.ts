@@ -1,8 +1,11 @@
 export { default as addedAtToString } from './addedAtToString';
 export { default as analyticsEvent } from './analyticsEvent';
+export { default as decimalMultiplier } from './decimalMultiplier';
+export { default as decimalToHex } from './decimalToHex';
 export { default as durationToStringLong } from './durationToStringLong';
 export { default as durationToStringShort } from './durationToStringShort';
 export { default as formatRecentDate } from './formatRecentDate';
 export { default as getTrackKeys } from './getTrackKeys';
 export { default as pageWasReloaded } from './pageWasReloaded';
+export { default as sendToElectron } from './sendToElectron';
 export { default as sortList } from './sortList';
