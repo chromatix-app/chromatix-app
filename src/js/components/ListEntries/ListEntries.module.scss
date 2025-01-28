@@ -122,7 +122,7 @@
 
   > * {
     border-radius: 2px;
-    opacity: 0.5;
+    color: var(--color-opacity-05);
 
     @include focus-self-outline;
   }
@@ -207,7 +207,7 @@
   align-items: center;
   padding: 11px 15px;
   margin-top: 30px;
-  opacity: 0.5;
+  opacity: var(--opacity-05);
   font-weight: bold;
 
   :global(.cq-800) & {
@@ -240,8 +240,8 @@
 }
 
 .trackNumber {
-  opacity: 0.5;
   font-weight: bold;
+  color: var(--color-opacity-05);
 
   .entry:hover & {
     display: none;
@@ -311,10 +311,10 @@
 
 .thumbIcon {
   position: absolute;
-  width: 24px;
-  height: 24px;
   top: 50%;
   left: 50%;
+  width: 24px;
+  height: 24px;
   transform: translate(-50%, -50%);
 }
 
@@ -333,22 +333,22 @@
 .lastPlayed,
 .releaseDate,
 .totalTracks {
-  opacity: 0.5;
+  color: var(--color-opacity-05);
 
   .entry:hover & {
-    opacity: 1;
+    color: var(--color-text);
   }
 }
 
 .userRating {
   display: none;
-  opacity: 0.4;
+  color: var(--color-opacity-04);
 
   :global(.cq-800) & {
     display: block;
   }
 
   .entry:hover & {
-    opacity: 1;
+    color: var(--color-text);
   }
 }

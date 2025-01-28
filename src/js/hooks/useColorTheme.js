@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 import chroma from 'chroma-js';
 
 import { themes } from 'js/_config/themes';
-
-const isElectron = window?.isElectron;
-const electronPlatform = isElectron ? (window?.electronProcess?.platform === 'darwin' ? 'mac' : 'win') : null;
+import { decimalMultiplier, decimalToHex, sendToElectron } from 'js/utils';
 
 function useColorTheme() {
   const defaultTheme = 'chromatix';
+
+  const accessibilityContrast = useSelector(({ sessionModel }) => sessionModel.accessibilityContrast);
 
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
@@ -18,44 +18,77 @@ function useColorTheme() {
   const hasQueueVisible = queueIsVisible && hasSelectedLibrary;
 
   const currentTheme = useSelector(({ sessionModel }) => sessionModel.currentTheme);
-  const actualTheme = themes[currentTheme] ? currentTheme : defaultTheme;
 
   const currentColorBackground = useSelector(({ sessionModel }) => sessionModel.currentColorBackground);
   const currentColorText = useSelector(({ sessionModel }) => sessionModel.currentColorText);
   const currentColorPrimary = useSelector(({ sessionModel }) => sessionModel.currentColorPrimary);
 
-  const colorBackground = currentTheme === 'custom' ? currentColorBackground : themes[actualTheme].background;
-  const colorText = currentTheme === 'custom' ? currentColorText : themes[actualTheme].text;
-  const colorPrimary = currentTheme === 'custom' ? currentColorPrimary : themes[actualTheme].primary;
-
-  const isLightTheme = chroma(colorBackground).luminance() > 0.5;
-
-  let colorPanelBackground = chroma(colorBackground).brighten(0.4).hex(); // #1e1e1e
-  let colorHover = chroma(colorBackground).brighten(0.8).hex(); // #2a2a2a
-  let colorBorder = chroma(colorBackground).brighten(0.8).hex(); // #2a2a2a
-
-  let colorOpacity0025 = colorText + '06';
-  let colorOpacity005 = colorText + '0d';
-  let colorOpacity01 = colorText + '1a';
-  let colorOpacity015 = colorText + '26';
-  let colorOpacity02 = colorText + '33';
-  let colorOpacity03 = colorText + '4d';
-  let colorOpacity04 = colorText + '66';
-  let colorOpacity05 = colorText + '80';
-  let colorOpacity06 = colorText + '99';
-  let colorOpacity07 = colorText + 'b3';
-  let colorOpacity08 = colorText + 'cc';
-
-  let colorShadow = isLightTheme ? '' : '#00000066';
-
-  // If the background color is light, darken the colors instead
-  if (isLightTheme) {
-    colorPanelBackground = chroma(colorBackground).darken(0.4).hex();
-    colorHover = chroma(colorBackground).darken(0.8).hex();
-    colorBorder = chroma(colorBackground).darken(0.8).hex();
-  }
-
   useEffect(() => {
+    const actualTheme = themes[currentTheme] ? currentTheme : defaultTheme;
+
+    const colorBackground = currentTheme === 'custom' ? currentColorBackground : themes[actualTheme].background;
+    const colorText = currentTheme === 'custom' ? currentColorText : themes[actualTheme].text;
+    const colorPrimary = currentTheme === 'custom' ? currentColorPrimary : themes[actualTheme].primary;
+
+    const chromaMultiplier = accessibilityContrast ? 1.4 : 1.1;
+    const opacityMultiplier = accessibilityContrast ? 1.6 : 1;
+
+    const isLightTheme = chroma(colorBackground).luminance() > 0.5;
+
+    let colorPanelBackground;
+    let colorHover;
+    let colorBorder;
+
+    // Light theme handling
+    if (isLightTheme) {
+      colorPanelBackground = chroma(colorBackground)
+        .darken(0.4 * chromaMultiplier)
+        .hex();
+      colorHover = chroma(colorBackground)
+        .darken(0.8 * chromaMultiplier)
+        .hex();
+      colorBorder = chroma(colorBackground)
+        .darken(0.8 * chromaMultiplier)
+        .hex();
+    }
+
+    // Dark theme handling
+    else {
+      colorPanelBackground = chroma(colorBackground)
+        .brighten(0.4 * chromaMultiplier)
+        .hex();
+      colorHover = chroma(colorBackground)
+        .brighten(0.8 * chromaMultiplier)
+        .hex();
+      colorBorder = chroma(colorBackground)
+        .brighten(0.8 * chromaMultiplier)
+        .hex();
+    }
+
+    const colorOpacity0025 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.025));
+    const colorOpacity005 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.05));
+    const colorOpacity01 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.1));
+    const colorOpacity015 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.15));
+    const colorOpacity02 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.2));
+    const colorOpacity025 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.25));
+    const colorOpacity03 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.3));
+    const colorOpacity04 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.4));
+    const colorOpacity05 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.5));
+    const colorOpacity06 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.6));
+    const colorOpacity07 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.7));
+    const colorOpacity08 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.8));
+
+    const colorShadow = isLightTheme ? '' : '#00000066';
+
+    const opacity02 = decimalMultiplier(opacityMultiplier, 0.2);
+    const opacity025 = decimalMultiplier(opacityMultiplier, 0.25);
+    const opacity03 = decimalMultiplier(opacityMultiplier, 0.3);
+    const opacity04 = decimalMultiplier(opacityMultiplier, 0.4);
+    const opacity05 = decimalMultiplier(opacityMultiplier, 0.5);
+    const opacity06 = decimalMultiplier(opacityMultiplier, 0.6);
+    const opacity07 = decimalMultiplier(opacityMultiplier, 0.7);
+    const opacity08 = decimalMultiplier(opacityMultiplier, 0.8);
+
     const colors = {
       '--color-background': colorBackground,
       '--color-text': colorText,
@@ -70,6 +103,7 @@ function useColorTheme() {
       '--color-opacity-01': colorOpacity01,
       '--color-opacity-015': colorOpacity015,
       '--color-opacity-02': colorOpacity02,
+      '--color-opacity-025': colorOpacity025,
       '--color-opacity-03': colorOpacity03,
       '--color-opacity-04': colorOpacity04,
       '--color-opacity-05': colorOpacity05,
@@ -78,48 +112,34 @@ function useColorTheme() {
       '--color-opacity-08': colorOpacity08,
 
       '--color-shadow': colorShadow,
+
+      '--opacity-02': opacity02,
+      '--opacity-025': opacity025,
+      '--opacity-03': opacity03,
+      '--opacity-04': opacity04,
+      '--opacity-05': opacity05,
+      '--opacity-06': opacity06,
+      '--opacity-07': opacity07,
+      '--opacity-08': opacity08,
     };
 
     for (const color in colors) {
       document.documentElement.style.setProperty(color, colors[color]);
     }
 
-    sendToElectron('color-theme', {
+    sendToElectron('win', 'color-theme', {
       background: hasQueueVisible ? colorPanelBackground : colorBackground,
       text: colorText,
       primary: colorPrimary,
     });
   }, [
-    colorBackground,
-    colorText,
-    colorPrimary,
-
-    colorPanelBackground,
-    colorHover,
-    colorBorder,
-
-    colorOpacity0025,
-    colorOpacity005,
-    colorOpacity01,
-    colorOpacity015,
-    colorOpacity02,
-    colorOpacity03,
-    colorOpacity04,
-    colorOpacity05,
-    colorOpacity06,
-    colorOpacity07,
-    colorOpacity08,
-
-    colorShadow,
-
+    accessibilityContrast,
     hasQueueVisible,
+    currentTheme,
+    currentColorBackground,
+    currentColorText,
+    currentColorPrimary,
   ]);
 }
-
-const sendToElectron = (key, data) => {
-  if (isElectron && electronPlatform === 'win' && window?.ipcRenderer) {
-    window.ipcRenderer.send(key, data);
-  }
-};
 
 export default useColorTheme;

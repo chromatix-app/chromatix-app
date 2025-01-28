@@ -2,16 +2,15 @@
 // IMPORTS
 // ======================================================================
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { track } from '@vercel/analytics';
 import axios from 'axios';
 import clsx from 'clsx';
 
 import { Button, Icon } from 'js/components';
+import { analyticsEvent } from 'js/utils';
 
 import style from './PageHome.module.scss';
-import { useEffect } from 'react';
 
 // ======================================================================
 // COMPONENT
@@ -36,11 +35,11 @@ export const PageHome = () => {
   };
 
   const handleDownloadMacSilicon = () => {
-    track('Download: macOS');
+    analyticsEvent('Download: macOS');
   };
 
   const handleDownloadMacUniversal = () => {
-    track('Download: macOS (Universal)');
+    analyticsEvent('Download: macOS (Universal)');
   };
 
   useEffect(() => {

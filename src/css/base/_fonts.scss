@@ -122,6 +122,16 @@ sup {
     margin-left: 20px;
   }
 
+  i,
+  em {
+    font-style: italic;
+  }
+
+  b,
+  strong {
+    font-weight: bold;
+  }
+
   a {
     border-radius: 2px;
     text-decoration: underline;

@@ -28,7 +28,10 @@ const Component = () => {
           </a>
           .
         </p>
-        <p>A fun fact...</p>
+        <hr />
+        <p>
+          <i>A fun fact...</i>
+        </p>
         <p>
           Many years ago, I actually built the{' '}
           <a href="https://www.last.fm/dashboard" target="_blank" rel="noreferrer nofollow">

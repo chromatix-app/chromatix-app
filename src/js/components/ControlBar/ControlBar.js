@@ -5,12 +5,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { track } from '@vercel/analytics';
 import clsx from 'clsx';
 
 import { Icon, RangeSlider } from 'js/components';
 import { useKeyboardControls, useMediaControls, useMediaMeta } from 'js/hooks';
-import { durationToStringShort } from 'js/utils';
+import { analyticsEvent, durationToStringShort } from 'js/utils';
 
 import style from './ControlBar.module.scss';
 
@@ -84,7 +83,7 @@ const ControlBar = () => {
               to={playingLink}
               onClick={() => {
                 dispatch.appModel.setAppState({ scrollToPlaying: true });
-                track('Navigate to Playing');
+                analyticsEvent('Navigate to Playing');
               }}
             >
               <img src={trackCurrent.thumb} alt={trackCurrent.title} />

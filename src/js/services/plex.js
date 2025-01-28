@@ -2,8 +2,6 @@
 // IMPORTS
 // ======================================================================
 
-import { track } from '@vercel/analytics';
-
 import * as plexTools from 'js/services/plexTools';
 import {
   transposeArtistData,
@@ -16,6 +14,7 @@ import {
   transposeStyleData,
   transposeMoodData,
 } from 'js/services/plexTranspose';
+import { analyticsEvent } from 'js/utils';
 import store from 'js/store/store';
 
 // ======================================================================
@@ -95,11 +94,11 @@ export const init = () => {
       if (error?.code !== 'init.2') {
         console.error(error);
         if (error?.code === 'init.1') {
-          track('Error: Plex Init - No Pin ID');
+          analyticsEvent('Error: Plex Init - No Pin ID');
         } else if (error?.code === 'checkPlexPinStatus.2') {
-          track('Error: Plex Init - Pin Check Failed');
+          analyticsEvent('Error: Plex Init - Pin Check Failed');
         } else {
-          track('Error: Plex Init - Unknown Error');
+          analyticsEvent('Error: Plex Init - Unknown Error');
         }
       }
     });
@@ -114,12 +113,12 @@ export const login = async () => {
   plexTools
     .login()
     .then((res) => {
-      track('Plex: Login Success');
+      analyticsEvent('Plex: Login Success');
     })
     .catch((error) => {
       console.error(error);
       store.dispatch.appModel.plexErrorLogin();
-      track('Plex: Login Error');
+      analyticsEvent('Plex: Login Error');
     });
 };
 
@@ -131,7 +130,7 @@ export const logout = () => {
   console.log('%c--- plex - logout ---', 'color:#f9743b;');
   plexTools.logout();
   store.dispatch.appModel.setLoggedOut();
-  track('Plex: Logout');
+  analyticsEvent('Plex: Logout');
 };
 
 // ======================================================================
@@ -156,7 +155,7 @@ const getUserInfo = () => {
     .catch((error) => {
       console.error(error);
       store.dispatch.appModel.plexErrorLogin();
-      track('Error: Plex Get User Info');
+      analyticsEvent('Error: Plex Get User Info');
     });
 };
 
@@ -185,7 +184,7 @@ export const getAllServers = () => {
         .catch((error) => {
           console.error(error);
           store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
-          track('Error: Plex Get All Servers');
+          analyticsEvent('Error: Plex Get All Servers');
         })
         .finally(() => {
           getUserServersRunning = false;
@@ -208,7 +207,7 @@ const getFastestServerConnection = async (currentServer) => {
   } catch (error) {
     console.error(error);
     store.dispatch.sessionModel.unsetCurrentServer();
-    track('Error: Plex Get Fastest Server Connection');
+    analyticsEvent('Error: Plex Get Fastest Server Connection');
     throw error;
   }
   return plexBaseUrl;
@@ -258,7 +257,7 @@ export const getAllLibraries = async () => {
           .catch((error) => {
             console.error(error);
             store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
-            track('Error: Plex Get All Libraries');
+            analyticsEvent('Error: Plex Get All Libraries');
           })
           .finally(() => {
             getUserLibrariesRunning = false;
@@ -1199,11 +1198,11 @@ export const setStarRating = (type, ratingKey, rating) => {
       } else if (type === 'collection' || type === 'collections') {
         store.dispatch.appModel.setCollectionRating({ ratingKey, rating });
       }
-      track('Plex: Set Star Rating');
+      analyticsEvent('Plex: Set Star Rating');
     })
     .catch((error) => {
       console.error(error);
-      track('Error: Plex Set Star Rating');
+      analyticsEvent('Error: Plex Set Star Rating');
     });
 };
 
@@ -1241,7 +1240,7 @@ export const logPlaybackStatus = (currentTrack, state, currentTime) => {
       .logPlaybackStatus(plexBaseUrl, accessToken, sessionId, 'music', trackId, trackKey, state, currentTime, duration)
       .catch((error) => {
         console.error(error);
-        track('Error: Plex Update Playback Status');
+        analyticsEvent('Error: Plex Update Playback Status');
       });
   }
 };
