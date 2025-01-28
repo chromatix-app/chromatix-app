@@ -31,6 +31,8 @@ const App = () => {
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
 
+  const { accessibilityFocus } = useSelector(({ sessionModel }) => sessionModel);
+
   const debugConsole = useSelector(({ persistentModel }) => persistentModel.debugConsole);
 
   const gotRequiredData = useGotRequiredData();
@@ -65,6 +67,15 @@ const App = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // toggle class on html if accessibility focus is enabled
+  useEffect(() => {
+    if (accessibilityFocus) {
+      document.documentElement.classList.add('access-focus');
+    } else {
+      document.documentElement.classList.remove('access-focus');
+    }
+  }, [accessibilityFocus]);
 
   // toggle class on html if logged in
   useEffect(() => {

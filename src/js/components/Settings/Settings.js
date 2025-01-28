@@ -28,7 +28,7 @@ export const Settings = () => {
           </div>
         </NavLink>
 
-        {/* <NavLink className={style.entry} to={'/settings/accessibility'}>
+        <NavLink className={style.entry} to={'/settings/accessibility'}>
           <div className={style.entryIconSmall}>
             <Icon icon="AccessibilityIcon" cover stroke strokeWidth={1.5} />
           </div>
@@ -36,7 +36,7 @@ export const Settings = () => {
           <div className={style.entryArrow}>
             <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
           </div>
-        </NavLink> */}
+        </NavLink>
 
         <NavLink className={style.entry} to={'/settings/appearance'}>
           <div className={style.entryIconSmall}>
