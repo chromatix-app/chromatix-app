@@ -30,6 +30,7 @@ export { default as PlaylistDetail } from './PlaylistDetail';
 export { default as FolderList } from './FolderList';
 
 export { default as Settings } from './Settings';
+export { default as SettingsAbout } from './SettingsAbout';
 export { default as SettingsAccessibility } from './SettingsAccessibility';
 export { default as SettingsAppearance } from './SettingsAppearance';
 export { default as SettingsChangelog } from './SettingsChangelog';
