@@ -86,7 +86,7 @@ export const Settings = () => {
       <div className={style.group}>
         <div className={style.title}>About</div>
 
-        {/* <NavLink className={style.entry} to={'/settings/about'}>
+        <NavLink className={style.entry} to={'/settings/about'}>
           <div className={style.entryIcon}>
             <Icon icon="InfoIcon" cover stroke strokeWidth={1.5} />
           </div>
@@ -94,7 +94,7 @@ export const Settings = () => {
           <div className={style.entryArrow}>
             <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
           </div>
-        </NavLink> */}
+        </NavLink>
 
         <NavLink className={style.entry} to={'/settings/changelog'}>
           <div className={style.entryIconSmall}>
