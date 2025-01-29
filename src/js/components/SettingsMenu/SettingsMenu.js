@@ -13,15 +13,15 @@ import style from './SettingsMenu.module.scss';
 export const SettingsMenu = () => {
   return (
     <div className={style.wrap}>
-      <div className={style.entry}>
+      <div className={style.group}>
         <div className={style.title}>General</div>
         <GeneralSettings />
       </div>
-      <div className={style.entry}>
+      <div className={style.group}>
         <div className={style.title}>Library</div>
         <LibrarySettings />
       </div>
-      <div className={style.entry}>
+      <div className={style.group}>
         <div className={style.title}>Browse</div>
         <BrowseSettings />
       </div>

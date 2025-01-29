@@ -206,9 +206,14 @@ export const authRoutes = [
     component: 'Settings',
   },
   {
-    path: '/settings/general',
+    path: '/settings/about',
     exact: true,
-    component: 'SettingsGeneral',
+    component: 'SettingsAbout',
+  },
+  {
+    path: '/settings/accessibility',
+    exact: true,
+    component: 'SettingsAccessibility',
   },
   {
     path: '/settings/appearance',
@@ -216,9 +221,19 @@ export const authRoutes = [
     component: 'SettingsAppearance',
   },
   {
-    path: '/settings/menu',
+    path: '/settings/changelog',
     exact: true,
-    component: 'SettingsMenu',
+    component: 'SettingsChangelog',
+  },
+  {
+    path: '/settings/downloads',
+    exact: true,
+    component: 'SettingsDownloads',
+  },
+  {
+    path: '/settings/general',
+    exact: true,
+    component: 'SettingsGeneral',
   },
   {
     path: '/settings/lastfm',
@@ -226,9 +241,9 @@ export const authRoutes = [
     component: 'SettingsLastFM',
   },
   {
-    path: '/settings/changelog',
+    path: '/settings/menu',
     exact: true,
-    component: 'SettingsChangelog',
+    component: 'SettingsMenu',
   },
 
   // other

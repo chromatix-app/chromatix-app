@@ -13,11 +13,11 @@ import style from './SettingsGeneral.module.scss';
 export const SettingsGeneral = () => {
   return (
     <div className={style.wrap}>
-      <div className={style.entry}>
+      <div className={style.group}>
         <div className={style.title}>Interface</div>
         <InterfaceSettings />
       </div>
-      <div className={style.entry}>
+      <div className={style.group}>
         <div className={style.title}>Plex</div>
         <PlexSettings />
       </div>

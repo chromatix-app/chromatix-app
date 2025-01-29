@@ -28,6 +28,16 @@ export const Settings = () => {
           </div>
         </NavLink>
 
+        <NavLink className={style.entry} to={'/settings/accessibility'}>
+          <div className={style.entryIconSmall}>
+            <Icon icon="AccessibilityIcon" cover stroke strokeWidth={1.5} />
+          </div>
+          <div>Accessibility</div>
+          <div className={style.entryArrow}>
+            <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
+          </div>
+        </NavLink>
+
         <NavLink className={style.entry} to={'/settings/appearance'}>
           <div className={style.entryIconSmall}>
             <Icon icon="PaintPaletteIcon" cover stroke strokeWidth={1.5} />
@@ -59,10 +69,24 @@ export const Settings = () => {
         </NavLink>
       </div>
 
+      {/* <div className={style.group}>
+        <div className={style.title}>Downloads</div>
+
+        <NavLink className={style.entry} to={'/settings/downloads'}>
+          <div className={style.entryIconSmall}>
+            <Icon icon="DownloadIcon" cover stroke strokeWidth={1.5} />
+          </div>
+          <div>Download desktop apps</div>
+          <div className={style.entryArrow}>
+            <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
+          </div>
+        </NavLink>
+      </div> */}
+
       <div className={style.group}>
         <div className={style.title}>About</div>
 
-        {/* <NavLink className={style.entry} to={'/settings/about'}>
+        <NavLink className={style.entry} to={'/settings/about'}>
           <div className={style.entryIcon}>
             <Icon icon="InfoIcon" cover stroke strokeWidth={1.5} />
           </div>
@@ -70,7 +94,7 @@ export const Settings = () => {
           <div className={style.entryArrow}>
             <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
           </div>
-        </NavLink> */}
+        </NavLink>
 
         <NavLink className={style.entry} to={'/settings/changelog'}>
           <div className={style.entryIconSmall}>

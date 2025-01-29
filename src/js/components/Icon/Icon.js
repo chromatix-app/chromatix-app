@@ -7,6 +7,7 @@ import clsx from 'clsx';
 import style from './Icon.module.scss';
 
 // custom
+import { ReactComponent as AccessibilityIcon } from './icons/music/accessibility.svg';
 import { ReactComponent as AlbumCollectionsIcon } from './icons/music/album-collections.svg';
 import { ReactComponent as AlbumGenresIcon } from './icons/music/album-genres.svg';
 import { ReactComponent as AlbumMoodsIcon } from './icons/music/album-moods.svg';
@@ -84,6 +85,7 @@ import { ReactComponent as WindowsSiteIcon } from './icons/site/windows.svg';
 // ======================================================================
 
 const customIcons = {
+  AccessibilityIcon,
   AlbumCollectionsIcon,
   AlbumGenresIcon,
   AlbumMoodsIcon,

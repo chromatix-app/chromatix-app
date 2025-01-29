@@ -69,11 +69,11 @@
   color: var(--color-text);
 
   .label:hover & {
-    opacity: 0.5;
+    opacity: var(--opacity-05);
   }
 
   @include focus-child-custom() {
-    opacity: 0.5;
+    opacity: var(--opacity-05);
   }
 }
 
@@ -114,7 +114,7 @@
   width: 14px;
   height: 14px;
   margin: 0 10px 0 0;
-  opacity: 0.5;
+  opacity: var(--opacity-05);
 
   .linkActive & {
     opacity: 1;

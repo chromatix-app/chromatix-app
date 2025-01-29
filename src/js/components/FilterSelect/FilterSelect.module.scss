@@ -22,8 +22,8 @@
   display: inline-block;
   width: 14px;
   height: 14px;
-  opacity: 0.6;
   color: var(--color-text);
+  opacity: var(--opacity-06);
 
   &:first-child {
     margin: 0 8px 0 0;
