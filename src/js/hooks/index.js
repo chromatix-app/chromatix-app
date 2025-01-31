@@ -6,6 +6,7 @@ export { default as useGetAllCollections } from './useGetAllCollections';
 export { default as useGetAllPlaylists } from './useGetAllPlaylists';
 export { default as useGetArtistDetail } from './useGetArtistDetail';
 export { default as useGetCollectionItems } from './useGetCollectionItems';
+export { default as useGetDownloadLinks } from './useGetDownloadLinks';
 export { default as useGetFolderItems } from './useGetFolderItems';
 export { default as useGetPlaylistDetail } from './useGetPlaylistDetail';
 export { default as useGetQueuedTracks } from './useGetQueuedTracks';
