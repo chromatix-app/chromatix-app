@@ -2,12 +2,12 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import axios from 'axios';
 import clsx from 'clsx';
 
 import { Button, Icon } from 'js/components';
+import { useGetDownloadLinks } from 'js/hooks';
 import { analyticsEvent } from 'js/utils';
 
 import style from './PageHome.module.scss';
@@ -20,53 +20,23 @@ const isElectron = window?.isElectron;
 
 export const PageHome = () => {
   const dispatch = useDispatch();
-
   const downloadsRef = useRef(null);
 
-  const [macSiliconDownloadUrl, setMacSiliconDownloadUrl] = useState(
-    'https://github.com/chromatix-app/chromatix-release/releases/latest'
-  );
-  const [macUniversalDownloadUrl, setMacUniversalDownloadUrl] = useState(
-    'https://github.com/chromatix-app/chromatix-release/releases/latest'
-  );
-  const [windowsDownloadUrl, setWindowsDownloadUrl] = useState(
-    'https://github.com/chromatix-app/chromatix-release/releases/latest'
-  );
+  const { macSiliconDownloadUrl, macUniversalDownloadUrl, windowsDownloadUrl } = useGetDownloadLinks();
 
   const scrollToDownloads = () => {
     downloadsRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleDownloadMacSilicon = () => {
+  const logDownloadMacSilicon = () => {
     analyticsEvent('Download: macOS');
   };
-
-  const handleDownloadMacUniversal = () => {
+  const logDownloadMacUniversal = () => {
     analyticsEvent('Download: macOS (Universal)');
   };
-
-  const handleDownloadWindows = () => {
+  const logDownloadWindows = () => {
     analyticsEvent('Download: Windows');
   };
-
-  useEffect(() => {
-    axios.get('https://api.github.com/repos/chromatix-app/chromatix-release/releases/latest').then((response) => {
-      const assets = response.data.assets;
-      // console.log(assets);
-      const macSiliconAsset = assets.find((asset) => asset.name.endsWith('arm64.dmg'));
-      const macUniversalAsset = assets.find((asset) => asset.name.endsWith('universal.dmg'));
-      const windowsAsset = assets.find((asset) => asset.name.endsWith('.exe'));
-      if (macSiliconAsset) {
-        setMacSiliconDownloadUrl(macSiliconAsset.browser_download_url);
-      }
-      if (macUniversalAsset) {
-        setMacUniversalDownloadUrl(macUniversalAsset.browser_download_url);
-      }
-      if (windowsAsset) {
-        setWindowsDownloadUrl(windowsAsset.browser_download_url);
-      }
-    });
-  }, []);
 
   return (
     <div className={clsx(style.wrap, 'text-center')}>
@@ -137,7 +107,7 @@ export const PageHome = () => {
                     href={macSiliconDownloadUrl}
                     target="_blank"
                     rel="noreferrer nofollow"
-                    onClick={handleDownloadMacSilicon}
+                    onClick={logDownloadMacSilicon}
                   >
                     <span className={style.downloadsIcon}>
                       <Icon icon="AppleSiteIcon" cover />
@@ -151,7 +121,7 @@ export const PageHome = () => {
                     href={macUniversalDownloadUrl}
                     target="_blank"
                     rel="noreferrer nofollow"
-                    onClick={handleDownloadMacUniversal}
+                    onClick={logDownloadMacUniversal}
                   >
                     <span className={style.downloadsIcon}>
                       <Icon icon="AppleSiteIcon" cover />
@@ -161,12 +131,7 @@ export const PageHome = () => {
 
                   <br />
 
-                  <a
-                    href={windowsDownloadUrl}
-                    target="_blank"
-                    rel="noreferrer nofollow"
-                    onClick={handleDownloadWindows}
-                  >
+                  <a href={windowsDownloadUrl} target="_blank" rel="noreferrer nofollow" onClick={logDownloadWindows}>
                     <span className={style.downloadsIcon}>
                       <Icon icon="WindowsSiteIcon" cover />
                     </span>
