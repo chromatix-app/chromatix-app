@@ -1,5 +1,13 @@
+<a name="0.27.0"></a>
+# 0.27.0 (2025-01-31)
+Features:
+- Download links added to settings section within app.
+- Minor styling tweaks to settings pages.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.26.0"></a>
-# 0.25.0 (2025-01-29)
+# 0.26.0 (2025-01-29)
 Features:
 - Added Windows download link to home page.
 - Added a "high contrast" option to appearance settings.
