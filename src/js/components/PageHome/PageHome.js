@@ -29,13 +29,13 @@ export const PageHome = () => {
   };
 
   const logDownloadMacSilicon = () => {
-    analyticsEvent('Download: macOS');
+    analyticsEvent('Download: macOS', { source: 'home' });
   };
   const logDownloadMacUniversal = () => {
-    analyticsEvent('Download: macOS (Universal)');
+    analyticsEvent('Download: macOS (Universal)', { source: 'home' });
   };
   const logDownloadWindows = () => {
-    analyticsEvent('Download: Windows');
+    analyticsEvent('Download: Windows', { source: 'home' });
   };
 
   return (

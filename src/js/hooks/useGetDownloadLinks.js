@@ -15,10 +15,13 @@ const useGetCollectionItems = () => {
   useEffect(() => {
     axios.get('https://api.github.com/repos/chromatix-app/chromatix-release/releases/latest').then((response) => {
       const assets = response.data.assets;
+
       // console.log(assets);
+
       const macSiliconAsset = assets.find((asset) => asset.name.endsWith('arm64.dmg'));
       const macUniversalAsset = assets.find((asset) => asset.name.endsWith('universal.dmg'));
       const windowsAsset = assets.find((asset) => asset.name.endsWith('.exe'));
+
       if (macSiliconAsset) {
         setMacSiliconDownloadUrl(macSiliconAsset.browser_download_url);
       }

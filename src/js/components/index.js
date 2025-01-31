@@ -17,6 +17,7 @@ export { default as Settings } from './Settings/Settings';
 export { default as SettingsAccessibility } from './SettingsAccessibility/SettingsAccessibility';
 export { default as SettingsAppearance } from './SettingsAppearance/SettingsAppearance';
 export { default as SettingsChangelog } from './SettingsChangelog/SettingsChangelog';
+export { default as SettingsDownloads } from './SettingsDownloads/SettingsDownloads';
 export { default as SettingsGeneral } from './SettingsGeneral/SettingsGeneral';
 export { default as SettingsMenu } from './SettingsMenu/SettingsMenu';
 export { default as SideBar } from './SideBar/SideBar';

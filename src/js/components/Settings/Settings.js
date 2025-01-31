@@ -69,7 +69,7 @@ export const Settings = () => {
         </NavLink>
       </div>
 
-      {/* <div className={style.group}>
+      <div className={style.group}>
         <div className={style.title}>Downloads</div>
 
         <NavLink className={style.entry} to={'/settings/downloads'}>
@@ -81,7 +81,7 @@ export const Settings = () => {
             <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
           </div>
         </NavLink>
-      </div> */}
+      </div>
 
       <div className={style.group}>
         <div className={style.title}>About</div>
