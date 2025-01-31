@@ -19,7 +19,7 @@ export const Settings = () => {
         <div className={style.title}>General</div>
 
         <NavLink className={style.entry} to={'/settings/general'}>
-          <div className={style.entryIcon}>
+          <div className={style.entryIconMed}>
             <Icon icon="CogIcon" cover stroke strokeWidth={1.5} />
           </div>
           <div>General</div>
@@ -87,7 +87,7 @@ export const Settings = () => {
         <div className={style.title}>About</div>
 
         <NavLink className={style.entry} to={'/settings/about'}>
-          <div className={style.entryIcon}>
+          <div className={style.entryIconSmall}>
             <Icon icon="InfoIcon" cover stroke strokeWidth={1.5} />
           </div>
           <div>About Chromatix</div>
@@ -122,7 +122,7 @@ export const Settings = () => {
         </a>
 
         <a className={style.entry} href="https://github.com/chromatix-app" target="_blank" rel="noreferrer nofollow">
-          <div className={style.entryIcon}>
+          <div className={style.entryIconMed}>
             <Icon icon="GithubIcon" cover stroke strokeWidth={1.5} />
           </div>
           <div>
@@ -142,7 +142,7 @@ export const Settings = () => {
           target="_blank"
           rel="noreferrer nofollow"
         >
-          <div className={style.entryIcon}>
+          <div className={style.entryIconMed}>
             <Icon icon="BlueskyIcon" cover stroke strokeWidth={1.5} />
           </div>
           <div>
