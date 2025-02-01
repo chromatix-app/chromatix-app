@@ -678,7 +678,17 @@ const FolderTrackEntry = ({ index, entry }) => {
         <span>{index}</span>
       </div>
       <div className={style.thumb}>{entry.thumb && <img src={entry.thumb} alt={entry.title} loading="lazy" />}</div>
-      <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
+      <div className={clsx({ 'text-trim': !optionShowFullTitles })}>
+        <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
+        <div className={clsx(style.artist, style.smallText, { 'text-trim': !optionShowFullTitles })}>
+          {entry.artistLink && (
+            <NavLink to={entry.artistLink} tabIndex={-1}>
+              {entry.artist}
+            </NavLink>
+          )}
+          {!entry.artistLink && entry.artist}
+        </div>
+      </div>
       <div className={style.meta}>Track</div>
       <div></div>
     </div>
