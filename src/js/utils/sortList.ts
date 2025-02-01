@@ -1,4 +1,5 @@
 type Entry = {
+  kind?: string;
   title?: string;
   album?: string;
   artist?: string;
@@ -15,19 +16,32 @@ type Entry = {
 
 type SortFunction = (a: Entry, b: Entry) => number;
 
+const forcedSecondarySortKeys: { [key: string]: { key: string; direction: 'asc' | 'desc' } } = {
+  kind: {
+    key: 'sortOrder',
+    direction: 'asc',
+  },
+};
+
 const sortList = (entries: Entry[], options: string, direction: 'asc' | 'desc' = 'asc'): Entry[] => {
   const optionsArray = options.split('-');
 
   const primarySortKey = optionsArray[0];
   let primaryDirection: 'asc' | 'desc' = (optionsArray[1] as 'asc' | 'desc') || 'asc';
 
-  const secondarySortKey = optionsArray[2] || 'title';
+  const secondarySortKey = optionsArray[2] || forcedSecondarySortKeys[primarySortKey]?.key || 'title';
   let secondaryDirection: 'asc' | 'desc' = (optionsArray[3] as 'asc' | 'desc') || 'asc';
 
   if (direction === 'desc') {
     primaryDirection = primaryDirection === 'asc' ? 'desc' : 'asc';
-    secondaryDirection = secondaryDirection === 'asc' ? 'desc' : 'asc';
+    secondaryDirection = forcedSecondarySortKeys[primarySortKey]?.direction
+      ? forcedSecondarySortKeys[primarySortKey].direction
+      : secondaryDirection === 'asc'
+      ? 'desc'
+      : 'asc';
   }
+
+  // console.log(direction, primarySortKey, primaryDirection, secondarySortKey, secondaryDirection);
 
   return doSorting(entries, primarySortKey, primaryDirection, secondarySortKey, secondaryDirection);
 };
@@ -56,6 +70,7 @@ const doSorting = (
 
 const sortFunctions: Record<string, SortFunction> = {
   // Strings
+  kind: (a, b) => (a.kind ?? '').localeCompare(b.kind ?? ''),
   title: (a, b) => {
     const nameA = (a.title ?? '').toUpperCase();
     const nameB = (b.title ?? '').toUpperCase();

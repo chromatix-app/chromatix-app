@@ -80,7 +80,7 @@ const sessionState = {
   sortArtistAlbums: 'title',
   sortAlbums: 'title',
   sortAlbumTracks: {},
-  sortFolders: 'title',
+  sortFolders: 'sortOrder',
   sortPlaylists: 'title',
   sortPlaylistTracks: {},
   sortArtistCollections: 'title',

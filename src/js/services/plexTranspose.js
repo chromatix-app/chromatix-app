@@ -21,6 +21,7 @@ and doing some additional processing and validation.
 
 export const transposeArtistData = (artist, libraryId, plexBaseUrl, accessToken) => {
   return {
+    kind: 'artist',
     libraryId: libraryId,
     artistId: artist.ratingKey,
     title: artist.title,
@@ -49,6 +50,7 @@ export const transposeArtistData = (artist, libraryId, plexBaseUrl, accessToken)
 
 export const transposeAlbumData = (album, libraryId, plexBaseUrl, accessToken) => {
   return {
+    kind: 'album',
     libraryId: libraryId,
     albumId: album.ratingKey,
     title: album.title,
@@ -87,9 +89,9 @@ export const transposeFolderData = (folder, index, libraryId, plexBaseUrl, acces
 
   const folderId = folder.key.split('?parent=')[1];
   return {
+    kind: 'aaafolder', // "aaa" prefix to force folders to the top
     libraryId: libraryId,
     folderId: folderId,
-    sortOrder: index,
     title: folder.title,
     link: '/folders/' + libraryId + '/' + folderId,
   };
@@ -98,6 +100,7 @@ export const transposeFolderData = (folder, index, libraryId, plexBaseUrl, acces
 export const transposePlaylistData = (playlist, libraryId, plexBaseUrl, accessToken) => {
   const playlistThumb = playlist.thumb ? playlist.thumb : playlist.composite ? playlist.composite : null;
   return {
+    kind: 'playlist',
     libraryId: libraryId,
     playlistId: playlist.ratingKey,
     title: playlist.title,
@@ -131,6 +134,7 @@ export const transposeTrackData = (track, libraryId, plexBaseUrl, accessToken) =
   const artistLink = isLikelyCompilation ? null : '/artists/' + libraryId + '/' + track.grandparentRatingKey;
 
   return {
+    kind: 'track',
     libraryId: libraryId,
     trackId: track.ratingKey,
     trackKey: track.key,
@@ -162,6 +166,7 @@ export const transposeTrackData = (track, libraryId, plexBaseUrl, accessToken) =
 export const transposeCollectionData = (collection, libraryId, plexBaseUrl, accessToken) => {
   const collectionThumb = collection.thumb ? collection.thumb : collection.composite ? collection.composite : null;
   return {
+    kind: 'collection',
     libraryId: libraryId,
     collectionId: collection.ratingKey,
     title: collection.title,
@@ -188,6 +193,7 @@ export const transposeCollectionData = (collection, libraryId, plexBaseUrl, acce
 
 export const transposeGenreData = (type, genre, libraryId) => {
   return {
+    kind: 'genre',
     libraryId: libraryId,
     genreId: genre.key,
     title: genre.title.replace(/\//g, ' & '),
@@ -197,6 +203,7 @@ export const transposeGenreData = (type, genre, libraryId) => {
 
 export const transposeStyleData = (type, style, libraryId) => {
   return {
+    kind: 'style',
     libraryId: libraryId,
     styleId: style.key,
     title: style.title.replace(/\//g, ' & '),
@@ -206,6 +213,7 @@ export const transposeStyleData = (type, style, libraryId) => {
 
 export const transposeMoodData = (type, mood, libraryId) => {
   return {
+    kind: 'mood',
     libraryId: libraryId,
     moodId: mood.key,
     title: mood.title.replace(/\//g, ' & '),

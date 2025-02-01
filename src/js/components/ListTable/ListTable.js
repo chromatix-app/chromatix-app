@@ -257,8 +257,39 @@ const ListTable = ({
             </>
           )}
 
-          {(variant === 'folders' ||
-            variant === 'artistGenres' ||
+          {variant === 'folders' && (
+            <>
+              <SortableHeading
+                className={style.labelCenter}
+                sortKey="sortOrder"
+                currentSortKey={sortKey}
+                currentOrderKey={orderKey}
+                label="#"
+                handleSortCallback={handleSortList}
+                showArrows={false}
+              />
+              <SortableHeading
+                sortKey="title"
+                currentSortKey={sortKey}
+                currentOrderKey={orderKey}
+                label="Title"
+                handleSortCallback={handleSortList}
+                style={{
+                  gridColumn: '2 / span 2',
+                }}
+              />
+              <SortableHeading
+                sortKey="kind"
+                currentSortKey={sortKey}
+                currentOrderKey={orderKey}
+                label="Kind"
+                handleSortCallback={handleSortList}
+              />
+              <div></div>
+            </>
+          )}
+
+          {(variant === 'artistGenres' ||
             variant === 'albumGenres' ||
             variant === 'artistMoods' ||
             variant === 'albumMoods' ||
@@ -400,9 +431,7 @@ const ListTable = ({
             <ListArtistCollections entries={entries} />
           )}
 
-          {variant === 'folders' && (
-            <ListGenresMoodsStyles entryKey={'folderId'} entries={entries} icon={'FolderIcon'} />
-          )}
+          {variant === 'folders' && <ListFolders entries={entries} />}
 
           {variant === 'artistGenres' && (
             <ListGenresMoodsStyles entryKey={'genreId'} entries={entries} icon={'ArtistGenresIcon'} />
@@ -608,16 +637,63 @@ const ListArtistCollections = ({ entries }) => {
   });
 };
 
-const ListGenresMoodsStyles = ({ entryKey, entries, icon }) => {
-  return entries.map((entry) => <GenresMoodsStylesEntry key={entry[entryKey]} entry={entry} icon={icon} />);
+const ListFolders = ({ entries }) => {
+  let trackCount = 0;
+  return entries.map((entry) => {
+    if (entry.kind === 'aaafolder') {
+      return <FolderEntry key={entry.folderId} entry={entry} />;
+    } else {
+      trackCount++;
+      return <FolderTrackEntry key={entry.trackId} index={trackCount} entry={entry} />;
+    }
+  });
 };
 
-const GenresMoodsStylesEntry = ({ entry, icon, trackList }) => {
+const FolderEntry = ({ entry }) => {
   const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
 
   return (
     <NavLink className={style.entry} to={entry.link}>
-      {trackList && <div></div>}
+      <div className={clsx(style.trackNumberPermanent, style.labelCenter)}>
+        <span>-</span>
+      </div>
+      <div className={clsx(style.thumb, style.thumbFolder)}>
+        <span className={style.thumbIcon}>
+          <Icon icon={'FolderIcon'} cover stroke strokeWidth={1.2} />
+        </span>
+      </div>
+      <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
+      <div className={style.meta}>Folder</div>
+      <div></div>
+    </NavLink>
+  );
+};
+
+const FolderTrackEntry = ({ index, entry }) => {
+  const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+
+  return (
+    <div className={style.entry}>
+      <div className={clsx(style.trackNumberPermanent, style.labelCenter)}>
+        <span>{index}</span>
+      </div>
+      <div className={style.thumb}>{entry.thumb && <img src={entry.thumb} alt={entry.title} loading="lazy" />}</div>
+      <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
+      <div className={style.meta}>Track</div>
+      <div></div>
+    </div>
+  );
+};
+
+const ListGenresMoodsStyles = ({ entryKey, entries, icon }) => {
+  return entries.map((entry) => <GenresMoodsStylesEntry key={entry[entryKey]} entry={entry} icon={icon} />);
+};
+
+const GenresMoodsStylesEntry = ({ entry, icon }) => {
+  const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+
+  return (
+    <NavLink className={style.entry} to={entry.link}>
       <div className={clsx(style.thumb, style.thumbFolder)}>
         <span className={style.thumbIcon}>
           <Icon icon={icon} cover stroke strokeWidth={1.2} />
@@ -691,18 +767,6 @@ const ListTracks = ({ variant, albumId, playlistId, discCount, entries, playingO
         dispatch.playerModel.playerPlay();
       }
     };
-
-    if (entry.folderId) {
-      return (
-        <GenresMoodsStylesEntry
-          key={entry.folderId}
-          entry={entry}
-          entryKey={'folderId'}
-          icon={'FolderIcon'}
-          trackList={true}
-        />
-      );
-    }
 
     return (
       <ListTrackEntry

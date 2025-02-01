@@ -4,7 +4,7 @@
 
 import { useParams } from 'react-router-dom';
 
-import { FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
 import { useGetFolderItems } from 'js/hooks';
 
 // ======================================================================
@@ -17,9 +17,11 @@ const FolderList = () => {
     viewFolders,
     sortFolders,
     orderFolders,
-    setViewFolders,
 
+    setViewFolders,
+    setSortFolders,
     setOrderFolders,
+
     sortedFolders,
   } = useGetFolderItems(folderId);
 
@@ -45,6 +47,15 @@ const FolderList = () => {
         />
         {viewFolders === 'grid' && (
           <>
+            <FilterSelect
+              value={sortFolders}
+              options={[
+                { value: 'sortOrder', label: 'Default' },
+                { value: 'title', label: 'Title' },
+                { value: 'kind', label: 'Kind' },
+              ]}
+              setter={setSortFolders}
+            />
             <FilterToggle
               value={orderFolders}
               options={[
