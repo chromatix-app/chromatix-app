@@ -597,9 +597,14 @@ export const getFolderItems = async (folderId) => {
         return 0;
       });
 
-      // Add sortOrder property to each object
+      // Add sortOrder properties to each object
+      let trackSortOrder = 0;
       folderItems.forEach((item, index) => {
         item.sortOrder = index;
+        if (item.kind === 'track') {
+          item.trackSortOrder = trackSortOrder;
+          trackSortOrder++;
+        }
       });
 
       // console.log('folderItems', folderItems);

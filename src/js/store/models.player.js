@@ -138,7 +138,9 @@ const effects = (dispatch) => ({
 
   playerLoadTrackItem(payload, rootState) {
     // console.log('%c--- playerLoadTrackItem ---', 'color:#5c16b1');
-    const { playingVariant, playingAlbumId, playingPlaylistId, playingOrder, playingTrackIndex } = payload;
+
+    const { playingVariant, playingAlbumId, playingPlaylistId, playingFolderId, playingOrder, playingTrackIndex } =
+      payload;
     const isShuffle = rootState.sessionModel.playingShuffle;
     if (playingVariant === 'albums') {
       dispatch.playerModel.playerLoadAlbum({
@@ -151,6 +153,14 @@ const effects = (dispatch) => ({
     } else if (playingVariant === 'playlists') {
       dispatch.playerModel.playerLoadPlaylist({
         playlistId: playingPlaylistId,
+        playingOrder: playingOrder,
+        trackIndex: playingTrackIndex,
+        isShuffle: isShuffle,
+        isTrack: true, // this ensures that the trackIndex is used
+      });
+    } else if (playingVariant === 'folders') {
+      dispatch.playerModel.playerLoadFolder({
+        folderId: playingFolderId,
         playingOrder: playingOrder,
         trackIndex: playingTrackIndex,
         isShuffle: isShuffle,
@@ -182,6 +192,7 @@ const effects = (dispatch) => ({
       playingLibraryId: rootState.sessionModel.currentLibrary?.libraryId,
       playingAlbumId: albumId,
       playingPlaylistId: null,
+      playingFolderId: null,
       playingOrder: playingOrder,
       playingTrackIndex: realIndex,
       playingTrackKeys: trackKeys,
@@ -217,6 +228,7 @@ const effects = (dispatch) => ({
       playingLibraryId: rootState.sessionModel.currentLibrary?.libraryId,
       playingAlbumId: null,
       playingPlaylistId: playlistId,
+      playingFolderId: null,
       playingOrder: playingOrder,
       playingTrackIndex: realIndex,
       playingTrackKeys: trackKeys,
@@ -227,6 +239,42 @@ const effects = (dispatch) => ({
     });
 
     analyticsEvent('Plex: Load Playlist');
+  },
+
+  async playerLoadFolder(payload, rootState) {
+    // console.log('%c--- playerLoadFolder ---', 'color:#5c16b1');
+    const { folderId, playingOrder = null, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
+
+    const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
+    const allFolderItems = rootState.appModel.allFolderItems;
+    const currentFolderItems = allFolderItems[libraryId + '-' + folderId]?.filter((entry) => entry.kind === 'track');
+
+    if (!currentFolderItems) {
+      await plex.getFolderItems(folderId);
+      dispatch.playerModel.playerLoadFolder({ folderId, trackIndex });
+      return;
+    }
+
+    const trackKeys = getTrackKeys(currentFolderItems.length, playingOrder, isShuffle, isTrack ? trackIndex : null);
+    const realIndex = isTrack ? trackKeys.indexOf(trackIndex) : 0;
+
+    dispatch.playerModel.playerLoadTrackList({
+      playingVariant: 'folders',
+      playingServerId: rootState.sessionModel.currentServer?.serverId,
+      playingLibraryId: rootState.sessionModel.currentLibrary?.libraryId,
+      playingAlbumId: null,
+      playingPlaylistId: null,
+      playingFolderId: folderId,
+      playingOrder: playingOrder,
+      playingTrackIndex: realIndex,
+      playingTrackKeys: trackKeys,
+      playingTrackList: currentFolderItems,
+      playingTrackCount: currentFolderItems.length,
+      playingTrackProgress: 0,
+      playingShuffle: isShuffle,
+    });
+
+    analyticsEvent('Plex: Load Folder');
   },
 
   playerLoadTrackList(payload, rootState) {

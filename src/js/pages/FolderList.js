@@ -23,16 +23,15 @@ const FolderList = () => {
     setOrderFolders,
 
     sortedFolders,
+    folderOrder,
   } = useGetFolderItems(folderId);
-
-  // const hasTracks = sortedFolders?.filter((entry) => entry.trackId);
 
   return (
     <>
       <TitleHeading
         title="Folders"
         subtitle={
-          sortedFolders ? sortedFolders?.length + ' Folder' + (sortedFolders?.length !== 1 ? 's' : '') : <>&nbsp;</>
+          sortedFolders ? sortedFolders?.length + ' Item' + (sortedFolders?.length !== 1 ? 's' : '') : <>&nbsp;</>
         }
       />
       <FilterWrap>
@@ -71,7 +70,14 @@ const FolderList = () => {
       {!sortedFolders && <Loading forceVisible inline />}
       {sortedFolders && viewFolders === 'grid' && <ListCards variant="folders" entries={sortedFolders} />}
       {sortFolders && viewFolders === 'list' && (
-        <ListTable variant={'folders'} entries={sortedFolders} sortKey={sortFolders} orderKey={orderFolders} />
+        <ListTable
+          variant={'folders'}
+          folderId={folderId}
+          entries={sortedFolders}
+          playingOrder={folderOrder}
+          sortKey={sortFolders}
+          orderKey={orderFolders}
+        />
       )}
     </>
   );

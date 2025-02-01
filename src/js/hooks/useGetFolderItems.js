@@ -29,6 +29,9 @@ const useGetFolderItems = (folderId = 'root') => {
           return 0;
         });
 
+  const tracksOnly = sortedFolders?.filter((entry) => entry.kind === 'track');
+  const folderOrder = tracksOnly?.map((entry) => entry.trackSortOrder);
+
   const setViewFolders = (viewFolders) => {
     dispatch.sessionModel.setSessionState({
       viewFolders,
@@ -61,6 +64,7 @@ const useGetFolderItems = (folderId = 'root') => {
     setOrderFolders,
 
     sortedFolders: sortedWithFoldersOnTop,
+    folderOrder,
   };
 };
 
