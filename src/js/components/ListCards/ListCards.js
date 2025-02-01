@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import clsx from 'clsx';
 
 import { Icon, StarRating } from 'js/components';
-import { durationToStringLong } from 'js/utils';
+// import { durationToStringLong } from 'js/utils';
 
 import style from './ListCards.module.scss';
 
@@ -27,7 +27,7 @@ const ListCards = ({ entries, variant }) => {
 
   if (entries) {
     return (
-      <div className={clsx(style.wrap, style['wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1)])}>
+      <div className={clsx(style.wrap)}>
         {entries.map((entry, index) => {
           const isCurrentlyLoaded =
             playingVariant === variant &&
@@ -35,13 +35,18 @@ const ListCards = ({ entries, variant }) => {
             (playingPlaylistId === entry.playlistId || (!playingPlaylistId && !entry.playlistId));
 
           const entryKey =
-            entry.albumId ||
-            entry.artistId ||
-            entry.playlistId ||
+            // prioritise track id
+            entry.trackId ||
+            entry.folderId ||
             entry.collectionId ||
             entry.genreId ||
             entry.moodId ||
+            entry.playlistId ||
             entry.styleId ||
+            // lastly, use album / artist, as these may be present in multiple variants
+            entry.albumId ||
+            entry.artistId ||
+            // fallback to index
             index;
 
           return (
@@ -61,6 +66,7 @@ const ListCards = ({ entries, variant }) => {
 
 const ListEntry = React.memo(
   ({
+    variant,
     thumb,
     title,
     albumId,
@@ -69,11 +75,11 @@ const ListEntry = React.memo(
     artistLink,
     collectionId,
     playlistId,
-    duration,
+    trackId,
     userRating,
     link,
-    totalTracks,
-    variant,
+    // duration,
+    // totalTracks,
     // addedAt,
     // lastPlayed,
     // releaseDate,
@@ -83,19 +89,9 @@ const ListEntry = React.memo(
     const history = useHistory();
     const dispatch = useDispatch();
 
-    const ratingKey =
-      variant === 'albums'
-        ? albumId
-        : variant === 'artists'
-        ? artistId
-        : variant === 'playlists'
-        ? playlistId
-        : variant === 'collections'
-        ? collectionId
-        : null;
-
     const { optionShowFullTitles, optionShowStarRatings } = useSelector(({ sessionModel }) => sessionModel);
 
+    // Open card link on click
     const handleCardClick = useCallback(
       (event) => {
         if (link) {
@@ -105,6 +101,7 @@ const ListEntry = React.memo(
       [link, history]
     );
 
+    // Open card link on enter key
     const handleKeyDown = useCallback(
       (event) => {
         if (event.key === 'Enter') {
@@ -114,10 +111,12 @@ const ListEntry = React.memo(
       [handleCardClick]
     );
 
+    // Allow nested links without triggering parent link
     const handleLinkClick = useCallback((event) => {
       event.stopPropagation();
     }, []);
 
+    // Play button handler
     const handlePlay = useCallback(
       (event) => {
         event.stopPropagation();
@@ -134,6 +133,7 @@ const ListEntry = React.memo(
       [variant, albumId, playlistId, isCurrentlyLoaded, dispatch]
     );
 
+    // Pause button handler
     const handlePause = useCallback(
       (event) => {
         event.stopPropagation();
@@ -142,61 +142,52 @@ const ListEntry = React.memo(
       [dispatch]
     );
 
+    // Ratings
+    const ratingKeyMap = {
+      albums: albumId,
+      artists: artistId,
+      playlists: playlistId,
+      collections: collectionId,
+    };
+    const ratingKey = ratingKeyMap[variant] || null;
+
+    // Icons
+    const iconImageMap = {
+      folders: 'FolderIcon',
+      artistGenres: 'ArtistGenresIcon',
+      artistMoods: 'ArtistMoodsIcon',
+      artistStyles: 'ArtistStylesIcon',
+      albumGenres: 'AlbumGenresIcon',
+      albumMoods: 'AlbumMoodsIcon',
+      albumStyles: 'AlbumStylesIcon',
+    };
+    const iconImage = (!thumb && iconImageMap[variant]) || null;
+    const isIconCard = iconImage && !thumb;
+    const isSquareCard = !isIconCard || variant === 'folders';
+
     // const albumRelease = releaseDate ? moment(releaseDate).format('YYYY') : null;
 
     return (
       <div
-        className={clsx(style.card, { [style.cardCurrent]: isCurrentlyLoaded })}
+        className={clsx(style.card, { [style.cardCurrent]: isCurrentlyLoaded, [style.cardLink]: link })}
         onClick={handleCardClick}
         onKeyDown={handleKeyDown}
         tabIndex={0}
       >
-        <div className={style.thumb}>
+        {/* Thumbnail */}
+        <div className={clsx(style.thumb, { [style.thumbSquare]: isSquareCard, [style.thumbWithIcon]: isIconCard })}>
+          {/* Artwork */}
           {thumb && <img src={thumb} alt={title} loading="lazy" />}
 
-          {variant === 'folders' && (
+          {/* Icon */}
+          {iconImage && (
             <div className={style.icon}>
-              <Icon icon="FolderIcon" cover stroke strokeWidth={1.6} />
+              <Icon icon={iconImage} cover stroke strokeWidth={1.6} />
             </div>
           )}
 
-          {variant === 'artistGenres' && (
-            <div className={style.icon}>
-              <Icon icon="ArtistGenresIcon" cover stroke strokeWidth={1.6} />
-            </div>
-          )}
-
-          {variant === 'artistMoods' && (
-            <div className={style.icon}>
-              <Icon icon="ArtistMoodsIcon" cover stroke strokeWidth={1.6} />
-            </div>
-          )}
-
-          {variant === 'artistStyles' && (
-            <div className={style.icon}>
-              <Icon icon="ArtistStylesIcon" cover stroke strokeWidth={1.6} />
-            </div>
-          )}
-
-          {variant === 'albumGenres' && (
-            <div className={style.icon}>
-              <Icon icon="AlbumGenresIcon" cover stroke strokeWidth={1.6} />
-            </div>
-          )}
-
-          {variant === 'albumMoods' && (
-            <div className={style.icon}>
-              <Icon icon="AlbumMoodsIcon" cover stroke strokeWidth={1.6} />
-            </div>
-          )}
-
-          {variant === 'albumStyles' && (
-            <div className={style.icon}>
-              <Icon icon="AlbumStylesIcon" cover stroke strokeWidth={1.6} />
-            </div>
-          )}
-
-          {(variant === 'albums' || variant === 'playlists') && (
+          {/* Play / Pause Button */}
+          {(variant === 'albums' || variant === 'playlists' || (variant === 'folders' && trackId)) && (
             <div className={style.controlButtonWrap}>
               {isCurrentlyLoaded && isCurrentlyPlaying && (
                 <button className={style.pauseButton} onClick={handlePause} tabIndex={-1}>
@@ -212,6 +203,7 @@ const ListEntry = React.memo(
           )}
         </div>
 
+        {/* Text */}
         <div className={style.body}>
           {title && <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{title}</div>}
 
@@ -230,9 +222,9 @@ const ListEntry = React.memo(
             </NavLink>
           )}
 
-          {totalTracks && <div className={style.subtitle}>{totalTracks + ' tracks'}</div>}
+          {/* {totalTracks && <div className={style.subtitle}>{totalTracks + ' tracks'}</div>} */}
 
-          {duration && <div className={style.subtitle}>{durationToStringLong(duration)}</div>}
+          {/* {duration && <div className={style.subtitle}>{durationToStringLong(duration)}</div>} */}
 
           {/* {albumRelease && <div className={style.subtitle}>{albumRelease}</div>} */}
 
