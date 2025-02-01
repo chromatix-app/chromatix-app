@@ -4,7 +4,7 @@
 
 import { useParams } from 'react-router-dom';
 
-import { FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
+import { FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
 import { useGetFolderItems } from 'js/hooks';
 
 // ======================================================================
@@ -23,7 +23,7 @@ const FolderList = () => {
     sortedFolders,
   } = useGetFolderItems(folderId);
 
-  const trackEntries = sortedFolders?.filter((entry) => entry.trackId);
+  // const hasTracks = sortedFolders?.filter((entry) => entry.trackId);
 
   return (
     <>
@@ -60,12 +60,7 @@ const FolderList = () => {
       {!sortedFolders && <Loading forceVisible inline />}
       {sortedFolders && viewFolders === 'grid' && <ListCards variant="folders" entries={sortedFolders} />}
       {sortFolders && viewFolders === 'list' && (
-        <ListEntries
-          variant={trackEntries?.length > 0 ? 'playlistTracks' : 'folders'}
-          entries={sortedFolders}
-          sortKey={sortFolders}
-          orderKey={orderFolders}
-        />
+        <ListTable variant={'folders'} entries={sortedFolders} sortKey={sortFolders} orderKey={orderFolders} />
       )}
     </>
   );

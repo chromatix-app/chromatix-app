@@ -11,13 +11,13 @@ import moment from 'moment';
 import { Icon, StarRating } from 'js/components';
 import { durationToStringLong, durationToStringShort, formatRecentDate } from 'js/utils';
 
-import style from './ListEntries.module.scss';
+import style from './ListTable.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const ListEntries = ({
+const ListTable = ({
   variant,
   albumId,
   playlistId,
@@ -836,4 +836,4 @@ const ListTrackEntry = React.memo(
 // EXPORT
 // ======================================================================
 
-export default ListEntries;
+export default ListTable;
