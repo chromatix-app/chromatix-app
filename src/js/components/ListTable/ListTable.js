@@ -639,7 +639,30 @@ const ListArtistCollections = ({ entries }) => {
 };
 
 const ListFolders = ({ folderId, entries, playingOrder, sortKey }) => {
+  const dispatch = useDispatch();
+
+  const scrollToPlaying = useSelector(({ appModel }) => appModel.scrollToPlaying);
+
+  const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
+  const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
+  const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
+
+  const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
+
+  // scroll to playing track, if required
+  useEffect(() => {
+    if (scrollToPlaying) {
+      const playingElement = document.getElementById(trackDetail?.trackId);
+      if (playingElement) {
+        playingElement.scrollIntoView({ block: 'center' });
+      }
+      dispatch.appModel.setAppState({ scrollToPlaying: false });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scrollToPlaying]);
+
   let trackNumber = 0;
+
   return entries.map((entry) => {
     if (entry.kind === 'aaafolder') {
       return <FolderEntry key={entry.folderId} entry={entry} />;
