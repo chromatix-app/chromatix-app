@@ -14,6 +14,7 @@ export { default as Queue } from './Queue/Queue';
 export { default as RangeSlider } from './RangeSlider/RangeSlider';
 export { default as RightBar } from './RightBar/RightBar';
 export { default as Settings } from './Settings/Settings';
+export { default as SettingsAbout } from './SettingsAbout/SettingsAbout';
 export { default as SettingsAccessibility } from './SettingsAccessibility/SettingsAccessibility';
 export { default as SettingsAppearance } from './SettingsAppearance/SettingsAppearance';
 export { default as SettingsChangelog } from './SettingsChangelog/SettingsChangelog';

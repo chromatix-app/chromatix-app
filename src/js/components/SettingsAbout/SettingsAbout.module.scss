@@ -1,0 +1,41 @@
+@import '../../../css/global';
+
+.wrap {
+  padding: 0 30px 50px;
+
+  :global(.cq-800) & {
+    padding: 0 40px 50px;
+  }
+}
+
+.group {
+  + .group {
+    margin-top: 35px;
+  }
+}
+
+.title {
+  margin: 0 0 15px;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--color-opacity-05);
+}
+
+.body {
+  font-size: 14px;
+
+  p + p {
+    margin-top: 0.5em;
+  }
+
+  strong {
+    font-weight: bold;
+  }
+}
+
+.legal {
+  margin: 35px 0 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-opacity-03);
+}
