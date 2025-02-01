@@ -701,6 +701,7 @@ const FolderTrackEntry = ({ index, folderId, trackNumber, entry, playingOrder, s
 
   const doPlay = (restart) => {
     if (restart) {
+      // console.log(222, index, folderId, playingOrder, sortKey);
       dispatch.playerModel.playerLoadTrackItem({
         playingVariant: 'folders',
         playingFolderId: folderId,

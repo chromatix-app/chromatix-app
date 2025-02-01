@@ -68,7 +68,15 @@ const FolderList = () => {
         )}
       </FilterWrap>
       {!sortedFolders && <Loading forceVisible inline />}
-      {sortedFolders && viewFolders === 'grid' && <ListCards variant="folders" entries={sortedFolders} />}
+      {sortedFolders && viewFolders === 'grid' && (
+        <ListCards
+          variant="folders"
+          folderId={folderId}
+          entries={sortedFolders}
+          playingOrder={folderOrder}
+          sortKey={sortFolders}
+        />
+      )}
       {sortFolders && viewFolders === 'list' && (
         <ListTable
           variant={'folders'}

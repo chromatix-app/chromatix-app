@@ -19,20 +19,35 @@ import style from './ListCards.module.scss';
 
 // const isLocal = process.env.REACT_APP_ENV === 'local';
 
-const ListCards = ({ entries, variant }) => {
+const ListCards = ({ variant, folderId, entries, playingOrder, sortKey }) => {
+  const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
+
   const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
   const playingAlbumId = useSelector(({ sessionModel }) => sessionModel.playingAlbumId);
   const playingPlaylistId = useSelector(({ sessionModel }) => sessionModel.playingPlaylistId);
-  const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
+  const playingFolderId = useSelector(({ sessionModel }) => sessionModel.playingFolderId);
+
+  const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
+  const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
+  const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
+
+  const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
+
+  let trackNumber = 0;
 
   if (entries) {
     return (
       <div className={clsx(style.wrap)}>
         {entries.map((entry, index) => {
+          if (entry.kind === 'track') {
+            trackNumber++;
+          }
+
           const isCurrentlyLoaded =
             playingVariant === variant &&
-            (playingAlbumId === entry.albumId || (!playingAlbumId && !entry.albumId)) &&
-            (playingPlaylistId === entry.playlistId || (!playingPlaylistId && !entry.playlistId));
+            (((playingAlbumId === entry.albumId || (!playingAlbumId && !entry.albumId)) &&
+              (playingPlaylistId === entry.playlistId || (!playingPlaylistId && !entry.playlistId))) ||
+              (playingFolderId === folderId && trackDetail.trackId === entry.trackId));
 
           const entryKey =
             // prioritise track id
@@ -52,7 +67,11 @@ const ListCards = ({ entries, variant }) => {
           return (
             <ListEntry
               key={entryKey}
+              index={trackNumber - 1}
               variant={variant}
+              folderId={folderId}
+              playingOrder={playingOrder}
+              sortKey={sortKey}
               isCurrentlyLoaded={isCurrentlyLoaded}
               isCurrentlyPlaying={playerPlaying}
               {...entry}
@@ -66,6 +85,7 @@ const ListCards = ({ entries, variant }) => {
 
 const ListEntry = React.memo(
   ({
+    index,
     variant,
     thumb,
     title,
@@ -74,47 +94,28 @@ const ListEntry = React.memo(
     artistId,
     artistLink,
     collectionId,
+    folderId,
     playlistId,
     trackId,
     userRating,
     link,
+
+    playingOrder,
+    sortKey,
+
+    isCurrentlyLoaded,
+    isCurrentlyPlaying,
+
     // duration,
     // totalTracks,
     // addedAt,
     // lastPlayed,
     // releaseDate,
-    isCurrentlyLoaded,
-    isCurrentlyPlaying,
   }) => {
     const history = useHistory();
     const dispatch = useDispatch();
 
     const { optionShowFullTitles, optionShowStarRatings } = useSelector(({ sessionModel }) => sessionModel);
-
-    // Open card link on click
-    const handleCardClick = useCallback(
-      (event) => {
-        if (link) {
-          history.push(link);
-        }
-      },
-      [link, history]
-    );
-
-    // Open card link on enter key
-    const handleKeyDown = useCallback(
-      (event) => {
-        if (event.key === 'Enter') {
-          handleCardClick(event);
-        }
-      },
-      [handleCardClick]
-    );
-
-    // Allow nested links without triggering parent link
-    const handleLinkClick = useCallback((event) => {
-      event.stopPropagation();
-    }, []);
 
     // Play button handler
     const handlePlay = useCallback(
@@ -127,11 +128,58 @@ const ListEntry = React.memo(
             dispatch.playerModel.playerLoadAlbum({ albumId });
           } else if (variant === 'playlists') {
             dispatch.playerModel.playerLoadPlaylist({ playlistId });
+          } else if (variant === 'folders') {
+            // console.log(1111, index, folderId, playingOrder, sortKey);
+            dispatch.playerModel.playerLoadTrackItem({
+              playingVariant: 'folders',
+              playingFolderId: folderId,
+              playingOrder: sortKey ? playingOrder : null,
+              playingTrackIndex: sortKey ? playingOrder[index] : index,
+            });
           }
         }
       },
-      [variant, albumId, playlistId, isCurrentlyLoaded, dispatch]
+      [variant, index, albumId, folderId, playlistId, playingOrder, sortKey, isCurrentlyLoaded, dispatch]
     );
+
+    // Handle card click
+    const handleCardClick = useCallback(
+      (event) => {
+        if (link) {
+          history.push(link);
+        }
+      },
+      [link, history]
+    );
+
+    // Handle card double click
+    const handleCardDoubleClick = useCallback(
+      (event) => {
+        if (variant === 'folders' && trackId) {
+          handlePlay(event);
+        }
+      },
+      [variant, trackId, handlePlay]
+    );
+
+    // Handle enter key when card is focused
+    const handleKeyDown = useCallback(
+      (event) => {
+        if (event.key === 'Enter') {
+          if (variant === 'folders' && trackId) {
+            handlePlay(event);
+          } else {
+            handleCardClick(event);
+          }
+        }
+      },
+      [variant, trackId, handlePlay, handleCardClick]
+    );
+
+    // Allow nested links without triggering parent link
+    const handleLinkClick = useCallback((event) => {
+      event.stopPropagation();
+    }, []);
 
     // Pause button handler
     const handlePause = useCallback(
@@ -171,6 +219,7 @@ const ListEntry = React.memo(
       <div
         className={clsx(style.card, { [style.cardCurrent]: isCurrentlyLoaded, [style.cardLink]: link })}
         onClick={handleCardClick}
+        onDoubleClick={handleCardDoubleClick}
         onKeyDown={handleKeyDown}
         tabIndex={0}
       >
