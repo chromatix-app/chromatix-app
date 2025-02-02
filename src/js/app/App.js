@@ -10,6 +10,7 @@ import clsx from 'clsx';
 import { ControlBar, RightBar, SideBar, UserMenu } from 'js/components';
 import { useColorTheme, useGotRequiredData, useScrollRestoration, useWindowSize } from 'js/hooks';
 import { ErrorPlexGeneral, ErrorPlexLogin } from 'js/pages';
+import { isElectron, electronPlatform } from 'js/utils';
 import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 
 // ======================================================================
@@ -18,9 +19,6 @@ import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 
 const isProduction = process.env.REACT_APP_ENV === 'production';
 // const isLocal = process.env.REACT_APP_ENV === 'local';
-
-const isElectron = window?.isElectron;
-const electronPlatform = isElectron ? (window?.electronProcess?.platform === 'darwin' ? 'mac' : 'win') : null;
 
 const App = () => {
   const inited = useSelector(({ appModel }) => appModel.inited);
