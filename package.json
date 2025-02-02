@@ -13,6 +13,7 @@
     "release:dev": "release-it --preReleaseId=beta --config .release-it.dev.json"
   },
   "dependencies": {
+    "@radix-ui/react-popover": "^1.1.5",
     "@radix-ui/react-select": "^2.0.0",
     "@rematch/core": "^2.2.0",
     "@vercel/analytics": "^1.2.2",
