@@ -4,7 +4,7 @@
 
 import { useSelector } from 'react-redux';
 
-import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
 import { useGetAllAlbums } from 'js/hooks';
 
 // ======================================================================
@@ -39,8 +39,8 @@ const AlbumList = () => {
               options={[
                 { value: 'title', label: 'Alphabetical' },
                 { value: 'artist', label: 'Artist' },
-                { value: 'artist-asc-releaseDate-desc', label: 'Artist, newest release first' },
                 { value: 'artist-asc-releaseDate-asc', label: 'Artist, oldest release first' },
+                { value: 'artist-asc-releaseDate-desc', label: 'Artist, newest release first' },
                 { value: 'addedAt', label: 'Date added' },
                 { value: 'lastPlayed', label: 'Date played' },
                 { value: 'releaseDate', label: 'Date released' },
@@ -64,7 +64,7 @@ const AlbumList = () => {
       {!sortedAlbums && <Loading forceVisible inline />}
       {sortedAlbums && viewAlbums === 'grid' && <ListCards variant="albums" entries={sortedAlbums} />}
       {sortedAlbums && viewAlbums === 'list' && (
-        <ListEntries variant="albums" entries={sortedAlbums} sortKey={sortAlbums} orderKey={orderAlbums} />
+        <ListTable variant="albums" entries={sortedAlbums} sortKey={sortAlbums} orderKey={orderAlbums} />
       )}
     </>
   );

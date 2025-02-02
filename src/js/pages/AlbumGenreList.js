@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
+import { FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
 import { useGetAllCollections } from 'js/hooks';
 
 // ======================================================================
@@ -60,7 +60,7 @@ const AlbumGenreList = () => {
         <ListCards variant="albumGenres" entries={sortedCollections} />
       )}
       {sortCollections && viewCollections === 'list' && (
-        <ListEntries
+        <ListTable
           variant="albumGenres"
           entries={sortedCollections}
           sortKey={sortCollections}

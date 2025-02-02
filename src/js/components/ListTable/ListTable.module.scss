@@ -78,7 +78,10 @@
     }
   }
 
-  .wrap.wrapFolders &,
+  .wrap.wrapFolders & {
+    grid-template-columns: 30px 41px 2fr 1fr 1px;
+  }
+
   .wrap.wrapArtistGenres &,
   .wrap.wrapAlbumGenres &,
   .wrap.wrapArtistMoods &,
@@ -239,10 +242,12 @@
   height: 14px;
 }
 
-.trackNumber {
+.trackNumber,
+.trackNumberPermanent {
   font-weight: bold;
   color: var(--color-opacity-05);
-
+}
+.trackNumber {
   .entry:hover & {
     display: none;
   }
@@ -325,6 +330,11 @@
   }
 }
 
+.smallText {
+  font-size: 11px;
+}
+
+.meta,
 .artist,
 .album,
 .duration,

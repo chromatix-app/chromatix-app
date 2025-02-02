@@ -4,7 +4,7 @@
 
 import { useSelector } from 'react-redux';
 
-import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
 import { useGetAllArtists } from 'js/hooks';
 
 // ======================================================================
@@ -60,7 +60,7 @@ const ArtistList = () => {
       {!sortedArtists && <Loading forceVisible inline />}
       {sortedArtists && viewArtists === 'grid' && <ListCards variant="artists" entries={sortedArtists} />}
       {sortedArtists && viewArtists === 'list' && (
-        <ListEntries variant="artists" entries={sortedArtists} sortKey={sortArtists} orderKey={orderArtists} />
+        <ListTable variant="artists" entries={sortedArtists} sortKey={sortArtists} orderKey={orderArtists} />
       )}
     </>
   );

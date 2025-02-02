@@ -27,6 +27,7 @@ const ControlBar = () => {
     playingLibraryId,
     playingAlbumId,
     playingPlaylistId,
+    playingFolderId,
     playingTrackList,
     playingTrackIndex,
     playingTrackKeys,
@@ -38,7 +39,9 @@ const ControlBar = () => {
   const playingLink =
     playingVariant === 'albums'
       ? `/albums/${playingLibraryId}/${playingAlbumId}`
-      : `/playlists/${playingLibraryId}/${playingPlaylistId}`;
+      : playingVariant === 'playlists'
+      ? `/playlists/${playingLibraryId}/${playingPlaylistId}`
+      : `/folders/${playingLibraryId}/${playingFolderId}`;
 
   const trackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
   const isDisabled = !trackCurrent ? true : false;

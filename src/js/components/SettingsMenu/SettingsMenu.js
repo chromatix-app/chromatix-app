@@ -75,11 +75,14 @@ const GeneralSettings = () => {
 const LibrarySettings = () => {
   const dispatch = useDispatch();
 
-  const { menuShowArtists, menuShowAlbums, menuShowPlaylists } = useSelector(({ sessionModel }) => sessionModel);
+  const { menuShowArtists, menuShowAlbums, menuShowFolders, menuShowPlaylists } = useSelector(
+    ({ sessionModel }) => sessionModel
+  );
 
   const menuItems = [
     { key: 'menuShowArtists', label: 'Artists', state: menuShowArtists },
     { key: 'menuShowAlbums', label: 'Albums', state: menuShowAlbums },
+    { key: 'menuShowFolders', label: 'Folders', state: menuShowFolders },
     { key: 'menuShowPlaylists', label: 'Playlists', state: menuShowPlaylists },
   ];
 

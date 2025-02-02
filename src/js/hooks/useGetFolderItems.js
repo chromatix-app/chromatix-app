@@ -16,13 +16,21 @@ const useGetFolderItems = (folderId = 'root') => {
   const libraryId = currentLibrary?.libraryId;
   const allFolderItems = useSelector(({ appModel }) => appModel.allFolderItems);
   const folderItems = allFolderItems ? allFolderItems[libraryId + '-' + folderId] : null;
-  const sortedFolders = folderItems
-    ? sortList(folderItems, sortFolders, orderFolders).sort((a, b) => {
-        if (a.folderId && !b.folderId) return -1;
-        if (!a.folderId && b.folderId) return 1;
-        return 0;
-      })
-    : null;
+  const sortedFolders = folderItems ? sortList(folderItems, sortFolders, orderFolders) : null;
+
+  // console.log(sortFolders);
+
+  const sortedWithFoldersOnTop =
+    sortFolders === 'kind'
+      ? sortedFolders
+      : sortedFolders?.sort((a, b) => {
+          if (a.kind === 'aaafolder' && b.kind !== 'aaafolder') return -1;
+          if (a.kind !== 'aaafolder' && b.kind === 'aaafolder') return 1;
+          return 0;
+        });
+
+  const tracksOnly = sortedFolders?.filter((entry) => entry.kind === 'track');
+  const folderOrder = tracksOnly?.map((entry) => entry.trackSortOrder);
 
   const setViewFolders = (viewFolders) => {
     dispatch.sessionModel.setSessionState({
@@ -55,7 +63,8 @@ const useGetFolderItems = (folderId = 'root') => {
     setSortFolders,
     setOrderFolders,
 
-    sortedFolders,
+    sortedFolders: sortedWithFoldersOnTop,
+    folderOrder,
   };
 };
 

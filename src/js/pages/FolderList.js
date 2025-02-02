@@ -4,7 +4,7 @@
 
 import { useParams } from 'react-router-dom';
 
-import { FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
 import { useGetFolderItems } from 'js/hooks';
 
 // ======================================================================
@@ -17,20 +17,21 @@ const FolderList = () => {
     viewFolders,
     sortFolders,
     orderFolders,
+
     setViewFolders,
-
+    setSortFolders,
     setOrderFolders,
-    sortedFolders,
-  } = useGetFolderItems(folderId);
 
-  const trackEntries = sortedFolders?.filter((entry) => entry.trackId);
+    sortedFolders,
+    folderOrder,
+  } = useGetFolderItems(folderId);
 
   return (
     <>
       <TitleHeading
         title="Folders"
         subtitle={
-          sortedFolders ? sortedFolders?.length + ' Folder' + (sortedFolders?.length !== 1 ? 's' : '') : <>&nbsp;</>
+          sortedFolders ? sortedFolders?.length + ' Item' + (sortedFolders?.length !== 1 ? 's' : '') : <>&nbsp;</>
         }
       />
       <FilterWrap>
@@ -45,6 +46,15 @@ const FolderList = () => {
         />
         {viewFolders === 'grid' && (
           <>
+            <FilterSelect
+              value={sortFolders}
+              options={[
+                { value: 'sortOrder', label: 'Default' },
+                { value: 'title', label: 'Title' },
+                { value: 'kind', label: 'Kind' },
+              ]}
+              setter={setSortFolders}
+            />
             <FilterToggle
               value={orderFolders}
               options={[
@@ -58,11 +68,21 @@ const FolderList = () => {
         )}
       </FilterWrap>
       {!sortedFolders && <Loading forceVisible inline />}
-      {sortedFolders && viewFolders === 'grid' && <ListCards variant="folders" entries={sortedFolders} />}
-      {sortFolders && viewFolders === 'list' && (
-        <ListEntries
-          variant={trackEntries?.length > 0 ? 'playlistTracks' : 'folders'}
+      {sortedFolders && viewFolders === 'grid' && (
+        <ListCards
+          variant="folders"
+          folderId={folderId}
           entries={sortedFolders}
+          playingOrder={folderOrder}
+          sortKey={sortFolders}
+        />
+      )}
+      {sortFolders && viewFolders === 'list' && (
+        <ListTable
+          variant={'folders'}
+          folderId={folderId}
+          entries={sortedFolders}
+          playingOrder={folderOrder}
           sortKey={sortFolders}
           orderKey={orderFolders}
         />

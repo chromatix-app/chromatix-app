@@ -4,7 +4,7 @@
 
 import { useSelector } from 'react-redux';
 
-import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListEntries, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
 import { useGetAllCollections } from 'js/hooks';
 
 // ======================================================================
@@ -74,7 +74,7 @@ const ArtistCollectionList = () => {
         <ListCards variant="collections" entries={sortedCollections} />
       )}
       {sortedCollections && viewCollections === 'list' && (
-        <ListEntries
+        <ListTable
           variant="artistCollections"
           entries={sortedCollections}
           sortKey={sortCollections}

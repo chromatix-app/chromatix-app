@@ -5,7 +5,7 @@
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { FilterSelect, FilterToggle, ListCards, ListEntries, Loading, StarRating, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, ListCards, ListTable, Loading, StarRating, TitleHeading } from 'js/components';
 import { useGetCollectionItems } from 'js/hooks';
 
 // ======================================================================
@@ -75,8 +75,8 @@ const AlbumCollectionItems = () => {
                     options={[
                       { value: 'title', label: 'Alphabetical' },
                       { value: 'artist', label: 'Artist' },
-                      { value: 'artist-asc-releaseDate-desc', label: 'Artist, newest release first' },
                       { value: 'artist-asc-releaseDate-asc', label: 'Artist, oldest release first' },
+                      { value: 'artist-asc-releaseDate-desc', label: 'Artist, newest release first' },
                       { value: 'addedAt', label: 'Date added' },
                       { value: 'lastPlayed', label: 'Date played' },
                       { value: 'releaseDate', label: 'Date released' },
@@ -105,7 +105,7 @@ const AlbumCollectionItems = () => {
         <ListCards variant={'albums'} entries={sortedCollectionItems} />
       )}
       {sortedCollectionItems && viewCollectionItems === 'list' && (
-        <ListEntries
+        <ListTable
           variant="albumCollectionItems"
           entries={sortedCollectionItems}
           sortKey={sortCollectionItems}

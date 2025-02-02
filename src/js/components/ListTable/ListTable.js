@@ -11,16 +11,17 @@ import moment from 'moment';
 import { Icon, StarRating } from 'js/components';
 import { durationToStringLong, durationToStringShort, formatRecentDate } from 'js/utils';
 
-import style from './ListEntries.module.scss';
+import style from './ListTable.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const ListEntries = ({
+const ListTable = ({
   variant,
   albumId,
   playlistId,
+  folderId,
   playingOrder,
   discCount = 1,
   entries,
@@ -36,7 +37,6 @@ const ListEntries = ({
 
   const handleSortList = (event) => {
     const sortKey = event.currentTarget.dataset.sort;
-    // console.log(sortKey);
     dispatch.sessionModel.setSortList({
       variant,
       sortKey,
@@ -45,7 +45,6 @@ const ListEntries = ({
 
   const handleSortTracks = (event) => {
     const sortKey = event.currentTarget.dataset.sort;
-    // console.log(sortKey);
     dispatch.sessionModel.setSortTracks({
       variant,
       sortId,
@@ -257,8 +256,39 @@ const ListEntries = ({
             </>
           )}
 
-          {(variant === 'folders' ||
-            variant === 'artistGenres' ||
+          {variant === 'folders' && (
+            <>
+              <SortableHeading
+                className={style.labelCenter}
+                sortKey="sortOrder"
+                currentSortKey={sortKey}
+                currentOrderKey={orderKey}
+                label="#"
+                handleSortCallback={handleSortList}
+                showArrows={false}
+              />
+              <SortableHeading
+                sortKey="title"
+                currentSortKey={sortKey}
+                currentOrderKey={orderKey}
+                label="Title"
+                handleSortCallback={handleSortList}
+                style={{
+                  gridColumn: '2 / span 2',
+                }}
+              />
+              <SortableHeading
+                sortKey="kind"
+                currentSortKey={sortKey}
+                currentOrderKey={orderKey}
+                label="Kind"
+                handleSortCallback={handleSortList}
+              />
+              <div></div>
+            </>
+          )}
+
+          {(variant === 'artistGenres' ||
             variant === 'albumGenres' ||
             variant === 'artistMoods' ||
             variant === 'albumMoods' ||
@@ -401,7 +431,7 @@ const ListEntries = ({
           )}
 
           {variant === 'folders' && (
-            <ListGenresMoodsStyles entryKey={'folderId'} entries={entries} icon={'FolderIcon'} />
+            <ListFolders folderId={folderId} entries={entries} playingOrder={playingOrder} sortKey={sortKey} />
           )}
 
           {variant === 'artistGenres' && (
@@ -608,16 +638,173 @@ const ListArtistCollections = ({ entries }) => {
   });
 };
 
-const ListGenresMoodsStyles = ({ entryKey, entries, icon }) => {
-  return entries.map((entry) => <GenresMoodsStylesEntry key={entry[entryKey]} entry={entry} icon={icon} />);
+const ListFolders = ({ folderId, entries, playingOrder, sortKey }) => {
+  const dispatch = useDispatch();
+
+  const scrollToPlaying = useSelector(({ appModel }) => appModel.scrollToPlaying);
+
+  const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
+  const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
+  const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
+
+  const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
+
+  // scroll to playing track, if required
+  useEffect(() => {
+    if (scrollToPlaying) {
+      const playingElement = document.getElementById(trackDetail?.trackId);
+      if (playingElement) {
+        playingElement.scrollIntoView({ block: 'center' });
+      }
+      dispatch.appModel.setAppState({ scrollToPlaying: false });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scrollToPlaying]);
+
+  let trackNumber = 0;
+
+  return entries.map((entry) => {
+    if (entry.kind === 'aaafolder') {
+      return <FolderEntry key={entry.folderId} entry={entry} />;
+    } else {
+      trackNumber++;
+      return (
+        <FolderTrackEntry
+          key={entry.trackId}
+          index={trackNumber - 1}
+          folderId={folderId}
+          trackNumber={trackNumber}
+          entry={entry}
+          playingOrder={playingOrder}
+          sortKey={sortKey}
+        />
+      );
+    }
+  });
 };
 
-const GenresMoodsStylesEntry = ({ entry, icon, trackList }) => {
+const FolderEntry = ({ entry }) => {
   const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
 
   return (
     <NavLink className={style.entry} to={entry.link}>
-      {trackList && <div></div>}
+      <div className={clsx(style.trackNumberPermanent, style.labelCenter)}>
+        <span>-</span>
+      </div>
+      <div className={clsx(style.thumb, style.thumbFolder)}>
+        <span className={style.thumbIcon}>
+          <Icon icon={'FolderIcon'} cover stroke strokeWidth={1.2} />
+        </span>
+      </div>
+      <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
+      <div className={style.meta}>Folder</div>
+      <div></div>
+    </NavLink>
+  );
+};
+
+const FolderTrackEntry = ({ index, folderId, trackNumber, entry, playingOrder, sortKey }) => {
+  const dispatch = useDispatch();
+
+  const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
+
+  const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
+  const playingFolderId = useSelector(({ sessionModel }) => sessionModel.playingFolderId);
+
+  const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
+  const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
+  const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
+
+  const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+
+  const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
+
+  const isCurrentlyPlaying =
+    playingVariant === 'folders' && playingFolderId === folderId && trackDetail.trackId === entry.trackId;
+
+  const doPlay = (restart) => {
+    if (restart) {
+      // console.log(222, index, folderId, playingOrder, sortKey);
+      dispatch.playerModel.playerLoadTrackItem({
+        playingVariant: 'folders',
+        playingFolderId: folderId,
+        playingOrder: sortKey ? playingOrder : null,
+        playingTrackIndex: sortKey ? playingOrder[index] : index,
+      });
+    } else {
+      dispatch.playerModel.playerPlay();
+    }
+  };
+
+  return (
+    <div
+      id={entry.trackId}
+      className={style.entry}
+      onDoubleClick={() => {
+        doPlay(true);
+      }}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter') {
+          doPlay(true);
+        }
+      }}
+      tabIndex={0}
+    >
+      {!isCurrentlyPlaying && (
+        <div className={clsx(style.trackNumber, style.labelCenter)}>
+          <span>{trackNumber}</span>
+        </div>
+      )}
+
+      {isCurrentlyPlaying && (
+        <div className={style.playingIcon}>
+          <Icon icon="VolHighIcon" cover stroke />
+        </div>
+      )}
+
+      {!(isCurrentlyPlaying && playerPlaying) && (
+        <div
+          className={style.playIcon}
+          onClick={() => {
+            doPlay(!isCurrentlyPlaying);
+          }}
+        >
+          <Icon icon="PlayFilledIcon" cover />
+        </div>
+      )}
+      {isCurrentlyPlaying && playerPlaying && (
+        <div className={style.pauseIcon} onClick={dispatch.playerModel.playerPause}>
+          <Icon icon="PauseFilledIcon" cover />
+        </div>
+      )}
+
+      <div className={style.thumb}>{entry.thumb && <img src={entry.thumb} alt={entry.title} loading="lazy" />}</div>
+      <div className={clsx({ 'text-trim': !optionShowFullTitles })}>
+        <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
+        <div className={clsx(style.artist, style.smallText, { 'text-trim': !optionShowFullTitles })}>
+          {entry.artistLink && (
+            <NavLink to={entry.artistLink} tabIndex={-1}>
+              {entry.artist}
+            </NavLink>
+          )}
+          {!entry.artistLink && entry.artist}
+        </div>
+      </div>
+      <div className={style.meta}>Track</div>
+      <div></div>
+    </div>
+  );
+};
+
+const ListGenresMoodsStyles = ({ entryKey, entries, icon }) => {
+  return entries.map((entry) => <GenresMoodsStylesEntry key={entry[entryKey]} entry={entry} icon={icon} />);
+};
+
+const GenresMoodsStylesEntry = ({ entry, icon }) => {
+  const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+
+  return (
+    <NavLink className={style.entry} to={entry.link}>
       <div className={clsx(style.thumb, style.thumbFolder)}>
         <span className={style.thumbIcon}>
           <Icon icon={icon} cover stroke strokeWidth={1.2} />
@@ -691,18 +878,6 @@ const ListTracks = ({ variant, albumId, playlistId, discCount, entries, playingO
         dispatch.playerModel.playerPlay();
       }
     };
-
-    if (entry.folderId) {
-      return (
-        <GenresMoodsStylesEntry
-          key={entry.folderId}
-          entry={entry}
-          entryKey={'folderId'}
-          icon={'FolderIcon'}
-          trackList={true}
-        />
-      );
-    }
 
     return (
       <ListTrackEntry
@@ -836,4 +1011,4 @@ const ListTrackEntry = React.memo(
 // EXPORT
 // ======================================================================
 
-export default ListEntries;
+export default ListTable;
