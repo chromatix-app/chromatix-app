@@ -584,6 +584,29 @@ export const getFolderItems = async (folderId) => {
           transposeFolderData(item, index, libraryId, plexBaseUrl, accessToken)
         ).filter((item) => item !== null) || [];
 
+      // Sort folderItems
+      folderItems.sort((a, b) => {
+        if (a.kind === 'folder' && b.kind === 'track') return -1;
+        if (a.kind === 'track' && b.kind === 'folder') return 1;
+        if (a.kind === 'folder' && b.kind === 'folder') return a.title.localeCompare(b.title);
+        if (a.kind === 'track' && b.kind === 'track') {
+          if (a.album !== b.album) return a.album.localeCompare(b.album);
+          if (a.discNumber !== b.discNumber) return a.discNumber - b.discNumber;
+          return a.trackNumber - b.trackNumber;
+        }
+        return 0;
+      });
+
+      // Add sortOrder properties to each object
+      let trackSortOrder = 0;
+      folderItems.forEach((item, index) => {
+        item.sortOrder = index;
+        if (item.kind === 'track') {
+          item.trackSortOrder = trackSortOrder;
+          trackSortOrder++;
+        }
+      });
+
       // console.log('folderItems', folderItems);
 
       store.dispatch.appModel.storeFolderItems({ libraryId, folderId, folderItems });

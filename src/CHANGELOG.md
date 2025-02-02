@@ -1,3 +1,12 @@
+<a name="0.28.0"></a>
+# 0.28.0 (2025-02-02)
+Features:
+- Folders section added with grid and list views.
+- Tweaks to colour theme options.
+- Tweaks to the "about" page.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.27.0"></a>
 # 0.27.0 (2025-01-31)
 Features:

@@ -2,14 +2,14 @@
 // IMPORTS
 // ======================================================================
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 // import moment from 'moment';
 import clsx from 'clsx';
 
 import { Icon, StarRating } from 'js/components';
-import { durationToStringLong } from 'js/utils';
+// import { durationToStringLong } from 'js/utils';
 
 import style from './ListCards.module.scss';
 
@@ -19,35 +19,75 @@ import style from './ListCards.module.scss';
 
 // const isLocal = process.env.REACT_APP_ENV === 'local';
 
-const ListCards = ({ entries, variant }) => {
+const ListCards = ({ variant, folderId, entries, playingOrder, sortKey }) => {
+  const dispatch = useDispatch();
+
+  const scrollToPlaying = useSelector(({ appModel }) => appModel.scrollToPlaying);
+
+  const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
+
   const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
   const playingAlbumId = useSelector(({ sessionModel }) => sessionModel.playingAlbumId);
   const playingPlaylistId = useSelector(({ sessionModel }) => sessionModel.playingPlaylistId);
-  const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
+  const playingFolderId = useSelector(({ sessionModel }) => sessionModel.playingFolderId);
+
+  const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
+  const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
+  const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
+
+  const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
+
+  // scroll to playing track, if required
+  useEffect(() => {
+    if (scrollToPlaying) {
+      const playingElement = document.getElementById(trackDetail?.trackId);
+      if (playingElement) {
+        playingElement.scrollIntoView({ block: 'center' });
+      }
+      dispatch.appModel.setAppState({ scrollToPlaying: false });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scrollToPlaying]);
+
+  let trackNumber = 0;
 
   if (entries) {
     return (
-      <div className={clsx(style.wrap, style['wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1)])}>
+      <div className={clsx(style.wrap)}>
         {entries.map((entry, index) => {
+          if (entry.kind === 'track') {
+            trackNumber++;
+          }
+
           const isCurrentlyLoaded =
             playingVariant === variant &&
-            (playingAlbumId === entry.albumId || (!playingAlbumId && !entry.albumId)) &&
-            (playingPlaylistId === entry.playlistId || (!playingPlaylistId && !entry.playlistId));
+            (((playingAlbumId === entry.albumId || (!playingAlbumId && !entry.albumId)) &&
+              (playingPlaylistId === entry.playlistId || (!playingPlaylistId && !entry.playlistId))) ||
+              (playingFolderId === folderId && trackDetail.trackId === entry.trackId));
 
           const entryKey =
-            entry.albumId ||
-            entry.artistId ||
-            entry.playlistId ||
+            // prioritise track id
+            entry.trackId ||
+            entry.folderId ||
             entry.collectionId ||
             entry.genreId ||
             entry.moodId ||
+            entry.playlistId ||
             entry.styleId ||
+            // lastly, use album / artist, as these may be present in multiple variants
+            entry.albumId ||
+            entry.artistId ||
+            // fallback to index
             index;
 
           return (
             <ListEntry
               key={entryKey}
+              index={trackNumber - 1}
               variant={variant}
+              folderId={folderId}
+              playingOrder={playingOrder}
+              sortKey={sortKey}
               isCurrentlyLoaded={isCurrentlyLoaded}
               isCurrentlyPlaying={playerPlaying}
               {...entry}
@@ -61,6 +101,8 @@ const ListCards = ({ entries, variant }) => {
 
 const ListEntry = React.memo(
   ({
+    index,
+    variant,
     thumb,
     title,
     albumId,
@@ -68,56 +110,30 @@ const ListEntry = React.memo(
     artistId,
     artistLink,
     collectionId,
+    folderId,
     playlistId,
-    duration,
+    trackId,
     userRating,
     link,
-    totalTracks,
-    variant,
+
+    playingOrder,
+    sortKey,
+
+    isCurrentlyLoaded,
+    isCurrentlyPlaying,
+
+    // duration,
+    // totalTracks,
     // addedAt,
     // lastPlayed,
     // releaseDate,
-    isCurrentlyLoaded,
-    isCurrentlyPlaying,
   }) => {
     const history = useHistory();
     const dispatch = useDispatch();
 
-    const ratingKey =
-      variant === 'albums'
-        ? albumId
-        : variant === 'artists'
-        ? artistId
-        : variant === 'playlists'
-        ? playlistId
-        : variant === 'collections'
-        ? collectionId
-        : null;
-
     const { optionShowFullTitles, optionShowStarRatings } = useSelector(({ sessionModel }) => sessionModel);
 
-    const handleCardClick = useCallback(
-      (event) => {
-        if (link) {
-          history.push(link);
-        }
-      },
-      [link, history]
-    );
-
-    const handleKeyDown = useCallback(
-      (event) => {
-        if (event.key === 'Enter') {
-          handleCardClick(event);
-        }
-      },
-      [handleCardClick]
-    );
-
-    const handleLinkClick = useCallback((event) => {
-      event.stopPropagation();
-    }, []);
-
+    // Play button handler
     const handlePlay = useCallback(
       (event) => {
         event.stopPropagation();
@@ -128,12 +144,60 @@ const ListEntry = React.memo(
             dispatch.playerModel.playerLoadAlbum({ albumId });
           } else if (variant === 'playlists') {
             dispatch.playerModel.playerLoadPlaylist({ playlistId });
+          } else if (variant === 'folders') {
+            // console.log(1111, index, folderId, playingOrder, sortKey);
+            dispatch.playerModel.playerLoadTrackItem({
+              playingVariant: 'folders',
+              playingFolderId: folderId,
+              playingOrder: sortKey ? playingOrder : null,
+              playingTrackIndex: sortKey ? playingOrder[index] : index,
+            });
           }
         }
       },
-      [variant, albumId, playlistId, isCurrentlyLoaded, dispatch]
+      [variant, index, albumId, folderId, playlistId, playingOrder, sortKey, isCurrentlyLoaded, dispatch]
     );
 
+    // Handle card click
+    const handleCardClick = useCallback(
+      (event) => {
+        if (link) {
+          history.push(link);
+        }
+      },
+      [link, history]
+    );
+
+    // Handle card double click
+    const handleCardDoubleClick = useCallback(
+      (event) => {
+        if (variant === 'folders' && trackId) {
+          handlePlay(event);
+        }
+      },
+      [variant, trackId, handlePlay]
+    );
+
+    // Handle enter key when card is focused
+    const handleKeyDown = useCallback(
+      (event) => {
+        if (event.key === 'Enter') {
+          if (variant === 'folders' && trackId) {
+            handlePlay(event);
+          } else {
+            handleCardClick(event);
+          }
+        }
+      },
+      [variant, trackId, handlePlay, handleCardClick]
+    );
+
+    // Allow nested links without triggering parent link
+    const handleLinkClick = useCallback((event) => {
+      event.stopPropagation();
+    }, []);
+
+    // Pause button handler
     const handlePause = useCallback(
       (event) => {
         event.stopPropagation();
@@ -142,61 +206,54 @@ const ListEntry = React.memo(
       [dispatch]
     );
 
+    // Ratings
+    const ratingKeyMap = {
+      albums: albumId,
+      artists: artistId,
+      playlists: playlistId,
+      collections: collectionId,
+    };
+    const ratingKey = ratingKeyMap[variant] || null;
+
+    // Icons
+    const iconImageMap = {
+      folders: 'FolderIcon',
+      artistGenres: 'ArtistGenresIcon',
+      artistMoods: 'ArtistMoodsIcon',
+      artistStyles: 'ArtistStylesIcon',
+      albumGenres: 'AlbumGenresIcon',
+      albumMoods: 'AlbumMoodsIcon',
+      albumStyles: 'AlbumStylesIcon',
+    };
+    const iconImage = (!thumb && iconImageMap[variant]) || null;
+    const isIconCard = iconImage && !thumb;
+    const isSquareCard = !isIconCard || variant === 'folders';
+
     // const albumRelease = releaseDate ? moment(releaseDate).format('YYYY') : null;
 
     return (
       <div
-        className={clsx(style.card, { [style.cardCurrent]: isCurrentlyLoaded })}
+        id={variant === 'folders' && trackId ? trackId : null}
+        className={clsx(style.card, { [style.cardCurrent]: isCurrentlyLoaded, [style.cardLink]: link })}
         onClick={handleCardClick}
+        onDoubleClick={handleCardDoubleClick}
         onKeyDown={handleKeyDown}
         tabIndex={0}
       >
-        <div className={style.thumb}>
+        {/* Thumbnail */}
+        <div className={clsx(style.thumb, { [style.thumbSquare]: isSquareCard, [style.thumbWithIcon]: isIconCard })}>
+          {/* Artwork */}
           {thumb && <img src={thumb} alt={title} loading="lazy" />}
 
-          {variant === 'folders' && (
+          {/* Icon */}
+          {iconImage && (
             <div className={style.icon}>
-              <Icon icon="FolderIcon" cover stroke strokeWidth={1.6} />
+              <Icon icon={iconImage} cover stroke strokeWidth={1.6} />
             </div>
           )}
 
-          {variant === 'artistGenres' && (
-            <div className={style.icon}>
-              <Icon icon="ArtistGenresIcon" cover stroke strokeWidth={1.6} />
-            </div>
-          )}
-
-          {variant === 'artistMoods' && (
-            <div className={style.icon}>
-              <Icon icon="ArtistMoodsIcon" cover stroke strokeWidth={1.6} />
-            </div>
-          )}
-
-          {variant === 'artistStyles' && (
-            <div className={style.icon}>
-              <Icon icon="ArtistStylesIcon" cover stroke strokeWidth={1.6} />
-            </div>
-          )}
-
-          {variant === 'albumGenres' && (
-            <div className={style.icon}>
-              <Icon icon="AlbumGenresIcon" cover stroke strokeWidth={1.6} />
-            </div>
-          )}
-
-          {variant === 'albumMoods' && (
-            <div className={style.icon}>
-              <Icon icon="AlbumMoodsIcon" cover stroke strokeWidth={1.6} />
-            </div>
-          )}
-
-          {variant === 'albumStyles' && (
-            <div className={style.icon}>
-              <Icon icon="AlbumStylesIcon" cover stroke strokeWidth={1.6} />
-            </div>
-          )}
-
-          {(variant === 'albums' || variant === 'playlists') && (
+          {/* Play / Pause Button */}
+          {(variant === 'albums' || variant === 'playlists' || (variant === 'folders' && trackId)) && (
             <div className={style.controlButtonWrap}>
               {isCurrentlyLoaded && isCurrentlyPlaying && (
                 <button className={style.pauseButton} onClick={handlePause} tabIndex={-1}>
@@ -212,6 +269,7 @@ const ListEntry = React.memo(
           )}
         </div>
 
+        {/* Text */}
         <div className={style.body}>
           {title && <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{title}</div>}
 
@@ -230,9 +288,9 @@ const ListEntry = React.memo(
             </NavLink>
           )}
 
-          {totalTracks && <div className={style.subtitle}>{totalTracks + ' tracks'}</div>}
+          {/* {totalTracks && <div className={style.subtitle}>{totalTracks + ' tracks'}</div>} */}
 
-          {duration && <div className={style.subtitle}>{durationToStringLong(duration)}</div>}
+          {/* {duration && <div className={style.subtitle}>{durationToStringLong(duration)}</div>} */}
 
           {/* {albumRelease && <div className={style.subtitle}>{albumRelease}</div>} */}
 

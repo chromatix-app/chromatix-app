@@ -16,8 +16,6 @@ import style from './SideBar.module.scss';
 // COMPONENT
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
-
 const isElectron = window?.isElectron;
 const electronPlatform = isElectron ? (window?.electronProcess?.platform === 'darwin' ? 'mac' : 'win') : null;
 
@@ -127,7 +125,7 @@ const SideBar = () => {
                   Albums
                 </NavLink>
               )}
-              {isLocal && menuShowFolders && (
+              {menuShowFolders && (
                 <NavLink className={style.link} activeClassName={style.linkActive} to="/folders">
                   {menuShowIcons && (
                     <span className={style.icon}>
