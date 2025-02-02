@@ -12,10 +12,11 @@ import style from './SettingsAbout.module.scss';
 
 const isElectron = window?.isElectron;
 const electronPlatform = (isElectron && window?.electronProcess?.platform) || null;
-const electronVersion = (isElectron && window?.electronProcess?.version) || null;
-const electronDate = (isElectron && window?.electronProcess?.date) || null;
+const electronVersion = (isElectron && window?.electronProcess?.appVersion) || null;
+const electronDate = (isElectron && window?.electronProcess?.buildDate) || null;
 
-const momentDate = moment(process.env.REACT_APP_DATE * 1000);
+const appDate = electronDate ? moment(electronDate * 1000) : null;
+const webDate = moment(process.env.REACT_APP_DATE * 1000);
 
 const capitalise = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -40,8 +41,8 @@ export const SettingsAbout = () => {
             )}
             {electronDate && (
               <p>
-                Compiled: <strong>{moment(electronDate).format('dddd Do MMMM YYYY')}</strong> at{' '}
-                <strong>{moment(electronDate).format('HH:mm:ss')}</strong>
+                Compiled: <strong>{appDate.format('dddd Do MMMM YYYY')}</strong> at{' '}
+                <strong>{appDate.format('HH:mm:ss')}</strong>
               </p>
             )}
           </div>
@@ -58,8 +59,8 @@ export const SettingsAbout = () => {
             Environment: <strong>{capitalise(process.env.REACT_APP_ENV)}</strong>
           </p>
           <p>
-            Compiled: <strong>{momentDate.format('dddd Do MMMM YYYY')}</strong> at{' '}
-            <strong>{momentDate.format('HH:mm:ss')}</strong>
+            Compiled: <strong>{webDate.format('dddd Do MMMM YYYY')}</strong> at{' '}
+            <strong>{webDate.format('HH:mm:ss')}</strong>
           </p>
         </div>
       </div>
