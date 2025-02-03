@@ -298,7 +298,7 @@ const searchLibrary2 = async (query, searchCounter) => {
     .searchHub(plexBaseUrl, libraryId, accessToken, query)
     // .searchLibrary(plexBaseUrl, accessToken, query)
     .then((res) => {
-      console.log(res);
+      // console.log(res);
 
       const searchResults =
         res
@@ -316,7 +316,7 @@ const searchLibrary2 = async (query, searchCounter) => {
             return b.score - a.score;
           }) || [];
 
-      console.log(searchResults);
+      // console.log(searchResults);
 
       const searchResultCounter = store.getState().appModel.searchResultCounter;
       if (searchCounter > searchResultCounter) {

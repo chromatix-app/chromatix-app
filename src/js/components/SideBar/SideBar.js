@@ -318,6 +318,7 @@ const SearchField = () => {
   const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
   const [searchResultsVisible, setSearchResultsVisible] = useState(false);
 
+  const { searchResults } = useSelector(({ appModel }) => appModel);
   const { currentLibrary } = useSelector(({ sessionModel }) => sessionModel);
   const { libraryId } = currentLibrary;
 
@@ -375,6 +376,8 @@ const SearchField = () => {
     } else {
       if (searchResultsVisible) {
         setSearchResultsVisible(false);
+      }
+      if (searchResults) {
         dispatch.appModel.setAppState({ searchResults: null });
       }
     }
@@ -393,7 +396,7 @@ const SearchField = () => {
               value={searchValue}
               onChange={(event) => setSearchValue(event.target.value)}
               onFocus={() => {
-                if (debouncedSearchValue && debouncedSearchValue.length > 1 && !searchResultsVisible) {
+                if (searchValue && debouncedSearchValue && debouncedSearchValue.length > 1 && !searchResultsVisible) {
                   setSearchResultsVisible(true);
                 }
               }}
@@ -405,14 +408,16 @@ const SearchField = () => {
               <button
                 ref={clearButtonRef}
                 className={style.crossIcon}
-                onFocus={() => {
-                  if (debouncedSearchValue && debouncedSearchValue.length > 1 && !searchResultsVisible) {
-                    setSearchResultsVisible(true);
-                  }
-                }}
+                // onFocus={() => {
+                //   if (debouncedSearchValue && debouncedSearchValue.length > 1 && !searchResultsVisible) {
+                //     setSearchResultsVisible(true);
+                //   }
+                // }}
                 onClick={() => {
                   setSearchValue('');
-                  focusOnInput();
+                  setTimeout(function () {
+                    focusOnInput();
+                  }, 20);
                 }}
               >
                 <span>
