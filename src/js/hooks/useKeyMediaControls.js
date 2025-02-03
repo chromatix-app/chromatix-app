@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-const useKeyboardControls = (handlers) => {
+const useKeyMediaControls = (handlers) => {
   useEffect(() => {
     function handleKeyDown(event) {
       const activeElement = document.activeElement;
@@ -57,4 +57,4 @@ const useKeyboardControls = (handlers) => {
   return null;
 };
 
-export default useKeyboardControls;
+export default useKeyMediaControls;

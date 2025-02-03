@@ -220,3 +220,169 @@ export const transposeMoodData = (type, mood, libraryId) => {
     link: '/' + type + '-moods/' + libraryId + '/' + mood.key,
   };
 };
+
+export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBaseUrl, accessToken) => {
+  if (result?.type) {
+    if (result.type === 'artist') {
+      return {
+        score: result.score,
+        type: 'artist',
+        icon: 'PeopleIcon',
+        title: result.title,
+        link: '/artists/' + libraryId + '/' + result.ratingKey,
+        thumb: result.thumb
+          ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
+              result.thumb
+            )}&X-Plex-Token=${accessToken}`
+          : thumbPlaceholder,
+      };
+    } else if (result.type === 'album') {
+      return {
+        score: result.score,
+        type: 'album',
+        icon: 'PlayCircleIcon',
+        title: result.title,
+        link: '/albums/' + libraryId + '/' + result.ratingKey,
+        thumb: result.thumb
+          ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
+              result.thumb
+            )}&X-Plex-Token=${accessToken}`
+          : thumbPlaceholder,
+      };
+    } else if (result.type === 'playlist') {
+      const playlistThumb = result.thumb ? result.thumb : result.composite ? result.composite : null;
+      return {
+        score: result.score,
+        type: 'playlist',
+        icon: 'PlaylistIcon',
+        title: result.title,
+        link: '/playlists/' + libraryId + '/' + result.ratingKey,
+        thumb: playlistThumb
+          ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
+              playlistThumb
+            )}&X-Plex-Token=${accessToken}`
+          : thumbPlaceholder,
+      };
+    } else if (result.type === 'collection') {
+      const collectionThumb = result.thumb ? result.thumb : result.composite ? result.composite : null;
+      return {
+        score: result.score,
+        type: result.subtype + ' collection',
+        icon: result.subtype === 'artist' ? 'ArtistCollectionsIcon' : 'AlbumCollectionsIcon',
+        title: result.title,
+        link:
+          (result.subtype === 'artist' ? '/artist-collections/' : '/album-collections/') +
+          libraryId +
+          '/' +
+          result.ratingKey,
+        thumb: collectionThumb
+          ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
+              collectionThumb
+            )}&X-Plex-Token=${accessToken}`
+          : thumbPlaceholder,
+      };
+    } else if (result.type === 'track') {
+      return {
+        score: result.score,
+        type: 'track',
+        icon: 'MusicNoteSingleIcon',
+        title: result.title,
+        link: '/albums/' + libraryId + '/' + result.parentRatingKey,
+        thumb: result.thumb
+          ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
+              result.thumb
+            )}&X-Plex-Token=${accessToken}`
+          : thumbPlaceholder,
+      };
+    }
+  }
+
+  return null;
+};
+
+// export const transposeLibrarySearchData = (result, libraryId, libraryTitle, plexBaseUrl, accessToken) => {
+//   if (result?.Metadata?.type) {
+//     const meta = result.Metadata;
+//     if (meta.librarySectionTitle !== libraryTitle) {
+//       return null;
+//     } else if (meta.type === 'artist') {
+//       return {
+//         score: result.score,
+//         type: 'artist',
+//         icon: 'PeopleIcon',
+//         title: meta.title,
+//         link: '/artists/' + libraryId + '/' + meta.ratingKey,
+//         thumb: meta.thumb
+//           ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
+//               meta.thumb
+//             )}&X-Plex-Token=${accessToken}`
+//           : thumbPlaceholder,
+//       };
+//     } else if (meta.type === 'album') {
+//       return {
+//         score: result.score,
+//         type: 'album',
+//         icon: 'PlayCircleIcon',
+//         title: meta.title,
+//         link: '/albums/' + libraryId + '/' + meta.ratingKey,
+//         thumb: meta.thumb
+//           ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
+//               meta.thumb
+//             )}&X-Plex-Token=${accessToken}`
+//           : thumbPlaceholder,
+//       };
+//     } else if (meta.type === 'playlist') {
+//       const playlistThumb = meta.thumb ? meta.thumb : meta.composite ? meta.composite : null;
+//       return {
+//         score: result.score,
+//         type: 'playlist',
+//         icon: 'MusicNoteDoubleIcon',
+//         title: meta.title,
+//         link: '/playlists/' + libraryId + '/' + meta.ratingKey,
+//         thumb: playlistThumb
+//           ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
+//               playlistThumb
+//             )}&X-Plex-Token=${accessToken}`
+//           : thumbPlaceholder,
+//       };
+//     } else if (meta.type === 'collection') {
+//       const collectionThumb = meta.thumb ? meta.thumb : meta.composite ? meta.composite : null;
+//       return {
+//         score: result.score,
+//         type: meta.subtype + ' collection',
+//         icon: meta.subtype === 'artist' ? 'ArtistCollectionsIcon' : 'AlbumCollectionsIcon',
+//         title: meta.title,
+//         link:
+//           (meta.subtype === 'artist' ? '/artist-collections/' : '/album-collections/') +
+//           libraryId +
+//           '/' +
+//           meta.ratingKey,
+//         thumb: collectionThumb
+//           ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
+//               collectionThumb
+//             )}&X-Plex-Token=${accessToken}`
+//           : thumbPlaceholder,
+//       };
+//     } else if (meta.type === 'track') {
+//       return {
+//         score: result.score,
+//         type: 'track',
+//         icon: 'MusicNoteSingleIcon',
+//         title: meta.title,
+//         link: '/albums/' + libraryId + '/' + meta.parentRatingKey,
+//         thumb: meta.thumb
+//           ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
+//               meta.thumb
+//             )}&X-Plex-Token=${accessToken}`
+//           : thumbPlaceholder,
+//       };
+//     }
+//   }
+//   // else if (result?.Directory?.type) {
+//   //   const directory = result.Directory;
+//   //   if (directory.type === 'tag') {
+//   //   }
+//   // }
+
+//   return null;
+// };

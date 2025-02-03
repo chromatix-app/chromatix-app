@@ -13,6 +13,8 @@ import {
   transposeGenreData,
   transposeStyleData,
   transposeMoodData,
+  transposeHubSearchData,
+  // transposeLibrarySearchData,
 } from 'js/services/plexTranspose';
 import { analyticsEvent } from 'js/utils';
 import store from 'js/store/store';
@@ -33,9 +35,9 @@ const endpointConfig = {
     getAllRelated: (base, artistId) =>
       `${base}/library/metadata/${artistId}/related?includeAugmentations=1&includeExternalMetadata=1&includeMeta=1`,
     getCompilationTracks: (base, libraryId, artistName) =>
-      `${base}/library/sections/${libraryId}/all?type=10&track.originalTitle=${slugify(
+      `${base}/library/sections/${libraryId}/all?type=10&track.originalTitle=${encodeURIComponent(
         artistName
-      )}&artist.title!=${slugify(artistName)}`,
+      )}&artist.title!=${encodeURIComponent(artistName)}`,
   },
   album: {
     getAllAlbums: (base, libraryId) => `${base}/library/sections/${libraryId}/all?type=9`,
@@ -266,6 +268,72 @@ export const getAllLibraries = async () => {
     }
   }
 };
+
+// ======================================================================
+// SEARCH LIBRARY
+// ======================================================================
+
+let searchCounter = 0;
+
+export const searchLibrary = (query) => {
+  searchCounter += 1;
+  searchLibrary2(query, searchCounter);
+};
+
+const searchLibrary2 = async (query, searchCounter) => {
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+  const { libraryId, title } = store.getState().sessionModel.currentLibrary;
+
+  const typeOrder = {
+    artist: 1,
+    album: 2,
+    playlist: 3,
+    'artist collection': 4,
+    'album collection': 5,
+    track: 6,
+  };
+
+  plexTools
+    .searchHub(plexBaseUrl, libraryId, accessToken, query)
+    // .searchLibrary(plexBaseUrl, accessToken, query)
+    .then((res) => {
+      console.log(res);
+
+      const searchResults =
+        res
+          ?.flatMap((result) => result.Metadata)
+          ?.map((result) => transposeHubSearchData(result, libraryId, title, plexBaseUrl, accessToken))
+          // .map((result) => transposeLibrarySearchData(result, libraryId, title, plexBaseUrl, accessToken))
+          .filter((result) => result !== null)
+          .sort((a, b) => {
+            if (b.score === a.score) {
+              if (a.type === b.type) {
+                return a.title.localeCompare(b.title);
+              }
+              return typeOrder[a.type] - typeOrder[b.type];
+            }
+            return b.score - a.score;
+          }) || [];
+
+      console.log(searchResults);
+
+      const searchResultCounter = store.getState().appModel.searchResultCounter;
+      if (searchCounter > searchResultCounter) {
+        store.dispatch.appModel.setAppState({
+          searchResults,
+          searchResultCounter: searchCounter,
+        });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
+      analyticsEvent('Error: Plex Get All Libraries');
+    });
+};
+
+window.searchLibrary = searchLibrary;
 
 // ======================================================================
 // GET ALL ARTISTS
@@ -1304,14 +1372,4 @@ async function fetchData(endpoint, accessToken) {
 
   const data = await response.json();
   return data;
-}
-
-function slugify(text) {
-  return (
-    text
-      // replace ampersands with html entity
-      .replace(/&/g, '%26')
-      // replace commas with html entity
-      .replace(/,/g, '%2C')
-  );
 }

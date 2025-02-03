@@ -8,7 +8,7 @@ import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 
 import { Icon, RangeSlider } from 'js/components';
-import { useKeyboardControls, useMediaControls, useMediaMeta } from 'js/hooks';
+import { useKeyMediaControls, useMediaControls, useMediaMeta } from 'js/hooks';
 import { analyticsEvent, durationToStringShort } from 'js/utils';
 
 import style from './ControlBar.module.scss';
@@ -72,7 +72,7 @@ const ControlBar = () => {
       : null;
   }, [trackCurrent]);
 
-  useKeyboardControls(controlHandlers);
+  useKeyMediaControls(controlHandlers);
   useMediaControls(controlHandlers);
   useMediaMeta(trackMeta);
 

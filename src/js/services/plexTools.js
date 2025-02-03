@@ -34,11 +34,14 @@ const endpointConfig = {
     getUserInfo: () => 'https://plex.tv/users/account',
   },
   server: {
-    getAllServers: () => 'https://plex.tv/api/v2/resources?includeHttps=1&includeRelay=1&includeIPv6=1',
-    // getAllServers: () => '/api/servers.json',
+    getAllServers: () => 'https://plex.tv/api/v2/resources',
   },
   library: {
     getAllLibraries: (base) => `${base}/library/sections`,
+  },
+  search: {
+    searchLibrary: (base) => `${base}/library/search`,
+    searchHub: (base) => `${base}/hubs/search`,
   },
   rating: {
     setStarRating: (base) => `${base}/:/rate`,
@@ -327,6 +330,11 @@ export const getAllServers = () => {
             'X-Plex-Token': authToken,
             'X-Plex-Client-Identifier': clientId,
           },
+          params: {
+            includeHttps: 1,
+            includeRelay: 1,
+            includeIPv6: 1,
+          },
         })
         .then((response) => {
           const data = response?.data?.filter((resource) => resource.provides === 'server');
@@ -435,6 +443,98 @@ export const getAllLibraries = (baseUrl, accessToken) => {
       reject({
         code: 'getAllLibraries.2',
         message: 'Failed to get all libraries: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// SEARCH
+// ======================================================================
+
+// /hubs/search?query=Epica&excludeFields=summary&limit=4&includeCollections=1&contentDirectoryID=23&includeFields=thumbBlurHash
+
+export const searchHub = (baseUrl, libraryId, accessToken, query, limit = 25, includeCollections = 1) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.search.searchHub(baseUrl);
+      axios
+        .get(endpoint, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': accessToken,
+            'X-Plex-Client-Identifier': clientId,
+          },
+          params: {
+            query,
+            limit,
+            includeCollections,
+            contentDirectoryID: libraryId,
+            excludeFields: 'summary',
+          },
+        })
+        .then((response) => {
+          resolve(response?.data?.MediaContainer?.Hub);
+        })
+        .catch((error) => {
+          reject({
+            code: 'searchHub.1',
+            message: 'Failed to search library: ' + error.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'searchHub.2',
+        message: 'Failed to search library: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};
+
+export const searchLibrary = (
+  baseUrl,
+  accessToken,
+  query,
+  limit = 100,
+  searchTypes = 'music',
+  includeCollections = 1
+) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.search.searchLibrary(baseUrl);
+      axios
+        .get(endpoint, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': accessToken,
+            'X-Plex-Client-Identifier': clientId,
+          },
+          params: {
+            query,
+            limit,
+            searchTypes,
+            includeCollections,
+          },
+        })
+        .then((response) => {
+          resolve(response?.data?.MediaContainer?.SearchResult);
+        })
+        .catch((error) => {
+          reject({
+            code: 'searchLibrary.1',
+            message: 'Failed to search library: ' + error.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'searchLibrary.2',
+        message: 'Failed to search library: ' + error.message,
         error: error,
       });
     }

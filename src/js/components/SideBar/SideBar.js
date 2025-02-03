@@ -2,12 +2,14 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import * as RadixPopover from '@radix-ui/react-popover';
 
 import { Icon, UserMenu } from 'js/components';
-import { useNavigationHistory } from 'js/hooks';
+import { useKeyControl, useNavigationHistory } from 'js/hooks';
+import { appPlatform } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 import style from './SideBar.module.scss';
@@ -16,10 +18,11 @@ import style from './SideBar.module.scss';
 // COMPONENT
 // ======================================================================
 
-const isElectron = window?.isElectron;
-const electronPlatform = isElectron ? (window?.electronProcess?.platform === 'darwin' ? 'mac' : 'win') : null;
+const isLocal = process.env.REACT_APP_ENV === 'local';
 
 const SideBar = () => {
+  const dispatch = useDispatch();
+
   const { canGoBack, canGoForward, goBack, goForward } = useNavigationHistory();
 
   const {
@@ -47,8 +50,6 @@ const SideBar = () => {
     menuShowAlbumMoods,
   } = useSelector(({ sessionModel }) => sessionModel);
 
-  const dispatch = useDispatch();
-
   const currentLibraryId = currentLibrary?.libraryId;
 
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists)?.filter(
@@ -69,6 +70,7 @@ const SideBar = () => {
 
   const browseIsOpen = menuShowSeparateBrowseSection ? menuOpenBrowse : menuOpenLibrary;
 
+  // Get playlists on load
   useEffect(() => {
     plex.getAllPlaylists();
   }, []);
@@ -84,7 +86,9 @@ const SideBar = () => {
         </button>
       </div>
 
-      {electronPlatform === 'win' && <UserMenu variant="Inline" />}
+      {appPlatform === 'win' && <UserMenu variant="Inline" />}
+
+      {isLocal && <SearchField />}
 
       {(libraryIsVisible || (browseIsVisible && !menuShowSeparateBrowseSection)) && (
         <>
@@ -144,7 +148,7 @@ const SideBar = () => {
                 >
                   {menuShowIcons && (
                     <span className={style.icon}>
-                      <Icon icon="MusicNoteIcon" cover stroke />
+                      <Icon icon="MusicNoteDoubleIcon" cover stroke />
                     </span>
                   )}
                   Playlists
@@ -299,6 +303,180 @@ const SideBar = () => {
           )}
         </>
       )}
+    </div>
+  );
+};
+
+const SearchField = () => {
+  const dispatch = useDispatch();
+
+  const searchInputRef = useRef(null);
+  const searchResultsRef = useRef(null);
+
+  const [searchValue, setSearchValue] = useState('');
+  const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
+  const [searchResultsVisible, setSearchResultsVisible] = useState(false);
+
+  const { currentLibrary } = useSelector(({ sessionModel }) => sessionModel);
+  const { libraryId } = currentLibrary;
+
+  // Focus first search result on enter
+  useKeyControl('Enter', () => {
+    if (searchInputRef.current === document.activeElement) {
+      const firstLink = searchResultsRef.current.querySelector('a');
+      if (firstLink) {
+        firstLink.focus();
+      }
+    }
+  });
+
+  // Blur search input on escape
+  useKeyControl('Command+K', () => {
+    searchInputRef.current.focus();
+  });
+
+  // Blur search input on escape
+  useKeyControl('Escape', () => {
+    setSearchResultsVisible(false);
+    searchInputRef.current.blur();
+  });
+
+  // Clear search value when library changes
+  useEffect(() => {
+    setSearchValue('');
+  }, [libraryId]);
+
+  // Handle search value changes, with a debounce
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchValue(searchValue);
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchValue]);
+
+  // Submit search value when the debounced value changes
+  useEffect(() => {
+    if (debouncedSearchValue && debouncedSearchValue.length > 1) {
+      plex.searchLibrary(debouncedSearchValue);
+      if (!searchResultsVisible) {
+        setSearchResultsVisible(true);
+      }
+    } else {
+      if (searchResultsVisible) {
+        setSearchResultsVisible(false);
+        dispatch.appModel.setAppState({ searchResults: null });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearchValue]);
+
+  return (
+    <div className={style.search}>
+      <RadixPopover.Root open={searchResultsVisible}>
+        <RadixPopover.Anchor>
+          <div className={style.searchInput}>
+            <input
+              ref={searchInputRef}
+              type="text"
+              placeholder="Search"
+              value={searchValue}
+              onChange={(event) => setSearchValue(event.target.value)}
+              onFocus={() => {
+                if (debouncedSearchValue && debouncedSearchValue.length > 1 && !searchResultsVisible) {
+                  setSearchResultsVisible(true);
+                }
+              }}
+            />
+            <div className={style.searchIcon}>
+              <Icon icon="SearchIcon" cover stroke />
+            </div>
+          </div>
+        </RadixPopover.Anchor>
+        <RadixPopover.Portal>
+          <RadixPopover.Content
+            ref={searchResultsRef}
+            className={style.searchPopover}
+            side="right"
+            sideOffset={26}
+            collisionPadding={{
+              top: 42,
+            }}
+            onOpenAutoFocus={(event) => {
+              event.preventDefault();
+            }}
+            onEscapeKeyDown={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              setSearchResultsVisible(false);
+              searchInputRef.current.focus();
+              searchInputRef.current.blur();
+            }}
+            onFocusOutside={(event) => {
+              if (searchInputRef.current && searchInputRef.current.contains(event.target)) {
+                return;
+              }
+              event.preventDefault();
+              event.stopPropagation();
+              setSearchResultsVisible(false);
+            }}
+            onInteractOutside={(event) => {
+              if (searchInputRef.current && searchInputRef.current.contains(event.target)) {
+                return;
+              }
+              event.preventDefault();
+              event.stopPropagation();
+              setSearchResultsVisible(false);
+            }}
+          >
+            <SearchResults setSearchResultsVisible={setSearchResultsVisible} />
+          </RadixPopover.Content>
+        </RadixPopover.Portal>
+      </RadixPopover.Root>
+    </div>
+  );
+};
+
+const SearchResults = ({ setSearchResultsVisible }) => {
+  // const dispatch = useDispatch();
+
+  const { searchResults } = useSelector(({ appModel }) => appModel);
+
+  if (!searchResults) {
+    return <div className={style.searchLoading}>Loading...</div>;
+  }
+
+  if (searchResults.length === 0) {
+    return <div className={style.searchNoResults}>No results found</div>;
+  }
+
+  return (
+    <div className={style.searchResults}>
+      {searchResults.map((result, index) => {
+        return (
+          <NavLink
+            key={index}
+            className={style.searchEntry}
+            to={result.link}
+            onClick={() => {
+              setSearchResultsVisible(false);
+            }}
+          >
+            <div className={style.searchTypeIcon}>
+              <Icon icon={result.icon} cover stroke />
+            </div>
+            <div className={style.searchThumb}>
+              <img src={result.thumb} alt={result.title} loading="lazy" />
+            </div>
+            <div>
+              <div className={style.searchTitle}>{result.title}</div>
+              <div className={style.searchType}>{result.type}</div>
+            </div>
+          </NavLink>
+        );
+      })}
     </div>
   );
 };
