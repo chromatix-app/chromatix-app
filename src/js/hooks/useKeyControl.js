@@ -1,19 +1,20 @@
 import { useEffect } from 'react';
 
-const useKeyControl = (keyCombination, callback) => {
+const useKeyControl = (keyCombination, callback, preventDefault) => {
   useEffect(() => {
     // console.log('Esc Bind 111');
     const keys = keyCombination.split('+').map((key) => key.trim().toLowerCase());
 
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (event) => {
       const pressedKeys = [];
-      if (e.ctrlKey || e.metaKey) pressedKeys.push('command');
-      if (e.altKey) pressedKeys.push('alt');
-      if (e.shiftKey) pressedKeys.push('shift');
-      pressedKeys.push(e.key.toLowerCase());
+      if (event.ctrlKey || event.metaKey) pressedKeys.push('command');
+      if (event.altKey) pressedKeys.push('alt');
+      if (event.shiftKey) pressedKeys.push('shift');
+      pressedKeys.push(event.key.toLowerCase());
 
       if (keys.every((key) => pressedKeys.includes(key))) {
         console.log('Key pressed: ' + keyCombination);
+        if (preventDefault) event.preventDefault();
         callback();
       }
     };

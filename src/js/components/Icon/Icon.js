@@ -29,6 +29,7 @@ import { ReactComponent as CheckCircleIcon } from './icons/music/check-circle.sv
 import { ReactComponent as ClockRewindIcon } from './icons/music/clock-rewind.svg';
 import { ReactComponent as CogIcon } from './icons/music/cog.svg';
 import { ReactComponent as CollapseIcon } from './icons/music/collapse.svg';
+import { ReactComponent as CrossSmallIcon } from './icons/music/cross-small.svg';
 import { ReactComponent as DiscIcon } from './icons/music/disc.svg';
 import { ReactComponent as DownloadIcon } from './icons/music/download.svg';
 import { ReactComponent as ExpandIcon } from './icons/music/expand.svg';
@@ -108,6 +109,7 @@ const customIcons = {
   ClockRewindIcon,
   CogIcon,
   CollapseIcon,
+  CrossSmallIcon,
   DiscIcon,
   DownloadIcon,
   ExpandIcon,

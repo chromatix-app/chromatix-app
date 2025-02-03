@@ -312,6 +312,7 @@ const SearchField = () => {
 
   const searchInputRef = useRef(null);
   const searchResultsRef = useRef(null);
+  const clearButtonRef = useRef(null);
 
   const [searchValue, setSearchValue] = useState('');
   const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
@@ -320,25 +321,32 @@ const SearchField = () => {
   const { currentLibrary } = useSelector(({ sessionModel }) => sessionModel);
   const { libraryId } = currentLibrary;
 
+  const focusOnInput = () => {
+    searchInputRef.current?.focus();
+    searchInputRef.current?.setSelectionRange(searchInputRef.current.value.length, searchInputRef.current.value.length);
+  };
+
   // Focus first search result on enter
   useKeyControl('Enter', () => {
-    if (searchInputRef.current === document.activeElement) {
-      const firstLink = searchResultsRef.current.querySelector('a');
-      if (firstLink) {
-        firstLink.focus();
-      }
+    if (document.activeElement === searchInputRef.current) {
+      setSearchResultsVisible(true);
+      setTimeout(function () {
+        const firstLink = searchResultsRef.current?.querySelector('a');
+        if (firstLink) {
+          firstLink.focus();
+        }
+      }, 10);
     }
   });
 
-  // Blur search input on escape
-  useKeyControl('Command+K', () => {
-    searchInputRef.current.focus();
-  });
+  // Focus search input with keyboard shortcut
+  useKeyControl('Command+F', focusOnInput, true);
+  useKeyControl('Command+K', focusOnInput, true);
 
   // Blur search input on escape
   useKeyControl('Escape', () => {
     setSearchResultsVisible(false);
-    searchInputRef.current.blur();
+    searchInputRef.current?.blur();
   });
 
   // Clear search value when library changes
@@ -393,6 +401,25 @@ const SearchField = () => {
             <div className={style.searchIcon}>
               <Icon icon="SearchIcon" cover stroke />
             </div>
+            {searchValue && (
+              <button
+                ref={clearButtonRef}
+                className={style.crossIcon}
+                onFocus={() => {
+                  if (debouncedSearchValue && debouncedSearchValue.length > 1 && !searchResultsVisible) {
+                    setSearchResultsVisible(true);
+                  }
+                }}
+                onClick={() => {
+                  setSearchValue('');
+                  focusOnInput();
+                }}
+              >
+                <span>
+                  <Icon icon="CrossSmallIcon" cover stroke />
+                </span>
+              </button>
+            )}
           </div>
         </RadixPopover.Anchor>
         <RadixPopover.Portal>
@@ -411,11 +438,13 @@ const SearchField = () => {
               event.preventDefault();
               event.stopPropagation();
               setSearchResultsVisible(false);
-              searchInputRef.current.focus();
-              searchInputRef.current.blur();
+              focusOnInput();
             }}
             onFocusOutside={(event) => {
-              if (searchInputRef.current && searchInputRef.current.contains(event.target)) {
+              if (
+                (searchInputRef.current && searchInputRef.current?.contains(event.target)) ||
+                (clearButtonRef.current && clearButtonRef.current?.contains(event.target))
+              ) {
                 return;
               }
               event.preventDefault();
@@ -423,7 +452,10 @@ const SearchField = () => {
               setSearchResultsVisible(false);
             }}
             onInteractOutside={(event) => {
-              if (searchInputRef.current && searchInputRef.current.contains(event.target)) {
+              if (
+                (searchInputRef.current && searchInputRef.current?.contains(event.target)) ||
+                (clearButtonRef.current && clearButtonRef.current?.contains(event.target))
+              ) {
                 return;
               }
               event.preventDefault();

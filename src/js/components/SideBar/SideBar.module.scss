@@ -48,7 +48,7 @@
   input {
     display: block;
     width: 100%;
-    padding: 7px 11px 7px 35px;
+    padding: 7px 35px 7px 35px;
     margin: 0 0 1px;
     background: var(--color-border);
     border: 1px solid var(--color-opacity-005);
@@ -66,6 +66,12 @@
       border-color: var(--color-opacity-03);
     }
   }
+
+  &:focus-within {
+    input {
+      border-color: var(--color-opacity-03);
+    }
+  }
 }
 
 .searchIcon {
@@ -75,6 +81,34 @@
   width: 14px;
   height: 14px;
   opacity: var(--opacity-05);
+}
+
+.crossIcon {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 26px;
+  padding: 6px 7px 6px 1px;
+  background: transparent;
+  // background: #f00;
+  border-radius: 2px;
+
+  @include focus-self-outline;
+
+  span {
+    display: block;
+    background: var(--color-opacity-025);
+    border-radius: 50%;
+    color: var(--color-background);
+  }
+
+  &:focus,
+  &:focus-visible {
+    span {
+      background: var(--color-text);
+    }
+  }
 }
 
 .searchPopover {
@@ -114,7 +148,7 @@
 
   &:hover,
   &:focus {
-    background: var(--color-opacity-0025);
+    background: var(--color-opacity-005);
   }
 }
 
@@ -227,7 +261,7 @@
 
   &:hover,
   &:focus {
-    background: var(--color-opacity-0025);
+    background: var(--color-opacity-005);
   }
 
   &Active {
