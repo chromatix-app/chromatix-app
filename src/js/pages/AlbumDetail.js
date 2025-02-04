@@ -51,6 +51,7 @@ const AlbumDetail = () => {
     <>
       {albumInfo && (
         <TitleHeading
+          key={libraryId + '-' + albumId}
           thumb={albumThumb}
           title={albumTitle}
           subtitle={albumArtist && <NavLink to={albumArtistLink}>{albumArtist}</NavLink>}
@@ -71,7 +72,8 @@ const AlbumDetail = () => {
               <>&nbsp;</>
             )
           }
-          handlePlay={albumTracks ? doPlay : null}
+          showPlay={true}
+          handlePlay={albumTracks && albumTracks.length > 0 ? doPlay : null}
         />
       )}
       {!(albumInfo && albumTracks) && <Loading forceVisible inline />}

@@ -50,6 +50,7 @@ const ArtistDetail = () => {
     <>
       {artistInfo && (
         <TitleHeading
+          key={libraryId + '-' + artistId}
           thumb={artistThumb}
           title={artistName}
           subtitle={

@@ -13,7 +13,7 @@ import { useGetCollectionItems } from 'js/hooks';
 // ======================================================================
 
 const AlbumGenreItems = () => {
-  const { genreId, libraryId } = useParams();
+  const { libraryId, genreId } = useParams();
 
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
@@ -42,15 +42,10 @@ const AlbumGenreItems = () => {
     <>
       {sortedCollectionItems && (
         <TitleHeading
+          key={libraryId + '-' + genreId}
           thumb={collectionThumb}
           title={collectionTitle}
-          subtitle={
-            sortedCollectionItems ? (
-              sortedCollectionItems?.length + ' Album' + (sortedCollectionItems?.length !== 1 ? 's' : '')
-            ) : (
-              <>&nbsp;</>
-            )
-          }
+          subtitle={sortedCollectionItems?.length + ' Album' + (sortedCollectionItems?.length !== 1 ? 's' : '')}
           icon={'AlbumGenresIcon'}
           filters={
             <>

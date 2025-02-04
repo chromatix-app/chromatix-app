@@ -13,7 +13,7 @@ import { useGetCollectionItems } from 'js/hooks';
 // ======================================================================
 
 const AlbumCollectionItems = () => {
-  const { collectionId, libraryId } = useParams();
+  const { libraryId, collectionId } = useParams();
 
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
@@ -42,6 +42,7 @@ const AlbumCollectionItems = () => {
     <>
       {sortedCollectionItems && (
         <TitleHeading
+          key={libraryId + '-' + collectionId}
           thumb={collectionThumb}
           title={collectionTitle}
           detail={

@@ -29,6 +29,7 @@ const FolderList = () => {
   return (
     <>
       <TitleHeading
+        key={'folder-' + folderId}
         title="Folders"
         subtitle={
           sortedFolders ? sortedFolders?.length + ' Item' + (sortedFolders?.length !== 1 ? 's' : '') : <>&nbsp;</>

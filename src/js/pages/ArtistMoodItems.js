@@ -13,7 +13,7 @@ import { useGetCollectionItems } from 'js/hooks';
 // ======================================================================
 
 const ArtistMoodItems = () => {
-  const { moodId, libraryId } = useParams();
+  const { libraryId, moodId } = useParams();
 
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
@@ -42,15 +42,10 @@ const ArtistMoodItems = () => {
     <>
       {sortedCollectionItems && (
         <TitleHeading
+          key={libraryId + '-' + moodId}
           thumb={collectionThumb}
           title={collectionTitle}
-          subtitle={
-            sortedCollectionItems ? (
-              sortedCollectionItems?.length + ' Artist' + (sortedCollectionItems?.length !== 1 ? 's' : '')
-            ) : (
-              <>&nbsp;</>
-            )
-          }
+          subtitle={sortedCollectionItems?.length + ' Artist' + (sortedCollectionItems?.length !== 1 ? 's' : '')}
           icon={'ArtistMoodsIcon'}
           filters={
             <>

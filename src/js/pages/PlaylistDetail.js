@@ -47,6 +47,7 @@ const PlaylistDetail = () => {
     <>
       {playlistInfo && (
         <TitleHeading
+          key={libraryId + '-' + playlistId}
           thumb={playlistThumb}
           title={playlistTitle}
           subtitle={playlistTracks ? playlistTrackCount + ' tracks' : <>&nbsp;</>}
@@ -70,7 +71,8 @@ const PlaylistDetail = () => {
               <>&nbsp;</>
             )
           }
-          handlePlay={playlistTracks ? doPlay : null}
+          showPlay={true}
+          handlePlay={playlistTracks && playlistTracks.length > 0 ? doPlay : null}
         />
       )}
       {!(playlistInfo && playlistTracks) && <Loading forceVisible inline />}

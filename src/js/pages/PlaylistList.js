@@ -26,9 +26,14 @@ const PlaylistList = () => {
   return (
     <>
       <TitleHeading
+        key="PlaylistList"
         title="Playlists"
         subtitle={
-          sortedPlaylists ? sortedPlaylists?.length + ' Playlist' + (sortedPlaylists?.length !== 1 ? 's' : '') : null
+          sortedPlaylists ? (
+            sortedPlaylists?.length + ' Playlist' + (sortedPlaylists?.length !== 1 ? 's' : '')
+          ) : (
+            <>&nbsp;</>
+          )
         }
       />
       <FilterWrap>

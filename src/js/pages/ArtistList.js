@@ -19,8 +19,11 @@ const ArtistList = () => {
   return (
     <>
       <TitleHeading
+        key="ArtistList"
         title="Artists"
-        subtitle={sortedArtists ? sortedArtists?.length + ' Artist' + (sortedArtists?.length !== 1 ? 's' : '') : null}
+        subtitle={
+          sortedArtists ? sortedArtists?.length + ' Artist' + (sortedArtists?.length !== 1 ? 's' : '') : <>&nbsp;</>
+        }
       />
       <FilterWrap>
         <FilterToggle
