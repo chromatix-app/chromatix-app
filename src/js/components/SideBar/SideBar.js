@@ -25,30 +25,28 @@ const SideBar = () => {
 
   const { canGoBack, canGoForward, goBack, goForward } = useNavigationHistory();
 
-  const {
-    currentLibrary,
+  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
 
-    menuShowIcons,
-    menuShowAllPlaylists,
-    menuShowSeparateBrowseSection,
+  const menuShowIcons = useSelector(({ sessionModel }) => sessionModel.menuShowIcons);
+  const menuShowAllPlaylists = useSelector(({ sessionModel }) => sessionModel.menuShowAllPlaylists);
+  const menuShowSeparateBrowseSection = useSelector(({ sessionModel }) => sessionModel.menuShowSeparateBrowseSection);
 
-    menuOpenLibrary,
-    menuOpenBrowse,
-    menuOpenPlaylists,
+  const menuOpenLibrary = useSelector(({ sessionModel }) => sessionModel.menuOpenLibrary);
+  const menuOpenBrowse = useSelector(({ sessionModel }) => sessionModel.menuOpenBrowse);
+  const menuOpenPlaylists = useSelector(({ sessionModel }) => sessionModel.menuOpenPlaylists);
 
-    menuShowArtists,
-    menuShowAlbums,
-    menuShowFolders,
-    menuShowPlaylists,
-    menuShowArtistCollections,
-    menuShowAlbumCollections,
-    menuShowArtistGenres,
-    menuShowAlbumGenres,
-    menuShowArtistStyles,
-    menuShowAlbumStyles,
-    menuShowArtistMoods,
-    menuShowAlbumMoods,
-  } = useSelector(({ sessionModel }) => sessionModel);
+  const menuShowArtists = useSelector(({ sessionModel }) => sessionModel.menuShowArtists);
+  const menuShowAlbums = useSelector(({ sessionModel }) => sessionModel.menuShowAlbums);
+  const menuShowFolders = useSelector(({ sessionModel }) => sessionModel.menuShowFolders);
+  const menuShowPlaylists = useSelector(({ sessionModel }) => sessionModel.menuShowPlaylists);
+  const menuShowArtistCollections = useSelector(({ sessionModel }) => sessionModel.menuShowArtistCollections);
+  const menuShowAlbumCollections = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumCollections);
+  const menuShowArtistGenres = useSelector(({ sessionModel }) => sessionModel.menuShowArtistGenres);
+  const menuShowAlbumGenres = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumGenres);
+  const menuShowArtistStyles = useSelector(({ sessionModel }) => sessionModel.menuShowArtistStyles);
+  const menuShowAlbumStyles = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumStyles);
+  const menuShowArtistMoods = useSelector(({ sessionModel }) => sessionModel.menuShowArtistMoods);
+  const menuShowAlbumMoods = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumMoods);
 
   const currentLibraryId = currentLibrary?.libraryId;
 
@@ -318,8 +316,9 @@ const SearchField = () => {
   const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
   const [searchResultsVisible, setSearchResultsVisible] = useState(false);
 
-  const { searchResults } = useSelector(({ appModel }) => appModel);
-  const { currentLibrary } = useSelector(({ sessionModel }) => sessionModel);
+  const searchResults = useSelector(({ appModel }) => appModel.searchResults);
+  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
+
   const { libraryId } = currentLibrary;
 
   const focusOnInput = () => {
@@ -479,7 +478,7 @@ const SearchField = () => {
 const SearchResults = ({ setSearchResultsVisible }) => {
   // const dispatch = useDispatch();
 
-  const { searchResults } = useSelector(({ appModel }) => appModel);
+  const searchResults = useSelector(({ appModel }) => appModel.searchResults);
 
   if (!searchResults) {
     return <div className={style.searchLoading}>Loading...</div>;

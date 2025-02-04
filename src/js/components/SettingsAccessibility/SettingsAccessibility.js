@@ -28,7 +28,7 @@ export const SettingsAccessibility = () => {
 const InterfaceSettings = () => {
   const dispatch = useDispatch();
 
-  const { accessibilityFocus } = useSelector(({ sessionModel }) => sessionModel);
+  const accessibilityFocus = useSelector(({ sessionModel }) => sessionModel.accessibilityFocus);
 
   const menuItems = [
     {

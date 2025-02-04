@@ -131,7 +131,8 @@ const ListEntry = React.memo(
     const history = useHistory();
     const dispatch = useDispatch();
 
-    const { optionShowFullTitles, optionShowStarRatings } = useSelector(({ sessionModel }) => sessionModel);
+    const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+    const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
     // Play button handler
     const handlePlay = useCallback(
