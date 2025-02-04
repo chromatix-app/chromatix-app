@@ -31,8 +31,6 @@ const App = () => {
 
   const { accessibilityFocus } = useSelector(({ sessionModel }) => sessionModel);
 
-  const debugConsole = useSelector(({ persistentModel }) => persistentModel.debugConsole);
-
   const gotRequiredData = useGotRequiredData();
 
   const history = useHistory();
@@ -43,12 +41,12 @@ const App = () => {
 
   // disable console logs
   useEffect(() => {
-    if (isProduction && !debugConsole) {
+    if (isProduction) {
       console.log = () => {};
       console.error = () => {};
       console.debug = () => {};
     }
-  }, [debugConsole]);
+  }, []);
 
   // initialise on load
   useEffect(() => {
