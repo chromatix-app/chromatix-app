@@ -17,7 +17,7 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const albumSortString = isRatingSortHidden ? null : currentSortString;
 
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums);
-  const albumInfo = allAlbums?.filter((album) => album.albumId === albumId)[0];
+  const albumInfo = allAlbums?.find((album) => album.albumId === albumId);
 
   const allAlbumTracks = useSelector(({ appModel }) => appModel.allAlbumTracks);
   const albumTracks = allAlbumTracks[libraryId + '-' + albumId];

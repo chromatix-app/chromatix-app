@@ -29,7 +29,7 @@ const useGetCollectionItems = ({
   const actualOrderCollectionItems = isRatingSortHidden ? 'asc' : orderCollectionItems;
 
   const allCollections = useSelector(({ appModel }) => appModel[`all${collectionKey}`]);
-  const currentCollection = allCollections?.filter((collection) => collection[collectionFilter] === collectionId)[0];
+  const currentCollection = allCollections?.find((collection) => collection[collectionFilter] === collectionId);
 
   const allCollectionItems = useSelector(({ appModel }) => appModel[`all${itemsKey}`]);
   const currentCollectionItems = allCollectionItems[libraryId + '-' + collectionId];
