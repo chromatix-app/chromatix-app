@@ -27,20 +27,28 @@ const isProduction = process.env.REACT_APP_ENV === 'production';
 
 const mockData = isProduction ? false : false;
 
+const artistExcludes = 'summary,guid,key,parentRatingKey,parentTitle,skipCount';
+const albumExcludes =
+  'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,parentThumb,studio';
+const artistAndAlbumExcludes =
+  'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,skipCount,studio';
+
 const endpointConfig = {
   artist: {
-    getAllArtists: (base, libraryId) => `${base}/library/sections/${libraryId}/all?type=8`,
+    getAllArtists: (base, libraryId) =>
+      `${base}/library/sections/${libraryId}/all?type=8&excludeFields=${artistExcludes}`,
     getDetails: (base, artistId) => `${base}/library/metadata/${artistId}`,
-    getAllAlbums: (base, artistId) => `${base}/library/metadata/${artistId}/children?excludeAllLeaves=1`,
-    getAllRelated: (base, artistId) =>
-      `${base}/library/metadata/${artistId}/related?includeAugmentations=1&includeExternalMetadata=1&includeMeta=1`,
+    getAllAlbums: (base, artistId) =>
+      `${base}/library/metadata/${artistId}/children?excludeAllLeaves=1&excludeFields=summary`,
+    getAllRelated: (base, artistId) => `${base}/library/metadata/${artistId}/related?excludeFields=summary`,
     getCompilationTracks: (base, libraryId, artistName) =>
       `${base}/library/sections/${libraryId}/all?type=10&track.originalTitle=${encodeURIComponent(
         artistName
-      )}&artist.title!=${encodeURIComponent(artistName)}`,
+      )}&artist.title!=${encodeURIComponent(artistName)}&excludeFields=summary`,
   },
   album: {
-    getAllAlbums: (base, libraryId) => `${base}/library/sections/${libraryId}/all?type=9`,
+    getAllAlbums: (base, libraryId) =>
+      `${base}/library/sections/${libraryId}/all?type=9&excludeFields=${albumExcludes}`,
     getDetails: (base, albumId) => `${base}/library/metadata/${albumId}`,
     getTracks: (base, albumId) => `${base}/library/metadata/${albumId}/children`,
   },
@@ -54,29 +62,32 @@ const endpointConfig = {
   },
   collection: {
     getAllCollections: (base, libraryId) => `${base}/library/sections/${libraryId}/collections`,
-    getItems: (base, collectionId) => `${base}/library/collections/${collectionId}/children`,
+    getItems: (base, collectionId) =>
+      `${base}/library/collections/${collectionId}/children?excludeFields=${artistAndAlbumExcludes}`,
   },
   genres: {
     getAllArtistGenres: (base, libraryId) => `${base}/library/sections/${libraryId}/genre?type=8`,
     getArtistGenreItems: (base, libraryId, genreId) =>
-      `${base}/library/sections/${libraryId}/all?type=8&genre=${genreId}`,
+      `${base}/library/sections/${libraryId}/all?type=8&genre=${genreId}&excludeFields=${artistExcludes}`,
     getAllAlbumGenres: (base, libraryId) => `${base}/library/sections/${libraryId}/genre?type=9`,
     getAlbumGenreItems: (base, libraryId, genreId) =>
-      `${base}/library/sections/${libraryId}/all?type=9&genre=${genreId}`,
+      `${base}/library/sections/${libraryId}/all?type=9&genre=${genreId}&excludeFields=${albumExcludes}`,
   },
   styles: {
     getAllArtistStyles: (base, libraryId) => `${base}/library/sections/${libraryId}/style?type=8`,
     getArtistStyleItems: (base, libraryId, styleId) =>
-      `${base}/library/sections/${libraryId}/all?type=8&style=${styleId}`,
+      `${base}/library/sections/${libraryId}/all?type=8&style=${styleId}&excludeFields=${artistExcludes}`,
     getAllAlbumStyles: (base, libraryId) => `${base}/library/sections/${libraryId}/style?type=9`,
     getAlbumStyleItems: (base, libraryId, styleId) =>
-      `${base}/library/sections/${libraryId}/all?type=9&style=${styleId}`,
+      `${base}/library/sections/${libraryId}/all?type=9&style=${styleId}&excludeFields=${albumExcludes}`,
   },
   moods: {
     getAllArtistMoods: (base, libraryId) => `${base}/library/sections/${libraryId}/mood?type=8`,
-    getArtistMoodItems: (base, libraryId, moodId) => `${base}/library/sections/${libraryId}/all?type=8&mood=${moodId}`,
+    getArtistMoodItems: (base, libraryId, moodId) =>
+      `${base}/library/sections/${libraryId}/all?type=8&mood=${moodId}&excludeFields=${artistExcludes}`,
     getAllAlbumMoods: (base, libraryId) => `${base}/library/sections/${libraryId}/mood?type=9`,
-    getAlbumMoodItems: (base, libraryId, moodId) => `${base}/library/sections/${libraryId}/all?type=9&mood=${moodId}`,
+    getAlbumMoodItems: (base, libraryId, moodId) =>
+      `${base}/library/sections/${libraryId}/all?type=9&mood=${moodId}&excludeFields=${albumExcludes}`,
   },
 };
 
