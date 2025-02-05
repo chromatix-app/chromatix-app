@@ -366,6 +366,20 @@ const effects = (dispatch) => ({
       const sessionKey = config.sessionStoreKey + '-' + userHash;
       try {
         localStorageState = localStorage.getItem(sessionKey) ? JSON.parse(localStorage.getItem(sessionKey)) : {};
+        // NOTE: bug fix - cleaning up some data that should never have been saved here
+        if (localStorageState.appModel) {
+          delete localStorageState.appModel;
+
+          if (localStorageState.persistentModel) {
+            delete localStorageState.persistentModel;
+          }
+          if (localStorageState.playerModel) {
+            delete localStorageState.playerModel;
+          }
+          if (localStorageState.sessionModel) {
+            delete localStorageState.sessionModel;
+          }
+        }
       } catch (error) {
         // browser does not support local storage, or local storage item does not exist
       }
@@ -383,7 +397,7 @@ const effects = (dispatch) => ({
     });
   },
 
-  unsetCurrentServer(rootState, payload) {
+  unsetCurrentServer(payload, rootState) {
     console.log('%c--- unsetCurrentServer ---', 'color:#0f60b7');
     dispatch.sessionModel.setSessionState({
       currentServer: null,
@@ -402,7 +416,8 @@ const effects = (dispatch) => ({
       const newServer = rootState.appModel.allServers.find((server) => server.serverId === payload);
       // TODO: what if currentServer is null?
       dispatch.sessionModel.setSessionState({
-        ...rootState,
+        // pretty sure "...rootState" wasn't supposed to be here and causes way too much data to be cached
+        // ...rootState,
         currentServer: newServer,
         currentLibrary: null,
         ...Object.assign({}, playingState),
