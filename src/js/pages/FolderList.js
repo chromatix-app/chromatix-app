@@ -12,7 +12,8 @@ import { useGetFolderItems } from 'js/hooks';
 // ======================================================================
 
 const FolderList = () => {
-  const { folderId } = useParams();
+  const { folderId = 'root' } = useParams();
+
   const {
     viewFolders,
     sortFolders,

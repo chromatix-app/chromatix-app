@@ -43,40 +43,42 @@ const PlaylistDetail = () => {
     });
   };
 
+  if (!playlistInfo) {
+    return <Loading forceVisible inline />;
+  }
+
   return (
     <>
-      {playlistInfo && (
-        <TitleHeading
-          key={libraryId + '-' + playlistId}
-          thumb={playlistThumb}
-          title={playlistTitle}
-          subtitle={playlistTracks ? playlistTrackCount + ' tracks' : <>&nbsp;</>}
-          detail={
-            playlistTracks ? (
-              <>
-                {playlistDurationString}
-                {playlistDurationString && optionShowStarRatings && ' • '}
-                {optionShowStarRatings && (
-                  <StarRating
-                    type="playlist"
-                    ratingKey={playlistId}
-                    rating={playlistRating}
-                    inline
-                    editable
-                    alwaysVisible
-                  />
-                )}
-              </>
-            ) : (
-              <>&nbsp;</>
-            )
-          }
-          showPlay={true}
-          handlePlay={playlistTracks && playlistTracks.length > 0 ? doPlay : null}
-        />
-      )}
-      {!(playlistInfo && playlistTracks) && <Loading forceVisible inline />}
-      {playlistInfo && playlistTracks && (
+      <TitleHeading
+        key={libraryId + '-' + playlistId}
+        thumb={playlistThumb}
+        title={playlistTitle}
+        subtitle={playlistTracks ? playlistTrackCount + ' tracks' : <>&nbsp;</>}
+        detail={
+          playlistTracks ? (
+            <>
+              {playlistDurationString}
+              {playlistDurationString && optionShowStarRatings && ' • '}
+              {optionShowStarRatings && (
+                <StarRating
+                  type="playlist"
+                  ratingKey={playlistId}
+                  rating={playlistRating}
+                  inline
+                  editable
+                  alwaysVisible
+                />
+              )}
+            </>
+          ) : (
+            <>&nbsp;</>
+          )
+        }
+        showPlay={true}
+        handlePlay={playlistTracks && playlistTracks.length > 0 ? doPlay : null}
+      />
+      {!playlistTracks && <Loading forceVisible inline />}
+      {playlistTracks && (
         <ListTable
           variant="playlistTracks"
           playlistId={playlistId}

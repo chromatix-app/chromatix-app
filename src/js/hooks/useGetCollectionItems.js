@@ -29,18 +29,18 @@ const useGetCollectionItems = ({
   const actualOrderCollectionItems = isRatingSortHidden ? 'asc' : orderCollectionItems;
 
   const allCollections = useSelector(({ appModel }) => appModel[`all${collectionKey}`]);
-  const currentCollection = allCollections?.find((collection) => collection[collectionFilter] === collectionId);
+  const collectionInfo = allCollections?.find((collection) => collection[collectionFilter] === collectionId);
 
   const allCollectionItems = useSelector(({ appModel }) => appModel[`all${itemsKey}`]);
-  const currentCollectionItems = allCollectionItems[libraryId + '-' + collectionId];
+  const collectionInfoItems = allCollectionItems[libraryId + '-' + collectionId];
 
-  const sortedCollectionItems = currentCollectionItems
-    ? sortList(currentCollectionItems, actualSortCollectionItems, actualOrderCollectionItems)
+  const sortedCollectionItems = collectionInfoItems
+    ? sortList(collectionInfoItems, actualSortCollectionItems, actualOrderCollectionItems)
     : null;
 
-  const collectionThumb = currentCollection?.thumb;
-  const collectionTitle = currentCollection?.title;
-  const collectionRating = currentCollection?.userRating;
+  const collectionThumb = collectionInfo?.thumb;
+  const collectionTitle = collectionInfo?.title;
+  const collectionRating = collectionInfo?.userRating;
 
   const setViewCollectionItems = (viewCollectionItems) => {
     dispatch.sessionModel.setSessionState({
@@ -71,6 +71,7 @@ const useGetCollectionItems = ({
   }, [itemsKey, collectionId, collectionKey, libraryId]);
 
   return {
+    collectionInfo,
     sortedCollectionItems,
 
     viewCollectionItems,

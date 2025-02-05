@@ -46,34 +46,35 @@ const ArtistDetail = () => {
 
   const gotArtistData = artistInfo && artistAlbums && artistRelated;
 
+  if (!artistInfo) {
+    return <Loading forceVisible inline />;
+  }
+
   return (
     <>
-      {artistInfo && (
-        <TitleHeading
-          key={libraryId + '-' + artistId}
-          thumb={artistThumb}
-          title={artistName}
-          subtitle={
-            artistAlbums && artistRelated ? artistReleases + ' Release' + (artistReleases > 1 ? 's' : '') : <>&nbsp;</>
-          }
-          detail={
-            artistAlbums && artistRelated ? (
-              <>
-                {artistCountry}
-                {artistCountry && artistGenre && ' • '}
-                {artistGenre}
-                {(artistCountry || artistGenre) && optionShowStarRatings && ' • '}
-                {optionShowStarRatings && (
-                  <StarRating type="artist" ratingKey={artistId} rating={artistRating} inline editable alwaysVisible />
-                )}
-              </>
-            ) : (
-              <>&nbsp;</>
-            )
-          }
-          filters={
+      <TitleHeading
+        key={libraryId + '-' + artistId}
+        thumb={artistThumb}
+        title={artistName}
+        subtitle={gotArtistData ? artistReleases + ' Release' + (artistReleases > 1 ? 's' : '') : <>&nbsp;</>}
+        detail={
+          gotArtistData ? (
             <>
-              {/* <FilterToggle
+              {artistCountry}
+              {artistCountry && artistGenre && ' • '}
+              {artistGenre}
+              {(artistCountry || artistGenre) && optionShowStarRatings && ' • '}
+              {optionShowStarRatings && (
+                <StarRating type="artist" ratingKey={artistId} rating={artistRating} inline editable alwaysVisible />
+              )}
+            </>
+          ) : (
+            <>&nbsp;</>
+          )
+        }
+        filters={
+          <>
+            {/* <FilterToggle
                 value={viewArtistAlbums}
                 options={[
                   { value: 'grid', label: 'Grid view' },
@@ -82,38 +83,37 @@ const ArtistDetail = () => {
                 setter={setViewArtistAlbums}
                 icon={viewArtistAlbums === 'grid' ? 'GridIcon' : 'ListIcon'}
               /> */}
-              {viewArtistAlbums === 'grid' && (
-                <>
-                  <FilterSelect
-                    value={sortArtistAlbums}
-                    options={[
-                      { value: 'title', label: 'Alphabetical' },
-                      // { value: 'artist', label: 'Artist' },
-                      // { value: 'artist-asc-releaseDate-asc', label: 'Artist, oldest release first' },
-                      // { value: 'artist-asc-releaseDate-desc', label: 'Artist, newest release first' },
-                      { value: 'addedAt', label: 'Date added' },
-                      { value: 'lastPlayed', label: 'Date played' },
-                      { value: 'releaseDate', label: 'Date released' },
-                      // only allow sorting by rating if the option is enabled
-                      ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
-                    ]}
-                    setter={setSortArtistAlbums}
-                  />
-                  <FilterToggle
-                    value={orderArtistAlbums}
-                    options={[
-                      { value: 'asc', label: 'Ascending' },
-                      { value: 'desc', label: 'Descending' },
-                    ]}
-                    setter={setOrderArtistAlbums}
-                    icon={orderArtistAlbums === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
-                  />
-                </>
-              )}
-            </>
-          }
-        />
-      )}
+            {viewArtistAlbums === 'grid' && (
+              <>
+                <FilterSelect
+                  value={sortArtistAlbums}
+                  options={[
+                    { value: 'title', label: 'Alphabetical' },
+                    // { value: 'artist', label: 'Artist' },
+                    // { value: 'artist-asc-releaseDate-asc', label: 'Artist, oldest release first' },
+                    // { value: 'artist-asc-releaseDate-desc', label: 'Artist, newest release first' },
+                    { value: 'addedAt', label: 'Date added' },
+                    { value: 'lastPlayed', label: 'Date played' },
+                    { value: 'releaseDate', label: 'Date released' },
+                    // only allow sorting by rating if the option is enabled
+                    ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
+                  ]}
+                  setter={setSortArtistAlbums}
+                />
+                <FilterToggle
+                  value={orderArtistAlbums}
+                  options={[
+                    { value: 'asc', label: 'Ascending' },
+                    { value: 'desc', label: 'Descending' },
+                  ]}
+                  setter={setOrderArtistAlbums}
+                  icon={orderArtistAlbums === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+                />
+              </>
+            )}
+          </>
+        }
+      />
       {!gotArtistData && <Loading forceVisible inline />}
       {gotArtistData && viewArtistAlbums === 'grid' && (
         <>
