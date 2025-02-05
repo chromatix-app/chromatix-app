@@ -2,11 +2,7 @@
 // OPTIONS
 // ======================================================================
 
-const isProduction = process.env.REACT_APP_ENV === 'production';
-
-const mockData = isProduction ? false : false;
-
-const thumbSizeSmall = 400;
+const thumbSizeSmall = 360;
 const thumbSizeMedium = 600;
 const thumbPlaceholder = '/images/artwork-placeholder.png';
 
@@ -18,6 +14,14 @@ const thumbPlaceholder = '/images/artwork-placeholder.png';
 We are transposing the Plex data to a format that is easier to work with in the app,
 and doing some additional processing and validation.
 */
+
+const getThumb = (plexBaseUrl, thumb, size, accessToken) => {
+  return thumb
+    ? `${plexBaseUrl}/photo/:/transcode?width=${size}&height=${size}&url=${encodeURIComponent(
+        thumb
+      )}&minSize=1&X-Plex-Token=${accessToken}`
+    : thumbPlaceholder;
+};
 
 export const transposeArtistData = (artist, libraryId, plexBaseUrl, accessToken) => {
   return {
@@ -31,20 +35,8 @@ export const transposeArtistData = (artist, libraryId, plexBaseUrl, accessToken)
     genre: artist?.Genre?.[0]?.tag,
     userRating: artist.userRating,
     link: '/artists/' + libraryId + '/' + artist.ratingKey,
-    thumb: artist.thumb
-      ? mockData
-        ? artist.thumb
-        : `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
-            artist.thumb
-          )}&X-Plex-Token=${accessToken}`
-      : thumbPlaceholder,
-    thumbMedium: artist.thumb
-      ? mockData
-        ? artist.thumb
-        : `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeMedium}&height=${thumbSizeMedium}&url=${encodeURIComponent(
-            artist.thumb
-          )}&X-Plex-Token=${accessToken}`
-      : thumbPlaceholder,
+    thumb: getThumb(plexBaseUrl, artist.thumb, thumbSizeSmall, accessToken),
+    thumbMedium: getThumb(plexBaseUrl, artist.thumb, thumbSizeMedium, accessToken),
   };
 };
 
@@ -62,20 +54,8 @@ export const transposeAlbumData = (album, libraryId, plexBaseUrl, accessToken) =
     userRating: album.userRating,
     releaseDate: album.originallyAvailableAt,
     link: '/albums/' + libraryId + '/' + album.ratingKey,
-    thumb: album.thumb
-      ? mockData
-        ? album.thumb
-        : `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
-            album.thumb
-          )}&X-Plex-Token=${accessToken}`
-      : thumbPlaceholder,
-    thumbMedium: album.thumb
-      ? mockData
-        ? album.thumb
-        : `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeMedium}&height=${thumbSizeMedium}&url=${encodeURIComponent(
-            album.thumb
-          )}&X-Plex-Token=${accessToken}`
-      : thumbPlaceholder,
+    thumb: getThumb(plexBaseUrl, album.thumb, thumbSizeSmall, accessToken),
+    thumbMedium: getThumb(plexBaseUrl, album.thumb, thumbSizeMedium, accessToken),
   };
 };
 
@@ -110,20 +90,8 @@ export const transposePlaylistData = (playlist, libraryId, plexBaseUrl, accessTo
     link: '/playlists/' + libraryId + '/' + playlist.ratingKey,
     totalTracks: playlist.leafCount,
     duration: playlist.duration,
-    thumb: playlistThumb
-      ? mockData
-        ? playlistThumb
-        : `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
-            playlistThumb
-          )}&X-Plex-Token=${accessToken}`
-      : thumbPlaceholder,
-    thumbMedium: playlistThumb
-      ? mockData
-        ? playlistThumb
-        : `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeMedium}&height=${thumbSizeMedium}&url=${encodeURIComponent(
-            playlistThumb
-          )}&X-Plex-Token=${accessToken}`
-      : thumbPlaceholder,
+    thumb: getThumb(plexBaseUrl, playlistThumb, thumbSizeSmall, accessToken),
+    thumbMedium: getThumb(plexBaseUrl, playlistThumb, thumbSizeMedium, accessToken),
   };
 };
 
@@ -149,16 +117,8 @@ export const transposeTrackData = (track, libraryId, plexBaseUrl, accessToken) =
     discNumber: track.parentIndex,
     duration: track.Media[0].duration,
     userRating: track.userRating,
-    thumb: track.thumb
-      ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
-          track.thumb
-        )}&X-Plex-Token=${accessToken}`
-      : thumbPlaceholder,
-    thumbMedium: track.thumb
-      ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeMedium}&height=${thumbSizeMedium}&url=${encodeURIComponent(
-          track.thumb
-        )}&X-Plex-Token=${accessToken}`
-      : thumbPlaceholder,
+    thumb: getThumb(plexBaseUrl, track.thumb, thumbSizeSmall, accessToken),
+    thumbMedium: getThumb(plexBaseUrl, track.thumb, thumbSizeMedium, accessToken),
     src: `${plexBaseUrl}${track.Media[0].Part[0].key}?X-Plex-Token=${accessToken}`,
   };
 };
@@ -178,16 +138,8 @@ export const transposeCollectionData = (collection, libraryId, plexBaseUrl, acce
       libraryId +
       '/' +
       collection.ratingKey,
-    thumb: collectionThumb
-      ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
-          collectionThumb
-        )}&X-Plex-Token=${accessToken}`
-      : thumbPlaceholder,
-    thumbMedium: collectionThumb
-      ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeMedium}&height=${thumbSizeMedium}&url=${encodeURIComponent(
-          collectionThumb
-        )}&X-Plex-Token=${accessToken}`
-      : thumbPlaceholder,
+    thumb: getThumb(plexBaseUrl, collectionThumb, thumbSizeSmall, accessToken),
+    thumbMedium: getThumb(plexBaseUrl, collectionThumb, thumbSizeMedium, accessToken),
   };
 };
 
@@ -230,11 +182,7 @@ export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBase
         icon: 'PeopleIcon',
         title: result.title,
         link: '/artists/' + libraryId + '/' + result.ratingKey,
-        thumb: result.thumb
-          ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
-              result.thumb
-            )}&X-Plex-Token=${accessToken}`
-          : thumbPlaceholder,
+        thumb: getThumb(plexBaseUrl, result.thumb, thumbSizeSmall, accessToken),
       };
     } else if (result.type === 'album') {
       return {
@@ -243,11 +191,8 @@ export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBase
         icon: 'PlayCircleIcon',
         title: result.title,
         link: '/albums/' + libraryId + '/' + result.ratingKey,
-        thumb: result.thumb
-          ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
-              result.thumb
-            )}&X-Plex-Token=${accessToken}`
-          : thumbPlaceholder,
+
+        thumb: getThumb(plexBaseUrl, result.thumb, thumbSizeSmall, accessToken),
       };
     } else if (result.type === 'playlist') {
       const playlistThumb = result.thumb ? result.thumb : result.composite ? result.composite : null;
@@ -257,11 +202,7 @@ export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBase
         icon: 'PlaylistIcon',
         title: result.title,
         link: '/playlists/' + libraryId + '/' + result.ratingKey,
-        thumb: playlistThumb
-          ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
-              playlistThumb
-            )}&X-Plex-Token=${accessToken}`
-          : thumbPlaceholder,
+        thumb: getThumb(plexBaseUrl, playlistThumb, thumbSizeSmall, accessToken),
       };
     } else if (result.type === 'collection') {
       const collectionThumb = result.thumb ? result.thumb : result.composite ? result.composite : null;
@@ -275,11 +216,7 @@ export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBase
           libraryId +
           '/' +
           result.ratingKey,
-        thumb: collectionThumb
-          ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
-              collectionThumb
-            )}&X-Plex-Token=${accessToken}`
-          : thumbPlaceholder,
+        thumb: getThumb(plexBaseUrl, collectionThumb, thumbSizeSmall, accessToken),
       };
     } else if (result.type === 'track') {
       return {
@@ -288,11 +225,8 @@ export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBase
         icon: 'MusicNoteSingleIcon',
         title: result.title,
         link: '/albums/' + libraryId + '/' + result.parentRatingKey,
-        thumb: result.thumb
-          ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
-              result.thumb
-            )}&X-Plex-Token=${accessToken}`
-          : thumbPlaceholder,
+
+        thumb: getThumb(plexBaseUrl, result.thumb, thumbSizeSmall, accessToken),
       };
     }
   }
@@ -315,7 +249,7 @@ export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBase
 //         thumb: meta.thumb
 //           ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
 //               meta.thumb
-//             )}&X-Plex-Token=${accessToken}`
+//             )}&minSize=1&X-Plex-Token=${accessToken}`
 //           : thumbPlaceholder,
 //       };
 //     } else if (meta.type === 'album') {
@@ -328,7 +262,7 @@ export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBase
 //         thumb: meta.thumb
 //           ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
 //               meta.thumb
-//             )}&X-Plex-Token=${accessToken}`
+//             )}&minSize=1&X-Plex-Token=${accessToken}`
 //           : thumbPlaceholder,
 //       };
 //     } else if (meta.type === 'playlist') {
@@ -342,7 +276,7 @@ export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBase
 //         thumb: playlistThumb
 //           ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
 //               playlistThumb
-//             )}&X-Plex-Token=${accessToken}`
+//             )}&minSize=1&X-Plex-Token=${accessToken}`
 //           : thumbPlaceholder,
 //       };
 //     } else if (meta.type === 'collection') {
@@ -360,7 +294,7 @@ export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBase
 //         thumb: collectionThumb
 //           ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
 //               collectionThumb
-//             )}&X-Plex-Token=${accessToken}`
+//             )}&minSize=1&X-Plex-Token=${accessToken}`
 //           : thumbPlaceholder,
 //       };
 //     } else if (meta.type === 'track') {
@@ -373,7 +307,7 @@ export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBase
 //         thumb: meta.thumb
 //           ? `${plexBaseUrl}/photo/:/transcode?width=${thumbSizeSmall}&height=${thumbSizeSmall}&url=${encodeURIComponent(
 //               meta.thumb
-//             )}&X-Plex-Token=${accessToken}`
+//             )}&minSize=1&X-Plex-Token=${accessToken}`
 //           : thumbPlaceholder,
 //       };
 //     }
@@ -386,3 +320,7 @@ export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBase
 
 //   return null;
 // };
+
+// ======================================================================
+// HELPER FUNCTIONS
+// ======================================================================
