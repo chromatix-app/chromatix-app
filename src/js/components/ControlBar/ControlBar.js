@@ -20,10 +20,10 @@ import style from './ControlBar.module.scss';
 const ControlBar = () => {
   const dispatch = useDispatch();
 
-  const playerLoading = useSelector(({ playerModel }) => playerModel.playingVariant);
-  const playerPlaying = useSelector(({ playerModel }) => playerModel.playingVariant);
-  const playerVolume = useSelector(({ playerModel }) => playerModel.playingVariant);
-  const playerMuted = useSelector(({ playerModel }) => playerModel.playingVariant);
+  const playerLoading = useSelector(({ playerModel }) => playerModel.playerLoading);
+  const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
+  const playerVolume = useSelector(({ playerModel }) => playerModel.playerVolume);
+  const playerMuted = useSelector(({ playerModel }) => playerModel.playerMuted);
 
   const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
   const playingLibraryId = useSelector(({ sessionModel }) => sessionModel.playingLibraryId);
