@@ -19,6 +19,16 @@ import style from './ListCards.module.scss';
 
 // const isLocal = process.env.REACT_APP_ENV === 'local';
 
+const iconImageMap = {
+  folders: 'FolderIcon',
+  artistGenres: 'ArtistGenresIcon',
+  artistMoods: 'ArtistMoodsIcon',
+  artistStyles: 'ArtistStylesIcon',
+  albumGenres: 'AlbumGenresIcon',
+  albumMoods: 'AlbumMoodsIcon',
+  albumStyles: 'AlbumStylesIcon',
+};
+
 const ListCards = ({ variant, folderId, entries, playingOrder, sortKey }) => {
   const dispatch = useDispatch();
 
@@ -36,6 +46,8 @@ const ListCards = ({ variant, folderId, entries, playingOrder, sortKey }) => {
   const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
 
   const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
+
+  const iconImage = iconImageMap[variant];
 
   // scroll to playing track, if required
   useEffect(() => {
@@ -82,9 +94,10 @@ const ListCards = ({ variant, folderId, entries, playingOrder, sortKey }) => {
 
           return (
             <ListEntry
-              key={entryKey}
+              key={variant + '-' + entryKey}
               index={trackNumber - 1}
               variant={variant}
+              iconImage={iconImage}
               folderId={folderId}
               playingOrder={playingOrder}
               sortKey={sortKey}
@@ -111,6 +124,7 @@ const ListEntry = React.memo(
     artistLink,
     collectionId,
     folderId,
+    iconImage,
     playlistId,
     trackId,
     userRating,
@@ -217,16 +231,6 @@ const ListEntry = React.memo(
     const ratingKey = ratingKeyMap[variant] || null;
 
     // Icons
-    const iconImageMap = {
-      folders: 'FolderIcon',
-      artistGenres: 'ArtistGenresIcon',
-      artistMoods: 'ArtistMoodsIcon',
-      artistStyles: 'ArtistStylesIcon',
-      albumGenres: 'AlbumGenresIcon',
-      albumMoods: 'AlbumMoodsIcon',
-      albumStyles: 'AlbumStylesIcon',
-    };
-    const iconImage = (!thumb && iconImageMap[variant]) || null;
     const isIconCard = iconImage && !thumb;
     const isSquareCard = !isIconCard || variant === 'folders';
 
@@ -247,7 +251,7 @@ const ListEntry = React.memo(
           {thumb && <img src={thumb} alt={title} loading="lazy" />}
 
           {/* Icon */}
-          {iconImage && (
+          {isIconCard && (
             <div className={style.icon}>
               <Icon icon={iconImage} cover stroke strokeWidth={1.6} />
             </div>
