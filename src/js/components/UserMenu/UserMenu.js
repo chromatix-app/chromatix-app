@@ -101,7 +101,7 @@ const UserMenu = ({ variant = 'default' }) => {
                               }}
                             >
                               <span className={style.iconBefore}>
-                                <Icon icon="MusicNoteIcon" cover stroke />
+                                <Icon icon="MusicNoteDoubleIcon" cover stroke />
                               </span>
                               {library.title}
                               {isCurrentLibrary && (

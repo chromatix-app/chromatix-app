@@ -26,12 +26,9 @@ const App = () => {
   const plexErrorGeneral = useSelector(({ appModel }) => appModel.plexErrorGeneral);
   const plexErrorLogin = useSelector(({ appModel }) => appModel.plexErrorLogin);
 
+  const accessibilityFocus = useSelector(({ sessionModel }) => sessionModel.accessibilityFocus);
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
-
-  const { accessibilityFocus } = useSelector(({ sessionModel }) => sessionModel);
-
-  const debugConsole = useSelector(({ persistentModel }) => persistentModel.debugConsole);
 
   const gotRequiredData = useGotRequiredData();
 
@@ -43,12 +40,12 @@ const App = () => {
 
   // disable console logs
   useEffect(() => {
-    if (isProduction && !debugConsole) {
+    if (isProduction) {
       console.log = () => {};
       console.error = () => {};
       console.debug = () => {};
     }
-  }, [debugConsole]);
+  }, []);
 
   // initialise on load
   useEffect(() => {
@@ -140,8 +137,9 @@ const App = () => {
 const breakPoints = [620, 680, 800, 860, 920, 980];
 
 const AppMain = () => {
-  const [contentContainerClass, setContentContainerClass] = useState(0);
   const contentRef = useRef();
+
+  const [contentContainerClass, setContentContainerClass] = useState(0);
 
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
 

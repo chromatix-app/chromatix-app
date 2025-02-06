@@ -47,35 +47,39 @@ const AlbumDetail = () => {
     });
   };
 
+  if (!albumInfo) {
+    return <Loading forceVisible inline />;
+  }
+
   return (
     <>
-      {albumInfo && (
-        <TitleHeading
-          thumb={albumThumb}
-          title={albumTitle}
-          subtitle={albumArtist && <NavLink to={albumArtistLink}>{albumArtist}</NavLink>}
-          detail={
-            albumTracks ? (
-              <>
-                {albumReleaseDate}
-                {albumReleaseDate && albumTrackCount && ' • '}
-                {albumTrackCount} track{albumTrackCount !== 1 && 's'}
-                {(albumReleaseDate || albumTrackCount) && albumDurationString && ' • '}
-                {albumDurationString}
-                {(albumReleaseDate || albumTrackCount || albumDurationString) && optionShowStarRatings && ' • '}
-                {optionShowStarRatings && (
-                  <StarRating type="album" ratingKey={albumId} rating={albumRating} inline editable alwaysVisible />
-                )}
-              </>
-            ) : (
-              <>&nbsp;</>
-            )
-          }
-          handlePlay={albumTracks ? doPlay : null}
-        />
-      )}
-      {!(albumInfo && albumTracks) && <Loading forceVisible inline />}
-      {albumInfo && albumTracks && (
+      <TitleHeading
+        key={libraryId + '-' + albumId}
+        thumb={albumThumb}
+        title={albumTitle}
+        subtitle={albumArtist && <NavLink to={albumArtistLink}>{albumArtist}</NavLink>}
+        detail={
+          albumTracks ? (
+            <>
+              {albumReleaseDate}
+              {albumReleaseDate && albumTrackCount && ' • '}
+              {albumTrackCount} track{albumTrackCount !== 1 && 's'}
+              {(albumReleaseDate || albumTrackCount) && albumDurationString && ' • '}
+              {albumDurationString}
+              {(albumReleaseDate || albumTrackCount || albumDurationString) && optionShowStarRatings && ' • '}
+              {optionShowStarRatings && (
+                <StarRating type="album" ratingKey={albumId} rating={albumRating} inline editable alwaysVisible />
+              )}
+            </>
+          ) : (
+            <>&nbsp;</>
+          )
+        }
+        showPlay={true}
+        handlePlay={albumTracks && albumTracks.length > 0 ? doPlay : null}
+      />
+      {!albumTracks && <Loading forceVisible inline />}
+      {albumTracks && (
         <ListTable
           variant="albumTracks"
           albumId={albumId}

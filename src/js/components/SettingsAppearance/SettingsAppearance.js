@@ -147,7 +147,7 @@ export const SettingsAppearance = () => {
 const InterfaceSettings = () => {
   const dispatch = useDispatch();
 
-  const { accessibilityContrast } = useSelector(({ sessionModel }) => sessionModel);
+  const accessibilityContrast = useSelector(({ sessionModel }) => sessionModel.accessibilityContrast);
 
   const menuItems = [
     {

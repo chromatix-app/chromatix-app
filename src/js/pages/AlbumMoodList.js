@@ -22,6 +22,7 @@ const AlbumMoodList = () => {
   return (
     <>
       <TitleHeading
+        key="AlbumMoodList"
         title="Album Moods"
         subtitle={
           sortedCollections ? (

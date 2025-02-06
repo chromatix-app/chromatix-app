@@ -59,7 +59,7 @@ const ListServers = ({ entries, variant }) => {
                 }}
               >
                 <div className={style.icon}>
-                  <Icon icon="MusicNoteIcon" cover stroke />
+                  <Icon icon="MusicNoteDoubleIcon" cover stroke />
                 </div>
                 <div>
                   <div className={style.title}>{entry.title}</div>

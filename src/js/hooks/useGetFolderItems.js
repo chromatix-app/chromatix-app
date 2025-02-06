@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
-const useGetFolderItems = (folderId = 'root') => {
+const useGetFolderItems = (folderId) => {
   const dispatch = useDispatch();
 
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
