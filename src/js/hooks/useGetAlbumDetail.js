@@ -69,7 +69,9 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   // Get the required album data
   useEffect(() => {
     // plex.getAllAlbums();
-    plex.getAlbumDetails(libraryId, albumId);
+    if (!albumInfo) {
+      plex.getAlbumDetails(libraryId, albumId);
+    }
     plex.getAlbumTracks(libraryId, albumId);
   }, [albumId, libraryId]);
 
