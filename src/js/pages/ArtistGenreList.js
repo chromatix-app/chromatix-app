@@ -22,6 +22,7 @@ const ArtistGenreList = () => {
   return (
     <>
       <TitleHeading
+        key="ArtistGenreList"
         title="Artist Genres"
         subtitle={
           sortedCollections ? (

@@ -8,15 +8,13 @@ import clsx from 'clsx';
 
 import { Button, Icon } from 'js/components';
 import { useGetDownloadLinks } from 'js/hooks';
-import { analyticsEvent } from 'js/utils';
+import { analyticsEvent, isElectron } from 'js/utils';
 
 import style from './PageHome.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
-
-const isElectron = window?.isElectron;
 
 export const PageHome = () => {
   const dispatch = useDispatch();

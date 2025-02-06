@@ -25,10 +25,11 @@ const useGetAllAlbums = () => {
   const actualSortAlbums = isRatingSortHidden ? 'title' : isSubSortList ? 'artist' : sortAlbums;
   const actualOrderAlbums = isRatingSortHidden ? 'asc' : orderAlbums;
 
+  const haveGotAllAlbums = useSelector(({ appModel }) => appModel.haveGotAllAlbums);
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums)?.filter(
     (album) => album.libraryId === currentLibraryId
   );
-  const sortedAlbums = allAlbums ? sortList(allAlbums, actualSortAlbums, actualOrderAlbums) : null;
+  const sortedAlbums = haveGotAllAlbums && allAlbums ? sortList(allAlbums, actualSortAlbums, actualOrderAlbums) : null;
 
   const setViewAlbums = (viewAlbums) => {
     dispatch.sessionModel.setSessionState({

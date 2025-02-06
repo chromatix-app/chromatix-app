@@ -9,9 +9,6 @@ import style from './StarRating.module.scss';
 const StarRating = ({ type, ratingKey, rating = 0, inline, size = 14, editable = false, alwaysVisible = false }) => {
   const [displayRating, setDisplayRating] = useState(null);
 
-  const actualRating = displayRating ? displayRating : rating;
-  const halfRating = actualRating / 2;
-
   const handleMouseEnter = useCallback((e) => {
     setDisplayRating(e.target.dataset.value);
   }, []);
@@ -32,6 +29,9 @@ const StarRating = ({ type, ratingKey, rating = 0, inline, size = 14, editable =
   if (!editable && (!rating || rating === null || rating <= 0)) {
     return null;
   }
+
+  const actualRating = displayRating ? displayRating : rating;
+  const halfRating = actualRating / 2;
 
   const stars = Array.from({ length: 5 }, (_, i) => {
     let icon;

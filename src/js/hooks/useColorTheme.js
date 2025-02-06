@@ -67,6 +67,7 @@ function useColorTheme() {
 
     const colorOpacity0025 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.025));
     const colorOpacity005 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.05));
+    const colorOpacity0075 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.075));
     const colorOpacity01 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.1));
     const colorOpacity015 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.15));
     const colorOpacity02 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.2));
@@ -100,6 +101,7 @@ function useColorTheme() {
 
       '--color-opacity-0025': colorOpacity0025,
       '--color-opacity-005': colorOpacity005,
+      '--color-opacity-0075': colorOpacity0075,
       '--color-opacity-01': colorOpacity01,
       '--color-opacity-015': colorOpacity015,
       '--color-opacity-02': colorOpacity02,

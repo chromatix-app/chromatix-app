@@ -111,16 +111,14 @@ const LibrarySettings = () => {
 const BrowseSettings = () => {
   const dispatch = useDispatch();
 
-  const {
-    menuShowArtistCollections,
-    menuShowAlbumCollections,
-    menuShowArtistGenres,
-    menuShowAlbumGenres,
-    menuShowArtistStyles,
-    menuShowAlbumStyles,
-    menuShowArtistMoods,
-    menuShowAlbumMoods,
-  } = useSelector(({ sessionModel }) => sessionModel);
+  const menuShowArtistCollections = useSelector(({ sessionModel }) => sessionModel.menuShowArtistCollections);
+  const menuShowAlbumCollections = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumCollections);
+  const menuShowArtistGenres = useSelector(({ sessionModel }) => sessionModel.menuShowArtistGenres);
+  const menuShowAlbumGenres = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumGenres);
+  const menuShowArtistMoods = useSelector(({ sessionModel }) => sessionModel.menuShowArtistMoods);
+  const menuShowAlbumMoods = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumMoods);
+  const menuShowArtistStyles = useSelector(({ sessionModel }) => sessionModel.menuShowArtistStyles);
+  const menuShowAlbumStyles = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumStyles);
 
   const menuItems = [
     { key: 'menuShowArtistCollections', label: 'Artist Collections', state: menuShowArtistCollections },

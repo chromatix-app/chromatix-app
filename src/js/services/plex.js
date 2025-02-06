@@ -13,6 +13,8 @@ import {
   transposeGenreData,
   transposeStyleData,
   transposeMoodData,
+  transposeHubSearchData,
+  // transposeLibrarySearchData,
 } from 'js/services/plexTranspose';
 import { analyticsEvent } from 'js/utils';
 import store from 'js/store/store';
@@ -25,20 +27,28 @@ const isProduction = process.env.REACT_APP_ENV === 'production';
 
 const mockData = isProduction ? false : false;
 
+const artistExcludes = 'summary,guid,key,parentRatingKey,parentTitle,skipCount';
+const albumExcludes =
+  'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,parentThumb,studio';
+const artistAndAlbumExcludes =
+  'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,skipCount,studio';
+
 const endpointConfig = {
   artist: {
-    getAllArtists: (base, libraryId) => `${base}/library/sections/${libraryId}/all?type=8`,
+    getAllArtists: (base, libraryId) =>
+      `${base}/library/sections/${libraryId}/all?type=8&excludeFields=${artistExcludes}`,
     getDetails: (base, artistId) => `${base}/library/metadata/${artistId}`,
-    getAllAlbums: (base, artistId) => `${base}/library/metadata/${artistId}/children?excludeAllLeaves=1`,
-    getAllRelated: (base, artistId) =>
-      `${base}/library/metadata/${artistId}/related?includeAugmentations=1&includeExternalMetadata=1&includeMeta=1`,
+    getAllAlbums: (base, artistId) =>
+      `${base}/library/metadata/${artistId}/children?excludeAllLeaves=1&excludeFields=summary`,
+    getAllRelated: (base, artistId) => `${base}/library/metadata/${artistId}/related?excludeFields=summary`,
     getCompilationTracks: (base, libraryId, artistName) =>
-      `${base}/library/sections/${libraryId}/all?type=10&track.originalTitle=${slugify(
+      `${base}/library/sections/${libraryId}/all?type=10&track.originalTitle=${encodeURIComponent(
         artistName
-      )}&artist.title!=${slugify(artistName)}`,
+      )}&artist.title!=${encodeURIComponent(artistName)}&excludeFields=summary`,
   },
   album: {
-    getAllAlbums: (base, libraryId) => `${base}/library/sections/${libraryId}/all?type=9`,
+    getAllAlbums: (base, libraryId) =>
+      `${base}/library/sections/${libraryId}/all?type=9&excludeFields=${albumExcludes}`,
     getDetails: (base, albumId) => `${base}/library/metadata/${albumId}`,
     getTracks: (base, albumId) => `${base}/library/metadata/${albumId}/children`,
   },
@@ -52,29 +62,32 @@ const endpointConfig = {
   },
   collection: {
     getAllCollections: (base, libraryId) => `${base}/library/sections/${libraryId}/collections`,
-    getItems: (base, collectionId) => `${base}/library/collections/${collectionId}/children`,
+    getItems: (base, collectionId) =>
+      `${base}/library/collections/${collectionId}/children?excludeFields=${artistAndAlbumExcludes}`,
   },
   genres: {
     getAllArtistGenres: (base, libraryId) => `${base}/library/sections/${libraryId}/genre?type=8`,
     getArtistGenreItems: (base, libraryId, genreId) =>
-      `${base}/library/sections/${libraryId}/all?type=8&genre=${genreId}`,
+      `${base}/library/sections/${libraryId}/all?type=8&genre=${genreId}&excludeFields=${artistExcludes}`,
     getAllAlbumGenres: (base, libraryId) => `${base}/library/sections/${libraryId}/genre?type=9`,
     getAlbumGenreItems: (base, libraryId, genreId) =>
-      `${base}/library/sections/${libraryId}/all?type=9&genre=${genreId}`,
+      `${base}/library/sections/${libraryId}/all?type=9&genre=${genreId}&excludeFields=${albumExcludes}`,
   },
   styles: {
     getAllArtistStyles: (base, libraryId) => `${base}/library/sections/${libraryId}/style?type=8`,
     getArtistStyleItems: (base, libraryId, styleId) =>
-      `${base}/library/sections/${libraryId}/all?type=8&style=${styleId}`,
+      `${base}/library/sections/${libraryId}/all?type=8&style=${styleId}&excludeFields=${artistExcludes}`,
     getAllAlbumStyles: (base, libraryId) => `${base}/library/sections/${libraryId}/style?type=9`,
     getAlbumStyleItems: (base, libraryId, styleId) =>
-      `${base}/library/sections/${libraryId}/all?type=9&style=${styleId}`,
+      `${base}/library/sections/${libraryId}/all?type=9&style=${styleId}&excludeFields=${albumExcludes}`,
   },
   moods: {
     getAllArtistMoods: (base, libraryId) => `${base}/library/sections/${libraryId}/mood?type=8`,
-    getArtistMoodItems: (base, libraryId, moodId) => `${base}/library/sections/${libraryId}/all?type=8&mood=${moodId}`,
+    getArtistMoodItems: (base, libraryId, moodId) =>
+      `${base}/library/sections/${libraryId}/all?type=8&mood=${moodId}&excludeFields=${artistExcludes}`,
     getAllAlbumMoods: (base, libraryId) => `${base}/library/sections/${libraryId}/mood?type=9`,
-    getAlbumMoodItems: (base, libraryId, moodId) => `${base}/library/sections/${libraryId}/all?type=9&mood=${moodId}`,
+    getAlbumMoodItems: (base, libraryId, moodId) =>
+      `${base}/library/sections/${libraryId}/all?type=9&mood=${moodId}&excludeFields=${albumExcludes}`,
   },
 };
 
@@ -266,6 +279,72 @@ export const getAllLibraries = async () => {
     }
   }
 };
+
+// ======================================================================
+// SEARCH LIBRARY
+// ======================================================================
+
+let searchCounter = 0;
+
+export const searchLibrary = (query) => {
+  searchCounter += 1;
+  searchLibrary2(query, searchCounter);
+};
+
+const searchLibrary2 = async (query, searchCounter) => {
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+  const { libraryId, title } = store.getState().sessionModel.currentLibrary;
+
+  const typeOrder = {
+    artist: 1,
+    album: 2,
+    playlist: 3,
+    'artist collection': 4,
+    'album collection': 5,
+    track: 6,
+  };
+
+  plexTools
+    .searchHub(plexBaseUrl, libraryId, accessToken, query)
+    // .searchLibrary(plexBaseUrl, accessToken, query)
+    .then((res) => {
+      // console.log(res);
+
+      const searchResults =
+        res
+          ?.flatMap((result) => result.Metadata)
+          ?.map((result) => transposeHubSearchData(result, libraryId, title, plexBaseUrl, accessToken))
+          // .map((result) => transposeLibrarySearchData(result, libraryId, title, plexBaseUrl, accessToken))
+          .filter((result) => result !== null)
+          .sort((a, b) => {
+            if (b.score === a.score) {
+              if (a.type === b.type) {
+                return a.title.localeCompare(b.title);
+              }
+              return typeOrder[a.type] - typeOrder[b.type];
+            }
+            return b.score - a.score;
+          }) || [];
+
+      // console.log(searchResults);
+
+      const searchResultCounter = store.getState().appModel.searchResultCounter;
+      if (searchCounter > searchResultCounter) {
+        store.dispatch.appModel.setAppState({
+          searchResults,
+          searchResultCounter: searchCounter,
+        });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
+      analyticsEvent('Error: Plex Get All Libraries');
+    });
+};
+
+window.searchLibrary = searchLibrary;
 
 // ======================================================================
 // GET ALL ARTISTS
@@ -474,8 +553,8 @@ let getAllAlbumsRunning;
 
 export const getAllAlbums = async () => {
   if (!getAllAlbumsRunning) {
-    const prevAllAlbums = store.getState().appModel.allAlbums;
-    if (!prevAllAlbums) {
+    const haveGotAllAlbums = store.getState().appModel.haveGotAllAlbums;
+    if (!haveGotAllAlbums) {
       getAllAlbumsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
@@ -491,7 +570,10 @@ export const getAllAlbums = async () => {
 
       // console.log('allAlbums', allAlbums);
 
-      store.dispatch.appModel.setAppState({ allAlbums });
+      store.dispatch.appModel.setAppState({
+        haveGotAllAlbums: true,
+        allAlbums,
+      });
 
       getAllAlbumsRunning = false;
     }
@@ -1304,14 +1386,4 @@ async function fetchData(endpoint, accessToken) {
 
   const data = await response.json();
   return data;
-}
-
-function slugify(text) {
-  return (
-    text
-      // replace ampersands with html entity
-      .replace(/&/g, '%26')
-      // replace commas with html entity
-      .replace(/,/g, '%2C')
-  );
 }

@@ -1,22 +1,13 @@
 import { track } from '@vercel/analytics';
 
-declare global {
-  interface Window {
-    isElectron?: boolean;
-    electronProcess?: {
-      platform?: string;
-    };
-  }
-}
-
-const isElectron = window?.isElectron || false;
-const platform = isElectron ? (window?.electronProcess?.platform === 'darwin' ? 'mac' : 'win') : 'web';
+import { isElectron, electronVersion, appPlatform } from './environment';
 
 const analyticsEvent = (event: string, props: object = {}) => {
   const finalProps = {
     ...props,
-    electron: isElectron,
-    platform: platform,
+    isElectron: isElectron,
+    appPlatform: appPlatform,
+    electronVersion: electronVersion,
   };
 
   track(event, finalProps);

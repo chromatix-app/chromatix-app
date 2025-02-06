@@ -1,13 +1,4 @@
-declare global {
-  interface Window {
-    ipcRenderer: {
-      send: (key: string, data: any) => void;
-    };
-  }
-}
-
-const isElectron = window?.isElectron;
-const electronPlatform = isElectron ? (window?.electronProcess?.platform === 'darwin' ? 'mac' : 'win') : null;
+import { isElectron, electronPlatform } from './environment';
 
 const sendToElectron = (platform: 'any' | string = 'any', key: string, data: any): void => {
   if (isElectron && (platform === 'any' || electronPlatform === platform) && window?.ipcRenderer) {

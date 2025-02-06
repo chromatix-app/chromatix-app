@@ -13,11 +13,12 @@ import { useGetCollectionItems } from 'js/hooks';
 // ======================================================================
 
 const ArtistStyleItems = () => {
-  const { styleId, libraryId } = useParams();
+  const { libraryId, styleId } = useParams();
 
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   const {
+    collectionInfo,
     sortedCollectionItems,
 
     viewCollectionItems,
@@ -38,59 +39,62 @@ const ArtistStyleItems = () => {
     itemsKey: 'ArtistStyleItems',
   });
 
+  if (!collectionInfo) {
+    return <Loading forceVisible inline />;
+  }
+
   return (
     <>
-      {sortedCollectionItems && (
-        <TitleHeading
-          thumb={collectionThumb}
-          title={collectionTitle}
-          subtitle={
-            sortedCollectionItems ? (
-              sortedCollectionItems?.length + ' Artist' + (sortedCollectionItems?.length !== 1 ? 's' : '')
-            ) : (
-              <>&nbsp;</>
-            )
-          }
-          icon={'ArtistStylesIcon'}
-          filters={
-            <>
-              <FilterToggle
-                value={viewCollectionItems}
-                options={[
-                  { value: 'grid', label: 'Grid view' },
-                  { value: 'list', label: 'List view' },
-                ]}
-                setter={setViewCollectionItems}
-                icon={viewCollectionItems === 'grid' ? 'GridIcon' : 'ListIcon'}
-              />
-              {viewCollectionItems === 'grid' && (
-                <>
-                  <FilterSelect
-                    value={sortCollectionItems}
-                    options={[
-                      { value: 'title', label: 'Alphabetical' },
-                      { value: 'addedAt', label: 'Date added' },
-                      { value: 'lastPlayed', label: 'Date played' },
-                      // only allow sorting by rating if the option is enabled
-                      ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
-                    ]}
-                    setter={setSortCollectionItems}
-                  />
-                  <FilterToggle
-                    value={orderCollectionItems}
-                    options={[
-                      { value: 'asc', label: 'Ascending' },
-                      { value: 'desc', label: 'Descending' },
-                    ]}
-                    setter={setOrderCollectionItems}
-                    icon={orderCollectionItems === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
-                  />
-                </>
-              )}
-            </>
-          }
-        />
-      )}
+      <TitleHeading
+        key={libraryId + '-' + styleId}
+        thumb={collectionThumb}
+        title={collectionTitle}
+        subtitle={
+          sortedCollectionItems ? (
+            sortedCollectionItems?.length + ' Artist' + (sortedCollectionItems?.length !== 1 ? 's' : '')
+          ) : (
+            <>&nbsp;</>
+          )
+        }
+        icon={'ArtistStylesIcon'}
+        filters={
+          <>
+            <FilterToggle
+              value={viewCollectionItems}
+              options={[
+                { value: 'grid', label: 'Grid view' },
+                { value: 'list', label: 'List view' },
+              ]}
+              setter={setViewCollectionItems}
+              icon={viewCollectionItems === 'grid' ? 'GridIcon' : 'ListIcon'}
+            />
+            {viewCollectionItems === 'grid' && (
+              <>
+                <FilterSelect
+                  value={sortCollectionItems}
+                  options={[
+                    { value: 'title', label: 'Alphabetical' },
+                    { value: 'addedAt', label: 'Date added' },
+                    { value: 'lastPlayed', label: 'Date played' },
+                    // only allow sorting by rating if the option is enabled
+                    ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
+                  ]}
+                  setter={setSortCollectionItems}
+                />
+                <FilterToggle
+                  value={orderCollectionItems}
+                  options={[
+                    { value: 'asc', label: 'Ascending' },
+                    { value: 'desc', label: 'Descending' },
+                  ]}
+                  setter={setOrderCollectionItems}
+                  icon={orderCollectionItems === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+                />
+              </>
+            )}
+          </>
+        }
+      />
       {!sortedCollectionItems && <Loading forceVisible inline />}
       {sortedCollectionItems && viewCollectionItems === 'grid' && (
         <ListCards variant={'artists'} entries={sortedCollectionItems} />

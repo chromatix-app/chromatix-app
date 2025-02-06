@@ -12,7 +12,8 @@ import { useGetFolderItems } from 'js/hooks';
 // ======================================================================
 
 const FolderList = () => {
-  const { folderId } = useParams();
+  const { folderId = 'root' } = useParams();
+
   const {
     viewFolders,
     sortFolders,
@@ -29,6 +30,7 @@ const FolderList = () => {
   return (
     <>
       <TitleHeading
+        key={'folder-' + folderId}
         title="Folders"
         subtitle={
           sortedFolders ? sortedFolders?.length + ' Item' + (sortedFolders?.length !== 1 ? 's' : '') : <>&nbsp;</>

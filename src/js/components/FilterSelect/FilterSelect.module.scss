@@ -56,6 +56,10 @@
 
   @include focus-self-fill;
 
+  &:hover {
+    background: var(--color-opacity-005);
+  }
+
   &[data-state='checked'] {
     color: var(--color-primary);
   }

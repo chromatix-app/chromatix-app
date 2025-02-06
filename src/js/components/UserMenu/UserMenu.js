@@ -8,15 +8,13 @@ import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 
 import { Icon } from 'js/components';
+import { appPlatform } from 'js/utils';
 
 import style from './UserMenu.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
-
-const isElectron = window?.isElectron;
-const electronPlatform = isElectron ? (window?.electronProcess?.platform === 'darwin' ? 'mac' : 'win') : null;
 
 const UserMenu = ({ variant = 'default' }) => {
   const dispatch = useDispatch();
@@ -40,7 +38,7 @@ const UserMenu = ({ variant = 'default' }) => {
 
   return (
     <>
-      {showMenu && electronPlatform !== 'win' && <div className={style.overlay} onClick={toggleMenu}></div>}
+      {showMenu && appPlatform !== 'win' && <div className={style.overlay} onClick={toggleMenu}></div>}
 
       <div
         className={clsx(style.wrap, style[`wrap${variant}`], {
@@ -103,7 +101,7 @@ const UserMenu = ({ variant = 'default' }) => {
                               }}
                             >
                               <span className={style.iconBefore}>
-                                <Icon icon="MusicNoteIcon" cover stroke />
+                                <Icon icon="MusicNoteDoubleIcon" cover stroke />
                               </span>
                               {library.title}
                               {isCurrentLibrary && (

@@ -16,7 +16,7 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   const playlistSortString = isRatingSortHidden ? null : currentSortString;
 
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
-  const playlistInfo = allPlaylists?.filter((playlist) => playlist.playlistId === playlistId)[0];
+  const playlistInfo = allPlaylists?.find((playlist) => playlist.playlistId === playlistId);
 
   const allPlaylistTracks = useSelector(({ appModel }) => appModel.allPlaylistTracks);
   const playlistTracks = allPlaylistTracks[libraryId + '-' + playlistId];

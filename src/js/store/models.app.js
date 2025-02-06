@@ -46,6 +46,7 @@ const plexLibraryState = {
   // albums
   allAlbums: null,
   allAlbumTracks: {},
+  haveGotAllAlbums: false,
   // folders
   allFolderItems: {},
   // playlists
@@ -71,6 +72,9 @@ const plexLibraryState = {
   allArtistMoodItems: {},
   allAlbumMoods: null,
   allAlbumMoodItems: {},
+  // search results
+  searchResultCounter: 0,
+  searchResults: null,
 };
 
 const state = Object.assign({}, appState, userState, plexServerState, plexLibraryState);
