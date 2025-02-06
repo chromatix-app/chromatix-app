@@ -68,17 +68,19 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
 
   // Get the required album data
   useEffect(() => {
-    plex.getAllAlbums();
+    // plex.getAllAlbums();
+    plex.getAlbumDetails(libraryId, albumId);
     plex.getAlbumTracks(libraryId, albumId);
   }, [albumId, libraryId]);
 
-  // Fallback in case album data is not included in the allAlbums array
-  useEffect(() => {
-    if (allAlbums && !albumInfo) {
-      plex.getAlbumDetails(libraryId, albumId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allAlbums, albumInfo]);
+  // // Fallback in case album data is not included in the allAlbums array
+  // useEffect(() => {
+  //   console.log(allAlbums);
+  //   if (allAlbums && !albumInfo) {
+  //     plex.getAlbumDetails(libraryId, albumId);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [allAlbums, albumInfo]);
 
   return {
     albumInfo,

@@ -553,8 +553,8 @@ let getAllAlbumsRunning;
 
 export const getAllAlbums = async () => {
   if (!getAllAlbumsRunning) {
-    const prevAllAlbums = store.getState().appModel.allAlbums;
-    if (!prevAllAlbums) {
+    const haveGotAllAlbums = store.getState().appModel.haveGotAllAlbums;
+    if (!haveGotAllAlbums) {
       getAllAlbumsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
@@ -570,7 +570,10 @@ export const getAllAlbums = async () => {
 
       // console.log('allAlbums', allAlbums);
 
-      store.dispatch.appModel.setAppState({ allAlbums });
+      store.dispatch.appModel.setAppState({
+        haveGotAllAlbums: true,
+        allAlbums,
+      });
 
       getAllAlbumsRunning = false;
     }
