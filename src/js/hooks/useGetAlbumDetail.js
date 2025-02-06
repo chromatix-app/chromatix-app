@@ -73,6 +73,7 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
       plex.getAlbumDetails(libraryId, albumId);
     }
     plex.getAlbumTracks(libraryId, albumId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [albumId, libraryId]);
 
   // // Fallback in case album data is not included in the allAlbums array
