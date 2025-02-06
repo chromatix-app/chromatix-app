@@ -1,6 +1,6 @@
 {
   "name": "chromatix",
-  "version": "0.28.1",
+  "version": "0.29.0",
   "description": "",
   "license": "UNLICENSED",
   "private": "true",
@@ -13,7 +13,8 @@
     "release:dev": "release-it --preReleaseId=beta --config .release-it.dev.json"
   },
   "dependencies": {
-    "@radix-ui/react-select": "^2.0.0",
+    "@radix-ui/react-popover": "^1.1.5",
+    "@radix-ui/react-select": "^2.1.5",
     "@rematch/core": "^2.2.0",
     "@vercel/analytics": "^1.2.2",
     "axios": "^1.6.8",

@@ -26,6 +26,7 @@ const AlbumCollectionList = () => {
   return (
     <>
       <TitleHeading
+        key="AlbumCollectionList"
         title="Album Collections"
         subtitle={
           sortedCollections ? (

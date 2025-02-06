@@ -39,14 +39,14 @@ store.subscribe(() => {
 // debounce - use timeout to prevent writing data too many times in quick succession
 
 let saveDataTimeout;
-const saveDataInterval = 100;
+const saveDataDebounce = 100;
 
 const saveData = () => {
   clearTimeout(saveDataTimeout);
   saveDataTimeout = setTimeout(function () {
     savePersistentData();
     saveSessionData();
-  }, saveDataInterval);
+  }, saveDataDebounce);
 };
 
 // actually save the data

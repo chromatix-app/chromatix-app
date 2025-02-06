@@ -4,19 +4,16 @@
 
 import moment from 'moment';
 
+import { isElectron, electronPlatform, electronVersion, electronBuildDate } from 'js/utils';
+
 import style from './SettingsAbout.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const isElectron = window?.isElectron;
-const electronPlatform = (isElectron && window?.electronProcess?.platform) || null;
-const electronVersion = (isElectron && window?.electronProcess?.appVersion) || null;
-const electronDate = (isElectron && window?.electronProcess?.buildDate) || null;
-
-const appDate = electronDate ? moment(electronDate * 1000) : null;
-const webDate = moment(process.env.REACT_APP_DATE * 1000);
+const electronMoment = electronBuildDate ? moment(electronBuildDate * 1000) : null;
+const webMoment = moment(process.env.REACT_APP_DATE * 1000);
 
 const capitalise = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -25,7 +22,7 @@ const capitalise = (string) => {
 export const SettingsAbout = () => {
   return (
     <div className={style.wrap}>
-      {isElectron && (electronVersion || electronPlatform || electronDate) && (
+      {isElectron && (electronVersion || electronPlatform || electronBuildDate) && (
         <div className={style.group}>
           <div className={style.title}>Chromatix Desktop</div>
           <div className={style.body}>
@@ -39,10 +36,10 @@ export const SettingsAbout = () => {
                 Platform: <strong>{capitalise(electronPlatform)}</strong>
               </p>
             )}
-            {electronDate && (
+            {electronMoment && (
               <p>
-                Compiled: <strong>{appDate.format('dddd Do MMMM YYYY')}</strong> at{' '}
-                <strong>{appDate.format('HH:mm:ss')}</strong>
+                Compiled: <strong>{electronMoment.format('dddd Do MMMM YYYY')}</strong> at{' '}
+                <strong>{electronMoment.format('HH:mm:ss')}</strong>
               </p>
             )}
           </div>
@@ -59,8 +56,8 @@ export const SettingsAbout = () => {
             Environment: <strong>{capitalise(process.env.REACT_APP_ENV)}</strong>
           </p>
           <p>
-            Compiled: <strong>{webDate.format('dddd Do MMMM YYYY')}</strong> at{' '}
-            <strong>{webDate.format('HH:mm:ss')}</strong>
+            Compiled: <strong>{webMoment.format('dddd Do MMMM YYYY')}</strong> at{' '}
+            <strong>{webMoment.format('HH:mm:ss')}</strong>
           </p>
         </div>
       </div>

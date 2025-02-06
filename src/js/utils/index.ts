@@ -4,6 +4,7 @@ export { default as decimalMultiplier } from './decimalMultiplier';
 export { default as decimalToHex } from './decimalToHex';
 export { default as durationToStringLong } from './durationToStringLong';
 export { default as durationToStringShort } from './durationToStringShort';
+export * from './environment';
 export { default as formatRecentDate } from './formatRecentDate';
 export { default as getTrackKeys } from './getTrackKeys';
 export { default as pageWasReloaded } from './pageWasReloaded';

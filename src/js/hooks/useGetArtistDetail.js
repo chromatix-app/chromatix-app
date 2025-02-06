@@ -10,7 +10,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   const allArtists = useSelector(({ appModel }) => appModel.allArtists);
-  const artistInfo = allArtists?.filter((artist) => artist.artistId === artistId)[0];
+  const artistInfo = allArtists?.find((artist) => artist.artistId === artistId);
 
   const allArtistAlbums = useSelector(({ appModel }) => appModel.allArtistAlbums);
   const artistAlbums = allArtistAlbums[libraryId + '-' + artistId];

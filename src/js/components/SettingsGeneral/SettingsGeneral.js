@@ -32,7 +32,8 @@ export const SettingsGeneral = () => {
 const InterfaceSettings = () => {
   const dispatch = useDispatch();
 
-  const { optionShowFullTitles, optionShowStarRatings } = useSelector(({ sessionModel }) => sessionModel);
+  const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   const menuItems = [
     {
@@ -71,7 +72,7 @@ const InterfaceSettings = () => {
 const PlexSettings = () => {
   const dispatch = useDispatch();
 
-  const { optionLogPlexPlayback } = useSelector(({ sessionModel }) => sessionModel);
+  const optionLogPlexPlayback = useSelector(({ sessionModel }) => sessionModel.optionLogPlexPlayback);
 
   const menuItems = [
     {

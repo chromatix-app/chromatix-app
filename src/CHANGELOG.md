@@ -1,3 +1,11 @@
+<a name="0.29.0"></a>
+# 0.29.0 (2025-02-06)
+Refactor:
+- Lots of performance improvements.
+- Lots of UI optimisations.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.28.0"></a>
 # 0.28.0 (2025-02-02)
 Features:

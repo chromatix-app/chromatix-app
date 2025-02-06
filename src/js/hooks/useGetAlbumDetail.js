@@ -17,7 +17,7 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const albumSortString = isRatingSortHidden ? null : currentSortString;
 
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums);
-  const albumInfo = allAlbums?.filter((album) => album.albumId === albumId)[0];
+  const albumInfo = allAlbums?.find((album) => album.albumId === albumId);
 
   const allAlbumTracks = useSelector(({ appModel }) => appModel.allAlbumTracks);
   const albumTracks = allAlbumTracks[libraryId + '-' + albumId];
@@ -68,17 +68,22 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
 
   // Get the required album data
   useEffect(() => {
-    plex.getAllAlbums();
-    plex.getAlbumTracks(libraryId, albumId);
-  }, [albumId, libraryId]);
-
-  // Fallback in case album data is not included in the allAlbums array
-  useEffect(() => {
-    if (allAlbums && !albumInfo) {
+    // plex.getAllAlbums();
+    if (!albumInfo) {
       plex.getAlbumDetails(libraryId, albumId);
     }
+    plex.getAlbumTracks(libraryId, albumId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allAlbums, albumInfo]);
+  }, [albumId, libraryId]);
+
+  // // Fallback in case album data is not included in the allAlbums array
+  // useEffect(() => {
+  //   console.log(allAlbums);
+  //   if (allAlbums && !albumInfo) {
+  //     plex.getAlbumDetails(libraryId, albumId);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [allAlbums, albumInfo]);
 
   return {
     albumInfo,

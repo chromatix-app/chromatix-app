@@ -10,6 +10,7 @@ import clsx from 'clsx';
 import { ControlBar, RightBar, SideBar, UserMenu } from 'js/components';
 import { useColorTheme, useGotRequiredData, useScrollRestoration, useWindowSize } from 'js/hooks';
 import { ErrorPlexGeneral, ErrorPlexLogin } from 'js/pages';
+import { isElectron, electronPlatform } from 'js/utils';
 import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 
 // ======================================================================
@@ -19,21 +20,15 @@ import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 const isProduction = process.env.REACT_APP_ENV === 'production';
 // const isLocal = process.env.REACT_APP_ENV === 'local';
 
-const isElectron = window?.isElectron;
-const electronPlatform = isElectron ? (window?.electronProcess?.platform === 'darwin' ? 'mac' : 'win') : null;
-
 const App = () => {
   const inited = useSelector(({ appModel }) => appModel.inited);
   const loggedIn = useSelector(({ appModel }) => appModel.loggedIn);
   const plexErrorGeneral = useSelector(({ appModel }) => appModel.plexErrorGeneral);
   const plexErrorLogin = useSelector(({ appModel }) => appModel.plexErrorLogin);
 
+  const accessibilityFocus = useSelector(({ sessionModel }) => sessionModel.accessibilityFocus);
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
-
-  const { accessibilityFocus } = useSelector(({ sessionModel }) => sessionModel);
-
-  const debugConsole = useSelector(({ persistentModel }) => persistentModel.debugConsole);
 
   const gotRequiredData = useGotRequiredData();
 
@@ -45,12 +40,12 @@ const App = () => {
 
   // disable console logs
   useEffect(() => {
-    if (isProduction && !debugConsole) {
+    if (isProduction) {
       console.log = () => {};
       console.error = () => {};
       console.debug = () => {};
     }
-  }, [debugConsole]);
+  }, []);
 
   // initialise on load
   useEffect(() => {
@@ -142,8 +137,9 @@ const App = () => {
 const breakPoints = [620, 680, 800, 860, 920, 980];
 
 const AppMain = () => {
-  const [contentContainerClass, setContentContainerClass] = useState(0);
   const contentRef = useRef();
+
+  const [contentContainerClass, setContentContainerClass] = useState(0);
 
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
 

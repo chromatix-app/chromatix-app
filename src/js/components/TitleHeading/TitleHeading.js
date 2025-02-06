@@ -14,7 +14,7 @@ import style from './TitleHeading.module.scss';
 // COMPONENT
 // ======================================================================
 
-const TitleHeading = ({ title, subtitle, detail, thumb, icon, handlePlay, filters }) => {
+const TitleHeading = ({ title, subtitle, detail, thumb, icon, showPlay, handlePlay, filters }) => {
   const triggerRef = useRef(null);
   const isNearTop = useNearTop(triggerRef, 90);
 
@@ -42,15 +42,15 @@ const TitleHeading = ({ title, subtitle, detail, thumb, icon, handlePlay, filter
           {title && <h1 className={clsx(style.title, style[titleSize])}>{title}</h1>}
           {subtitle && <h2 className={style.subtitle}>{subtitle}</h2>}
           {detail && <div className={style.detail}>{detail}</div>}
-          {handlePlay && (
+          {showPlay && (
             <div className={style.buttons}>
-              <button className={style.playButton} onClick={() => handlePlay(false)}>
+              <button className={style.playButton} onClick={() => handlePlay && handlePlay(false)}>
                 <span className={style.playIcon}>
                   <Icon icon="PlayFilledIcon" cover />
                 </span>
                 <span className={style.playText}>Play</span>
               </button>
-              <button className={style.shuffleButton} onClick={() => handlePlay(true)}>
+              <button className={style.shuffleButton} onClick={() => handlePlay && handlePlay(true)}>
                 <span className={style.shuffleIcon}>
                   <Icon icon="ShuffleIcon" cover stroke strokeWidth={1.4} />
                 </span>
