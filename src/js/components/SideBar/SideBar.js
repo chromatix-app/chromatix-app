@@ -84,7 +84,11 @@ const SideBar = () => {
         </button>
       </div>
 
-      {electronPlatform === 'win' && <UserMenu variant="Inline" />}
+      {electronPlatform === 'win' && (
+        <div className={style.userMenu}>
+          <UserMenu variant="Inline" />
+        </div>
+      )}
 
       {isLocal && <SearchField />}
 
