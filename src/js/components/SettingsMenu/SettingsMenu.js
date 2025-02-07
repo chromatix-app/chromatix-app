@@ -41,7 +41,8 @@ export const SettingsMenu = () => {
 const GeneralSettings = () => {
   const dispatch = useDispatch();
 
-  const { menuShowIcons, menuShowSearch } = useSelector(({ sessionModel }) => sessionModel);
+  const menuShowIcons = useSelector(({ sessionModel }) => sessionModel.menuShowIcons);
+  const menuShowSearch = useSelector(({ sessionModel }) => sessionModel.menuShowSearch);
 
   const menuItems = [
     { key: 'menuShowIcons', label: 'Show icons', state: menuShowIcons },
@@ -73,9 +74,10 @@ const GeneralSettings = () => {
 const LibrarySettings = () => {
   const dispatch = useDispatch();
 
-  const { menuShowArtists, menuShowAlbums, menuShowFolders, menuShowPlaylists } = useSelector(
-    ({ sessionModel }) => sessionModel
-  );
+  const menuShowArtists = useSelector(({ sessionModel }) => sessionModel.menuShowArtists);
+  const menuShowAlbums = useSelector(({ sessionModel }) => sessionModel.menuShowAlbums);
+  const menuShowFolders = useSelector(({ sessionModel }) => sessionModel.menuShowFolders);
+  const menuShowPlaylists = useSelector(({ sessionModel }) => sessionModel.menuShowPlaylists);
 
   const menuItems = [
     { key: 'menuShowArtists', label: 'Artists', state: menuShowArtists },
@@ -161,7 +163,7 @@ const BrowseSettings = () => {
 const PlaylistSettings = () => {
   const dispatch = useDispatch();
 
-  const { menuShowAllPlaylists } = useSelector(({ sessionModel }) => sessionModel);
+  const menuShowAllPlaylists = useSelector(({ sessionModel }) => sessionModel.menuShowAllPlaylists);
 
   const menuItems = [{ key: 'menuShowAllPlaylists', label: 'Show playlists', state: menuShowAllPlaylists }];
 
