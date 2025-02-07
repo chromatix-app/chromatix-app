@@ -1,8 +1,14 @@
+<a name="0.30.0"></a>
+# 0.30.0 (2025-02-07)
+Features:
+- Search functionality has been added.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.29.0"></a>
 # 0.29.0 (2025-02-06)
 Refactor:
-- Lots of performance improvements.
-- Lots of UI optimisations.
+- Lots of performance improvements and optimisations.
 
 <!-- CHANGELOG SPLIT MARKER -->
 

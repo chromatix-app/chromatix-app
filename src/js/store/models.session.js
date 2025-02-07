@@ -27,6 +27,7 @@ const sessionState = {
   accessibilityContrast: false,
 
   menuShowIcons: true,
+  menuShowSearch: true,
   menuShowAllPlaylists: true,
   menuShowSeparateBrowseSection: true,
 

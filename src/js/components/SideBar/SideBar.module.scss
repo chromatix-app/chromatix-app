@@ -39,12 +39,28 @@
 }
 
 //
+// USER MENU
+//
+
+.userMenu {
+  margin-top: 16px;
+}
+
+//
 // SEARCH
 //
 
-.searchInput {
+.search {
+  // below nav
   margin-top: 20px;
 
+  // below user menu
+  .userMenu + & {
+    margin-top: 10px;
+  }
+}
+
+.searchInput {
   input {
     display: block;
     width: 100%;
@@ -209,12 +225,19 @@
 
   @include focus-self-outline;
 
-  .search + & {
+  // below nav
+  .nav + & {
+    margin-top: 16px;
+  }
+
+  // below user menu
+  .userMenu + & {
     margin-top: 18px;
   }
 
-  .nav + & {
-    margin-top: 20px;
+  // below search bar
+  .search + & {
+    margin-top: 18px;
   }
 }
 

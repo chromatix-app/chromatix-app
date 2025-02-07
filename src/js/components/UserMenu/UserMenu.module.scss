@@ -14,8 +14,6 @@
     top: 0;
     left: 0;
     right: auto;
-    margin-top: 16px;
-    margin-bottom: 20px;
   }
 
   &WithoutLibrary {
@@ -71,7 +69,9 @@
   .wrapInline & {
     flex-direction: row-reverse;
     width: 100%;
-    background: var(--color-opacity-0025);
+    background: var(--color-border);
+    border: 1px solid var(--color-opacity-005);
+    border-radius: 6px;
     box-shadow: none;
   }
 
@@ -172,6 +172,8 @@
 
   .wrapInline & {
     max-height: none;
+    margin: 3px 0 0 auto;
+    border-radius: 6px;
     box-shadow: none;
   }
 }
@@ -191,10 +193,20 @@
   &:first-child {
     border-top-left-radius: 9px;
     border-top-right-radius: 9px;
+
+    .wrapInline & {
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+    }
   }
   &:last-child {
     border-bottom-left-radius: 9px;
     border-bottom-right-radius: 9px;
+
+    .wrapInline & {
+      border-bottom-left-radius: 6px;
+      border-bottom-right-radius: 6px;
+    }
   }
 
   &.buttonLibrary {
@@ -208,6 +220,7 @@
   .wrapInline & {
     padding-right: 36px;
     background: var(--color-opacity-0025);
+    border-color: var(--color-opacity-01);
 
     &:hover {
       background: var(--color-hover);
