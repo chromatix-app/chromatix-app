@@ -336,11 +336,13 @@ const searchLibrary2 = async (query, searchCounter) => {
           searchResultCounter: searchCounter,
         });
       }
+
+      analyticsEvent('Plex: Search');
     })
     .catch((error) => {
       console.error(error);
       store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
-      analyticsEvent('Error: Plex Get All Libraries');
+      analyticsEvent('Error: Plex Search');
     });
 };
 
