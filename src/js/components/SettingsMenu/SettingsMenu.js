@@ -3,6 +3,7 @@
 // ======================================================================
 
 import { useDispatch, useSelector } from 'react-redux';
+import clsx from 'clsx';
 
 import style from './SettingsMenu.module.scss';
 
@@ -25,6 +26,10 @@ export const SettingsMenu = () => {
         <div className={style.title}>Browse</div>
         <BrowseSettings />
       </div>
+      <div className={style.group}>
+        <div className={style.title}>Playlists</div>
+        <PlaylistSettings />
+      </div>
     </div>
   );
 };
@@ -36,18 +41,11 @@ export const SettingsMenu = () => {
 const GeneralSettings = () => {
   const dispatch = useDispatch();
 
-  const { menuShowIcons, menuShowAllPlaylists, menuShowSeparateBrowseSection } = useSelector(
-    ({ sessionModel }) => sessionModel
-  );
+  const { menuShowIcons, menuShowSearch } = useSelector(({ sessionModel }) => sessionModel);
 
   const menuItems = [
     { key: 'menuShowIcons', label: 'Show icons', state: menuShowIcons },
-    {
-      key: 'menuShowSeparateBrowseSection',
-      label: 'Show separate "Browse" section',
-      state: menuShowSeparateBrowseSection,
-    },
-    { key: 'menuShowAllPlaylists', label: 'Show playlists', state: menuShowAllPlaylists },
+    { key: 'menuShowSearch', label: 'Show search', state: menuShowSearch },
   ];
 
   return (
@@ -111,6 +109,7 @@ const LibrarySettings = () => {
 const BrowseSettings = () => {
   const dispatch = useDispatch();
 
+  const menuShowSeparateBrowseSection = useSelector(({ sessionModel }) => sessionModel.menuShowSeparateBrowseSection);
   const menuShowArtistCollections = useSelector(({ sessionModel }) => sessionModel.menuShowArtistCollections);
   const menuShowAlbumCollections = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumCollections);
   const menuShowArtistGenres = useSelector(({ sessionModel }) => sessionModel.menuShowArtistGenres);
@@ -121,6 +120,12 @@ const BrowseSettings = () => {
   const menuShowAlbumStyles = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumStyles);
 
   const menuItems = [
+    {
+      key: 'menuShowSeparateBrowseSection',
+      label: 'Show as separate "Browse" section',
+      state: menuShowSeparateBrowseSection,
+      variant: 'spaceBelow',
+    },
     { key: 'menuShowArtistCollections', label: 'Artist Collections', state: menuShowArtistCollections },
     { key: 'menuShowAlbumCollections', label: 'Album Collections', state: menuShowAlbumCollections },
     { key: 'menuShowArtistGenres', label: 'Artist Genres', state: menuShowArtistGenres },
@@ -130,6 +135,35 @@ const BrowseSettings = () => {
     { key: 'menuShowArtistStyles', label: 'Artist Styles', state: menuShowArtistStyles },
     { key: 'menuShowAlbumStyles', label: 'Album Styles', state: menuShowAlbumStyles },
   ];
+
+  return (
+    <div className={style.menu}>
+      {menuItems.map(({ key, label, state, variant }) => (
+        <div key={key} className={clsx(style.menuEntry, variant && style[variant])}>
+          <label>
+            <input
+              type="checkbox"
+              checked={state}
+              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
+            />
+            <div>{label}</div>
+          </label>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+//
+// PLAYLIST
+//
+
+const PlaylistSettings = () => {
+  const dispatch = useDispatch();
+
+  const { menuShowAllPlaylists } = useSelector(({ sessionModel }) => sessionModel);
+
+  const menuItems = [{ key: 'menuShowAllPlaylists', label: 'Show playlists', state: menuShowAllPlaylists }];
 
   return (
     <div className={style.menu}>
