@@ -18,7 +18,7 @@ import style from './SideBar.module.scss';
 // COMPONENT
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
+// const isLocal = process.env.REACT_APP_ENV === 'local';
 
 const SideBar = () => {
   const dispatch = useDispatch();
@@ -28,6 +28,7 @@ const SideBar = () => {
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
 
   const menuShowIcons = useSelector(({ sessionModel }) => sessionModel.menuShowIcons);
+  const menuShowSearch = useSelector(({ sessionModel }) => sessionModel.menuShowSearch);
   const menuShowAllPlaylists = useSelector(({ sessionModel }) => sessionModel.menuShowAllPlaylists);
   const menuShowSeparateBrowseSection = useSelector(({ sessionModel }) => sessionModel.menuShowSeparateBrowseSection);
 
@@ -84,9 +85,13 @@ const SideBar = () => {
         </button>
       </div>
 
-      {electronPlatform === 'win' && <UserMenu variant="Inline" />}
+      {electronPlatform === 'win' && (
+        <div className={style.userMenu}>
+          <UserMenu variant="Inline" />
+        </div>
+      )}
 
-      {isLocal && <SearchField />}
+      {menuShowSearch && <SearchField />}
 
       {(libraryIsVisible || (browseIsVisible && !menuShowSeparateBrowseSection)) && (
         <>
