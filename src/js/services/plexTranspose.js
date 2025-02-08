@@ -178,6 +178,7 @@ export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBase
     if (result.type === 'artist') {
       return {
         score: result.score,
+        artistId: result.ratingKey,
         type: 'artist',
         icon: 'PeopleIcon',
         title: result.title,
@@ -187,6 +188,7 @@ export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBase
     } else if (result.type === 'album') {
       return {
         score: result.score,
+        albumId: result.ratingKey,
         type: 'album',
         icon: 'PlayCircleIcon',
         title: result.title,
@@ -198,6 +200,7 @@ export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBase
       const playlistThumb = result.thumb ? result.thumb : result.composite ? result.composite : null;
       return {
         score: result.score,
+        playlistId: result.ratingKey,
         type: 'playlist',
         icon: 'PlaylistIcon',
         title: result.title,
@@ -208,6 +211,7 @@ export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBase
       const collectionThumb = result.thumb ? result.thumb : result.composite ? result.composite : null;
       return {
         score: result.score,
+        collectionId: result.ratingKey,
         type: result.subtype + ' collection',
         icon: result.subtype === 'artist' ? 'ArtistCollectionsIcon' : 'AlbumCollectionsIcon',
         title: result.title,
@@ -221,6 +225,7 @@ export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBase
     } else if (result.type === 'track') {
       return {
         score: result.score,
+        trackId: result.ratingKey,
         type: 'track',
         icon: 'MusicNoteSingleIcon',
         title: result.title,

@@ -2,13 +2,14 @@
 // IMPORTS
 // ======================================================================
 
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 // import moment from 'moment';
 import clsx from 'clsx';
 
 import { Icon, StarRating } from 'js/components';
+import { useScrollToTrack } from 'js/hooks';
 // import { durationToStringLong } from 'js/utils';
 
 import style from './ListCards.module.scss';
@@ -30,10 +31,6 @@ const iconImageMap = {
 };
 
 const ListCards = ({ variant, folderId, entries, playingOrder, sortKey }) => {
-  const dispatch = useDispatch();
-
-  const scrollToPlaying = useSelector(({ appModel }) => appModel.scrollToPlaying);
-
   const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
 
   const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
@@ -49,17 +46,7 @@ const ListCards = ({ variant, folderId, entries, playingOrder, sortKey }) => {
 
   const iconImage = iconImageMap[variant];
 
-  // scroll to playing track, if required
-  useEffect(() => {
-    if (scrollToPlaying) {
-      const playingElement = document.getElementById(trackDetail?.trackId);
-      if (playingElement) {
-        playingElement.scrollIntoView({ block: 'center' });
-      }
-      dispatch.appModel.setAppState({ scrollToPlaying: false });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scrollToPlaying]);
+  useScrollToTrack();
 
   let trackNumber = 0;
 
