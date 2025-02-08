@@ -844,18 +844,18 @@ export const getAllCollections = async () => {
 };
 
 // ======================================================================
-// GET ARTIST COLLECTION ITEMS
+// GET COLLECTION ITEMS
 // ======================================================================
 
-let getArtistCollectionItemsRunning;
+let getCollectionItemsRunning;
 
-export const getArtistCollectionItems = async (libraryId, collectionId) => {
-  if (!getArtistCollectionItemsRunning) {
-    const prevArtistCollectionItems =
-      store.getState().appModel.allArtistCollectionItems[libraryId + '-' + collectionId];
-    if (!prevArtistCollectionItems) {
-      console.log('%c--- plex - getArtistCollectionItems ---', 'color:#f9743b;');
-      getArtistCollectionItemsRunning = true;
+export const getCollectionItems = async (libraryId, collectionId, typeKey) => {
+  if (!getCollectionItemsRunning) {
+    const prevCollectionItems =
+      store.getState().appModel[`all${typeKey}CollectionItems`][libraryId + '-' + collectionId];
+    if (!prevCollectionItems) {
+      console.log('%c--- plex - getCollectionItems ---', 'color:#f9743b;');
+      getCollectionItemsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const endpoint = endpointConfig.collection.getItems(plexBaseUrl, collectionId);
@@ -863,49 +863,20 @@ export const getArtistCollectionItems = async (libraryId, collectionId) => {
 
       // console.log(data.MediaContainer.Metadata);
 
-      const artistCollectionItems =
-        data.MediaContainer.Metadata?.map((artist) =>
-          plexTranspose.transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
+      const collectionItems =
+        data.MediaContainer.Metadata?.map((item) =>
+          plexTranspose[`transpose${typeKey}Data`](item, libraryId, plexBaseUrl, accessToken)
         ) || [];
 
       // console.log('collectionItems', collectionItems);
 
-      store.dispatch.appModel.storeArtistCollectionItems({ libraryId, collectionId, artistCollectionItems });
+      store.dispatch.appModel[`store${typeKey}CollectionItems`]({
+        libraryId,
+        collectionId,
+        collectionItems,
+      });
 
-      getArtistCollectionItemsRunning = false;
-    }
-  }
-};
-
-// ======================================================================
-// GET ALBUM COLLECTION ITEMS
-// ======================================================================
-
-let getAlbumCollectionItemsRunning;
-
-export const getAlbumCollectionItems = async (libraryId, collectionId) => {
-  if (!getAlbumCollectionItemsRunning) {
-    const prevAlbumCollectionItems = store.getState().appModel.allAlbumCollectionItems[libraryId + '-' + collectionId];
-    if (!prevAlbumCollectionItems) {
-      console.log('%c--- plex - getAlbumCollectionItems ---', 'color:#f9743b;');
-      getAlbumCollectionItemsRunning = true;
-      const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-      const endpoint = endpointConfig.collection.getItems(plexBaseUrl, collectionId);
-      const data = await fetchData(endpoint, accessToken);
-
-      // console.log(data.MediaContainer.Metadata);
-
-      const albumCollectionItems =
-        data.MediaContainer.Metadata?.map((album) =>
-          plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
-        ) || [];
-
-      // console.log('collectionItems', collectionItems);
-
-      store.dispatch.appModel.storeAlbumCollectionItems({ libraryId, collectionId, albumCollectionItems });
-
-      getAlbumCollectionItemsRunning = false;
+      getCollectionItemsRunning = false;
     }
   }
 };

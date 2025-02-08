@@ -63,11 +63,13 @@ const useGetCollectionItems = ({
 
   useEffect(() => {
     if (collectionKey.includes('Collections')) {
+      const collectionType = collectionKey.includes('Artist') ? 'Artist' : 'Album';
       plex.getAllCollections();
+      plex.getCollectionItems(libraryId, collectionId, collectionType);
     } else {
       plex[`getAll${collectionKey}`]();
+      plex[`get${itemsKey}`](libraryId, collectionId);
     }
-    plex[`get${itemsKey}`](libraryId, collectionId);
   }, [itemsKey, collectionId, collectionKey, libraryId]);
 
   return {
