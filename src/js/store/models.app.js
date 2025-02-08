@@ -16,12 +16,15 @@ const maxDataLength = 5;
 
 const appState = {
   inited: false,
+  isOnline: true,
   standalone: false,
   history: null,
 
-  plexErrorGeneral: false,
-  plexErrorLogin: false,
-  plexErrorServer: false,
+  errorPlexFastestServer: false,
+  errorPlexLibraries: false,
+  errorPlexLogin: false,
+  errorPlexServers: false,
+  errorPlexUser: false,
 
   scrollToPlaying: false,
   scrollToTrack: false,
@@ -64,16 +67,16 @@ const plexLibraryState = {
   allArtistGenreItems: {},
   allAlbumGenres: null,
   allAlbumGenreItems: {},
-  // styles
-  allArtistStyles: null,
-  allArtistStyleItems: {},
-  allAlbumStyles: null,
-  allAlbumStyleItems: {},
   // moods
   allArtistMoods: null,
   allArtistMoodItems: {},
   allAlbumMoods: null,
   allAlbumMoodItems: {},
+  // styles
+  allArtistStyles: null,
+  allArtistStyleItems: {},
+  allAlbumStyles: null,
+  allAlbumStyleItems: {},
   // search results
   searchResultCounter: 0,
   searchResults: null,
@@ -166,26 +169,55 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX
+  // PLEX ERROR HANDLING
   //
 
-  plexErrorLogin(payload, rootState) {
-    // console.log('%c--- plexErrorLogin ---', 'color:#07a098');
+  dismissErrorPlexFastestServer(payload, rootState) {
+    // console.log('%c--- dismissErrorPlexFastestServer ---', 'color:#07a098');
     dispatch.appModel.setAppState({
-      plexErrorLogin: true,
+      errorPlexFastestServer: false,
     });
+    dispatch.sessionModel.unsetCurrentServer();
   },
 
-  dismissPlexErrorLogin(payload, rootState) {
-    // console.log('%c--- dismissPlexErrorLogin ---', 'color:#07a098');
+  dismissErrorPlexLibraries(payload, rootState) {
+    // console.log('%c--- dismissErrorPlexLibraries ---', 'color:#07a098');
+    dispatch.appModel.setAppState({
+      errorPlexLibraries: false,
+    });
+    dispatch.sessionModel.unsetCurrentServer();
+  },
+
+  dismissErrorPlexLogin(payload, rootState) {
+    // console.log('%c--- dismissErrorPlexLogin ---', 'color:#07a098');
     if (rootState.appModel.isInited) {
       dispatch.appModel.setAppState({
-        plexErrorLogin: false,
+        errorPlexLogin: false,
       });
     } else {
       window.location.reload();
     }
   },
+
+  dismissErrorPlexServers(payload, rootState) {
+    // console.log('%c--- dismissErrorPlexServers ---', 'color:#07a098');
+    dispatch.appModel.setAppState({
+      errorPlexServers: false,
+    });
+    plex.getAllServers();
+  },
+
+  dismissErrorPlexUser(payload, rootState) {
+    // console.log('%c--- dismissErrorPlexUser ---', 'color:#07a098');
+    dispatch.appModel.setAppState({
+      errorPlexUser: false,
+    });
+    plex.getUserInfo();
+  },
+
+  //
+  // PLEX SERVERS & LIBRARIES
+  //
 
   clearPlexServerState(payload, rootState) {
     console.log('%c--- clearPlexServerState ---', 'color:#07a098');
@@ -332,18 +364,6 @@ const effects = (dispatch) => ({
       }
     });
 
-    // update artist style items
-    const allArtistStyleItems = { ...rootState.appModel.allArtistStyleItems };
-    const styleKeys = Object.keys(allArtistStyleItems);
-    styleKeys.forEach((key) => {
-      const artistStyleItems = allArtistStyleItems[key];
-      const artistIndex = artistStyleItems.findIndex((artist) => artist.artistId === ratingKey);
-      if (artistIndex !== -1) {
-        artistStyleItems[artistIndex].userRating = rating;
-        allArtistStyleItems[key] = artistStyleItems;
-      }
-    });
-
     // update artist mood items
     const allArtistMoodItems = { ...rootState.appModel.allArtistMoodItems };
     const moodKeys = Object.keys(allArtistMoodItems);
@@ -353,6 +373,18 @@ const effects = (dispatch) => ({
       if (artistIndex !== -1) {
         artistMoodItems[artistIndex].userRating = rating;
         allArtistMoodItems[key] = artistMoodItems;
+      }
+    });
+
+    // update artist style items
+    const allArtistStyleItems = { ...rootState.appModel.allArtistStyleItems };
+    const styleKeys = Object.keys(allArtistStyleItems);
+    styleKeys.forEach((key) => {
+      const artistStyleItems = allArtistStyleItems[key];
+      const artistIndex = artistStyleItems.findIndex((artist) => artist.artistId === ratingKey);
+      if (artistIndex !== -1) {
+        artistStyleItems[artistIndex].userRating = rating;
+        allArtistStyleItems[key] = artistStyleItems;
       }
     });
 
@@ -472,18 +504,6 @@ const effects = (dispatch) => ({
       }
     });
 
-    // update album style items
-    const allAlbumStyleItems = { ...rootState.appModel.allAlbumStyleItems };
-    const styleKeys = Object.keys(allAlbumStyleItems);
-    styleKeys.forEach((key) => {
-      const albumStyleItems = allAlbumStyleItems[key];
-      const albumIndex = albumStyleItems.findIndex((album) => album.albumId === ratingKey);
-      if (albumIndex !== -1) {
-        albumStyleItems[albumIndex].userRating = rating;
-        allAlbumStyleItems[key] = albumStyleItems;
-      }
-    });
-
     // update album mood items
     const allAlbumMoodItems = { ...rootState.appModel.allAlbumMoodItems };
     const moodKeys = Object.keys(allAlbumMoodItems);
@@ -493,6 +513,18 @@ const effects = (dispatch) => ({
       if (albumIndex !== -1) {
         albumMoodItems[albumIndex].userRating = rating;
         allAlbumMoodItems[key] = albumMoodItems;
+      }
+    });
+
+    // update album style items
+    const allAlbumStyleItems = { ...rootState.appModel.allAlbumStyleItems };
+    const styleKeys = Object.keys(allAlbumStyleItems);
+    styleKeys.forEach((key) => {
+      const albumStyleItems = allAlbumStyleItems[key];
+      const albumIndex = albumStyleItems.findIndex((album) => album.albumId === ratingKey);
+      if (albumIndex !== -1) {
+        albumStyleItems[albumIndex].userRating = rating;
+        allAlbumStyleItems[key] = albumStyleItems;
       }
     });
 
@@ -623,7 +655,7 @@ const effects = (dispatch) => ({
 
   storeArtistCollectionItems(payload, rootState) {
     console.log('%c--- storeArtistCollectionItems ---', 'color:#07a098');
-    const { libraryId, collectionId, artistCollectionItems } = payload;
+    const { libraryId, collectionId, collectionItems } = payload;
     const allArtistCollectionItems = { ...rootState.appModel.allArtistCollectionItems };
     // limit recent entries
     const keys = Object.keys(allArtistCollectionItems);
@@ -631,7 +663,7 @@ const effects = (dispatch) => ({
       delete allArtistCollectionItems[keys[0]];
     }
     // add the new entry and save
-    allArtistCollectionItems[libraryId + '-' + collectionId] = artistCollectionItems;
+    allArtistCollectionItems[libraryId + '-' + collectionId] = collectionItems;
     dispatch.appModel.setAppState({
       allArtistCollectionItems,
     });
@@ -639,7 +671,7 @@ const effects = (dispatch) => ({
 
   storeAlbumCollectionItems(payload, rootState) {
     console.log('%c--- storeAlbumCollectionItems ---', 'color:#07a098');
-    const { libraryId, collectionId, albumCollectionItems } = payload;
+    const { libraryId, collectionId, collectionItems } = payload;
     const allAlbumCollectionItems = { ...rootState.appModel.allAlbumCollectionItems };
     // limit recent entries
     const keys = Object.keys(allAlbumCollectionItems);
@@ -647,7 +679,7 @@ const effects = (dispatch) => ({
       delete allAlbumCollectionItems[keys[0]];
     }
     // add the new entry and save
-    allAlbumCollectionItems[libraryId + '-' + collectionId] = albumCollectionItems;
+    allAlbumCollectionItems[libraryId + '-' + collectionId] = collectionItems;
     dispatch.appModel.setAppState({
       allAlbumCollectionItems,
     });
@@ -686,7 +718,7 @@ const effects = (dispatch) => ({
 
   storeArtistGenreItems(payload, rootState) {
     console.log('%c--- storeArtistGenreItems ---', 'color:#07a098');
-    const { libraryId, genreId, artistGenreItems } = payload;
+    const { libraryId, setId, setItems } = payload;
     const allArtistGenreItems = { ...rootState.appModel.allArtistGenreItems };
     // limit recent entries
     const keys = Object.keys(allArtistGenreItems);
@@ -694,7 +726,7 @@ const effects = (dispatch) => ({
       delete allArtistGenreItems[keys[0]];
     }
     // add the new entry and save
-    allArtistGenreItems[libraryId + '-' + genreId] = artistGenreItems;
+    allArtistGenreItems[libraryId + '-' + setId] = setItems;
     dispatch.appModel.setAppState({
       allArtistGenreItems,
     });
@@ -702,7 +734,7 @@ const effects = (dispatch) => ({
 
   storeAlbumGenreItems(payload, rootState) {
     console.log('%c--- storeAlbumGenreItems ---', 'color:#07a098');
-    const { libraryId, genreId, albumGenreItems } = payload;
+    const { libraryId, setId, setItems } = payload;
     const allAlbumGenreItems = { ...rootState.appModel.allAlbumGenreItems };
     // limit recent entries
     const keys = Object.keys(allAlbumGenreItems);
@@ -710,45 +742,9 @@ const effects = (dispatch) => ({
       delete allAlbumGenreItems[keys[0]];
     }
     // add the new entry and save
-    allAlbumGenreItems[libraryId + '-' + genreId] = albumGenreItems;
+    allAlbumGenreItems[libraryId + '-' + setId] = setItems;
     dispatch.appModel.setAppState({
       allAlbumGenreItems,
-    });
-  },
-
-  //
-  // PLEX - STYLES
-  //
-
-  storeArtistStyleItems(payload, rootState) {
-    console.log('%c--- storeArtistStyleItems ---', 'color:#07a098');
-    const { libraryId, styleId, artistStyleItems } = payload;
-    const allArtistStyleItems = { ...rootState.appModel.allArtistStyleItems };
-    // limit recent entries
-    const keys = Object.keys(allArtistStyleItems);
-    if (keys.length >= maxDataLength) {
-      delete allArtistStyleItems[keys[0]];
-    }
-    // add the new entry and save
-    allArtistStyleItems[libraryId + '-' + styleId] = artistStyleItems;
-    dispatch.appModel.setAppState({
-      allArtistStyleItems,
-    });
-  },
-
-  storeAlbumStyleItems(payload, rootState) {
-    console.log('%c--- storeAlbumStyleItems ---', 'color:#07a098');
-    const { libraryId, styleId, albumStyleItems } = payload;
-    const allAlbumStyleItems = { ...rootState.appModel.allAlbumStyleItems };
-    // limit recent entries
-    const keys = Object.keys(allAlbumStyleItems);
-    if (keys.length >= maxDataLength) {
-      delete allAlbumStyleItems[keys[0]];
-    }
-    // add the new entry and save
-    allAlbumStyleItems[libraryId + '-' + styleId] = albumStyleItems;
-    dispatch.appModel.setAppState({
-      allAlbumStyleItems,
     });
   },
 
@@ -758,7 +754,7 @@ const effects = (dispatch) => ({
 
   storeArtistMoodItems(payload, rootState) {
     console.log('%c--- storeArtistMoodItems ---', 'color:#07a098');
-    const { libraryId, moodId, artistMoodItems } = payload;
+    const { libraryId, setId, setItems } = payload;
     const allArtistMoodItems = { ...rootState.appModel.allArtistMoodItems };
     // limit recent entries
     const keys = Object.keys(allArtistMoodItems);
@@ -766,7 +762,7 @@ const effects = (dispatch) => ({
       delete allArtistMoodItems[keys[0]];
     }
     // add the new entry and save
-    allArtistMoodItems[libraryId + '-' + moodId] = artistMoodItems;
+    allArtistMoodItems[libraryId + '-' + setId] = setItems;
     dispatch.appModel.setAppState({
       allArtistMoodItems,
     });
@@ -774,7 +770,7 @@ const effects = (dispatch) => ({
 
   storeAlbumMoodItems(payload, rootState) {
     console.log('%c--- storeAlbumMoodItems ---', 'color:#07a098');
-    const { libraryId, moodId, albumMoodItems } = payload;
+    const { libraryId, setId, setItems } = payload;
     const allAlbumMoodItems = { ...rootState.appModel.allAlbumMoodItems };
     // limit recent entries
     const keys = Object.keys(allAlbumMoodItems);
@@ -782,9 +778,45 @@ const effects = (dispatch) => ({
       delete allAlbumMoodItems[keys[0]];
     }
     // add the new entry and save
-    allAlbumMoodItems[libraryId + '-' + moodId] = albumMoodItems;
+    allAlbumMoodItems[libraryId + '-' + setId] = setItems;
     dispatch.appModel.setAppState({
       allAlbumMoodItems,
+    });
+  },
+
+  //
+  // PLEX - STYLES
+  //
+
+  storeArtistStyleItems(payload, rootState) {
+    console.log('%c--- storeArtistStyleItems ---', 'color:#07a098');
+    const { libraryId, setId, setItems } = payload;
+    const allArtistStyleItems = { ...rootState.appModel.allArtistStyleItems };
+    // limit recent entries
+    const keys = Object.keys(allArtistStyleItems);
+    if (keys.length >= maxDataLength) {
+      delete allArtistStyleItems[keys[0]];
+    }
+    // add the new entry and save
+    allArtistStyleItems[libraryId + '-' + setId] = setItems;
+    dispatch.appModel.setAppState({
+      allArtistStyleItems,
+    });
+  },
+
+  storeAlbumStyleItems(payload, rootState) {
+    console.log('%c--- storeAlbumStyleItems ---', 'color:#07a098');
+    const { libraryId, setId, setItems } = payload;
+    const allAlbumStyleItems = { ...rootState.appModel.allAlbumStyleItems };
+    // limit recent entries
+    const keys = Object.keys(allAlbumStyleItems);
+    if (keys.length >= maxDataLength) {
+      delete allAlbumStyleItems[keys[0]];
+    }
+    // add the new entry and save
+    allAlbumStyleItems[libraryId + '-' + setId] = setItems;
+    dispatch.appModel.setAppState({
+      allAlbumStyleItems,
     });
   },
 });

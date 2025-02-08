@@ -64,7 +64,7 @@ const AlbumList = () => {
           </>
         )}
       </FilterWrap>
-      {!sortedAlbums && <Loading forceVisible inline />}
+      {!sortedAlbums && <Loading forceVisible inline showOffline />}
       {sortedAlbums && viewAlbums === 'grid' && <ListCards variant="albums" entries={sortedAlbums} />}
       {sortedAlbums && viewAlbums === 'list' && (
         <ListTable variant="albums" entries={sortedAlbums} sortKey={sortAlbums} orderKey={orderAlbums} />

@@ -41,5 +41,4 @@ export { default as SettingsMenu } from './SettingsMenu';
 
 export { default as Error404Auth } from './Error404Auth';
 export { default as Error404Default } from './Error404Default';
-export { default as ErrorPlexGeneral } from './ErrorPlexGeneral';
-export { default as ErrorPlexLogin } from './ErrorPlexLogin';
+export { default as ErrorPage } from './ErrorPage';

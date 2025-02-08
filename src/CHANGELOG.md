@@ -1,3 +1,13 @@
+<a name="0.31.0"></a>
+# 0.31.0 (2025-02-08)
+Features:
+- Added better error handling and messaging.
+- Added network detection and messaging.
+Refactor:
+- Tidied up a bunch of Plex API code.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.30.0"></a>
 # 0.30.0 (2025-02-07)
 Features:

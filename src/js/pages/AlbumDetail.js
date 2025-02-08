@@ -48,7 +48,7 @@ const AlbumDetail = () => {
   };
 
   if (!albumInfo) {
-    return <Loading forceVisible inline />;
+    return <Loading forceVisible inline showOffline />;
   }
 
   return (
@@ -78,7 +78,7 @@ const AlbumDetail = () => {
         showPlay={true}
         handlePlay={albumTracks && albumTracks.length > 0 ? doPlay : null}
       />
-      {!albumTracks && <Loading forceVisible inline />}
+      {!albumTracks && <Loading forceVisible inline showOffline />}
       {albumTracks && (
         <ListTable
           variant="albumTracks"

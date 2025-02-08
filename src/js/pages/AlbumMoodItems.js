@@ -40,7 +40,7 @@ const AlbumMoodItems = () => {
   });
 
   if (!collectionInfo) {
-    return <Loading forceVisible inline />;
+    return <Loading forceVisible inline showOffline />;
   }
 
   return (
@@ -99,7 +99,7 @@ const AlbumMoodItems = () => {
           </>
         }
       />
-      {!sortedCollectionItems && <Loading forceVisible inline />}
+      {!sortedCollectionItems && <Loading forceVisible inline showOffline />}
       {sortedCollectionItems && viewCollectionItems === 'grid' && (
         <ListCards variant={'albums'} entries={sortedCollectionItems} />
       )}

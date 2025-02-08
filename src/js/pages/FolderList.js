@@ -69,7 +69,7 @@ const FolderList = () => {
           </>
         )}
       </FilterWrap>
-      {!sortedFolders && <Loading forceVisible inline />}
+      {!sortedFolders && <Loading forceVisible inline showOffline />}
       {sortedFolders && viewFolders === 'grid' && (
         <ListCards
           variant="folders"

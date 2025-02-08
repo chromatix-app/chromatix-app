@@ -8,8 +8,8 @@ import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 
 import { ControlBar, RightBar, SideBar, UserMenu } from 'js/components';
-import { useColorTheme, useGotRequiredData, useScrollRestoration, useWindowSize } from 'js/hooks';
-import { ErrorPlexGeneral, ErrorPlexLogin } from 'js/pages';
+import { useColorTheme, useGotRequiredData, useNetworkStatus, useScrollRestoration, useWindowSize } from 'js/hooks';
+import { ErrorPage } from 'js/pages';
 import { isElectron, electronPlatform } from 'js/utils';
 import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 
@@ -17,14 +17,18 @@ import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 // COMPONENT
 // ======================================================================
 
-const isProduction = process.env.REACT_APP_ENV === 'production';
 // const isLocal = process.env.REACT_APP_ENV === 'local';
+const isProduction = process.env.REACT_APP_ENV === 'production';
 
 const App = () => {
   const inited = useSelector(({ appModel }) => appModel.inited);
   const loggedIn = useSelector(({ appModel }) => appModel.loggedIn);
-  const plexErrorGeneral = useSelector(({ appModel }) => appModel.plexErrorGeneral);
-  const plexErrorLogin = useSelector(({ appModel }) => appModel.plexErrorLogin);
+
+  const errorPlexFastestServer = useSelector(({ appModel }) => appModel.errorPlexFastestServer);
+  const errorPlexLibraries = useSelector(({ appModel }) => appModel.errorPlexLibraries);
+  const errorPlexLogin = useSelector(({ appModel }) => appModel.errorPlexLogin);
+  const errorPlexServers = useSelector(({ appModel }) => appModel.errorPlexServers);
+  const errorPlexUser = useSelector(({ appModel }) => appModel.errorPlexUser);
 
   const accessibilityFocus = useSelector(({ sessionModel }) => sessionModel.accessibilityFocus);
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
@@ -36,6 +40,7 @@ const App = () => {
   const dispatch = useDispatch();
 
   useColorTheme();
+  useNetworkStatus();
   useScrollRestoration();
 
   // disable console logs
@@ -81,19 +86,100 @@ const App = () => {
     }
   }, [loggedIn]);
 
-  // plex errors
-  if (plexErrorLogin) {
+  // error pages
+  if (errorPlexFastestServer) {
     return (
       <div className="wrap">
         <div className="electron-drag"></div>
-        <ErrorPlexLogin />
+        <ErrorPage
+          title="Oops!"
+          body={
+            <>
+              Sorry, it was not possible to connect to the requested Plex server.
+              <br />
+              <br />
+              Please try again later.
+            </>
+          }
+          buttonText="Ok"
+          buttonClick={dispatch.appModel.dismissErrorPlexFastestServer}
+        />
       </div>
     );
-  } else if (plexErrorGeneral) {
+  } else if (errorPlexLibraries) {
     return (
       <div className="wrap">
         <div className="electron-drag"></div>
-        <ErrorPlexGeneral />
+        <ErrorPage
+          title="Oops!"
+          body={
+            <>
+              Sorry, there was an error retrieving your available Plex libraries.
+              <br />
+              <br />
+              Please try again later.
+            </>
+          }
+          buttonText="Ok"
+          buttonClick={dispatch.appModel.dismissErrorPlexLibraries}
+        />
+      </div>
+    );
+  } else if (errorPlexLogin) {
+    return (
+      <div className="wrap">
+        <div className="electron-drag"></div>
+        <ErrorPage
+          title="Oops!"
+          body={
+            <>
+              Sorry, there was an error logging in to Plex.
+              <br />
+              <br />
+              Please try again later.
+            </>
+          }
+          buttonText="Ok"
+          buttonClick={dispatch.appModel.dismissErrorPlexLogin}
+        />
+      </div>
+    );
+  } else if (errorPlexServers) {
+    return (
+      <div className="wrap">
+        <div className="electron-drag"></div>
+        <ErrorPage
+          title="Oops!"
+          body={
+            <>
+              Sorry, there was an error retrieving your available Plex servers.
+              <br />
+              <br />
+              Please try again later.
+            </>
+          }
+          buttonText="Ok"
+          buttonClick={dispatch.appModel.dismissErrorPlexServers}
+        />
+      </div>
+    );
+  } else if (errorPlexUser) {
+    return (
+      <div className="wrap">
+        <div className="electron-drag"></div>
+        <ErrorPage
+          title="Oops!"
+          body={
+            <>
+              Sorry, there was an error retrieving your user data from Plex.
+              <br />
+              <br />
+              Please try again later.
+            </>
+          }
+          buttonText="Ok"
+          buttonClick={dispatch.appModel.dismissErrorPlexUser}
+        />
       </div>
     );
   }

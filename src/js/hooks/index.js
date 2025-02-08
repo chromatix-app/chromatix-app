@@ -17,6 +17,7 @@ export { default as useMediaControls } from './useMediaControls';
 export { default as useMediaMeta } from './useMediaMeta';
 export { default as useNavigationHistory } from './useNavigationHistory';
 export { default as useNearTop } from './useNearTop';
+export { default as useNetworkStatus } from './useNetworkStatus';
 export { default as useScrollRestoration } from './useScrollRestoration';
 export { default as useScrollToTrack } from './useScrollToTrack';
 export { default as useWindowSize } from './useWindowSize';

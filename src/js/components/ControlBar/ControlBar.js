@@ -20,6 +20,8 @@ import style from './ControlBar.module.scss';
 const ControlBar = () => {
   const dispatch = useDispatch();
 
+  const isOnline = useSelector(({ appModel }) => appModel.isOnline);
+
   const playerLoading = useSelector(({ playerModel }) => playerModel.playerLoading);
   const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
   const playerVolume = useSelector(({ playerModel }) => playerModel.playerVolume);
@@ -160,6 +162,13 @@ const ControlBar = () => {
         <div className={style.volSlider}>
           <RangeSlider value={playerMuted ? 0 : playerVolume} handleChange={dispatch.playerModel.playerVolumeSet} />
         </div>
+        {!isOnline && (
+          <div className={style.secondaryControls}>
+            <div className={style.offline} title="No Internet Connection">
+              <Icon icon="CloudOfflineIcon" cover stroke strokeWidth={1.2} />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

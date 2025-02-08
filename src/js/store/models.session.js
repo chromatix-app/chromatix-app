@@ -12,13 +12,16 @@ import * as plex from 'js/services/plex';
 // STATE
 // ======================================================================
 
+const isLocal = process.env.REACT_APP_ENV === 'local';
+const isProduction = process.env.REACT_APP_ENV === 'production';
+
 const sessionState = {
   sessionId: CryptoJS.lib.WordArray.random(16).toString(),
 
   currentServer: null,
   currentLibrary: null,
 
-  currentTheme: 'chromatix',
+  currentTheme: isProduction ? 'chromatix' : isLocal ? 'chromatix-teal' : 'plex',
   currentColorBackground: '#021C27',
   currentColorText: '#ffffff',
   currentColorPrimary: '#f7277a',

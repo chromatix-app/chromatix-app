@@ -56,7 +56,7 @@ const AlbumStyleList = () => {
           </>
         )}
       </FilterWrap>
-      {!sortedCollections && <Loading forceVisible inline />}
+      {!sortedCollections && <Loading forceVisible inline showOffline />}
       {sortedCollections && viewCollections === 'grid' && (
         <ListCards variant="albumStyles" entries={sortedCollections} />
       )}
