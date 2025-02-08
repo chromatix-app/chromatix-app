@@ -16,6 +16,7 @@ const maxDataLength = 5;
 
 const appState = {
   inited: false,
+  isOnline: true,
   standalone: false,
   history: null,
 

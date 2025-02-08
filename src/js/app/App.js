@@ -8,7 +8,7 @@ import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 
 import { ControlBar, RightBar, SideBar, UserMenu } from 'js/components';
-import { useColorTheme, useGotRequiredData, useScrollRestoration, useWindowSize } from 'js/hooks';
+import { useColorTheme, useGotRequiredData, useNetworkStatus, useScrollRestoration, useWindowSize } from 'js/hooks';
 import { ErrorPage } from 'js/pages';
 import { isElectron, electronPlatform } from 'js/utils';
 import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
@@ -40,6 +40,7 @@ const App = () => {
   const dispatch = useDispatch();
 
   useColorTheme();
+  useNetworkStatus();
   useScrollRestoration();
 
   // disable console logs

@@ -3,7 +3,8 @@
 .wrap {
   display: grid;
   align-items: center;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  // grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) auto 1fr;
   height: 100px;
   padding: 9px 20px 10px;
   background: var(--color-panel-background);
@@ -131,7 +132,8 @@ button.pause,
 button.forward,
 button.repeat,
 button.queue,
-button.volume {
+button.volume,
+.offline {
   display: block;
   position: relative;
   width: 44px;
@@ -203,6 +205,15 @@ button.active {
   color: var(--color-primary);
 }
 
+.offline {
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  background: var(--color-text) !important;
+  color: var(--color-panel-background) !important;
+  cursor: default;
+}
+
 .loading {
   display: block;
   position: absolute;
@@ -264,6 +275,10 @@ button.active {
   // @media (min-width: 1024px) {
   //   gap: 10px;
   // }
+
+  .volSlider + & {
+    margin-left: 16px;
+  }
 }
 
 .volSlider {
