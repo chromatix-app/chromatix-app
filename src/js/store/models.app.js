@@ -24,6 +24,7 @@ const appState = {
   plexErrorServer: false,
 
   scrollToPlaying: false,
+  scrollToTrack: false,
 };
 
 const userState = {
@@ -43,6 +44,7 @@ const plexLibraryState = {
   allArtistAlbums: {},
   allArtistRelated: {},
   allArtistCompilationAlbums: {},
+  haveGotAllArtists: false,
   // albums
   allAlbums: null,
   allAlbumTracks: {},
@@ -226,7 +228,7 @@ const effects = (dispatch) => ({
 
   storeArtistDetails(payload, rootState) {
     console.log('%c--- storeArtistDetails ---', 'color:#07a098');
-    const allArtists = [...rootState.appModel.allArtists];
+    const allArtists = [...(rootState.appModel.allArtists || [])];
     const artistIndex = allArtists.findIndex((artist) => artist.artistId === payload.artistId);
     if (artistIndex === -1) {
       // limit recent entries
@@ -531,7 +533,7 @@ const effects = (dispatch) => ({
 
   storePlaylistDetails(payload, rootState) {
     console.log('%c--- storePlaylistDetails ---', 'color:#07a098');
-    const allPlaylists = [...rootState.appModel.allPlaylists];
+    const allPlaylists = [...(rootState.appModel.allPlaylists || [])];
     const playlistIndex = allPlaylists.findIndex((playlist) => playlist.playlistId === payload.playlistId);
     if (playlistIndex === -1) {
       // limit recent entries

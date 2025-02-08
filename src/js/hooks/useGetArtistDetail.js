@@ -81,9 +81,14 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
 
   // Get the required artist data
   useEffect(() => {
-    plex.getAllArtists();
+    // plex.getAllArtists();
+    if (!artistInfo) {
+      plex.getArtistDetails(libraryId, artistId);
+    }
     plex.getAllArtistAlbums(libraryId, artistId);
     plex.getAllArtistRelated(libraryId, artistId);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [artistId, libraryId]);
 
   // Fallback in case artist data is not included in the allArtists array

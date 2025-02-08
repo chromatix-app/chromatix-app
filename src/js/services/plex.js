@@ -354,10 +354,11 @@ window.searchLibrary = searchLibrary;
 
 let getAllArtistsRunning;
 
-export const getAllArtists = async () => {
+export const getAllArtists = () => {
   if (!getAllArtistsRunning) {
-    const prevAllArtists = store.getState().appModel.allArtists;
-    if (!prevAllArtists) {
+    const haveGotAllArtists = store.getState().appModel.haveGotAllArtists;
+    if (!haveGotAllArtists) {
+      console.log('%c--- plex - getAllArtists ---', 'color:#f9743b;');
       getAllArtistsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
@@ -366,20 +367,27 @@ export const getAllArtists = async () => {
       const mockEndpoint = '/api/artists.json';
       const prodEndpoint = endpointConfig.artist.getAllArtists(plexBaseUrl, libraryId);
       const endpoint = mockData ? mockEndpoint : prodEndpoint;
-      const data = await fetchData(endpoint, accessToken);
 
-      // console.log(data.MediaContainer.Metadata);
+      fetchDataPromise(endpoint, accessToken, true)
+        .then((response) => {
+          // console.log(response.MediaContainer.Metadata);
 
-      const allArtists =
-        data.MediaContainer.Metadata?.map((artist) =>
-          transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
-        ) || [];
+          const allArtists =
+            response.MediaContainer.Metadata?.map((artist) =>
+              transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
+            ) || [];
 
-      // console.log('allArtists', allArtists);
+          // console.log('allArtists', allArtists);
 
-      store.dispatch.appModel.setAppState({ allArtists });
-
-      getAllArtistsRunning = false;
+          store.dispatch.appModel.setAppState({
+            haveGotAllArtists: true,
+            allArtists,
+          });
+        })
+        .catch((error) => {})
+        .finally(() => {
+          getAllArtistsRunning = false;
+        });
     }
   }
 };
@@ -394,6 +402,7 @@ export const getArtistDetails = async (libraryId, artistId) => {
   if (!getArtistDetailsRunning) {
     const prevArtistDetails = store.getState().appModel.allArtists?.find((artist) => artist.artistId === artistId);
     if (!prevArtistDetails) {
+      console.log('%c--- plex - getArtistDetails ---', 'color:#f9743b;');
       getArtistDetailsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
@@ -424,6 +433,7 @@ export const getAllArtistAlbums = async (libraryId, artistId) => {
   if (!getAllArtistAlbumsRunning) {
     const prevAllAlbums = store.getState().appModel.allArtistAlbums[libraryId + '-' + artistId];
     if (!prevAllAlbums) {
+      console.log('%c--- plex - getAllArtistAlbums ---', 'color:#f9743b;');
       getAllArtistAlbumsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
@@ -455,6 +465,7 @@ export const getAllArtistRelated = async (libraryId, artistId) => {
   if (!getAllArtistRelatedRunning) {
     const prevAllRelated = store.getState().appModel.allArtistRelated[libraryId + '-' + artistId];
     if (!prevAllRelated) {
+      console.log('%c--- plex - getAllArtistRelated ---', 'color:#f9743b;');
       getAllArtistRelatedRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
@@ -490,6 +501,7 @@ export const getAllArtistCompilationAlbums = async (libraryId, artistId, artistN
   if (!getAllArtistCompilationAlbumsRunning) {
     const prevAllCompilationAlbums = store.getState().appModel.allArtistCompilationAlbums[libraryId + '-' + artistId];
     if (!prevAllCompilationAlbums) {
+      console.log('%c--- plex - getAllArtistCompilationAlbums ---', 'color:#f9743b;');
       getAllArtistCompilationAlbumsRunning = true;
 
       const albumIds = await getAllArtistCompilationAlbumIds(libraryId, artistId, artistName);
@@ -553,31 +565,37 @@ const getAllArtistCompilationAlbumIds = async (libraryId, artistId, artistName) 
 
 let getAllAlbumsRunning;
 
-export const getAllAlbums = async () => {
+export const getAllAlbums = () => {
   if (!getAllAlbumsRunning) {
     const haveGotAllAlbums = store.getState().appModel.haveGotAllAlbums;
     if (!haveGotAllAlbums) {
+      console.log('%c--- plex - getAllAlbums ---', 'color:#f9743b;');
       getAllAlbumsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
       const endpoint = endpointConfig.album.getAllAlbums(plexBaseUrl, libraryId);
-      const data = await fetchData(endpoint, accessToken);
 
-      // console.log(data.MediaContainer.Metadata);
+      fetchDataPromise(endpoint, accessToken, true)
+        .then((response) => {
+          // console.log(response.MediaContainer.Metadata);
 
-      const allAlbums =
-        data.MediaContainer.Metadata?.map((album) => transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)) ||
-        [];
+          const allAlbums =
+            response.MediaContainer.Metadata?.map((album) =>
+              transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
+            ) || [];
 
-      // console.log('allAlbums', allAlbums);
+          // console.log('allAlbums', allAlbums);
 
-      store.dispatch.appModel.setAppState({
-        haveGotAllAlbums: true,
-        allAlbums,
-      });
-
-      getAllAlbumsRunning = false;
+          store.dispatch.appModel.setAppState({
+            haveGotAllAlbums: true,
+            allAlbums,
+          });
+        })
+        .catch((error) => {})
+        .finally(() => {
+          getAllAlbumsRunning = false;
+        });
     }
   }
 };
@@ -592,6 +610,7 @@ export const getAlbumDetails = async (libraryId, albumId) => {
   if (!getAlbumDetailsRunning) {
     const prevAlbumDetails = store.getState().appModel.allAlbums?.find((album) => album.albumId === albumId);
     if (!prevAlbumDetails) {
+      console.log('%c--- plex - getAlbumDetails ---', 'color:#f9743b;');
       getAlbumDetailsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
@@ -622,6 +641,7 @@ export const getAlbumTracks = async (libraryId, albumId) => {
   if (!getAlbumTracksRunning) {
     const prevAlbumTracks = store.getState().appModel.allAlbumTracks[libraryId + '-' + albumId];
     if (!prevAlbumTracks) {
+      console.log('%c--- plex - getAlbumTracks ---', 'color:#f9743b;');
       getAlbumTracksRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
@@ -654,6 +674,7 @@ export const getFolderItems = async (folderId) => {
     const { libraryId } = store.getState().sessionModel.currentLibrary;
     const prevFolderItems = store.getState().appModel.allFolderItems[libraryId + '-' + folderId];
     if (!prevFolderItems) {
+      console.log('%c--- plex - getFolderItems ---', 'color:#f9743b;');
       getFolderItemsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
@@ -749,6 +770,7 @@ export const getPlaylistDetails = async (libraryId, playlistId) => {
       .getState()
       .appModel.allPlaylists?.find((playlist) => playlist.playlistId === playlistId);
     if (!prevPlaylistDetails) {
+      console.log('%c--- plex - getPlaylistDetails ---', 'color:#f9743b;');
       getPlaylistDetailsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
@@ -779,6 +801,7 @@ export const getPlaylistTracks = async (libraryId, playlistId) => {
   if (!getPlaylistTracksRunning) {
     const prevPlaylistTracks = store.getState().appModel.allPlaylistTracks[libraryId + '-' + playlistId];
     if (!prevPlaylistTracks) {
+      console.log('%c--- plex - getPlaylistTracks ---', 'color:#f9743b;');
       getPlaylistTracksRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
@@ -849,6 +872,7 @@ export const getArtistCollectionItems = async (libraryId, collectionId) => {
     const prevArtistCollectionItems =
       store.getState().appModel.allArtistCollectionItems[libraryId + '-' + collectionId];
     if (!prevArtistCollectionItems) {
+      console.log('%c--- plex - getArtistCollectionItems ---', 'color:#f9743b;');
       getArtistCollectionItemsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
@@ -881,6 +905,7 @@ export const getAlbumCollectionItems = async (libraryId, collectionId) => {
   if (!getAlbumCollectionItemsRunning) {
     const prevAlbumCollectionItems = store.getState().appModel.allAlbumCollectionItems[libraryId + '-' + collectionId];
     if (!prevAlbumCollectionItems) {
+      console.log('%c--- plex - getAlbumCollectionItems ---', 'color:#f9743b;');
       getAlbumCollectionItemsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
@@ -944,6 +969,7 @@ export const getArtistGenreItems = async (libraryId, genreId) => {
   if (!getArtistGenreItemsRunning) {
     const prevGenreItems = store.getState().appModel.allArtistGenreItems[libraryId + '-' + genreId];
     if (!prevGenreItems) {
+      console.log('%c--- plex - getArtistGenreItems ---', 'color:#f9743b;');
       getArtistGenreItemsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
@@ -1008,6 +1034,7 @@ export const getAlbumGenreItems = async (libraryId, genreId) => {
   if (!getAlbumGenreItemsRunning) {
     const prevGenreItems = store.getState().appModel.allAlbumGenreItems[libraryId + '-' + genreId];
     if (!prevGenreItems) {
+      console.log('%c--- plex - getAlbumGenreItems ---', 'color:#f9743b;');
       getAlbumGenreItemsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
@@ -1071,6 +1098,7 @@ export const getArtistStyleItems = async (libraryId, styleId) => {
   if (!getArtistStyleItemsRunning) {
     const prevStyleItems = store.getState().appModel.allArtistStyleItems[libraryId + '-' + styleId];
     if (!prevStyleItems) {
+      console.log('%c--- plex - getArtistStyleItems ---', 'color:#f9743b;');
       getArtistStyleItemsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
@@ -1135,6 +1163,7 @@ export const getAlbumStyleItems = async (libraryId, styleId) => {
   if (!getAlbumStyleItemsRunning) {
     const prevStyleItems = store.getState().appModel.allAlbumStyleItems[libraryId + '-' + styleId];
     if (!prevStyleItems) {
+      console.log('%c--- plex - getAlbumStyleItems ---', 'color:#f9743b;');
       getAlbumStyleItemsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
@@ -1198,6 +1227,7 @@ export const getArtistMoodItems = async (libraryId, moodId) => {
   if (!getArtistMoodItemsRunning) {
     const prevMoodItems = store.getState().appModel.allArtistMoodItems[libraryId + '-' + moodId];
     if (!prevMoodItems) {
+      console.log('%c--- plex - getArtistMoodItems ---', 'color:#f9743b;');
       getArtistMoodItemsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
@@ -1262,6 +1292,7 @@ export const getAlbumMoodItems = async (libraryId, moodId) => {
   if (!getAlbumMoodItemsRunning) {
     const prevMoodItems = store.getState().appModel.allAlbumMoodItems[libraryId + '-' + moodId];
     if (!prevMoodItems) {
+      console.log('%c--- plex - getAlbumMoodItems ---', 'color:#f9743b;');
       getAlbumMoodItemsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
@@ -1377,6 +1408,18 @@ export const logPlaybackQuit = (currentTrack, currentTime) => {
 // FETCH DATA
 // ======================================================================
 
+let abortControllers = [];
+
+export const abortAllRequests = () => {
+  if (abortControllers.length > 0) {
+    console.log('%c### plex - abortAllRequests ###', 'color:#f00;');
+    abortControllers.forEach((controller) => {
+      controller.abort();
+    });
+    abortControllers = [];
+  }
+};
+
 async function fetchData(endpoint, accessToken) {
   const response = await fetch(endpoint, {
     headers: {
@@ -1388,4 +1431,49 @@ async function fetchData(endpoint, accessToken) {
 
   const data = await response.json();
   return data;
+}
+
+function fetchDataPromise(endpoint, accessToken, canBeAborted = false) {
+  return new Promise((resolve, reject) => {
+    let controller;
+    if (canBeAborted) {
+      controller = new AbortController();
+      abortControllers.push(controller);
+    }
+
+    fetch(endpoint, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Plex-Token': accessToken,
+      },
+      signal: canBeAborted ? controller.signal : undefined,
+    })
+      .then((response) => response.json())
+      .then((data) => resolve(data))
+      .catch((error) => {
+        // Handle aborted request
+        if (error.name === 'AbortError') {
+          reject({
+            code: 'fetchDataPromise.1',
+            message: 'Request aborted',
+            error: error,
+          });
+        }
+        // Handle all other errors
+        else {
+          reject({
+            code: 'fetchDataPromise.2',
+            message: 'Failed to complete fetch request: ' + error.message,
+            error: error,
+          });
+        }
+      })
+      .finally(() => {
+        // Clean up the abort controller
+        if (canBeAborted) {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        }
+      });
+  });
 }
