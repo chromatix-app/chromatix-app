@@ -22,10 +22,12 @@ const useGetAllArtists = () => {
   const actualSortArtists = isRatingSortHidden ? 'title' : sortArtists;
   const actualOrderArtists = isRatingSortHidden ? 'asc' : orderArtists;
 
+  const haveGotAllArtists = useSelector(({ appModel }) => appModel.haveGotAllArtists);
   const allArtists = useSelector(({ appModel }) => appModel.allArtists)?.filter(
     (artist) => artist.libraryId === currentLibraryId
   );
-  const sortedArtists = allArtists ? sortList(allArtists, actualSortArtists, actualOrderArtists) : null;
+  const sortedArtists =
+    haveGotAllArtists && allArtists ? sortList(allArtists, actualSortArtists, actualOrderArtists) : null;
 
   const setViewArtists = (viewArtists) => {
     dispatch.sessionModel.setSessionState({
