@@ -56,7 +56,7 @@ const ArtistMoodList = () => {
           </>
         )}
       </FilterWrap>
-      {!sortedCollections && <Loading forceVisible inline />}
+      {!sortedCollections && <Loading forceVisible inline showOffline />}
       {sortedCollections && viewCollections === 'grid' && (
         <ListCards variant="artistMoods" entries={sortedCollections} />
       )}

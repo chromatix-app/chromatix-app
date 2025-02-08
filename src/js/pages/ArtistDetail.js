@@ -47,7 +47,7 @@ const ArtistDetail = () => {
   const gotArtistData = artistInfo && artistAlbums && artistRelated;
 
   if (!artistInfo) {
-    return <Loading forceVisible inline />;
+    return <Loading forceVisible inline showOffline />;
   }
 
   return (
@@ -114,7 +114,7 @@ const ArtistDetail = () => {
           </>
         }
       />
-      {!gotArtistData && <Loading forceVisible inline />}
+      {!gotArtistData && <Loading forceVisible inline showOffline />}
       {gotArtistData && viewArtistAlbums === 'grid' && (
         <>
           {artistAlbums && artistAlbums.length > 0 && (

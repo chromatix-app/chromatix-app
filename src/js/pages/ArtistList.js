@@ -60,7 +60,7 @@ const ArtistList = () => {
           </>
         )}
       </FilterWrap>
-      {!sortedArtists && <Loading forceVisible inline />}
+      {!sortedArtists && <Loading forceVisible inline showOffline />}
       {sortedArtists && viewArtists === 'grid' && <ListCards variant="artists" entries={sortedArtists} />}
       {sortedArtists && viewArtists === 'list' && (
         <ListTable variant="artists" entries={sortedArtists} sortKey={sortArtists} orderKey={orderArtists} />

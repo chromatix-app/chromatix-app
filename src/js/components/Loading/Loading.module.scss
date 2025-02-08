@@ -22,6 +22,39 @@
   text-indent: -9999px;
 }
 
+.loaderOffline {
+  display: flex;
+  position: fixed;
+  pointer-events: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-width: 32px;
+  min-height: 32px;
+  padding-top: 15vh;
+
+  opacity: 0;
+  animation: fade-in 1s 0.5s forwards;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  margin: 0 auto;
+  opacity: var(--opacity-05);
+}
+
+.message {
+  margin: 10px auto 0;
+  opacity: var(--opacity-05);
+  font-size: 15px;
+  text-align: center;
+}
+
 @keyframes fade-in {
   0% {
     opacity: 0;
