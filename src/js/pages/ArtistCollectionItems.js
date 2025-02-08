@@ -40,7 +40,7 @@ const ArtistCollectionItems = () => {
   });
 
   if (!collectionInfo) {
-    return <Loading forceVisible inline />;
+    return <Loading forceVisible inline showOffline />;
   }
 
   return (
@@ -106,7 +106,7 @@ const ArtistCollectionItems = () => {
           </>
         }
       />
-      {!sortedCollectionItems && <Loading forceVisible inline />}
+      {!sortedCollectionItems && <Loading forceVisible inline showOffline />}
       {sortedCollectionItems && viewCollectionItems === 'grid' && (
         <ListCards variant={'artists'} entries={sortedCollectionItems} />
       )}

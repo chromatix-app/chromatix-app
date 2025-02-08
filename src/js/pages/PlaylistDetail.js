@@ -44,7 +44,7 @@ const PlaylistDetail = () => {
   };
 
   if (!playlistInfo) {
-    return <Loading forceVisible inline />;
+    return <Loading forceVisible inline showOffline />;
   }
 
   return (
@@ -77,7 +77,7 @@ const PlaylistDetail = () => {
         showPlay={true}
         handlePlay={playlistTracks && playlistTracks.length > 0 ? doPlay : null}
       />
-      {!playlistTracks && <Loading forceVisible inline />}
+      {!playlistTracks && <Loading forceVisible inline showOffline />}
       {playlistTracks && (
         <ListTable
           variant="playlistTracks"

@@ -70,7 +70,7 @@ const ArtistCollectionList = () => {
           </>
         )}
       </FilterWrap>
-      {!sortedCollections && <Loading forceVisible inline />}
+      {!sortedCollections && <Loading forceVisible inline showOffline />}
       {sortedCollections && viewCollections === 'grid' && (
         <ListCards variant="collections" entries={sortedCollections} />
       )}

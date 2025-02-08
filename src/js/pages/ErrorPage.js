@@ -2,29 +2,34 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch } from 'react-redux';
-
 import { Button, TitleBasic } from 'js/components';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const ErrorPlexLogin = () => {
-  const dispatch = useDispatch();
-
+const ErrorPage = ({ title, body, buttonText, buttonClick }) => {
   return (
     <main className="wrap-inner">
       <div className="wrap-middle text-center">
-        <TitleBasic title="Oops!" />
+        <TitleBasic title={title} />
+
         <div className="mt-15"></div>
-        Sorry, there was an error connecting to Plex.
-        <br />
-        Please try again later.
+        <div
+          style={{
+            maxWidth: 300,
+            textWrap: 'balance',
+          }}
+        >
+          {body}
+        </div>
         <div className="mt-50"></div>
-        <Button className="btn btn-primary" onClick={dispatch.appModel.dismissPlexErrorLogin}>
-          Ok
-        </Button>
+
+        {buttonText && buttonClick && (
+          <Button className="btn btn-primary" onClick={buttonClick}>
+            {buttonText}
+          </Button>
+        )}
       </div>
     </main>
   );
@@ -34,4 +39,4 @@ const ErrorPlexLogin = () => {
 // EXPORT
 // ======================================================================
 
-export default ErrorPlexLogin;
+export default ErrorPage;

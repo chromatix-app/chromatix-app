@@ -23,6 +23,32 @@ const getThumb = (plexBaseUrl, thumb, size, accessToken) => {
     : thumbPlaceholder;
 };
 
+export const transposeUserData = (user) => {
+  return {
+    userId: user['@_id'],
+    email: user['email'],
+    thumb: user['@_thumb'],
+    title: user['@_title'],
+    username: user['username'],
+  };
+};
+
+export const transposeServerData = (server) => {
+  return {
+    serverId: server.clientIdentifier,
+    name: server.name,
+    accessToken: server.accessToken,
+    connections: server.connections,
+  };
+};
+
+export const transposeLibraryData = (library) => {
+  return {
+    libraryId: library.key,
+    title: library.title,
+  };
+};
+
 export const transposeArtistData = (artist, libraryId, plexBaseUrl, accessToken) => {
   return {
     kind: 'artist',

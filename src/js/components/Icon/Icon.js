@@ -27,6 +27,7 @@ import { ReactComponent as BlueskyIcon } from './icons/music/bluesky.svg';
 import { ReactComponent as CheckIcon } from './icons/music/check.svg';
 import { ReactComponent as CheckCircleIcon } from './icons/music/check-circle.svg';
 import { ReactComponent as ClockRewindIcon } from './icons/music/clock-rewind.svg';
+import { ReactComponent as CloudOfflineIcon } from './icons/music/cloud-offline.svg';
 import { ReactComponent as CogIcon } from './icons/music/cog.svg';
 import { ReactComponent as CollapseIcon } from './icons/music/collapse.svg';
 import { ReactComponent as CrossSmallIcon } from './icons/music/cross-small.svg';
@@ -107,6 +108,7 @@ const customIcons = {
   CheckIcon,
   CheckCircleIcon,
   ClockRewindIcon,
+  CloudOfflineIcon,
   CogIcon,
   CollapseIcon,
   CrossSmallIcon,
