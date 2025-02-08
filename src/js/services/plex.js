@@ -3,19 +3,7 @@
 // ======================================================================
 
 import * as plexTools from 'js/services/plexTools';
-import {
-  transposeArtistData,
-  transposeAlbumData,
-  transposeFolderData,
-  transposePlaylistData,
-  transposeTrackData,
-  transposeCollectionData,
-  transposeGenreData,
-  transposeStyleData,
-  transposeMoodData,
-  transposeHubSearchData,
-  // transposeLibrarySearchData,
-} from 'js/services/plexTranspose';
+import * as plexTranspose from 'js/services/plexTranspose';
 import { analyticsEvent } from 'js/utils';
 import store from 'js/store/store';
 
@@ -99,7 +87,7 @@ export const init = () => {
   console.log('%c--- plex - init ---', 'color:#f9743b;');
   plexTools
     .init()
-    .then((res) => {
+    .then((response) => {
       getUserInfo();
     })
     .catch((error) => {
@@ -125,7 +113,7 @@ export const login = async () => {
   console.log('%c--- plex - login ---', 'color:#f9743b;');
   plexTools
     .login()
-    .then((res) => {
+    .then((response) => {
       analyticsEvent('Plex: Login Success');
     })
     .catch((error) => {
@@ -154,15 +142,8 @@ const getUserInfo = () => {
   console.log('%c--- plex - getUserInfo ---', 'color:#f9743b;');
   plexTools
     .getUserInfo()
-    .then((res) => {
-      // transpose user data
-      const currentUser = {
-        userId: res['@_id'],
-        email: res['email'],
-        thumb: res['@_thumb'],
-        title: res['@_title'],
-        username: res['username'],
-      };
+    .then((response) => {
+      const currentUser = plexTranspose.transposeUserData(response);
       store.dispatch.appModel.setLoggedIn(currentUser);
     })
     .catch((error) => {
@@ -186,12 +167,8 @@ export const getAllServers = () => {
       getUserServersRunning = true;
       plexTools
         .getAllServers()
-        .then((res) => {
-          // transpose server data
-          const allServers = res.map((server) => {
-            server.serverId = server.clientIdentifier;
-            return server;
-          });
+        .then((response) => {
+          const allServers = response?.map((server) => plexTranspose.transposeServerData(server)) || [];
           store.dispatch.appModel.storeAllServers(allServers);
         })
         .catch((error) => {
@@ -213,8 +190,8 @@ export const getAllServers = () => {
 const getFastestServerConnection = async (currentServer) => {
   let plexBaseUrl;
   try {
-    await plexTools.getFastestServerConnection(currentServer).then((res) => {
-      plexBaseUrl = res.uri;
+    await plexTools.getFastestServerConnection(currentServer).then((response) => {
+      plexBaseUrl = response.uri;
       store.dispatch.appModel.setAppState({ plexBaseUrl });
     });
   } catch (error) {
@@ -253,14 +230,11 @@ export const getAllLibraries = async () => {
         const accessToken = store.getState().sessionModel.currentServer.accessToken;
         plexTools
           .getAllLibraries(plexBaseUrl, accessToken)
-          .then((res) => {
+          .then((response) => {
             // transpose library data
-            const allLibraries = res
+            const allLibraries = response
               .filter((library) => library.type === 'artist')
-              .map((library) => {
-                library.libraryId = library.key;
-                return library;
-              });
+              .map((library) => plexTranspose.transposeLibraryData(library));
 
             // console.log('allLibraries', allLibraries);
 
@@ -308,14 +282,14 @@ const searchLibrary2 = async (query, searchCounter) => {
   plexTools
     .searchHub(plexBaseUrl, libraryId, accessToken, query)
     // .searchLibrary(plexBaseUrl, accessToken, query)
-    .then((res) => {
-      // console.log(res);
+    .then((response) => {
+      // console.log(response);
 
       const searchResults =
-        res
+        response
           ?.flatMap((result) => result.Metadata)
-          ?.map((result) => transposeHubSearchData(result, libraryId, title, plexBaseUrl, accessToken))
-          // .map((result) => transposeLibrarySearchData(result, libraryId, title, plexBaseUrl, accessToken))
+          ?.map((result) => plexTranspose.transposeHubSearchData(result, libraryId, title, plexBaseUrl, accessToken))
+          // .map((result) => plexTranspose.transposeLibrarySearchData(result, libraryId, title, plexBaseUrl, accessToken))
           .filter((result) => result !== null)
           .sort((a, b) => {
             if (b.score === a.score) {
@@ -374,7 +348,7 @@ export const getAllArtists = () => {
 
           const allArtists =
             response.MediaContainer.Metadata?.map((artist) =>
-              transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
+              plexTranspose.transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
             ) || [];
 
           // console.log('allArtists', allArtists);
@@ -412,7 +386,7 @@ export const getArtistDetails = async (libraryId, artistId) => {
       // console.log(data.MediaContainer.Metadata);
 
       const artist = data.MediaContainer.Metadata[0];
-      const artistDetails = transposeArtistData(artist, libraryId, plexBaseUrl, accessToken);
+      const artistDetails = plexTranspose.transposeArtistData(artist, libraryId, plexBaseUrl, accessToken);
 
       // console.log('artistDetails', artistDetails);
 
@@ -443,8 +417,9 @@ export const getAllArtistAlbums = async (libraryId, artistId) => {
       // console.log(data.MediaContainer.Metadata);
 
       const artistAlbums =
-        data.MediaContainer.Metadata?.map((album) => transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)) ||
-        [];
+        data.MediaContainer.Metadata?.map((album) =>
+          plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
+        ) || [];
 
       // console.log('artistAlbums', artistAlbums);
 
@@ -479,7 +454,9 @@ export const getAllArtistRelated = async (libraryId, artistId) => {
           (hub) => hub.type === 'album' && hub.Metadata && hub.context && hub.context.includes('hub.artist.albums')
         ).map((hub) => ({
           title: hub.title,
-          related: hub.Metadata.map((album) => transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)),
+          related: hub.Metadata.map((album) =>
+            plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
+          ),
         })) || [];
 
       // console.log('artistRelated', artistRelated);
@@ -549,7 +526,9 @@ const getAllArtistCompilationAlbumIds = async (libraryId, artistId, artistName) 
   // console.log(data.MediaContainer.Metadata);
 
   const artistCompilationTracks =
-    data.MediaContainer.Metadata?.map((track) => transposeTrackData(track, libraryId, plexBaseUrl, accessToken)) || [];
+    data.MediaContainer.Metadata?.map((track) =>
+      plexTranspose.transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
+    ) || [];
 
   // get a unique list of album IDs using the albumId key of each track
   const artistCompilationAlbums = [...new Set(artistCompilationTracks.map((track) => track.albumId))];
@@ -582,7 +561,7 @@ export const getAllAlbums = () => {
 
           const allAlbums =
             response.MediaContainer.Metadata?.map((album) =>
-              transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
+              plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
             ) || [];
 
           // console.log('allAlbums', allAlbums);
@@ -620,7 +599,7 @@ export const getAlbumDetails = async (libraryId, albumId) => {
       // console.log(data.MediaContainer.Metadata);
 
       const album = data.MediaContainer.Metadata[0];
-      const albumDetails = transposeAlbumData(album, libraryId, plexBaseUrl, accessToken);
+      const albumDetails = plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken);
 
       // console.log('albumDetails', albumDetails);
 
@@ -651,8 +630,9 @@ export const getAlbumTracks = async (libraryId, albumId) => {
       // console.log(data.MediaContainer.Metadata);
 
       const albumTracks =
-        data.MediaContainer.Metadata?.map((track) => transposeTrackData(track, libraryId, plexBaseUrl, accessToken)) ||
-        [];
+        data.MediaContainer.Metadata?.map((track) =>
+          plexTranspose.transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
+        ) || [];
 
       // console.log('albumTracks', albumTracks);
 
@@ -686,7 +666,7 @@ export const getFolderItems = async (folderId) => {
 
       const folderItems =
         data.MediaContainer.Metadata?.map((item, index) =>
-          transposeFolderData(item, index, libraryId, plexBaseUrl, accessToken)
+          plexTranspose.transposeFolderData(item, index, libraryId, plexBaseUrl, accessToken)
         ).filter((item) => item !== null) || [];
 
       // Sort folderItems
@@ -746,7 +726,7 @@ export const getAllPlaylists = async () => {
 
       const allPlaylists =
         data.MediaContainer.Metadata?.map((playlist) =>
-          transposePlaylistData(playlist, libraryId, plexBaseUrl, accessToken)
+          plexTranspose.transposePlaylistData(playlist, libraryId, plexBaseUrl, accessToken)
         ) || [];
 
       // console.log('allPlaylists', allPlaylists);
@@ -780,7 +760,7 @@ export const getPlaylistDetails = async (libraryId, playlistId) => {
       // console.log(data.MediaContainer.Metadata);
 
       const playlist = data.MediaContainer.Metadata[0];
-      const playlistDetails = transposePlaylistData(playlist, libraryId, plexBaseUrl, accessToken);
+      const playlistDetails = plexTranspose.transposePlaylistData(playlist, libraryId, plexBaseUrl, accessToken);
 
       // console.log('playlistDetails', playlistDetails);
 
@@ -811,8 +791,9 @@ export const getPlaylistTracks = async (libraryId, playlistId) => {
       // console.log(data.MediaContainer.Metadata);
 
       const playlistTracks =
-        data.MediaContainer.Metadata?.map((track) => transposeTrackData(track, libraryId, plexBaseUrl, accessToken)) ||
-        [];
+        data.MediaContainer.Metadata?.map((track) =>
+          plexTranspose.transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
+        ) || [];
 
       // console.log(playlistTracks);
 
@@ -847,7 +828,8 @@ export const getAllCollections = async () => {
       const allCollections =
         data.MediaContainer.Metadata?.filter(
           (collection) => collection.subtype === 'artist' || collection.subtype === 'album'
-        ).map((collection) => transposeCollectionData(collection, libraryId, plexBaseUrl, accessToken)) || [];
+        ).map((collection) => plexTranspose.transposeCollectionData(collection, libraryId, plexBaseUrl, accessToken)) ||
+        [];
 
       const allArtistCollections = allCollections.filter((collection) => collection.type === 'artist');
       const allAlbumCollections = allCollections.filter((collection) => collection.type === 'album');
@@ -883,7 +865,7 @@ export const getArtistCollectionItems = async (libraryId, collectionId) => {
 
       const artistCollectionItems =
         data.MediaContainer.Metadata?.map((artist) =>
-          transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
+          plexTranspose.transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
         ) || [];
 
       // console.log('collectionItems', collectionItems);
@@ -915,8 +897,9 @@ export const getAlbumCollectionItems = async (libraryId, collectionId) => {
       // console.log(data.MediaContainer.Metadata);
 
       const albumCollectionItems =
-        data.MediaContainer.Metadata?.map((album) => transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)) ||
-        [];
+        data.MediaContainer.Metadata?.map((album) =>
+          plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
+        ) || [];
 
       // console.log('collectionItems', collectionItems);
 
@@ -948,7 +931,8 @@ export const getAllArtistGenres = async (type) => {
       // console.log(data.MediaContainer.Directory);
 
       const allArtistGenres =
-        data.MediaContainer.Directory?.map((genre) => transposeGenreData('artist', genre, libraryId)) || [];
+        data.MediaContainer.Directory?.map((genre) => plexTranspose.transposeGenreData('artist', genre, libraryId)) ||
+        [];
 
       // console.log('allArtistGenres', allArtistGenres);
 
@@ -980,7 +964,7 @@ export const getArtistGenreItems = async (libraryId, genreId) => {
 
       const artistGenreItems =
         data.MediaContainer.Metadata?.map((artist) =>
-          transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
+          plexTranspose.transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
         ) || [];
 
       // console.log('artistGenreItems', artistGenreItems);
@@ -1013,7 +997,8 @@ export const getAllAlbumGenres = async (type) => {
       // console.log(data.MediaContainer.Directory);
 
       const allAlbumGenres =
-        data.MediaContainer.Directory?.map((genre) => transposeGenreData('album', genre, libraryId)) || [];
+        data.MediaContainer.Directory?.map((genre) => plexTranspose.transposeGenreData('album', genre, libraryId)) ||
+        [];
 
       // console.log('allAlbumGenres', allAlbumGenres);
 
@@ -1044,8 +1029,9 @@ export const getAlbumGenreItems = async (libraryId, genreId) => {
       // console.log(data.MediaContainer.Metadata);
 
       const albumGenreItems =
-        data.MediaContainer.Metadata?.map((album) => transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)) ||
-        [];
+        data.MediaContainer.Metadata?.map((album) =>
+          plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
+        ) || [];
 
       // console.log('albumGenreItems', albumGenreItems);
 
@@ -1077,7 +1063,8 @@ export const getAllArtistStyles = async (type) => {
       // console.log(data.MediaContainer.Directory);
 
       const allArtistStyles =
-        data.MediaContainer.Directory?.map((style) => transposeStyleData('artist', style, libraryId)) || [];
+        data.MediaContainer.Directory?.map((style) => plexTranspose.transposeStyleData('artist', style, libraryId)) ||
+        [];
 
       // console.log('allArtistStyles', allArtistStyles);
 
@@ -1109,7 +1096,7 @@ export const getArtistStyleItems = async (libraryId, styleId) => {
 
       const artistStyleItems =
         data.MediaContainer.Metadata?.map((artist) =>
-          transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
+          plexTranspose.transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
         ) || [];
 
       // console.log('artistStyleItems', artistStyleItems);
@@ -1142,7 +1129,8 @@ export const getAllAlbumStyles = async (type) => {
       // console.log(data.MediaContainer.Directory);
 
       const allAlbumStyles =
-        data.MediaContainer.Directory?.map((style) => transposeStyleData('album', style, libraryId)) || [];
+        data.MediaContainer.Directory?.map((style) => plexTranspose.transposeStyleData('album', style, libraryId)) ||
+        [];
 
       // console.log('allAlbumStyles', allAlbumStyles);
 
@@ -1173,8 +1161,9 @@ export const getAlbumStyleItems = async (libraryId, styleId) => {
       // console.log(data.MediaContainer.Metadata);
 
       const albumStyleItems =
-        data.MediaContainer.Metadata?.map((album) => transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)) ||
-        [];
+        data.MediaContainer.Metadata?.map((album) =>
+          plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
+        ) || [];
 
       // console.log('albumStyleItems', albumStyleItems);
 
@@ -1206,7 +1195,7 @@ export const getAllArtistMoods = async (type) => {
       // console.log(data.MediaContainer.Directory);
 
       const allArtistMoods =
-        data.MediaContainer.Directory?.map((mood) => transposeMoodData('artist', mood, libraryId)) || [];
+        data.MediaContainer.Directory?.map((mood) => plexTranspose.transposeMoodData('artist', mood, libraryId)) || [];
 
       // console.log('allArtistMoods', allArtistMoods);
 
@@ -1238,7 +1227,7 @@ export const getArtistMoodItems = async (libraryId, moodId) => {
 
       const artistMoodItems =
         data.MediaContainer.Metadata?.map((artist) =>
-          transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
+          plexTranspose.transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
         ) || [];
 
       // console.log('artistMoodItems', artistMoodItems);
@@ -1271,7 +1260,7 @@ export const getAllAlbumMoods = async (type) => {
       // console.log(data.MediaContainer.Directory);
 
       const allAlbumMoods =
-        data.MediaContainer.Directory?.map((mood) => transposeMoodData('album', mood, libraryId)) || [];
+        data.MediaContainer.Directory?.map((mood) => plexTranspose.transposeMoodData('album', mood, libraryId)) || [];
 
       // console.log('allAlbumMoods', allAlbumMoods);
 
@@ -1302,8 +1291,9 @@ export const getAlbumMoodItems = async (libraryId, moodId) => {
       // console.log(data.MediaContainer.Metadata);
 
       const albumMoodItems =
-        data.MediaContainer.Metadata?.map((album) => transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)) ||
-        [];
+        data.MediaContainer.Metadata?.map((album) =>
+          plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
+        ) || [];
 
       // console.log('albumMoodItems', albumMoodItems);
 
