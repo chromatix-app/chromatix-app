@@ -64,16 +64,16 @@ const plexLibraryState = {
   allArtistGenreItems: {},
   allAlbumGenres: null,
   allAlbumGenreItems: {},
-  // styles
-  allArtistStyles: null,
-  allArtistStyleItems: {},
-  allAlbumStyles: null,
-  allAlbumStyleItems: {},
   // moods
   allArtistMoods: null,
   allArtistMoodItems: {},
   allAlbumMoods: null,
   allAlbumMoodItems: {},
+  // styles
+  allArtistStyles: null,
+  allArtistStyleItems: {},
+  allAlbumStyles: null,
+  allAlbumStyleItems: {},
   // search results
   searchResultCounter: 0,
   searchResults: null,
@@ -332,18 +332,6 @@ const effects = (dispatch) => ({
       }
     });
 
-    // update artist style items
-    const allArtistStyleItems = { ...rootState.appModel.allArtistStyleItems };
-    const styleKeys = Object.keys(allArtistStyleItems);
-    styleKeys.forEach((key) => {
-      const artistStyleItems = allArtistStyleItems[key];
-      const artistIndex = artistStyleItems.findIndex((artist) => artist.artistId === ratingKey);
-      if (artistIndex !== -1) {
-        artistStyleItems[artistIndex].userRating = rating;
-        allArtistStyleItems[key] = artistStyleItems;
-      }
-    });
-
     // update artist mood items
     const allArtistMoodItems = { ...rootState.appModel.allArtistMoodItems };
     const moodKeys = Object.keys(allArtistMoodItems);
@@ -353,6 +341,18 @@ const effects = (dispatch) => ({
       if (artistIndex !== -1) {
         artistMoodItems[artistIndex].userRating = rating;
         allArtistMoodItems[key] = artistMoodItems;
+      }
+    });
+
+    // update artist style items
+    const allArtistStyleItems = { ...rootState.appModel.allArtistStyleItems };
+    const styleKeys = Object.keys(allArtistStyleItems);
+    styleKeys.forEach((key) => {
+      const artistStyleItems = allArtistStyleItems[key];
+      const artistIndex = artistStyleItems.findIndex((artist) => artist.artistId === ratingKey);
+      if (artistIndex !== -1) {
+        artistStyleItems[artistIndex].userRating = rating;
+        allArtistStyleItems[key] = artistStyleItems;
       }
     });
 
@@ -472,18 +472,6 @@ const effects = (dispatch) => ({
       }
     });
 
-    // update album style items
-    const allAlbumStyleItems = { ...rootState.appModel.allAlbumStyleItems };
-    const styleKeys = Object.keys(allAlbumStyleItems);
-    styleKeys.forEach((key) => {
-      const albumStyleItems = allAlbumStyleItems[key];
-      const albumIndex = albumStyleItems.findIndex((album) => album.albumId === ratingKey);
-      if (albumIndex !== -1) {
-        albumStyleItems[albumIndex].userRating = rating;
-        allAlbumStyleItems[key] = albumStyleItems;
-      }
-    });
-
     // update album mood items
     const allAlbumMoodItems = { ...rootState.appModel.allAlbumMoodItems };
     const moodKeys = Object.keys(allAlbumMoodItems);
@@ -493,6 +481,18 @@ const effects = (dispatch) => ({
       if (albumIndex !== -1) {
         albumMoodItems[albumIndex].userRating = rating;
         allAlbumMoodItems[key] = albumMoodItems;
+      }
+    });
+
+    // update album style items
+    const allAlbumStyleItems = { ...rootState.appModel.allAlbumStyleItems };
+    const styleKeys = Object.keys(allAlbumStyleItems);
+    styleKeys.forEach((key) => {
+      const albumStyleItems = allAlbumStyleItems[key];
+      const albumIndex = albumStyleItems.findIndex((album) => album.albumId === ratingKey);
+      if (albumIndex !== -1) {
+        albumStyleItems[albumIndex].userRating = rating;
+        allAlbumStyleItems[key] = albumStyleItems;
       }
     });
 

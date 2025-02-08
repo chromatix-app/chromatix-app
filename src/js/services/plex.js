@@ -341,7 +341,7 @@ export const getAllArtists = () => {
       const prodEndpoint = endpointConfig.artist.getAllArtists(plexBaseUrl, libraryId);
       const endpoint = mockData ? mockEndpoint : prodEndpoint;
 
-      fetchDataPromise(endpoint, accessToken, true)
+      fetchDataPromise(endpoint, accessToken)
         .then((response) => {
           // console.log(response.MediaContainer.Metadata);
 
@@ -381,7 +381,7 @@ export const getArtistDetails = (libraryId, artistId) => {
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const endpoint = endpointConfig.artist.getDetails(plexBaseUrl, artistId);
 
-      fetchDataPromise(endpoint, accessToken, true)
+      fetchDataPromise(endpoint, accessToken)
         .then((response) => {
           // console.log(response.MediaContainer.Metadata);
 
@@ -416,7 +416,7 @@ export const getAllArtistAlbums = (libraryId, artistId) => {
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const endpoint = endpointConfig.artist.getAllAlbums(plexBaseUrl, artistId);
 
-      fetchDataPromise(endpoint, accessToken, true)
+      fetchDataPromise(endpoint, accessToken)
         .then((response) => {
           // console.log(response.MediaContainer.Metadata);
 
@@ -453,7 +453,7 @@ export const getAllArtistRelated = (libraryId, artistId) => {
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const endpoint = endpointConfig.artist.getAllRelated(plexBaseUrl, artistId);
 
-      fetchDataPromise(endpoint, accessToken, true)
+      fetchDataPromise(endpoint, accessToken)
         .then((response) => {
           // console.log(response.MediaContainer.Hub);
 
@@ -485,68 +485,82 @@ export const getAllArtistRelated = (libraryId, artistId) => {
 
 let getAllArtistCompilationAlbumsRunning;
 
-export const getAllArtistCompilationAlbums = async (libraryId, artistId, artistName) => {
+export const getAllArtistCompilationAlbums = (libraryId, artistId, artistName) => {
   if (!getAllArtistCompilationAlbumsRunning) {
     const prevAllCompilationAlbums = store.getState().appModel.allArtistCompilationAlbums[libraryId + '-' + artistId];
     if (!prevAllCompilationAlbums) {
       console.log('%c--- plex - getAllArtistCompilationAlbums ---', 'color:#f9743b;');
       getAllArtistCompilationAlbumsRunning = true;
 
-      const albumIds = await getAllArtistCompilationAlbumIds(libraryId, artistName);
-      let artistCompilationAlbums = [];
+      getAllArtistCompilationAlbumIds(libraryId, artistName)
+        .then((response) => {
+          let artistCompilationAlbums = [];
 
-      if (albumIds.length > 0) {
-        const allAlbums = store.getState().appModel.allAlbums;
+          if (response.length > 0) {
+            const allAlbums1 = store.getState().appModel.allAlbums;
 
-        for (let i in albumIds) {
-          const albumId = albumIds[i];
+            const albumPromises = response.map((albumId) => {
+              // Check to see if we already have the album info
+              const albumInfo1 = allAlbums1 ? allAlbums1?.find((album) => album.albumId === albumId) : null;
+              if (albumInfo1) {
+                artistCompilationAlbums.push(albumInfo1);
+                return Promise.resolve();
+              }
 
-          // Check to see if we already have the album info
-          const albumInfo = allAlbums ? allAlbums?.find((album) => album.albumId === albumId) : null;
-          if (albumInfo) {
-            artistCompilationAlbums.push(albumInfo);
+              // If not, get the album details
+              return new Promise((resolve) => {
+                getAlbumDetails(libraryId, albumId, () => {
+                  const allAlbums2 = store.getState().appModel.allAlbums;
+                  const albumInfo2 = allAlbums2?.find((album) => album.albumId === albumId);
+                  if (albumInfo2) {
+                    artistCompilationAlbums.push(albumInfo2);
+                  }
+                  resolve();
+                });
+              });
+            });
+
+            Promise.all(albumPromises).then(() => {
+              store.dispatch.appModel.storeArtistCompilationAlbums({ libraryId, artistId, artistCompilationAlbums });
+            });
+          } else {
+            store.dispatch.appModel.storeArtistCompilationAlbums({ libraryId, artistId, artistCompilationAlbums });
           }
-
-          // If not, get the album details
-          if (!albumInfo) {
-            getAlbumDetails(libraryId, albumId);
-            const allAlbums2 = store.getState().appModel.allAlbums;
-            const albumInfo2 = allAlbums2?.find((album) => album.albumId === albumId);
-            if (albumInfo2) {
-              artistCompilationAlbums.push(albumInfo2);
-            }
-          }
-        }
-      }
-
-      // console.log('artistCompilationAlbums', artistCompilationAlbums);
-
-      store.dispatch.appModel.storeArtistCompilationAlbums({ libraryId, artistId, artistCompilationAlbums });
-
-      getAllArtistCompilationAlbumsRunning = false;
+        })
+        .catch((error) => {})
+        .finally(() => {
+          getAllArtistCompilationAlbumsRunning = false;
+        });
     }
   }
 };
 
-const getAllArtistCompilationAlbumIds = async (libraryId, artistName) => {
+const getAllArtistCompilationAlbumIds = (libraryId, artistName) => {
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const plexBaseUrl = store.getState().appModel.plexBaseUrl;
   const endpoint = endpointConfig.artist.getCompilationTracks(plexBaseUrl, libraryId, artistName);
-  const data = await fetchData(endpoint, accessToken);
 
-  // console.log(data.MediaContainer.Metadata);
+  return new Promise((resolve, reject) => {
+    fetchDataPromise(endpoint, accessToken)
+      .then((response) => {
+        // console.log(response.MediaContainer.Metadata);
 
-  const artistCompilationTracks =
-    data.MediaContainer.Metadata?.map((track) =>
-      plexTranspose.transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
-    ) || [];
+        const artistCompilationTracks =
+          response.MediaContainer.Metadata?.map((track) =>
+            plexTranspose.transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
+          ) || [];
 
-  // get a unique list of album IDs using the albumId key of each track
-  const artistCompilationAlbums = [...new Set(artistCompilationTracks.map((track) => track.albumId))];
+        // get a unique list of album IDs using the albumId key of each track
+        const artistCompilationAlbums = [...new Set(artistCompilationTracks.map((track) => track.albumId))];
 
-  // console.log('artistCompilationTracks', artistCompilationTracks);
+        // console.log('artistCompilationTracks', artistCompilationTracks);
 
-  return artistCompilationAlbums;
+        resolve(artistCompilationAlbums);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
 };
 
 // ======================================================================
@@ -566,7 +580,7 @@ export const getAllAlbums = () => {
       const { libraryId } = store.getState().sessionModel.currentLibrary;
       const endpoint = endpointConfig.album.getAllAlbums(plexBaseUrl, libraryId);
 
-      fetchDataPromise(endpoint, accessToken, true)
+      fetchDataPromise(endpoint, accessToken)
         .then((response) => {
           // console.log(response.MediaContainer.Metadata);
 
@@ -596,7 +610,7 @@ export const getAllAlbums = () => {
 
 let getAlbumDetailsRunning;
 
-export const getAlbumDetails = (libraryId, albumId) => {
+export const getAlbumDetails = (libraryId, albumId, callback) => {
   if (!getAlbumDetailsRunning) {
     const prevAlbumDetails = store.getState().appModel.allAlbums?.find((album) => album.albumId === albumId);
     if (!prevAlbumDetails) {
@@ -606,7 +620,7 @@ export const getAlbumDetails = (libraryId, albumId) => {
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const endpoint = endpointConfig.album.getDetails(plexBaseUrl, albumId);
 
-      fetchDataPromise(endpoint, accessToken, true)
+      fetchDataPromise(endpoint, accessToken)
         .then((response) => {
           // console.log(response.MediaContainer.Metadata);
 
@@ -616,6 +630,10 @@ export const getAlbumDetails = (libraryId, albumId) => {
           // console.log('albumDetails', albumDetails);
 
           store.dispatch.appModel.storeAlbumDetails(albumDetails);
+
+          if (callback) {
+            callback();
+          }
         })
         .catch((error) => {})
         .finally(() => {
@@ -641,7 +659,7 @@ export const getAlbumTracks = (libraryId, albumId) => {
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const endpoint = endpointConfig.album.getTracks(plexBaseUrl, albumId);
 
-      fetchDataPromise(endpoint, accessToken, true)
+      fetchDataPromise(endpoint, accessToken)
         .then((response) => {
           // console.log(response.MediaContainer.Metadata);
 
@@ -679,7 +697,7 @@ export const getFolderItems = (folderId) => {
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const endpoint = endpointConfig.folder.getFolderItems(plexBaseUrl, libraryId, folderId);
 
-      fetchDataPromise(endpoint, accessToken, true)
+      fetchDataPromise(endpoint, accessToken)
         .then((response) => {
           // console.log(response.MediaContainer.Metadata);
 
@@ -743,7 +761,7 @@ export const getAllPlaylists = () => {
       const prodEndpoint = endpointConfig.playlist.getAllPlaylists(plexBaseUrl, libraryId);
       const endpoint = mockData ? mockEndpoint : prodEndpoint;
 
-      fetchDataPromise(endpoint, accessToken, true)
+      fetchDataPromise(endpoint, accessToken)
         .then((response) => {
           // console.log(response.MediaContainer.Metadata);
 
@@ -817,7 +835,7 @@ export const getPlaylistTracks = (libraryId, playlistId) => {
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const endpoint = endpointConfig.playlist.getTracks(plexBaseUrl, playlistId);
 
-      fetchDataPromise(endpoint, accessToken, true)
+      fetchDataPromise(endpoint, accessToken)
         .then((response) => {
           // console.log(response.MediaContainer.Metadata);
 
@@ -856,7 +874,7 @@ export const getAllCollections = () => {
       const { libraryId } = store.getState().sessionModel.currentLibrary;
       const endpoint = endpointConfig.collection.getAllCollections(plexBaseUrl, libraryId);
 
-      fetchDataPromise(endpoint, accessToken, true)
+      fetchDataPromise(endpoint, accessToken)
         .then((response) => {
           // console.log(response.MediaContainer.Metadata);
 
@@ -902,7 +920,7 @@ export const getCollectionItems = (libraryId, collectionId, typeKey) => {
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const endpoint = endpointConfig.collection.getItems(plexBaseUrl, collectionId);
 
-      fetchDataPromise(endpoint, accessToken, true)
+      fetchDataPromise(endpoint, accessToken)
         .then((response) => {
           // console.log(response.MediaContainer.Metadata);
 
@@ -960,7 +978,7 @@ export const getAllSets = (typeKey) => {
       const { libraryId } = store.getState().sessionModel.currentLibrary;
       const endpoint = endpointConfig.sets[`getAll${typeKey}`](plexBaseUrl, libraryId);
 
-      fetchDataPromise(endpoint, accessToken, true)
+      fetchDataPromise(endpoint, accessToken)
         .then((response) => {
           // console.log(response.MediaContainer.Directory);
 
@@ -1015,7 +1033,7 @@ export const getSetItems = (libraryId, setId, typeKey) => {
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const endpoint = endpointConfig.sets[`get${typeKey}`](plexBaseUrl, libraryId, setId);
 
-      fetchDataPromise(endpoint, accessToken, true)
+      fetchDataPromise(endpoint, accessToken)
         .then((response) => {
           // console.log(response.MediaContainer.Metadata);
 
@@ -1144,20 +1162,7 @@ export const abortAllRequests = () => {
   }
 };
 
-const fetchData = async (endpoint, accessToken) => {
-  const response = await fetch(endpoint, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'X-Plex-Token': accessToken,
-    },
-  });
-
-  const data = await response.json();
-  return data;
-};
-
-const fetchDataPromise = (endpoint, accessToken, canBeAborted = false) => {
+const fetchDataPromise = (endpoint, accessToken, canBeAborted = true) => {
   return new Promise((resolve, reject) => {
     let controller;
     if (canBeAborted) {
@@ -1201,3 +1206,16 @@ const fetchDataPromise = (endpoint, accessToken, canBeAborted = false) => {
       });
   });
 };
+
+// const fetchData = async (endpoint, accessToken) => {
+//   const response = await fetch(endpoint, {
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'application/json',
+//       'X-Plex-Token': accessToken,
+//     },
+//   });
+
+//   const data = await response.json();
+//   return data;
+// };
