@@ -686,7 +686,7 @@ const effects = (dispatch) => ({
 
   storeArtistGenreItems(payload, rootState) {
     console.log('%c--- storeArtistGenreItems ---', 'color:#07a098');
-    const { libraryId, genreId, artistGenreItems } = payload;
+    const { libraryId, setId, setItems } = payload;
     const allArtistGenreItems = { ...rootState.appModel.allArtistGenreItems };
     // limit recent entries
     const keys = Object.keys(allArtistGenreItems);
@@ -694,7 +694,7 @@ const effects = (dispatch) => ({
       delete allArtistGenreItems[keys[0]];
     }
     // add the new entry and save
-    allArtistGenreItems[libraryId + '-' + genreId] = artistGenreItems;
+    allArtistGenreItems[libraryId + '-' + setId] = setItems;
     dispatch.appModel.setAppState({
       allArtistGenreItems,
     });
@@ -702,7 +702,7 @@ const effects = (dispatch) => ({
 
   storeAlbumGenreItems(payload, rootState) {
     console.log('%c--- storeAlbumGenreItems ---', 'color:#07a098');
-    const { libraryId, genreId, albumGenreItems } = payload;
+    const { libraryId, setId, setItems } = payload;
     const allAlbumGenreItems = { ...rootState.appModel.allAlbumGenreItems };
     // limit recent entries
     const keys = Object.keys(allAlbumGenreItems);
@@ -710,45 +710,9 @@ const effects = (dispatch) => ({
       delete allAlbumGenreItems[keys[0]];
     }
     // add the new entry and save
-    allAlbumGenreItems[libraryId + '-' + genreId] = albumGenreItems;
+    allAlbumGenreItems[libraryId + '-' + setId] = setItems;
     dispatch.appModel.setAppState({
       allAlbumGenreItems,
-    });
-  },
-
-  //
-  // PLEX - STYLES
-  //
-
-  storeArtistStyleItems(payload, rootState) {
-    console.log('%c--- storeArtistStyleItems ---', 'color:#07a098');
-    const { libraryId, styleId, artistStyleItems } = payload;
-    const allArtistStyleItems = { ...rootState.appModel.allArtistStyleItems };
-    // limit recent entries
-    const keys = Object.keys(allArtistStyleItems);
-    if (keys.length >= maxDataLength) {
-      delete allArtistStyleItems[keys[0]];
-    }
-    // add the new entry and save
-    allArtistStyleItems[libraryId + '-' + styleId] = artistStyleItems;
-    dispatch.appModel.setAppState({
-      allArtistStyleItems,
-    });
-  },
-
-  storeAlbumStyleItems(payload, rootState) {
-    console.log('%c--- storeAlbumStyleItems ---', 'color:#07a098');
-    const { libraryId, styleId, albumStyleItems } = payload;
-    const allAlbumStyleItems = { ...rootState.appModel.allAlbumStyleItems };
-    // limit recent entries
-    const keys = Object.keys(allAlbumStyleItems);
-    if (keys.length >= maxDataLength) {
-      delete allAlbumStyleItems[keys[0]];
-    }
-    // add the new entry and save
-    allAlbumStyleItems[libraryId + '-' + styleId] = albumStyleItems;
-    dispatch.appModel.setAppState({
-      allAlbumStyleItems,
     });
   },
 
@@ -758,7 +722,7 @@ const effects = (dispatch) => ({
 
   storeArtistMoodItems(payload, rootState) {
     console.log('%c--- storeArtistMoodItems ---', 'color:#07a098');
-    const { libraryId, moodId, artistMoodItems } = payload;
+    const { libraryId, setId, setItems } = payload;
     const allArtistMoodItems = { ...rootState.appModel.allArtistMoodItems };
     // limit recent entries
     const keys = Object.keys(allArtistMoodItems);
@@ -766,7 +730,7 @@ const effects = (dispatch) => ({
       delete allArtistMoodItems[keys[0]];
     }
     // add the new entry and save
-    allArtistMoodItems[libraryId + '-' + moodId] = artistMoodItems;
+    allArtistMoodItems[libraryId + '-' + setId] = setItems;
     dispatch.appModel.setAppState({
       allArtistMoodItems,
     });
@@ -774,7 +738,7 @@ const effects = (dispatch) => ({
 
   storeAlbumMoodItems(payload, rootState) {
     console.log('%c--- storeAlbumMoodItems ---', 'color:#07a098');
-    const { libraryId, moodId, albumMoodItems } = payload;
+    const { libraryId, setId, setItems } = payload;
     const allAlbumMoodItems = { ...rootState.appModel.allAlbumMoodItems };
     // limit recent entries
     const keys = Object.keys(allAlbumMoodItems);
@@ -782,9 +746,45 @@ const effects = (dispatch) => ({
       delete allAlbumMoodItems[keys[0]];
     }
     // add the new entry and save
-    allAlbumMoodItems[libraryId + '-' + moodId] = albumMoodItems;
+    allAlbumMoodItems[libraryId + '-' + setId] = setItems;
     dispatch.appModel.setAppState({
       allAlbumMoodItems,
+    });
+  },
+
+  //
+  // PLEX - STYLES
+  //
+
+  storeArtistStyleItems(payload, rootState) {
+    console.log('%c--- storeArtistStyleItems ---', 'color:#07a098');
+    const { libraryId, setId, setItems } = payload;
+    const allArtistStyleItems = { ...rootState.appModel.allArtistStyleItems };
+    // limit recent entries
+    const keys = Object.keys(allArtistStyleItems);
+    if (keys.length >= maxDataLength) {
+      delete allArtistStyleItems[keys[0]];
+    }
+    // add the new entry and save
+    allArtistStyleItems[libraryId + '-' + setId] = setItems;
+    dispatch.appModel.setAppState({
+      allArtistStyleItems,
+    });
+  },
+
+  storeAlbumStyleItems(payload, rootState) {
+    console.log('%c--- storeAlbumStyleItems ---', 'color:#07a098');
+    const { libraryId, setId, setItems } = payload;
+    const allAlbumStyleItems = { ...rootState.appModel.allAlbumStyleItems };
+    // limit recent entries
+    const keys = Object.keys(allAlbumStyleItems);
+    if (keys.length >= maxDataLength) {
+      delete allAlbumStyleItems[keys[0]];
+    }
+    // add the new entry and save
+    allAlbumStyleItems[libraryId + '-' + setId] = setItems;
+    dispatch.appModel.setAppState({
+      allAlbumStyleItems,
     });
   },
 });
