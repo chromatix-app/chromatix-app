@@ -117,7 +117,7 @@ export const login = () => {
     })
     .catch((error) => {
       console.error(error);
-      store.dispatch.appModel.plexErrorLogin();
+      store.dispatch.appModel.setAppState({ errorPlexLogin: true });
       analyticsEvent('Plex: Login Error');
     });
 };
@@ -137,7 +137,7 @@ export const logout = () => {
 // GET USER INFO
 // ======================================================================
 
-const getUserInfo = () => {
+export const getUserInfo = () => {
   console.log('%c--- plex - getUserInfo ---', 'color:#f9743b;');
   plexTools
     .getUserInfo()
@@ -147,7 +147,7 @@ const getUserInfo = () => {
     })
     .catch((error) => {
       console.error(error);
-      store.dispatch.appModel.plexErrorLogin();
+      store.dispatch.appModel.setAppState({ errorPlexUser: true });
       analyticsEvent('Error: Plex Get User Info');
     });
 };
@@ -172,7 +172,7 @@ export const getAllServers = () => {
         })
         .catch((error) => {
           console.error(error);
-          store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
+          store.dispatch.appModel.setAppState({ errorPlexServers: true });
           analyticsEvent('Error: Plex Get All Servers');
         })
         .finally(() => {
@@ -195,7 +195,7 @@ const getFastestServerConnection = async (currentServer) => {
     });
   } catch (error) {
     console.error(error);
-    store.dispatch.sessionModel.unsetCurrentServer();
+    store.dispatch.appModel.setAppState({ errorPlexFastestServer: true });
     analyticsEvent('Error: Plex Get Fastest Server Connection');
     throw error;
   }
@@ -234,15 +234,12 @@ export const getAllLibraries = async () => {
             const allLibraries = response
               .filter((library) => library.type === 'artist')
               .map((library) => plexTranspose.transposeLibraryData(library));
-
-            // console.log('allLibraries', allLibraries);
-
             store.dispatch.sessionModel.refreshCurrentLibrary(allLibraries);
             store.dispatch.appModel.setAppState({ allLibraries });
           })
           .catch((error) => {
             console.error(error);
-            store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
+            store.dispatch.appModel.setAppState({ errorPlexLibraries: true });
             analyticsEvent('Error: Plex Get All Libraries');
           })
           .finally(() => {
@@ -314,7 +311,6 @@ const searchLibrary2 = (query, searchCounter) => {
     })
     .catch((error) => {
       console.error(error);
-      store.dispatch.appModel.setAppState({ plexErrorGeneral: true });
       analyticsEvent('Error: Plex Search');
     });
 };

@@ -19,9 +19,11 @@ const appState = {
   standalone: false,
   history: null,
 
-  plexErrorGeneral: false,
-  plexErrorLogin: false,
-  plexErrorServer: false,
+  errorPlexFastestServer: false,
+  errorPlexLibraries: false,
+  errorPlexLogin: false,
+  errorPlexServers: false,
+  errorPlexUser: false,
 
   scrollToPlaying: false,
   scrollToTrack: false,
@@ -166,26 +168,55 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX
+  // PLEX ERROR HANDLING
   //
 
-  plexErrorLogin(payload, rootState) {
-    // console.log('%c--- plexErrorLogin ---', 'color:#07a098');
+  dismissErrorPlexFastestServer(payload, rootState) {
+    // console.log('%c--- dismissErrorPlexFastestServer ---', 'color:#07a098');
     dispatch.appModel.setAppState({
-      plexErrorLogin: true,
+      errorPlexFastestServer: false,
     });
+    dispatch.sessionModel.unsetCurrentServer();
   },
 
-  dismissPlexErrorLogin(payload, rootState) {
-    // console.log('%c--- dismissPlexErrorLogin ---', 'color:#07a098');
+  dismissErrorPlexLibraries(payload, rootState) {
+    // console.log('%c--- dismissErrorPlexLibraries ---', 'color:#07a098');
+    dispatch.appModel.setAppState({
+      errorPlexLibraries: false,
+    });
+    dispatch.sessionModel.unsetCurrentServer();
+  },
+
+  dismissErrorPlexLogin(payload, rootState) {
+    // console.log('%c--- dismissErrorPlexLogin ---', 'color:#07a098');
     if (rootState.appModel.isInited) {
       dispatch.appModel.setAppState({
-        plexErrorLogin: false,
+        errorPlexLogin: false,
       });
     } else {
       window.location.reload();
     }
   },
+
+  dismissErrorPlexServers(payload, rootState) {
+    // console.log('%c--- dismissErrorPlexServers ---', 'color:#07a098');
+    dispatch.appModel.setAppState({
+      errorPlexServers: false,
+    });
+    plex.getAllServers();
+  },
+
+  dismissErrorPlexUser(payload, rootState) {
+    // console.log('%c--- dismissErrorPlexUser ---', 'color:#07a098');
+    dispatch.appModel.setAppState({
+      errorPlexUser: false,
+    });
+    plex.getUserInfo();
+  },
+
+  //
+  // PLEX SERVERS & LIBRARIES
+  //
 
   clearPlexServerState(payload, rootState) {
     console.log('%c--- clearPlexServerState ---', 'color:#07a098');
