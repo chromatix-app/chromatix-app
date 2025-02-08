@@ -2,13 +2,14 @@
 // IMPORTS
 // ======================================================================
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 import moment from 'moment';
 
 import { Icon, StarRating } from 'js/components';
+import { useScrollToTrack } from 'js/hooks';
 import { durationToStringLong, durationToStringShort, formatRecentDate } from 'js/utils';
 
 import style from './ListTable.module.scss';
@@ -639,27 +640,7 @@ const ListArtistCollections = ({ entries }) => {
 };
 
 const ListFolders = ({ folderId, entries, playingOrder, sortKey }) => {
-  const dispatch = useDispatch();
-
-  const scrollToPlaying = useSelector(({ appModel }) => appModel.scrollToPlaying);
-
-  const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
-  const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
-  const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
-
-  const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
-
-  // scroll to playing track, if required
-  useEffect(() => {
-    if (scrollToPlaying) {
-      const playingElement = document.getElementById(trackDetail?.trackId);
-      if (playingElement) {
-        playingElement.scrollIntoView({ block: 'center' });
-      }
-      dispatch.appModel.setAppState({ scrollToPlaying: false });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scrollToPlaying]);
+  useScrollToTrack();
 
   let trackNumber = 0;
 
@@ -820,7 +801,6 @@ const ListTracks = ({ variant, albumId, playlistId, discCount, entries, playingO
   const dispatch = useDispatch();
 
   const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
-  const scrollToPlaying = useSelector(({ appModel }) => appModel.scrollToPlaying);
 
   const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
   const playingAlbumId = useSelector(({ sessionModel }) => sessionModel.playingAlbumId);
@@ -837,17 +817,7 @@ const ListTracks = ({ variant, albumId, playlistId, discCount, entries, playingO
 
   const matchVariant = variant === 'albumTracks' ? 'albums' : 'playlists';
 
-  // scroll to playing track, if required
-  useEffect(() => {
-    if ((variant === 'albumTracks' || variant === 'playlistTracks') && scrollToPlaying) {
-      const playingElement = document.getElementById(trackDetail?.trackId);
-      if (playingElement) {
-        playingElement.scrollIntoView({ block: 'center' });
-      }
-      dispatch.appModel.setAppState({ scrollToPlaying: false });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scrollToPlaying]);
+  useScrollToTrack();
 
   let currentDisc = 0;
 

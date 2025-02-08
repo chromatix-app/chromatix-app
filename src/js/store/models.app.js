@@ -24,6 +24,7 @@ const appState = {
   plexErrorServer: false,
 
   scrollToPlaying: false,
+  scrollToTrack: false,
 };
 
 const userState = {

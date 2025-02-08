@@ -481,7 +481,7 @@ const SearchField = () => {
 };
 
 const SearchResults = ({ setSearchResultsVisible }) => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const searchResults = useSelector(({ appModel }) => appModel.searchResults);
 
@@ -503,6 +503,9 @@ const SearchResults = ({ setSearchResultsVisible }) => {
             to={result.link}
             onClick={() => {
               setSearchResultsVisible(false);
+              if (result.type === 'track') {
+                dispatch.appModel.setAppState({ scrollToTrack: result.trackId });
+              }
             }}
           >
             <div className={style.searchTypeIcon}>
