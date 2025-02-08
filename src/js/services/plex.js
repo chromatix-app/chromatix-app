@@ -354,7 +354,7 @@ window.searchLibrary = searchLibrary;
 
 let getAllArtistsRunning;
 
-export const getAllArtists = async () => {
+export const getAllArtists = () => {
   if (!getAllArtistsRunning) {
     const haveGotAllArtists = store.getState().appModel.haveGotAllArtists;
     if (!haveGotAllArtists) {
@@ -367,23 +367,27 @@ export const getAllArtists = async () => {
       const mockEndpoint = '/api/artists.json';
       const prodEndpoint = endpointConfig.artist.getAllArtists(plexBaseUrl, libraryId);
       const endpoint = mockData ? mockEndpoint : prodEndpoint;
-      const data = await fetchData(endpoint, accessToken);
 
-      // console.log(data.MediaContainer.Metadata);
+      fetchDataPromise(endpoint, accessToken, true)
+        .then((response) => {
+          // console.log(response.MediaContainer.Metadata);
 
-      const allArtists =
-        data.MediaContainer.Metadata?.map((artist) =>
-          transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
-        ) || [];
+          const allArtists =
+            response.MediaContainer.Metadata?.map((artist) =>
+              transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
+            ) || [];
 
-      // console.log('allArtists', allArtists);
+          // console.log('allArtists', allArtists);
 
-      store.dispatch.appModel.setAppState({
-        haveGotAllArtists: true,
-        allArtists,
-      });
-
-      getAllArtistsRunning = false;
+          store.dispatch.appModel.setAppState({
+            haveGotAllArtists: true,
+            allArtists,
+          });
+        })
+        .catch((error) => {})
+        .finally(() => {
+          getAllArtistsRunning = false;
+        });
     }
   }
 };
@@ -561,7 +565,7 @@ const getAllArtistCompilationAlbumIds = async (libraryId, artistId, artistName) 
 
 let getAllAlbumsRunning;
 
-export const getAllAlbums = async () => {
+export const getAllAlbums = () => {
   if (!getAllAlbumsRunning) {
     const haveGotAllAlbums = store.getState().appModel.haveGotAllAlbums;
     if (!haveGotAllAlbums) {
@@ -571,22 +575,27 @@ export const getAllAlbums = async () => {
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
       const endpoint = endpointConfig.album.getAllAlbums(plexBaseUrl, libraryId);
-      const data = await fetchData(endpoint, accessToken);
 
-      // console.log(data.MediaContainer.Metadata);
+      fetchDataPromise(endpoint, accessToken, true)
+        .then((response) => {
+          // console.log(response.MediaContainer.Metadata);
 
-      const allAlbums =
-        data.MediaContainer.Metadata?.map((album) => transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)) ||
-        [];
+          const allAlbums =
+            response.MediaContainer.Metadata?.map((album) =>
+              transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
+            ) || [];
 
-      // console.log('allAlbums', allAlbums);
+          // console.log('allAlbums', allAlbums);
 
-      store.dispatch.appModel.setAppState({
-        haveGotAllAlbums: true,
-        allAlbums,
-      });
-
-      getAllAlbumsRunning = false;
+          store.dispatch.appModel.setAppState({
+            haveGotAllAlbums: true,
+            allAlbums,
+          });
+        })
+        .catch((error) => {})
+        .finally(() => {
+          getAllAlbumsRunning = false;
+        });
     }
   }
 };
@@ -1399,6 +1408,18 @@ export const logPlaybackQuit = (currentTrack, currentTime) => {
 // FETCH DATA
 // ======================================================================
 
+let abortControllers = [];
+
+export const abortAllRequests = () => {
+  if (abortControllers.length > 0) {
+    console.log('%c### plex - abortAllRequests ###', 'color:#f00;');
+    abortControllers.forEach((controller) => {
+      controller.abort();
+    });
+    abortControllers = [];
+  }
+};
+
 async function fetchData(endpoint, accessToken) {
   const response = await fetch(endpoint, {
     headers: {
@@ -1410,4 +1431,49 @@ async function fetchData(endpoint, accessToken) {
 
   const data = await response.json();
   return data;
+}
+
+function fetchDataPromise(endpoint, accessToken, canBeAborted = false) {
+  return new Promise((resolve, reject) => {
+    let controller;
+    if (canBeAborted) {
+      controller = new AbortController();
+      abortControllers.push(controller);
+    }
+
+    fetch(endpoint, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Plex-Token': accessToken,
+      },
+      signal: canBeAborted ? controller.signal : undefined,
+    })
+      .then((response) => response.json())
+      .then((data) => resolve(data))
+      .catch((error) => {
+        // Handle aborted request
+        if (error.name === 'AbortError') {
+          reject({
+            code: 'fetchDataPromise.1',
+            message: 'Request aborted',
+            error: error,
+          });
+        }
+        // Handle all other errors
+        else {
+          reject({
+            code: 'fetchDataPromise.2',
+            message: 'Failed to complete fetch request: ' + error.message,
+            error: error,
+          });
+        }
+      })
+      .finally(() => {
+        // Clean up the abort controller
+        if (canBeAborted) {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        }
+      });
+  });
 }
