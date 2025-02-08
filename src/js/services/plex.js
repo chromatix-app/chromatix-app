@@ -76,24 +76,6 @@ const endpointConfig = {
     getAlbumStyleItems: (base, libraryId, styleId) =>
       `${base}/library/sections/${libraryId}/all?type=9&style=${styleId}&excludeFields=${albumExcludes}`,
   },
-  genres: {
-    getArtistGenreItems: (base, libraryId, genreId) =>
-      `${base}/library/sections/${libraryId}/all?type=8&genre=${genreId}&excludeFields=${artistExcludes}`,
-    getAlbumGenreItems: (base, libraryId, genreId) =>
-      `${base}/library/sections/${libraryId}/all?type=9&genre=${genreId}&excludeFields=${albumExcludes}`,
-  },
-  moods: {
-    getArtistMoodItems: (base, libraryId, moodId) =>
-      `${base}/library/sections/${libraryId}/all?type=8&mood=${moodId}&excludeFields=${artistExcludes}`,
-    getAlbumMoodItems: (base, libraryId, moodId) =>
-      `${base}/library/sections/${libraryId}/all?type=9&mood=${moodId}&excludeFields=${albumExcludes}`,
-  },
-  styles: {
-    getArtistStyleItems: (base, libraryId, styleId) =>
-      `${base}/library/sections/${libraryId}/all?type=8&style=${styleId}&excludeFields=${artistExcludes}`,
-    getAlbumStyleItems: (base, libraryId, styleId) =>
-      `${base}/library/sections/${libraryId}/all?type=9&style=${styleId}&excludeFields=${albumExcludes}`,
-  },
 };
 
 // ======================================================================
