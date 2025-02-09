@@ -55,8 +55,8 @@ const ControlBar = () => {
   const controlHandlers = useMemo(
     () => ({
       playPause: () =>
-        !isDisabled && (!playerPlaying ? dispatch.playerModel.playerPlay() : dispatch.playerModel.playerPause()),
-      play: () => !isDisabled && dispatch.playerModel.playerPlay(),
+        !isDisabled && (!playerPlaying ? dispatch.playerModel.playerResume() : dispatch.playerModel.playerPause()),
+      play: () => !isDisabled && dispatch.playerModel.playerResume(),
       pause: () => !isDisabled && dispatch.playerModel.playerPause(),
       prev: () => !isDisabled && dispatch.playerModel.playerPrev(),
       next: () => !isDisabled && dispatch.playerModel.playerNext(),
@@ -122,7 +122,7 @@ const ControlBar = () => {
             <Icon icon="RewindIcon" cover stroke />
           </button>
           {!playerPlaying && (
-            <button className={style.play} onClick={dispatch.playerModel.playerPlay} disabled={isDisabled}>
+            <button className={style.play} onClick={dispatch.playerModel.playerResume} disabled={isDisabled}>
               <Icon icon="PlayFilledIcon" cover />
             </button>
           )}

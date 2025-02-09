@@ -140,7 +140,7 @@ const ListEntry = React.memo(
       (event) => {
         event.stopPropagation();
         if (isCurrentlyLoaded) {
-          dispatch.playerModel.playerPlay();
+          dispatch.playerModel.playerResume();
         } else {
           if (variant === 'albums') {
             dispatch.playerModel.playerLoadAlbum({ albumId });

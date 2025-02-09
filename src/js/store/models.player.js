@@ -41,7 +41,7 @@ const effects = (dispatch) => ({
   //
 
   playerInit(payload, rootState) {
-    // console.log('%c--- playerInit ---', 'color:#5c16b1');
+    console.log('%c--- playerInit ---', 'color:#5c16b1');
     const playerElement = document.createElement('audio');
     const playerVolume = rootState.playerModel.playerVolume / 100;
     const playerMuted = rootState.playerModel.playerMuted;
@@ -202,7 +202,7 @@ const effects = (dispatch) => ({
       playingShuffle: isShuffle,
     });
 
-    analyticsEvent('Plex: Load Album');
+    analyticsEvent('Plex: Play (Album)');
   },
 
   async playerLoadPlaylist(payload, rootState) {
@@ -238,7 +238,7 @@ const effects = (dispatch) => ({
       playingShuffle: isShuffle,
     });
 
-    analyticsEvent('Plex: Load Playlist');
+    analyticsEvent('Plex: Play (Playlist)');
   },
 
   async playerLoadFolder(payload, rootState) {
@@ -274,7 +274,7 @@ const effects = (dispatch) => ({
       playingShuffle: isShuffle,
     });
 
-    analyticsEvent('Plex: Load Folder');
+    analyticsEvent('Plex: Play (Folder)');
   },
 
   playerLoadTrackList(payload, rootState) {
@@ -320,6 +320,7 @@ const effects = (dispatch) => ({
         if (play) {
           playerElement.play().catch((error) => null);
           plex.logPlaybackPlay(currentTrack, progress);
+          analyticsEvent('Plex: Play (Track)');
         }
       }
     } catch (error) {
@@ -332,10 +333,8 @@ const effects = (dispatch) => ({
   // PLAYER CONTROLS
   //
 
-  // TODO: funnel all play actions through this function
-
-  playerPlay(payload, rootState) {
-    // console.log('%c--- playerPlay ---', 'color:#5c16b1');
+  playerResume(payload, rootState) {
+    // console.log('%c--- playerResume ---', 'color:#5c16b1');
     const playerElement = rootState.playerModel.playerElement;
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
     const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
@@ -347,7 +346,7 @@ const effects = (dispatch) => ({
       playerPlaying: true,
     });
     plex.logPlaybackPlay(currentTrack, playingTrackProgress);
-    analyticsEvent('Plex: Play');
+    analyticsEvent('Plex: Play (Resume)');
   },
 
   playerProgress(payload, rootState) {
