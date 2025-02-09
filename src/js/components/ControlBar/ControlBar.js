@@ -10,6 +10,7 @@ import clsx from 'clsx';
 import { Icon, RangeSlider } from 'js/components';
 import { useKeyMediaControls, useMediaControls, useMediaMeta } from 'js/hooks';
 import { analyticsEvent, durationToStringShort } from 'js/utils';
+import * as playerX from 'js/services/player';
 
 import style from './ControlBar.module.scss';
 
@@ -55,8 +56,8 @@ const ControlBar = () => {
   const controlHandlers = useMemo(
     () => ({
       playPause: () =>
-        !isDisabled && (!playerPlaying ? dispatch.playerModel.playerPlay() : dispatch.playerModel.playerPause()),
-      play: () => !isDisabled && dispatch.playerModel.playerPlay(),
+        !isDisabled && (!playerPlaying ? dispatch.playerModel.playerResume() : dispatch.playerModel.playerPause()),
+      play: () => !isDisabled && dispatch.playerModel.playerResume(),
       pause: () => !isDisabled && dispatch.playerModel.playerPause(),
       prev: () => !isDisabled && dispatch.playerModel.playerPrev(),
       next: () => !isDisabled && dispatch.playerModel.playerNext(),
@@ -122,7 +123,7 @@ const ControlBar = () => {
             <Icon icon="RewindIcon" cover stroke />
           </button>
           {!playerPlaying && (
-            <button className={style.play} onClick={dispatch.playerModel.playerPlay} disabled={isDisabled}>
+            <button className={style.play} onClick={dispatch.playerModel.playerResume} disabled={isDisabled}>
               <Icon icon="PlayFilledIcon" cover />
             </button>
           )}
@@ -182,21 +183,21 @@ const ControlProgress = () => {
   const intervalRef = useRef(null);
   const mouseDownRef = useRef(false);
 
-  const playerElement = useSelector(({ playerModel }) => playerModel.playerElement);
+  const playerInited = useSelector(({ playerModel }) => playerModel.playerInited);
   const playerInteractionCount = useSelector(({ playerModel }) => playerModel.playerInteractionCount);
 
   const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
   const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
   const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
 
-  const [trackProgress, setTrackProgress] = useState(playerElement?.currentTime * 1000 || 0);
+  const [trackProgress, setTrackProgress] = useState(playerX.getCurrentProgress() * 1000 || 0);
 
   const realIndex = playingTrackKeys?.[playingTrackIndex];
   const trackCurrent = playingTrackList?.[realIndex];
   const isDisabled = !trackCurrent ? true : false;
 
   const trackProgressCurrent = trackProgress / 1000;
-  const trackProgressTotal = trackCurrent?.duration ? trackCurrent?.duration / 1000 : 0;
+  const trackProgressMax = trackCurrent?.duration ? trackCurrent?.duration / 1000 : 0;
 
   // handle progress change
   const handleProgressChange = useCallback(
@@ -213,13 +214,13 @@ const ControlProgress = () => {
 
   const handleProgressMouseUp = () => {
     mouseDownRef.current = false;
-    playerElement.currentTime = trackProgress / 1000;
+    playerX.setProgress(trackProgress);
   };
 
   // handle track progress
-  const updateTrackProgress = (playerElement, mouseDownRef, counterRef, setTrackProgress, dispatch) => {
+  const updateTrackProgress = (mouseDownRef, counterRef, setTrackProgress, dispatch) => {
     if (!mouseDownRef.current) {
-      const newTrackProgress = Math.round(playerElement.currentTime) * 1000;
+      const newTrackProgress = Math.round(playerX.getCurrentProgress()) * 1000;
       setTrackProgress(newTrackProgress);
       // only update redux every 5 seconds
       counterRef.current += 1;
@@ -232,15 +233,15 @@ const ControlProgress = () => {
 
   // whilst track is playing, update track progress every second
   useEffect(() => {
-    if (playerElement) {
+    if (playerInited) {
       clearInterval(intervalRef.current);
       intervalRef.current = setInterval(() => {
-        updateTrackProgress(playerElement, mouseDownRef, counterRef, setTrackProgress, dispatch);
+        updateTrackProgress(mouseDownRef, counterRef, setTrackProgress, dispatch);
       }, 1000);
     }
     return () => clearInterval(intervalRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playerElement, playingTrackIndex]);
+  }, [playerInited, playingTrackIndex]);
 
   // if a new track is selected, reset track progress
   useEffect(() => {
@@ -256,7 +257,7 @@ const ControlProgress = () => {
       <div className={style.scrubLeft}>{!isDisabled && durationToStringShort(trackProgress)}</div>
       <div className={style.scrubSlider}>
         <RangeSlider
-          max={trackProgressTotal}
+          max={trackProgressMax}
           value={trackProgressCurrent}
           handleChange={handleProgressChange}
           handleMouseDown={handleProgressMouseDown}

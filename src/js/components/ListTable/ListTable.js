@@ -713,7 +713,7 @@ const FolderTrackEntry = ({ index, folderId, trackNumber, entry, playingOrder, s
         playingTrackIndex: sortKey ? playingOrder[index] : index,
       });
     } else {
-      dispatch.playerModel.playerPlay();
+      dispatch.playerModel.playerResume();
     }
   };
 
@@ -845,7 +845,7 @@ const ListTracks = ({ variant, albumId, playlistId, discCount, entries, playingO
           playingTrackIndex: sortKey ? playingOrder[index] : index,
         });
       } else {
-        dispatch.playerModel.playerPlay();
+        dispatch.playerModel.playerResume();
       }
     };
 

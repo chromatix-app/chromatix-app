@@ -59,7 +59,7 @@ const savePersistentData = () => {
   if (newPersistentString !== persistentString) {
     // console.log('%cSAVE PERSISTENT DATA', 'color:#1fb800');
     persistentString = newPersistentString;
-    localStorage.setItem(config.persistentStoreKey, persistentString);
+    localStorage.setItem(config.storagePersistentKey, persistentString);
   }
 };
 
@@ -73,7 +73,7 @@ const saveSessionData = () => {
         // console.log('%cSAVE SESSION DATA', 'color:#1fb800');
         sessionString = newSessionString;
         const userHash = sha3('music' + userName, { outputLength: 224 }).toString();
-        const sessionKey = config.sessionStoreKey + '-' + userHash;
+        const sessionKey = config.storageSessionKey + '-' + userHash;
         localStorage.setItem(sessionKey, sessionString);
       }
     }

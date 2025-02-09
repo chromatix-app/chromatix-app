@@ -19,7 +19,7 @@ const clientId = 'chromatix.app';
 const clientIcon = 'https://chromatix.app/icon/icon-512.png';
 
 const storagePinKey = config.storagePinKey;
-const storageTokenKey = config.storageTokenKey;
+const storageAuthKey = config.storageAuthKey;
 
 const redirectPath = window.location.origin;
 const redirectQuery = 'plex-login';
@@ -140,7 +140,7 @@ export const init = () => {
     }
     // otherwise, check if the user is already logged in
     else {
-      const authToken = getLocalStorage(storageTokenKey);
+      const authToken = getLocalStorage(storageAuthKey);
       if (authToken) {
         resolve();
       } else {
@@ -232,7 +232,7 @@ const checkPlexPinStatus = (pinId, retryCount = 0) => {
 
           // if valid, store the authToken in the local storage
           if (pinStatusData.authToken) {
-            setLocalStorage(storageTokenKey, pinStatusData.authToken);
+            setLocalStorage(storageAuthKey, pinStatusData.authToken);
             window.localStorage.removeItem(storagePinKey);
             resolve();
           }
@@ -272,7 +272,7 @@ const checkPlexPinStatus = (pinId, retryCount = 0) => {
 // ======================================================================
 
 export const logout = () => {
-  window.localStorage.removeItem(storageTokenKey);
+  window.localStorage.removeItem(storageAuthKey);
 };
 
 // ======================================================================
@@ -282,7 +282,7 @@ export const logout = () => {
 export const getUserInfo = () => {
   return new Promise((resolve, reject) => {
     try {
-      const authToken = getLocalStorage(storageTokenKey);
+      const authToken = getLocalStorage(storageAuthKey);
       const endpoint = endpointConfig.user.getUserInfo();
       axios
         .get(endpoint, {
@@ -296,7 +296,9 @@ export const getUserInfo = () => {
           resolve(jsonObj);
         })
         .catch((error) => {
-          window.localStorage.removeItem(storageTokenKey);
+          if (error?.code !== 'ERR_NETWORK') {
+            logout();
+          }
           reject({
             code: 'getUserInfo.1',
             message: 'Failed to get user info: ' + error.message,
@@ -320,7 +322,7 @@ export const getUserInfo = () => {
 export const getAllServers = () => {
   return new Promise((resolve, reject) => {
     try {
-      const authToken = getLocalStorage(storageTokenKey);
+      const authToken = getLocalStorage(storageAuthKey);
       const endpoint = endpointConfig.server.getAllServers();
       axios
         .get(endpoint, {
