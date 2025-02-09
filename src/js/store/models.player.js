@@ -157,7 +157,7 @@ const effects = (dispatch) => ({
   },
 
   async playerLoadAlbum(payload, rootState) {
-    // console.log('%c--- playerLoadAlbum ---', 'color:#5c16b1');
+    console.log('%c--- playerLoadAlbum ---', 'color:#5c16b1');
     const { albumId, playingOrder = null, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
 
     const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
@@ -193,7 +193,7 @@ const effects = (dispatch) => ({
   },
 
   async playerLoadPlaylist(payload, rootState) {
-    // console.log('%c--- playerLoadPlaylist ---', 'color:#5c16b1');
+    console.log('%c--- playerLoadPlaylist ---', 'color:#5c16b1');
     const { playlistId, playingOrder = null, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
 
     const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
@@ -229,7 +229,7 @@ const effects = (dispatch) => ({
   },
 
   async playerLoadFolder(payload, rootState) {
-    // console.log('%c--- playerLoadFolder ---', 'color:#5c16b1');
+    console.log('%c--- playerLoadFolder ---', 'color:#5c16b1');
     const { folderId, playingOrder = null, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
 
     const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
