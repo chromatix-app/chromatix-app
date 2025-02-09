@@ -367,7 +367,7 @@ const effects = (dispatch) => ({
     if (loggedIn) {
       const userName = rootState.appModel.currentUser.userId;
       const userHash = sha3('music' + userName, { outputLength: 224 }).toString();
-      const sessionKey = config.sessionStoreKey + '-' + userHash;
+      const sessionKey = config.storageSessionKey + '-' + userHash;
       try {
         localStorageState = localStorage.getItem(sessionKey) ? JSON.parse(localStorage.getItem(sessionKey)) : {};
         // NOTE: bug fix - cleaning up some data that should never have been saved here
