@@ -296,7 +296,9 @@ export const getUserInfo = () => {
           resolve(jsonObj);
         })
         .catch((error) => {
-          window.localStorage.removeItem(storageAuthKey);
+          if (error?.code !== 'ERR_NETWORK') {
+            logout();
+          }
           reject({
             code: 'getUserInfo.1',
             message: 'Failed to get user info: ' + error.message,
