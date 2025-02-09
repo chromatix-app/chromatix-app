@@ -3,6 +3,7 @@
 // ======================================================================
 
 import { analyticsEvent, getTrackKeys } from 'js/utils';
+import * as playerX from 'js/services/player';
 import * as plex from 'js/services/plex';
 
 // ======================================================================
@@ -10,7 +11,7 @@ import * as plex from 'js/services/plex';
 // ======================================================================
 
 const playerState = {
-  playerElement: null,
+  playerInited: false,
   playerLoading: false,
   playerPlaying: false,
   playerVolume: 100,
@@ -41,38 +42,37 @@ const effects = (dispatch) => ({
   //
 
   playerInit(payload, rootState) {
-    // console.log('%c--- playerInit ---', 'color:#5c16b1');
-    const playerElement = document.createElement('audio');
+    console.log('%c--- playerInit ---', 'color:#5c16b1');
+
+    // get saved volume and muted state
     const playerVolume = rootState.playerModel.playerVolume / 100;
     const playerMuted = rootState.playerModel.playerMuted;
+
+    // player events
     let loadstartTimeoutId = null;
-    playerElement.volume = playerMuted ? 0 : playerVolume;
-    dispatch.playerModel.setPlayerState({
-      playerElement,
-    });
-    // load events
-    playerElement.addEventListener('loadstart', () => {
+    const onLoadStart = () => {
       // console.log('loadstart');
       clearTimeout(loadstartTimeoutId);
       loadstartTimeoutId = setTimeout(() => {
         dispatch.playerModel.playerSetLoading(true);
       }, 1000);
-    });
-    playerElement.addEventListener('canplay', () => {
+    };
+    const onCanPlay = () => {
       // console.log('canplay');
       clearTimeout(loadstartTimeoutId);
       dispatch.playerModel.playerSetLoading(false);
-    });
-    // playerElement.addEventListener('play', () => {
-    //   dispatch.playerModel.playerSetPlaying(true);
-    // });
-    // playerElement.addEventListener('pause', () => {
-    //   dispatch.playerModel.playerSetPlaying(true);
-    // });
-    // play next track when current track ends
-    playerElement.addEventListener('ended', () => {
+    };
+    const onEnded = () => {
+      // console.log('ended');
       dispatch.playerModel.playerNext(true);
+    };
+
+    // create and save player element
+    playerX.init(playerVolume, playerMuted, onLoadStart, onCanPlay, onEnded);
+    dispatch.playerModel.setPlayerState({
+      playerInited: true,
     });
+
     // handle quit
     window.addEventListener('beforeunload', () => {
       dispatch.playerModel.playerLogQuit();
@@ -88,16 +88,6 @@ const effects = (dispatch) => ({
     }
   },
 
-  // playerSetPlaying(payload, rootState) {
-  //   const playerPlaying = rootState.playerModel.playerPlaying;
-  //   if (playerPlaying !== payload) {
-  //     console.log(555);
-  //     dispatch.playerModel.setPlayerState({
-  //       playerPlaying: payload,
-  //     });
-  //   }
-  // },
-
   playerSetLoading(payload, rootState) {
     const playerLoading = rootState.playerModel.playerLoading;
     if (playerLoading !== payload) {
@@ -109,10 +99,7 @@ const effects = (dispatch) => ({
 
   playerUnload(payload, rootState) {
     console.log('%c--- playerUnload ---', 'color:#5c16b1');
-    const playerElement = rootState.playerModel.playerElement;
-    playerElement.pause();
-    playerElement.src = '';
-    playerElement.load();
+    playerX.unload();
     dispatch.playerModel.setPlayerState({
       playerPlaying: false,
     });
@@ -170,7 +157,7 @@ const effects = (dispatch) => ({
   },
 
   async playerLoadAlbum(payload, rootState) {
-    // console.log('%c--- playerLoadAlbum ---', 'color:#5c16b1');
+    console.log('%c--- playerLoadAlbum ---', 'color:#5c16b1');
     const { albumId, playingOrder = null, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
 
     const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
@@ -202,11 +189,11 @@ const effects = (dispatch) => ({
       playingShuffle: isShuffle,
     });
 
-    analyticsEvent('Plex: Load Album');
+    analyticsEvent('Plex: Play (Album)');
   },
 
   async playerLoadPlaylist(payload, rootState) {
-    // console.log('%c--- playerLoadPlaylist ---', 'color:#5c16b1');
+    console.log('%c--- playerLoadPlaylist ---', 'color:#5c16b1');
     const { playlistId, playingOrder = null, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
 
     const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
@@ -238,11 +225,11 @@ const effects = (dispatch) => ({
       playingShuffle: isShuffle,
     });
 
-    analyticsEvent('Plex: Load Playlist');
+    analyticsEvent('Plex: Play (Playlist)');
   },
 
   async playerLoadFolder(payload, rootState) {
-    // console.log('%c--- playerLoadFolder ---', 'color:#5c16b1');
+    console.log('%c--- playerLoadFolder ---', 'color:#5c16b1');
     const { folderId, playingOrder = null, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
 
     const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
@@ -274,7 +261,7 @@ const effects = (dispatch) => ({
       playingShuffle: isShuffle,
     });
 
-    analyticsEvent('Plex: Load Folder');
+    analyticsEvent('Plex: Play (Folder)');
   },
 
   playerLoadTrackList(payload, rootState) {
@@ -286,11 +273,8 @@ const effects = (dispatch) => ({
       ...payload,
     });
     // start playing
-    const playerElement = rootState.playerModel.playerElement;
     const currentTrack = payload.playingTrackList[payload.playingTrackKeys[payload.playingTrackIndex]];
-    playerElement.src = currentTrack.src;
-    playerElement.load();
-    playerElement.play().catch((error) => null);
+    playerX.loadTrack(currentTrack.src);
     dispatch.playerModel.setPlayerState({
       playerInteractionCount: rootState.playerModel.playerInteractionCount + 1,
     });
@@ -300,7 +284,6 @@ const effects = (dispatch) => ({
   playerLoadIndex(payload, rootState) {
     // console.log('%c--- playerLoadIndex ---', 'color:#5c16b1');
     try {
-      const playerElement = rootState.playerModel.playerElement;
       const playingTrackList = rootState.sessionModel.playingTrackList;
       const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
       const { index, play, progress } = payload;
@@ -312,14 +295,10 @@ const effects = (dispatch) => ({
         dispatch.sessionModel.setSessionState({
           playingTrackIndex: index,
         });
-        playerElement.src = currentTrack.src;
-        playerElement.load();
-        if (progress) {
-          playerElement.currentTime = progress / 1000;
-        }
+        playerX.loadTrack(currentTrack.src, progress, play);
         if (play) {
-          playerElement.play().catch((error) => null);
           plex.logPlaybackPlay(currentTrack, progress);
+          analyticsEvent('Plex: Play (Track)');
         }
       }
     } catch (error) {
@@ -332,22 +311,19 @@ const effects = (dispatch) => ({
   // PLAYER CONTROLS
   //
 
-  // TODO: funnel all play actions through this function
-
-  playerPlay(payload, rootState) {
-    // console.log('%c--- playerPlay ---', 'color:#5c16b1');
-    const playerElement = rootState.playerModel.playerElement;
+  playerResume(payload, rootState) {
+    // console.log('%c--- playerResume ---', 'color:#5c16b1');
+    playerX.resume();
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
     const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
     const playingTrackList = rootState.sessionModel.playingTrackList;
     const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
     const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
-    playerElement.play().catch((error) => null);
     dispatch.playerModel.setPlayerState({
       playerPlaying: true,
     });
     plex.logPlaybackPlay(currentTrack, playingTrackProgress);
-    analyticsEvent('Plex: Play');
+    analyticsEvent('Plex: Play (Resume)');
   },
 
   playerProgress(payload, rootState) {
@@ -365,13 +341,12 @@ const effects = (dispatch) => ({
 
   playerPause(payload, rootState) {
     // console.log('%c--- playerPause ---', 'color:#5c16b1');
-    const playerElement = rootState.playerModel.playerElement;
+    playerX.pause();
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
     const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
     const playingTrackList = rootState.sessionModel.playingTrackList;
     const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
     const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
-    playerElement.pause();
     dispatch.playerModel.setPlayerState({
       playerPlaying: false,
     });
@@ -381,9 +356,7 @@ const effects = (dispatch) => ({
 
   playerRestart(payload, rootState) {
     // console.log('%c--- playerRestart ---', 'color:#5c16b1');
-    const playerElement = rootState.playerModel.playerElement;
-    playerElement.currentTime = 0;
-    playerElement.play().catch((error) => null);
+    playerX.restart();
     dispatch.playerModel.setPlayerState({
       playerPlaying: true,
       playerInteractionCount: rootState.playerModel.playerInteractionCount + 1,
@@ -392,16 +365,16 @@ const effects = (dispatch) => ({
 
   playerPrev(payload, rootState) {
     // console.log('%c--- playerPrev ---', 'color:#5c16b1');
-    const playerElement = rootState.playerModel.playerElement;
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
     const playingRepeat = rootState.sessionModel.playingRepeat;
     const playingTrackCount = rootState.sessionModel.playingTrackCount;
+    const currentTime = playerX.getCurrentProgress();
     // play previous track, if available
-    if (playingTrackIndex > 0 && playerElement.currentTime <= 5) {
+    if (playingTrackIndex > 0 && currentTime <= 5) {
       dispatch.playerModel.playerLoadIndex({ index: playingTrackIndex - 1, play: true });
     }
     // else play last track, if on repeat
-    else if (playingRepeat && playerElement.currentTime <= 5) {
+    else if (playingRepeat && currentTime <= 5) {
       dispatch.playerModel.playerLoadIndex({ index: playingTrackCount - 1, play: true });
     }
     // else restart current track
@@ -483,8 +456,7 @@ const effects = (dispatch) => ({
       playerVolume: payload,
       playerMuted: false,
     });
-    const playerElement = rootState.playerModel.playerElement;
-    playerElement.volume = payload / 100;
+    playerX.setVolume(payload);
   },
 
   playerMuteToggle(payload, rootState) {
@@ -518,8 +490,8 @@ const effects = (dispatch) => ({
       playerVolume: newVolume,
       playerMuted: newMuted,
     });
-    const playerElement = rootState.playerModel.playerElement;
-    playerElement.volume = newMuted ? 0 : newVolume / 100;
+    const actualVolume = newMuted ? 0 : newVolume;
+    playerX.setVolume(actualVolume);
     analyticsEvent('Plex: Mute ' + (newMuted ? 'On' : 'Off'));
   },
 });

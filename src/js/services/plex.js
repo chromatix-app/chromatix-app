@@ -646,34 +646,44 @@ export const getAlbumDetails = (libraryId, albumId, callback) => {
 let getAlbumTracksRunning;
 
 export const getAlbumTracks = (libraryId, albumId) => {
-  if (!getAlbumTracksRunning) {
-    const prevAlbumTracks = store.getState().appModel.allAlbumTracks[libraryId + '-' + albumId];
-    if (!prevAlbumTracks) {
-      console.log('%c--- plex - getAlbumTracks ---', 'color:#f9743b;');
-      getAlbumTracksRunning = true;
-      const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-      const endpoint = endpointConfig.album.getTracks(plexBaseUrl, albumId);
+  return new Promise((resolve, reject) => {
+    if (!getAlbumTracksRunning) {
+      const prevAlbumTracks = store.getState().appModel.allAlbumTracks[libraryId + '-' + albumId];
+      if (!prevAlbumTracks) {
+        console.log('%c--- plex - getAlbumTracks ---', 'color:#f9743b;');
+        getAlbumTracksRunning = true;
+        const accessToken = store.getState().sessionModel.currentServer.accessToken;
+        const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+        const endpoint = endpointConfig.album.getTracks(plexBaseUrl, albumId);
 
-      fetchDataPromise(endpoint, accessToken)
-        .then((response) => {
-          // console.log(response.MediaContainer.Metadata);
+        fetchDataPromise(endpoint, accessToken)
+          .then((response) => {
+            // console.log(response.MediaContainer.Metadata);
 
-          const albumTracks =
-            response.MediaContainer.Metadata?.map((track) =>
-              plexTranspose.transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
-            ) || [];
+            const albumTracks =
+              response.MediaContainer.Metadata?.map((track) =>
+                plexTranspose.transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
+              ) || [];
 
-          // console.log('albumTracks', albumTracks);
+            // console.log('albumTracks', albumTracks);
 
-          store.dispatch.appModel.storeAlbumTracks({ libraryId, albumId, albumTracks });
-        })
-        .catch((error) => {})
-        .finally(() => {
-          getAlbumTracksRunning = false;
-        });
+            store.dispatch.appModel.storeAlbumTracks({ libraryId, albumId, albumTracks });
+
+            resolve();
+          })
+          .catch((error) => {
+            reject();
+          })
+          .finally(() => {
+            getAlbumTracksRunning = false;
+          });
+      } else {
+        resolve();
+      }
+    } else {
+      reject();
     }
-  }
+  });
 };
 
 // ======================================================================
@@ -683,58 +693,68 @@ export const getAlbumTracks = (libraryId, albumId) => {
 let getFolderItemsRunning;
 
 export const getFolderItems = (folderId) => {
-  if (!getFolderItemsRunning) {
-    const { libraryId } = store.getState().sessionModel.currentLibrary;
-    const prevFolderItems = store.getState().appModel.allFolderItems[libraryId + '-' + folderId];
-    if (!prevFolderItems) {
-      console.log('%c--- plex - getFolderItems ---', 'color:#f9743b;');
-      getFolderItemsRunning = true;
-      const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-      const endpoint = endpointConfig.folder.getFolderItems(plexBaseUrl, libraryId, folderId);
+  return new Promise((resolve, reject) => {
+    if (!getFolderItemsRunning) {
+      const { libraryId } = store.getState().sessionModel.currentLibrary;
+      const prevFolderItems = store.getState().appModel.allFolderItems[libraryId + '-' + folderId];
+      if (!prevFolderItems) {
+        console.log('%c--- plex - getFolderItems ---', 'color:#f9743b;');
+        getFolderItemsRunning = true;
+        const accessToken = store.getState().sessionModel.currentServer.accessToken;
+        const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+        const endpoint = endpointConfig.folder.getFolderItems(plexBaseUrl, libraryId, folderId);
 
-      fetchDataPromise(endpoint, accessToken)
-        .then((response) => {
-          // console.log(response.MediaContainer.Metadata);
+        fetchDataPromise(endpoint, accessToken)
+          .then((response) => {
+            // console.log(response.MediaContainer.Metadata);
 
-          const folderItems =
-            response.MediaContainer.Metadata?.map((item, index) =>
-              plexTranspose.transposeFolderData(item, index, libraryId, plexBaseUrl, accessToken)
-            ).filter((item) => item !== null) || [];
+            const folderItems =
+              response.MediaContainer.Metadata?.map((item, index) =>
+                plexTranspose.transposeFolderData(item, index, libraryId, plexBaseUrl, accessToken)
+              ).filter((item) => item !== null) || [];
 
-          // Sort folderItems
-          folderItems.sort((a, b) => {
-            if (a.kind === 'folder' && b.kind === 'track') return -1;
-            if (a.kind === 'track' && b.kind === 'folder') return 1;
-            if (a.kind === 'folder' && b.kind === 'folder') return a.title.localeCompare(b.title);
-            if (a.kind === 'track' && b.kind === 'track') {
-              if (a.album !== b.album) return a.album.localeCompare(b.album);
-              if (a.discNumber !== b.discNumber) return a.discNumber - b.discNumber;
-              return a.trackNumber - b.trackNumber;
-            }
-            return 0;
+            // Sort folderItems
+            folderItems.sort((a, b) => {
+              if (a.kind === 'folder' && b.kind === 'track') return -1;
+              if (a.kind === 'track' && b.kind === 'folder') return 1;
+              if (a.kind === 'folder' && b.kind === 'folder') return a.title.localeCompare(b.title);
+              if (a.kind === 'track' && b.kind === 'track') {
+                if (a.album !== b.album) return a.album.localeCompare(b.album);
+                if (a.discNumber !== b.discNumber) return a.discNumber - b.discNumber;
+                return a.trackNumber - b.trackNumber;
+              }
+              return 0;
+            });
+
+            // Add sortOrder properties to each object
+            let trackSortOrder = 0;
+            folderItems.forEach((item, index) => {
+              item.sortOrder = index;
+              if (item.kind === 'track') {
+                item.trackSortOrder = trackSortOrder;
+                trackSortOrder++;
+              }
+            });
+
+            // console.log('folderItems', folderItems);
+
+            store.dispatch.appModel.storeFolderItems({ libraryId, folderId, folderItems });
+
+            resolve();
+          })
+          .catch((error) => {
+            reject();
+          })
+          .finally(() => {
+            getFolderItemsRunning = false;
           });
-
-          // Add sortOrder properties to each object
-          let trackSortOrder = 0;
-          folderItems.forEach((item, index) => {
-            item.sortOrder = index;
-            if (item.kind === 'track') {
-              item.trackSortOrder = trackSortOrder;
-              trackSortOrder++;
-            }
-          });
-
-          // console.log('folderItems', folderItems);
-
-          store.dispatch.appModel.storeFolderItems({ libraryId, folderId, folderItems });
-        })
-        .catch((error) => {})
-        .finally(() => {
-          getFolderItemsRunning = false;
-        });
+      } else {
+        resolve();
+      }
+    } else {
+      reject();
     }
-  }
+  });
 };
 
 // ======================================================================
@@ -822,34 +842,44 @@ export const getPlaylistDetails = (libraryId, playlistId) => {
 let getPlaylistTracksRunning;
 
 export const getPlaylistTracks = (libraryId, playlistId) => {
-  if (!getPlaylistTracksRunning) {
-    const prevPlaylistTracks = store.getState().appModel.allPlaylistTracks[libraryId + '-' + playlistId];
-    if (!prevPlaylistTracks) {
-      console.log('%c--- plex - getPlaylistTracks ---', 'color:#f9743b;');
-      getPlaylistTracksRunning = true;
-      const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-      const endpoint = endpointConfig.playlist.getTracks(plexBaseUrl, playlistId);
+  return new Promise((resolve, reject) => {
+    if (!getPlaylistTracksRunning) {
+      const prevPlaylistTracks = store.getState().appModel.allPlaylistTracks[libraryId + '-' + playlistId];
+      if (!prevPlaylistTracks) {
+        console.log('%c--- plex - getPlaylistTracks ---', 'color:#f9743b;');
+        getPlaylistTracksRunning = true;
+        const accessToken = store.getState().sessionModel.currentServer.accessToken;
+        const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+        const endpoint = endpointConfig.playlist.getTracks(plexBaseUrl, playlistId);
 
-      fetchDataPromise(endpoint, accessToken)
-        .then((response) => {
-          // console.log(response.MediaContainer.Metadata);
+        fetchDataPromise(endpoint, accessToken)
+          .then((response) => {
+            // console.log(response.MediaContainer.Metadata);
 
-          const playlistTracks =
-            response.MediaContainer.Metadata?.map((track) =>
-              plexTranspose.transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
-            ) || [];
+            const playlistTracks =
+              response.MediaContainer.Metadata?.map((track) =>
+                plexTranspose.transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
+              ) || [];
 
-          // console.log(playlistTracks);
+            // console.log(playlistTracks);
 
-          store.dispatch.appModel.storePlaylistTracks({ libraryId, playlistId, playlistTracks });
-        })
-        .catch((error) => {})
-        .finally(() => {
-          getPlaylistTracksRunning = false;
-        });
+            store.dispatch.appModel.storePlaylistTracks({ libraryId, playlistId, playlistTracks });
+
+            resolve();
+          })
+          .catch((error) => {
+            reject();
+          })
+          .finally(() => {
+            getPlaylistTracksRunning = false;
+          });
+      } else {
+        resolve();
+      }
+    } else {
+      reject();
     }
-  }
+  });
 };
 
 // ======================================================================
