@@ -5,7 +5,7 @@ export { default as FilterToggle } from './FilterToggle/FilterToggle';
 export { default as FilterWrap } from './FilterWrap/FilterWrap';
 export { default as Icon } from './Icon/Icon';
 export { default as ListCards } from './ListCards/ListCards';
-export { default as ListTable } from './ListTable/ListTable';
+export { default as ListTableV1 } from './ListTableV1/ListTableV1';
 export { default as ListServers } from './ListServers/ListServers';
 export { default as Loading } from './Loading/Loading';
 export { default as PageHome } from './PageHome/PageHome';

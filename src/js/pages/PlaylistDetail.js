@@ -5,7 +5,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { ListTable, Loading, StarRating, TitleHeading } from 'js/components';
+import { ListTableV1, Loading, StarRating, TitleHeading } from 'js/components';
 import { useGetPlaylistDetail } from 'js/hooks';
 
 // ======================================================================
@@ -79,7 +79,7 @@ const PlaylistDetail = () => {
       />
       {!playlistTracks && <Loading forceVisible inline showOffline />}
       {playlistTracks && (
-        <ListTable
+        <ListTableV1
           variant="playlistTracks"
           playlistId={playlistId}
           entries={playlistTracks}

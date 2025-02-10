@@ -4,7 +4,7 @@
 
 import { useSelector } from 'react-redux';
 
-import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTableV1, Loading, TitleHeading } from 'js/components';
 import { useGetAllAlbums } from 'js/hooks';
 
 // ======================================================================
@@ -67,7 +67,7 @@ const AlbumList = () => {
       {!sortedAlbums && <Loading forceVisible inline showOffline />}
       {sortedAlbums && viewAlbums === 'grid' && <ListCards variant="albums" entries={sortedAlbums} />}
       {sortedAlbums && viewAlbums === 'list' && (
-        <ListTable variant="albums" entries={sortedAlbums} sortKey={sortAlbums} orderKey={orderAlbums} />
+        <ListTableV1 variant="albums" entries={sortedAlbums} sortKey={sortAlbums} orderKey={orderAlbums} />
       )}
     </>
   );

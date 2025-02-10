@@ -12,13 +12,13 @@ import { Icon, StarRating } from 'js/components';
 import { useScrollToTrack } from 'js/hooks';
 import { durationToStringLong, durationToStringShort, formatRecentDate } from 'js/utils';
 
-import style from './ListTable.module.scss';
+import style from './ListTableV1.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const ListTable = ({
+const ListTableV1 = ({
   variant,
   albumId,
   playlistId,
@@ -981,4 +981,4 @@ const ListTrackEntry = React.memo(
 // EXPORT
 // ======================================================================
 
-export default ListTable;
+export default ListTableV1;
