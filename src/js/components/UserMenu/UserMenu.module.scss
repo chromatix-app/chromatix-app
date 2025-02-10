@@ -14,6 +14,7 @@
     top: 0;
     left: 0;
     right: auto;
+    z-index: auto;
   }
 
   &WithoutLibrary {
@@ -39,6 +40,10 @@
   left: 0;
   right: 0;
   z-index: 887;
+
+  .wrapInline & {
+    z-index: auto;
+  }
 }
 
 //

@@ -75,7 +75,7 @@ const SideBar = () => {
   }, []);
 
   return (
-    <div className={style.wrap}>
+    <>
       <div className={style.nav}>
         <button className={style.prev} disabled={!canGoBack} onClick={goBack}>
           <Icon icon="PreviousIcon" cover stroke />
@@ -84,229 +84,230 @@ const SideBar = () => {
           <Icon icon="NextIcon" cover stroke />
         </button>
       </div>
+      <div className={style.wrap}>
+        {electronPlatform === 'win' && (
+          <div className={style.userMenu}>
+            <UserMenu variant="Inline" />
+          </div>
+        )}
 
-      {electronPlatform === 'win' && (
-        <div className={style.userMenu}>
-          <UserMenu variant="Inline" />
-        </div>
-      )}
+        {menuShowSearch && <SearchField />}
 
-      {menuShowSearch && <SearchField />}
-
-      {(libraryIsVisible || (browseIsVisible && !menuShowSeparateBrowseSection)) && (
-        <>
-          <button
-            className={style.label}
-            onClick={() => {
-              dispatch.sessionModel.setSessionState({ menuOpenLibrary: !menuOpenLibrary });
-            }}
-          >
-            Library
-            <span className={style.labelIcon}>
-              {menuOpenLibrary ? (
-                <Icon icon="ArrowDownIcon" cover stroke strokeWidth={1.4} />
-              ) : (
-                <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.4} />
-              )}
-            </span>
-          </button>
-          {libraryIsVisible && menuOpenLibrary && (
-            <>
-              {menuShowArtists && (
-                <NavLink className={style.link} activeClassName={style.linkActive} to="/artists">
-                  {menuShowIcons && (
-                    <span className={style.icon}>
-                      <Icon icon="PeopleIcon" cover stroke />
-                    </span>
-                  )}
-                  Artists
-                </NavLink>
-              )}
-              {menuShowAlbums && (
-                <NavLink className={style.link} activeClassName={style.linkActive} to="/albums">
-                  {menuShowIcons && (
-                    <span className={style.icon}>
-                      <Icon icon="PlayCircleIcon" cover stroke />
-                    </span>
-                  )}
-                  Albums
-                </NavLink>
-              )}
-              {menuShowFolders && (
-                <NavLink className={style.link} activeClassName={style.linkActive} to="/folders">
-                  {menuShowIcons && (
-                    <span className={style.icon}>
-                      <Icon icon="FolderIcon" cover stroke />
-                    </span>
-                  )}
-                  Folders
-                </NavLink>
-              )}
-              {menuShowPlaylists && (
-                <NavLink
-                  className={style.link}
-                  activeClassName={style.linkActive}
-                  to="/playlists"
-                  exact={playlistsIsVisible}
-                >
-                  {menuShowIcons && (
-                    <span className={style.icon}>
-                      <Icon icon="MusicNoteDoubleIcon" cover stroke />
-                    </span>
-                  )}
-                  Playlists
-                </NavLink>
-              )}
-            </>
-          )}
-        </>
-      )}
-
-      {browseIsVisible && (
-        <>
-          {menuShowSeparateBrowseSection && (
+        {(libraryIsVisible || (browseIsVisible && !menuShowSeparateBrowseSection)) && (
+          <>
             <button
               className={style.label}
               onClick={() => {
-                dispatch.sessionModel.setSessionState({ menuOpenBrowse: !menuOpenBrowse });
+                dispatch.sessionModel.setSessionState({ menuOpenLibrary: !menuOpenLibrary });
               }}
             >
-              Browse
+              Library
               <span className={style.labelIcon}>
-                {browseIsOpen ? (
+                {menuOpenLibrary ? (
                   <Icon icon="ArrowDownIcon" cover stroke strokeWidth={1.4} />
                 ) : (
                   <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.4} />
                 )}
               </span>
             </button>
-          )}
-          {browseIsOpen && (
-            <>
-              {menuShowArtistCollections && (
-                <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-collections">
-                  {menuShowIcons && (
-                    <span className={style.icon}>
-                      <Icon icon="ArtistCollectionsIcon" cover stroke />
-                    </span>
-                  )}
-                  Artist Collections
-                </NavLink>
-              )}
-              {menuShowAlbumCollections && (
-                <NavLink className={style.link} activeClassName={style.linkActive} to="/album-collections">
-                  {menuShowIcons && (
-                    <span className={style.icon}>
-                      <Icon icon="AlbumCollectionsIcon" cover stroke />
-                    </span>
-                  )}
-                  Album Collections
-                </NavLink>
-              )}
-              {menuShowArtistGenres && (
-                <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-genres">
-                  {menuShowIcons && (
-                    <span className={style.icon}>
-                      <Icon icon="ArtistGenresIcon" cover stroke />
-                    </span>
-                  )}
-                  Artist Genres
-                </NavLink>
-              )}
-              {menuShowAlbumGenres && (
-                <NavLink className={style.link} activeClassName={style.linkActive} to="/album-genres">
-                  {menuShowIcons && (
-                    <span className={style.icon}>
-                      <Icon icon="AlbumGenresIcon" cover stroke />
-                    </span>
-                  )}
-                  Album Genres
-                </NavLink>
-              )}
-              {menuShowArtistMoods && (
-                <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-moods">
-                  {menuShowIcons && (
-                    <span className={style.icon}>
-                      <Icon icon="ArtistMoodsIcon" cover stroke />
-                    </span>
-                  )}
-                  Artist Moods
-                </NavLink>
-              )}
-              {menuShowAlbumMoods && (
-                <NavLink className={style.link} activeClassName={style.linkActive} to="/album-moods">
-                  {menuShowIcons && (
-                    <span className={style.icon}>
-                      <Icon icon="AlbumMoodsIcon" cover stroke />
-                    </span>
-                  )}
-                  Album Moods
-                </NavLink>
-              )}
-              {menuShowArtistStyles && (
-                <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-styles">
-                  {menuShowIcons && (
-                    <span className={style.icon}>
-                      <Icon icon="ArtistStylesIcon" cover stroke />
-                    </span>
-                  )}
-                  Artist Styles
-                </NavLink>
-              )}
-              {menuShowAlbumStyles && (
-                <NavLink className={style.link} activeClassName={style.linkActive} to="/album-styles">
-                  {menuShowIcons && (
-                    <span className={style.icon}>
-                      <Icon icon="AlbumStylesIcon" cover stroke />
-                    </span>
-                  )}
-                  Album Styles
-                </NavLink>
-              )}
-            </>
-          )}
-        </>
-      )}
+            {libraryIsVisible && menuOpenLibrary && (
+              <>
+                {menuShowArtists && (
+                  <NavLink className={style.link} activeClassName={style.linkActive} to="/artists">
+                    {menuShowIcons && (
+                      <span className={style.icon}>
+                        <Icon icon="PeopleIcon" cover stroke />
+                      </span>
+                    )}
+                    Artists
+                  </NavLink>
+                )}
+                {menuShowAlbums && (
+                  <NavLink className={style.link} activeClassName={style.linkActive} to="/albums">
+                    {menuShowIcons && (
+                      <span className={style.icon}>
+                        <Icon icon="PlayCircleIcon" cover stroke />
+                      </span>
+                    )}
+                    Albums
+                  </NavLink>
+                )}
+                {menuShowFolders && (
+                  <NavLink className={style.link} activeClassName={style.linkActive} to="/folders">
+                    {menuShowIcons && (
+                      <span className={style.icon}>
+                        <Icon icon="FolderIcon" cover stroke />
+                      </span>
+                    )}
+                    Folders
+                  </NavLink>
+                )}
+                {menuShowPlaylists && (
+                  <NavLink
+                    className={style.link}
+                    activeClassName={style.linkActive}
+                    to="/playlists"
+                    exact={playlistsIsVisible}
+                  >
+                    {menuShowIcons && (
+                      <span className={style.icon}>
+                        <Icon icon="MusicNoteDoubleIcon" cover stroke />
+                      </span>
+                    )}
+                    Playlists
+                  </NavLink>
+                )}
+              </>
+            )}
+          </>
+        )}
 
-      {playlistsIsVisible && (
-        <>
-          <button
-            className={style.label}
-            onClick={() => {
-              dispatch.sessionModel.setSessionState({ menuOpenPlaylists: !menuOpenPlaylists });
-            }}
-          >
-            Playlists
-            <span className={style.labelIcon}>
-              {menuOpenPlaylists ? (
-                <Icon icon="ArrowDownIcon" cover stroke strokeWidth={1.4} />
-              ) : (
-                <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.4} />
-              )}
-            </span>
-          </button>
-          {menuOpenPlaylists && (
-            <>
-              {allPlaylists.map((playlist) => (
-                <NavLink
-                  key={playlist.playlistId}
-                  className={style.link}
-                  activeClassName={style.linkActive}
-                  to={playlist.link}
-                >
-                  {menuShowIcons && (
-                    <span className={style.icon}>
-                      <Icon icon="PlaylistIcon" cover stroke />
-                    </span>
+        {browseIsVisible && (
+          <>
+            {menuShowSeparateBrowseSection && (
+              <button
+                className={style.label}
+                onClick={() => {
+                  dispatch.sessionModel.setSessionState({ menuOpenBrowse: !menuOpenBrowse });
+                }}
+              >
+                Browse
+                <span className={style.labelIcon}>
+                  {browseIsOpen ? (
+                    <Icon icon="ArrowDownIcon" cover stroke strokeWidth={1.4} />
+                  ) : (
+                    <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.4} />
                   )}
-                  {playlist.title}
-                </NavLink>
-              ))}
-            </>
-          )}
-        </>
-      )}
-    </div>
+                </span>
+              </button>
+            )}
+            {browseIsOpen && (
+              <>
+                {menuShowArtistCollections && (
+                  <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-collections">
+                    {menuShowIcons && (
+                      <span className={style.icon}>
+                        <Icon icon="ArtistCollectionsIcon" cover stroke />
+                      </span>
+                    )}
+                    Artist Collections
+                  </NavLink>
+                )}
+                {menuShowAlbumCollections && (
+                  <NavLink className={style.link} activeClassName={style.linkActive} to="/album-collections">
+                    {menuShowIcons && (
+                      <span className={style.icon}>
+                        <Icon icon="AlbumCollectionsIcon" cover stroke />
+                      </span>
+                    )}
+                    Album Collections
+                  </NavLink>
+                )}
+                {menuShowArtistGenres && (
+                  <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-genres">
+                    {menuShowIcons && (
+                      <span className={style.icon}>
+                        <Icon icon="ArtistGenresIcon" cover stroke />
+                      </span>
+                    )}
+                    Artist Genres
+                  </NavLink>
+                )}
+                {menuShowAlbumGenres && (
+                  <NavLink className={style.link} activeClassName={style.linkActive} to="/album-genres">
+                    {menuShowIcons && (
+                      <span className={style.icon}>
+                        <Icon icon="AlbumGenresIcon" cover stroke />
+                      </span>
+                    )}
+                    Album Genres
+                  </NavLink>
+                )}
+                {menuShowArtistMoods && (
+                  <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-moods">
+                    {menuShowIcons && (
+                      <span className={style.icon}>
+                        <Icon icon="ArtistMoodsIcon" cover stroke />
+                      </span>
+                    )}
+                    Artist Moods
+                  </NavLink>
+                )}
+                {menuShowAlbumMoods && (
+                  <NavLink className={style.link} activeClassName={style.linkActive} to="/album-moods">
+                    {menuShowIcons && (
+                      <span className={style.icon}>
+                        <Icon icon="AlbumMoodsIcon" cover stroke />
+                      </span>
+                    )}
+                    Album Moods
+                  </NavLink>
+                )}
+                {menuShowArtistStyles && (
+                  <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-styles">
+                    {menuShowIcons && (
+                      <span className={style.icon}>
+                        <Icon icon="ArtistStylesIcon" cover stroke />
+                      </span>
+                    )}
+                    Artist Styles
+                  </NavLink>
+                )}
+                {menuShowAlbumStyles && (
+                  <NavLink className={style.link} activeClassName={style.linkActive} to="/album-styles">
+                    {menuShowIcons && (
+                      <span className={style.icon}>
+                        <Icon icon="AlbumStylesIcon" cover stroke />
+                      </span>
+                    )}
+                    Album Styles
+                  </NavLink>
+                )}
+              </>
+            )}
+          </>
+        )}
+
+        {playlistsIsVisible && (
+          <>
+            <button
+              className={style.label}
+              onClick={() => {
+                dispatch.sessionModel.setSessionState({ menuOpenPlaylists: !menuOpenPlaylists });
+              }}
+            >
+              Playlists
+              <span className={style.labelIcon}>
+                {menuOpenPlaylists ? (
+                  <Icon icon="ArrowDownIcon" cover stroke strokeWidth={1.4} />
+                ) : (
+                  <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.4} />
+                )}
+              </span>
+            </button>
+            {menuOpenPlaylists && (
+              <>
+                {allPlaylists.map((playlist) => (
+                  <NavLink
+                    key={playlist.playlistId}
+                    className={style.link}
+                    activeClassName={style.linkActive}
+                    to={playlist.link}
+                  >
+                    {menuShowIcons && (
+                      <span className={style.icon}>
+                        <Icon icon="PlaylistIcon" cover stroke />
+                      </span>
+                    )}
+                    {playlist.title}
+                  </NavLink>
+                ))}
+              </>
+            )}
+          </>
+        )}
+      </div>
+    </>
   );
 };
 

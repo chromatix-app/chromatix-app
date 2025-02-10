@@ -1,28 +1,26 @@
 @import '../../../css/global';
 
-.wrap {
-  overflow-x: hidden;
-  min-height: 100%;
-  padding: 40px 12px 20px;
-  background: var(--color-panel-background);
-  border-right: 1px solid var(--color-border);
-}
-
 .nav {
   display: flex;
-  position: absolute;
-  top: 4px;
-  right: -4px;
-  width: 80px;
-  height: 50px;
-  // background: rgba(255, 0, 0, 0.1);
+  position: sticky;
+  overflow-x: hidden;
+  justify-content: flex-end;
+  align-items: flex-end;
+  top: 0;
+  height: 54px;
+  padding: 4px 0 0;
+  background: var(--color-panel-background);
+  border-right: 1px solid var(--color-border);
+  z-index: 2;
 
   @include electron-no-drag;
 }
 
 .prev,
 .next {
-  width: 50%;
+  position: relative;
+  right: -4px;
+  width: 40px;
   height: 100%;
   padding: 17px 7px 17px 17px;
   border-radius: 6px;
@@ -39,11 +37,23 @@
 }
 
 //
+// WRAP
+//
+
+.wrap {
+  overflow-x: hidden;
+  min-height: 100%;
+  min-height: calc(100% - 54px);
+  padding: 5px 12px 20px;
+  background: var(--color-panel-background);
+  border-right: 1px solid var(--color-border);
+}
+
+//
 // USER MENU
 //
 
 .userMenu {
-  margin-top: 16px;
 }
 
 //
@@ -51,9 +61,6 @@
 //
 
 .search {
-  // below nav
-  margin-top: 20px;
-
   // below user menu
   .userMenu + & {
     margin-top: 10px;
@@ -107,7 +114,6 @@
   height: 26px;
   padding: 6px 7px 6px 1px;
   background: transparent;
-  // background: #f00;
   border-radius: 2px;
 
   @include focus-self-outline;
@@ -134,7 +140,6 @@
   max-height: calc(100vh - 42px - 24px - 100px);
   max-height: calc(100svh - 42px - 24px - 100px);
   padding: 10px 6px;
-  // margin-top: 42px;
   background: var(--color-panel-background);
   border: 1px solid var(--color-border);
   border-radius: 8px;
@@ -215,7 +220,7 @@
   position: relative;
   width: 100%;
   padding: 8px;
-  margin-top: 10px;
+  margin-top: -4px;
   background: transparent;
   border-radius: 6px;
   font-size: 11px;
@@ -225,11 +230,6 @@
 
   @include focus-self-outline;
 
-  // below nav
-  .nav + & {
-    margin-top: 16px;
-  }
-
   // below user menu
   .userMenu + & {
     margin-top: 18px;
@@ -238,6 +238,11 @@
   // below search bar
   .search + & {
     margin-top: 18px;
+  }
+
+  // below a link
+  .link + & {
+    margin-top: 10px;
   }
 }
 
