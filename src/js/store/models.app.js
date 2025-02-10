@@ -30,7 +30,7 @@ const appState = {
   scrollToTrack: false,
 };
 
-const userState = {
+const plexUserState = {
   loggedIn: false,
   currentUser: null,
   allServers: null,
@@ -82,7 +82,7 @@ const plexLibraryState = {
   searchResults: null,
 };
 
-const state = Object.assign({}, appState, userState, plexServerState, plexLibraryState);
+const state = Object.assign({}, appState, plexUserState, plexServerState, plexLibraryState);
 
 // ======================================================================
 // REDUCERS
@@ -160,7 +160,7 @@ const effects = (dispatch) => ({
     console.log('%c--- setLoggedOut ---', 'color:#07a098');
     dispatch.appModel.setAppState({
       inited: true,
-      ...Object.assign({}, userState),
+      ...Object.assign({}, plexUserState),
       ...Object.assign({}, plexServerState),
       ...Object.assign({}, plexLibraryState),
     });

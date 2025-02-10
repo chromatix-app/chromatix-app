@@ -36,7 +36,7 @@ export const transposeUserData = (user) => {
 export const transposeServerData = (server) => {
   return {
     serverId: server.clientIdentifier,
-    name: server.name,
+    name: server.name || 'Unknown Plex Server',
     accessToken: server.accessToken,
     connections: server.connections,
   };
