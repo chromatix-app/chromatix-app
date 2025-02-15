@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+const enablePolling = false;
+
 const useNetworkStatus = (pollingUrl = 'https://chromatix.app', pollingInterval = 5000) => {
   const dispatch = useDispatch();
 
   const isCurrentlyOnline = useSelector(({ appModel }) => appModel.isOnline);
 
   const [navigatorIsOnline, setNavigatorIsOnline] = useState(navigator?.onLine);
-  const [
-    pollingIsOnline,
-    // setPollingIsOnline
-  ] = useState(true);
+  const [pollingIsOnline, setPollingIsOnline] = useState(true);
   const [navigatorHasBeenOnline, setNavigatorHasBeenOnline] = useState(navigator?.onLine);
   const [isOnline, setIsOnline] = useState(true);
 
@@ -21,43 +20,51 @@ const useNetworkStatus = (pollingUrl = 'https://chromatix.app', pollingInterval 
 
   // Handle polling network status
   const pollNetworkStatus = async () => {
-    // try {
-    //   const response = await fetch(pollingUrl, { method: 'HEAD', cache: 'no-cache' });
-    //   // console.log(response);
-    //   if (response.ok) {
-    //     setPollingIsOnline(true);
-    //   } else {
-    //     setPollingIsOnline(false);
-    //   }
-    // } catch {
-    //   // console.log('Error fetching polling URL');
-    //   setPollingIsOnline(false);
-    // }
+    try {
+      const response = await fetch(pollingUrl, { method: 'HEAD', cache: 'no-cache' });
+      // console.log(response);
+      if (response.ok) {
+        setPollingIsOnline(true);
+      } else {
+        setPollingIsOnline(false);
+      }
+    } catch {
+      // console.log('Error fetching polling URL');
+      setPollingIsOnline(false);
+    }
   };
 
   // Handle combined network status
   useEffect(() => {
-    // Both are online
-    if (navigatorIsOnline && pollingIsOnline) {
-      setIsOnline(true);
-    }
-    // Both are offline
-    else if (!navigatorIsOnline && !pollingIsOnline) {
-      setIsOnline(false);
-    }
-    // Navigator seems to be working, we can rely on that for offline detection
-    // (but not for online detection, because it is known to give false positives
-    // when there is a network connection but no internet access)
-    else if (navigatorHasBeenOnline && !navigatorIsOnline) {
-      setIsOnline(false);
-    }
-    // Fallback to rely on polling being online
-    else if (pollingIsOnline) {
-      setIsOnline(true);
-    }
-    // We seem to be offline
-    else {
-      setIsOnline(false);
+    if (!enablePolling) {
+      if (navigatorHasBeenOnline && !navigatorIsOnline) {
+        setIsOnline(false);
+      } else {
+        setIsOnline(true);
+      }
+    } else {
+      // Both are online
+      if (navigatorIsOnline && pollingIsOnline) {
+        setIsOnline(true);
+      }
+      // Both are offline
+      else if (!navigatorIsOnline && !pollingIsOnline) {
+        setIsOnline(false);
+      }
+      // Navigator seems to be working, we can rely on that for offline detection
+      // (but not for online detection, because it is known to give false positives
+      // when there is a network connection but no internet access)
+      else if (navigatorHasBeenOnline && !navigatorIsOnline) {
+        setIsOnline(false);
+      }
+      // Fallback to rely on polling being online
+      else if (pollingIsOnline) {
+        setIsOnline(true);
+      }
+      // We seem to be offline
+      else {
+        setIsOnline(false);
+      }
     }
   }, [navigatorIsOnline, pollingIsOnline, navigatorHasBeenOnline]);
 
@@ -81,16 +88,21 @@ const useNetworkStatus = (pollingUrl = 'https://chromatix.app', pollingInterval 
     // Update status on online/offline events
     window.addEventListener('online', updateNetworkStatus);
     window.addEventListener('offline', updateNetworkStatus);
+    let intervalId;
 
     // Polling for internet access
-    const intervalId = setInterval(pollNetworkStatus, pollingInterval);
-    pollNetworkStatus();
+    if (enablePolling) {
+      intervalId = setInterval(pollNetworkStatus, pollingInterval);
+      pollNetworkStatus();
+    }
 
     // Clean up event listeners and interval on unmount
     return () => {
       window.removeEventListener('online', updateNetworkStatus);
       window.removeEventListener('offline', updateNetworkStatus);
-      clearInterval(intervalId);
+      if (enablePolling) {
+        clearInterval(intervalId);
+      }
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
