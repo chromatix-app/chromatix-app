@@ -2,14 +2,16 @@
 // IMPORTS
 // ======================================================================
 
+import clsx from 'clsx';
+
 import style from './FilterWrap.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-export const FilterWrap = ({ children }) => {
-  return <div className={style.wrap}>{children}</div>;
+export const FilterWrap = ({ children, padding = true }) => {
+  return <div className={clsx(style.wrap, { [style.wrapPadding]: padding })}>{children}</div>;
 };
 
 // ======================================================================
