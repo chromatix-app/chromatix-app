@@ -14,6 +14,8 @@ const useScrollRestoration = () => {
 
   const historyListener = useCallback((location, action) => {
     const contentElement = document.getElementById('content');
+    const scrollableElement = document.getElementById('scrollable');
+    const actualElement = scrollableElement || contentElement;
 
     // Save the current scroll positions
     if (previousPathname.current) {
@@ -23,7 +25,7 @@ const useScrollRestoration = () => {
       };
       contentScrollPositions.current = {
         ...contentScrollPositions.current,
-        [previousPathname.current]: contentElement ? contentElement.scrollTop : 0,
+        [previousPathname.current]: actualElement ? actualElement.scrollTop : 0,
       };
     }
 
@@ -31,18 +33,26 @@ const useScrollRestoration = () => {
     sessionStorage.setItem(windowPosKey, JSON.stringify(windowScrollPositions.current));
     sessionStorage.setItem(contentPosKey, JSON.stringify(contentScrollPositions.current));
 
+    // Scroll to the top of the page on normal navigation
     if (action === 'PUSH' || action === 'REPLACE') {
       window.scrollTo(0, 0);
-      if (contentElement) {
-        contentElement.scrollTo(0, 0);
+      if (actualElement) {
+        actualElement.scrollTo(0, 0);
       }
-    } else if (action === 'POP') {
+    }
+
+    // Scroll to the previous position on history navigation
+    else if (action === 'POP') {
       requestAnimationFrame(() => {
+        const contentElement = document.getElementById('content');
+        const scrollableElement = document.getElementById('scrollable');
+        const actualElement = scrollableElement || contentElement;
+
         if (windowScrollPositions.current[location.pathname] !== undefined) {
           window.scrollTo(0, windowScrollPositions.current[location.pathname]);
         }
-        if (contentScrollPositions.current[location.pathname] !== undefined && contentElement) {
-          contentElement.scrollTo(0, contentScrollPositions.current[location.pathname]);
+        if (contentScrollPositions.current[location.pathname] !== undefined && actualElement) {
+          actualElement.scrollTo(0, contentScrollPositions.current[location.pathname]);
         }
       });
     }
