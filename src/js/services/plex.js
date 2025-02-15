@@ -1070,7 +1070,7 @@ export const getSetItems = (libraryId, setId, typeKey) => {
               plexTranspose[`transpose${primaryKey}Data`](entry, libraryId, plexBaseUrl, accessToken)
             ) || [];
 
-          console.log('setItems', setItems);
+          // console.log('setItems', setItems);
 
           store.dispatch.appModel[`store${typeKey}`]({ libraryId, setId, setItems });
         })
