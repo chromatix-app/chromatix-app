@@ -32,7 +32,13 @@ export const SettingsDownloads = () => {
         <div>Get the Chromatix app for desktop platforms here:</div>
 
         <div className={style.downloads}>
-          <a href={macSiliconDownloadUrl} target="_blank" rel="noreferrer nofollow" onClick={logDownloadMacSilicon}>
+          <a
+            href={macSiliconDownloadUrl}
+            target="_blank"
+            rel="noreferrer nofollow"
+            draggable="false"
+            onClick={logDownloadMacSilicon}
+          >
             <span className={style.downloadsIcon}>
               <Icon icon="AppleSiteIcon" cover />
             </span>
@@ -41,7 +47,13 @@ export const SettingsDownloads = () => {
 
           <br />
 
-          <a href={macUniversalDownloadUrl} target="_blank" rel="noreferrer nofollow" onClick={logDownloadMacUniversal}>
+          <a
+            href={macUniversalDownloadUrl}
+            target="_blank"
+            rel="noreferrer nofollow"
+            draggable="false"
+            onClick={logDownloadMacUniversal}
+          >
             <span className={style.downloadsIcon}>
               <Icon icon="AppleSiteIcon" cover />
             </span>
@@ -50,7 +62,13 @@ export const SettingsDownloads = () => {
 
           <br />
 
-          <a href={windowsDownloadUrl} target="_blank" rel="noreferrer nofollow" onClick={logDownloadWindows}>
+          <a
+            href={windowsDownloadUrl}
+            target="_blank"
+            rel="noreferrer nofollow"
+            draggable="false"
+            onClick={logDownloadWindows}
+          >
             <span className={style.downloadsIcon}>
               <Icon icon="WindowsSiteIcon" cover />
             </span>

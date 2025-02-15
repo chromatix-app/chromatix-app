@@ -113,7 +113,7 @@ const SideBar = () => {
             {libraryIsVisible && menuOpenLibrary && (
               <>
                 {menuShowArtists && (
-                  <NavLink className={style.link} activeClassName={style.linkActive} to="/artists">
+                  <NavLink className={style.link} activeClassName={style.linkActive} to="/artists" draggable="false">
                     {menuShowIcons && (
                       <span className={style.icon}>
                         <Icon icon="PeopleIcon" cover stroke />
@@ -123,7 +123,7 @@ const SideBar = () => {
                   </NavLink>
                 )}
                 {menuShowAlbums && (
-                  <NavLink className={style.link} activeClassName={style.linkActive} to="/albums">
+                  <NavLink className={style.link} activeClassName={style.linkActive} to="/albums" draggable="false">
                     {menuShowIcons && (
                       <span className={style.icon}>
                         <Icon icon="PlayCircleIcon" cover stroke />
@@ -133,7 +133,7 @@ const SideBar = () => {
                   </NavLink>
                 )}
                 {menuShowFolders && (
-                  <NavLink className={style.link} activeClassName={style.linkActive} to="/folders">
+                  <NavLink className={style.link} activeClassName={style.linkActive} to="/folders" draggable="false">
                     {menuShowIcons && (
                       <span className={style.icon}>
                         <Icon icon="FolderIcon" cover stroke />
@@ -148,6 +148,7 @@ const SideBar = () => {
                     activeClassName={style.linkActive}
                     to="/playlists"
                     exact={playlistsIsVisible}
+                    draggable="false"
                   >
                     {menuShowIcons && (
                       <span className={style.icon}>
@@ -184,7 +185,12 @@ const SideBar = () => {
             {browseIsOpen && (
               <>
                 {menuShowArtistCollections && (
-                  <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-collections">
+                  <NavLink
+                    className={style.link}
+                    activeClassName={style.linkActive}
+                    to="/artist-collections"
+                    draggable="false"
+                  >
                     {menuShowIcons && (
                       <span className={style.icon}>
                         <Icon icon="ArtistCollectionsIcon" cover stroke />
@@ -194,7 +200,12 @@ const SideBar = () => {
                   </NavLink>
                 )}
                 {menuShowAlbumCollections && (
-                  <NavLink className={style.link} activeClassName={style.linkActive} to="/album-collections">
+                  <NavLink
+                    className={style.link}
+                    activeClassName={style.linkActive}
+                    to="/album-collections"
+                    draggable="false"
+                  >
                     {menuShowIcons && (
                       <span className={style.icon}>
                         <Icon icon="AlbumCollectionsIcon" cover stroke />
@@ -204,7 +215,12 @@ const SideBar = () => {
                   </NavLink>
                 )}
                 {menuShowArtistGenres && (
-                  <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-genres">
+                  <NavLink
+                    className={style.link}
+                    activeClassName={style.linkActive}
+                    to="/artist-genres"
+                    draggable="false"
+                  >
                     {menuShowIcons && (
                       <span className={style.icon}>
                         <Icon icon="ArtistGenresIcon" cover stroke />
@@ -214,7 +230,12 @@ const SideBar = () => {
                   </NavLink>
                 )}
                 {menuShowAlbumGenres && (
-                  <NavLink className={style.link} activeClassName={style.linkActive} to="/album-genres">
+                  <NavLink
+                    className={style.link}
+                    activeClassName={style.linkActive}
+                    to="/album-genres"
+                    draggable="false"
+                  >
                     {menuShowIcons && (
                       <span className={style.icon}>
                         <Icon icon="AlbumGenresIcon" cover stroke />
@@ -224,7 +245,12 @@ const SideBar = () => {
                   </NavLink>
                 )}
                 {menuShowArtistMoods && (
-                  <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-moods">
+                  <NavLink
+                    className={style.link}
+                    activeClassName={style.linkActive}
+                    to="/artist-moods"
+                    draggable="false"
+                  >
                     {menuShowIcons && (
                       <span className={style.icon}>
                         <Icon icon="ArtistMoodsIcon" cover stroke />
@@ -234,7 +260,12 @@ const SideBar = () => {
                   </NavLink>
                 )}
                 {menuShowAlbumMoods && (
-                  <NavLink className={style.link} activeClassName={style.linkActive} to="/album-moods">
+                  <NavLink
+                    className={style.link}
+                    activeClassName={style.linkActive}
+                    to="/album-moods"
+                    draggable="false"
+                  >
                     {menuShowIcons && (
                       <span className={style.icon}>
                         <Icon icon="AlbumMoodsIcon" cover stroke />
@@ -244,7 +275,12 @@ const SideBar = () => {
                   </NavLink>
                 )}
                 {menuShowArtistStyles && (
-                  <NavLink className={style.link} activeClassName={style.linkActive} to="/artist-styles">
+                  <NavLink
+                    className={style.link}
+                    activeClassName={style.linkActive}
+                    to="/artist-styles"
+                    draggable="false"
+                  >
                     {menuShowIcons && (
                       <span className={style.icon}>
                         <Icon icon="ArtistStylesIcon" cover stroke />
@@ -254,7 +290,12 @@ const SideBar = () => {
                   </NavLink>
                 )}
                 {menuShowAlbumStyles && (
-                  <NavLink className={style.link} activeClassName={style.linkActive} to="/album-styles">
+                  <NavLink
+                    className={style.link}
+                    activeClassName={style.linkActive}
+                    to="/album-styles"
+                    draggable="false"
+                  >
                     {menuShowIcons && (
                       <span className={style.icon}>
                         <Icon icon="AlbumStylesIcon" cover stroke />
@@ -293,6 +334,7 @@ const SideBar = () => {
                     className={style.link}
                     activeClassName={style.linkActive}
                     to={playlist.link}
+                    draggable="false"
                   >
                     {menuShowIcons && (
                       <span className={style.icon}>
@@ -508,12 +550,13 @@ const SearchResults = ({ setSearchResultsVisible }) => {
                 dispatch.appModel.setAppState({ scrollToTrack: result.trackId });
               }
             }}
+            draggable="false"
           >
             <div className={style.searchTypeIcon}>
               <Icon icon={result.icon} cover stroke />
             </div>
             <div className={style.searchThumb}>
-              <img src={result.thumb} alt={result.title} loading="lazy" />
+              <img src={result.thumb} alt={result.title} draggable="false" loading="lazy" />
             </div>
             <div>
               <div className={style.searchTitle}>{result.title}</div>

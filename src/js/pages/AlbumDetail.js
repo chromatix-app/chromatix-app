@@ -57,7 +57,13 @@ const AlbumDetail = () => {
         key={libraryId + '-' + albumId}
         thumb={albumThumb}
         title={albumTitle}
-        subtitle={albumArtist && <NavLink to={albumArtistLink}>{albumArtist}</NavLink>}
+        subtitle={
+          albumArtist && (
+            <NavLink to={albumArtistLink} draggable="false">
+              {albumArtist}
+            </NavLink>
+          )
+        }
         detail={
           albumTracks ? (
             <>

@@ -15,7 +15,7 @@ const Component = () => {
       <PageText>
         <p>
           Linking your account to{' '}
-          <a href="https://www.last.fm/" target="_blank" rel="noreferrer nofollow">
+          <a href="https://www.last.fm/" target="_blank" rel="noreferrer nofollow" draggable="false">
             Last.fm
           </a>{' '}
           must be done on the Plex website, and will affect all music playback from any Plex client that you are logged
@@ -23,7 +23,7 @@ const Component = () => {
         </p>
         <p>
           You can link your Plex account to Last.fm{' '}
-          <a href="https://plex.tv/users/other-services" target="_blank" rel="noreferrer nofollow">
+          <a href="https://plex.tv/users/other-services" target="_blank" rel="noreferrer nofollow" draggable="false">
             here
           </a>
           .
@@ -34,7 +34,7 @@ const Component = () => {
         </p>
         <p>
           Many years ago, I actually built the{' '}
-          <a href="https://www.last.fm/dashboard" target="_blank" rel="noreferrer nofollow">
+          <a href="https://www.last.fm/dashboard" target="_blank" rel="noreferrer nofollow" draggable="false">
             Last.fm dashboard
           </a>{' '}
           page!
