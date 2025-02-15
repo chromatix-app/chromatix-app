@@ -181,6 +181,74 @@ const getTableOptions = (variant, sortKey, orderKey, optionShowStarRatings, disp
     ];
   }
 
+  // PLAYLISTS
+  else if (variant === 'playlists') {
+    tableVariant = 'playlists';
+    tableOptions = [
+      {
+        colKey: 'thumb',
+        label: '',
+        colWidth: '41px',
+        visible: true,
+        visibleInHeader: false,
+      },
+      {
+        colKey: 'title',
+        label: 'Title',
+        isDefault: true,
+        colWidth: '1.2fr',
+        headerStyle: {
+          gridColumn: '1 / span 2',
+        },
+        isAsc: sortKey === 'title' && orderKey === 'asc',
+        isDesc: sortKey === 'title' && orderKey === 'desc',
+        visible: true,
+      },
+      {
+        colKey: 'totalTracks',
+        label: 'Tracks',
+        colWidth: '1fr',
+        isAsc: sortKey === 'totalTracks' && orderKey === 'asc',
+        isDesc: sortKey === 'totalTracks' && orderKey === 'desc',
+        visible: true,
+      },
+      {
+        colKey: 'duration',
+        label: 'Duration',
+        colWidth: '1fr',
+        isAsc: sortKey === 'duration' && orderKey === 'asc',
+        isDesc: sortKey === 'duration' && orderKey === 'desc',
+        visible: true,
+      },
+      {
+        colKey: 'addedAt',
+        label: 'Added',
+        colWidth: '1fr',
+        isAsc: sortKey === 'addedAt' && orderKey === 'asc',
+        isDesc: sortKey === 'addedAt' && orderKey === 'desc',
+        visible: true,
+      },
+      {
+        colKey: 'lastPlayed',
+        label: 'Last Played',
+        colWidth: '1fr',
+        isAsc: sortKey === 'lastPlayed' && orderKey === 'asc',
+        isDesc: sortKey === 'lastPlayed' && orderKey === 'desc',
+        visible: true,
+      },
+
+      // TODO: integrate with breakpoints from App.js and hide below a certain width
+      {
+        colKey: 'userRating',
+        label: 'Rating',
+        colWidth: '0.5fr',
+        isAsc: sortKey === 'userRating' && orderKey === 'asc',
+        isDesc: sortKey === 'userRating' && orderKey === 'desc',
+        visible: optionShowStarRatings,
+      },
+    ];
+  }
+
   // COLLECTIONS
   else if (variant === 'artistCollections' || variant === 'albumCollections') {
     tableVariant = 'collections';
@@ -265,9 +333,10 @@ const getTableOptions = (variant, sortKey, orderKey, optionShowStarRatings, disp
   }
 
   // DETERMINE THE GRID TEMPLATE COLUMNS
-  const gridTemplateColumns = tableOptions.reduce((acc, option) => {
-    return option.visible ? acc + ' ' + option.colWidth : acc;
-  }, '');
+  const gridTemplateColumns =
+    tableOptions?.reduce((acc, option) => {
+      return option.visible ? acc + ' ' + option.colWidth : acc;
+    }, '') || '';
 
   // RETURN
   return {

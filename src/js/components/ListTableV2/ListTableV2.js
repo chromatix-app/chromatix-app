@@ -14,7 +14,7 @@ import {
   useTableOptions,
 } from 'js/hooks';
 import {
-  // durationToStringLong,
+  durationToStringLong,
   // durationToStringShort,
   formatRecentDate,
 } from 'js/utils';
@@ -273,10 +273,18 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
                 </div>
               );
 
-            case 'addedAt':
+            case 'totalTracks':
               return (
-                <div key={index} className={clsx(style.addedAt, 'text-trim')}>
-                  {formatRecentDate(entry.addedAt)}
+                <div key={index} className={clsx(style.totalTracks, 'text-trim')}>
+                  {entry.totalTracks}
+                  {(entry.totalTracks || entry.totalTracks === 0) && <> track{entry.totalTracks !== 1 ? 's' : ''}</>}
+                </div>
+              );
+
+            case 'duration':
+              return (
+                <div key={index} className={clsx(style.duration, 'text-trim')}>
+                  {durationToStringLong(entry.duration)}
                 </div>
               );
 
@@ -284,6 +292,13 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
               return (
                 <div key={index} className={clsx(style.releaseDate, 'text-trim')}>
                   {entry.releaseDate ? moment(entry.releaseDate).format('MMM YYYY') : null}
+                </div>
+              );
+
+            case 'addedAt':
+              return (
+                <div key={index} className={clsx(style.addedAt, 'text-trim')}>
+                  {formatRecentDate(entry.addedAt)}
                 </div>
               );
 
@@ -326,6 +341,10 @@ const userRatingOptions = {
   artists: {
     ratingType: 'artist',
     ratingKey: 'artistId',
+  },
+  playlists: {
+    ratingType: 'playlist',
+    ratingKey: 'playlistId',
   },
   collections: {
     ratingType: 'collection',
