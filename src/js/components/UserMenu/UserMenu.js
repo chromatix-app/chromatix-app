@@ -60,7 +60,7 @@ const UserMenu = ({ variant = 'default' }) => {
                 <Icon icon="ArtistCollectionsIcon" cover stroke strokeWidth={1.4} />
               </span>
             )}
-            {currentUser.thumb && <img src={currentUser.thumb} alt={currentUser.title} />}
+            {currentUser.thumb && <img src={currentUser.thumb} alt={currentUser.title} draggable="false" />}
           </div>
         </button>
 
@@ -126,6 +126,7 @@ const UserMenu = ({ variant = 'default' }) => {
                   onClick={() => {
                     toggleMenu();
                   }}
+                  draggable="false"
                 >
                   <span className={style.iconBefore}>
                     <Icon icon="CogIcon" cover stroke />

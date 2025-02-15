@@ -4,7 +4,7 @@
 
 import { useSelector } from 'react-redux';
 
-import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTableV1, Loading, TitleHeading } from 'js/components';
 import { useGetAllPlaylists } from 'js/hooks';
 
 // ======================================================================
@@ -76,7 +76,7 @@ const PlaylistList = () => {
       {!sortedPlaylists && <Loading forceVisible inline showOffline />}
       {sortedPlaylists && viewPlaylists === 'grid' && <ListCards variant="playlists" entries={sortedPlaylists} />}
       {sortedPlaylists && viewPlaylists === 'list' && (
-        <ListTable variant="playlists" entries={sortedPlaylists} sortKey={sortPlaylists} orderKey={orderPlaylists} />
+        <ListTableV1 variant="playlists" entries={sortedPlaylists} sortKey={sortPlaylists} orderKey={orderPlaylists} />
       )}
     </>
   );

@@ -51,7 +51,7 @@ const useGetFolderItems = (folderId) => {
   };
 
   useEffect(() => {
-    plex.getFolderItems(folderId);
+    plex.getFolderItems(folderId).catch(() => {});
   }, [folderId]);
 
   return {

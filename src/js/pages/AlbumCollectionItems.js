@@ -5,7 +5,7 @@
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { FilterSelect, FilterToggle, ListCards, ListTable, Loading, StarRating, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, ListCards, ListTableV1, Loading, StarRating, TitleHeading } from 'js/components';
 import { useGetCollectionItems } from 'js/hooks';
 
 // ======================================================================
@@ -115,7 +115,7 @@ const AlbumCollectionItems = () => {
         <ListCards variant={'albums'} entries={sortedCollectionItems} />
       )}
       {sortedCollectionItems && viewCollectionItems === 'list' && (
-        <ListTable
+        <ListTableV1
           variant="albumCollectionItems"
           entries={sortedCollectionItems}
           sortKey={sortCollectionItems}

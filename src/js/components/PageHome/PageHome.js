@@ -74,7 +74,13 @@ export const PageHome = () => {
       </div>
 
       <div className={clsx(style.image, style.margin)}>
-        <img src="/images/chromatix004.jpg" alt="Chromatix music player for Plex" width="2000" height="1484" />
+        <img
+          src="/images/chromatix004.jpg"
+          alt="Chromatix music player for Plex"
+          width="2000"
+          height="1484"
+          draggable="false"
+        />
       </div>
 
       <div className={style.intro}>
@@ -105,6 +111,7 @@ export const PageHome = () => {
                     href={macSiliconDownloadUrl}
                     target="_blank"
                     rel="noreferrer nofollow"
+                    draggable="false"
                     onClick={logDownloadMacSilicon}
                   >
                     <span className={style.downloadsIcon}>
@@ -119,6 +126,7 @@ export const PageHome = () => {
                     href={macUniversalDownloadUrl}
                     target="_blank"
                     rel="noreferrer nofollow"
+                    draggable="false"
                     onClick={logDownloadMacUniversal}
                   >
                     <span className={style.downloadsIcon}>
@@ -129,7 +137,13 @@ export const PageHome = () => {
 
                   <br />
 
-                  <a href={windowsDownloadUrl} target="_blank" rel="noreferrer nofollow" onClick={logDownloadWindows}>
+                  <a
+                    href={windowsDownloadUrl}
+                    target="_blank"
+                    rel="noreferrer nofollow"
+                    draggable="false"
+                    onClick={logDownloadWindows}
+                  >
                     <span className={style.downloadsIcon}>
                       <Icon icon="WindowsSiteIcon" cover />
                     </span>
@@ -160,16 +174,29 @@ export const PageHome = () => {
             href="https://www.reddit.com/r/chromatix/"
             target="_blank"
             rel="noreferrer nofollow"
+            draggable="false"
           >
             <Icon icon="RedditSiteIcon" cover />
             <span className="u-hide-text">Join us on Reddit</span>
           </a>
-          <a className={style.icon} href="https://github.com/chromatix-app" target="_blank" rel="noreferrer nofollow">
+          <a
+            className={style.icon}
+            href="https://github.com/chromatix-app"
+            target="_blank"
+            rel="noreferrer nofollow"
+            draggable="false"
+          >
             <Icon icon="GithubSiteIcon" cover />
             <span className="u-hide-text">View us on Github</span>
           </a>
         </div>
-        <a className={style.kofi} href="https://ko-fi.com/chromaticnova" target="_blank" rel="noreferrer nofollow">
+        <a
+          className={style.kofi}
+          href="https://ko-fi.com/chromaticnova"
+          target="_blank"
+          rel="noreferrer nofollow"
+          draggable="false"
+        >
           Support me on Ko-fi
         </a>
       </div>

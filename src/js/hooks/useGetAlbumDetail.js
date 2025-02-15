@@ -72,7 +72,7 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
     if (!albumInfo) {
       plex.getAlbumDetails(libraryId, albumId);
     }
-    plex.getAlbumTracks(libraryId, albumId);
+    plex.getAlbumTracks(libraryId, albumId).catch(() => {});
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [albumId, libraryId]);
