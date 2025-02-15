@@ -6,10 +6,20 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 46px;
-    // background: rgba(255, 0, 0, 0.1);
+    right: 20px;
+    height: 40px;
+
+    // background: rgba(255, 0, 0, 0.2);
+    // z-index: 999999;
 
     @include electron-drag;
+  }
+
+  html.electron.electron-platform-mac & {
+    left: 80px;
+  }
+
+  html.electron.electron-platform-win & {
+    right: 140px;
   }
 }
