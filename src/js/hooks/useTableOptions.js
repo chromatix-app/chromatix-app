@@ -181,6 +181,45 @@ const getTableOptions = (variant, sortKey, orderKey, optionShowStarRatings, disp
     ];
   }
 
+  // SETS
+  else if (
+    variant === 'artistGenres' ||
+    variant === 'albumGenres' ||
+    variant === 'artistMoods' ||
+    variant === 'albumMoods' ||
+    variant === 'artistStyles' ||
+    variant === 'albumStyles'
+  ) {
+    tableVariant = 'sets';
+    tableOptions = [
+      {
+        colKey: 'thumb',
+        label: '',
+        icon: variant.charAt(0).toUpperCase() + variant.slice(1) + 'Icon',
+        colWidth: '41px',
+        visible: true,
+        visibleInHeader: false,
+      },
+      {
+        colKey: 'title',
+        label: 'Title',
+        isDefault: true,
+        colWidth: '1.2fr',
+        headerStyle: {
+          gridColumn: '1 / span 2',
+        },
+        isAsc: sortKey === 'title' && orderKey === 'asc',
+        isDesc: sortKey === 'title' && orderKey === 'desc',
+        visible: true,
+      },
+      {
+        colKey: 'empty',
+        colWidth: '1fr',
+        visible: true,
+      },
+    ];
+  }
+
   // DETERMINE THE GRID TEMPLATE COLUMNS
   const gridTemplateColumns = tableOptions.reduce((acc, option) => {
     return option.visible ? acc + ' ' + option.colWidth : acc;

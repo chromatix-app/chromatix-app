@@ -101,14 +101,14 @@
     grid-template-columns: 30px 41px 2fr 1fr 1px;
   }
 
-  .wrap.wrapArtistGenres &,
-  .wrap.wrapAlbumGenres &,
-  .wrap.wrapArtistMoods &,
-  .wrap.wrapAlbumMoods &,
-  .wrap.wrapArtistStyles &,
-  .wrap.wrapAlbumStyles & {
-    grid-template-columns: 41px 1.2fr 1fr;
-  }
+  // .wrap.wrapArtistGenres &,
+  // .wrap.wrapAlbumGenres &,
+  // .wrap.wrapArtistMoods &,
+  // .wrap.wrapAlbumMoods &,
+  // .wrap.wrapArtistStyles &,
+  // .wrap.wrapAlbumStyles & {
+  //   grid-template-columns: 41px 1.2fr 1fr;
+  // }
 
   .wrap.wrapAlbumTracks & {
     grid-template-columns: 30px 1.2fr 1fr minmax(72px, auto);

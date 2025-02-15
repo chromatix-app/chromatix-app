@@ -234,47 +234,64 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
         .map((columnOptions, index) => {
           switch (columnOptions.colKey) {
             case 'thumb':
-              return (
-                <div key={index} className={style.thumb}>
-                  <img src={entry.thumb} alt={entry.title} loading="lazy" />
-                </div>
-              );
+              if (columnOptions.icon) {
+                return (
+                  <div key={index} className={clsx(style.thumb, style.thumbFolder)}>
+                    <span className={style.thumbIcon}>
+                      <Icon icon={columnOptions.icon} cover stroke strokeWidth={1.2} />
+                    </span>
+                  </div>
+                );
+              } else {
+                return (
+                  <div key={index} className={style.thumb}>
+                    <img src={entry.thumb} alt={entry.title} loading="lazy" />
+                  </div>
+                );
+              }
+
             case 'title':
               return (
                 <div key={index} className={clsx(style.title, 'text-trim')}>
                   {entry.title}
                 </div>
               );
+
             case 'artist':
               return (
                 <div key={index} className={clsx(style.artist, 'text-trim')}>
                   {entry.artist}
                 </div>
               );
+
             case 'genre':
               return (
                 <div key={index} className={clsx(style.genre, 'text-trim')}>
                   {entry.genre}
                 </div>
               );
+
             case 'addedAt':
               return (
                 <div key={index} className={clsx(style.addedAt, 'text-trim')}>
                   {formatRecentDate(entry.addedAt)}
                 </div>
               );
+
             case 'releaseDate':
               return (
                 <div key={index} className={clsx(style.releaseDate, 'text-trim')}>
                   {entry.releaseDate ? moment(entry.releaseDate).format('MMM YYYY') : null}
                 </div>
               );
+
             case 'lastPlayed':
               return (
                 <div key={index} className={clsx(style.lastPlayed, 'text-trim')}>
                   {formatRecentDate(entry.lastPlayed)}
                 </div>
               );
+
             case 'userRating':
               if (tableVariant === 'artists') {
                 return (
@@ -290,6 +307,10 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
                 );
               }
               return null;
+
+            case 'empty':
+              return <div key={index} className={style.empty}></div>;
+
             default:
               return null;
           }
