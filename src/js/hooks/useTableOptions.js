@@ -181,7 +181,51 @@ const getTableOptions = (variant, sortKey, orderKey, optionShowStarRatings, disp
     ];
   }
 
-  // SETS
+  // COLLECTIONS
+  else if (variant === 'artistCollections' || variant === 'albumCollections') {
+    tableVariant = 'collections';
+    tableOptions = [
+      {
+        colKey: 'thumb',
+        label: '',
+        colWidth: '41px',
+        visible: true,
+        visibleInHeader: false,
+      },
+      {
+        colKey: 'title',
+        label: 'Title',
+        isDefault: true,
+        colWidth: '1.2fr',
+        headerStyle: {
+          gridColumn: '1 / span 2',
+        },
+        isAsc: sortKey === 'title' && orderKey === 'asc',
+        isDesc: sortKey === 'title' && orderKey === 'desc',
+        visible: true,
+      },
+      {
+        colKey: 'addedAt',
+        label: 'Added',
+        colWidth: '1fr',
+        isAsc: sortKey === 'addedAt' && orderKey === 'asc',
+        isDesc: sortKey === 'addedAt' && orderKey === 'desc',
+        visible: true,
+      },
+
+      // TODO: integrate with breakpoints from App.js and hide below a certain width
+      {
+        colKey: 'userRating',
+        label: 'Rating',
+        colWidth: '0.5fr',
+        isAsc: sortKey === 'userRating' && orderKey === 'asc',
+        isDesc: sortKey === 'userRating' && orderKey === 'desc',
+        visible: optionShowStarRatings,
+      },
+    ];
+  }
+
+  // TAGS
   else if (
     variant === 'artistGenres' ||
     variant === 'albumGenres' ||
@@ -190,7 +234,7 @@ const getTableOptions = (variant, sortKey, orderKey, optionShowStarRatings, disp
     variant === 'artistStyles' ||
     variant === 'albumStyles'
   ) {
-    tableVariant = 'sets';
+    tableVariant = 'tags';
     tableOptions = [
       {
         colKey: 'thumb',

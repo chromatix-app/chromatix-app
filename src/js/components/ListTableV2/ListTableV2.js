@@ -232,6 +232,8 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
       {tableOptions
         .filter((columnOptions) => columnOptions.visible !== false)
         .map((columnOptions, index) => {
+          const { ratingType, ratingKey } = userRatingOptions[tableVariant];
+
           switch (columnOptions.colKey) {
             case 'thumb':
               if (columnOptions.icon) {
@@ -293,20 +295,17 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
               );
 
             case 'userRating':
-              if (tableVariant === 'artists') {
-                return (
-                  <div key={index} className={style.userRating}>
-                    <StarRating type="artist" ratingKey={entry.artistId} rating={entry.userRating} inline editable />
-                  </div>
-                );
-              } else if (tableVariant === 'albums') {
-                return (
-                  <div key={index} className={style.userRating}>
-                    <StarRating type="album" ratingKey={entry.albumId} rating={entry.userRating} inline editable />
-                  </div>
-                );
-              }
-              return null;
+              return (
+                <div key={index} className={style.userRating}>
+                  <StarRating
+                    type={ratingType}
+                    ratingKey={entry[ratingKey]}
+                    rating={entry.userRating}
+                    inline
+                    editable
+                  />
+                </div>
+              );
 
             case 'empty':
               return <div key={index} className={style.empty}></div>;
@@ -317,6 +316,21 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
         })}
     </NavLink>
   );
+};
+
+const userRatingOptions = {
+  albums: {
+    ratingType: 'album',
+    ratingKey: 'albumId',
+  },
+  artists: {
+    ratingType: 'artist',
+    ratingKey: 'artistId',
+  },
+  collections: {
+    ratingType: 'collection',
+    ratingKey: 'collectionId',
+  },
 };
 
 // ======================================================================
