@@ -232,7 +232,7 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
       {tableOptions
         .filter((columnOptions) => columnOptions.visible !== false)
         .map((columnOptions, index) => {
-          const { ratingType, ratingKey } = userRatingOptions[tableVariant];
+          const { ratingType, ratingKey } = userRatingOptions[tableVariant] || {};
 
           switch (columnOptions.colKey) {
             case 'thumb':
