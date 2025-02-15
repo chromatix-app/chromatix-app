@@ -7,7 +7,10 @@ const useNetworkStatus = (pollingUrl = 'https://chromatix.app', pollingInterval 
   const isCurrentlyOnline = useSelector(({ appModel }) => appModel.isOnline);
 
   const [navigatorIsOnline, setNavigatorIsOnline] = useState(navigator?.onLine);
-  const [pollingIsOnline, setPollingIsOnline] = useState(true);
+  const [
+    pollingIsOnline,
+    // setPollingIsOnline
+  ] = useState(true);
   const [navigatorHasBeenOnline, setNavigatorHasBeenOnline] = useState(navigator?.onLine);
   const [isOnline, setIsOnline] = useState(true);
 
@@ -18,18 +21,18 @@ const useNetworkStatus = (pollingUrl = 'https://chromatix.app', pollingInterval 
 
   // Handle polling network status
   const pollNetworkStatus = async () => {
-    try {
-      const response = await fetch(pollingUrl, { method: 'HEAD', cache: 'no-cache' });
-      // console.log(response);
-      if (response.ok) {
-        setPollingIsOnline(true);
-      } else {
-        setPollingIsOnline(false);
-      }
-    } catch {
-      // console.log('Error fetching polling URL');
-      setPollingIsOnline(false);
-    }
+    // try {
+    //   const response = await fetch(pollingUrl, { method: 'HEAD', cache: 'no-cache' });
+    //   // console.log(response);
+    //   if (response.ok) {
+    //     setPollingIsOnline(true);
+    //   } else {
+    //     setPollingIsOnline(false);
+    //   }
+    // } catch {
+    //   // console.log('Error fetching polling URL');
+    //   setPollingIsOnline(false);
+    // }
   };
 
   // Handle combined network status
