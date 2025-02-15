@@ -681,7 +681,7 @@ export const getAlbumTracks = (libraryId, albumId) => {
         resolve();
       }
     } else {
-      reject();
+      resolve();
     }
   });
 };
@@ -752,7 +752,7 @@ export const getFolderItems = (folderId) => {
         resolve();
       }
     } else {
-      reject();
+      resolve();
     }
   });
 };
@@ -877,7 +877,7 @@ export const getPlaylistTracks = (libraryId, playlistId) => {
         resolve();
       }
     } else {
-      reject();
+      resolve();
     }
   });
 };

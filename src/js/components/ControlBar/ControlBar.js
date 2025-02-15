@@ -88,12 +88,13 @@ const ControlBar = () => {
             <NavLink
               className={style.coverLink}
               to={playingLink}
+              draggable="false"
               onClick={() => {
                 dispatch.appModel.setAppState({ scrollToPlaying: true });
                 analyticsEvent('Navigate to Playing');
               }}
             >
-              <img src={trackCurrent.thumb} alt={trackCurrent.title} />
+              <img src={trackCurrent.thumb} alt={trackCurrent.title} draggable="false" />
             </NavLink>
           )}
         </div>
@@ -102,7 +103,11 @@ const ControlBar = () => {
             <>
               <div className={style.title}>{trackCurrent.title}</div>
               <div className={style.artist}>
-                {trackCurrent.artistLink && <NavLink to={trackCurrent.artistLink}>{trackCurrent.artist}</NavLink>}
+                {trackCurrent.artistLink && (
+                  <NavLink to={trackCurrent.artistLink} draggable="false">
+                    {trackCurrent.artist}
+                  </NavLink>
+                )}
                 {!trackCurrent.artistLink && trackCurrent.artist}
               </div>
             </>

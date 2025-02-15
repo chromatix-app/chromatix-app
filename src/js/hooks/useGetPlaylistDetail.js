@@ -57,7 +57,7 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
 
   useEffect(() => {
     plex.getAllPlaylists();
-    plex.getPlaylistTracks(libraryId, playlistId);
+    plex.getPlaylistTracks(libraryId, playlistId).catch(() => {});
   }, [libraryId, playlistId]);
 
   useEffect(() => {

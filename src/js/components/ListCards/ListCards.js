@@ -235,7 +235,7 @@ const ListEntry = React.memo(
         {/* Thumbnail */}
         <div className={clsx(style.thumb, { [style.thumbSquare]: isSquareCard, [style.thumbWithIcon]: isIconCard })}>
           {/* Artwork */}
-          {thumb && <img src={thumb} alt={title} loading="lazy" />}
+          {thumb && <img src={thumb} alt={title} draggable="false" loading="lazy" />}
 
           {/* Icon */}
           {isIconCard && (
@@ -275,6 +275,7 @@ const ListEntry = React.memo(
               to={artistLink}
               onClick={handleLinkClick}
               tabIndex={-1}
+              draggable="false"
             >
               {artist}
             </NavLink>

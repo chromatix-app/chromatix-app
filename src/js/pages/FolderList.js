@@ -4,7 +4,7 @@
 
 import { useParams } from 'react-router-dom';
 
-import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTableV1, Loading, TitleHeading } from 'js/components';
 import { useGetFolderItems } from 'js/hooks';
 
 // ======================================================================
@@ -80,7 +80,7 @@ const FolderList = () => {
         />
       )}
       {sortFolders && viewFolders === 'list' && (
-        <ListTable
+        <ListTableV1
           variant={'folders'}
           folderId={folderId}
           entries={sortedFolders}

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+const enablePolling = false;
+
 const useNetworkStatus = (pollingUrl = 'https://chromatix.app', pollingInterval = 5000) => {
   const dispatch = useDispatch();
 
@@ -34,27 +36,35 @@ const useNetworkStatus = (pollingUrl = 'https://chromatix.app', pollingInterval 
 
   // Handle combined network status
   useEffect(() => {
-    // Both are online
-    if (navigatorIsOnline && pollingIsOnline) {
-      setIsOnline(true);
-    }
-    // Both are offline
-    else if (!navigatorIsOnline && !pollingIsOnline) {
-      setIsOnline(false);
-    }
-    // Navigator seems to be working, we can rely on that for offline detection
-    // (but not for online detection, because it is known to give false positives
-    // when there is a network connection but no internet access)
-    else if (navigatorHasBeenOnline && !navigatorIsOnline) {
-      setIsOnline(false);
-    }
-    // Fallback to rely on polling being online
-    else if (pollingIsOnline) {
-      setIsOnline(true);
-    }
-    // We seem to be offline
-    else {
-      setIsOnline(false);
+    if (!enablePolling) {
+      if (navigatorHasBeenOnline && !navigatorIsOnline) {
+        setIsOnline(false);
+      } else {
+        setIsOnline(true);
+      }
+    } else {
+      // Both are online
+      if (navigatorIsOnline && pollingIsOnline) {
+        setIsOnline(true);
+      }
+      // Both are offline
+      else if (!navigatorIsOnline && !pollingIsOnline) {
+        setIsOnline(false);
+      }
+      // Navigator seems to be working, we can rely on that for offline detection
+      // (but not for online detection, because it is known to give false positives
+      // when there is a network connection but no internet access)
+      else if (navigatorHasBeenOnline && !navigatorIsOnline) {
+        setIsOnline(false);
+      }
+      // Fallback to rely on polling being online
+      else if (pollingIsOnline) {
+        setIsOnline(true);
+      }
+      // We seem to be offline
+      else {
+        setIsOnline(false);
+      }
     }
   }, [navigatorIsOnline, pollingIsOnline, navigatorHasBeenOnline]);
 
@@ -78,16 +88,21 @@ const useNetworkStatus = (pollingUrl = 'https://chromatix.app', pollingInterval 
     // Update status on online/offline events
     window.addEventListener('online', updateNetworkStatus);
     window.addEventListener('offline', updateNetworkStatus);
+    let intervalId;
 
     // Polling for internet access
-    const intervalId = setInterval(pollNetworkStatus, pollingInterval);
-    pollNetworkStatus();
+    if (enablePolling) {
+      intervalId = setInterval(pollNetworkStatus, pollingInterval);
+      pollNetworkStatus();
+    }
 
     // Clean up event listeners and interval on unmount
     return () => {
       window.removeEventListener('online', updateNetworkStatus);
       window.removeEventListener('offline', updateNetworkStatus);
-      clearInterval(intervalId);
+      if (enablePolling) {
+        clearInterval(intervalId);
+      }
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
