@@ -152,14 +152,14 @@ const QueueEntry = ({
           tabIndex={0}
         >
           <div className={style.thumb}>
-            <img src={entry.thumb} alt={entry.title} loading="lazy" />
+            <img src={entry.thumb} alt={entry.title} loading="lazy" draggable="false" />
           </div>
 
           <div className={clsx(style.content, { 'text-trim': !optionShowFullTitles })}>
             <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
             <div className={clsx(style.artist, { 'text-trim': !optionShowFullTitles })}>
               {entry.artistLink && (
-                <NavLink to={entry.artistLink} tabIndex={-1}>
+                <NavLink to={entry.artistLink} tabIndex={-1} draggable="false">
                   {entry.artist}
                 </NavLink>
               )}
@@ -196,7 +196,12 @@ const QueueEntryExpanded = ({ entry, optionShowFullTitles }) => {
   return (
     <div className={style.expandedEntry}>
       <div className={style.expandedThumb}>
-        <img src={entry.thumbMedium ? entry.thumbMedium : entry.thumb} alt={entry.title} loading="lazy" />
+        <img
+          src={entry.thumbMedium ? entry.thumbMedium : entry.thumb}
+          alt={entry.title}
+          draggable="false"
+          loading="lazy"
+        />
         <button className={style.expandedCollapse} onClick={collapseArtwork}>
           <span>
             <span>
@@ -210,7 +215,7 @@ const QueueEntryExpanded = ({ entry, optionShowFullTitles }) => {
 
       <div className={clsx(style.expandedArtist, { 'text-trim': !optionShowFullTitles })}>
         {entry.artistLink && (
-          <NavLink to={entry.artistLink} tabIndex={-1}>
+          <NavLink draggable="false" to={entry.artistLink} tabIndex={-1}>
             {entry.artist}
           </NavLink>
         )}

@@ -528,9 +528,9 @@ const ListArtists = ({ entries }) => {
 
   return entries.map((entry) => {
     return (
-      <NavLink key={entry.artistId} className={style.entry} to={entry.link}>
+      <NavLink key={entry.artistId} className={style.entry} to={entry.link} draggable="false">
         <div className={style.thumb}>
-          <img src={entry.thumb} alt={entry.title} loading="lazy" />
+          <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />
         </div>
         <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
         {/* <div className={clsx(style.genre, { 'text-trim': !optionShowFullTitles })}>{entry.genre}</div> */}
@@ -556,9 +556,9 @@ const ListAlbums = ({ entries }) => {
 
   return entries.map((entry) => {
     return (
-      <NavLink key={entry.albumId} className={style.entry} to={entry.link}>
+      <NavLink key={entry.albumId} className={style.entry} to={entry.link} draggable="false">
         <div className={style.thumb}>
-          <img src={entry.thumb} alt={entry.title} loading="lazy" />
+          <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />
         </div>
         <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
         <div className={clsx(style.artist, { 'text-trim': !optionShowFullTitles })}>{entry.artist}</div>
@@ -587,9 +587,9 @@ const ListPlaylists = ({ entries }) => {
 
   return entries.map((entry) => {
     return (
-      <NavLink key={entry.playlistId} className={style.entry} to={entry.link}>
+      <NavLink key={entry.playlistId} className={style.entry} to={entry.link} draggable="false">
         <div className={style.thumb}>
-          <img src={entry.thumb} alt={entry.title} loading="lazy" />
+          <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />
         </div>
         <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
         <div className={clsx(style.totalTracks, { 'text-trim': !optionShowFullTitles })}>
@@ -621,9 +621,9 @@ const ListArtistCollections = ({ entries }) => {
 
   return entries.map((entry) => {
     return (
-      <NavLink key={entry.collectionId} className={style.entry} to={entry.link}>
+      <NavLink key={entry.collectionId} className={style.entry} to={entry.link} draggable="false">
         <div className={style.thumb}>
-          <img src={entry.thumb} alt={entry.title} loading="lazy" />
+          <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />
         </div>
         <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
         <div className={clsx(style.addedAt, { 'text-trim': !optionShowFullTitles })}>
@@ -668,7 +668,7 @@ const FolderEntry = ({ entry }) => {
   const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
 
   return (
-    <NavLink className={style.entry} to={entry.link}>
+    <NavLink className={style.entry} to={entry.link} draggable="false">
       <div className={clsx(style.trackNumberPermanent, style.labelCenter)}>
         <span>-</span>
       </div>
@@ -759,12 +759,14 @@ const FolderTrackEntry = ({ index, folderId, trackNumber, entry, playingOrder, s
         </div>
       )}
 
-      <div className={style.thumb}>{entry.thumb && <img src={entry.thumb} alt={entry.title} loading="lazy" />}</div>
+      <div className={style.thumb}>
+        {entry.thumb && <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />}
+      </div>
       <div className={clsx({ 'text-trim': !optionShowFullTitles })}>
         <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
         <div className={clsx(style.artist, style.smallText, { 'text-trim': !optionShowFullTitles })}>
           {entry.artistLink && (
-            <NavLink to={entry.artistLink} tabIndex={-1}>
+            <NavLink to={entry.artistLink} tabIndex={-1} draggable="false">
               {entry.artist}
             </NavLink>
           )}
@@ -785,7 +787,7 @@ const GenresMoodsStylesEntry = ({ entry, icon }) => {
   const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
 
   return (
-    <NavLink className={style.entry} to={entry.link}>
+    <NavLink className={style.entry} to={entry.link} draggable="false">
       <div className={clsx(style.thumb, style.thumbFolder)}>
         <span className={style.thumbIcon}>
           <Icon icon={icon} cover stroke strokeWidth={1.2} />
@@ -936,7 +938,7 @@ const ListTrackEntry = React.memo(
 
           {variant === 'playlistTracks' && (
             <div className={style.thumb}>
-              {entry.thumb && <img src={entry.thumb} alt={entry.title} loading="lazy" />}
+              {entry.thumb && <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />}
             </div>
           )}
 
@@ -944,7 +946,7 @@ const ListTrackEntry = React.memo(
 
           <div className={clsx(style.artist, { 'text-trim': !optionShowFullTitles })}>
             {entry.artistLink && (
-              <NavLink to={entry.artistLink} tabIndex={-1}>
+              <NavLink to={entry.artistLink} tabIndex={-1} draggable="false">
                 {entry.artist}
               </NavLink>
             )}
@@ -954,7 +956,7 @@ const ListTrackEntry = React.memo(
           {variant === 'playlistTracks' && (
             <div className={clsx(style.album, { 'text-trim': !optionShowFullTitles })}>
               {entry.albumLink && (
-                <NavLink to={entry.albumLink} tabIndex={-1}>
+                <NavLink to={entry.albumLink} tabIndex={-1} draggable="false">
                   {entry.album}{' '}
                 </NavLink>
               )}

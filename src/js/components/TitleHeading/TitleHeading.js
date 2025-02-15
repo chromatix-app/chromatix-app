@@ -28,7 +28,7 @@ const TitleHeading = ({ title, subtitle, detail, thumb, icon, showPlay, handlePl
       <div className={style.wrap}>
         {thumb && (
           <div className={style.thumb}>
-            <img src={thumb} alt={title} />
+            <img src={thumb} alt={title} draggable="false" />
           </div>
         )}
         {icon && (
