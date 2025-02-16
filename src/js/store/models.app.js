@@ -20,6 +20,8 @@ const appState = {
   standalone: false,
   history: null,
 
+  contentBreakpoint: 0,
+
   errorPlexFastestServer: false,
   errorPlexLibraries: false,
   errorPlexLogin: false,

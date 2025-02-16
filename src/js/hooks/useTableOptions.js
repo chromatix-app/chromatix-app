@@ -4,21 +4,24 @@ import { useDispatch, useSelector } from 'react-redux';
 const useTableOptions = (variant, sortKey, orderKey) => {
   const dispatch = useDispatch();
 
+  const contentBreakpoint = useSelector(({ appModel }) => appModel.contentBreakpoint);
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
+  const userRatingsAreVisible = optionShowStarRatings && contentBreakpoint >= 800;
+
   const [returnState, setReturnState] = useState(
-    getTableOptions(variant, sortKey, orderKey, optionShowStarRatings, dispatch)
+    getTableOptions(variant, sortKey, orderKey, userRatingsAreVisible, dispatch)
   );
 
   useEffect(() => {
-    setReturnState(getTableOptions(variant, sortKey, orderKey, optionShowStarRatings, dispatch));
+    setReturnState(getTableOptions(variant, sortKey, orderKey, userRatingsAreVisible, dispatch));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [variant, sortKey, orderKey, optionShowStarRatings]);
+  }, [variant, sortKey, orderKey, userRatingsAreVisible]);
 
   return returnState;
 };
 
-const getTableOptions = (variant, sortKey, orderKey, optionShowStarRatings, dispatch) => {
+const getTableOptions = (variant, sortKey, orderKey, userRatingsAreVisible, dispatch) => {
   let tableVariant;
   let tableOptions;
 
@@ -94,15 +97,13 @@ const getTableOptions = (variant, sortKey, orderKey, optionShowStarRatings, disp
         isDesc: sortKey === 'lastPlayed' && orderKey === 'desc',
         visible: true,
       },
-
-      // TODO: integrate with breakpoints from App.js and hide below a certain width
       {
         colKey: 'userRating',
         label: 'Rating',
         colWidth: '0.5fr',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
-        visible: optionShowStarRatings,
+        visible: userRatingsAreVisible,
       },
     ];
   }
@@ -168,15 +169,13 @@ const getTableOptions = (variant, sortKey, orderKey, optionShowStarRatings, disp
         isDesc: sortKey === 'lastPlayed' && orderKey === 'desc',
         visible: true,
       },
-
-      // TODO: integrate with breakpoints from App.js and hide below a certain width
       {
         colKey: 'userRating',
         label: 'Rating',
         colWidth: '0.5fr',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
-        visible: optionShowStarRatings,
+        visible: userRatingsAreVisible,
       },
     ];
   }
@@ -286,15 +285,13 @@ const getTableOptions = (variant, sortKey, orderKey, optionShowStarRatings, disp
         isDesc: sortKey === 'lastPlayed' && orderKey === 'desc',
         visible: true,
       },
-
-      // TODO: integrate with breakpoints from App.js and hide below a certain width
       {
         colKey: 'userRating',
         label: 'Rating',
         colWidth: '0.5fr',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
-        visible: optionShowStarRatings,
+        visible: userRatingsAreVisible,
       },
     ];
   }
@@ -330,15 +327,13 @@ const getTableOptions = (variant, sortKey, orderKey, optionShowStarRatings, disp
         isDesc: sortKey === 'addedAt' && orderKey === 'desc',
         visible: true,
       },
-
-      // TODO: integrate with breakpoints from App.js and hide below a certain width
       {
         colKey: 'userRating',
         label: 'Rating',
         colWidth: '0.5fr',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
-        visible: optionShowStarRatings,
+        visible: userRatingsAreVisible,
       },
     ];
   }
