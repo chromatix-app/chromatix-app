@@ -181,6 +181,56 @@ const getTableOptions = (variant, sortKey, orderKey, optionShowStarRatings, disp
     ];
   }
 
+  // FOLDERS
+  else if (variant === 'folders') {
+    tableVariant = 'folders';
+    tableOptions = [
+      {
+        colKey: 'sortOrder',
+        label: '#',
+        isDefault: true,
+        colWidth: '30px',
+        headerClassName: 'colCenter',
+        isAsc: sortKey === 'sortOrder' && orderKey === 'asc',
+        isDesc: sortKey === 'sortOrder' && orderKey === 'desc',
+        showArrows: false,
+        visible: true,
+      },
+      {
+        colKey: 'thumb',
+        label: '',
+        icon: 'FolderIcon',
+        colWidth: '41px',
+        visible: true,
+        visibleInHeader: false,
+      },
+      {
+        colKey: 'title',
+        label: 'Title',
+        colWidth: '2fr',
+        headerStyle: {
+          gridColumn: '2 / span 2',
+        },
+        isAsc: sortKey === 'title' && orderKey === 'asc',
+        isDesc: sortKey === 'title' && orderKey === 'desc',
+        visible: true,
+      },
+      {
+        colKey: 'kind',
+        label: 'Kind',
+        colWidth: '1fr',
+        isAsc: sortKey === 'kind' && orderKey === 'asc',
+        isDesc: sortKey === 'kind' && orderKey === 'desc',
+        visible: true,
+      },
+      {
+        colKey: 'empty',
+        colWidth: '1px',
+        visible: true,
+      },
+    ];
+  }
+
   // PLAYLISTS
   else if (variant === 'playlists') {
     tableVariant = 'playlists';

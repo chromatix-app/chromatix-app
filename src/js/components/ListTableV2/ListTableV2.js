@@ -2,8 +2,9 @@
 // IMPORTS
 // ======================================================================
 
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import clsx from 'clsx';
 import moment from 'moment';
@@ -30,21 +31,64 @@ const ListTableV2 = ({
   variant,
   // albumId,
   // playlistId,
-  // folderId,
-  // playingOrder,
+  folderId,
+  playingOrder,
   // discCount = 1,
   entries,
   sortString,
   sortKey = sortString ? sortString.split('-')[0] : null,
   orderKey = sortString ? sortString.split('-')[1] : null,
 }) => {
+  // useScrollToTrack();
+
+  const dispatch = useDispatch();
+
+  const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
+
+  const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
+  const playingFolderId = useSelector(({ sessionModel }) => sessionModel.playingFolderId);
+
+  const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
+  const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
+  const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
+
+  const playingTrackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
+
   const { tableVariant, tableOptions, gridTemplateColumns, handleSortList } = useTableOptions(
     variant,
     sortKey,
     orderKey
   );
 
-  const tableHeading = () => {
+  const playTrack = useCallback(
+    (trackIndex, restart) => {
+      if (restart) {
+        // console.log(222, trackIndex, folderId, playingOrder, sortKey);
+        dispatch.playerModel.playerLoadTrackItem({
+          playingVariant: 'folders',
+          playingFolderId: folderId,
+          playingOrder: sortKey ? playingOrder : null,
+          playingTrackIndex: sortKey ? playingOrder[trackIndex] : trackIndex,
+        });
+      } else {
+        dispatch.playerModel.playerResume();
+      }
+    },
+    [dispatch, folderId, playingOrder, sortKey]
+  );
+
+  const pauseTrack = useCallback(() => {
+    dispatch.playerModel.playerPause();
+  }, [dispatch]);
+
+  const isTrackLoaded = useCallback(
+    (trackVariant, trackId) => {
+      return folderId === playingFolderId && playingVariant === trackVariant && playingTrackCurrent.trackId === trackId;
+    },
+    [folderId, playingFolderId, playingTrackCurrent, playingVariant]
+  );
+
+  const headerBlock = () => {
     return (
       <TableHeader
         tableVariant={tableVariant}
@@ -61,10 +105,15 @@ const ListTableV2 = ({
         <TableBody
           entries={entries}
           titleBlock={children}
-          tableHeading={tableHeading()}
+          headerBlock={headerBlock()}
           tableVariant={tableVariant}
           tableOptions={tableOptions}
           gridTemplateColumns={gridTemplateColumns}
+          //
+          playerPlaying={playerPlaying}
+          playTrack={playTrack}
+          pauseTrack={pauseTrack}
+          isTrackLoaded={isTrackLoaded}
         />
       </div>
     );
@@ -94,8 +143,9 @@ const SortableHeading = ({
   isAsc,
   isDesc,
   headerStyle,
+  headerClassName,
   handleSortList,
-  showArrows = true, // TODO: what views use this?
+  showArrows = true,
 }) => {
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -104,7 +154,14 @@ const SortableHeading = ({
   };
 
   return (
-    <div onClick={handleSortList} onKeyDown={handleKeyDown} tabIndex={0} data-sort={colKey} style={headerStyle}>
+    <div
+      onClick={handleSortList}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      data-sort={colKey}
+      style={headerStyle}
+      className={clsx({ [style[headerClassName]]: headerClassName })}
+    >
       <span>{label}</span>
       {showArrows && (
         <>
@@ -128,13 +185,25 @@ const SortableHeading = ({
 // TABLE BODY
 // ======================================================================
 
-const TableBody = ({ entries, titleBlock, tableHeading, tableVariant, tableOptions, gridTemplateColumns }) => {
+const TableBody = ({
+  entries,
+  titleBlock,
+  headerBlock,
+  tableVariant,
+  tableOptions,
+  gridTemplateColumns,
+
+  playerPlaying,
+  playTrack,
+  pauseTrack,
+  isTrackLoaded,
+}) => {
   const outerRef = useRef(null);
   const innerRef = useRef(null);
 
-  // Config in state so it can be dynamic in future
-  const [tableHeadHeight] = useState(250);
-  const [rowHeight] = useState(50);
+  // Config
+  const tableHeadHeight = 250;
+  const rowHeight = 50;
   const fixedElementCount = 1;
 
   // Helper to determine row heights
@@ -183,7 +252,7 @@ const TableBody = ({ entries, titleBlock, tableHeading, tableVariant, tableOptio
             return (
               <React.Fragment key={index}>
                 {titleBlock}
-                {tableHeading}
+                {headerBlock}
                 <div
                   id="measure"
                   className={style.measure}
@@ -194,16 +263,34 @@ const TableBody = ({ entries, titleBlock, tableHeading, tableVariant, tableOptio
             );
           } else {
             const entry = entries[virtualRow.index - fixedElementCount];
-            return (
-              <TableRow
-                key={index}
-                entry={entry}
-                virtualRow={virtualRow}
-                tableVariant={tableVariant}
-                tableOptions={tableOptions}
-                gridTemplateColumns={gridTemplateColumns}
-              />
-            );
+            if (entry.kind === 'track') {
+              return (
+                <TrackRow
+                  key={index}
+                  entry={entry}
+                  virtualRow={virtualRow}
+                  tableVariant={tableVariant}
+                  tableOptions={tableOptions}
+                  gridTemplateColumns={gridTemplateColumns}
+                  //
+                  playerPlaying={playerPlaying}
+                  playTrack={playTrack}
+                  pauseTrack={pauseTrack}
+                  isTrackLoaded={isTrackLoaded}
+                />
+              );
+            } else {
+              return (
+                <TableRow
+                  key={index}
+                  entry={entry}
+                  virtualRow={virtualRow}
+                  tableVariant={tableVariant}
+                  tableOptions={tableOptions}
+                  gridTemplateColumns={gridTemplateColumns}
+                />
+              );
+            }
           }
         })}
       </div>
@@ -218,7 +305,6 @@ const TableBody = ({ entries, titleBlock, tableHeading, tableVariant, tableOptio
 const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateColumns }) => {
   return (
     <NavLink
-      key={entry.artistId}
       className={style.entry}
       to={entry.link}
       draggable="false"
@@ -237,6 +323,13 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
           const { ratingType, ratingKey } = userRatingOptions[tableVariant] || {};
 
           switch (columnOptions.colKey) {
+            case 'sortOrder':
+              return (
+                <div key={index} className={clsx(style.trackNumberPermanent, style.colCenter)}>
+                  <span>-</span>
+                </div>
+              );
+
             case 'thumb':
               if (columnOptions.icon) {
                 return (
@@ -265,6 +358,13 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
               return (
                 <div key={index} className={clsx(style.artist, 'text-trim')}>
                   {entry.artist}
+                </div>
+              );
+
+            case 'kind':
+              return (
+                <div key={index} className={clsx(style.meta, 'text-trim')}>
+                  {entry.kind.replace('aaa', '')}
                 </div>
               );
 
@@ -334,6 +434,178 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
     </NavLink>
   );
 };
+
+// ======================================================================
+// TRACK ROW
+// ======================================================================
+
+const TrackRow = ({
+  virtualRow,
+  entry,
+  tableVariant,
+  tableOptions,
+  gridTemplateColumns,
+  //
+  playTrack,
+  playerPlaying,
+  pauseTrack,
+  isTrackLoaded,
+}) => {
+  const trackNumber = entry.sortedTrackNumber;
+  const trackIndex = trackNumber - 1;
+  const trackIsLoaded = isTrackLoaded(tableVariant, entry.trackId);
+
+  return (
+    <div
+      id={entry.trackId}
+      className={clsx(style.entry, {
+        [style.entryPlaying]: trackIsLoaded,
+      })}
+      onDoubleClick={() => {
+        playTrack(trackIndex, true);
+      }}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter') {
+          playTrack(trackIndex, true);
+        }
+      }}
+      tabIndex={0}
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        transform: `translateY(${virtualRow.start}px)`,
+        gridTemplateColumns,
+      }}
+    >
+      {tableOptions
+        .filter((columnOptions) => columnOptions.visible !== false)
+        .map((columnOptions, index) => {
+          const { ratingType, ratingKey } = userRatingOptions[tableVariant] || {};
+
+          switch (columnOptions.colKey) {
+            case 'sortOrder':
+              return (
+                <React.Fragment key={index}>
+                  {!trackIsLoaded && (
+                    <div className={clsx(style.trackNumber, style.colCenter)}>
+                      <span>{trackNumber}</span>
+                      {/* <span>{entry.trackSortOrder}</span> */}
+                    </div>
+                  )}
+
+                  {trackIsLoaded && playerPlaying && (
+                    <div className={style.playingIcon}>
+                      <Icon icon="VolHighIcon" cover stroke />
+                    </div>
+                  )}
+
+                  {trackIsLoaded && !playerPlaying && (
+                    // <div className={style.playingPausedIcon}>
+                    //   <Icon icon="PauseIcon" cover stroke />
+                    // </div>
+                    <div className={style.playingIcon}>
+                      <Icon icon="VolOffIcon" cover stroke />
+                    </div>
+                  )}
+
+                  {!(trackIsLoaded && playerPlaying) && (
+                    <div
+                      className={style.playIcon}
+                      onClick={() => {
+                        playTrack(trackIndex, !trackIsLoaded);
+                      }}
+                    >
+                      <Icon icon="PlayFilledIcon" cover />
+                    </div>
+                  )}
+                  {trackIsLoaded && playerPlaying && (
+                    <div className={style.pauseIcon} onClick={pauseTrack}>
+                      <Icon icon="PauseFilledIcon" cover />
+                    </div>
+                  )}
+                </React.Fragment>
+              );
+
+            case 'thumb':
+              return (
+                <div key={index} className={style.thumb}>
+                  <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />
+                </div>
+              );
+
+            case 'title':
+              if (tableVariant === 'folders') {
+                return (
+                  <div key={index} className={'text-trim'}>
+                    <div className={clsx(style.title, 'text-trim')}>{entry.title}</div>
+                    <div className={clsx(style.artist, style.smallText, 'text-trim')}>
+                      {entry.artistLink && (
+                        <NavLink to={entry.artistLink} tabIndex={-1} draggable="false">
+                          {entry.artist}
+                        </NavLink>
+                      )}
+                      {!entry.artistLink && entry.artist}
+                    </div>
+                  </div>
+                );
+              } else {
+                return (
+                  <div key={index} className={clsx(style.title, 'text-trim')}>
+                    {entry.title}
+                  </div>
+                );
+              }
+
+            case 'artist':
+              return (
+                <div key={index} className={clsx(style.artist, 'text-trim')}>
+                  {entry.artist}
+                </div>
+              );
+
+            case 'kind':
+              return (
+                <div key={index} className={clsx(style.meta, 'text-trim')}>
+                  {entry.kind.replace('aaa', '')}
+                </div>
+              );
+
+            case 'duration':
+              return (
+                <div key={index} className={clsx(style.duration, 'text-trim')}>
+                  {durationToStringLong(entry.duration)}
+                </div>
+              );
+
+            case 'userRating':
+              return (
+                <div key={index} className={style.userRating}>
+                  <StarRating
+                    type={ratingType}
+                    ratingKey={entry[ratingKey]}
+                    rating={entry.userRating}
+                    inline
+                    editable
+                  />
+                </div>
+              );
+
+            case 'empty':
+              return <div key={index} className={style.empty}></div>;
+
+            default:
+              return null;
+          }
+        })}
+    </div>
+  );
+};
+
+// ======================================================================
+// HELPERS
+// ======================================================================
 
 const userRatingOptions = {
   albums: {
