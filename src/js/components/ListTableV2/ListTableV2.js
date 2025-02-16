@@ -110,10 +110,12 @@ const ListTableV2 = ({
           tableOptions={tableOptions}
           gridTemplateColumns={gridTemplateColumns}
           //
-          playerPlaying={playerPlaying}
-          playTrack={playTrack}
-          pauseTrack={pauseTrack}
-          isTrackLoaded={isTrackLoaded}
+          {...(variant === 'folders' && {
+            playerPlaying,
+            playTrack,
+            pauseTrack,
+            isTrackLoaded,
+          })}
         />
       </div>
     );
@@ -185,6 +187,14 @@ const SortableHeading = ({
 // TABLE BODY
 // ======================================================================
 
+// Config
+const tableHeadHeight = 250;
+const rowHeight = 50;
+const fixedElementCount = 1;
+
+// State
+let innerRef;
+
 const TableBody = ({
   entries,
   titleBlock,
@@ -199,33 +209,7 @@ const TableBody = ({
   isTrackLoaded,
 }) => {
   const outerRef = useRef(null);
-  const innerRef = useRef(null);
-
-  // Config
-  const tableHeadHeight = 250;
-  const rowHeight = 50;
-  const fixedElementCount = 1;
-
-  // Helper to determine row heights
-  const getItemSize = (index) => (index === 0 ? tableHeadHeight : rowHeight);
-
-  // Helper to determine the visible range, including our sticky row
-  const rangeExtractor = (range) => {
-    const start = Math.max(range.startIndex - range.overscan, 0);
-    const end = Math.min(range.endIndex + range.overscan, range.count - 1);
-    const indexes = Array.from({ length: end - start + 1 }, (_, i) => start + i);
-    if (!indexes.includes(0)) {
-      indexes.unshift(0);
-    }
-    return indexes;
-  };
-
-  // Helper to determine the header height
-  const measureElement = (element) => {
-    const innerTop = innerRef.current.getBoundingClientRect().top;
-    const elementTop = element.getBoundingClientRect().top;
-    return elementTop - innerTop;
-  };
+  innerRef = useRef(null);
 
   // Setup the virtualizer
   const rowVirtualizer = useVirtualizer({
@@ -296,6 +280,27 @@ const TableBody = ({
       </div>
     </div>
   );
+};
+
+// Helper to determine row heights
+const getItemSize = (index) => (index === 0 ? tableHeadHeight : rowHeight);
+
+// Helper to determine the visible range, including our sticky row
+const rangeExtractor = (range) => {
+  const start = Math.max(range.startIndex - range.overscan, 0);
+  const end = Math.min(range.endIndex + range.overscan, range.count - 1);
+  const indexes = Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  if (!indexes.includes(0)) {
+    indexes.unshift(0);
+  }
+  return indexes;
+};
+
+// Helper to determine the header height
+const measureElement = (element) => {
+  const innerTop = innerRef.current.getBoundingClientRect().top;
+  const elementTop = element.getBoundingClientRect().top;
+  return elementTop - innerTop;
 };
 
 // ======================================================================
