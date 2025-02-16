@@ -51,7 +51,7 @@ export const setVolume = (volume) => {
 };
 
 export const setProgress = (progress) => {
-  console.log('%c--- player - setProgress - ' + progress / 1000 + ' ---', 'color:#a18507');
+  // console.log('%c--- player - setProgress - ' + progress / 1000 + ' ---', 'color:#a18507');
   playerElement.currentTime = progress / 1000;
 };
 

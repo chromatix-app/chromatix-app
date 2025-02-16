@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-const useTableOptions = (variant, sortKey, orderKey) => {
+const useTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderKey) => {
   const dispatch = useDispatch();
 
   const contentBreakpoint = useSelector(({ appModel }) => appModel.contentBreakpoint);
@@ -10,22 +10,33 @@ const useTableOptions = (variant, sortKey, orderKey) => {
   const userRatingsAreVisible = optionShowStarRatings && contentBreakpoint >= 800;
 
   const [returnState, setReturnState] = useState(
-    getTableOptions(variant, sortKey, orderKey, userRatingsAreVisible, dispatch)
+    getTableOptions(variant, albumId, playlistId, folderId, sortKey, orderKey, userRatingsAreVisible, dispatch)
   );
 
   useEffect(() => {
-    setReturnState(getTableOptions(variant, sortKey, orderKey, userRatingsAreVisible, dispatch));
+    setReturnState(
+      getTableOptions(variant, albumId, playlistId, folderId, sortKey, orderKey, userRatingsAreVisible, dispatch)
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [variant, sortKey, orderKey, userRatingsAreVisible]);
 
   return returnState;
 };
 
-const getTableOptions = (variant, sortKey, orderKey, userRatingsAreVisible, dispatch) => {
+const getTableOptions = (
+  variant,
+  albumId,
+  playlistId,
+  folderId,
+  sortKey,
+  orderKey,
+  userRatingsAreVisible,
+  dispatch
+) => {
   let tableVariant;
   let tableOptions;
 
-  // HELPER FOR SORTING WHEN CLICKING ON TABLE HEADERS
+  // HELPERS FOR SORTING WHEN CLICKING ON TABLE HEADERS
   const handleSortList = (event) => {
     const sortKey = event.currentTarget.dataset.sort;
     dispatch.sessionModel.setSortList({
@@ -34,15 +45,18 @@ const getTableOptions = (variant, sortKey, orderKey, userRatingsAreVisible, disp
     });
   };
 
-  // const sortId = (variant === 'albumTracks' && albumId) || (variant === 'playlistTracks' && playlistId) || null;
-  // const handleSortTracks = (event) => {
-  //   const sortKey = event.currentTarget.dataset.sort;
-  //   dispatch.sessionModel.setSortTracks({
-  //     variant,
-  //     sortId,
-  //     sortKey,
-  //   });
-  // };
+  const sortId = (variant === 'albumTracks' && albumId) || (variant === 'playlistTracks' && playlistId) || null;
+  const handleSortTracks = (event) => {
+    const sortKey = event.currentTarget.dataset.sort;
+    dispatch.sessionModel.setSortTracks({
+      variant,
+      sortId,
+      sortKey,
+    });
+  };
+
+  const handleSortFunction =
+    variant === 'albumTracks' || variant === 'playlistTracks' ? handleSortTracks : handleSortList;
 
   // ARTISTS
   if (
@@ -377,6 +391,75 @@ const getTableOptions = (variant, sortKey, orderKey, userRatingsAreVisible, disp
     ];
   }
 
+  // PLAYLIST TRACKS
+  else if (variant === 'playlistTracks') {
+    tableVariant = 'playlistTracks';
+    tableOptions = [
+      {
+        colKey: 'sortOrder',
+        label: '#',
+        isDefault: true,
+        colWidth: '30px',
+        headerClassName: 'colCenter',
+        isAsc: sortKey === 'sortOrder' && orderKey === 'asc',
+        isDesc: sortKey === 'sortOrder' && orderKey === 'desc',
+        showArrows: false,
+        visible: true,
+      },
+      {
+        colKey: 'thumb',
+        label: '',
+        icon: 'FolderIcon',
+        colWidth: '41px',
+        visible: true,
+        visibleInHeader: false,
+      },
+      {
+        colKey: 'title',
+        label: 'Title',
+        colWidth: '1.2fr',
+        headerStyle: {
+          gridColumn: '2 / span 2',
+        },
+        isAsc: sortKey === 'title' && orderKey === 'asc',
+        isDesc: sortKey === 'title' && orderKey === 'desc',
+        visible: true,
+      },
+      {
+        colKey: 'artist',
+        label: 'Artist',
+        colWidth: '1fr',
+        isAsc: sortKey === 'artist' && orderKey === 'asc',
+        isDesc: sortKey === 'artist' && orderKey === 'desc',
+        visible: true,
+      },
+      {
+        colKey: 'album',
+        label: 'Album',
+        colWidth: '1fr',
+        isAsc: sortKey === 'album' && orderKey === 'asc',
+        isDesc: sortKey === 'album' && orderKey === 'desc',
+        visible: true,
+      },
+      {
+        colKey: 'userRating',
+        label: 'Rating',
+        colWidth: '0.5fr',
+        isAsc: sortKey === 'userRating' && orderKey === 'asc',
+        isDesc: sortKey === 'userRating' && orderKey === 'desc',
+        visible: userRatingsAreVisible,
+      },
+      {
+        colKey: 'duration',
+        label: 'Duration',
+        colWidth: 'minmax(72px, auto)',
+        isAsc: sortKey === 'duration' && orderKey === 'asc',
+        isDesc: sortKey === 'duration' && orderKey === 'desc',
+        visible: true,
+      },
+    ];
+  }
+
   // DETERMINE THE GRID TEMPLATE COLUMNS
   const gridTemplateColumns =
     tableOptions?.reduce((acc, option) => {
@@ -388,7 +471,7 @@ const getTableOptions = (variant, sortKey, orderKey, userRatingsAreVisible, disp
     tableVariant,
     tableOptions,
     gridTemplateColumns,
-    handleSortList,
+    handleSortFunction,
   };
 };
 

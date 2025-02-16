@@ -78,14 +78,14 @@
   //   }
   // }
 
-  .wrap.wrapPlaylists & {
-    grid-template-columns: 41px 1.2fr 1fr 1fr 1fr 1fr;
-  }
-  .wrap.wrapPlaylists.wrapWithRatings & {
-    :global(.cq-800) & {
-      grid-template-columns: 41px 1.2fr 1fr 1fr 1fr 1fr 0.5fr;
-    }
-  }
+  // .wrap.wrapPlaylists & {
+  //   grid-template-columns: 41px 1.2fr 1fr 1fr 1fr 1fr;
+  // }
+  // .wrap.wrapPlaylists.wrapWithRatings & {
+  //   :global(.cq-800) & {
+  //     grid-template-columns: 41px 1.2fr 1fr 1fr 1fr 1fr 0.5fr;
+  //   }
+  // }
 
   // .wrap.wrapArtistCollections &,
   // .wrap.wrapAlbumCollections & {
@@ -120,14 +120,14 @@
     }
   }
 
-  .wrap.wrapPlaylistTracks & {
-    grid-template-columns: 30px 41px 1.2fr 1fr 1fr minmax(72px, auto);
-  }
-  .wrap.wrapPlaylistTracks.wrapWithRatings & {
-    :global(.cq-800) & {
-      grid-template-columns: 30px 41px 1.2fr 1fr 1fr 0.5fr minmax(72px, auto);
-    }
-  }
+  // .wrap.wrapPlaylistTracks & {
+  //   grid-template-columns: 30px 41px 1.2fr 1fr 1fr minmax(72px, auto);
+  // }
+  // .wrap.wrapPlaylistTracks.wrapWithRatings & {
+  //   :global(.cq-800) & {
+  //     grid-template-columns: 30px 41px 1.2fr 1fr 1fr 0.5fr minmax(72px, auto);
+  //   }
+  // }
 }
 
 .header {

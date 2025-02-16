@@ -14,11 +14,7 @@ import {
   // useScrollToTrack,
   useTableOptions,
 } from 'js/hooks';
-import {
-  durationToStringLong,
-  // durationToStringShort,
-  formatRecentDate,
-} from 'js/utils';
+import { durationToStringMed, durationToStringShort, formatRecentDate } from 'js/utils';
 
 import style from './ListTableV2.module.scss';
 
@@ -35,8 +31,8 @@ const virtualThreshold = 1;
 const ListTableV2 = ({
   children,
   variant,
-  // albumId,
-  // playlistId,
+  albumId,
+  playlistId,
   folderId,
   playingOrder,
   // discCount = 1,
@@ -52,6 +48,8 @@ const ListTableV2 = ({
   const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
 
   const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
+  const playingAlbumId = useSelector(({ sessionModel }) => sessionModel.playingAlbumId);
+  const playingPlaylistId = useSelector(({ sessionModel }) => sessionModel.playingPlaylistId);
   const playingFolderId = useSelector(({ sessionModel }) => sessionModel.playingFolderId);
 
   const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
@@ -60,18 +58,29 @@ const ListTableV2 = ({
 
   const playingTrackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
 
-  const { tableVariant, tableOptions, gridTemplateColumns, handleSortList } = useTableOptions(
+  const matchVariant = {
+    albumTracks: 'albums',
+    playlistTracks: 'playlists',
+    folders: 'folders',
+  };
+
+  const { tableVariant, tableOptions, gridTemplateColumns, handleSortFunction } = useTableOptions(
     variant,
+    albumId,
+    playlistId,
+    folderId,
     sortKey,
     orderKey
   );
 
   const playTrack = useCallback(
-    (trackIndex, restart) => {
+    (trackVariant, trackIndex, restart) => {
       if (restart) {
-        // console.log(222, trackIndex, folderId, playingOrder, sortKey);
+        // console.log(222, trackVariant, trackIndex, albumId, playlistId, folderId, playingOrder, sortKey);
         dispatch.playerModel.playerLoadTrackItem({
-          playingVariant: 'folders',
+          playingVariant: matchVariant[trackVariant],
+          playingAlbumId: albumId,
+          playingPlaylistId: playlistId,
           playingFolderId: folderId,
           playingOrder: sortKey ? playingOrder : null,
           playingTrackIndex: sortKey ? playingOrder[trackIndex] : trackIndex,
@@ -80,7 +89,8 @@ const ListTableV2 = ({
         dispatch.playerModel.playerResume();
       }
     },
-    [dispatch, folderId, playingOrder, sortKey]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [dispatch, albumId, playlistId, folderId, playingOrder, sortKey]
   );
 
   const pauseTrack = useCallback(() => {
@@ -89,9 +99,25 @@ const ListTableV2 = ({
 
   const isTrackLoaded = useCallback(
     (trackVariant, trackId) => {
-      return folderId === playingFolderId && playingVariant === trackVariant && playingTrackCurrent.trackId === trackId;
+      return (
+        playingVariant === matchVariant[trackVariant] &&
+        (playingAlbumId === albumId || (!playingAlbumId && !albumId)) &&
+        (playingPlaylistId === playlistId || (!playingPlaylistId && !playlistId)) &&
+        (playingFolderId === folderId || (!playingFolderId && !folderId)) &&
+        playingTrackCurrent.trackId === trackId
+      );
     },
-    [folderId, playingFolderId, playingTrackCurrent, playingVariant]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      albumId,
+      playlistId,
+      folderId,
+      playingAlbumId,
+      playingPlaylistId,
+      playingFolderId,
+      playingTrackCurrent,
+      playingVariant,
+    ]
   );
 
   const headerBlock = () => {
@@ -100,7 +126,7 @@ const ListTableV2 = ({
         tableVariant={tableVariant}
         tableOptions={tableOptions}
         gridTemplateColumns={gridTemplateColumns}
-        handleSortList={handleSortList}
+        handleSortFunction={handleSortFunction}
       />
     );
   };
@@ -118,7 +144,7 @@ const ListTableV2 = ({
           tableOptions={tableOptions}
           gridTemplateColumns={gridTemplateColumns}
           // track related props
-          {...(variant === 'folders' && {
+          {...((variant === 'folders' || variant === 'playlistTracks') && {
             playerPlaying,
             playTrack,
             pauseTrack,
@@ -134,13 +160,13 @@ const ListTableV2 = ({
 // TABLE HEADER
 // ======================================================================
 
-const TableHeader = ({ tableOptions, gridTemplateColumns, handleSortList }) => {
+const TableHeader = ({ tableOptions, gridTemplateColumns, handleSortFunction }) => {
   return (
     <div className={style.header} style={{ gridTemplateColumns }}>
       {tableOptions
         .filter((columnOptions) => columnOptions.visible !== false && columnOptions.visibleInHeader !== false)
         .map((columnOptions, index) => (
-          <SortableHeading key={index} handleSortList={handleSortList} {...columnOptions} />
+          <SortableHeading key={index} handleSortFunction={handleSortFunction} {...columnOptions} />
         ))}
     </div>
   );
@@ -154,18 +180,18 @@ const SortableHeading = ({
   isDesc,
   headerStyle,
   headerClassName,
-  handleSortList,
+  handleSortFunction,
   showArrows = true,
 }) => {
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
-      handleSortList(event);
+      handleSortFunction(event);
     }
   };
 
   return (
     <div
-      onClick={handleSortList}
+      onClick={handleSortFunction}
       onKeyDown={handleKeyDown}
       tabIndex={0}
       data-sort={colKey}
@@ -461,7 +487,7 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
             case 'duration':
               return (
                 <div key={rowKey + '-' + index} className={clsx(style.duration, 'text-trim')}>
-                  {durationToStringLong(entry.duration)}
+                  {durationToStringMed(entry.duration)}
                 </div>
               );
 
@@ -526,7 +552,9 @@ const TrackRow = ({
   pauseTrack,
   isTrackLoaded,
 }) => {
-  const trackNumber = entry.sortedTrackNumber;
+  const rowKey = entry.albumId || entry.artistId || entry.playlistId || entry.collectionId;
+
+  const trackNumber = entry.sortedTrackNumber ? entry.sortedTrackNumber : virtualRow.index;
   const trackIndex = trackNumber - 1;
   const trackIsLoaded = isTrackLoaded(tableVariant, entry.trackId);
 
@@ -537,11 +565,11 @@ const TrackRow = ({
         [style.entryPlaying]: trackIsLoaded,
       })}
       onDoubleClick={() => {
-        playTrack(trackIndex, true);
+        playTrack(tableVariant, trackIndex, true);
       }}
       onKeyDown={(event) => {
         if (event.key === 'Enter') {
-          playTrack(trackIndex, true);
+          playTrack(tableVariant, trackIndex, true);
         }
       }}
       tabIndex={0}
@@ -564,7 +592,7 @@ const TrackRow = ({
           switch (columnOptions.colKey) {
             case 'sortOrder':
               return (
-                <React.Fragment key={index}>
+                <React.Fragment key={rowKey + '-' + index}>
                   {!trackIsLoaded && (
                     <div className={clsx(style.trackNumber, style.colCenter)}>
                       <span>{trackNumber}</span>
@@ -591,7 +619,7 @@ const TrackRow = ({
                     <div
                       className={style.playIcon}
                       onClick={() => {
-                        playTrack(trackIndex, !trackIsLoaded);
+                        playTrack(tableVariant, trackIndex, !trackIsLoaded);
                       }}
                     >
                       <Icon icon="PlayFilledIcon" cover />
@@ -607,7 +635,7 @@ const TrackRow = ({
 
             case 'thumb':
               return (
-                <div key={index} className={style.thumb}>
+                <div key={rowKey + '-' + index} className={style.thumb}>
                   {entry.thumb && <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />}
                 </div>
               );
@@ -615,7 +643,7 @@ const TrackRow = ({
             case 'title':
               if (tableVariant === 'folders') {
                 return (
-                  <div key={index} className={'text-trim'}>
+                  <div key={rowKey + '-' + index} className={'text-trim'}>
                     <div className={clsx(style.title, 'text-trim')}>{entry.title}</div>
                     <div className={clsx(style.artist, style.smallText, 'text-trim')}>
                       {entry.artistLink && (
@@ -629,7 +657,7 @@ const TrackRow = ({
                 );
               } else {
                 return (
-                  <div key={index} className={clsx(style.title, 'text-trim')}>
+                  <div key={rowKey + '-' + index} className={clsx(style.title, 'text-trim')}>
                     {entry.title}
                   </div>
                 );
@@ -637,28 +665,45 @@ const TrackRow = ({
 
             case 'artist':
               return (
-                <div key={index} className={clsx(style.artist, 'text-trim')}>
-                  {entry.artist}
+                <div key={rowKey + '-' + index} className={clsx(style.artist, 'text-trim')}>
+                  {entry.artistLink && (
+                    <NavLink to={entry.artistLink} tabIndex={-1} draggable="false">
+                      {entry.artist}
+                    </NavLink>
+                  )}
+                  {!entry.artistLink && entry.artist}
+                </div>
+              );
+
+            case 'album':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.album, 'text-trim')}>
+                  {entry.albumLink && (
+                    <NavLink to={entry.albumLink} tabIndex={-1} draggable="false">
+                      {entry.album}{' '}
+                    </NavLink>
+                  )}
+                  {!entry.albumLink && entry.album}
                 </div>
               );
 
             case 'kind':
               return (
-                <div key={index} className={clsx(style.meta, 'text-trim')}>
+                <div key={rowKey + '-' + index} className={clsx(style.meta, 'text-trim')}>
                   {entry.kind.replace('aaa', '')}
                 </div>
               );
 
             case 'duration':
               return (
-                <div key={index} className={clsx(style.duration, 'text-trim')}>
-                  {durationToStringLong(entry.duration)}
+                <div key={rowKey + '-' + index} className={clsx(style.duration, 'text-trim')}>
+                  {durationToStringShort(entry.duration)}
                 </div>
               );
 
             case 'userRating':
               return (
-                <div key={index} className={style.userRating}>
+                <div key={rowKey + '-' + index} className={style.userRating}>
                   <StarRating
                     type={ratingType}
                     ratingKey={entry[ratingKey]}
@@ -670,7 +715,7 @@ const TrackRow = ({
               );
 
             case 'empty':
-              return <div key={index} className={style.empty}></div>;
+              return <div key={rowKey + '-' + index} className={style.empty}></div>;
 
             default:
               return null;
