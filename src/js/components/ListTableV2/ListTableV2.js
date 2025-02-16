@@ -374,6 +374,8 @@ const measureElement = (element) => {
 // ======================================================================
 
 const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateColumns }) => {
+  const rowKey = entry.albumId || entry.artistId || entry.playlistId || entry.collectionId;
+
   return (
     <NavLink
       className={style.entry}
@@ -398,7 +400,7 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
           switch (columnOptions.colKey) {
             case 'sortOrder':
               return (
-                <div key={index} className={clsx(style.trackNumberPermanent, style.colCenter)}>
+                <div key={rowKey + '-' + index} className={clsx(style.trackNumberPermanent, style.colCenter)}>
                   <span>-</span>
                 </div>
               );
@@ -406,7 +408,7 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
             case 'thumb':
               if (columnOptions.icon) {
                 return (
-                  <div key={index} className={clsx(style.thumb, style.thumbFolder)}>
+                  <div key={rowKey + '-' + index} className={clsx(style.thumb, style.thumbFolder)}>
                     <span className={style.thumbIcon}>
                       <Icon icon={columnOptions.icon} cover stroke strokeWidth={1.2} />
                     </span>
@@ -414,43 +416,43 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
                 );
               } else {
                 return (
-                  <div key={index} className={style.thumb}>
-                    <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />
+                  <div key={rowKey + '-' + index} className={style.thumb}>
+                    {entry.thumb && <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />}
                   </div>
                 );
               }
 
             case 'title':
               return (
-                <div key={index} className={clsx(style.title, 'text-trim')}>
+                <div key={rowKey + '-' + index} className={clsx(style.title, 'text-trim')}>
                   {entry.title}
                 </div>
               );
 
             case 'artist':
               return (
-                <div key={index} className={clsx(style.artist, 'text-trim')}>
+                <div key={rowKey + '-' + index} className={clsx(style.artist, 'text-trim')}>
                   {entry.artist}
                 </div>
               );
 
             case 'kind':
               return (
-                <div key={index} className={clsx(style.meta, 'text-trim')}>
+                <div key={rowKey + '-' + index} className={clsx(style.meta, 'text-trim')}>
                   {entry.kind.replace('aaa', '')}
                 </div>
               );
 
             case 'genre':
               return (
-                <div key={index} className={clsx(style.genre, 'text-trim')}>
+                <div key={rowKey + '-' + index} className={clsx(style.genre, 'text-trim')}>
                   {entry.genre}
                 </div>
               );
 
             case 'totalTracks':
               return (
-                <div key={index} className={clsx(style.totalTracks, 'text-trim')}>
+                <div key={rowKey + '-' + index} className={clsx(style.totalTracks, 'text-trim')}>
                   {entry.totalTracks}
                   {(entry.totalTracks || entry.totalTracks === 0) && <> track{entry.totalTracks !== 1 ? 's' : ''}</>}
                 </div>
@@ -458,35 +460,35 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
 
             case 'duration':
               return (
-                <div key={index} className={clsx(style.duration, 'text-trim')}>
+                <div key={rowKey + '-' + index} className={clsx(style.duration, 'text-trim')}>
                   {durationToStringLong(entry.duration)}
                 </div>
               );
 
             case 'releaseDate':
               return (
-                <div key={index} className={clsx(style.releaseDate, 'text-trim')}>
+                <div key={rowKey + '-' + index} className={clsx(style.releaseDate, 'text-trim')}>
                   {entry.releaseDate ? moment(entry.releaseDate).format('MMM YYYY') : null}
                 </div>
               );
 
             case 'addedAt':
               return (
-                <div key={index} className={clsx(style.addedAt, 'text-trim')}>
+                <div key={rowKey + '-' + index} className={clsx(style.addedAt, 'text-trim')}>
                   {formatRecentDate(entry.addedAt)}
                 </div>
               );
 
             case 'lastPlayed':
               return (
-                <div key={index} className={clsx(style.lastPlayed, 'text-trim')}>
+                <div key={rowKey + '-' + index} className={clsx(style.lastPlayed, 'text-trim')}>
                   {formatRecentDate(entry.lastPlayed)}
                 </div>
               );
 
             case 'userRating':
               return (
-                <div key={index} className={style.userRating}>
+                <div key={rowKey + '-' + index} className={style.userRating}>
                   <StarRating
                     type={ratingType}
                     ratingKey={entry[ratingKey]}
@@ -498,7 +500,7 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
               );
 
             case 'empty':
-              return <div key={index} className={style.empty}></div>;
+              return <div key={rowKey + '-' + index} className={style.empty}></div>;
 
             default:
               return null;
@@ -606,7 +608,7 @@ const TrackRow = ({
             case 'thumb':
               return (
                 <div key={index} className={style.thumb}>
-                  <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />
+                  {entry.thumb && <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />}
                 </div>
               );
 

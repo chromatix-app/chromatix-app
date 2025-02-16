@@ -62,6 +62,13 @@
   }
 }
 
+.thumb {
+  background-image: $thumbnail;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 .thumbBg {
   :global(.cq-800) &,
   :global(.cq-920) &,

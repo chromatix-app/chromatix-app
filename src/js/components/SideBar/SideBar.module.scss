@@ -189,6 +189,10 @@
   height: 36px;
   margin-right: 16px;
   background: var(--color-opacity-01);
+  background-image: $thumbnail;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   border-radius: 3px;
 
   img {

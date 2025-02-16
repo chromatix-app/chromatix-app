@@ -313,6 +313,10 @@
   height: 36px;
   // margin: 0 -5px;
   background: var(--color-opacity-01);
+  background-image: $thumbnail;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   border-radius: 3px;
 
   // .wrap.wrapArtistGenres &,

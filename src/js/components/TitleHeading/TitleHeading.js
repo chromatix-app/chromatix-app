@@ -40,6 +40,7 @@ const TitleHeading = ({ title, subtitle, detail, thumb, icon, showPlay, handlePl
             </div>
           </div>
         )}
+        {!icon && thumb === null && <div className={style.thumb}></div>}
         <div className={style.content}>
           {title && <h1 className={clsx(style.title, style[titleSize])}>{title}</h1>}
           {subtitle && <h2 className={style.subtitle}>{subtitle}</h2>}

@@ -152,7 +152,7 @@ const QueueEntry = ({
           tabIndex={0}
         >
           <div className={style.thumb}>
-            <img src={entry.thumb} alt={entry.title} loading="lazy" draggable="false" />
+            {entry.thumb && <img src={entry.thumb} alt={entry.title} loading="lazy" draggable="false" />}
           </div>
 
           <div className={clsx(style.content, { 'text-trim': !optionShowFullTitles })}>
@@ -196,12 +196,14 @@ const QueueEntryExpanded = ({ entry, optionShowFullTitles }) => {
   return (
     <div className={style.expandedEntry}>
       <div className={style.expandedThumb}>
-        <img
-          src={entry.thumbMedium ? entry.thumbMedium : entry.thumb}
-          alt={entry.title}
-          draggable="false"
-          loading="lazy"
-        />
+        {(entry.thumbMedium || entry.thumb) && (
+          <img
+            src={entry.thumbMedium ? entry.thumbMedium : entry.thumb}
+            alt={entry.title}
+            draggable="false"
+            loading="lazy"
+          />
+        )}
         <button className={style.expandedCollapse} onClick={collapseArtwork}>
           <span>
             <span>
