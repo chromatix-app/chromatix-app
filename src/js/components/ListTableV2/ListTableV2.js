@@ -245,6 +245,7 @@ const TableBodyStatic = ({
             return (
               <TrackRow
                 key={index}
+                index={index}
                 entry={entry}
                 // virtualRow={virtualRow}
                 tableVariant={tableVariant}
@@ -542,6 +543,7 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
 
 const TrackRow = ({
   virtualRow,
+  index,
   entry,
   tableVariant,
   tableOptions,
@@ -554,7 +556,7 @@ const TrackRow = ({
 }) => {
   const rowKey = entry.albumId || entry.artistId || entry.playlistId || entry.collectionId;
 
-  const trackNumber = entry.sortedTrackNumber ? entry.sortedTrackNumber : virtualRow.index;
+  const trackNumber = entry.sortedTrackNumber ? entry.sortedTrackNumber : virtualRow ? virtualRow.index : index + 1;
   const trackIndex = trackNumber - 1;
   const trackIsLoaded = isTrackLoaded(tableVariant, entry.trackId);
 
@@ -607,12 +609,12 @@ const TrackRow = ({
                   )}
 
                   {trackIsLoaded && !playerPlaying && (
-                    // <div className={style.playingPausedIcon}>
-                    //   <Icon icon="PauseIcon" cover stroke />
-                    // </div>
-                    <div className={style.playingIcon}>
-                      <Icon icon="VolOffIcon" cover stroke />
+                    <div className={style.playingPausedIcon}>
+                      <Icon icon="PauseIcon" cover stroke />
                     </div>
+                    // <div className={style.playingIcon}>
+                    //   <Icon icon="VolOffIcon" cover stroke />
+                    // </div>
                   )}
 
                   {!(trackIsLoaded && playerPlaying) && (
