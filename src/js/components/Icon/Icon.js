@@ -48,6 +48,7 @@ import { ReactComponent as MusicNoteSingleIcon } from './icons/music/music-note-
 import { ReactComponent as NextIcon } from './icons/music/next.svg';
 import { ReactComponent as PaintPaletteIcon } from './icons/music/paint-palette.svg';
 import { ReactComponent as PauseIcon } from './icons/music/pause.svg';
+import { ReactComponent as PauseCircleIcon } from './icons/music/pause-circle.svg';
 import { ReactComponent as PauseFilledIcon } from './icons/music/pause-filled.svg';
 import { ReactComponent as PencilIcon } from './icons/music/pencil.svg';
 import { ReactComponent as PeopleIcon } from './icons/music/people.svg';
@@ -129,6 +130,7 @@ const customIcons = {
   NextIcon,
   PaintPaletteIcon,
   PauseIcon,
+  PauseCircleIcon,
   PauseFilledIcon,
   PencilIcon,
   PeopleIcon,
