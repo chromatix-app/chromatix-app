@@ -23,6 +23,12 @@ import {
 import style from './ListTableV2.module.scss';
 
 // ======================================================================
+// OPTIONS
+// ======================================================================
+
+const virtualThreshold = 1;
+
+// ======================================================================
 // COMPONENT
 // ======================================================================
 
@@ -100,16 +106,18 @@ const ListTableV2 = ({
   };
 
   if (entries) {
+    const TableBodyComponent = entries.length <= virtualThreshold ? TableBodyStatic : TableBodyVirtual;
+
     return (
       <div className={clsx(style.wrap, style['wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1)], {})}>
-        <TableBody
+        <TableBodyComponent
           entries={entries}
           titleBlock={children}
           headerBlock={headerBlock()}
           tableVariant={tableVariant}
           tableOptions={tableOptions}
           gridTemplateColumns={gridTemplateColumns}
-          //
+          // track related props
           {...(variant === 'folders' && {
             playerPlaying,
             playTrack,
@@ -184,7 +192,65 @@ const SortableHeading = ({
 };
 
 // ======================================================================
-// TABLE BODY
+// TABLE BODY - STATIC
+// ======================================================================
+
+const TableBodyStatic = ({
+  entries,
+  titleBlock,
+  headerBlock,
+  tableVariant,
+  tableOptions,
+  gridTemplateColumns,
+  // track related props
+  playerPlaying,
+  playTrack,
+  pauseTrack,
+  isTrackLoaded,
+}) => {
+  return (
+    <div id="scrollable" className={style.scrollableOuter}>
+      <div id="scrollable-list" className={style.scrollableInner}>
+        {titleBlock}
+        {headerBlock}
+        {entries.map((virtualRow, index) => {
+          const entry = entries[index];
+          if (entry.kind === 'track') {
+            return (
+              <TrackRow
+                key={index}
+                entry={entry}
+                // virtualRow={virtualRow}
+                tableVariant={tableVariant}
+                tableOptions={tableOptions}
+                gridTemplateColumns={gridTemplateColumns}
+                // track related props
+                playerPlaying={playerPlaying}
+                playTrack={playTrack}
+                pauseTrack={pauseTrack}
+                isTrackLoaded={isTrackLoaded}
+              />
+            );
+          } else {
+            return (
+              <TableRow
+                key={index}
+                entry={entry}
+                // virtualRow={virtualRow}
+                tableVariant={tableVariant}
+                tableOptions={tableOptions}
+                gridTemplateColumns={gridTemplateColumns}
+              />
+            );
+          }
+        })}
+      </div>
+    </div>
+  );
+};
+
+// ======================================================================
+// TABLE BODY - VIRTUAL
 // ======================================================================
 
 // Config
@@ -195,14 +261,14 @@ const fixedElementCount = 1;
 // State
 let innerRef;
 
-const TableBody = ({
+const TableBodyVirtual = ({
   entries,
   titleBlock,
   headerBlock,
   tableVariant,
   tableOptions,
   gridTemplateColumns,
-
+  // track related props
   playerPlaying,
   playTrack,
   pauseTrack,
@@ -256,7 +322,7 @@ const TableBody = ({
                   tableVariant={tableVariant}
                   tableOptions={tableOptions}
                   gridTemplateColumns={gridTemplateColumns}
-                  //
+                  // track related props
                   playerPlaying={playerPlaying}
                   playTrack={playTrack}
                   pauseTrack={pauseTrack}
@@ -314,11 +380,13 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
       to={entry.link}
       draggable="false"
       style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        transform: `translateY(${virtualRow.start}px)`,
+        ...(virtualRow && {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          transform: `translateY(${virtualRow.start}px)`,
+        }),
         gridTemplateColumns,
       }}
     >
@@ -450,7 +518,7 @@ const TrackRow = ({
   tableVariant,
   tableOptions,
   gridTemplateColumns,
-  //
+  // track related props
   playTrack,
   playerPlaying,
   pauseTrack,
@@ -476,11 +544,13 @@ const TrackRow = ({
       }}
       tabIndex={0}
       style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        transform: `translateY(${virtualRow.start}px)`,
+        ...(virtualRow && {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          transform: `translateY(${virtualRow.start}px)`,
+        }),
         gridTemplateColumns,
       }}
     >
