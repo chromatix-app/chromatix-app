@@ -142,8 +142,9 @@ const TableBody = ({ entries, titleBlock, tableHeading, tableVariant, tableOptio
 
   // Helper to determine the visible range, including our sticky row
   const rangeExtractor = (range) => {
-    const { startIndex, endIndex } = range;
-    const indexes = Array.from({ length: endIndex - startIndex + 1 }, (_, i) => startIndex + i);
+    const start = Math.max(range.startIndex - range.overscan, 0);
+    const end = Math.min(range.endIndex + range.overscan, range.count - 1);
+    const indexes = Array.from({ length: end - start + 1 }, (_, i) => start + i);
     if (!indexes.includes(0)) {
       indexes.unshift(0);
     }
@@ -162,7 +163,7 @@ const TableBody = ({ entries, titleBlock, tableHeading, tableVariant, tableOptio
     count: entries.length + fixedElementCount,
     getScrollElement: () => outerRef.current,
     estimateSize: getItemSize,
-    overscan: 5,
+    overscan: 3,
     rangeExtractor,
     measureElement,
   });
@@ -220,6 +221,7 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
       key={entry.artistId}
       className={style.entry}
       to={entry.link}
+      draggable="false"
       style={{
         position: 'absolute',
         top: 0,
@@ -247,7 +249,7 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
               } else {
                 return (
                   <div key={index} className={style.thumb}>
-                    <img src={entry.thumb} alt={entry.title} loading="lazy" />
+                    <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />
                   </div>
                 );
               }

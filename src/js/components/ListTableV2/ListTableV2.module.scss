@@ -25,7 +25,8 @@
 
 .measure {
   height: 1px;
-  background: rgba(255, 0, 0, 0.2);
+  background: var(--color-primary);
+  opacity: 0.5;
 }
 
 .header,
