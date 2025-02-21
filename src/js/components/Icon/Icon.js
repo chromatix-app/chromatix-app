@@ -43,6 +43,7 @@ import { ReactComponent as InfoIcon } from './icons/music/info.svg';
 import { ReactComponent as LastFMIcon } from './icons/music/lastfm.svg';
 import { ReactComponent as ListIcon } from './icons/music/list.svg';
 import { ReactComponent as LogoutIcon } from './icons/music/logout.svg';
+import { ReactComponent as MicrophoneIcon } from './icons/music/microphone.svg';
 import { ReactComponent as MusicNoteDoubleIcon } from './icons/music/music-note-double.svg';
 import { ReactComponent as MusicNoteSingleIcon } from './icons/music/music-note-single.svg';
 import { ReactComponent as NextIcon } from './icons/music/next.svg';
@@ -125,6 +126,7 @@ const customIcons = {
   LastFMIcon,
   ListIcon,
   LogoutIcon,
+  MicrophoneIcon,
   MusicNoteDoubleIcon,
   MusicNoteSingleIcon,
   NextIcon,
