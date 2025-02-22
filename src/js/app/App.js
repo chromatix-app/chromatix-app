@@ -17,7 +17,7 @@ import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 // COMPONENT
 // ======================================================================
 
-// const isLocal = process.env.REACT_APP_ENV === 'local';
+const isLocal = process.env.REACT_APP_ENV === 'local';
 const isProduction = process.env.REACT_APP_ENV === 'production';
 
 const App = () => {
@@ -54,6 +54,11 @@ const App = () => {
 
   // initialise on load
   useEffect(() => {
+    // add local class to html
+    if (isLocal) {
+      document.documentElement.classList.add('env-local');
+    }
+
     // add electron classes to html
     if (isElectron) {
       document.documentElement.classList.add('electron');

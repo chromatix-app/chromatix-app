@@ -24,9 +24,7 @@
 }
 
 .measure {
-  height: 1px;
-  background: var(--color-primary);
-  opacity: 0.5;
+  height: 0;
 }
 
 .header,
@@ -74,6 +72,13 @@
     right: 15px;
     height: 1px;
     background: var(--color-opacity-015);
+
+    .scrollableOuter & {
+      :global(.env-local) & {
+        background: var(--color-primary);
+        opacity: 0.6;
+      }
+    }
   }
 }
 
@@ -86,10 +91,10 @@
 }
 
 .entry {
+  padding: 6px 14px;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 8px;
-  padding: 6px 14px;
 
   @include focus-self-outline;
 
