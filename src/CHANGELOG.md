@@ -1,3 +1,11 @@
+<a name="0.32.0"></a>
+# 0.32.0 (2025-02-22)
+Features:
+- Volume and mute state is now saved in session storage.
+- Email link for getting in touch added to settings page.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.31.0"></a>
 # 0.31.0 (2025-02-08)
 Features:

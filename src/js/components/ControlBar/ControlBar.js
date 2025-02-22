@@ -25,8 +25,9 @@ const ControlBar = () => {
 
   const playerLoading = useSelector(({ playerModel }) => playerModel.playerLoading);
   const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
-  const playerVolume = useSelector(({ playerModel }) => playerModel.playerVolume);
-  const playerMuted = useSelector(({ playerModel }) => playerModel.playerMuted);
+
+  const volumeLevel = useSelector(({ sessionModel }) => sessionModel.volumeLevel);
+  const volumeMuted = useSelector(({ sessionModel }) => sessionModel.volumeMuted);
 
   const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
   const playingLibraryId = useSelector(({ sessionModel }) => sessionModel.playingLibraryId);
@@ -50,7 +51,7 @@ const ControlBar = () => {
   const trackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
   const isDisabled = !trackCurrent ? true : false;
 
-  const volIcon = playerMuted || playerVolume <= 0 ? 'VolXIcon' : playerVolume < 50 ? 'VolLowIcon' : 'VolHighIcon';
+  const volIcon = volumeMuted || volumeLevel <= 0 ? 'VolXIcon' : volumeLevel < 50 ? 'VolLowIcon' : 'VolHighIcon';
 
   // handle keyboard controls
   const controlHandlers = useMemo(
@@ -161,12 +162,12 @@ const ControlBar = () => {
           >
             <Icon icon="QueueIcon" cover stroke />
           </button>
-          <button className={style.volume} onClick={dispatch.playerModel.playerMuteToggle}>
+          <button className={style.volume} onClick={dispatch.playerModel.volumeMuteToggle}>
             <Icon icon={volIcon} cover stroke />
           </button>
         </div>
         <div className={style.volSlider}>
-          <RangeSlider value={playerMuted ? 0 : playerVolume} handleChange={dispatch.playerModel.playerVolumeSet} />
+          <RangeSlider value={volumeMuted ? 0 : volumeLevel} handleChange={dispatch.playerModel.volumeLevelSet} />
         </div>
         {!isOnline && (
           <div className={style.secondaryControls}>
