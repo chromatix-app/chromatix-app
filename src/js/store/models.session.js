@@ -29,6 +29,9 @@ const sessionState = {
   accessibilityFocus: false,
   accessibilityContrast: false,
 
+  volumeLevel: 100,
+  volumeMuted: false,
+
   menuShowIcons: true,
   menuShowSearch: true,
   menuShowAllPlaylists: true,

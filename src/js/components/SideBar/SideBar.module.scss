@@ -248,6 +248,11 @@
   .link + & {
     margin-top: 10px;
   }
+
+  // below another label
+  .label + & {
+    margin-top: 6px;
+  }
 }
 
 .labelIcon {
