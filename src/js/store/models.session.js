@@ -84,8 +84,8 @@ const sessionState = {
   viewAlbumStyleItems: 'grid',
 
   sortArtists: 'title',
-  sortArtistAlbums: 'title',
-  sortAlbums: 'title',
+  sortArtistAlbums: 'releaseDate',
+  sortAlbums: 'title', // artist-asc-releaseDate-asc
   sortAlbumTracks: {},
   sortFolders: 'sortOrder',
   sortPlaylists: 'title',
