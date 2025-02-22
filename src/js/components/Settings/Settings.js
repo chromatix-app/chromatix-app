@@ -15,6 +15,8 @@ import style from './Settings.module.scss';
 export const Settings = () => {
   return (
     <div className={style.wrap}>
+      {/* GENERAL */}
+
       <div className={style.group}>
         <div className={style.title}>General</div>
 
@@ -69,6 +71,8 @@ export const Settings = () => {
         </NavLink>
       </div>
 
+      {/* DOWNLOADS */}
+
       <div className={style.group}>
         <div className={style.title}>Downloads</div>
 
@@ -83,28 +87,31 @@ export const Settings = () => {
         </NavLink>
       </div>
 
+      {/* CONNECT */}
+
       <div className={style.group}>
-        <div className={style.title}>About</div>
+        <div className={style.title}>Connect</div>
 
-        <NavLink className={style.entry} to={'/settings/about'} draggable="false">
+        <a
+          className={style.entry}
+          href="mailto:info@chromatix.app?subject=Feedback"
+          target="_blank"
+          rel="noreferrer nofollow"
+          draggable="false"
+        >
           <div className={style.entryIconSmall}>
-            <Icon icon="InfoIcon" cover stroke strokeWidth={1.5} />
+            <Icon icon="MailIcon" cover stroke strokeWidth={1.5} />
           </div>
-          <div>About Chromatix</div>
+          <div>
+            Email Chromatix
+            <div className={style.externalIcon}>
+              <Icon icon="ExternalLinkIcon" cover stroke />
+            </div>
+          </div>
           <div className={style.entryArrow}>
             <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
           </div>
-        </NavLink>
-
-        <NavLink className={style.entry} to={'/settings/changelog'} draggable="false">
-          <div className={style.entryIconSmall}>
-            <Icon icon="ClockRewindIcon" cover stroke strokeWidth={1.5} />
-          </div>
-          <div>Changelog</div>
-          <div className={style.entryArrow}>
-            <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
-          </div>
-        </NavLink>
+        </a>
 
         <a
           className={style.entry}
@@ -169,6 +176,34 @@ export const Settings = () => {
           </div>
         </a>
       </div>
+
+      {/* ABOUT */}
+
+      <div className={style.group}>
+        <div className={style.title}>About</div>
+
+        <NavLink className={style.entry} to={'/settings/about'} draggable="false">
+          <div className={style.entryIconSmall}>
+            <Icon icon="InfoIcon" cover stroke strokeWidth={1.5} />
+          </div>
+          <div>About Chromatix</div>
+          <div className={style.entryArrow}>
+            <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
+          </div>
+        </NavLink>
+
+        <NavLink className={style.entry} to={'/settings/changelog'} draggable="false">
+          <div className={style.entryIconSmall}>
+            <Icon icon="ClockRewindIcon" cover stroke strokeWidth={1.5} />
+          </div>
+          <div>Changelog</div>
+          <div className={style.entryArrow}>
+            <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
+          </div>
+        </NavLink>
+      </div>
+
+      {/* KO-FI */}
 
       <div className={style.group}>
         <div className={style.kofiWrap}>
