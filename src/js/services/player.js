@@ -4,7 +4,7 @@ export const init = (volumeLevel, volumeMuted, onLoadStart, onCanPlay, onEnded) 
   console.log('%c--- player - init ---', 'color:#a18507');
   playerElement = document.createElement('audio');
 
-  playerElement.volume = volumeMuted ? 0 : volumeLevel;
+  playerElement.volume = volumeMuted ? 0 : volumeLevel / 100;
 
   playerElement.addEventListener('loadstart', onLoadStart);
   playerElement.addEventListener('canplay', onCanPlay);

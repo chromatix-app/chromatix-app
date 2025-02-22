@@ -43,7 +43,7 @@ const effects = (dispatch) => ({
     console.log('%c--- playerInit ---', 'color:#5c16b1');
 
     // get saved volume and muted state
-    const volumeLevel = rootState.sessionModel.volumeLevel / 100;
+    const volumeLevel = rootState.sessionModel.volumeLevel;
     const volumeMuted = rootState.sessionModel.volumeMuted;
 
     // player events
@@ -79,6 +79,11 @@ const effects = (dispatch) => ({
 
   playerRefresh(payload, rootState) {
     console.log('%c--- playerRefresh ---', 'color:#5c16b1');
+
+    const volumeLevel = rootState.sessionModel.volumeLevel;
+    const volumeMuted = rootState.sessionModel.volumeMuted;
+    dispatch.playerModel.volumeRefresh({ volumeLevel, volumeMuted });
+
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
     const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
     if (playingTrackIndex || playingTrackIndex === 0) {
@@ -447,6 +452,17 @@ const effects = (dispatch) => ({
   //
   // VOLUME CONTROLS
   //
+
+  volumeRefresh(payload, rootState) {
+    // console.log('%c--- volumeRefresh ---', 'color:#5c16b1');
+    const { volumeLevel, volumeMuted } = payload;
+    dispatch.sessionModel.setSessionState({
+      volumeLevel,
+      volumeMuted,
+    });
+    const actualVolume = volumeMuted ? 0 : volumeLevel;
+    playerX.setVolume(actualVolume);
+  },
 
   volumeLevelSet(payload, rootState) {
     // console.log('%c--- volumeLevelSet ---', 'color:#5c16b1');
