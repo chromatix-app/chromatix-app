@@ -10,10 +10,7 @@ import clsx from 'clsx';
 import moment from 'moment';
 
 import { Icon, StarRating } from 'js/components';
-import {
-  // useScrollToTrack,
-  useTableOptions,
-} from 'js/hooks';
+import { useScrollToTrack, useScrollToVirtualTrack, useTableOptions, useWindowSize } from 'js/hooks';
 import { durationToStringMed, durationToStringShort, formatRecentDate } from 'js/utils';
 
 import style from './ListTableV2.module.scss';
@@ -100,8 +97,6 @@ const ListTableTracks = ({
   sortKey = sortString ? sortString.split('-')[0] : null,
   orderKey = sortString ? sortString.split('-')[1] : null,
 }) => {
-  // useScrollToTrack();
-
   const dispatch = useDispatch();
 
   const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
@@ -291,6 +286,8 @@ const TableBodyStatic = ({
   pauseTrack,
   isTrackLoaded,
 }) => {
+  useScrollToTrack();
+
   return (
     <div id="scrollable" className={style.scrollableOuter}>
       <div id="scrollable-list" className={style.scrollableInner}>
@@ -339,7 +336,7 @@ const TableBodyStatic = ({
 
 // Config
 const tableHeadHeight = 250;
-const rowHeight = 50;
+const rowHeightDefault = 50;
 const rowHeightSmall = 39;
 const fixedElementCount = 1;
 
@@ -362,12 +359,14 @@ const TableBodyVirtual = ({
   const outerRef = useRef(null);
   innerRef = useRef(null);
 
+  const { windowHeight } = useWindowSize();
+
   // Used to detect if the content breakpoint has changed
   const contentBreakpoint = useSelector(({ appModel }) => appModel.contentBreakpoint);
 
   // Helper to determine row heights
-  const getItemSize = (index) =>
-    index === 0 ? tableHeadHeight : tableVariant === 'albumTracks' ? rowHeightSmall : rowHeight;
+  const rowHeightActual = tableVariant === 'albumTracks' ? rowHeightSmall : rowHeightDefault;
+  const getItemSize = (index) => (index === 0 ? tableHeadHeight : rowHeightActual);
 
   // Setup the virtualizer
   const rowVirtualizer = useVirtualizer({
@@ -378,6 +377,31 @@ const TableBodyVirtual = ({
     rangeExtractor,
     measureElement,
   });
+
+  const scrollToVirtualTrack = useCallback(
+    (index) => {
+      rowVirtualizer.scrollToOffset(
+        tableHeadHeight + (index + fixedElementCount) * rowHeightActual - (windowHeight - 100) / 2,
+        {
+          align: 'start',
+          behavior: 'auto',
+        }
+      );
+
+      // Using "scrollToIndex" would be better, but it is broken - it prevents me from scrolling the page.
+      // It seems to clash with the use of "ref={rowVirtualizer.measureElement}" for some reason.
+
+      // rowVirtualizer.scrollToIndex(index, {
+      //   align: 'center',
+      //   behavior: 'auto',
+      // });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+  useScrollToVirtualTrack(entries, scrollToVirtualTrack);
+
+  // window.scrollToVirtualTrack = scrollToVirtualTrack;
 
   return (
     <div ref={outerRef} id="scrollable" className={style.scrollableOuter}>
@@ -396,7 +420,7 @@ const TableBodyVirtual = ({
                 {titleBlock}
                 {headerBlock}
                 <div
-                  key={contentBreakpoint}
+                  key={index + '-' + contentBreakpoint}
                   id="measure"
                   className={style.measure}
                   data-index={virtualRow.index}
@@ -456,6 +480,7 @@ const rangeExtractor = (range) => {
 const measureElement = (element) => {
   const innerTop = innerRef.current.getBoundingClientRect().top;
   const elementTop = element.getBoundingClientRect().top;
+  // console.log(elementTop - innerTop);
   return elementTop - innerTop;
 };
 
