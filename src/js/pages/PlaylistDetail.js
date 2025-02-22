@@ -119,10 +119,10 @@ const Title = ({
             {playlistDurationString && optionShowStarRatings && ' • '}
             {optionShowStarRatings && (
               <StarRating
+                variant="title"
                 type="playlist"
                 ratingKey={playlistId}
                 rating={playlistRating}
-                inline
                 editable
                 alwaysVisible
               />

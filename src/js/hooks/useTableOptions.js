@@ -194,6 +194,56 @@ const getTableOptions = (
     ];
   }
 
+  // ALBUM TRACKS
+  else if (variant === 'albumTracks') {
+    tableVariant = 'albumTracks';
+    tableOptions = [
+      {
+        colKey: 'sortOrder',
+        label: '#',
+        isDefault: true,
+        colWidth: '30px',
+        headerClassName: 'colCenter',
+        isAsc: sortKey === 'sortOrder' && orderKey === 'asc',
+        isDesc: sortKey === 'sortOrder' && orderKey === 'desc',
+        showArrows: false,
+        visible: true,
+      },
+      {
+        colKey: 'title',
+        label: 'Title',
+        colWidth: '1.2fr',
+        isAsc: sortKey === 'title' && orderKey === 'asc',
+        isDesc: sortKey === 'title' && orderKey === 'desc',
+        visible: true,
+      },
+      {
+        colKey: 'artist',
+        label: 'Artist',
+        colWidth: '1fr',
+        isAsc: sortKey === 'artist' && orderKey === 'asc',
+        isDesc: sortKey === 'artist' && orderKey === 'desc',
+        visible: true,
+      },
+      {
+        colKey: 'userRating',
+        label: 'Rating',
+        colWidth: '0.5fr',
+        isAsc: sortKey === 'userRating' && orderKey === 'asc',
+        isDesc: sortKey === 'userRating' && orderKey === 'desc',
+        visible: userRatingsAreVisible,
+      },
+      {
+        colKey: 'duration',
+        label: 'Duration',
+        colWidth: 'minmax(72px, auto)',
+        isAsc: sortKey === 'duration' && orderKey === 'asc',
+        isDesc: sortKey === 'duration' && orderKey === 'desc',
+        visible: true,
+      },
+    ];
+  }
+
   // FOLDERS
   else if (variant === 'folders') {
     tableVariant = 'folders';

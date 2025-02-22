@@ -2,11 +2,24 @@
 
 .wrap {
   position: relative;
+  overflow: hidden;
   top: 0;
+  // background: rgba(255, 0, 0, 0.2);
+
+  &Title {
+    display: inline-block;
+    margin-bottom: -3px;
+  }
+
+  &Card {
+  }
+
+  &List {
+  }
 
   &Inline {
     display: inline-block;
-    top: 1px;
+    top: 0;
     margin-left: 6px;
 
     &:first-child {

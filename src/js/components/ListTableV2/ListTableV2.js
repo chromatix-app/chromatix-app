@@ -29,7 +29,7 @@ const virtualThreshold = 1;
 // ======================================================================
 
 const ListTableV2 = ({ variant, ...props }) => {
-  if (variant === 'folders' || variant === 'playlistTracks') {
+  if (variant === 'albumTracks' || variant === 'playlistTracks' || variant === 'folders') {
     return <ListTableTracks variant={variant} {...props} />;
   } else {
     return <ListTableBasic variant={variant} {...props} />;
@@ -340,6 +340,7 @@ const TableBodyStatic = ({
 // Config
 const tableHeadHeight = 250;
 const rowHeight = 50;
+const rowHeightSmall = 39;
 const fixedElementCount = 1;
 
 // State
@@ -360,6 +361,10 @@ const TableBodyVirtual = ({
 }) => {
   const outerRef = useRef(null);
   innerRef = useRef(null);
+
+  // Helper to determine row heights
+  const getItemSize = (index) =>
+    index === 0 ? tableHeadHeight : tableVariant === 'albumTracks' ? rowHeightSmall : rowHeight;
 
   // Setup the virtualizer
   const rowVirtualizer = useVirtualizer({
@@ -431,9 +436,6 @@ const TableBodyVirtual = ({
     </div>
   );
 };
-
-// Helper to determine row heights
-const getItemSize = (index) => (index === 0 ? tableHeadHeight : rowHeight);
 
 // Helper to determine the visible range, including our sticky row
 const rangeExtractor = (range) => {
@@ -574,10 +576,10 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
               return (
                 <div key={rowKey + '-' + index} className={style.userRating}>
                   <StarRating
+                    variant="list"
                     type={ratingType}
                     ratingKey={entry[ratingKey]}
                     rating={entry.userRating}
-                    inline
                     editable
                   />
                 </div>
@@ -764,10 +766,10 @@ const TrackRow = ({
               return (
                 <div key={rowKey + '-' + index} className={style.userRating}>
                   <StarRating
+                    variant="list"
                     type={ratingType}
                     ratingKey={entry[ratingKey]}
                     rating={entry.userRating}
-                    inline
                     editable
                   />
                 </div>
@@ -796,6 +798,10 @@ const userRatingOptions = {
   albums: {
     ratingType: 'album',
     ratingKey: 'albumId',
+  },
+  albumTracks: {
+    ratingType: 'track',
+    ratingKey: 'trackId',
   },
   playlists: {
     ratingType: 'playlist',

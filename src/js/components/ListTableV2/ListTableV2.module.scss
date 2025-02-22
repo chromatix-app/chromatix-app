@@ -43,91 +43,6 @@
   > *:last-child {
     text-align: right;
   }
-
-  // .wrap.wrapArtists &,
-  // .wrap.wrapArtistCollectionItems &,
-  // .wrap.wrapArtistGenreItems &,
-  // .wrap.wrapArtistMoodItems &,
-  // .wrap.wrapArtistStyleItems & {
-  //   grid-template-columns: 41px 1.2fr 0.8fr 0.8fr;
-  // }
-  // .wrap.wrapArtists.wrapWithRatings &,
-  // .wrap.wrapArtistCollectionItems.wrapWithRatings &,
-  // .wrap.wrapArtistGenreItems.wrapWithRatings &,
-  // .wrap.wrapArtistMoodItems.wrapWithRatings &,
-  // .wrap.wrapArtistStyleItems.wrapWithRatings & {
-  //   :global(.cq-800) & {
-  //     grid-template-columns: 41px 1.2fr 0.8fr 0.8fr 0.5fr;
-  //   }
-  // }
-
-  // .wrap.wrapAlbums &,
-  // .wrap.wrapAlbumCollectionItems &,
-  // .wrap.wrapAlbumGenreItems &,
-  // .wrap.wrapAlbumMoodItems &,
-  // .wrap.wrapAlbumStyleItems & {
-  //   grid-template-columns: 41px 1.2fr 1fr 0.8fr 0.8fr 0.8fr;
-  // }
-  // .wrap.wrapAlbums.wrapWithRatings &,
-  // .wrap.wrapAlbumCollectionItems.wrapWithRatings &,
-  // .wrap.wrapAlbumGenreItems.wrapWithRatings &,
-  // .wrap.wrapAlbumMoodItems.wrapWithRatings &,
-  // .wrap.wrapAlbumStyleItems.wrapWithRatings & {
-  //   :global(.cq-800) & {
-  //     grid-template-columns: 41px 1.2fr 1fr 0.8fr 0.8fr 0.8fr 0.5fr;
-  //   }
-  // }
-
-  // .wrap.wrapPlaylists & {
-  //   grid-template-columns: 41px 1.2fr 1fr 1fr 1fr 1fr;
-  // }
-  // .wrap.wrapPlaylists.wrapWithRatings & {
-  //   :global(.cq-800) & {
-  //     grid-template-columns: 41px 1.2fr 1fr 1fr 1fr 1fr 0.5fr;
-  //   }
-  // }
-
-  // .wrap.wrapArtistCollections &,
-  // .wrap.wrapAlbumCollections & {
-  //   grid-template-columns: 41px 1.2fr 1fr;
-  // }
-  // .wrap.wrapArtistCollections.wrapWithRatings &,
-  // .wrap.wrapAlbumCollections.wrapWithRatings & {
-  //   :global(.cq-800) & {
-  //     grid-template-columns: 41px 1.2fr 1fr 0.5fr;
-  //   }
-  // }
-
-  // .wrap.wrapFolders & {
-  //   grid-template-columns: 30px 41px 2fr 1fr 1px;
-  // }
-
-  // .wrap.wrapArtistGenres &,
-  // .wrap.wrapAlbumGenres &,
-  // .wrap.wrapArtistMoods &,
-  // .wrap.wrapAlbumMoods &,
-  // .wrap.wrapArtistStyles &,
-  // .wrap.wrapAlbumStyles & {
-  //   grid-template-columns: 41px 1.2fr 1fr;
-  // }
-
-  .wrap.wrapAlbumTracks & {
-    grid-template-columns: 30px 1.2fr 1fr minmax(72px, auto);
-  }
-  .wrap.wrapAlbumTracks.wrapWithRatings & {
-    :global(.cq-800) & {
-      grid-template-columns: 30px 1.2fr 1fr 0.5fr minmax(72px, auto);
-    }
-  }
-
-  // .wrap.wrapPlaylistTracks & {
-  //   grid-template-columns: 30px 41px 1.2fr 1fr 1fr minmax(72px, auto);
-  // }
-  // .wrap.wrapPlaylistTracks.wrapWithRatings & {
-  //   :global(.cq-800) & {
-  //     grid-template-columns: 30px 41px 1.2fr 1fr 1fr 0.5fr minmax(72px, auto);
-  //   }
-  // }
 }
 
 .header {
@@ -174,42 +89,19 @@
   background: transparent;
   border: 1px solid transparent;
   border-radius: 8px;
+  padding: 6px 14px;
 
   @include focus-self-outline;
+
+  :global(.cq-800) & {
+    padding: 6px 19px;
+  }
 
   .wrap.wrapAlbumTracks & {
     padding: 10px 14px;
 
     :global(.cq-800) & {
       padding: 10px 19px;
-    }
-  }
-
-  .wrap.wrapArtists &,
-  .wrap.wrapArtistCollectionItems &,
-  .wrap.wrapArtistGenreItems &,
-  .wrap.wrapArtistMoodItems &,
-  .wrap.wrapArtistStyleItems &,
-  .wrap.wrapAlbums &,
-  .wrap.wrapAlbumCollectionItems &,
-  .wrap.wrapAlbumGenreItems &,
-  .wrap.wrapAlbumMoodItems &,
-  .wrap.wrapAlbumStyleItems &,
-  .wrap.wrapPlaylists &,
-  .wrap.wrapArtistCollections &,
-  .wrap.wrapAlbumCollections &,
-  .wrap.wrapFolders &,
-  .wrap.wrapArtistGenres &,
-  .wrap.wrapAlbumGenres &,
-  .wrap.wrapArtistMoods &,
-  .wrap.wrapAlbumMoods &,
-  .wrap.wrapArtistStyles &,
-  .wrap.wrapAlbumStyles &,
-  .wrap.wrapPlaylistTracks & {
-    padding: 6px 14px;
-
-    :global(.cq-800) & {
-      padding: 6px 19px;
     }
   }
 
@@ -384,6 +276,8 @@
 
 .userRating {
   display: none;
+  font-size: 0;
+  line-height: 0;
   color: var(--color-opacity-04);
 
   :global(.cq-800) & {

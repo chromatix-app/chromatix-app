@@ -299,7 +299,7 @@ const ListEntry = React.memo(
 
           {optionShowStarRatings && typeof userRating !== 'undefined' && (
             <div className={style.rating}>
-              <StarRating type={variant} ratingKey={ratingKey} rating={userRating} />
+              <StarRating variant="card" type={variant} ratingKey={ratingKey} rating={userRating} />
             </div>
           )}
         </div>

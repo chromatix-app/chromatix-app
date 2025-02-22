@@ -120,10 +120,10 @@ const Title = ({
       detail={
         optionShowStarRatings && (
           <StarRating
+            variant="title"
             type="collection"
             ratingKey={collectionId}
             rating={collectionRating}
-            inline
             editable
             alwaysVisible
           />
