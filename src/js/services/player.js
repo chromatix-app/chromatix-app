@@ -1,10 +1,10 @@
 let playerElement = null;
 
-export const init = (playerVolume, playerMuted, onLoadStart, onCanPlay, onEnded) => {
+export const init = (volumeLevel, volumeMuted, onLoadStart, onCanPlay, onEnded) => {
   console.log('%c--- player - init ---', 'color:#a18507');
   playerElement = document.createElement('audio');
 
-  playerElement.volume = playerMuted ? 0 : playerVolume;
+  playerElement.volume = volumeMuted ? 0 : volumeLevel;
 
   playerElement.addEventListener('loadstart', onLoadStart);
   playerElement.addEventListener('canplay', onCanPlay);
@@ -43,13 +43,13 @@ export const restart = () => {
   playerElement.play().catch((error) => null);
 };
 
-export const setVolume = (volume) => {
-  // console.log('%c--- player - setVolume - ' + volume + ' ---', 'color:#a18507');
-  playerElement.volume = volume / 100;
+export const setVolume = (volumeLevel) => {
+  // console.log('%c--- player - setVolume - ' + volumeLevel + ' ---', 'color:#a18507');
+  playerElement.volume = volumeLevel / 100;
 };
 
 export const setProgress = (progress) => {
-  console.log('%c--- player - setProgress - ' + progress / 1000 + ' ---', 'color:#a18507');
+  // console.log('%c--- player - setProgress - ' + progress / 1000 + ' ---', 'color:#a18507');
   playerElement.currentTime = progress / 1000;
 };
 

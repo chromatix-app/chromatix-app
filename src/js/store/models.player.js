@@ -14,8 +14,6 @@ const playerState = {
   playerInited: false,
   playerLoading: false,
   playerPlaying: false,
-  playerVolume: 100,
-  playerMuted: false,
   playerInteractionCount: 0,
 };
 
@@ -45,8 +43,8 @@ const effects = (dispatch) => ({
     console.log('%c--- playerInit ---', 'color:#5c16b1');
 
     // get saved volume and muted state
-    const playerVolume = rootState.playerModel.playerVolume / 100;
-    const playerMuted = rootState.playerModel.playerMuted;
+    const volumeLevel = rootState.sessionModel.volumeLevel / 100;
+    const volumeMuted = rootState.sessionModel.volumeMuted;
 
     // player events
     let loadstartTimeoutId = null;
@@ -68,7 +66,7 @@ const effects = (dispatch) => ({
     };
 
     // create and save player element
-    playerX.init(playerVolume, playerMuted, onLoadStart, onCanPlay, onEnded);
+    playerX.init(volumeLevel, volumeMuted, onLoadStart, onCanPlay, onEnded);
     dispatch.playerModel.setPlayerState({
       playerInited: true,
     });
@@ -450,49 +448,50 @@ const effects = (dispatch) => ({
   // VOLUME CONTROLS
   //
 
-  playerVolumeSet(payload, rootState) {
-    // console.log('%c--- playerVolumeSet ---', 'color:#5c16b1');
-    dispatch.playerModel.setPlayerState({
-      playerVolume: payload,
-      playerMuted: false,
+  volumeLevelSet(payload, rootState) {
+    // console.log('%c--- volumeLevelSet ---', 'color:#5c16b1');
+    dispatch.sessionModel.setSessionState({
+      volumeLevel: payload,
+      volumeMuted: false,
     });
     playerX.setVolume(payload);
   },
 
-  playerMuteToggle(payload, rootState) {
-    // console.log('%c--- playerMuteToggle ---', 'color:#5c16b1');
-    const playerVolume = rootState.playerModel.playerVolume;
-    const playerMuted = rootState.playerModel.playerMuted;
-    let newVolume;
-    let newMuted;
-    // if muted and volume is 0, unmute and set volume to 100
-    if (playerMuted && playerVolume === 0) {
-      newVolume = 75;
-      newMuted = false;
+  volumeMuteToggle(payload, rootState) {
+    // console.log('%c--- volumeMuteToggle ---', 'color:#5c16b1');
+    const defaultVolumeLevel = 75;
+    const volumeLevel = rootState.sessionModel.volumeLevel;
+    const volumeMuted = rootState.sessionModel.volumeMuted;
+    let newVolumeLevel;
+    let newVolumeMuted;
+    // if muted and volume is 0, unmute and set volume to default
+    if (volumeMuted && volumeLevel === 0) {
+      newVolumeLevel = defaultVolumeLevel;
+      newVolumeMuted = false;
     }
     // if muted and volume is not 0, unmute
-    else if (playerMuted) {
-      newVolume = playerVolume;
-      newMuted = false;
+    else if (volumeMuted) {
+      newVolumeLevel = volumeLevel;
+      newVolumeMuted = false;
     }
-    // if not muted and volume is 0, unmute and set volume to 100
-    else if (!playerMuted && playerVolume === 0) {
-      newVolume = 75;
-      newMuted = false;
+    // if not muted and volume is 0, unmute and set volume to default
+    else if (!volumeMuted && volumeLevel === 0) {
+      newVolumeLevel = defaultVolumeLevel;
+      newVolumeMuted = false;
     }
     // if not muted and volume is not 0, mute
     else {
-      newVolume = playerVolume;
-      newMuted = true;
+      newVolumeLevel = volumeLevel;
+      newVolumeMuted = true;
     }
     // save state
-    dispatch.playerModel.setPlayerState({
-      playerVolume: newVolume,
-      playerMuted: newMuted,
+    dispatch.sessionModel.setSessionState({
+      volumeLevel: newVolumeLevel,
+      volumeMuted: newVolumeMuted,
     });
-    const actualVolume = newMuted ? 0 : newVolume;
+    const actualVolume = newVolumeMuted ? 0 : newVolumeLevel;
     playerX.setVolume(actualVolume);
-    analyticsEvent('Plex: Mute ' + (newMuted ? 'On' : 'Off'));
+    analyticsEvent('Plex: Mute ' + (newVolumeMuted ? 'On' : 'Off'));
   },
 });
 
