@@ -227,25 +227,34 @@ const AppMain = () => {
   const contentRef = useRef();
 
   const [contentContainerClass, setContentContainerClass] = useState(0);
+  const [contentBreakpoint, setContentBreakpoint] = useState(0);
 
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
 
   const { windowWidth } = useWindowSize();
 
-  // handle window size
+  // Handle window resizing
   useEffect(() => {
     const contentWidth = contentRef.current.offsetWidth;
     const bpList = breakPoints.filter((bp) => bp <= contentWidth);
-    const classList = bpList.map((bp) => 'cq-' + bp).join(' ');
-    if (contentContainerClass !== classList) {
-      setContentContainerClass(classList);
-      const contentBreakpoint = bpList[bpList.length - 1] || 0;
-      dispatch.appModel.setAppState({
-        contentBreakpoint,
-      });
+    const newContainerClass = bpList.map((bp) => 'cq-' + bp).join(' ');
+    const newBreakpoint = bpList[bpList.length - 1] || 0;
+    if (contentContainerClass !== newContainerClass) {
+      setContentContainerClass(newContainerClass);
+    }
+    if (contentBreakpoint !== newBreakpoint) {
+      setContentBreakpoint(newBreakpoint);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [windowWidth, queueIsVisible]);
+
+  // Store current breakpoint (this theoretically won't run until after the HTML has re-rendered, which is essential)
+  useEffect(() => {
+    dispatch.appModel.setAppState({
+      contentBreakpoint,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contentBreakpoint]);
 
   return (
     <div className="wrap">

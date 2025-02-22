@@ -362,6 +362,9 @@ const TableBodyVirtual = ({
   const outerRef = useRef(null);
   innerRef = useRef(null);
 
+  // Used to detect if the content breakpoint has changed
+  const contentBreakpoint = useSelector(({ appModel }) => appModel.contentBreakpoint);
+
   // Helper to determine row heights
   const getItemSize = (index) =>
     index === 0 ? tableHeadHeight : tableVariant === 'albumTracks' ? rowHeightSmall : rowHeight;
@@ -393,6 +396,7 @@ const TableBodyVirtual = ({
                 {titleBlock}
                 {headerBlock}
                 <div
+                  key={contentBreakpoint}
                   id="measure"
                   className={style.measure}
                   data-index={virtualRow.index}
