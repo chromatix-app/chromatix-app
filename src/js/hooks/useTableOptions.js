@@ -310,6 +310,75 @@ const getTableOptions = (
     ];
   }
 
+  // PLAYLIST TRACKS
+  else if (variant === 'playlistTracks') {
+    tableVariant = 'playlistTracks';
+    tableOptions = [
+      {
+        colKey: 'sortOrder',
+        label: '#',
+        isDefault: true,
+        colWidth: '30px',
+        headerClassName: 'colCenter',
+        isAsc: sortKey === 'sortOrder' && orderKey === 'asc',
+        isDesc: sortKey === 'sortOrder' && orderKey === 'desc',
+        showArrows: false,
+        visible: true,
+      },
+      {
+        colKey: 'thumb',
+        label: '',
+        icon: 'FolderIcon',
+        colWidth: '41px',
+        visible: true,
+        visibleInHeader: false,
+      },
+      {
+        colKey: 'title',
+        label: 'Title',
+        colWidth: '1.2fr',
+        headerStyle: {
+          gridColumn: '2 / span 2',
+        },
+        isAsc: sortKey === 'title' && orderKey === 'asc',
+        isDesc: sortKey === 'title' && orderKey === 'desc',
+        visible: true,
+      },
+      {
+        colKey: 'artist',
+        label: 'Artist',
+        colWidth: '1fr',
+        isAsc: sortKey === 'artist' && orderKey === 'asc',
+        isDesc: sortKey === 'artist' && orderKey === 'desc',
+        visible: true,
+      },
+      {
+        colKey: 'album',
+        label: 'Album',
+        colWidth: '1fr',
+        isAsc: sortKey === 'album' && orderKey === 'asc',
+        isDesc: sortKey === 'album' && orderKey === 'desc',
+        visible: true,
+      },
+      {
+        colKey: 'userRating',
+        label: 'Rating',
+        colWidth: '0.5fr',
+        isAsc: sortKey === 'userRating' && orderKey === 'asc',
+        isDesc: sortKey === 'userRating' && orderKey === 'desc',
+        visible: userRatingsAreVisible,
+      },
+      {
+        colKey: 'duration',
+        label: 'Duration',
+        colWidth: 'minmax(72px, auto)',
+        isAsc: sortKey === 'duration' && orderKey === 'asc',
+        isDesc: sortKey === 'duration' && orderKey === 'desc',
+        visible: true,
+      },
+    ];
+  }
+
   // COLLECTIONS
   else if (variant === 'artistCollections' || variant === 'albumCollections') {
     tableVariant = 'collections';
@@ -386,75 +455,6 @@ const getTableOptions = (
       {
         colKey: 'empty',
         colWidth: '1fr',
-        visible: true,
-      },
-    ];
-  }
-
-  // PLAYLIST TRACKS
-  else if (variant === 'playlistTracks') {
-    tableVariant = 'playlistTracks';
-    tableOptions = [
-      {
-        colKey: 'sortOrder',
-        label: '#',
-        isDefault: true,
-        colWidth: '30px',
-        headerClassName: 'colCenter',
-        isAsc: sortKey === 'sortOrder' && orderKey === 'asc',
-        isDesc: sortKey === 'sortOrder' && orderKey === 'desc',
-        showArrows: false,
-        visible: true,
-      },
-      {
-        colKey: 'thumb',
-        label: '',
-        icon: 'FolderIcon',
-        colWidth: '41px',
-        visible: true,
-        visibleInHeader: false,
-      },
-      {
-        colKey: 'title',
-        label: 'Title',
-        colWidth: '1.2fr',
-        headerStyle: {
-          gridColumn: '2 / span 2',
-        },
-        isAsc: sortKey === 'title' && orderKey === 'asc',
-        isDesc: sortKey === 'title' && orderKey === 'desc',
-        visible: true,
-      },
-      {
-        colKey: 'artist',
-        label: 'Artist',
-        colWidth: '1fr',
-        isAsc: sortKey === 'artist' && orderKey === 'asc',
-        isDesc: sortKey === 'artist' && orderKey === 'desc',
-        visible: true,
-      },
-      {
-        colKey: 'album',
-        label: 'Album',
-        colWidth: '1fr',
-        isAsc: sortKey === 'album' && orderKey === 'asc',
-        isDesc: sortKey === 'album' && orderKey === 'desc',
-        visible: true,
-      },
-      {
-        colKey: 'userRating',
-        label: 'Rating',
-        colWidth: '0.5fr',
-        isAsc: sortKey === 'userRating' && orderKey === 'asc',
-        isDesc: sortKey === 'userRating' && orderKey === 'desc',
-        visible: userRatingsAreVisible,
-      },
-      {
-        colKey: 'duration',
-        label: 'Duration',
-        colWidth: 'minmax(72px, auto)',
-        isAsc: sortKey === 'duration' && orderKey === 'asc',
-        isDesc: sortKey === 'duration' && orderKey === 'desc',
         visible: true,
       },
     ];

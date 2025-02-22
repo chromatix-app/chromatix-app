@@ -789,17 +789,21 @@ const TrackRow = ({
 // ======================================================================
 
 const userRatingOptions = {
-  albums: {
-    ratingType: 'album',
-    ratingKey: 'albumId',
-  },
   artists: {
     ratingType: 'artist',
     ratingKey: 'artistId',
   },
+  albums: {
+    ratingType: 'album',
+    ratingKey: 'albumId',
+  },
   playlists: {
     ratingType: 'playlist',
     ratingKey: 'playlistId',
+  },
+  playlistTracks: {
+    ratingType: 'track',
+    ratingKey: 'trackId',
   },
   collections: {
     ratingType: 'collection',
