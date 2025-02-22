@@ -94,7 +94,7 @@ export const Settings = () => {
 
         <a
           className={style.entry}
-          href="mailto:info@chromatix.app?subject=Feedback"
+          href="mailto:hello@chromatix.app?subject=Feedback"
           target="_blank"
           rel="noreferrer nofollow"
           draggable="false"
