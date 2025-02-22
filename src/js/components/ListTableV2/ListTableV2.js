@@ -28,7 +28,66 @@ const virtualThreshold = 1;
 // COMPONENT
 // ======================================================================
 
-const ListTableV2 = ({
+const ListTableV2 = ({ variant, ...props }) => {
+  if (variant === 'folders' || variant === 'playlistTracks') {
+    return <ListTableTracks variant={variant} {...props} />;
+  } else {
+    return <ListTableBasic variant={variant} {...props} />;
+  }
+};
+
+const ListTableBasic = ({
+  children,
+  variant,
+  albumId,
+  playlistId,
+  folderId,
+  // playingOrder,
+  // discCount = 1,
+  entries,
+  sortString,
+  sortKey = sortString ? sortString.split('-')[0] : null,
+  orderKey = sortString ? sortString.split('-')[1] : null,
+}) => {
+  const { tableVariant, tableOptions, gridTemplateColumns, handleSortFunction } = useTableOptions(
+    variant,
+    albumId,
+    playlistId,
+    folderId,
+    sortKey,
+    orderKey
+  );
+
+  const headerBlock = () => {
+    return (
+      <TableHeader
+        tableVariant={tableVariant}
+        tableOptions={tableOptions}
+        gridTemplateColumns={gridTemplateColumns}
+        handleSortFunction={handleSortFunction}
+      />
+    );
+  };
+
+  if (entries) {
+    const TableBodyComponent = entries.length <= virtualThreshold ? TableBodyStatic : TableBodyVirtual;
+
+    return (
+      <div className={clsx(style.wrap, style['wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1)], {})}>
+        <TableBodyComponent
+          entries={entries}
+          titleBlock={children}
+          headerBlock={headerBlock()}
+          tableVariant={tableVariant}
+          tableOptions={tableOptions}
+          gridTemplateColumns={gridTemplateColumns}
+        />
+      </div>
+    );
+  }
+};
+
+const ListTableTracks = ({
   children,
   variant,
   albumId,
@@ -144,12 +203,10 @@ const ListTableV2 = ({
           tableOptions={tableOptions}
           gridTemplateColumns={gridTemplateColumns}
           // track related props
-          {...((variant === 'folders' || variant === 'playlistTracks') && {
-            playerPlaying,
-            playTrack,
-            pauseTrack,
-            isTrackLoaded,
-          })}
+          playerPlaying={playerPlaying}
+          playTrack={playTrack}
+          pauseTrack={pauseTrack}
+          isTrackLoaded={isTrackLoaded}
         />
       </div>
     );

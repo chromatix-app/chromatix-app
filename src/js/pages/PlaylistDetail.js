@@ -66,7 +66,7 @@ const PlaylistDetail = () => {
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
-      {!isLoading && (
+      {isListView && (
         <ListTableV2
           variant="playlistTracks"
           playlistId={playlistId}
