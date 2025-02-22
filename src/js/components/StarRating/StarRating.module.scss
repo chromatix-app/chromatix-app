@@ -17,15 +17,15 @@
   &List {
   }
 
-  &Inline {
-    display: inline-block;
-    top: 0;
-    margin-left: 6px;
+  // &Inline {
+  //   display: inline-block;
+  //   top: 0;
+  //   margin-left: 6px;
 
-    &:first-child {
-      margin-left: 0;
-    }
-  }
+  //   &:first-child {
+  //     margin-left: 0;
+  //   }
+  // }
 
   &Zero {
     opacity: 0.5;
