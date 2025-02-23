@@ -54,7 +54,7 @@ const sessionState = {
   menuShowArtistStyles: true,
   menuShowAlbumStyles: true,
 
-  optionShowFullTitles: false,
+  optionShowFullTitles_Deprecated: false,
   optionShowStarRatings: true,
   optionLogPlexPlayback: true,
 

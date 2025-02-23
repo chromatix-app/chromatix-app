@@ -132,7 +132,9 @@ const ListEntry = React.memo(
     const history = useHistory();
     const dispatch = useDispatch();
 
-    const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+    const optionShowFullTitles_Deprecated = useSelector(
+      ({ sessionModel }) => sessionModel.optionShowFullTitles_Deprecated
+    );
     const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
     // Play button handler
@@ -263,15 +265,15 @@ const ListEntry = React.memo(
 
         {/* Text */}
         <div className={style.body}>
-          {title && <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{title}</div>}
+          {title && <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles_Deprecated })}>{title}</div>}
 
           {artist && !artistLink && (
-            <div className={clsx(style.subtitle, { 'text-trim': !optionShowFullTitles })}>{artist}</div>
+            <div className={clsx(style.subtitle, { 'text-trim': !optionShowFullTitles_Deprecated })}>{artist}</div>
           )}
 
           {artist && artistLink && (
             <NavLink
-              className={clsx(style.subtitle, { 'text-trim': !optionShowFullTitles })}
+              className={clsx(style.subtitle, { 'text-trim': !optionShowFullTitles_Deprecated })}
               to={artistLink}
               onClick={handleLinkClick}
               tabIndex={-1}

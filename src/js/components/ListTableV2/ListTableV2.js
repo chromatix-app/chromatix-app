@@ -19,7 +19,7 @@ import style from './ListTableV2.module.scss';
 // OPTIONS
 // ======================================================================
 
-const virtualThreshold = 1000;
+const virtualThreshold = 1;
 
 // ======================================================================
 // COMPONENT
