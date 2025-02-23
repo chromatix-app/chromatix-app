@@ -21,7 +21,7 @@ export const unload = () => {
 };
 
 export const loadTrack = (trackSrc, progress = 0, play = true) => {
-  console.log('%c--- player - loadTrack ---', 'color:#a18507');
+  // console.log('%c--- player - loadTrack ---', 'color:#a18507');
   playerElement.src = trackSrc;
   playerElement.load();
   if (progress) {

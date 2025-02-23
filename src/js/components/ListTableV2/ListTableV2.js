@@ -19,7 +19,7 @@ import style from './ListTableV2.module.scss';
 // OPTIONS
 // ======================================================================
 
-const virtualThreshold = 1;
+const virtualThreshold = 1000;
 
 // ======================================================================
 // COMPONENT
@@ -39,8 +39,6 @@ const ListTableBasic = ({
   albumId,
   playlistId,
   folderId,
-  // playingOrder,
-  // discCount = 1,
   entries,
   sortString,
   sortKey = sortString ? sortString.split('-')[0] : null,
@@ -90,12 +88,13 @@ const ListTableTracks = ({
   albumId,
   playlistId,
   folderId,
-  playingOrder,
-  // discCount = 1,
   entries,
   sortString,
   sortKey = sortString ? sortString.split('-')[0] : null,
   orderKey = sortString ? sortString.split('-')[1] : null,
+  // disc and track related props
+  discCount = 1,
+  playingOrder,
 }) => {
   const dispatch = useDispatch();
 
@@ -112,12 +111,6 @@ const ListTableTracks = ({
 
   const playingTrackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
 
-  const matchVariant = {
-    albumTracks: 'albums',
-    playlistTracks: 'playlists',
-    folders: 'folders',
-  };
-
   const { tableVariant, tableOptions, gridTemplateColumns, handleSortFunction } = useTableOptions(
     variant,
     albumId,
@@ -132,7 +125,7 @@ const ListTableTracks = ({
       if (restart) {
         // console.log(222, trackVariant, trackIndex, albumId, playlistId, folderId, playingOrder, sortKey);
         dispatch.playerModel.playerLoadTrackItem({
-          playingVariant: matchVariant[trackVariant],
+          playingVariant: lookupVariantFields[trackVariant].playVariant,
           playingAlbumId: albumId,
           playingPlaylistId: playlistId,
           playingFolderId: folderId,
@@ -154,7 +147,7 @@ const ListTableTracks = ({
   const isTrackLoaded = useCallback(
     (trackVariant, trackId) => {
       return (
-        playingVariant === matchVariant[trackVariant] &&
+        playingVariant === lookupVariantFields[trackVariant].playVariant &&
         (playingAlbumId === albumId || (!playingAlbumId && !albumId)) &&
         (playingPlaylistId === playlistId || (!playingPlaylistId && !playlistId)) &&
         (playingFolderId === folderId || (!playingFolderId && !folderId)) &&
@@ -188,15 +181,41 @@ const ListTableTracks = ({
   if (entries) {
     const TableBodyComponent = entries.length <= virtualThreshold ? TableBodyStatic : TableBodyVirtual;
 
+    // Determine whether to show disc numbers
+    const isSorted = sortKey && !sortKey.startsWith('sortOrder');
+    const showDiscNumbers = !isSorted && discCount > 1;
+
+    // If disc numbers are shown, add them into our entries array
+    let currentDisc = 0;
+    let discIndex = 0;
+    const entriesWithDiscs = !showDiscNumbers
+      ? entries
+      : entries.reduce((acc, entry) => {
+          if (entry.kind === 'track') {
+            if (discCount > 1 && currentDisc !== entry.discNumber) {
+              discIndex += 1;
+              currentDisc = entry.discNumber;
+              acc.push({ kind: 'disc', discNumber: entry.discNumber });
+            }
+          }
+          entry.discIndex = discIndex;
+          acc.push(entry);
+          return acc;
+        }, []);
+
     return (
       <div className={clsx(style.wrap, style['wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1)], {})}>
         <TableBodyComponent
-          entries={entries}
+          entries={entriesWithDiscs}
           titleBlock={children}
           headerBlock={headerBlock()}
           tableVariant={tableVariant}
           tableOptions={tableOptions}
           gridTemplateColumns={gridTemplateColumns}
+          // disc related props
+          discCount={discCount}
+          showDiscNumbers={showDiscNumbers}
+          orderKey={orderKey}
           // track related props
           playerPlaying={playerPlaying}
           playTrack={playTrack}
@@ -280,6 +299,8 @@ const TableBodyStatic = ({
   tableVariant,
   tableOptions,
   gridTemplateColumns,
+  // disc related props
+  showDiscNumbers,
   // track related props
   playerPlaying,
   playTrack,
@@ -289,22 +310,37 @@ const TableBodyStatic = ({
   useScrollToTrack();
 
   return (
-    <div id="scrollable" className={style.scrollableOuter}>
-      <div id="scrollable-list" className={style.scrollableInner}>
+    <div id="scrollable" className={clsx(style.scrollableOuter, style.scrollableOuterStatic)}>
+      <div id="scrollable-inner" className={style.scrollableInner}>
         {titleBlock}
+
         {headerBlock}
-        {entries.map((virtualRow, index) => {
+
+        {entries.map((staticRow, index) => {
           const entry = entries[index];
-          if (entry.kind === 'track') {
+
+          // Catch missing entries
+          if (!entry) {
+            return null;
+          }
+
+          // Disc numbers
+          else if (entry.kind === 'disc') {
+            return <DiscRow key={index} entry={entry} />;
+          }
+
+          // Tracks
+          else if (entry.kind === 'track') {
             return (
               <TrackRow
-                key={index}
+                key={index + '-' + entry.trackId}
                 index={index}
                 entry={entry}
-                // virtualRow={virtualRow}
                 tableVariant={tableVariant}
                 tableOptions={tableOptions}
                 gridTemplateColumns={gridTemplateColumns}
+                // disc related props
+                showDiscNumbers={showDiscNumbers}
                 // track related props
                 playerPlaying={playerPlaying}
                 playTrack={playTrack}
@@ -312,12 +348,14 @@ const TableBodyStatic = ({
                 isTrackLoaded={isTrackLoaded}
               />
             );
-          } else {
+          }
+
+          // Standard rows
+          else {
             return (
-              <TableRow
+              <StandardRow
                 key={index}
                 entry={entry}
-                // virtualRow={virtualRow}
                 tableVariant={tableVariant}
                 tableOptions={tableOptions}
                 gridTemplateColumns={gridTemplateColumns}
@@ -336,6 +374,7 @@ const TableBodyStatic = ({
 
 // Config
 const tableHeadHeight = 250;
+const discHeight = 68;
 const rowHeightDefault = 50;
 const rowHeightSmall = 39;
 const fixedElementCount = 1;
@@ -350,27 +389,50 @@ const TableBodyVirtual = ({
   tableVariant,
   tableOptions,
   gridTemplateColumns,
+  // disc related props
+  discCount,
+  showDiscNumbers,
+  orderKey,
   // track related props
   playerPlaying,
   playTrack,
   pauseTrack,
   isTrackLoaded,
 }) => {
-  const outerRef = useRef(null);
+  // Element refs
   innerRef = useRef(null);
+  const outerRef = useRef(null);
 
+  // Used when scrolling to a specific track
   const { windowHeight } = useWindowSize();
 
-  // Used to detect if the content breakpoint has changed
+  // Hacky workaround to force a re-render if content breakpoint changes
   const contentBreakpoint = useSelector(({ appModel }) => appModel.contentBreakpoint);
 
-  // Helper to determine row heights
+  // Hacky workaround to force a re-render if disc numbers are shown and the order changes
+  const extraRows = showDiscNumbers && orderKey === 'desc' ? 1 : 0;
+
+  // Store which actual row height to use
   const rowHeightActual = tableVariant === 'albumTracks' ? rowHeightSmall : rowHeightDefault;
-  const getItemSize = (index) => (index === 0 ? tableHeadHeight : rowHeightActual);
+
+  // Helper to determine row heights
+  const getItemSize = useCallback(
+    (index) => {
+      const isDiscRow =
+        entries[index - fixedElementCount]?.kind === 'disc' &&
+        ((orderKey !== 'desc' && entries[index - fixedElementCount]?.discNumber > 1) ||
+          (orderKey === 'desc' && entries[index - fixedElementCount]?.discNumber < discCount));
+
+      const isExtraRow = orderKey === 'desc' && index === entries.length + fixedElementCount;
+
+      return index === 0 ? tableHeadHeight : isDiscRow ? discHeight : isExtraRow ? 0 : rowHeightActual;
+    },
+    [entries, discCount, orderKey, rowHeightActual]
+  );
 
   // Setup the virtualizer
   const rowVirtualizer = useVirtualizer({
-    count: entries.length + fixedElementCount,
+    count: entries.length + fixedElementCount + extraRows,
     getScrollElement: () => outerRef.current,
     estimateSize: getItemSize,
     overscan: 3,
@@ -378,6 +440,7 @@ const TableBodyVirtual = ({
     measureElement,
   });
 
+  // Scroll to a specific track, when required
   const scrollToVirtualTrack = useCallback(
     (index) => {
       rowVirtualizer.scrollToOffset(
@@ -401,13 +464,11 @@ const TableBodyVirtual = ({
   );
   useScrollToVirtualTrack(entries, scrollToVirtualTrack);
 
-  // window.scrollToVirtualTrack = scrollToVirtualTrack;
-
   return (
-    <div ref={outerRef} id="scrollable" className={style.scrollableOuter}>
+    <div ref={outerRef} id="scrollable" className={clsx(style.scrollableOuter, style.scrollableOuterVirtual)}>
       <div
         ref={innerRef}
-        id="scrollable-list"
+        id="scrollable-inner"
         className={style.scrollableInner}
         style={{
           height: `${rowVirtualizer.getTotalSize()}px`,
@@ -430,7 +491,19 @@ const TableBodyVirtual = ({
             );
           } else {
             const entry = entries[virtualRow.index - fixedElementCount];
-            if (entry.kind === 'track') {
+
+            // Catch missing entries
+            if (!entry) {
+              return null;
+            }
+
+            // Disc numbers
+            else if (entry.kind === 'disc') {
+              return <DiscRow key={index} entry={entry} virtualRow={virtualRow} />;
+            }
+
+            // Tracks
+            else if (entry.kind === 'track') {
               return (
                 <TrackRow
                   key={index}
@@ -439,6 +512,8 @@ const TableBodyVirtual = ({
                   tableVariant={tableVariant}
                   tableOptions={tableOptions}
                   gridTemplateColumns={gridTemplateColumns}
+                  // disc related props
+                  showDiscNumbers={showDiscNumbers}
                   // track related props
                   playerPlaying={playerPlaying}
                   playTrack={playTrack}
@@ -446,9 +521,12 @@ const TableBodyVirtual = ({
                   isTrackLoaded={isTrackLoaded}
                 />
               );
-            } else {
+            }
+
+            // Standard rows
+            else {
               return (
-                <TableRow
+                <StandardRow
                   key={index}
                   entry={entry}
                   virtualRow={virtualRow}
@@ -485,10 +563,36 @@ const measureElement = (element) => {
 };
 
 // ======================================================================
-// TABLE ROW
+// DISC ROW
 // ======================================================================
 
-const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateColumns }) => {
+const DiscRow = ({ virtualRow, entry, discNumber }) => {
+  return (
+    <div
+      className={style.discRow}
+      style={{
+        ...(virtualRow && {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          transform: `translateY(${virtualRow.start}px)`,
+        }),
+      }}
+    >
+      <div className={style.discIcon}>
+        <Icon icon="DiscIcon" cover stroke />
+      </div>
+      <div className={style.discNumber}>Disc {entry.discNumber}</div>
+    </div>
+  );
+};
+
+// ======================================================================
+// STANDARD ROW
+// ======================================================================
+
+const StandardRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateColumns }) => {
   const rowKey = entry.albumId || entry.artistId || entry.playlistId || entry.collectionId;
 
   return (
@@ -510,7 +614,7 @@ const TableRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateC
       {tableOptions
         .filter((columnOptions) => columnOptions.visible !== false)
         .map((columnOptions, index) => {
-          const { ratingType, ratingKey } = userRatingOptions[tableVariant] || {};
+          const { ratingType, ratingKey } = lookupVariantFields[tableVariant] || {};
 
           switch (columnOptions.colKey) {
             case 'sortOrder':
@@ -636,6 +740,8 @@ const TrackRow = ({
   tableVariant,
   tableOptions,
   gridTemplateColumns,
+  // disc related props
+  showDiscNumbers,
   // track related props
   playTrack,
   playerPlaying,
@@ -644,9 +750,26 @@ const TrackRow = ({
 }) => {
   const rowKey = entry.albumId || entry.artistId || entry.playlistId || entry.collectionId;
 
-  const trackNumber = entry.sortedTrackNumber ? entry.sortedTrackNumber : virtualRow ? virtualRow.index : index + 1;
-  const trackIndex = trackNumber - 1;
+  let trackNumber = entry.sortedTrackNumber ? entry.sortedTrackNumber : virtualRow ? virtualRow.index : index + 1;
+
+  const discIndex = entry.discIndex || 0;
+  const trackIndex = trackNumber - 1 - discIndex;
   const trackIsLoaded = isTrackLoaded(tableVariant, entry.trackId);
+
+  // TODO: Should probably show actual track numbers on all albums, even if only 1 disc
+  if (showDiscNumbers && entry.trackNumber) {
+    trackNumber = entry.trackNumber;
+  }
+
+  const handleDoubleClick = (event) => {
+    playTrack(tableVariant, trackIndex, true);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      playTrack(tableVariant, trackIndex, true);
+    }
+  };
 
   return (
     <div
@@ -654,14 +777,8 @@ const TrackRow = ({
       className={clsx(style.entry, {
         [style.entryPlaying]: trackIsLoaded,
       })}
-      onDoubleClick={() => {
-        playTrack(tableVariant, trackIndex, true);
-      }}
-      onKeyDown={(event) => {
-        if (event.key === 'Enter') {
-          playTrack(tableVariant, trackIndex, true);
-        }
-      }}
+      onDoubleClick={handleDoubleClick}
+      onKeyDown={handleKeyDown}
       tabIndex={0}
       style={{
         ...(virtualRow && {
@@ -677,7 +794,7 @@ const TrackRow = ({
       {tableOptions
         .filter((columnOptions) => columnOptions.visible !== false)
         .map((columnOptions, index) => {
-          const { ratingType, ratingKey } = userRatingOptions[tableVariant] || {};
+          const { ratingType, ratingKey } = lookupVariantFields[tableVariant] || {};
 
           switch (columnOptions.colKey) {
             case 'sortOrder':
@@ -753,6 +870,14 @@ const TrackRow = ({
                 );
               }
 
+            // // Debugging
+            // case 'artist':
+            //   return (
+            //     <div key={rowKey + '-' + index} className={clsx(style.artist, 'text-trim')}>
+            //       {discIndex} - {virtualRow.index} - {trackIndex}
+            //     </div>
+            //   );
+
             case 'artist':
               return (
                 <div key={rowKey + '-' + index} className={clsx(style.artist, 'text-trim')}>
@@ -819,7 +944,7 @@ const TrackRow = ({
 // HELPERS
 // ======================================================================
 
-const userRatingOptions = {
+const lookupVariantFields = {
   artists: {
     ratingType: 'artist',
     ratingKey: 'artistId',
@@ -831,6 +956,11 @@ const userRatingOptions = {
   albumTracks: {
     ratingType: 'track',
     ratingKey: 'trackId',
+    playVariant: 'albums',
+  },
+  folders: {
+    ratingKey: 'folderId',
+    playVariant: 'folders',
   },
   playlists: {
     ratingType: 'playlist',
@@ -839,6 +969,7 @@ const userRatingOptions = {
   playlistTracks: {
     ratingType: 'track',
     ratingKey: 'trackId',
+    playVariant: 'playlists',
   },
   collections: {
     ratingType: 'collection',

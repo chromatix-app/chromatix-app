@@ -73,7 +73,7 @@
     height: 1px;
     background: var(--color-opacity-015);
 
-    .scrollableOuter & {
+    .scrollableOuterVirtual & {
       :global(.env-local) & {
         background: var(--color-primary);
         opacity: 0.6;
@@ -122,20 +122,21 @@
   }
 }
 
-.disc {
+.discRow {
   display: flex;
   align-items: center;
-  padding: 11px 15px;
-  margin-top: 30px;
+  padding: 40px 15px 11px;
   opacity: var(--opacity-05);
+  font-size: 12px;
   font-weight: bold;
 
   :global(.cq-800) & {
-    padding: 11px 20px;
+    padding: 40px 20px 11px;
   }
 
-  &:first-child {
-    margin-top: 0;
+  .header + &,
+  .measure + & {
+    padding-top: 11px;
   }
 }
 
