@@ -4,16 +4,38 @@
 
 import { useSelector } from 'react-redux';
 
-import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTableV2, Loading, TitleHeading } from 'js/components';
+import {
+  FilterMenu,
+  FilterSelect,
+  FilterToggle,
+  FilterWrap,
+  ListCards,
+  ListTableV2,
+  Loading,
+  TitleHeading,
+} from 'js/components';
 import { useGetAllAlbums } from 'js/hooks';
+
+const isProduction = process.env.REACT_APP_ENV === 'production';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
 const AlbumList = () => {
-  const { viewAlbums, sortAlbums, orderAlbums, setViewAlbums, setSortAlbums, setOrderAlbums, sortedAlbums } =
-    useGetAllAlbums();
+  const {
+    viewAlbums,
+    sortAlbums,
+    orderAlbums,
+    colOptions,
+
+    setViewAlbums,
+    setSortAlbums,
+    setOrderAlbums,
+    setColumnVisibility,
+
+    sortedAlbums,
+  } = useGetAllAlbums();
 
   const isLoading = !sortedAlbums;
   const isEmptyList = !isLoading && sortedAlbums?.length === 0;
@@ -24,8 +46,10 @@ const AlbumList = () => {
     <>
       {(isLoading || isEmptyList || isGridView) && (
         <Title
+          colOptions={colOptions}
           isListView={isListView}
           orderAlbums={orderAlbums}
+          setColumnVisibility={setColumnVisibility}
           setOrderAlbums={setOrderAlbums}
           setSortAlbums={setSortAlbums}
           setViewAlbums={setViewAlbums}
@@ -37,10 +61,18 @@ const AlbumList = () => {
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && <ListCards variant="albums" entries={sortedAlbums} />}
       {isListView && (
-        <ListTableV2 variant="albums" entries={sortedAlbums} sortKey={sortAlbums} orderKey={orderAlbums}>
+        <ListTableV2
+          variant="albums"
+          entries={sortedAlbums}
+          sortKey={sortAlbums}
+          orderKey={orderAlbums}
+          colOptions={colOptions}
+        >
           <Title
+            colOptions={colOptions}
             isListView={isListView}
             orderAlbums={orderAlbums}
+            setColumnVisibility={setColumnVisibility}
             setOrderAlbums={setOrderAlbums}
             setSortAlbums={setSortAlbums}
             setViewAlbums={setViewAlbums}
@@ -55,8 +87,10 @@ const AlbumList = () => {
 };
 
 const Title = ({
+  colOptions,
   isListView,
   orderAlbums,
+  setColumnVisibility,
   setOrderAlbums,
   setSortAlbums,
   setViewAlbums,
@@ -113,6 +147,45 @@ const Title = ({
               icon={orderAlbums === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
           </>
+        )}
+        {!isProduction && viewAlbums === 'list' && (
+          <FilterMenu
+            label="Columns"
+            icon="ColumnsCircleIcon"
+            setter={setColumnVisibility}
+            entries={[
+              {
+                label: 'Title',
+                disabled: true,
+                checked: true,
+              },
+              {
+                label: 'Artist',
+                attr: 'colAlbumsArtist',
+                checked: colOptions.colAlbumsArtist,
+              },
+              {
+                label: 'Released',
+                attr: 'colAlbumsReleased',
+                checked: colOptions.colAlbumsReleased,
+              },
+              {
+                label: 'Added',
+                attr: 'colAlbumsAdded',
+                checked: colOptions.colAlbumsAdded,
+              },
+              {
+                label: 'Last Played',
+                attr: 'colAlbumsLastPlayed',
+                checked: colOptions.colAlbumsLastPlayed,
+              },
+              // {
+              //   label: 'Rating',
+              //   attr: 'colAlbumsRating',
+              //   checked: colOptions.colAlbumsRating,
+              // },
+            ]}
+          />
         )}
       </FilterWrap>
     </>

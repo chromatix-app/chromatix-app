@@ -1,0 +1,83 @@
+@import '../../../css/global';
+
+.wrap {
+  display: inline-block;
+  margin-right: 18px;
+  margin-left: -6px;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  padding: 6px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--color-opacity-06);
+
+  @include focus-self-outline;
+}
+
+.icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  color: var(--color-text);
+  opacity: var(--opacity-06);
+
+  &:first-child {
+    margin: 0 8px 0 0;
+  }
+  &:last-child {
+    margin: 0 0 0 8px;
+  }
+}
+
+.content {
+  left: 14px;
+  padding: 6px 0;
+  background: var(--color-panel-background);
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  box-shadow: 0 0 10px var(--color-shadow);
+  z-index: 99;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.item {
+  display: block;
+  position: relative;
+  padding: 5px 14px;
+
+  &:not([data-disabled]):hover {
+    background: var(--color-opacity-005);
+    cursor: pointer;
+
+    @include focus-self-fill;
+  }
+
+  &[data-state='checked'] {
+    color: var(--color-primary);
+  }
+
+  &[data-disabled] {
+    color: var(--color-opacity-04);
+  }
+
+  &[data-state='unchecked'] {
+    padding-right: 32px;
+  }
+}
+
+.indicator {
+  margin: 0 0 0 8px;
+}
+
+.indicatorIcon {
+  display: inline-block;
+  position: relative;
+  top: 1px;
+  width: 10px;
+  height: 10px;
+}

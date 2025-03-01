@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-const useTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderKey) => {
+const useTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderKey, colOptions) => {
   const dispatch = useDispatch();
 
   const contentBreakpoint = useSelector(({ appModel }) => appModel.contentBreakpoint);
@@ -10,15 +10,35 @@ const useTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
   const userRatingsAreVisible = optionShowStarRatings && contentBreakpoint >= 800;
 
   const [returnState, setReturnState] = useState(
-    getTableOptions(variant, albumId, playlistId, folderId, sortKey, orderKey, userRatingsAreVisible, dispatch)
+    getTableOptions(
+      variant,
+      albumId,
+      playlistId,
+      folderId,
+      sortKey,
+      orderKey,
+      colOptions,
+      userRatingsAreVisible,
+      dispatch
+    )
   );
 
   useEffect(() => {
     setReturnState(
-      getTableOptions(variant, albumId, playlistId, folderId, sortKey, orderKey, userRatingsAreVisible, dispatch)
+      getTableOptions(
+        variant,
+        albumId,
+        playlistId,
+        folderId,
+        sortKey,
+        orderKey,
+        colOptions,
+        userRatingsAreVisible,
+        dispatch
+      )
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [variant, sortKey, orderKey, userRatingsAreVisible]);
+  }, [variant, sortKey, orderKey, colOptions, userRatingsAreVisible]);
 
   return returnState;
 };
@@ -30,6 +50,7 @@ const getTableOptions = (
   folderId,
   sortKey,
   orderKey,
+  colOptions,
   userRatingsAreVisible,
   dispatch
 ) => {
@@ -157,7 +178,7 @@ const getTableOptions = (
         colWidth: '1fr',
         isAsc: sortKey === 'artist' && orderKey === 'asc',
         isDesc: sortKey === 'artist' && orderKey === 'desc',
-        visible: true,
+        visible: colOptions?.colAlbumsArtist !== false,
       },
       {
         colKey: 'releaseDate',
@@ -165,7 +186,7 @@ const getTableOptions = (
         colWidth: '0.8fr',
         isAsc: sortKey === 'releaseDate' && orderKey === 'asc',
         isDesc: sortKey === 'releaseDate' && orderKey === 'desc',
-        visible: true,
+        visible: colOptions?.colAlbumsReleased !== false,
       },
       {
         colKey: 'addedAt',
@@ -173,7 +194,7 @@ const getTableOptions = (
         colWidth: '0.8fr',
         isAsc: sortKey === 'addedAt' && orderKey === 'asc',
         isDesc: sortKey === 'addedAt' && orderKey === 'desc',
-        visible: true,
+        visible: colOptions?.colAlbumsAdded !== false,
       },
       {
         colKey: 'lastPlayed',
@@ -181,7 +202,7 @@ const getTableOptions = (
         colWidth: '0.8fr',
         isAsc: sortKey === 'lastPlayed' && orderKey === 'asc',
         isDesc: sortKey === 'lastPlayed' && orderKey === 'desc',
-        visible: true,
+        visible: colOptions?.colAlbumsLastPlayed !== false,
       },
       {
         colKey: 'userRating',

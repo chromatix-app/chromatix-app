@@ -128,6 +128,12 @@ const sessionState = {
   orderArtistStyleItems: 'asc',
   orderAlbumStyles: 'asc',
   orderAlbumStyleItems: 'asc',
+
+  colAlbumsArtist: true,
+  colAlbumsReleased: true,
+  colAlbumsAdded: true,
+  colAlbumsLastPlayed: true,
+  colAlbumsRating: true,
 };
 
 const playingState = {

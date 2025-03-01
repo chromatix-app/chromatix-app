@@ -30,9 +30,11 @@ import { ReactComponent as ClockRewindIcon } from './icons/music/clock-rewind.sv
 import { ReactComponent as CloudOfflineIcon } from './icons/music/cloud-offline.svg';
 import { ReactComponent as CogIcon } from './icons/music/cog.svg';
 import { ReactComponent as CollapseIcon } from './icons/music/collapse.svg';
+import { ReactComponent as ColumnsCircleIcon } from './icons/music/columns-circle.svg';
 import { ReactComponent as CrossSmallIcon } from './icons/music/cross-small.svg';
 import { ReactComponent as DiscIcon } from './icons/music/disc.svg';
 import { ReactComponent as DownloadIcon } from './icons/music/download.svg';
+import { ReactComponent as EllipsisCircleIcon } from './icons/music/ellipsis-circle.svg';
 import { ReactComponent as ExpandIcon } from './icons/music/expand.svg';
 import { ReactComponent as ExternalLinkIcon } from './icons/music/external-link.svg';
 import { ReactComponent as FastForwardIcon } from './icons/music/fast-forward.svg';
@@ -115,9 +117,11 @@ const customIcons = {
   CloudOfflineIcon,
   CogIcon,
   CollapseIcon,
+  ColumnsCircleIcon,
   CrossSmallIcon,
   DiscIcon,
   DownloadIcon,
+  EllipsisCircleIcon,
   ExpandIcon,
   ExternalLinkIcon,
   FastForwardIcon,

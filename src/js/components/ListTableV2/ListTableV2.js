@@ -43,6 +43,7 @@ const ListTableBasic = ({
   sortString,
   sortKey = sortString ? sortString.split('-')[0] : null,
   orderKey = sortString ? sortString.split('-')[1] : null,
+  colOptions,
 }) => {
   const { tableVariant, tableOptions, gridTemplateColumns, handleSortFunction } = useTableOptions(
     variant,
@@ -50,7 +51,8 @@ const ListTableBasic = ({
     playlistId,
     folderId,
     sortKey,
-    orderKey
+    orderKey,
+    colOptions
   );
 
   const headerBlock = () => {
@@ -92,6 +94,7 @@ const ListTableTracks = ({
   sortString,
   sortKey = sortString ? sortString.split('-')[0] : null,
   orderKey = sortString ? sortString.split('-')[1] : null,
+  colOptions,
   // disc and track related props
   discCount = 1,
   playingOrder,
@@ -117,7 +120,8 @@ const ListTableTracks = ({
     playlistId,
     folderId,
     sortKey,
-    orderKey
+    orderKey,
+    colOptions
   );
 
   const playTrack = useCallback(
