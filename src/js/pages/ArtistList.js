@@ -4,7 +4,7 @@
 
 import { useSelector } from 'react-redux';
 
-import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTableV1, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTableV2, Loading, TitleHeading } from 'js/components';
 import { useGetAllArtists } from 'js/hooks';
 
 // ======================================================================
@@ -12,9 +12,59 @@ import { useGetAllArtists } from 'js/hooks';
 // ======================================================================
 
 const ArtistList = () => {
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
   const { viewArtists, sortArtists, orderArtists, setViewArtists, setSortArtists, setOrderArtists, sortedArtists } =
     useGetAllArtists();
+
+  const isLoading = !sortedArtists;
+  const isEmptyList = !isLoading && sortedArtists?.length === 0;
+  const isGridView = !isLoading && !isEmptyList && viewArtists === 'grid';
+  const isListView = !isLoading && !isEmptyList && viewArtists === 'list';
+
+  return (
+    <>
+      {(isLoading || isEmptyList || isGridView) && (
+        <Title
+          isListView={isListView}
+          orderArtists={orderArtists}
+          setOrderArtists={setOrderArtists}
+          setSortArtists={setSortArtists}
+          setViewArtists={setViewArtists}
+          sortArtists={sortArtists}
+          sortedArtists={sortedArtists}
+          viewArtists={viewArtists}
+        />
+      )}
+      {isLoading && <Loading forceVisible inline showOffline />}
+      {isGridView && <ListCards variant="artists" entries={sortedArtists} />}
+      {isListView && (
+        <ListTableV2 variant="artists" entries={sortedArtists} sortKey={sortArtists} orderKey={orderArtists}>
+          <Title
+            isListView={isListView}
+            orderArtists={orderArtists}
+            setOrderArtists={setOrderArtists}
+            setSortArtists={setSortArtists}
+            setViewArtists={setViewArtists}
+            sortArtists={sortArtists}
+            sortedArtists={sortedArtists}
+            viewArtists={viewArtists}
+          />
+        </ListTableV2>
+      )}
+    </>
+  );
+};
+
+const Title = ({
+  isListView,
+  orderArtists,
+  setOrderArtists,
+  setSortArtists,
+  setViewArtists,
+  sortArtists,
+  sortedArtists,
+  viewArtists,
+}) => {
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   return (
     <>
@@ -24,8 +74,9 @@ const ArtistList = () => {
         subtitle={
           sortedArtists ? sortedArtists?.length + ' Artist' + (sortedArtists?.length !== 1 ? 's' : '') : <>&nbsp;</>
         }
+        padding={!isListView}
       />
-      <FilterWrap>
+      <FilterWrap padding={!isListView}>
         <FilterToggle
           value={viewArtists}
           options={[
@@ -60,11 +111,6 @@ const ArtistList = () => {
           </>
         )}
       </FilterWrap>
-      {!sortedArtists && <Loading forceVisible inline showOffline />}
-      {sortedArtists && viewArtists === 'grid' && <ListCards variant="artists" entries={sortedArtists} />}
-      {sortedArtists && viewArtists === 'list' && (
-        <ListTableV1 variant="artists" entries={sortedArtists} sortKey={sortArtists} orderKey={orderArtists} />
-      )}
     </>
   );
 };

@@ -4,7 +4,7 @@
 
 const thumbSizeSmall = 360;
 const thumbSizeMedium = 600;
-const thumbPlaceholder = '/images/artwork-placeholder.png';
+// const thumbPlaceholder = '/images/artwork-placeholder.png';
 
 // ======================================================================
 // TRANSPOSE PLEX DATA
@@ -20,7 +20,7 @@ const getThumb = (plexBaseUrl, thumb, size, accessToken) => {
     ? `${plexBaseUrl}/photo/:/transcode?width=${size}&height=${size}&url=${encodeURIComponent(
         thumb
       )}&minSize=1&X-Plex-Token=${accessToken}`
-    : thumbPlaceholder;
+    : null; // thumbPlaceholder;
 };
 
 export const transposeUserData = (user) => {

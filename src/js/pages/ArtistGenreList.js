@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { FilterToggle, FilterWrap, ListCards, ListTableV1, Loading, TitleHeading } from 'js/components';
+import { FilterToggle, FilterWrap, ListCards, ListTableV2, Loading, TitleHeading } from 'js/components';
 import { useGetAllCollections } from 'js/hooks';
 
 // ======================================================================
@@ -19,6 +19,54 @@ const ArtistGenreList = () => {
     sortedCollections,
   } = useGetAllCollections('ArtistGenres');
 
+  const isLoading = !sortedCollections;
+  const isEmptyList = !isLoading && sortedCollections?.length === 0;
+  const isGridView = !isLoading && !isEmptyList && viewCollections === 'grid';
+  const isListView = !isLoading && !isEmptyList && viewCollections === 'list';
+
+  return (
+    <>
+      {(isLoading || isEmptyList || isGridView) && (
+        <Title
+          isListView={isListView}
+          orderCollections={orderCollections}
+          setOrderCollections={setOrderCollections}
+          setViewCollections={setViewCollections}
+          sortedCollections={sortedCollections}
+          viewCollections={viewCollections}
+        />
+      )}
+      {isLoading && <Loading forceVisible inline showOffline />}
+      {isGridView && <ListCards variant="artistGenres" entries={sortedCollections} />}
+      {isListView && (
+        <ListTableV2
+          variant="artistGenres"
+          entries={sortedCollections}
+          sortKey={sortCollections}
+          orderKey={orderCollections}
+        >
+          <Title
+            isListView={isListView}
+            orderCollections={orderCollections}
+            setOrderCollections={setOrderCollections}
+            setViewCollections={setViewCollections}
+            sortedCollections={sortedCollections}
+            viewCollections={viewCollections}
+          />
+        </ListTableV2>
+      )}
+    </>
+  );
+};
+
+const Title = ({
+  isListView,
+  orderCollections,
+  setOrderCollections,
+  setViewCollections,
+  sortedCollections,
+  viewCollections,
+}) => {
   return (
     <>
       <TitleHeading
@@ -31,8 +79,9 @@ const ArtistGenreList = () => {
             <>&nbsp;</>
           )
         }
+        padding={!isListView}
       />
-      <FilterWrap>
+      <FilterWrap padding={!isListView}>
         <FilterToggle
           value={viewCollections}
           options={[
@@ -56,18 +105,6 @@ const ArtistGenreList = () => {
           </>
         )}
       </FilterWrap>
-      {!sortedCollections && <Loading forceVisible inline showOffline />}
-      {sortedCollections && viewCollections === 'grid' && (
-        <ListCards variant="artistGenres" entries={sortedCollections} />
-      )}
-      {sortCollections && viewCollections === 'list' && (
-        <ListTableV1
-          variant="artistGenres"
-          entries={sortedCollections}
-          sortKey={sortCollections}
-          orderKey={orderCollections}
-        />
-      )}
     </>
   );
 };

@@ -523,7 +523,9 @@ const SortableHeading = ({
 };
 
 const ListArtists = ({ entries }) => {
-  const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+  const optionShowFullTitles_Deprecated = useSelector(
+    ({ sessionModel }) => sessionModel.optionShowFullTitles_Deprecated
+  );
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   return entries.map((entry) => {
@@ -532,12 +534,12 @@ const ListArtists = ({ entries }) => {
         <div className={style.thumb}>
           <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />
         </div>
-        <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
-        {/* <div className={clsx(style.genre, { 'text-trim': !optionShowFullTitles })}>{entry.genre}</div> */}
-        <div className={clsx(style.addedAt, { 'text-trim': !optionShowFullTitles })}>
+        <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles_Deprecated })}>{entry.title}</div>
+        {/* <div className={clsx(style.genre, { 'text-trim': !optionShowFullTitles_Deprecated })}>{entry.genre}</div> */}
+        <div className={clsx(style.addedAt, { 'text-trim': !optionShowFullTitles_Deprecated })}>
           {formatRecentDate(entry.addedAt)}
         </div>
-        <div className={clsx(style.lastPlayed, { 'text-trim': !optionShowFullTitles })}>
+        <div className={clsx(style.lastPlayed, { 'text-trim': !optionShowFullTitles_Deprecated })}>
           {formatRecentDate(entry.lastPlayed)}
         </div>
         {optionShowStarRatings && (
@@ -551,7 +553,9 @@ const ListArtists = ({ entries }) => {
 };
 
 const ListAlbums = ({ entries }) => {
-  const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+  const optionShowFullTitles_Deprecated = useSelector(
+    ({ sessionModel }) => sessionModel.optionShowFullTitles_Deprecated
+  );
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   return entries.map((entry) => {
@@ -560,15 +564,15 @@ const ListAlbums = ({ entries }) => {
         <div className={style.thumb}>
           <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />
         </div>
-        <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
-        <div className={clsx(style.artist, { 'text-trim': !optionShowFullTitles })}>{entry.artist}</div>
-        <div className={clsx(style.releaseDate, { 'text-trim': !optionShowFullTitles })}>
+        <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles_Deprecated })}>{entry.title}</div>
+        <div className={clsx(style.artist, { 'text-trim': !optionShowFullTitles_Deprecated })}>{entry.artist}</div>
+        <div className={clsx(style.releaseDate, { 'text-trim': !optionShowFullTitles_Deprecated })}>
           {entry.releaseDate ? moment(entry.releaseDate).format('MMM YYYY') : null}
         </div>
-        <div className={clsx(style.addedAt, { 'text-trim': !optionShowFullTitles })}>
+        <div className={clsx(style.addedAt, { 'text-trim': !optionShowFullTitles_Deprecated })}>
           {formatRecentDate(entry.addedAt)}
         </div>
-        <div className={clsx(style.lastPlayed, { 'text-trim': !optionShowFullTitles })}>
+        <div className={clsx(style.lastPlayed, { 'text-trim': !optionShowFullTitles_Deprecated })}>
           {formatRecentDate(entry.lastPlayed)}
         </div>
         {optionShowStarRatings && (
@@ -582,7 +586,9 @@ const ListAlbums = ({ entries }) => {
 };
 
 const ListPlaylists = ({ entries }) => {
-  const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+  const optionShowFullTitles_Deprecated = useSelector(
+    ({ sessionModel }) => sessionModel.optionShowFullTitles_Deprecated
+  );
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   return entries.map((entry) => {
@@ -591,18 +597,18 @@ const ListPlaylists = ({ entries }) => {
         <div className={style.thumb}>
           <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />
         </div>
-        <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
-        <div className={clsx(style.totalTracks, { 'text-trim': !optionShowFullTitles })}>
+        <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles_Deprecated })}>{entry.title}</div>
+        <div className={clsx(style.totalTracks, { 'text-trim': !optionShowFullTitles_Deprecated })}>
           {entry.totalTracks}
           {entry.totalTracks && ' tracks'}
         </div>
-        <div className={clsx(style.duration, { 'text-trim': !optionShowFullTitles })}>
+        <div className={clsx(style.duration, { 'text-trim': !optionShowFullTitles_Deprecated })}>
           {durationToStringLong(entry.duration)}
         </div>
-        <div className={clsx(style.addedAt, { 'text-trim': !optionShowFullTitles })}>
+        <div className={clsx(style.addedAt, { 'text-trim': !optionShowFullTitles_Deprecated })}>
           {formatRecentDate(entry.addedAt)}
         </div>
-        <div className={clsx(style.lastPlayed, { 'text-trim': !optionShowFullTitles })}>
+        <div className={clsx(style.lastPlayed, { 'text-trim': !optionShowFullTitles_Deprecated })}>
           {formatRecentDate(entry.lastPlayed)}
         </div>
         {optionShowStarRatings && (
@@ -616,7 +622,9 @@ const ListPlaylists = ({ entries }) => {
 };
 
 const ListArtistCollections = ({ entries }) => {
-  const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+  const optionShowFullTitles_Deprecated = useSelector(
+    ({ sessionModel }) => sessionModel.optionShowFullTitles_Deprecated
+  );
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   return entries.map((entry) => {
@@ -625,8 +633,8 @@ const ListArtistCollections = ({ entries }) => {
         <div className={style.thumb}>
           <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />
         </div>
-        <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
-        <div className={clsx(style.addedAt, { 'text-trim': !optionShowFullTitles })}>
+        <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles_Deprecated })}>{entry.title}</div>
+        <div className={clsx(style.addedAt, { 'text-trim': !optionShowFullTitles_Deprecated })}>
           {formatRecentDate(entry.addedAt)}
         </div>
         {optionShowStarRatings && (
@@ -665,7 +673,9 @@ const ListFolders = ({ folderId, entries, playingOrder, sortKey }) => {
 };
 
 const FolderEntry = ({ entry }) => {
-  const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+  const optionShowFullTitles_Deprecated = useSelector(
+    ({ sessionModel }) => sessionModel.optionShowFullTitles_Deprecated
+  );
 
   return (
     <NavLink className={style.entry} to={entry.link} draggable="false">
@@ -677,7 +687,7 @@ const FolderEntry = ({ entry }) => {
           <Icon icon={'FolderIcon'} cover stroke strokeWidth={1.2} />
         </span>
       </div>
-      <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
+      <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles_Deprecated })}>{entry.title}</div>
       <div className={style.meta}>Folder</div>
       <div></div>
     </NavLink>
@@ -696,7 +706,9 @@ const FolderTrackEntry = ({ index, folderId, trackNumber, entry, playingOrder, s
   const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
   const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
 
-  const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+  const optionShowFullTitles_Deprecated = useSelector(
+    ({ sessionModel }) => sessionModel.optionShowFullTitles_Deprecated
+  );
 
   const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
 
@@ -762,9 +774,9 @@ const FolderTrackEntry = ({ index, folderId, trackNumber, entry, playingOrder, s
       <div className={style.thumb}>
         {entry.thumb && <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />}
       </div>
-      <div className={clsx({ 'text-trim': !optionShowFullTitles })}>
-        <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
-        <div className={clsx(style.artist, style.smallText, { 'text-trim': !optionShowFullTitles })}>
+      <div className={clsx({ 'text-trim': !optionShowFullTitles_Deprecated })}>
+        <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles_Deprecated })}>{entry.title}</div>
+        <div className={clsx(style.artist, style.smallText, { 'text-trim': !optionShowFullTitles_Deprecated })}>
           {entry.artistLink && (
             <NavLink to={entry.artistLink} tabIndex={-1} draggable="false">
               {entry.artist}
@@ -784,7 +796,9 @@ const ListGenresMoodsStyles = ({ entryKey, entries, icon }) => {
 };
 
 const GenresMoodsStylesEntry = ({ entry, icon }) => {
-  const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+  const optionShowFullTitles_Deprecated = useSelector(
+    ({ sessionModel }) => sessionModel.optionShowFullTitles_Deprecated
+  );
 
   return (
     <NavLink className={style.entry} to={entry.link} draggable="false">
@@ -793,7 +807,7 @@ const GenresMoodsStylesEntry = ({ entry, icon }) => {
           <Icon icon={icon} cover stroke strokeWidth={1.2} />
         </span>
       </div>
-      <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
+      <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles_Deprecated })}>{entry.title}</div>
       <div></div>
     </NavLink>
   );
@@ -812,7 +826,9 @@ const ListTracks = ({ variant, albumId, playlistId, discCount, entries, playingO
   const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
   const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
 
-  const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+  const optionShowFullTitles_Deprecated = useSelector(
+    ({ sessionModel }) => sessionModel.optionShowFullTitles_Deprecated
+  );
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
@@ -861,7 +877,7 @@ const ListTracks = ({ variant, albumId, playlistId, discCount, entries, playingO
         playerPlaying={playerPlaying}
         doPlay={doPlay}
         variant={variant}
-        optionShowFullTitles={optionShowFullTitles}
+        optionShowFullTitles_Deprecated={optionShowFullTitles_Deprecated}
         optionShowStarRatings={optionShowStarRatings}
       />
     );
@@ -877,7 +893,7 @@ const ListTrackEntry = React.memo(
     playerPlaying,
     doPlay,
     variant,
-    optionShowFullTitles,
+    optionShowFullTitles_Deprecated,
     optionShowStarRatings,
   }) => {
     const dispatch = useDispatch();
@@ -942,9 +958,9 @@ const ListTrackEntry = React.memo(
             </div>
           )}
 
-          <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
+          <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles_Deprecated })}>{entry.title}</div>
 
-          <div className={clsx(style.artist, { 'text-trim': !optionShowFullTitles })}>
+          <div className={clsx(style.artist, { 'text-trim': !optionShowFullTitles_Deprecated })}>
             {entry.artistLink && (
               <NavLink to={entry.artistLink} tabIndex={-1} draggable="false">
                 {entry.artist}
@@ -954,7 +970,7 @@ const ListTrackEntry = React.memo(
           </div>
 
           {variant === 'playlistTracks' && (
-            <div className={clsx(style.album, { 'text-trim': !optionShowFullTitles })}>
+            <div className={clsx(style.album, { 'text-trim': !optionShowFullTitles_Deprecated })}>
               {entry.albumLink && (
                 <NavLink to={entry.albumLink} tabIndex={-1} draggable="false">
                   {entry.album}{' '}

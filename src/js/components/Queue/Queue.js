@@ -16,7 +16,9 @@ import style from './Queue.module.scss';
 // ======================================================================
 
 const Queue = () => {
-  const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+  const optionShowFullTitles_Deprecated = useSelector(
+    ({ sessionModel }) => sessionModel.optionShowFullTitles_Deprecated
+  );
   const queueExpandArtwork = useSelector(({ sessionModel }) => sessionModel.queueExpandArtwork);
 
   const {
@@ -41,7 +43,7 @@ const Queue = () => {
           entries={upcomingEntries}
           initialIndex={playingTrackIndex}
           isRepeat={false}
-          optionShowFullTitles={optionShowFullTitles}
+          optionShowFullTitles_Deprecated={optionShowFullTitles_Deprecated}
           playingShuffle={playingShuffle}
           queueExpandArtwork={queueExpandArtwork}
           totalTracksRemaining={totalTracksRemaining}
@@ -53,7 +55,7 @@ const Queue = () => {
             entries={repeatEntries}
             initialIndex={0}
             isRepeat={true}
-            optionShowFullTitles={optionShowFullTitles}
+            optionShowFullTitles_Deprecated={optionShowFullTitles_Deprecated}
             totalTracksRemaining={totalTracksRemaining}
           />
           <div className={style.repeat}>
@@ -73,7 +75,7 @@ const QueueList = ({
   entries,
   initialIndex = 0,
   isRepeat,
-  optionShowFullTitles,
+  optionShowFullTitles_Deprecated,
   playingShuffle,
   queueExpandArtwork,
   totalTracksRemaining,
@@ -89,7 +91,7 @@ const QueueList = ({
         isRepeat={isRepeat}
         isCurrentlyPlaying={isCurrentlyPlaying}
         totalTracksRemaining={totalTracksRemaining}
-        optionShowFullTitles={optionShowFullTitles}
+        optionShowFullTitles_Deprecated={optionShowFullTitles_Deprecated}
         queueExpandArtwork={queueExpandArtwork}
         playingShuffle={playingShuffle}
       />
@@ -102,7 +104,7 @@ const QueueEntry = ({
   index,
   isRepeat,
   isCurrentlyPlaying,
-  optionShowFullTitles,
+  optionShowFullTitles_Deprecated,
   playingShuffle,
   queueExpandArtwork = false,
   totalTracksRemaining,
@@ -123,7 +125,9 @@ const QueueEntry = ({
     <>
       {!isRepeat && isCurrentlyPlaying && (
         <>
-          {queueExpandArtwork && <QueueEntryExpanded entry={entry} optionShowFullTitles={optionShowFullTitles} />}
+          {queueExpandArtwork && (
+            <QueueEntryExpanded entry={entry} optionShowFullTitles_Deprecated={optionShowFullTitles_Deprecated} />
+          )}
           {!queueExpandArtwork && (
             <button className={style.section} onClick={expandArtwork}>
               Now playing
@@ -139,7 +143,7 @@ const QueueEntry = ({
         <div
           className={clsx(style.entry, {
             [style.entryCurrent]: !isRepeat && isCurrentlyPlaying,
-            'text-trim': !optionShowFullTitles,
+            'text-trim': !optionShowFullTitles_Deprecated,
           })}
           onDoubleClick={() => {
             doPlay(true);
@@ -152,12 +156,12 @@ const QueueEntry = ({
           tabIndex={0}
         >
           <div className={style.thumb}>
-            <img src={entry.thumb} alt={entry.title} loading="lazy" draggable="false" />
+            {entry.thumb && <img src={entry.thumb} alt={entry.title} loading="lazy" draggable="false" />}
           </div>
 
-          <div className={clsx(style.content, { 'text-trim': !optionShowFullTitles })}>
-            <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
-            <div className={clsx(style.artist, { 'text-trim': !optionShowFullTitles })}>
+          <div className={clsx(style.content, { 'text-trim': !optionShowFullTitles_Deprecated })}>
+            <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles_Deprecated })}>{entry.title}</div>
+            <div className={clsx(style.artist, { 'text-trim': !optionShowFullTitles_Deprecated })}>
               {entry.artistLink && (
                 <NavLink to={entry.artistLink} tabIndex={-1} draggable="false">
                   {entry.artist}
@@ -186,7 +190,7 @@ const QueueEntry = ({
   );
 };
 
-const QueueEntryExpanded = ({ entry, optionShowFullTitles }) => {
+const QueueEntryExpanded = ({ entry, optionShowFullTitles_Deprecated }) => {
   const dispatch = useDispatch();
 
   const collapseArtwork = () => {
@@ -196,12 +200,14 @@ const QueueEntryExpanded = ({ entry, optionShowFullTitles }) => {
   return (
     <div className={style.expandedEntry}>
       <div className={style.expandedThumb}>
-        <img
-          src={entry.thumbMedium ? entry.thumbMedium : entry.thumb}
-          alt={entry.title}
-          draggable="false"
-          loading="lazy"
-        />
+        {(entry.thumbMedium || entry.thumb) && (
+          <img
+            src={entry.thumbMedium ? entry.thumbMedium : entry.thumb}
+            alt={entry.title}
+            draggable="false"
+            loading="lazy"
+          />
+        )}
         <button className={style.expandedCollapse} onClick={collapseArtwork}>
           <span>
             <span>
@@ -211,9 +217,9 @@ const QueueEntryExpanded = ({ entry, optionShowFullTitles }) => {
         </button>
       </div>
 
-      <div className={clsx(style.expandedTitle, { 'text-trim': !optionShowFullTitles })}>{entry.title}</div>
+      <div className={clsx(style.expandedTitle, { 'text-trim': !optionShowFullTitles_Deprecated })}>{entry.title}</div>
 
-      <div className={clsx(style.expandedArtist, { 'text-trim': !optionShowFullTitles })}>
+      <div className={clsx(style.expandedArtist, { 'text-trim': !optionShowFullTitles_Deprecated })}>
         {entry.artistLink && (
           <NavLink draggable="false" to={entry.artistLink} tabIndex={-1}>
             {entry.artist}

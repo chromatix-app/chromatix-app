@@ -29,6 +29,14 @@ const useGetFolderItems = (folderId) => {
           return 0;
         });
 
+  let sortedTrackNumber = 0;
+  sortedWithFoldersOnTop?.forEach((item, index) => {
+    if (item.kind === 'track') {
+      sortedTrackNumber++;
+      item.sortedTrackNumber = sortedTrackNumber;
+    }
+  });
+
   const tracksOnly = sortedFolders?.filter((entry) => entry.kind === 'track');
   const folderOrder = tracksOnly?.map((entry) => entry.trackSortOrder);
 
