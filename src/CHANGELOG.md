@@ -1,4 +1,20 @@
 <a name="0.32.0"></a>
+# 0.33.0 (2025-03-02)
+Features:
+- Performance tweaks when browsing in list view.
+  - List view has been entirely rebuilt to use a virtualised list.
+    - (Note that vistualisation is only used when more than a certain number of items are in the list.)
+  - This should prevent the UI from slowing down when browsing large libraries.
+  - This will also allow more flexibility in future for customising column visibility.
+- Updated and consistent placeholder icon for missing artwork.
+Deprecations:
+- Sadly, the "always show full titles" option is incompatible with the new virtualised list view.
+  - This option has been disabled and marked as deprecated in the settings page.
+  - This may be revisited in future if a solution can be found.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
+<a name="0.32.0"></a>
 # 0.32.0 (2025-02-22)
 Features:
 - Volume and mute state is now saved in session storage.
