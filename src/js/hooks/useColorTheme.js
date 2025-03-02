@@ -45,7 +45,7 @@ function useColorTheme() {
         .darken(0.4 * chromaMultiplier)
         .hex();
       colorHover = chroma(colorBackground)
-        .darken(0.8 * chromaMultiplier)
+        .darken(0.6 * chromaMultiplier)
         .hex();
       colorBorder = chroma(colorBackground)
         .darken(0.8 * chromaMultiplier)
@@ -58,7 +58,7 @@ function useColorTheme() {
         .brighten(0.4 * chromaMultiplier)
         .hex();
       colorHover = chroma(colorBackground)
-        .brighten(0.8 * chromaMultiplier)
+        .brighten(0.6 * chromaMultiplier)
         .hex();
       colorBorder = chroma(colorBackground)
         .brighten(0.8 * chromaMultiplier)

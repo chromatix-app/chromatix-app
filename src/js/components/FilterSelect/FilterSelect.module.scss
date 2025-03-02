@@ -2,8 +2,8 @@
 
 .wrap {
   display: inline-block;
-  margin-right: 18px;
   margin-left: -6px;
+  margin-right: 18px;
 }
 
 .trigger {
@@ -22,8 +22,8 @@
   display: inline-block;
   width: 14px;
   height: 14px;
-  color: var(--color-text);
   opacity: var(--opacity-06);
+  color: var(--color-text);
 
   &:first-child {
     margin: 0 8px 0 0;
@@ -34,8 +34,9 @@
 }
 
 .content {
+  top: 2px;
   left: 14px;
-  padding: 6px 0;
+  padding: 4px;
   background: var(--color-panel-background);
   border: 1px solid var(--color-border);
   border-radius: 5px;
@@ -51,13 +52,15 @@
 .item {
   display: block;
   position: relative;
-  padding: 5px 14px;
+  padding: 6px 14px 6px 10px;
+  border-radius: 2px;
   cursor: pointer;
 
   @include focus-self-fill;
 
-  &:hover {
-    background: var(--color-opacity-005);
+  &:hover,
+  &:focus {
+    background: var(--color-hover);
   }
 
   &[data-state='checked'] {
