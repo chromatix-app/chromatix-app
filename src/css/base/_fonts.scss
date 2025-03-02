@@ -6,7 +6,7 @@
 
 html,
 body {
-  font-size: 1.6rem;
+  font-size: 16px;
   line-height: 1.4;
   font-weight: normal;
   color: $color-text;
@@ -27,18 +27,18 @@ html {
     font-family: -apple-system, 'SF Pro', 'Inter', Helvetica, Arial, sans-serif;
   }
 
-  &[data-font-size='larger'] {
-    font-size: 77.5%;
-  }
-  &[data-font-size='large'] {
-    font-size: 72.5%;
-  }
-  &[data-font-size='medium'] {
-    font-size: 67.5%;
-  }
-  &[data-font-size='smaller'] {
-    font-size: 57.5%;
-  }
+  // &[data-font-size='larger'] {
+  //   font-size: 77.5%;
+  // }
+  // &[data-font-size='large'] {
+  //   font-size: 72.5%;
+  // }
+  // &[data-font-size='medium'] {
+  //   font-size: 67.5%;
+  // }
+  // &[data-font-size='smaller'] {
+  //   font-size: 57.5%;
+  // }
 }
 
 a {
