@@ -24,7 +24,7 @@ const App = () => {
   const inited = useSelector(({ appModel }) => appModel.inited);
   const loggedIn = useSelector(({ appModel }) => appModel.loggedIn);
 
-  const errorPlexFastestServer = useSelector(({ appModel }) => appModel.errorPlexFastestServer);
+  const errorPlexFastestConnection = useSelector(({ appModel }) => appModel.errorPlexFastestConnection);
   const errorPlexLibraries = useSelector(({ appModel }) => appModel.errorPlexLibraries);
   const errorPlexLogin = useSelector(({ appModel }) => appModel.errorPlexLogin);
   const errorPlexServers = useSelector(({ appModel }) => appModel.errorPlexServers);
@@ -92,7 +92,7 @@ const App = () => {
   }, [loggedIn]);
 
   // error pages
-  if (errorPlexFastestServer) {
+  if (errorPlexFastestConnection) {
     return (
       <div className="wrap">
         <div className="electron-drag"></div>
@@ -107,7 +107,7 @@ const App = () => {
             </>
           }
           buttonText="Ok"
-          buttonClick={dispatch.appModel.dismissErrorPlexFastestServer}
+          buttonClick={dispatch.appModel.dismissErrorPlexFastestConnection}
         />
       </div>
     );

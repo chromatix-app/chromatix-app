@@ -229,7 +229,7 @@ Features:
 # 0.6.0 (2024-04-19)
 Refactor:
 - More logic moved to plexTools.js.
-- Added getFastestServerConnection() function for improved performance.
+- Added getFastestConnection() function for improved performance.
 - Added better error handling.
 - Improved handling of album art generation.
 

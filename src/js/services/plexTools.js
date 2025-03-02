@@ -363,7 +363,7 @@ export const getAllServers = () => {
 // GET FASTEST SERVER CONNECTION
 // ======================================================================
 
-export const getFastestServerConnection = (server) => {
+export const getFastestConnection = (server) => {
   let { accessToken, connections } = server;
 
   // sort connections based on preference
@@ -395,7 +395,7 @@ export const getFastestServerConnection = (server) => {
           .then(() => resolve(connection))
           .catch((error) => {
             reject({
-              code: 'getFastestServerConnection.1',
+              code: 'getFastestConnection.1',
               message: `Failed to connect to ${connection.uri}: ${error.message}`,
               error,
             });
@@ -406,7 +406,7 @@ export const getFastestServerConnection = (server) => {
 
   // return the first connection that responds
   return raceToSuccess(requests, {
-    code: 'getFastestServerConnection.2',
+    code: 'getFastestConnection.2',
     message: 'No active connection found',
     error: null,
   }).then((activeConnection) => {

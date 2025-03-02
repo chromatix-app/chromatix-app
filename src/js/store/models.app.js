@@ -22,7 +22,7 @@ const appState = {
 
   contentBreakpoint: 0,
 
-  errorPlexFastestServer: false,
+  errorPlexFastestConnection: false,
   errorPlexLibraries: false,
   errorPlexLogin: false,
   errorPlexServers: false,
@@ -174,10 +174,10 @@ const effects = (dispatch) => ({
   // PLEX ERROR HANDLING
   //
 
-  dismissErrorPlexFastestServer(payload, rootState) {
-    // console.log('%c--- dismissErrorPlexFastestServer ---', 'color:#07a098');
+  dismissErrorPlexFastestConnection(payload, rootState) {
+    // console.log('%c--- dismissErrorPlexFastestConnection ---', 'color:#07a098');
     dispatch.appModel.setAppState({
-      errorPlexFastestServer: false,
+      errorPlexFastestConnection: false,
     });
     dispatch.sessionModel.unsetCurrentServer();
   },
