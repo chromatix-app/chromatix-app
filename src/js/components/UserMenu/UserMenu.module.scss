@@ -67,7 +67,8 @@
 
   @include focus-self-outline;
 
-  &:hover {
+  &:hover,
+  &:focus {
     background: var(--color-hover);
   }
 
@@ -218,7 +219,8 @@
     padding-left: 30px;
   }
 
-  &:hover {
+  &:hover,
+  &:focus {
     background: var(--color-hover);
   }
 
@@ -227,7 +229,8 @@
     background: var(--color-opacity-0025);
     border-color: var(--color-opacity-01);
 
-    &:hover {
+    &:hover,
+    &:focus {
       background: var(--color-hover);
     }
   }
@@ -276,7 +279,8 @@
 .iconHover {
   display: none;
 
-  .button:hover & {
+  .button:hover &,
+  .button:focus & {
     display: block;
   }
 }

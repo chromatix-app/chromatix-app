@@ -441,6 +441,10 @@ const SearchField = () => {
               type="text"
               placeholder="Search"
               value={searchValue}
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck="false"
               onChange={(event) => setSearchValue(event.target.value)}
               onFocus={() => {
                 if (searchValue && debouncedSearchValue && debouncedSearchValue.length > 1 && !searchResultsVisible) {

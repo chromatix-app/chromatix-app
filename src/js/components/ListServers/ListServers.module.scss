@@ -23,8 +23,9 @@
 
   @include focus-self-outline;
 
-  &:hover {
-    background: var(--color-opacity-01);
+  &:hover,
+  &:focus {
+    background: var(--color-opacity-005);
     border: 1px solid var(--color-opacity-005);
   }
 }
