@@ -19,7 +19,9 @@ import style from './ListTableV2.module.scss';
 // OPTIONS
 // ======================================================================
 
-const virtualThreshold = 1;
+const isProduction = process.env.REACT_APP_ENV === 'production';
+
+const virtualThreshold = isProduction ? 150 : 1;
 
 // ======================================================================
 // COMPONENT
