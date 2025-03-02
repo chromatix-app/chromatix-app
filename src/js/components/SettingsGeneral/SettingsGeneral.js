@@ -32,27 +32,30 @@ export const SettingsGeneral = () => {
 const InterfaceSettings = () => {
   const dispatch = useDispatch();
 
-  const optionShowFullTitles = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles);
+  // const optionShowFullTitles_Deprecated = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles_Deprecated);
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   const menuItems = [
-    {
-      key: 'optionShowFullTitles',
-      label: 'Always show full track, artist and album titles',
-      state: optionShowFullTitles,
-    },
     { key: 'optionShowStarRatings', label: 'Show star ratings', state: optionShowStarRatings },
+    {
+      key: 'optionShowFullTitles_Deprecated',
+      label: 'Always show full track, artist and album titles',
+      description: 'Sorry, this option has been removed for performance reasons.',
+      state: false,
+      disabled: true,
+    },
   ];
 
   return (
     <div className={style.menu}>
-      {menuItems.map(({ key, label, description, state }) => (
+      {menuItems.map(({ key, label, description, state, disabled }) => (
         <div key={key} className={style.menuEntry}>
           <label>
             <input
               type="checkbox"
               checked={state}
               onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
+              disabled={disabled}
             />
             <div>
               {label && <div className={style.label}>{label}</div>}

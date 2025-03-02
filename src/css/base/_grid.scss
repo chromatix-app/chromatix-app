@@ -28,29 +28,30 @@
     flex-direction: column;
   }
 
-  .row#{$key}--align-center {
-    align-items: center;
-  }
+  // .row#{$key}--align-center {
+  //   align-items: center;
+  // }
 
-  .row#{$key}--justify-start {
-    justify-content: flex-start;
-  }
-  .row#{$key}--justify-center {
-    justify-content: center;
-  }
-  .row#{$key}--justify-between {
-    justify-content: space-between;
-  }
-  .row#{$key}--justify-end {
-    justify-content: flex-end;
-  }
+  // .row#{$key}--justify-start {
+  //   justify-content: flex-start;
+  // }
+  // .row#{$key}--justify-center {
+  //   justify-content: center;
+  // }
+  // .row#{$key}--justify-between {
+  //   justify-content: space-between;
+  // }
+  // .row#{$key}--justify-end {
+  //   justify-content: flex-end;
+  // }
 
-  .row#{$key}--page-center {
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    min-height: 100%;
-  }
+  // .row#{$key}--page-center {
+  //   flex-direction: column;
+  //   justify-content: space-between;
+  //   align-items: center;
+  //   min-height: 100%;
+  // }
+
   // .row#{$key}--align-start {
   //   align-items: flex-start;
   // }
@@ -83,42 +84,42 @@
     padding: 0 map-val();
   }
 
-  &--no-padding-mobile {
-    @media (max-width: 767px) {
-      padding: 0;
-    }
-  }
+  // &--no-padding-mobile {
+  //   @media (max-width: 767px) {
+  //     padding: 0;
+  //   }
+  // }
 
-  &--center-narrow {
-    @media (min-width: 768px) {
-      max-width: 43rem;
-    }
-  }
+  // &--center-narrow {
+  //   @media (min-width: 768px) {
+  //     max-width: 43rem;
+  //   }
+  // }
 
-  &--center-login {
-    max-width: 33.6rem;
-    padding-top: 60px !important;
-    padding-bottom: 60px !important;
+  // &--center-login {
+  //   max-width: 33.6rem;
+  //   padding-top: 60px !important;
+  //   padding-bottom: 60px !important;
 
-    @media (min-width: 400px) {
-      width: percentage(336/364);
-      max-width: 43rem;
-    }
+  //   @media (min-width: 400px) {
+  //     width: percentage(336/364);
+  //     max-width: 43rem;
+  //   }
 
-    &--narrow {
-      @media (min-width: 400px) {
-        max-width: 40rem;
-      }
-    }
+  //   &--narrow {
+  //     @media (min-width: 400px) {
+  //       max-width: 40rem;
+  //     }
+  //   }
 
-    &--auto {
-      @media (min-width: 400px) {
-        flex: 0 1 auto;
-        width: auto !important;
-        max-width: 40rem;
-      }
-    }
-  }
+  //   &--auto {
+  //     @media (min-width: 400px) {
+  //       flex: 0 1 auto;
+  //       width: auto !important;
+  //       max-width: 40rem;
+  //     }
+  //   }
+  // }
 
   // &--last {
   //   padding-bottom: 40px;
@@ -128,9 +129,9 @@
   //   }
   // }
 
-  &--legal {
-    justify-self: flex-end;
-  }
+  // &--legal {
+  //   justify-self: flex-end;
+  // }
 }
 
 @mixin columns($key: null) {
@@ -179,22 +180,22 @@
 
   // INNER CONTENT - OUTSET
 
-  .outset#{$key}-0 {
-    @include breakpoint-map-filtered($grid-breakpoints) {
-      margin-left: 0;
-      margin-right: 0;
-    }
-  }
+  // .outset#{$key}-0 {
+  //   @include breakpoint-map-filtered($grid-breakpoints) {
+  //     margin-left: 0;
+  //     margin-right: 0;
+  //   }
+  // }
 
-  .outset#{$key}-all {
-    @include breakpoint-map-filtered($grid-breakpoints) {
-      $bpKey: map-key();
-      $bpVal: map-val();
-      $outset: map-closest-val($outsets, $bpKey);
-      margin-left: 0 - $outset;
-      margin-right: 0 - $outset;
-    }
-  }
+  // .outset#{$key}-all {
+  //   @include breakpoint-map-filtered($grid-breakpoints) {
+  //     $bpKey: map-key();
+  //     $bpVal: map-val();
+  //     $outset: map-closest-val($outsets, $bpKey);
+  //     margin-left: 0 - $outset;
+  //     margin-right: 0 - $outset;
+  //   }
+  // }
 
   // .outset#{$key}-p1 {
   //   @include breakpoint-map-filtered($grid-breakpoints) {
@@ -261,23 +262,23 @@
 
 // form grid
 
-.row--form {
-  margin-left: -8px;
-  margin-right: -8px;
+// .row--form {
+//   margin-left: -8px;
+//   margin-right: -8px;
 
-  @media (min-width: 880px) and (max-width: 1023px), (min-width: 1100px) {
-    margin-left: -10px;
-    margin-right: -10px;
-  }
-}
+//   @media (min-width: 880px) and (max-width: 1023px), (min-width: 1100px) {
+//     margin-left: -10px;
+//     margin-right: -10px;
+//   }
+// }
 
-.col--form {
-  padding: 0 8px;
+// .col--form {
+//   padding: 0 8px;
 
-  @media (min-width: 880px) and (max-width: 1023px), (min-width: 1100px) {
-    padding: 0 10px;
-  }
-}
+//   @media (min-width: 880px) and (max-width: 1023px), (min-width: 1100px) {
+//     padding: 0 10px;
+//   }
+// }
 
 // ======================================================================
 // GRID
@@ -298,18 +299,18 @@
     padding: 0 map-val();
   }
 
-  &--no-padding {
-    padding: 0;
-  }
+  // &--no-padding {
+  //   padding: 0;
+  // }
 
-  &--dash {
-    grid-template-rows: 1fr auto;
-    max-height: 90rem;
+  // &--dash {
+  //   grid-template-rows: 1fr auto;
+  //   max-height: 90rem;
 
-    @media (max-width: 440px) {
-      row-gap: 12px;
-    }
-  }
+  //   @media (max-width: 440px) {
+  //     row-gap: 12px;
+  //   }
+  // }
 }
 
 // @mixin grid($key: null) {

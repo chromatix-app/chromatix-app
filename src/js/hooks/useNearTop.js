@@ -5,17 +5,20 @@ const useNearTop = (ref, offset) => {
 
   useEffect(() => {
     const checkIfNearTop = () => {
-      const rect = ref.current.getBoundingClientRect();
-      setIsNearTop(rect.top <= offset);
+      const rect = ref.current?.getBoundingClientRect();
+      setIsNearTop(!rect || rect.top <= offset);
     };
 
-    const contentDiv = document.getElementById('content');
-    if (contentDiv) {
-      contentDiv.addEventListener('scroll', checkIfNearTop);
+    const contentElement = document.getElementById('content');
+    const scrollableElement = document.getElementById('scrollable');
+    const actualElement = scrollableElement || contentElement;
+
+    if (actualElement) {
+      actualElement.addEventListener('scroll', checkIfNearTop);
       checkIfNearTop();
 
       return () => {
-        contentDiv.removeEventListener('scroll', checkIfNearTop);
+        actualElement.removeEventListener('scroll', checkIfNearTop);
       };
     }
   }, [ref, offset]);

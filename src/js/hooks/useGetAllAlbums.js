@@ -16,6 +16,12 @@ const useGetAllAlbums = () => {
   const sortAlbums = useSelector(({ sessionModel }) => sessionModel.sortAlbums);
   const orderAlbums = useSelector(({ sessionModel }) => sessionModel.orderAlbums);
 
+  const colAlbumsArtist = useSelector(({ sessionModel }) => sessionModel.colAlbumsArtist);
+  const colAlbumsReleased = useSelector(({ sessionModel }) => sessionModel.colAlbumsReleased);
+  const colAlbumsAdded = useSelector(({ sessionModel }) => sessionModel.colAlbumsAdded);
+  const colAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colAlbumsLastPlayed);
+  const colAlbumsRating = useSelector(({ sessionModel }) => sessionModel.colAlbumsRating);
+
   // prevent sorting by rating if ratings are hidden
   const isRatingSortHidden = !optionShowStarRatings && sortAlbums === 'userRating';
 
@@ -50,6 +56,12 @@ const useGetAllAlbums = () => {
     });
   };
 
+  const setColumnVisibility = (columnKey, columnValue) => {
+    dispatch.sessionModel.setSessionState({
+      [columnKey]: columnValue,
+    });
+  };
+
   useEffect(() => {
     plex.getAllAlbums();
   }, []);
@@ -59,9 +71,18 @@ const useGetAllAlbums = () => {
     sortAlbums: actualSortAlbums,
     orderAlbums: actualOrderAlbums,
 
+    colOptions: {
+      colAlbumsArtist,
+      colAlbumsReleased,
+      colAlbumsAdded,
+      colAlbumsLastPlayed,
+      colAlbumsRating,
+    },
+
     setViewAlbums,
     setSortAlbums,
     setOrderAlbums,
+    setColumnVisibility,
 
     sortedAlbums,
   };

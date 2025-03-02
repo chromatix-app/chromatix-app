@@ -4,7 +4,7 @@
 
 import { useParams } from 'react-router-dom';
 
-import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTableV1, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTableV2, Loading, TitleHeading } from 'js/components';
 import { useGetFolderItems } from 'js/hooks';
 
 // ======================================================================
@@ -27,6 +27,73 @@ const FolderList = () => {
     folderOrder,
   } = useGetFolderItems(folderId);
 
+  const isLoading = !sortedFolders;
+  const isEmptyList = !isLoading && sortedFolders?.length === 0;
+  const isGridView = !isLoading && !isEmptyList && viewFolders === 'grid';
+  const isListView = !isLoading && !isEmptyList && viewFolders === 'list';
+
+  return (
+    <>
+      {(isLoading || isEmptyList || isGridView) && (
+        <Title
+          folderId={folderId}
+          isListView={isListView}
+          orderFolders={orderFolders}
+          setOrderFolders={setOrderFolders}
+          setSortFolders={setSortFolders}
+          setViewFolders={setViewFolders}
+          sortedFolders={sortedFolders}
+          sortFolders={sortFolders}
+          viewFolders={viewFolders}
+        />
+      )}
+      {isLoading && <Loading forceVisible inline showOffline />}
+      {isGridView && (
+        <ListCards
+          variant="folders"
+          folderId={folderId}
+          entries={sortedFolders}
+          playingOrder={folderOrder}
+          sortKey={sortFolders}
+        />
+      )}
+      {isListView && (
+        <ListTableV2
+          variant={'folders'}
+          folderId={folderId}
+          entries={sortedFolders}
+          playingOrder={folderOrder}
+          sortKey={sortFolders}
+          orderKey={orderFolders}
+        >
+          <Title
+            folderId={folderId}
+            isListView={isListView}
+            orderFolders={orderFolders}
+            setOrderFolders={setOrderFolders}
+            setSortFolders={setSortFolders}
+            setViewFolders={setViewFolders}
+            sortedFolders={sortedFolders}
+            sortFolders={sortFolders}
+            viewFolders={viewFolders}
+          />
+        </ListTableV2>
+      )}
+    </>
+  );
+};
+
+const Title = ({
+  folderId,
+  isListView,
+  orderFolders,
+  setOrderFolders,
+  setSortFolders,
+  setViewFolders,
+  sortedFolders,
+  sortFolders,
+  viewFolders,
+}) => {
   return (
     <>
       <TitleHeading
@@ -35,8 +102,9 @@ const FolderList = () => {
         subtitle={
           sortedFolders ? sortedFolders?.length + ' Item' + (sortedFolders?.length !== 1 ? 's' : '') : <>&nbsp;</>
         }
+        padding={!isListView}
       />
-      <FilterWrap>
+      <FilterWrap padding={!isListView}>
         <FilterToggle
           value={viewFolders}
           options={[
@@ -69,26 +137,6 @@ const FolderList = () => {
           </>
         )}
       </FilterWrap>
-      {!sortedFolders && <Loading forceVisible inline showOffline />}
-      {sortedFolders && viewFolders === 'grid' && (
-        <ListCards
-          variant="folders"
-          folderId={folderId}
-          entries={sortedFolders}
-          playingOrder={folderOrder}
-          sortKey={sortFolders}
-        />
-      )}
-      {sortFolders && viewFolders === 'list' && (
-        <ListTableV1
-          variant={'folders'}
-          folderId={folderId}
-          entries={sortedFolders}
-          playingOrder={folderOrder}
-          sortKey={sortFolders}
-          orderKey={orderFolders}
-        />
-      )}
     </>
   );
 };

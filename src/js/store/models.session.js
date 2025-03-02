@@ -54,7 +54,7 @@ const sessionState = {
   menuShowArtistStyles: true,
   menuShowAlbumStyles: true,
 
-  optionShowFullTitles: false,
+  optionShowFullTitles_Deprecated: false,
   optionShowStarRatings: true,
   optionLogPlexPlayback: true,
 
@@ -84,8 +84,8 @@ const sessionState = {
   viewAlbumStyleItems: 'grid',
 
   sortArtists: 'title',
-  sortArtistAlbums: 'title',
-  sortAlbums: 'title',
+  sortArtistAlbums: 'releaseDate',
+  sortAlbums: 'title', // artist-asc-releaseDate-asc
   sortAlbumTracks: {},
   sortFolders: 'sortOrder',
   sortPlaylists: 'title',
@@ -128,6 +128,12 @@ const sessionState = {
   orderArtistStyleItems: 'asc',
   orderAlbumStyles: 'asc',
   orderAlbumStyleItems: 'asc',
+
+  colAlbumsArtist: true,
+  colAlbumsReleased: true,
+  colAlbumsAdded: true,
+  colAlbumsLastPlayed: true,
+  colAlbumsRating: true,
 };
 
 const playingState = {
