@@ -21,7 +21,7 @@ import style from './ListTableV2.module.scss';
 
 const isLocal = process.env.REACT_APP_ENV === 'local';
 
-const virtualThreshold = !isLocal ? 150 : 1;
+const virtualThreshold = !isLocal ? 150 : 150;
 
 // ======================================================================
 // COMPONENT
