@@ -4,7 +4,7 @@
 
 import { useSelector } from 'react-redux';
 
-import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTableV1, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTableV2, Loading, TitleHeading } from 'js/components';
 import { useGetAllCollections } from 'js/hooks';
 
 // ======================================================================
@@ -12,7 +12,6 @@ import { useGetAllCollections } from 'js/hooks';
 // ======================================================================
 
 const AlbumCollectionList = () => {
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
   const {
     viewCollections,
     sortCollections,
@@ -22,6 +21,62 @@ const AlbumCollectionList = () => {
     setOrderCollections,
     sortedCollections,
   } = useGetAllCollections('AlbumCollections');
+
+  const isLoading = !sortedCollections;
+  const isEmptyList = !isLoading && sortedCollections?.length === 0;
+  const isGridView = !isLoading && !isEmptyList && viewCollections === 'grid';
+  const isListView = !isLoading && !isEmptyList && viewCollections === 'list';
+
+  return (
+    <>
+      {(isLoading || isEmptyList || isGridView) && (
+        <Title
+          isListView={isListView}
+          orderCollections={orderCollections}
+          setOrderCollections={setOrderCollections}
+          setSortCollections={setSortCollections}
+          setViewCollections={setViewCollections}
+          sortCollections={sortCollections}
+          sortedCollections={sortedCollections}
+          viewCollections={viewCollections}
+        />
+      )}
+      {isLoading && <Loading forceVisible inline showOffline />}
+      {isGridView && <ListCards variant="collections" entries={sortedCollections} />}
+      {isListView && (
+        <ListTableV2
+          variant="albumCollections"
+          entries={sortedCollections}
+          sortKey={sortCollections}
+          orderKey={orderCollections}
+        >
+          <Title
+            isListView={isListView}
+            orderCollections={orderCollections}
+            setOrderCollections={setOrderCollections}
+            setSortCollections={setSortCollections}
+            setViewCollections={setViewCollections}
+            sortCollections={sortCollections}
+            sortedCollections={sortedCollections}
+            viewCollections={viewCollections}
+          />
+        </ListTableV2>
+      )}
+    </>
+  );
+};
+
+const Title = ({
+  isListView,
+  orderCollections,
+  setOrderCollections,
+  setSortCollections,
+  setViewCollections,
+  sortCollections,
+  sortedCollections,
+  viewCollections,
+}) => {
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   return (
     <>
@@ -35,8 +90,9 @@ const AlbumCollectionList = () => {
             <>&nbsp;</>
           )
         }
+        padding={!isListView}
       />
-      <FilterWrap>
+      <FilterWrap padding={!isListView}>
         <FilterToggle
           value={viewCollections}
           options={[
@@ -70,18 +126,6 @@ const AlbumCollectionList = () => {
           </>
         )}
       </FilterWrap>
-      {!sortedCollections && <Loading forceVisible inline showOffline />}
-      {sortedCollections && viewCollections === 'grid' && (
-        <ListCards variant="collections" entries={sortedCollections} />
-      )}
-      {sortedCollections && viewCollections === 'list' && (
-        <ListTableV1
-          variant="albumCollections"
-          entries={sortedCollections}
-          sortKey={sortCollections}
-          orderKey={orderCollections}
-        />
-      )}
     </>
   );
 };

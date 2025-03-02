@@ -2,17 +2,31 @@
 
 .wrap {
   position: relative;
+  overflow: hidden;
   top: 0;
+  // background: rgba(255, 0, 0, 0.2);
 
-  &Inline {
+  &Title {
     display: inline-block;
-    top: 1px;
-    margin-left: 6px;
-
-    &:first-child {
-      margin-left: 0;
-    }
+    margin-bottom: -3px;
   }
+
+  &Card {
+  }
+
+  &List {
+    display: inline-block;
+  }
+
+  // &Inline {
+  //   display: inline-block;
+  //   top: 0;
+  //   margin-left: 6px;
+
+  //   &:first-child {
+  //     margin-left: 0;
+  //   }
+  // }
 
   &Zero {
     opacity: 0.5;

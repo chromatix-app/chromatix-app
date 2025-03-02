@@ -30,9 +30,11 @@ import { ReactComponent as ClockRewindIcon } from './icons/music/clock-rewind.sv
 import { ReactComponent as CloudOfflineIcon } from './icons/music/cloud-offline.svg';
 import { ReactComponent as CogIcon } from './icons/music/cog.svg';
 import { ReactComponent as CollapseIcon } from './icons/music/collapse.svg';
+import { ReactComponent as ColumnsCircleIcon } from './icons/music/columns-circle.svg';
 import { ReactComponent as CrossSmallIcon } from './icons/music/cross-small.svg';
 import { ReactComponent as DiscIcon } from './icons/music/disc.svg';
 import { ReactComponent as DownloadIcon } from './icons/music/download.svg';
+import { ReactComponent as EllipsisCircleIcon } from './icons/music/ellipsis-circle.svg';
 import { ReactComponent as ExpandIcon } from './icons/music/expand.svg';
 import { ReactComponent as ExternalLinkIcon } from './icons/music/external-link.svg';
 import { ReactComponent as FastForwardIcon } from './icons/music/fast-forward.svg';
@@ -45,11 +47,13 @@ import { ReactComponent as ListIcon } from './icons/music/list.svg';
 import { ReactComponent as LogoutIcon } from './icons/music/logout.svg';
 import { ReactComponent as MailIcon } from './icons/music/mail.svg';
 import { ReactComponent as MailPlaneIcon } from './icons/music/mail-plane.svg';
+import { ReactComponent as MicrophoneIcon } from './icons/music/microphone.svg';
 import { ReactComponent as MusicNoteDoubleIcon } from './icons/music/music-note-double.svg';
 import { ReactComponent as MusicNoteSingleIcon } from './icons/music/music-note-single.svg';
 import { ReactComponent as NextIcon } from './icons/music/next.svg';
 import { ReactComponent as PaintPaletteIcon } from './icons/music/paint-palette.svg';
 import { ReactComponent as PauseIcon } from './icons/music/pause.svg';
+import { ReactComponent as PauseCircleIcon } from './icons/music/pause-circle.svg';
 import { ReactComponent as PauseFilledIcon } from './icons/music/pause-filled.svg';
 import { ReactComponent as PencilIcon } from './icons/music/pencil.svg';
 import { ReactComponent as PeopleIcon } from './icons/music/people.svg';
@@ -113,9 +117,11 @@ const customIcons = {
   CloudOfflineIcon,
   CogIcon,
   CollapseIcon,
+  ColumnsCircleIcon,
   CrossSmallIcon,
   DiscIcon,
   DownloadIcon,
+  EllipsisCircleIcon,
   ExpandIcon,
   ExternalLinkIcon,
   FastForwardIcon,
@@ -128,11 +134,13 @@ const customIcons = {
   LogoutIcon,
   MailIcon,
   MailPlaneIcon,
+  MicrophoneIcon,
   MusicNoteDoubleIcon,
   MusicNoteSingleIcon,
   NextIcon,
   PaintPaletteIcon,
   PauseIcon,
+  PauseCircleIcon,
   PauseFilledIcon,
   PencilIcon,
   PeopleIcon,

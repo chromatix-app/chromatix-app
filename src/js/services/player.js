@@ -2,13 +2,15 @@ let playerElement = null;
 
 export const init = (volumeLevel, volumeMuted, onLoadStart, onCanPlay, onEnded) => {
   console.log('%c--- player - init ---', 'color:#a18507');
-  playerElement = document.createElement('audio');
+  if (!playerElement) {
+    playerElement = document.createElement('audio');
 
-  playerElement.volume = volumeMuted ? 0 : volumeLevel / 100;
+    playerElement.volume = volumeMuted ? 0 : volumeLevel / 100;
 
-  playerElement.addEventListener('loadstart', onLoadStart);
-  playerElement.addEventListener('canplay', onCanPlay);
-  playerElement.addEventListener('ended', onEnded);
+    playerElement.addEventListener('loadstart', onLoadStart);
+    playerElement.addEventListener('canplay', onCanPlay);
+    playerElement.addEventListener('ended', onEnded);
+  }
 };
 
 export const unload = () => {
@@ -19,7 +21,7 @@ export const unload = () => {
 };
 
 export const loadTrack = (trackSrc, progress = 0, play = true) => {
-  console.log('%c--- player - loadTrack ---', 'color:#a18507');
+  // console.log('%c--- player - loadTrack ---', 'color:#a18507');
   playerElement.src = trackSrc;
   playerElement.load();
   if (progress) {

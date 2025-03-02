@@ -186,16 +186,16 @@ export const getAllServers = () => {
 // GET FASTEST SERVER CONNECTION
 // ======================================================================
 
-const getFastestServerConnection = async (currentServer) => {
+const getFastestConnection = async (currentServer) => {
   let plexBaseUrl;
   try {
-    await plexTools.getFastestServerConnection(currentServer).then((response) => {
+    await plexTools.getFastestConnection(currentServer).then((response) => {
       plexBaseUrl = response.uri;
       store.dispatch.appModel.setAppState({ plexBaseUrl });
     });
   } catch (error) {
     console.error(error);
-    store.dispatch.appModel.setAppState({ errorPlexFastestServer: true });
+    store.dispatch.appModel.setAppState({ errorPlexFastestConnection: true });
     analyticsEvent('Error: Plex Get Fastest Server Connection');
     throw error;
   }
@@ -220,7 +220,7 @@ export const getAllLibraries = async () => {
         // before getting libraries, get the fastest server connection
         let plexBaseUrl;
         try {
-          plexBaseUrl = await getFastestServerConnection(currentServer);
+          plexBaseUrl = await getFastestConnection(currentServer);
         } catch (error) {
           getUserLibrariesRunning = false;
           return;
@@ -1070,7 +1070,7 @@ export const getSetItems = (libraryId, setId, typeKey) => {
               plexTranspose[`transpose${primaryKey}Data`](entry, libraryId, plexBaseUrl, accessToken)
             ) || [];
 
-          console.log('setItems', setItems);
+          // console.log('setItems', setItems);
 
           store.dispatch.appModel[`store${typeKey}`]({ libraryId, setId, setItems });
         })

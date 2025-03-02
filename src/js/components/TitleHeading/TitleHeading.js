@@ -14,7 +14,7 @@ import style from './TitleHeading.module.scss';
 // COMPONENT
 // ======================================================================
 
-const TitleHeading = ({ title, subtitle, detail, thumb, icon, showPlay, handlePlay, filters }) => {
+const TitleHeading = ({ title, subtitle, detail, thumb, icon, showPlay, handlePlay, filters, padding = true }) => {
   const triggerRef = useRef(null);
   const isNearTop = useNearTop(triggerRef, 90);
 
@@ -22,10 +22,12 @@ const TitleHeading = ({ title, subtitle, detail, thumb, icon, showPlay, handlePl
 
   return (
     <>
-      <div className={clsx(style.stickyWrap, { [style.stickyWrapVisible]: isNearTop })}>
+      <div
+        className={clsx(style.stickyWrap, { [style.stickyWrapVisible]: isNearTop, [style.stickyWrapPadding]: padding })}
+      >
         <div className={style.stickyContent}>{title && <h1 className={clsx(style.stickyTitle)}>{title}</h1>}</div>
       </div>
-      <div className={style.wrap}>
+      <div className={clsx(style.wrap, { [style.wrapPadding]: padding })}>
         {thumb && (
           <div className={style.thumb}>
             <img src={thumb} alt={title} draggable="false" />
@@ -38,6 +40,7 @@ const TitleHeading = ({ title, subtitle, detail, thumb, icon, showPlay, handlePl
             </div>
           </div>
         )}
+        {!icon && thumb === null && <div className={style.thumb}></div>}
         <div className={style.content}>
           {title && <h1 className={clsx(style.title, style[titleSize])}>{title}</h1>}
           {subtitle && <h2 className={style.subtitle}>{subtitle}</h2>}

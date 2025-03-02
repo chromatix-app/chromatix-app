@@ -84,8 +84,8 @@ const ControlBar = () => {
   return (
     <div className={style.wrap}>
       <div className={style.current}>
-        <div className={style.cover}>
-          {trackCurrent && trackCurrent.thumb && (
+        <div className={clsx(style.cover, { [style.coverPlaceholder]: !trackCurrent || !trackCurrent?.thumb })}>
+          {trackCurrent && (
             <NavLink
               className={style.coverLink}
               to={playingLink}
@@ -95,7 +95,7 @@ const ControlBar = () => {
                 analyticsEvent('Navigate to Playing');
               }}
             >
-              <img src={trackCurrent.thumb} alt={trackCurrent.title} draggable="false" />
+              {trackCurrent.thumb && <img src={trackCurrent.thumb} alt={trackCurrent.title} draggable="false" />}
             </NavLink>
           )}
         </div>

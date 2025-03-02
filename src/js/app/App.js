@@ -17,14 +17,14 @@ import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 // COMPONENT
 // ======================================================================
 
-// const isLocal = process.env.REACT_APP_ENV === 'local';
+const isLocal = process.env.REACT_APP_ENV === 'local';
 const isProduction = process.env.REACT_APP_ENV === 'production';
 
 const App = () => {
   const inited = useSelector(({ appModel }) => appModel.inited);
   const loggedIn = useSelector(({ appModel }) => appModel.loggedIn);
 
-  const errorPlexFastestServer = useSelector(({ appModel }) => appModel.errorPlexFastestServer);
+  const errorPlexFastestConnection = useSelector(({ appModel }) => appModel.errorPlexFastestConnection);
   const errorPlexLibraries = useSelector(({ appModel }) => appModel.errorPlexLibraries);
   const errorPlexLogin = useSelector(({ appModel }) => appModel.errorPlexLogin);
   const errorPlexServers = useSelector(({ appModel }) => appModel.errorPlexServers);
@@ -54,6 +54,11 @@ const App = () => {
 
   // initialise on load
   useEffect(() => {
+    // add local class to html
+    if (isLocal) {
+      document.documentElement.classList.add('env-local');
+    }
+
     // add electron classes to html
     if (isElectron) {
       document.documentElement.classList.add('electron');
@@ -87,7 +92,7 @@ const App = () => {
   }, [loggedIn]);
 
   // error pages
-  if (errorPlexFastestServer) {
+  if (errorPlexFastestConnection) {
     return (
       <div className="wrap">
         <div className="electron-drag"></div>
@@ -102,7 +107,7 @@ const App = () => {
             </>
           }
           buttonText="Ok"
-          buttonClick={dispatch.appModel.dismissErrorPlexFastestServer}
+          buttonClick={dispatch.appModel.dismissErrorPlexFastestConnection}
         />
       </div>
     );
@@ -223,23 +228,38 @@ const App = () => {
 const breakPoints = [620, 680, 800, 860, 920, 980];
 
 const AppMain = () => {
+  const dispatch = useDispatch();
   const contentRef = useRef();
 
   const [contentContainerClass, setContentContainerClass] = useState(0);
+  const [contentBreakpoint, setContentBreakpoint] = useState(0);
 
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
 
   const { windowWidth } = useWindowSize();
 
-  // handle window size
+  // Handle window resizing
   useEffect(() => {
     const contentWidth = contentRef.current.offsetWidth;
-    const classList = breakPoints
-      .filter((bp) => bp <= contentWidth)
-      .map((bp) => 'cq-' + bp)
-      .join(' ');
-    setContentContainerClass(classList);
+    const bpList = breakPoints.filter((bp) => bp <= contentWidth);
+    const newContainerClass = bpList.map((bp) => 'cq-' + bp).join(' ');
+    const newBreakpoint = bpList[bpList.length - 1] || 0;
+    if (contentContainerClass !== newContainerClass) {
+      setContentContainerClass(newContainerClass);
+    }
+    if (contentBreakpoint !== newBreakpoint) {
+      setContentBreakpoint(newBreakpoint);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [windowWidth, queueIsVisible]);
+
+  // Store current breakpoint (this theoretically won't run until after the HTML has re-rendered, which is essential)
+  useEffect(() => {
+    dispatch.appModel.setAppState({
+      contentBreakpoint,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contentBreakpoint]);
 
   return (
     <div className="wrap">

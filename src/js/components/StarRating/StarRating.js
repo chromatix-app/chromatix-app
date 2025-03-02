@@ -6,7 +6,16 @@ import * as plex from 'js/services/plex';
 
 import style from './StarRating.module.scss';
 
-const StarRating = ({ type, ratingKey, rating = 0, inline, size = 14, editable = false, alwaysVisible = false }) => {
+const StarRating = ({
+  variant,
+  type,
+  ratingKey,
+  rating = 0,
+  inline,
+  size = 14,
+  editable = false,
+  alwaysVisible = false,
+}) => {
   const [displayRating, setDisplayRating] = useState(null);
 
   const handleMouseEnter = useCallback((e) => {
@@ -30,6 +39,7 @@ const StarRating = ({ type, ratingKey, rating = 0, inline, size = 14, editable =
     return null;
   }
 
+  const variantClassName = 'wrap' + variant.charAt(0).toUpperCase() + variant.slice(1);
   const actualRating = displayRating ? displayRating : rating;
   const halfRating = actualRating / 2;
 
@@ -59,12 +69,13 @@ const StarRating = ({ type, ratingKey, rating = 0, inline, size = 14, editable =
 
   return (
     <div
-      className={clsx(style.wrap, {
+      className={clsx(style.wrap, style[variantClassName], {
         [style.wrapInline]: inline,
         [style.wrapZero]: rating <= 0 && !displayRating,
       })}
       style={{
         width: size * 5,
+        height: size,
       }}
     >
       <div className={style.stars}>{stars}</div>

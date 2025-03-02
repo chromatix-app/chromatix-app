@@ -4,7 +4,7 @@
 
 import { useSelector } from 'react-redux';
 
-import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTableV1, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTableV2, Loading, TitleHeading } from 'js/components';
 import { useGetAllPlaylists } from 'js/hooks';
 
 // ======================================================================
@@ -12,7 +12,6 @@ import { useGetAllPlaylists } from 'js/hooks';
 // ======================================================================
 
 const PlaylistList = () => {
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
   const {
     viewPlaylists,
     sortPlaylists,
@@ -22,6 +21,57 @@ const PlaylistList = () => {
     setOrderPlaylists,
     sortedPlaylists,
   } = useGetAllPlaylists();
+
+  const isLoading = !sortedPlaylists;
+  const isEmptyList = !isLoading && sortedPlaylists?.length === 0;
+  const isGridView = !isLoading && !isEmptyList && viewPlaylists === 'grid';
+  const isListView = !isLoading && !isEmptyList && viewPlaylists === 'list';
+
+  return (
+    <>
+      {(isLoading || isEmptyList || isGridView) && (
+        <Title
+          isListView={isListView}
+          orderPlaylists={orderPlaylists}
+          setOrderPlaylists={setOrderPlaylists}
+          setSortPlaylists={setSortPlaylists}
+          setViewPlaylists={setViewPlaylists}
+          sortedPlaylists={sortedPlaylists}
+          sortPlaylists={sortPlaylists}
+          viewPlaylists={viewPlaylists}
+        />
+      )}
+      {isLoading && <Loading forceVisible inline showOffline />}
+      {isGridView && <ListCards variant="playlists" entries={sortedPlaylists} />}
+      {isListView && (
+        <ListTableV2 variant="playlists" entries={sortedPlaylists} sortKey={sortPlaylists} orderKey={orderPlaylists}>
+          <Title
+            isListView={isListView}
+            orderPlaylists={orderPlaylists}
+            setOrderPlaylists={setOrderPlaylists}
+            setSortPlaylists={setSortPlaylists}
+            setViewPlaylists={setViewPlaylists}
+            sortedPlaylists={sortedPlaylists}
+            sortPlaylists={sortPlaylists}
+            viewPlaylists={viewPlaylists}
+          />
+        </ListTableV2>
+      )}
+    </>
+  );
+};
+
+const Title = ({
+  isListView,
+  orderPlaylists,
+  setOrderPlaylists,
+  setSortPlaylists,
+  setViewPlaylists,
+  sortedPlaylists,
+  sortPlaylists,
+  viewPlaylists,
+}) => {
+  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   return (
     <>
@@ -35,8 +85,9 @@ const PlaylistList = () => {
             <>&nbsp;</>
           )
         }
+        padding={!isListView}
       />
-      <FilterWrap>
+      <FilterWrap padding={!isListView}>
         <FilterToggle
           value={viewPlaylists}
           options={[
@@ -73,11 +124,6 @@ const PlaylistList = () => {
           </>
         )}
       </FilterWrap>
-      {!sortedPlaylists && <Loading forceVisible inline showOffline />}
-      {sortedPlaylists && viewPlaylists === 'grid' && <ListCards variant="playlists" entries={sortedPlaylists} />}
-      {sortedPlaylists && viewPlaylists === 'list' && (
-        <ListTableV1 variant="playlists" entries={sortedPlaylists} sortKey={sortPlaylists} orderKey={orderPlaylists} />
-      )}
     </>
   );
 };
