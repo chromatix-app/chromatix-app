@@ -12,7 +12,7 @@
   text-align: center;
 
   @media (min-width: 1024px) {
-    padding: 9px 30px 10px;
+    padding: 9px 26px 10px;
   }
 
   a {
@@ -22,7 +22,7 @@
   }
 }
 
-// CURRENT
+// CURRENTLY PLAYING
 
 .current {
   display: flex;
@@ -38,9 +38,14 @@
   margin-right: 10px;
   border-radius: 6px;
 
+  @media (min-width: 880px) {
+    width: 56px;
+    height: 56px;
+    margin-right: 12px;
+  }
   @media (min-width: 1024px) {
-    width: 64px;
-    height: 64px;
+    width: 68px;
+    height: 68px;
     margin-right: 15px;
   }
 }
@@ -120,7 +125,7 @@
   }
 }
 
-// CONTROLS
+// PRIMARY CONTROLS
 
 .controls {
   display: flex;
