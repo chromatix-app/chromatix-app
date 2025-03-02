@@ -23,7 +23,8 @@ html.electron.electron-platform-win {
   .layout-sidebar,
   .layout-content,
   .layout-controls,
-  .layout-rightbar {
+  .layout-rightbar,
+  #scrollable {
     &:hover {
       &::-webkit-scrollbar {
         visibility: visible;
