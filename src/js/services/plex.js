@@ -34,12 +34,6 @@ const endpointConfig = {
         artistName
       )}&artist.title!=${encodeURIComponent(artistName)}&excludeFields=summary`,
   },
-  album: {
-    getAllAlbums: (base, libraryId) =>
-      `${base}/library/sections/${libraryId}/all?type=9&excludeFields=${albumExcludes}`,
-    getDetails: (base, albumId) => `${base}/library/metadata/${albumId}`,
-    getTracks: (base, albumId) => `${base}/library/metadata/${albumId}/children`,
-  },
   folder: {
     getFolderItems: (base, libraryId, folderId) => `${base}/library/sections/${libraryId}/folder?parent=${folderId}`,
   },
@@ -142,8 +136,7 @@ export const getUserInfo = () => {
   plexTools
     .getUserInfo()
     .then((response) => {
-      const currentUser = plexTranspose.transposeUserData(response);
-      store.dispatch.appModel.setLoggedIn(currentUser);
+      store.dispatch.appModel.setLoggedIn(response);
     })
     .catch((error) => {
       console.error(error);
@@ -167,8 +160,7 @@ export const getAllServers = () => {
       plexTools
         .getAllServers()
         .then((response) => {
-          const allServers = response?.map((server) => plexTranspose.transposeServerData(server)) || [];
-          store.dispatch.appModel.storeAllServers(allServers);
+          store.dispatch.appModel.storeAllServers(response);
         })
         .catch((error) => {
           console.error(error);
@@ -190,7 +182,7 @@ const getFastestConnection = async (currentServer) => {
   let plexBaseUrl;
   try {
     await plexTools.getFastestConnection(currentServer).then((response) => {
-      plexBaseUrl = response.uri;
+      plexBaseUrl = response;
       store.dispatch.appModel.setAppState({ plexBaseUrl });
     });
   } catch (error) {
@@ -230,12 +222,8 @@ export const getAllLibraries = async () => {
         plexTools
           .getAllLibraries(plexBaseUrl, accessToken)
           .then((response) => {
-            // transpose library data
-            const allLibraries = response
-              .filter((library) => library.type === 'artist')
-              .map((library) => plexTranspose.transposeLibraryData(library));
-            store.dispatch.sessionModel.refreshCurrentLibrary(allLibraries);
-            store.dispatch.appModel.setAppState({ allLibraries });
+            store.dispatch.sessionModel.refreshCurrentLibrary(response);
+            store.dispatch.appModel.setAppState({ allLibraries: response });
           })
           .catch((error) => {
             console.error(error);
@@ -353,7 +341,9 @@ export const getAllArtists = () => {
             allArtists,
           });
         })
-        .catch((error) => {})
+        .catch((error) => {
+          console.error(error);
+        })
         .finally(() => {
           getAllArtistsRunning = false;
         });
@@ -388,7 +378,9 @@ export const getArtistDetails = (libraryId, artistId) => {
 
           store.dispatch.appModel.storeArtistDetails(artistDetails);
         })
-        .catch((error) => {})
+        .catch((error) => {
+          console.error(error);
+        })
         .finally(() => {
           getArtistDetailsRunning = false;
         });
@@ -425,7 +417,9 @@ export const getAllArtistAlbums = (libraryId, artistId) => {
 
           store.dispatch.appModel.storeArtistAlbums({ libraryId, artistId, artistAlbums });
         })
-        .catch((error) => {})
+        .catch((error) => {
+          console.error(error);
+        })
         .finally(() => {
           getAllArtistAlbumsRunning = false;
         });
@@ -467,7 +461,9 @@ export const getAllArtistRelated = (libraryId, artistId) => {
 
           store.dispatch.appModel.storeArtistRelated({ libraryId, artistId, artistRelated });
         })
-        .catch((error) => {})
+        .catch((error) => {
+          console.error(error);
+        })
         .finally(() => {
           getAllArtistRelatedRunning = false;
         });
@@ -523,7 +519,9 @@ export const getAllArtistCompilationAlbums = (libraryId, artistId, artistName) =
             store.dispatch.appModel.storeArtistCompilationAlbums({ libraryId, artistId, artistCompilationAlbums });
           }
         })
-        .catch((error) => {})
+        .catch((error) => {
+          console.error(error);
+        })
         .finally(() => {
           getAllArtistCompilationAlbumsRunning = false;
         });
@@ -554,6 +552,7 @@ const getAllArtistCompilationAlbumIds = (libraryId, artistName) => {
         resolve(artistCompilationAlbums);
       })
       .catch((error) => {
+        console.error(error);
         reject(error);
       });
   });
@@ -574,25 +573,19 @@ export const getAllAlbums = () => {
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
-      const endpoint = endpointConfig.album.getAllAlbums(plexBaseUrl, libraryId);
 
-      fetchDataPromise(endpoint, accessToken)
+      plexTools
+        .getAllAlbums(plexBaseUrl, libraryId, accessToken)
         .then((response) => {
-          // console.log(response.MediaContainer.Metadata);
-
-          const allAlbums =
-            response.MediaContainer.Metadata?.map((album) =>
-              plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
-            ) || [];
-
-          // console.log('allAlbums', allAlbums);
-
+          // console.log(response);
           store.dispatch.appModel.setAppState({
             haveGotAllAlbums: true,
-            allAlbums,
+            allAlbums: response,
           });
         })
-        .catch((error) => {})
+        .catch((error) => {
+          console.error(error);
+        })
         .finally(() => {
           getAllAlbumsRunning = false;
         });
@@ -614,24 +607,19 @@ export const getAlbumDetails = (libraryId, albumId, callback) => {
       getAlbumDetailsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-      const endpoint = endpointConfig.album.getDetails(plexBaseUrl, albumId);
 
-      fetchDataPromise(endpoint, accessToken)
+      plexTools
+        .getAlbumDetails(plexBaseUrl, libraryId, albumId, accessToken)
         .then((response) => {
-          // console.log(response.MediaContainer.Metadata);
-
-          const album = response.MediaContainer.Metadata[0];
-          const albumDetails = plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken);
-
-          // console.log('albumDetails', albumDetails);
-
-          store.dispatch.appModel.storeAlbumDetails(albumDetails);
-
+          // console.log(response);
+          store.dispatch.appModel.storeAlbumDetails(response);
           if (callback) {
             callback();
           }
         })
-        .catch((error) => {})
+        .catch((error) => {
+          console.error(error);
+        })
         .finally(() => {
           getAlbumDetailsRunning = false;
         });
@@ -654,24 +642,16 @@ export const getAlbumTracks = (libraryId, albumId) => {
         getAlbumTracksRunning = true;
         const accessToken = store.getState().sessionModel.currentServer.accessToken;
         const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-        const endpoint = endpointConfig.album.getTracks(plexBaseUrl, albumId);
 
-        fetchDataPromise(endpoint, accessToken)
+        plexTools
+          .getAlbumTracks(plexBaseUrl, libraryId, albumId, accessToken)
           .then((response) => {
             // console.log(response.MediaContainer.Metadata);
-
-            const albumTracks =
-              response.MediaContainer.Metadata?.map((track) =>
-                plexTranspose.transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
-              ) || [];
-
-            // console.log('albumTracks', albumTracks);
-
-            store.dispatch.appModel.storeAlbumTracks({ libraryId, albumId, albumTracks });
-
+            store.dispatch.appModel.storeAlbumTracks({ libraryId, albumId, albumTracks: response });
             resolve();
           })
           .catch((error) => {
+            console.error(error);
             reject();
           })
           .finally(() => {
@@ -743,6 +723,7 @@ export const getFolderItems = (folderId) => {
             resolve();
           })
           .catch((error) => {
+            console.error(error);
             reject();
           })
           .finally(() => {
@@ -790,7 +771,9 @@ export const getAllPlaylists = () => {
 
           store.dispatch.appModel.setAppState({ allPlaylists });
         })
-        .catch((error) => {})
+        .catch((error) => {
+          console.error(error);
+        })
         .finally(() => {
           getAllPlaylistsRunning = false;
         });
@@ -827,7 +810,9 @@ export const getPlaylistDetails = (libraryId, playlistId) => {
 
           store.dispatch.appModel.storePlaylistDetails(playlistDetails);
         })
-        .catch((error) => {})
+        .catch((error) => {
+          console.error(error);
+        })
         .finally(() => {
           getPlaylistDetailsRunning = false;
         });
@@ -868,6 +853,7 @@ export const getPlaylistTracks = (libraryId, playlistId) => {
             resolve();
           })
           .catch((error) => {
+            console.error(error);
             reject();
           })
           .finally(() => {
@@ -918,7 +904,9 @@ export const getAllCollections = () => {
 
           store.dispatch.appModel.setAppState({ allArtistCollections, allAlbumCollections });
         })
-        .catch((error) => {})
+        .catch((error) => {
+          console.error(error);
+        })
         .finally(() => {
           getAllCollectionsRunning = false;
         });
@@ -963,7 +951,9 @@ export const getCollectionItems = (libraryId, collectionId, typeKey) => {
             collectionItems,
           });
         })
-        .catch((error) => {})
+        .catch((error) => {
+          console.error(error);
+        })
         .finally(() => {
           getCollectionItemsRunning[typeKey] = false;
         });
@@ -1019,7 +1009,9 @@ export const getAllSets = (typeKey) => {
 
           store.dispatch.appModel.setAppState({ [`all${typeKey}`]: allSets });
         })
-        .catch((error) => {})
+        .catch((error) => {
+          console.error(error);
+        })
         .finally(() => {
           getAllSetsRunning[typeKey] = false;
         });
@@ -1074,7 +1066,9 @@ export const getSetItems = (libraryId, setId, typeKey) => {
 
           store.dispatch.appModel[`store${typeKey}`]({ libraryId, setId, setItems });
         })
-        .catch((error) => {})
+        .catch((error) => {
+          console.error(error);
+        })
         .finally(() => {
           getSetItemsRunning[typeKey] = false;
         });

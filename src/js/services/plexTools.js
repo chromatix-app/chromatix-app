@@ -7,6 +7,7 @@ import CryptoJS from 'crypto-js';
 import { XMLParser } from 'fast-xml-parser';
 
 import config from 'js/_config/config';
+import * as plexTranspose from 'js/services/plexTranspose';
 
 // ======================================================================
 // OPTIONS
@@ -37,19 +38,30 @@ const endpointConfig = {
     getAllServers: () => 'https://plex.tv/api/v2/resources',
   },
   library: {
-    getAllLibraries: (base) => `${base}/library/sections`,
+    getAllLibraries: (baseUrl) => `${baseUrl}/library/sections`,
+  },
+  album: {
+    getAllAlbums: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
+    getDetails: (baseUrl, albumId) => `${baseUrl}/library/metadata/${albumId}`,
+    getTracks: (baseUrl, albumId) => `${baseUrl}/library/metadata/${albumId}/children`,
   },
   search: {
-    searchLibrary: (base) => `${base}/library/search`,
-    searchHub: (base) => `${base}/hubs/search`,
+    searchLibrary: (baseUrl) => `${baseUrl}/library/search`,
+    searchHub: (baseUrl) => `${baseUrl}/hubs/search`,
   },
   rating: {
-    setStarRating: (base) => `${base}/:/rate`,
+    setStarRating: (baseUrl) => `${baseUrl}/:/rate`,
   },
   status: {
-    postPlaybackStatus: (base) => `${base}/:/timeline`,
+    postPlaybackStatus: (baseUrl) => `${baseUrl}/:/timeline`,
   },
 };
+
+// const artistExcludes = 'summary,guid,key,parentRatingKey,parentTitle,skipCount';
+const albumExcludes =
+  'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,parentThumb,studio';
+// const artistAndAlbumExcludes =
+//   'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,skipCount,studio';
 
 // ======================================================================
 // HELPER FUNCTIONS
@@ -114,6 +126,22 @@ const getBrowserName = () => {
     Array.isArray(b.identifier) ? b.identifier.some((id) => userAgent.includes(id)) : userAgent.includes(b.identifier)
   );
   return browser ? browser.name : 'Unknown';
+};
+
+// ======================================================================
+// ABORT HANDLING
+// ======================================================================
+
+let abortControllers = [];
+
+export const abortAllRequests = () => {
+  if (abortControllers.length > 0) {
+    console.log('%c### plexTools - abortAllRequests ###', 'color:#f00;');
+    abortControllers.forEach((controller) => {
+      controller.abort();
+    });
+    abortControllers = [];
+  }
 };
 
 // ======================================================================
@@ -292,8 +320,8 @@ export const getUserInfo = () => {
         })
         .then((response) => {
           const parser = new XMLParser({ ignoreAttributes: false });
-          const jsonObj = parser.parse(response.data).user;
-          resolve(jsonObj);
+          const data = plexTranspose.transposeUserData(parser.parse(response.data).user);
+          resolve(data);
         })
         .catch((error) => {
           if (error?.code !== 'ERR_NETWORK') {
@@ -339,7 +367,10 @@ export const getAllServers = () => {
           },
         })
         .then((response) => {
-          const data = response?.data?.filter((resource) => resource.provides === 'server');
+          const data =
+            response?.data
+              ?.filter((resource) => resource.provides === 'server')
+              ?.map((server) => plexTranspose.transposeServerData(server)) || [];
           resolve(data);
         })
         .catch((error) => {
@@ -392,7 +423,7 @@ export const getFastestConnection = (server) => {
             },
             timeout: 3000,
           })
-          .then(() => resolve(connection))
+          .then(() => resolve(connection.uri))
           .catch((error) => {
             reject({
               code: 'getFastestConnection.1',
@@ -432,7 +463,10 @@ export const getAllLibraries = (baseUrl, accessToken) => {
           },
         })
         .then((response) => {
-          resolve(response?.data?.MediaContainer.Directory);
+          const data = response?.data?.MediaContainer?.Directory?.filter((library) => library.type === 'artist').map(
+            (library) => plexTranspose.transposeLibraryData(library)
+          );
+          resolve(data);
         })
         .catch((error) => {
           reject({
@@ -452,6 +486,152 @@ export const getAllLibraries = (baseUrl, accessToken) => {
 };
 
 // ======================================================================
+// GET ALL ALBUMS
+// ======================================================================
+
+export const getAllAlbums = (baseUrl, libraryId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.album.getAllAlbums(baseUrl, libraryId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': accessToken,
+            'X-Plex-Client-Identifier': clientId,
+          },
+          params: {
+            type: 9,
+            excludeFields: albumExcludes,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(
+            response?.data?.MediaContainer?.Metadata?.map((album) =>
+              plexTranspose.transposeAlbumData(album, libraryId, baseUrl, accessToken)
+            )
+          );
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllAlbums.1',
+            message: 'Failed to get all albums: ' + error.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllAlbums.2',
+        message: 'Failed to get all albums: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALBUM DETAILS
+// ======================================================================
+
+export const getAlbumDetails = (baseUrl, libraryId, albumId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.album.getDetails(baseUrl, albumId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': accessToken,
+            'X-Plex-Client-Identifier': clientId,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          const album = response?.data?.MediaContainer?.Metadata[0];
+          const albumDetails = plexTranspose.transposeAlbumData(album, libraryId, baseUrl, accessToken);
+          resolve(albumDetails);
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAlbumDetails.1',
+            message: 'Failed to get album details: ' + error.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAlbumDetails.2',
+        message: 'Failed to get album details: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALBUM TRACKS
+// ======================================================================
+
+export const getAlbumTracks = (baseUrl, libraryId, albumId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.album.getTracks(baseUrl, albumId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': accessToken,
+            'X-Plex-Client-Identifier': clientId,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          const data =
+            response?.data?.MediaContainer?.Metadata?.map((track) =>
+              plexTranspose.transposeTrackData(track, libraryId, baseUrl, accessToken)
+            ) || [];
+          resolve(data);
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAlbumTracks.1',
+            message: 'Failed to get album tracks: ' + error.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAlbumTracks.2',
+        message: 'Failed to get album tracks: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
 // SEARCH
 // ======================================================================
 
@@ -461,6 +641,9 @@ export const searchHub = (baseUrl, libraryId, accessToken, query, limit = 25, in
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.search.searchHub(baseUrl);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
       axios
         .get(endpoint, {
           headers: {
@@ -476,6 +659,7 @@ export const searchHub = (baseUrl, libraryId, accessToken, query, limit = 25, in
             contentDirectoryID: libraryId,
             excludeFields: 'summary',
           },
+          signal: controller.signal,
         })
         .then((response) => {
           resolve(response?.data?.MediaContainer?.Hub);
@@ -486,6 +670,9 @@ export const searchHub = (baseUrl, libraryId, accessToken, query, limit = 25, in
             message: 'Failed to search library: ' + error.message,
             error: error,
           });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
         });
     } catch (error) {
       reject({
@@ -508,6 +695,9 @@ export const searchLibrary = (
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.search.searchLibrary(baseUrl);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
       axios
         .get(endpoint, {
           headers: {
@@ -522,6 +712,7 @@ export const searchLibrary = (
             searchTypes,
             includeCollections,
           },
+          signal: controller.signal,
         })
         .then((response) => {
           resolve(response?.data?.MediaContainer?.SearchResult);
@@ -532,6 +723,9 @@ export const searchLibrary = (
             message: 'Failed to search library: ' + error.message,
             error: error,
           });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
         });
     } catch (error) {
       reject({
