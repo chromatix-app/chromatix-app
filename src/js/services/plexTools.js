@@ -684,58 +684,58 @@ export const searchHub = (baseUrl, libraryId, accessToken, query, limit = 25, in
   });
 };
 
-export const searchLibrary = (
-  baseUrl,
-  accessToken,
-  query,
-  limit = 100,
-  searchTypes = 'music',
-  includeCollections = 1
-) => {
-  return new Promise((resolve, reject) => {
-    try {
-      const endpoint = endpointConfig.search.searchLibrary(baseUrl);
-      const controller = new AbortController();
-      abortControllers.push(controller);
+// export const searchLibrary = (
+//   baseUrl,
+//   accessToken,
+//   query,
+//   limit = 100,
+//   searchTypes = 'music',
+//   includeCollections = 1
+// ) => {
+//   return new Promise((resolve, reject) => {
+//     try {
+//       const endpoint = endpointConfig.search.searchLibrary(baseUrl);
+//       const controller = new AbortController();
+//       abortControllers.push(controller);
 
-      axios
-        .get(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientId,
-          },
-          params: {
-            query,
-            limit,
-            searchTypes,
-            includeCollections,
-          },
-          signal: controller.signal,
-        })
-        .then((response) => {
-          resolve(response?.data?.MediaContainer?.SearchResult);
-        })
-        .catch((error) => {
-          reject({
-            code: 'searchLibrary.1',
-            message: 'Failed to search library: ' + error.message,
-            error: error,
-          });
-        })
-        .finally(() => {
-          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
-        });
-    } catch (error) {
-      reject({
-        code: 'searchLibrary.2',
-        message: 'Failed to search library: ' + error.message,
-        error: error,
-      });
-    }
-  });
-};
+//       axios
+//         .get(endpoint, {
+//           headers: {
+//             Accept: 'application/json',
+//             'Content-Type': 'application/json',
+//             'X-Plex-Token': accessToken,
+//             'X-Plex-Client-Identifier': clientId,
+//           },
+//           params: {
+//             query,
+//             limit,
+//             searchTypes,
+//             includeCollections,
+//           },
+//           signal: controller.signal,
+//         })
+//         .then((response) => {
+//           resolve(response?.data?.MediaContainer?.SearchResult);
+//         })
+//         .catch((error) => {
+//           reject({
+//             code: 'searchLibrary.1',
+//             message: 'Failed to search library: ' + error.message,
+//             error: error,
+//           });
+//         })
+//         .finally(() => {
+//           abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+//         });
+//     } catch (error) {
+//       reject({
+//         code: 'searchLibrary.2',
+//         message: 'Failed to search library: ' + error.message,
+//         error: error,
+//       });
+//     }
+//   });
+// };
 
 // ======================================================================
 // SET STAR RATING

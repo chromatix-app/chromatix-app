@@ -303,8 +303,6 @@ const searchLibrary2 = (query, searchCounter) => {
     });
 };
 
-window.searchLibrary = searchLibrary;
-
 // ======================================================================
 // GET ALL ARTISTS
 // ======================================================================
