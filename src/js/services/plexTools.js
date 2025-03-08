@@ -58,7 +58,23 @@ const endpointConfig = {
     getAllCollections: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/collections`,
     getCollectionItems: (plexBaseUrl, collectionId) => `${plexBaseUrl}/library/collections/${collectionId}/children`,
   },
-  tags: {},
+  tags: {
+    getAllArtistGenres: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/genre`,
+    getAllArtistMoods: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/mood`,
+    getAllArtistStyles: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/style`,
+
+    getAllAlbumGenres: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/genre`,
+    getAllAlbumMoods: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/mood`,
+    getAllAlbumStyles: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/style`,
+
+    getArtistGenreItems: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
+    getArtistMoodItems: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
+    getArtistStyleItems: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
+
+    getAlbumGenreItems: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
+    getAlbumMoodItems: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
+    getAlbumStyleItems: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
+  },
   search: {
     searchHub: (plexBaseUrl) => `${plexBaseUrl}/hubs/search`,
     searchLibrary: (plexBaseUrl) => `${plexBaseUrl}/library/search`,
@@ -71,7 +87,7 @@ const endpointConfig = {
   },
 };
 
-// const artistExcludes = 'summary,guid,key,parentRatingKey,parentTitle,skipCount';
+const artistExcludes = 'summary,guid,key,parentRatingKey,parentTitle,skipCount';
 const albumExcludes =
   'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,parentThumb,studio';
 const artistAndAlbumExcludes =
@@ -1073,6 +1089,158 @@ export const getCollectionItems = (plexBaseUrl, libraryId, collectionId, typeKey
       reject({
         code: 'getCollectionItems.2',
         message: 'Failed to get all collection items: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALL TAGS
+// ======================================================================
+
+const tagOptions = {
+  AlbumGenres: { primaryKey: 'album', secondaryKey: 'Genre' },
+  AlbumMoods: { primaryKey: 'album', secondaryKey: 'Mood' },
+  AlbumStyles: { primaryKey: 'album', secondaryKey: 'Style' },
+  ArtistGenres: { primaryKey: 'artist', secondaryKey: 'Genre' },
+  ArtistMoods: { primaryKey: 'artist', secondaryKey: 'Mood' },
+  ArtistStyles: { primaryKey: 'artist', secondaryKey: 'Style' },
+};
+
+export const getAllTags = (plexBaseUrl, libraryId, typeKey, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.tags[`getAll${typeKey}`](plexBaseUrl, libraryId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': accessToken,
+            'X-Plex-Client-Identifier': clientId,
+          },
+          params: {
+            type: typeKey.toLowerCase().includes('artist') ? 8 : 9,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          const { primaryKey, secondaryKey } = tagOptions[typeKey];
+          const data =
+            response?.data?.MediaContainer?.Directory?.map((entry) =>
+              plexTranspose[`transpose${secondaryKey}Data`](primaryKey, entry, libraryId)
+            ) || [];
+          resolve(data);
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllTags.1',
+            message: 'Failed to get all tags: ' + error.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllTags.2',
+        message: 'Failed to get all tags: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET TAG ITEMS
+// ======================================================================
+
+const tagItemOptions = {
+  AlbumGenreItems: { primaryKey: 'Album' },
+  AlbumMoodItems: { primaryKey: 'Album' },
+  AlbumStyleItems: { primaryKey: 'Album' },
+  ArtistGenreItems: { primaryKey: 'Artist' },
+  ArtistMoodItems: { primaryKey: 'Artist' },
+  ArtistStyleItems: { primaryKey: 'Artist' },
+};
+
+export const getTagItems = (plexBaseUrl, libraryId, tagId, typeKey, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.tags[`get${typeKey}`](plexBaseUrl, libraryId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': accessToken,
+            'X-Plex-Client-Identifier': clientId,
+          },
+          params: {
+            ...(typeKey === 'ArtistGenreItems' && {
+              type: 8,
+              genre: tagId,
+              excludeFields: artistExcludes,
+            }),
+            ...(typeKey === 'ArtistMoodItems' && {
+              type: 8,
+              mood: tagId,
+              excludeFields: artistExcludes,
+            }),
+            ...(typeKey === 'ArtistStyleItems' && {
+              type: 8,
+              style: tagId,
+              excludeFields: artistExcludes,
+            }),
+
+            ...(typeKey === 'AlbumGenreItems' && {
+              type: 9,
+              genre: tagId,
+              excludeFields: albumExcludes,
+            }),
+            ...(typeKey === 'AlbumMoodItems' && {
+              type: 9,
+              mood: tagId,
+              excludeFields: albumExcludes,
+            }),
+            ...(typeKey === 'AlbumStyleItems' && {
+              type: 9,
+              style: tagId,
+              excludeFields: albumExcludes,
+            }),
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          const { primaryKey } = tagItemOptions[typeKey];
+          const data =
+            response?.data?.MediaContainer?.Metadata?.map((entry) =>
+              plexTranspose[`transpose${primaryKey}Data`](entry, libraryId, plexBaseUrl, accessToken)
+            ) || [];
+          resolve(data);
+        })
+        .catch((error) => {
+          reject({
+            code: 'getTagItems.1',
+            message: 'Failed to get all tag items: ' + error.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getTagItems.2',
+        message: 'Failed to get all tag items: ' + error.message,
         error: error,
       });
     }
