@@ -40,6 +40,7 @@ const endpointConfig = {
   library: {
     getAllLibraries: (baseUrl) => `${baseUrl}/library/sections`,
   },
+  artist: {},
   album: {
     getAllAlbums: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
     getDetails: (baseUrl, albumId) => `${baseUrl}/library/metadata/${albumId}`,
@@ -48,6 +49,13 @@ const endpointConfig = {
   folder: {
     getFolderItems: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/folder`,
   },
+  playlist: {
+    getAllPlaylists: (baseUrl) => `${baseUrl}/playlists`,
+    getDetails: (baseUrl, playlistId) => `${baseUrl}/playlists/${playlistId}`,
+    getTracks: (baseUrl, playlistId) => `${baseUrl}/playlists/${playlistId}/items`,
+  },
+  collection: {},
+  tags: {},
   search: {
     searchLibrary: (baseUrl) => `${baseUrl}/library/search`,
     searchHub: (baseUrl) => `${baseUrl}/hubs/search`,
@@ -621,11 +629,10 @@ export const getAllAlbums = (baseUrl, libraryId, accessToken) => {
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(
-            response?.data?.MediaContainer?.Metadata?.map((album) =>
-              plexTranspose.transposeAlbumData(album, libraryId, baseUrl, accessToken)
-            )
+          const data = response?.data?.MediaContainer?.Metadata?.map((album) =>
+            plexTranspose.transposeAlbumData(album, libraryId, baseUrl, accessToken)
           );
+          resolve(data);
         })
         .catch((error) => {
           reject({
@@ -817,6 +824,152 @@ export const getFolderItems = (baseUrl, libraryId, folderId, accessToken) => {
 };
 
 // ======================================================================
+// GET ALL PLAYLISTS
+// ======================================================================
+
+export const getAllPlaylists = (baseUrl, libraryId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.playlist.getAllPlaylists(baseUrl, libraryId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': accessToken,
+            'X-Plex-Client-Identifier': clientId,
+          },
+          params: {
+            playlistType: 'audio',
+            sectionID: libraryId,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          const data =
+            response?.data?.MediaContainer?.Metadata?.map((playlist) =>
+              plexTranspose.transposePlaylistData(playlist, libraryId, baseUrl, accessToken)
+            ) || [];
+          resolve(data);
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllPlaylists.1',
+            message: 'Failed to get all playlists: ' + error.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllPlaylists.2',
+        message: 'Failed to get all playlists: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET PLAYLIST DETAILS
+// ======================================================================
+
+export const getPlaylistDetails = (baseUrl, libraryId, playlistId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.playlist.getDetails(baseUrl, playlistId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': accessToken,
+            'X-Plex-Client-Identifier': clientId,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          const playlist = response?.data?.MediaContainer?.Metadata[0];
+          const playlistDetails = plexTranspose.transposePlaylistData(playlist, libraryId, baseUrl, accessToken);
+          resolve(playlistDetails);
+        })
+        .catch((error) => {
+          reject({
+            code: 'getPlaylistDetails.1',
+            message: 'Failed to get playlist details: ' + error.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getPlaylistDetails.2',
+        message: 'Failed to get playlist details: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET PLAYLIST TRACKS
+// ======================================================================
+
+export const getPlaylistTracks = (baseUrl, libraryId, playlistId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.playlist.getTracks(baseUrl, playlistId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': accessToken,
+            'X-Plex-Client-Identifier': clientId,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          const data =
+            response?.data?.MediaContainer?.Metadata?.map((track) =>
+              plexTranspose.transposeTrackData(track, libraryId, baseUrl, accessToken)
+            ) || [];
+          resolve(data);
+        })
+        .catch((error) => {
+          reject({
+            code: 'getPlaylistTracks.1',
+            message: 'Failed to get playlist tracks: ' + error.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getPlaylistTracks.2',
+        message: 'Failed to get playlist tracks: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
 // SET STAR RATING
 // ======================================================================
 
@@ -847,7 +1000,7 @@ export const setStarRating = (baseUrl, accessToken, sessionId, ratingKey, rating
           },
         })
         .then((response) => {
-          resolve(response.data);
+          resolve(response?.data);
         })
         .catch((error) => {
           reject({

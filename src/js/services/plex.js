@@ -34,11 +34,6 @@ const endpointConfig = {
         artistName
       )}&artist.title!=${encodeURIComponent(artistName)}&excludeFields=summary`,
   },
-  playlist: {
-    getAllPlaylists: (baseUrl, libraryId) => `${baseUrl}/playlists?playlistType=audio&sectionID=${libraryId}`,
-    getDetails: (baseUrl, playlistId) => `${baseUrl}/playlists/${playlistId}`,
-    getTracks: (baseUrl, playlistId) => `${baseUrl}/playlists/${playlistId}/items`,
-  },
   collection: {
     getAllCollections: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/collections`,
     getItems: (baseUrl, collectionId) =>
@@ -641,7 +636,7 @@ export const getAlbumTracks = (libraryId, albumId) => {
         plexTools
           .getAlbumTracks(plexBaseUrl, libraryId, albumId, accessToken)
           .then((response) => {
-            // console.log(response.MediaContainer.Metadata);
+            // console.log(response);
             store.dispatch.appModel.storeAlbumTracks({ libraryId, albumId, albumTracks: response });
             resolve();
           })
@@ -681,7 +676,7 @@ export const getFolderItems = (folderId) => {
         plexTools
           .getFolderItems(plexBaseUrl, libraryId, folderId, accessToken)
           .then((response) => {
-            // console.log(response.MediaContainer.Metadata);
+            // console.log(response);
             store.dispatch.appModel.storeFolderItems({ libraryId, folderId, folderItems: response });
             resolve();
           })
@@ -717,22 +712,11 @@ export const getAllPlaylists = () => {
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
-      const mockEndpoint = '/api/playlists.json';
-      const prodEndpoint = endpointConfig.playlist.getAllPlaylists(plexBaseUrl, libraryId);
-      const endpoint = mockData ? mockEndpoint : prodEndpoint;
-
-      fetchDataPromise(endpoint, accessToken)
+      plexTools
+        .getAllPlaylists(plexBaseUrl, libraryId, accessToken)
         .then((response) => {
-          // console.log(response.MediaContainer.Metadata);
-
-          const allPlaylists =
-            response.MediaContainer.Metadata?.map((playlist) =>
-              plexTranspose.transposePlaylistData(playlist, libraryId, plexBaseUrl, accessToken)
-            ) || [];
-
-          // console.log('allPlaylists', allPlaylists);
-
-          store.dispatch.appModel.setAppState({ allPlaylists });
+          // console.log(response);
+          store.dispatch.appModel.setAppState({ allPlaylists: response });
         })
         .catch((error) => {
           console.error(error);
@@ -760,18 +744,12 @@ export const getPlaylistDetails = (libraryId, playlistId) => {
       getPlaylistDetailsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-      const endpoint = endpointConfig.playlist.getDetails(plexBaseUrl, playlistId);
 
-      fetchDataPromise(endpoint, accessToken)
+      plexTools
+        .getPlaylistDetails(plexBaseUrl, libraryId, playlistId, accessToken)
         .then((response) => {
-          // console.log(response.MediaContainer.Metadata);
-
-          const playlist = response.MediaContainer.Metadata[0];
-          const playlistDetails = plexTranspose.transposePlaylistData(playlist, libraryId, plexBaseUrl, accessToken);
-
-          // console.log('playlistDetails', playlistDetails);
-
-          store.dispatch.appModel.storePlaylistDetails(playlistDetails);
+          // console.log(response);
+          store.dispatch.appModel.storePlaylistDetails(response);
         })
         .catch((error) => {
           console.error(error);
@@ -798,21 +776,12 @@ export const getPlaylistTracks = (libraryId, playlistId) => {
         getPlaylistTracksRunning = true;
         const accessToken = store.getState().sessionModel.currentServer.accessToken;
         const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-        const endpoint = endpointConfig.playlist.getTracks(plexBaseUrl, playlistId);
 
-        fetchDataPromise(endpoint, accessToken)
+        plexTools
+          .getPlaylistTracks(plexBaseUrl, libraryId, playlistId, accessToken)
           .then((response) => {
-            // console.log(response.MediaContainer.Metadata);
-
-            const playlistTracks =
-              response.MediaContainer.Metadata?.map((track) =>
-                plexTranspose.transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
-              ) || [];
-
-            // console.log(playlistTracks);
-
-            store.dispatch.appModel.storePlaylistTracks({ libraryId, playlistId, playlistTracks });
-
+            // console.log(response);
+            store.dispatch.appModel.storePlaylistTracks({ libraryId, playlistId, playlistTracks: response });
             resolve();
           })
           .catch((error) => {
