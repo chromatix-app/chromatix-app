@@ -39,7 +39,7 @@ const endpointConfig = {
     getItems: (baseUrl, collectionId) =>
       `${baseUrl}/library/collections/${collectionId}/children?excludeFields=${artistAndAlbumExcludes}`,
   },
-  sets: {
+  tags: {
     getAllArtistGenres: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/genre?type=8`,
     getAllArtistMoods: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/mood?type=8`,
     getAllArtistStyles: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/style?type=8`,
@@ -876,7 +876,7 @@ export const getCollectionItems = (libraryId, collectionId, typeKey) => {
 // GET ALL SETS
 // ======================================================================
 
-let getAllSetsRunning = {
+let getAllTagsRunning = {
   AlbumGenres: false,
   AlbumMoods: false,
   AlbumStyles: false,
@@ -885,7 +885,7 @@ let getAllSetsRunning = {
   ArtistStyles: false,
 };
 
-const setOptions = {
+const tagOptions = {
   AlbumGenres: { primaryKey: 'album', secondaryKey: 'Genre' },
   AlbumMoods: { primaryKey: 'album', secondaryKey: 'Mood' },
   AlbumStyles: { primaryKey: 'album', secondaryKey: 'Style' },
@@ -894,37 +894,37 @@ const setOptions = {
   ArtistStyles: { primaryKey: 'artist', secondaryKey: 'Style' },
 };
 
-export const getAllSets = (typeKey) => {
-  if (!getAllSetsRunning[typeKey]) {
-    const prevAllSets = store.getState().appModel[`all${typeKey}`];
-    if (!prevAllSets) {
-      console.log('%c--- plex - getAllSets - ' + typeKey + ' ---', 'color:#f9743b;');
-      getAllSetsRunning[typeKey] = true;
+export const getAllTags = (typeKey) => {
+  if (!getAllTagsRunning[typeKey]) {
+    const prevAllTags = store.getState().appModel[`all${typeKey}`];
+    if (!prevAllTags) {
+      console.log('%c--- plex - getAllTags - ' + typeKey + ' ---', 'color:#f9743b;');
+      getAllTagsRunning[typeKey] = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
-      const endpoint = endpointConfig.sets[`getAll${typeKey}`](plexBaseUrl, libraryId);
+      const endpoint = endpointConfig.tags[`getAll${typeKey}`](plexBaseUrl, libraryId);
 
       fetchDataPromise(endpoint, accessToken)
         .then((response) => {
           // console.log(response.MediaContainer.Directory);
 
-          const { primaryKey, secondaryKey } = setOptions[typeKey];
+          const { primaryKey, secondaryKey } = tagOptions[typeKey];
 
-          const allSets =
+          const allTags =
             response.MediaContainer.Directory?.map((entry) =>
               plexTranspose[`transpose${secondaryKey}Data`](primaryKey, entry, libraryId)
             ) || [];
 
-          // console.log('allSets', allSets);
+          // console.log('allTags', allTags);
 
-          store.dispatch.appModel.setAppState({ [`all${typeKey}`]: allSets });
+          store.dispatch.appModel.setAppState({ [`all${typeKey}`]: allTags });
         })
         .catch((error) => {
           console.error(error);
         })
         .finally(() => {
-          getAllSetsRunning[typeKey] = false;
+          getAllTagsRunning[typeKey] = false;
         });
     }
   }
@@ -934,7 +934,7 @@ export const getAllSets = (typeKey) => {
 // GET SET ITEMS
 // ======================================================================
 
-let getSetItemsRunning = {
+let getTagItemsRunning = {
   AlbumGenreItems: false,
   AlbumMoodItems: false,
   AlbumStyleItems: false,
@@ -943,7 +943,7 @@ let getSetItemsRunning = {
   ArtistStyleItems: false,
 };
 
-const setItemOptions = {
+const tagItemOptions = {
   AlbumGenreItems: { primaryKey: 'Album' },
   AlbumMoodItems: { primaryKey: 'Album' },
   AlbumStyleItems: { primaryKey: 'Album' },
@@ -952,36 +952,36 @@ const setItemOptions = {
   ArtistStyleItems: { primaryKey: 'Artist' },
 };
 
-export const getSetItems = (libraryId, setId, typeKey) => {
-  if (!getSetItemsRunning[typeKey]) {
-    const prevSetItems = store.getState().appModel[`all${typeKey}`][libraryId + '-' + setId];
-    if (!prevSetItems) {
-      console.log('%c--- plex - getSetItems ---', 'color:#f9743b;');
-      getSetItemsRunning[typeKey] = true;
+export const getTagItems = (libraryId, setId, typeKey) => {
+  if (!getTagItemsRunning[typeKey]) {
+    const prevTagItems = store.getState().appModel[`all${typeKey}`][libraryId + '-' + setId];
+    if (!prevTagItems) {
+      console.log('%c--- plex - getTagItems ---', 'color:#f9743b;');
+      getTagItemsRunning[typeKey] = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-      const endpoint = endpointConfig.sets[`get${typeKey}`](plexBaseUrl, libraryId, setId);
+      const endpoint = endpointConfig.tags[`get${typeKey}`](plexBaseUrl, libraryId, setId);
 
       fetchDataPromise(endpoint, accessToken)
         .then((response) => {
           // console.log(response.MediaContainer.Metadata);
 
-          const { primaryKey } = setItemOptions[typeKey];
+          const { primaryKey } = tagItemOptions[typeKey];
 
-          const setItems =
+          const tagItems =
             response.MediaContainer.Metadata?.map((entry) =>
               plexTranspose[`transpose${primaryKey}Data`](entry, libraryId, plexBaseUrl, accessToken)
             ) || [];
 
-          // console.log('setItems', setItems);
+          // console.log('tagItems', tagItems);
 
-          store.dispatch.appModel[`store${typeKey}`]({ libraryId, setId, setItems });
+          store.dispatch.appModel[`store${typeKey}`]({ libraryId, setId, tagItems });
         })
         .catch((error) => {
           console.error(error);
         })
         .finally(() => {
-          getSetItemsRunning[typeKey] = false;
+          getTagItemsRunning[typeKey] = false;
         });
     }
   }

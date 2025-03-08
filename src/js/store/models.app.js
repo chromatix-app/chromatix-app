@@ -720,7 +720,7 @@ const effects = (dispatch) => ({
 
   storeArtistGenreItems(payload, rootState) {
     console.log('%c--- storeArtistGenreItems ---', 'color:#07a098');
-    const { libraryId, setId, setItems } = payload;
+    const { libraryId, setId, tagItems } = payload;
     const allArtistGenreItems = { ...rootState.appModel.allArtistGenreItems };
     // limit recent entries
     const keys = Object.keys(allArtistGenreItems);
@@ -728,7 +728,7 @@ const effects = (dispatch) => ({
       delete allArtistGenreItems[keys[0]];
     }
     // add the new entry and save
-    allArtistGenreItems[libraryId + '-' + setId] = setItems;
+    allArtistGenreItems[libraryId + '-' + setId] = tagItems;
     dispatch.appModel.setAppState({
       allArtistGenreItems,
     });
@@ -736,7 +736,7 @@ const effects = (dispatch) => ({
 
   storeAlbumGenreItems(payload, rootState) {
     console.log('%c--- storeAlbumGenreItems ---', 'color:#07a098');
-    const { libraryId, setId, setItems } = payload;
+    const { libraryId, setId, tagItems } = payload;
     const allAlbumGenreItems = { ...rootState.appModel.allAlbumGenreItems };
     // limit recent entries
     const keys = Object.keys(allAlbumGenreItems);
@@ -744,7 +744,7 @@ const effects = (dispatch) => ({
       delete allAlbumGenreItems[keys[0]];
     }
     // add the new entry and save
-    allAlbumGenreItems[libraryId + '-' + setId] = setItems;
+    allAlbumGenreItems[libraryId + '-' + setId] = tagItems;
     dispatch.appModel.setAppState({
       allAlbumGenreItems,
     });
@@ -756,7 +756,7 @@ const effects = (dispatch) => ({
 
   storeArtistMoodItems(payload, rootState) {
     console.log('%c--- storeArtistMoodItems ---', 'color:#07a098');
-    const { libraryId, setId, setItems } = payload;
+    const { libraryId, setId, tagItems } = payload;
     const allArtistMoodItems = { ...rootState.appModel.allArtistMoodItems };
     // limit recent entries
     const keys = Object.keys(allArtistMoodItems);
@@ -764,7 +764,7 @@ const effects = (dispatch) => ({
       delete allArtistMoodItems[keys[0]];
     }
     // add the new entry and save
-    allArtistMoodItems[libraryId + '-' + setId] = setItems;
+    allArtistMoodItems[libraryId + '-' + setId] = tagItems;
     dispatch.appModel.setAppState({
       allArtistMoodItems,
     });
@@ -772,7 +772,7 @@ const effects = (dispatch) => ({
 
   storeAlbumMoodItems(payload, rootState) {
     console.log('%c--- storeAlbumMoodItems ---', 'color:#07a098');
-    const { libraryId, setId, setItems } = payload;
+    const { libraryId, setId, tagItems } = payload;
     const allAlbumMoodItems = { ...rootState.appModel.allAlbumMoodItems };
     // limit recent entries
     const keys = Object.keys(allAlbumMoodItems);
@@ -780,7 +780,7 @@ const effects = (dispatch) => ({
       delete allAlbumMoodItems[keys[0]];
     }
     // add the new entry and save
-    allAlbumMoodItems[libraryId + '-' + setId] = setItems;
+    allAlbumMoodItems[libraryId + '-' + setId] = tagItems;
     dispatch.appModel.setAppState({
       allAlbumMoodItems,
     });
@@ -792,7 +792,7 @@ const effects = (dispatch) => ({
 
   storeArtistStyleItems(payload, rootState) {
     console.log('%c--- storeArtistStyleItems ---', 'color:#07a098');
-    const { libraryId, setId, setItems } = payload;
+    const { libraryId, setId, tagItems } = payload;
     const allArtistStyleItems = { ...rootState.appModel.allArtistStyleItems };
     // limit recent entries
     const keys = Object.keys(allArtistStyleItems);
@@ -800,7 +800,7 @@ const effects = (dispatch) => ({
       delete allArtistStyleItems[keys[0]];
     }
     // add the new entry and save
-    allArtistStyleItems[libraryId + '-' + setId] = setItems;
+    allArtistStyleItems[libraryId + '-' + setId] = tagItems;
     dispatch.appModel.setAppState({
       allArtistStyleItems,
     });
@@ -808,7 +808,7 @@ const effects = (dispatch) => ({
 
   storeAlbumStyleItems(payload, rootState) {
     console.log('%c--- storeAlbumStyleItems ---', 'color:#07a098');
-    const { libraryId, setId, setItems } = payload;
+    const { libraryId, setId, tagItems } = payload;
     const allAlbumStyleItems = { ...rootState.appModel.allAlbumStyleItems };
     // limit recent entries
     const keys = Object.keys(allAlbumStyleItems);
@@ -816,7 +816,7 @@ const effects = (dispatch) => ({
       delete allAlbumStyleItems[keys[0]];
     }
     // add the new entry and save
-    allAlbumStyleItems[libraryId + '-' + setId] = setItems;
+    allAlbumStyleItems[libraryId + '-' + setId] = tagItems;
     dispatch.appModel.setAppState({
       allAlbumStyleItems,
     });
