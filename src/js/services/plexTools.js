@@ -38,41 +38,44 @@ const endpointConfig = {
     getAllServers: () => 'https://plex.tv/api/v2/resources',
   },
   library: {
-    getAllLibraries: (baseUrl) => `${baseUrl}/library/sections`,
+    getAllLibraries: (plexBaseUrl) => `${plexBaseUrl}/library/sections`,
   },
   artist: {},
   album: {
-    getAllAlbums: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
-    getDetails: (baseUrl, albumId) => `${baseUrl}/library/metadata/${albumId}`,
-    getTracks: (baseUrl, albumId) => `${baseUrl}/library/metadata/${albumId}/children`,
+    getAllAlbums: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
+    getDetails: (plexBaseUrl, albumId) => `${plexBaseUrl}/library/metadata/${albumId}`,
+    getTracks: (plexBaseUrl, albumId) => `${plexBaseUrl}/library/metadata/${albumId}/children`,
   },
   folder: {
-    getFolderItems: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/folder`,
+    getFolderItems: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/folder`,
   },
   playlist: {
-    getAllPlaylists: (baseUrl) => `${baseUrl}/playlists`,
-    getDetails: (baseUrl, playlistId) => `${baseUrl}/playlists/${playlistId}`,
-    getTracks: (baseUrl, playlistId) => `${baseUrl}/playlists/${playlistId}/items`,
+    getAllPlaylists: (plexBaseUrl) => `${plexBaseUrl}/playlists`,
+    getDetails: (plexBaseUrl, playlistId) => `${plexBaseUrl}/playlists/${playlistId}`,
+    getTracks: (plexBaseUrl, playlistId) => `${plexBaseUrl}/playlists/${playlistId}/items`,
   },
-  collection: {},
+  collection: {
+    getAllCollections: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/collections`,
+    getItems: (plexBaseUrl, collectionId) => `${plexBaseUrl}/library/collections/${collectionId}/children`,
+  },
   tags: {},
   search: {
-    searchLibrary: (baseUrl) => `${baseUrl}/library/search`,
-    searchHub: (baseUrl) => `${baseUrl}/hubs/search`,
+    searchLibrary: (plexBaseUrl) => `${plexBaseUrl}/library/search`,
+    searchHub: (plexBaseUrl) => `${plexBaseUrl}/hubs/search`,
   },
   rating: {
-    setStarRating: (baseUrl) => `${baseUrl}/:/rate`,
+    setStarRating: (plexBaseUrl) => `${plexBaseUrl}/:/rate`,
   },
   status: {
-    postPlaybackStatus: (baseUrl) => `${baseUrl}/:/timeline`,
+    postPlaybackStatus: (plexBaseUrl) => `${plexBaseUrl}/:/timeline`,
   },
 };
 
 // const artistExcludes = 'summary,guid,key,parentRatingKey,parentTitle,skipCount';
 const albumExcludes =
   'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,parentThumb,studio';
-// const artistAndAlbumExcludes =
-//   'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,skipCount,studio';
+const artistAndAlbumExcludes =
+  'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,skipCount,studio';
 const searchExcludes = 'summary';
 
 // ======================================================================
@@ -461,10 +464,10 @@ export const getFastestConnection = (server) => {
 // GET ALL LIBRARIES
 // ======================================================================
 
-export const getAllLibraries = (baseUrl, accessToken) => {
+export const getAllLibraries = (plexBaseUrl, accessToken) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.library.getAllLibraries(baseUrl);
+      const endpoint = endpointConfig.library.getAllLibraries(plexBaseUrl);
       axios
         .get(endpoint, {
           headers: {
@@ -503,10 +506,10 @@ export const getAllLibraries = (baseUrl, accessToken) => {
 
 // /hubs/search?query=Epica&excludeFields=summary&limit=4&includeCollections=1&contentDirectoryID=23&includeFields=thumbBlurHash
 
-export const searchHub = (baseUrl, libraryId, accessToken, query, limit = 25, includeCollections = 1) => {
+export const searchHub = (plexBaseUrl, libraryId, accessToken, query, limit = 25, includeCollections = 1) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.search.searchHub(baseUrl);
+      const endpoint = endpointConfig.search.searchHub(plexBaseUrl);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -551,7 +554,7 @@ export const searchHub = (baseUrl, libraryId, accessToken, query, limit = 25, in
 };
 
 // export const searchLibrary = (
-//   baseUrl,
+//   plexBaseUrl,
 //   accessToken,
 //   query,
 //   limit = 100,
@@ -560,7 +563,7 @@ export const searchHub = (baseUrl, libraryId, accessToken, query, limit = 25, in
 // ) => {
 //   return new Promise((resolve, reject) => {
 //     try {
-//       const endpoint = endpointConfig.search.searchLibrary(baseUrl);
+//       const endpoint = endpointConfig.search.searchLibrary(plexBaseUrl);
 //       const controller = new AbortController();
 //       abortControllers.push(controller);
 
@@ -607,10 +610,10 @@ export const searchHub = (baseUrl, libraryId, accessToken, query, limit = 25, in
 // GET ALL ALBUMS
 // ======================================================================
 
-export const getAllAlbums = (baseUrl, libraryId, accessToken) => {
+export const getAllAlbums = (plexBaseUrl, libraryId, accessToken) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.album.getAllAlbums(baseUrl, libraryId);
+      const endpoint = endpointConfig.album.getAllAlbums(plexBaseUrl, libraryId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -630,7 +633,7 @@ export const getAllAlbums = (baseUrl, libraryId, accessToken) => {
         })
         .then((response) => {
           const data = response?.data?.MediaContainer?.Metadata?.map((album) =>
-            plexTranspose.transposeAlbumData(album, libraryId, baseUrl, accessToken)
+            plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
           );
           resolve(data);
         })
@@ -658,10 +661,10 @@ export const getAllAlbums = (baseUrl, libraryId, accessToken) => {
 // GET ALBUM DETAILS
 // ======================================================================
 
-export const getAlbumDetails = (baseUrl, libraryId, albumId, accessToken) => {
+export const getAlbumDetails = (plexBaseUrl, libraryId, albumId, accessToken) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.album.getDetails(baseUrl, albumId);
+      const endpoint = endpointConfig.album.getDetails(plexBaseUrl, albumId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -677,7 +680,7 @@ export const getAlbumDetails = (baseUrl, libraryId, albumId, accessToken) => {
         })
         .then((response) => {
           const album = response?.data?.MediaContainer?.Metadata[0];
-          const albumDetails = plexTranspose.transposeAlbumData(album, libraryId, baseUrl, accessToken);
+          const albumDetails = plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken);
           resolve(albumDetails);
         })
         .catch((error) => {
@@ -704,10 +707,10 @@ export const getAlbumDetails = (baseUrl, libraryId, albumId, accessToken) => {
 // GET ALBUM TRACKS
 // ======================================================================
 
-export const getAlbumTracks = (baseUrl, libraryId, albumId, accessToken) => {
+export const getAlbumTracks = (plexBaseUrl, libraryId, albumId, accessToken) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.album.getTracks(baseUrl, albumId);
+      const endpoint = endpointConfig.album.getTracks(plexBaseUrl, albumId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -724,7 +727,7 @@ export const getAlbumTracks = (baseUrl, libraryId, albumId, accessToken) => {
         .then((response) => {
           const data =
             response?.data?.MediaContainer?.Metadata?.map((track) =>
-              plexTranspose.transposeTrackData(track, libraryId, baseUrl, accessToken)
+              plexTranspose.transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
             ) || [];
           resolve(data);
         })
@@ -752,10 +755,10 @@ export const getAlbumTracks = (baseUrl, libraryId, albumId, accessToken) => {
 // GET FOLDER ITEMS
 // ======================================================================
 
-export const getFolderItems = (baseUrl, libraryId, folderId, accessToken) => {
+export const getFolderItems = (plexBaseUrl, libraryId, folderId, accessToken) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.folder.getFolderItems(baseUrl, libraryId);
+      const endpoint = endpointConfig.folder.getFolderItems(plexBaseUrl, libraryId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -775,7 +778,7 @@ export const getFolderItems = (baseUrl, libraryId, folderId, accessToken) => {
         .then((response) => {
           const data =
             response?.data?.MediaContainer?.Metadata?.map((item, index) =>
-              plexTranspose.transposeFolderData(item, index, libraryId, baseUrl, accessToken)
+              plexTranspose.transposeFolderData(item, index, libraryId, plexBaseUrl, accessToken)
             ).filter((item) => item !== null) || [];
 
           // Sort folderItems
@@ -827,10 +830,10 @@ export const getFolderItems = (baseUrl, libraryId, folderId, accessToken) => {
 // GET ALL PLAYLISTS
 // ======================================================================
 
-export const getAllPlaylists = (baseUrl, libraryId, accessToken) => {
+export const getAllPlaylists = (plexBaseUrl, libraryId, accessToken) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.playlist.getAllPlaylists(baseUrl, libraryId);
+      const endpoint = endpointConfig.playlist.getAllPlaylists(plexBaseUrl, libraryId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -851,7 +854,7 @@ export const getAllPlaylists = (baseUrl, libraryId, accessToken) => {
         .then((response) => {
           const data =
             response?.data?.MediaContainer?.Metadata?.map((playlist) =>
-              plexTranspose.transposePlaylistData(playlist, libraryId, baseUrl, accessToken)
+              plexTranspose.transposePlaylistData(playlist, libraryId, plexBaseUrl, accessToken)
             ) || [];
           resolve(data);
         })
@@ -879,10 +882,10 @@ export const getAllPlaylists = (baseUrl, libraryId, accessToken) => {
 // GET PLAYLIST DETAILS
 // ======================================================================
 
-export const getPlaylistDetails = (baseUrl, libraryId, playlistId, accessToken) => {
+export const getPlaylistDetails = (plexBaseUrl, libraryId, playlistId, accessToken) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.playlist.getDetails(baseUrl, playlistId);
+      const endpoint = endpointConfig.playlist.getDetails(plexBaseUrl, playlistId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -898,7 +901,7 @@ export const getPlaylistDetails = (baseUrl, libraryId, playlistId, accessToken) 
         })
         .then((response) => {
           const playlist = response?.data?.MediaContainer?.Metadata[0];
-          const playlistDetails = plexTranspose.transposePlaylistData(playlist, libraryId, baseUrl, accessToken);
+          const playlistDetails = plexTranspose.transposePlaylistData(playlist, libraryId, plexBaseUrl, accessToken);
           resolve(playlistDetails);
         })
         .catch((error) => {
@@ -925,10 +928,10 @@ export const getPlaylistDetails = (baseUrl, libraryId, playlistId, accessToken) 
 // GET PLAYLIST TRACKS
 // ======================================================================
 
-export const getPlaylistTracks = (baseUrl, libraryId, playlistId, accessToken) => {
+export const getPlaylistTracks = (plexBaseUrl, libraryId, playlistId, accessToken) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.playlist.getTracks(baseUrl, playlistId);
+      const endpoint = endpointConfig.playlist.getTracks(plexBaseUrl, playlistId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -945,7 +948,7 @@ export const getPlaylistTracks = (baseUrl, libraryId, playlistId, accessToken) =
         .then((response) => {
           const data =
             response?.data?.MediaContainer?.Metadata?.map((track) =>
-              plexTranspose.transposeTrackData(track, libraryId, baseUrl, accessToken)
+              plexTranspose.transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
             ) || [];
           resolve(data);
         })
@@ -970,13 +973,120 @@ export const getPlaylistTracks = (baseUrl, libraryId, playlistId, accessToken) =
 };
 
 // ======================================================================
+// GET ALL COLLECTIONS
+// ======================================================================
+
+export const getAllCollections = (plexBaseUrl, libraryId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.collection.getAllCollections(plexBaseUrl, libraryId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': accessToken,
+            'X-Plex-Client-Identifier': clientId,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          const allCollections =
+            response?.data?.MediaContainer?.Metadata?.filter(
+              (collection) => collection.subtype === 'artist' || collection.subtype === 'album'
+            ).map((collection) =>
+              plexTranspose.transposeCollectionData(collection, libraryId, plexBaseUrl, accessToken)
+            ) || [];
+
+          const allArtistCollections = allCollections.filter((collection) => collection.type === 'artist');
+          const allAlbumCollections = allCollections.filter((collection) => collection.type === 'album');
+          resolve({
+            allArtistCollections,
+            allAlbumCollections,
+          });
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllCollections.1',
+            message: 'Failed to get all collections: ' + error.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllCollections.2',
+        message: 'Failed to get all collections: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET COLLECTION ITEMS
+// ======================================================================
+
+export const getCollectionItems = (plexBaseUrl, libraryId, collectionId, typeKey, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.collection.getItems(plexBaseUrl, collectionId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': accessToken,
+            'X-Plex-Client-Identifier': clientId,
+          },
+          params: {
+            excludeFields: artistAndAlbumExcludes,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          const data =
+            response?.data?.MediaContainer?.Metadata?.map((item) =>
+              plexTranspose[`transpose${typeKey}Data`](item, libraryId, plexBaseUrl, accessToken)
+            ) || [];
+          resolve(data);
+        })
+        .catch((error) => {
+          reject({
+            code: 'getCollectionItems.1',
+            message: 'Failed to get all collection items: ' + error.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getCollectionItems.2',
+        message: 'Failed to get all collection items: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
 // SET STAR RATING
 // ======================================================================
 
-export const setStarRating = (baseUrl, accessToken, sessionId, ratingKey, rating) => {
+export const setStarRating = (plexBaseUrl, accessToken, sessionId, ratingKey, rating) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.rating.setStarRating(baseUrl, ratingKey, rating);
+      const endpoint = endpointConfig.rating.setStarRating(plexBaseUrl, ratingKey, rating);
       const browserName = getBrowserName();
       const params = {
         identifier: 'com.plexapp.plugins.library',
@@ -1024,7 +1134,7 @@ export const setStarRating = (baseUrl, accessToken, sessionId, ratingKey, rating
 // ======================================================================
 
 export const logPlaybackStatus = (
-  baseUrl,
+  plexBaseUrl,
   accessToken,
   sessionId,
   type,
@@ -1036,7 +1146,7 @@ export const logPlaybackStatus = (
 ) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.status.postPlaybackStatus(baseUrl);
+      const endpoint = endpointConfig.status.postPlaybackStatus(plexBaseUrl);
       const browserName = getBrowserName();
       const params = {
         type: type,
@@ -1088,7 +1198,7 @@ export const logPlaybackStatus = (
 // will allow the request to complete even if the page is closed.
 
 export const logPlaybackQuit = (
-  baseUrl,
+  plexBaseUrl,
   accessToken,
   sessionId,
   type,
@@ -1099,7 +1209,7 @@ export const logPlaybackQuit = (
   duration
 ) => {
   try {
-    const endpoint = endpointConfig.status.postPlaybackStatus(baseUrl);
+    const endpoint = endpointConfig.status.postPlaybackStatus(plexBaseUrl);
     const params = new URLSearchParams({
       type: type,
       key: trackId,
@@ -1134,9 +1244,9 @@ export const logPlaybackQuit = (
 // SCROBBLE ITEM
 // ======================================================================
 
-// export const scrobbleItem = (baseUrl, accessToken, key, identifier) => {
+// export const scrobbleItem = (plexBaseUrl, accessToken, key, identifier) => {
 //   return new Promise((resolve, reject) => {
-//     const endpoint = `${baseUrl}/:/scrobble?key=${key}&identifier=${identifier}`;
+//     const endpoint = `${plexBaseUrl}/:/scrobble?key=${key}&identifier=${identifier}`;
 //     axios
 //       .get(endpoint, {
 //         headers: {

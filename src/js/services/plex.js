@@ -816,25 +816,12 @@ export const getAllCollections = () => {
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
-      const endpoint = endpointConfig.collection.getAllCollections(plexBaseUrl, libraryId);
 
-      fetchDataPromise(endpoint, accessToken)
+      plexTools
+        .getAllCollections(plexBaseUrl, libraryId, accessToken)
         .then((response) => {
-          // console.log(response.MediaContainer.Metadata);
-
-          const allCollections =
-            response.MediaContainer.Metadata?.filter(
-              (collection) => collection.subtype === 'artist' || collection.subtype === 'album'
-            ).map((collection) =>
-              plexTranspose.transposeCollectionData(collection, libraryId, plexBaseUrl, accessToken)
-            ) || [];
-
-          const allArtistCollections = allCollections.filter((collection) => collection.type === 'artist');
-          const allAlbumCollections = allCollections.filter((collection) => collection.type === 'album');
-
-          // console.log('allCollections', allCollections);
-
-          store.dispatch.appModel.setAppState({ allArtistCollections, allAlbumCollections });
+          // console.log(response);
+          store.dispatch.appModel.setAppState(response);
         })
         .catch((error) => {
           console.error(error);
@@ -864,23 +851,15 @@ export const getCollectionItems = (libraryId, collectionId, typeKey) => {
       getCollectionItemsRunning[typeKey] = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-      const endpoint = endpointConfig.collection.getItems(plexBaseUrl, collectionId);
 
-      fetchDataPromise(endpoint, accessToken)
+      plexTools
+        .getCollectionItems(plexBaseUrl, libraryId, collectionId, typeKey, accessToken)
         .then((response) => {
-          // console.log(response.MediaContainer.Metadata);
-
-          const collectionItems =
-            response.MediaContainer.Metadata?.map((item) =>
-              plexTranspose[`transpose${typeKey}Data`](item, libraryId, plexBaseUrl, accessToken)
-            ) || [];
-
-          // console.log('collectionItems', collectionItems);
-
+          // console.log(response);
           store.dispatch.appModel[`store${typeKey}CollectionItems`]({
             libraryId,
             collectionId,
-            collectionItems,
+            collectionItems: response,
           });
         })
         .catch((error) => {
