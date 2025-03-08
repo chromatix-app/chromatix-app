@@ -311,9 +311,7 @@ export const getAllArtists = () => {
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
-      const mockEndpoint = '/api/artists.json';
-      const prodEndpoint = endpointConfig.artist.getAllArtists(plexBaseUrl, libraryId);
-      const endpoint = mockData ? mockEndpoint : prodEndpoint;
+      const endpoint = endpointConfig.artist.getAllArtists(plexBaseUrl, libraryId);
 
       fetchDataPromise(endpoint, accessToken)
         .then((response) => {
