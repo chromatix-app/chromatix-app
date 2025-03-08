@@ -13,18 +13,24 @@ import * as plexTranspose from 'js/services/plexTranspose';
 // OPTIONS
 // ======================================================================
 
-const secretKey = 'your_secret_key_here';
-
 const appName = 'Chromatix';
 const clientId = 'chromatix.app';
 const clientIcon = 'https://chromatix.app/icon/icon-512.png';
 
 const storagePinKey = config.storagePinKey;
 const storageAuthKey = config.storageAuthKey;
+const storageSecretKey = 'your_secret_key_here';
 
 const redirectPath = window.location.origin;
 const redirectQuery = 'plex-login';
 const redirectUrl = `${redirectPath}?${redirectQuery}=true`;
+
+const artistExcludes = 'summary,guid,key,parentRatingKey,parentTitle,skipCount';
+const albumExcludes =
+  'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,parentThumb,studio';
+const artistAndAlbumExcludes =
+  'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,skipCount,studio';
+const searchExcludes = 'summary';
 
 const endpointConfig = {
   auth: {
@@ -39,6 +45,10 @@ const endpointConfig = {
   },
   library: {
     getAllLibraries: (plexBaseUrl) => `${plexBaseUrl}/library/sections`,
+  },
+  search: {
+    searchHub: (plexBaseUrl) => `${plexBaseUrl}/hubs/search`,
+    searchLibrary: (plexBaseUrl) => `${plexBaseUrl}/library/search`,
   },
   artist: {},
   album: {
@@ -75,10 +85,6 @@ const endpointConfig = {
     getAlbumMoodItems: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
     getAlbumStyleItems: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
   },
-  search: {
-    searchHub: (plexBaseUrl) => `${plexBaseUrl}/hubs/search`,
-    searchLibrary: (plexBaseUrl) => `${plexBaseUrl}/library/search`,
-  },
   rating: {
     setStarRating: (plexBaseUrl) => `${plexBaseUrl}/:/rate`,
   },
@@ -86,13 +92,6 @@ const endpointConfig = {
     logPlaybackStatus: (plexBaseUrl) => `${plexBaseUrl}/:/timeline`,
   },
 };
-
-const artistExcludes = 'summary,guid,key,parentRatingKey,parentTitle,skipCount';
-const albumExcludes =
-  'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,parentThumb,studio';
-const artistAndAlbumExcludes =
-  'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,skipCount,studio';
-const searchExcludes = 'summary';
 
 // ======================================================================
 // HELPER FUNCTIONS
@@ -102,18 +101,29 @@ const searchExcludes = 'summary';
 
 export const setLocalStorage = (key, value) => {
   const stringValue = String(value);
-  const encryptedValue = CryptoJS.AES.encrypt(stringValue, secretKey).toString();
+  const encryptedValue = CryptoJS.AES.encrypt(stringValue, storageSecretKey).toString();
   window.localStorage.setItem(key, encryptedValue);
 };
 
 export const getLocalStorage = (key) => {
   const encryptedValue = window.localStorage.getItem(key);
   if (encryptedValue) {
-    const bytes = CryptoJS.AES.decrypt(encryptedValue, secretKey);
+    const bytes = CryptoJS.AES.decrypt(encryptedValue, storageSecretKey);
     const decryptedValue = bytes.toString(CryptoJS.enc.Utf8);
     return decryptedValue;
   }
   return null;
+};
+
+// STANDARD HEADERS FOR MOST REQUESTS
+
+const getRequestHeaders = (plexToken) => {
+  return {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'X-Plex-Token': plexToken,
+    'X-Plex-Client-Identifier': clientId,
+  };
 };
 
 // A CUSTOM PROMISE FUNCTION THAT WAITS FOR THE FIRST RESOLVED PROMISE
@@ -385,12 +395,7 @@ export const getAllServers = () => {
       const endpoint = endpointConfig.server.getAllServers();
       axios
         .get(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': authToken,
-            'X-Plex-Client-Identifier': clientId,
-          },
+          headers: getRequestHeaders(authToken),
           params: {
             includeHttps: 1,
             includeRelay: 1,
@@ -446,12 +451,7 @@ export const getFastestConnection = (server) => {
       setTimeout(() => {
         axios
           .head(connection.uri, {
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-              'X-Plex-Token': accessToken,
-              'X-Plex-Client-Identifier': clientId,
-            },
+            headers: getRequestHeaders(accessToken),
             timeout: 3000,
           })
           .then(() => resolve(connection.uri))
@@ -486,12 +486,7 @@ export const getAllLibraries = (plexBaseUrl, accessToken) => {
       const endpoint = endpointConfig.library.getAllLibraries(plexBaseUrl);
       axios
         .get(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientId,
-          },
+          headers: getRequestHeaders(accessToken),
         })
         .then((response) => {
           const data = response?.data?.MediaContainer?.Directory?.filter((library) => library.type === 'artist').map(
@@ -531,12 +526,7 @@ export const searchHub = (plexBaseUrl, libraryId, accessToken, query, limit = 25
 
       axios
         .get(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientId,
-          },
+          headers: getRequestHeaders(accessToken),
           params: {
             query,
             limit,
@@ -585,12 +575,7 @@ export const searchHub = (plexBaseUrl, libraryId, accessToken, query, limit = 25
 
 //       axios
 //         .get(endpoint, {
-//           headers: {
-//             Accept: 'application/json',
-//             'Content-Type': 'application/json',
-//             'X-Plex-Token': accessToken,
-//             'X-Plex-Client-Identifier': clientId,
-//           },
+//           headers: getRequestHeaders(accessToken),
 //           params: {
 //             query,
 //             limit,
@@ -635,12 +620,7 @@ export const getAllAlbums = (plexBaseUrl, libraryId, accessToken) => {
 
       axios
         .get(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientId,
-          },
+          headers: getRequestHeaders(accessToken),
           params: {
             type: 9,
             excludeFields: albumExcludes,
@@ -686,12 +666,7 @@ export const getAlbumDetails = (plexBaseUrl, libraryId, albumId, accessToken) =>
 
       axios
         .get(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientId,
-          },
+          headers: getRequestHeaders(accessToken),
           signal: controller.signal,
         })
         .then((response) => {
@@ -732,12 +707,7 @@ export const getAlbumTracks = (plexBaseUrl, libraryId, albumId, accessToken) => 
 
       axios
         .get(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientId,
-          },
+          headers: getRequestHeaders(accessToken),
           signal: controller.signal,
         })
         .then((response) => {
@@ -780,12 +750,7 @@ export const getFolderItems = (plexBaseUrl, libraryId, folderId, accessToken) =>
 
       axios
         .get(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientId,
-          },
+          headers: getRequestHeaders(accessToken),
           params: {
             parent: folderId,
           },
@@ -855,12 +820,7 @@ export const getAllPlaylists = (plexBaseUrl, libraryId, accessToken) => {
 
       axios
         .get(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientId,
-          },
+          headers: getRequestHeaders(accessToken),
           params: {
             playlistType: 'audio',
             sectionID: libraryId,
@@ -907,12 +867,7 @@ export const getPlaylistDetails = (plexBaseUrl, libraryId, playlistId, accessTok
 
       axios
         .get(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientId,
-          },
+          headers: getRequestHeaders(accessToken),
           signal: controller.signal,
         })
         .then((response) => {
@@ -953,12 +908,7 @@ export const getPlaylistTracks = (plexBaseUrl, libraryId, playlistId, accessToke
 
       axios
         .get(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientId,
-          },
+          headers: getRequestHeaders(accessToken),
           signal: controller.signal,
         })
         .then((response) => {
@@ -1001,12 +951,7 @@ export const getAllCollections = (plexBaseUrl, libraryId, accessToken) => {
 
       axios
         .get(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientId,
-          },
+          headers: getRequestHeaders(accessToken),
           signal: controller.signal,
         })
         .then((response) => {
@@ -1057,12 +1002,7 @@ export const getCollectionItems = (plexBaseUrl, libraryId, collectionId, typeKey
 
       axios
         .get(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientId,
-          },
+          headers: getRequestHeaders(accessToken),
           params: {
             excludeFields: artistAndAlbumExcludes,
           },
@@ -1117,12 +1057,7 @@ export const getAllTags = (plexBaseUrl, libraryId, typeKey, accessToken) => {
 
       axios
         .get(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientId,
-          },
+          headers: getRequestHeaders(accessToken),
           params: {
             type: typeKey.toLowerCase().includes('artist') ? 8 : 9,
           },
@@ -1178,12 +1113,7 @@ export const getTagItems = (plexBaseUrl, libraryId, tagId, typeKey, accessToken)
 
       axios
         .get(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientId,
-          },
+          headers: getRequestHeaders(accessToken),
           params: {
             ...(typeKey === 'ArtistGenreItems' && {
               type: 8,
@@ -1408,31 +1338,3 @@ export const logPlaybackQuit = (
     // do nothing
   }
 };
-
-// ======================================================================
-// SCROBBLE ITEM
-// ======================================================================
-
-// export const scrobbleItem = (plexBaseUrl, accessToken, key, identifier) => {
-//   return new Promise((resolve, reject) => {
-//     const endpoint = `${plexBaseUrl}/:/scrobble?key=${key}&identifier=${identifier}`;
-//     axios
-//       .get(endpoint, {
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'X-Plex-Token': accessToken,
-//           'X-Plex-Client-Identifier': clientId,
-//         },
-//       })
-//       .then((response) => {
-//         resolve(response);
-//       })
-//       .catch((error) => {
-//         reject({
-//           code: 'scrobbleItem.1',
-//           message: `Failed to scrobble item to ${endpoint}: ${error.message}`,
-//           error,
-//         });
-//       });
-//   });
-// };
