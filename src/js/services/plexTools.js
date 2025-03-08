@@ -43,31 +43,31 @@ const endpointConfig = {
   artist: {},
   album: {
     getAllAlbums: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
-    getDetails: (plexBaseUrl, albumId) => `${plexBaseUrl}/library/metadata/${albumId}`,
-    getTracks: (plexBaseUrl, albumId) => `${plexBaseUrl}/library/metadata/${albumId}/children`,
+    getAlbumDetails: (plexBaseUrl, albumId) => `${plexBaseUrl}/library/metadata/${albumId}`,
+    getAlbumTracks: (plexBaseUrl, albumId) => `${plexBaseUrl}/library/metadata/${albumId}/children`,
   },
   folder: {
     getFolderItems: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/folder`,
   },
   playlist: {
     getAllPlaylists: (plexBaseUrl) => `${plexBaseUrl}/playlists`,
-    getDetails: (plexBaseUrl, playlistId) => `${plexBaseUrl}/playlists/${playlistId}`,
-    getTracks: (plexBaseUrl, playlistId) => `${plexBaseUrl}/playlists/${playlistId}/items`,
+    getPlaylistDetails: (plexBaseUrl, playlistId) => `${plexBaseUrl}/playlists/${playlistId}`,
+    getPlaylistTracks: (plexBaseUrl, playlistId) => `${plexBaseUrl}/playlists/${playlistId}/items`,
   },
   collection: {
     getAllCollections: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/collections`,
-    getItems: (plexBaseUrl, collectionId) => `${plexBaseUrl}/library/collections/${collectionId}/children`,
+    getCollectionItems: (plexBaseUrl, collectionId) => `${plexBaseUrl}/library/collections/${collectionId}/children`,
   },
   tags: {},
   search: {
-    searchLibrary: (plexBaseUrl) => `${plexBaseUrl}/library/search`,
     searchHub: (plexBaseUrl) => `${plexBaseUrl}/hubs/search`,
+    searchLibrary: (plexBaseUrl) => `${plexBaseUrl}/library/search`,
   },
   rating: {
     setStarRating: (plexBaseUrl) => `${plexBaseUrl}/:/rate`,
   },
   status: {
-    postPlaybackStatus: (plexBaseUrl) => `${plexBaseUrl}/:/timeline`,
+    logPlaybackStatus: (plexBaseUrl) => `${plexBaseUrl}/:/timeline`,
   },
 };
 
@@ -664,7 +664,7 @@ export const getAllAlbums = (plexBaseUrl, libraryId, accessToken) => {
 export const getAlbumDetails = (plexBaseUrl, libraryId, albumId, accessToken) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.album.getDetails(plexBaseUrl, albumId);
+      const endpoint = endpointConfig.album.getAlbumDetails(plexBaseUrl, albumId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -710,7 +710,7 @@ export const getAlbumDetails = (plexBaseUrl, libraryId, albumId, accessToken) =>
 export const getAlbumTracks = (plexBaseUrl, libraryId, albumId, accessToken) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.album.getTracks(plexBaseUrl, albumId);
+      const endpoint = endpointConfig.album.getAlbumTracks(plexBaseUrl, albumId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -885,7 +885,7 @@ export const getAllPlaylists = (plexBaseUrl, libraryId, accessToken) => {
 export const getPlaylistDetails = (plexBaseUrl, libraryId, playlistId, accessToken) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.playlist.getDetails(plexBaseUrl, playlistId);
+      const endpoint = endpointConfig.playlist.getPlaylistDetails(plexBaseUrl, playlistId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -931,7 +931,7 @@ export const getPlaylistDetails = (plexBaseUrl, libraryId, playlistId, accessTok
 export const getPlaylistTracks = (plexBaseUrl, libraryId, playlistId, accessToken) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.playlist.getTracks(plexBaseUrl, playlistId);
+      const endpoint = endpointConfig.playlist.getPlaylistTracks(plexBaseUrl, playlistId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -1035,7 +1035,7 @@ export const getAllCollections = (plexBaseUrl, libraryId, accessToken) => {
 export const getCollectionItems = (plexBaseUrl, libraryId, collectionId, typeKey, accessToken) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.collection.getItems(plexBaseUrl, collectionId);
+      const endpoint = endpointConfig.collection.getCollectionItems(plexBaseUrl, collectionId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -1146,7 +1146,7 @@ export const logPlaybackStatus = (
 ) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.status.postPlaybackStatus(plexBaseUrl);
+      const endpoint = endpointConfig.status.logPlaybackStatus(plexBaseUrl);
       const browserName = getBrowserName();
       const params = {
         type: type,
@@ -1209,7 +1209,8 @@ export const logPlaybackQuit = (
   duration
 ) => {
   try {
-    const endpoint = endpointConfig.status.postPlaybackStatus(plexBaseUrl);
+    const endpoint = endpointConfig.status.logPlaybackStatus(plexBaseUrl);
+    const browserName = getBrowserName();
     const params = new URLSearchParams({
       type: type,
       key: trackId,
@@ -1230,8 +1231,8 @@ export const logPlaybackQuit = (
         'X-Plex-Client-Identifier': clientId,
         'X-Plex-Session-Identifier': sessionId,
         'X-Plex-Product': appName,
-        'X-Plex-Device-Name': getBrowserName(),
-        'X-Plex-Platform': getBrowserName(),
+        'X-Plex-Device-Name': browserName,
+        'X-Plex-Platform': browserName,
         'X-Plex-Device-Icon': clientIcon,
       },
     });
