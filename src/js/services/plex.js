@@ -23,52 +23,49 @@ const artistAndAlbumExcludes =
 
 const endpointConfig = {
   artist: {
-    getAllArtists: (base, libraryId) =>
-      `${base}/library/sections/${libraryId}/all?type=8&excludeFields=${artistExcludes}`,
-    getDetails: (base, artistId) => `${base}/library/metadata/${artistId}`,
-    getAllAlbums: (base, artistId) =>
-      `${base}/library/metadata/${artistId}/children?excludeAllLeaves=1&excludeFields=summary`,
-    getAllRelated: (base, artistId) => `${base}/library/metadata/${artistId}/related?excludeFields=summary`,
-    getCompilationTracks: (base, libraryId, artistName) =>
-      `${base}/library/sections/${libraryId}/all?type=10&track.originalTitle=${encodeURIComponent(
+    getAllArtists: (baseUrl, libraryId) =>
+      `${baseUrl}/library/sections/${libraryId}/all?type=8&excludeFields=${artistExcludes}`,
+    getDetails: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}`,
+    getAllAlbums: (baseUrl, artistId) =>
+      `${baseUrl}/library/metadata/${artistId}/children?excludeAllLeaves=1&excludeFields=summary`,
+    getAllRelated: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/related?excludeFields=summary`,
+    getCompilationTracks: (baseUrl, libraryId, artistName) =>
+      `${baseUrl}/library/sections/${libraryId}/all?type=10&track.originalTitle=${encodeURIComponent(
         artistName
       )}&artist.title!=${encodeURIComponent(artistName)}&excludeFields=summary`,
   },
-  folder: {
-    getFolderItems: (base, libraryId, folderId) => `${base}/library/sections/${libraryId}/folder?parent=${folderId}`,
-  },
   playlist: {
-    getAllPlaylists: (base, libraryId) => `${base}/playlists?playlistType=audio&sectionID=${libraryId}`,
-    getDetails: (base, playlistId) => `${base}/playlists/${playlistId}`,
-    getTracks: (base, playlistId) => `${base}/playlists/${playlistId}/items`,
+    getAllPlaylists: (baseUrl, libraryId) => `${baseUrl}/playlists?playlistType=audio&sectionID=${libraryId}`,
+    getDetails: (baseUrl, playlistId) => `${baseUrl}/playlists/${playlistId}`,
+    getTracks: (baseUrl, playlistId) => `${baseUrl}/playlists/${playlistId}/items`,
   },
   collection: {
-    getAllCollections: (base, libraryId) => `${base}/library/sections/${libraryId}/collections`,
-    getItems: (base, collectionId) =>
-      `${base}/library/collections/${collectionId}/children?excludeFields=${artistAndAlbumExcludes}`,
+    getAllCollections: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/collections`,
+    getItems: (baseUrl, collectionId) =>
+      `${baseUrl}/library/collections/${collectionId}/children?excludeFields=${artistAndAlbumExcludes}`,
   },
   sets: {
-    getAllArtistGenres: (base, libraryId) => `${base}/library/sections/${libraryId}/genre?type=8`,
-    getAllArtistMoods: (base, libraryId) => `${base}/library/sections/${libraryId}/mood?type=8`,
-    getAllArtistStyles: (base, libraryId) => `${base}/library/sections/${libraryId}/style?type=8`,
+    getAllArtistGenres: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/genre?type=8`,
+    getAllArtistMoods: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/mood?type=8`,
+    getAllArtistStyles: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/style?type=8`,
 
-    getAllAlbumGenres: (base, libraryId) => `${base}/library/sections/${libraryId}/genre?type=9`,
-    getAllAlbumMoods: (base, libraryId) => `${base}/library/sections/${libraryId}/mood?type=9`,
-    getAllAlbumStyles: (base, libraryId) => `${base}/library/sections/${libraryId}/style?type=9`,
+    getAllAlbumGenres: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/genre?type=9`,
+    getAllAlbumMoods: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/mood?type=9`,
+    getAllAlbumStyles: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/style?type=9`,
 
-    getArtistGenreItems: (base, libraryId, genreId) =>
-      `${base}/library/sections/${libraryId}/all?type=8&genre=${genreId}&excludeFields=${artistExcludes}`,
-    getArtistMoodItems: (base, libraryId, moodId) =>
-      `${base}/library/sections/${libraryId}/all?type=8&mood=${moodId}&excludeFields=${artistExcludes}`,
-    getArtistStyleItems: (base, libraryId, styleId) =>
-      `${base}/library/sections/${libraryId}/all?type=8&style=${styleId}&excludeFields=${artistExcludes}`,
+    getArtistGenreItems: (baseUrl, libraryId, genreId) =>
+      `${baseUrl}/library/sections/${libraryId}/all?type=8&genre=${genreId}&excludeFields=${artistExcludes}`,
+    getArtistMoodItems: (baseUrl, libraryId, moodId) =>
+      `${baseUrl}/library/sections/${libraryId}/all?type=8&mood=${moodId}&excludeFields=${artistExcludes}`,
+    getArtistStyleItems: (baseUrl, libraryId, styleId) =>
+      `${baseUrl}/library/sections/${libraryId}/all?type=8&style=${styleId}&excludeFields=${artistExcludes}`,
 
-    getAlbumGenreItems: (base, libraryId, genreId) =>
-      `${base}/library/sections/${libraryId}/all?type=9&genre=${genreId}&excludeFields=${albumExcludes}`,
-    getAlbumMoodItems: (base, libraryId, moodId) =>
-      `${base}/library/sections/${libraryId}/all?type=9&mood=${moodId}&excludeFields=${albumExcludes}`,
-    getAlbumStyleItems: (base, libraryId, styleId) =>
-      `${base}/library/sections/${libraryId}/all?type=9&style=${styleId}&excludeFields=${albumExcludes}`,
+    getAlbumGenreItems: (baseUrl, libraryId, genreId) =>
+      `${baseUrl}/library/sections/${libraryId}/all?type=9&genre=${genreId}&excludeFields=${albumExcludes}`,
+    getAlbumMoodItems: (baseUrl, libraryId, moodId) =>
+      `${baseUrl}/library/sections/${libraryId}/all?type=9&mood=${moodId}&excludeFields=${albumExcludes}`,
+    getAlbumStyleItems: (baseUrl, libraryId, styleId) =>
+      `${baseUrl}/library/sections/${libraryId}/all?type=9&style=${styleId}&excludeFields=${albumExcludes}`,
   },
 };
 
@@ -650,7 +647,7 @@ export const getAlbumTracks = (libraryId, albumId) => {
           })
           .catch((error) => {
             console.error(error);
-            reject();
+            reject(error);
           })
           .finally(() => {
             getAlbumTracksRunning = false;
@@ -680,49 +677,17 @@ export const getFolderItems = (folderId) => {
         getFolderItemsRunning = true;
         const accessToken = store.getState().sessionModel.currentServer.accessToken;
         const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-        const endpoint = endpointConfig.folder.getFolderItems(plexBaseUrl, libraryId, folderId);
 
-        fetchDataPromise(endpoint, accessToken)
+        plexTools
+          .getFolderItems(plexBaseUrl, libraryId, folderId, accessToken)
           .then((response) => {
             // console.log(response.MediaContainer.Metadata);
-
-            const folderItems =
-              response.MediaContainer.Metadata?.map((item, index) =>
-                plexTranspose.transposeFolderData(item, index, libraryId, plexBaseUrl, accessToken)
-              ).filter((item) => item !== null) || [];
-
-            // Sort folderItems
-            folderItems.sort((a, b) => {
-              if (a.kind === 'folder' && b.kind === 'track') return -1;
-              if (a.kind === 'track' && b.kind === 'folder') return 1;
-              if (a.kind === 'folder' && b.kind === 'folder') return a.title.localeCompare(b.title);
-              if (a.kind === 'track' && b.kind === 'track') {
-                if (a.album !== b.album) return a.album.localeCompare(b.album);
-                if (a.discNumber !== b.discNumber) return a.discNumber - b.discNumber;
-                return a.trackNumber - b.trackNumber;
-              }
-              return 0;
-            });
-
-            // Add sortOrder properties to each object
-            let trackSortOrder = 0;
-            folderItems.forEach((item, index) => {
-              item.sortOrder = index;
-              if (item.kind === 'track') {
-                item.trackSortOrder = trackSortOrder;
-                trackSortOrder++;
-              }
-            });
-
-            // console.log('folderItems', folderItems);
-
-            store.dispatch.appModel.storeFolderItems({ libraryId, folderId, folderItems });
-
+            store.dispatch.appModel.storeFolderItems({ libraryId, folderId, folderItems: response });
             resolve();
           })
           .catch((error) => {
             console.error(error);
-            reject();
+            reject(error);
           })
           .finally(() => {
             getFolderItemsRunning = false;
@@ -852,7 +817,7 @@ export const getPlaylistTracks = (libraryId, playlistId) => {
           })
           .catch((error) => {
             console.error(error);
-            reject();
+            reject(error);
           })
           .finally(() => {
             getPlaylistTracksRunning = false;

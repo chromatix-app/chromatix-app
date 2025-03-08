@@ -45,6 +45,9 @@ const endpointConfig = {
     getDetails: (baseUrl, albumId) => `${baseUrl}/library/metadata/${albumId}`,
     getTracks: (baseUrl, albumId) => `${baseUrl}/library/metadata/${albumId}/children`,
   },
+  folder: {
+    getFolderItems: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/folder`,
+  },
   search: {
     searchLibrary: (baseUrl) => `${baseUrl}/library/search`,
     searchHub: (baseUrl) => `${baseUrl}/hubs/search`,
@@ -62,6 +65,7 @@ const albumExcludes =
   'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,parentThumb,studio';
 // const artistAndAlbumExcludes =
 //   'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,skipCount,studio';
+const searchExcludes = 'summary';
 
 // ======================================================================
 // HELPER FUNCTIONS
@@ -511,7 +515,7 @@ export const searchHub = (baseUrl, libraryId, accessToken, query, limit = 25, in
             limit,
             includeCollections,
             contentDirectoryID: libraryId,
-            excludeFields: 'summary',
+            excludeFields: searchExcludes,
           },
           signal: controller.signal,
         })
@@ -521,7 +525,7 @@ export const searchHub = (baseUrl, libraryId, accessToken, query, limit = 25, in
         .catch((error) => {
           reject({
             code: 'searchHub.1',
-            message: 'Failed to search library: ' + error.message,
+            message: 'Failed to search hub: ' + error.message,
             error: error,
           });
         })
@@ -531,7 +535,7 @@ export const searchHub = (baseUrl, libraryId, accessToken, query, limit = 25, in
     } catch (error) {
       reject({
         code: 'searchHub.2',
-        message: 'Failed to search library: ' + error.message,
+        message: 'Failed to search hub: ' + error.message,
         error: error,
       });
     }
@@ -731,6 +735,81 @@ export const getAlbumTracks = (baseUrl, libraryId, albumId, accessToken) => {
       reject({
         code: 'getAlbumTracks.2',
         message: 'Failed to get album tracks: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET FOLDER ITEMS
+// ======================================================================
+
+export const getFolderItems = (baseUrl, libraryId, folderId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.folder.getFolderItems(baseUrl, libraryId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Plex-Token': accessToken,
+            'X-Plex-Client-Identifier': clientId,
+          },
+          params: {
+            parent: folderId,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          const data =
+            response?.data?.MediaContainer?.Metadata?.map((item, index) =>
+              plexTranspose.transposeFolderData(item, index, libraryId, baseUrl, accessToken)
+            ).filter((item) => item !== null) || [];
+
+          // Sort folderItems
+          data.sort((a, b) => {
+            if (a.kind === 'folder' && b.kind === 'track') return -1;
+            if (a.kind === 'track' && b.kind === 'folder') return 1;
+            if (a.kind === 'folder' && b.kind === 'folder') return a.title.localeCompare(b.title);
+            if (a.kind === 'track' && b.kind === 'track') {
+              if (a.album !== b.album) return a.album.localeCompare(b.album);
+              if (a.discNumber !== b.discNumber) return a.discNumber - b.discNumber;
+              return a.trackNumber - b.trackNumber;
+            }
+            return 0;
+          });
+
+          // Add sortOrder properties to each object
+          let trackSortOrder = 0;
+          data.forEach((item, index) => {
+            item.sortOrder = index;
+            if (item.kind === 'track') {
+              item.trackSortOrder = trackSortOrder;
+              trackSortOrder++;
+            }
+          });
+
+          resolve(data);
+        })
+        .catch((error) => {
+          reject({
+            code: 'getFolderItems.1',
+            message: 'Failed to get folder items: ' + error.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getFolderItems.2',
+        message: 'Failed to get folder items: ' + error.message,
         error: error,
       });
     }
