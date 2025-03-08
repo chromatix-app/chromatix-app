@@ -16,11 +16,12 @@ and doing some additional processing and validation.
 */
 
 const getThumb = (plexBaseUrl, thumb, size, accessToken) => {
-  return thumb
+  const finalThumb = thumb
     ? `${plexBaseUrl}/photo/:/transcode?width=${size}&height=${size}&url=${encodeURIComponent(
-        thumb
+        thumb.split('?')[0]
       )}&minSize=1&X-Plex-Token=${accessToken}`
-    : null; // thumbPlaceholder;
+    : null;
+  return finalThumb;
 };
 
 export const transposeUserData = (user) => {
