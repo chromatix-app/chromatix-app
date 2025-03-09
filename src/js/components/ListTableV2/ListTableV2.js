@@ -693,7 +693,7 @@ const StandardRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTempla
             case 'releaseDate':
               return (
                 <div key={rowKey + '-' + index} className={clsx(style.releaseDate, 'text-trim')}>
-                  {entry.releaseDate ? moment(entry.releaseDate).format('MMM YYYY') : null}
+                  {entry.releaseDate ? moment(entry.releaseDate).format('YYYY') : null}
                 </div>
               );
 
