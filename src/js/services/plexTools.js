@@ -55,10 +55,7 @@ const endpointConfig = {
     getArtistDetails: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}`,
     getAllArtistAlbums: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/children`,
     getAllArtistRelated: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/related`,
-    getCompilationTracks: (baseUrl, libraryId, artistName) =>
-      `${baseUrl}/library/sections/${libraryId}/all?type=10&track.originalTitle=${encodeURIComponent(
-        artistName
-      )}&artist.title!=${encodeURIComponent(artistName)}&excludeFields=summary`,
+    getAllArtistAppearanceTracks: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
   },
   album: {
     getAllAlbums: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
@@ -819,6 +816,57 @@ export const getAllArtistRelated = (plexBaseUrl, libraryId, artistId, accessToke
       reject({
         code: 'getAllArtistRelated.2',
         message: 'Failed to get all artist related albums: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALL ARTIST APPEARANCES
+// ======================================================================
+
+export const getAllArtistAppearanceAlbumIds = (plexBaseUrl, libraryId, artistName, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.artist.getAllArtistAppearanceTracks(plexBaseUrl, libraryId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      // We are using a query string ebcause of the use of a != operator
+      const queryString = `?type=10&track.originalTitle=${encodeURIComponent(
+        artistName
+      )}&artist.title!=${encodeURIComponent(artistName)}&excludeFields=summary`;
+
+      axios
+        .get(endpoint + queryString, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+        })
+        .then((response) => {
+          const artistCompilationTracks =
+            response?.data?.MediaContainer?.Metadata?.map((track) =>
+              plexTranspose.transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
+            ) || [];
+
+          // get a unique list of album IDs using the albumId key of each track
+          const artistCompilationAlbums = [...new Set(artistCompilationTracks.map((track) => track.albumId))];
+          resolve(artistCompilationAlbums);
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllArtistAppearanceAlbumIds.1',
+            message: 'Failed to get all artist appearance album IDs: ' + error.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllArtistAppearanceAlbumIds.2',
+        message: 'Failed to get all artist appearance album IDs: ' + error.message,
         error: error,
       });
     }

@@ -3,22 +3,8 @@
 // ======================================================================
 
 import * as plexTools from 'js/services/plexTools';
-import * as plexTranspose from 'js/services/plexTranspose';
 import { analyticsEvent } from 'js/utils';
 import store from 'js/store/store';
-
-// ======================================================================
-// OPTIONS
-// ======================================================================
-
-const endpointConfig = {
-  artist: {
-    getCompilationTracks: (baseUrl, libraryId, artistName) =>
-      `${baseUrl}/library/sections/${libraryId}/all?type=10&track.originalTitle=${encodeURIComponent(
-        artistName
-      )}&artist.title!=${encodeURIComponent(artistName)}&excludeFields=summary`,
-  },
-};
 
 // ======================================================================
 // LOAD
@@ -353,17 +339,22 @@ export const getAllArtistRelated = (libraryId, artistId) => {
 // GET ARTIST COMPILATION ALBUMS
 // ======================================================================
 
-let getAllArtistCompilationAlbumsRunning;
+let getAllArtistAppearanceAlbumsRunning;
 
-export const getAllArtistCompilationAlbums = (libraryId, artistId, artistName) => {
-  if (!getAllArtistCompilationAlbumsRunning) {
+export const getAllArtistAppearanceAlbums = (libraryId, artistId, artistName) => {
+  if (!getAllArtistAppearanceAlbumsRunning) {
     const prevAllCompilationAlbums = store.getState().appModel.allArtistCompilationAlbums[libraryId + '-' + artistId];
     if (!prevAllCompilationAlbums) {
-      console.log('%c--- plex - getAllArtistCompilationAlbums ---', 'color:#f9743b;');
-      getAllArtistCompilationAlbumsRunning = true;
+      console.log('%c--- plex - getAllArtistAppearanceAlbums ---', 'color:#f9743b;');
+      getAllArtistAppearanceAlbumsRunning = true;
+      const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
 
-      getAllArtistCompilationAlbumIds(libraryId, artistName)
+      plexTools
+        .getAllArtistAppearanceAlbumIds(plexBaseUrl, libraryId, artistName, accessToken)
         .then((response) => {
+          console.log(111);
+          console.log(response);
           let artistCompilationAlbums = [];
 
           if (response.length > 0) {
@@ -401,39 +392,10 @@ export const getAllArtistCompilationAlbums = (libraryId, artistId, artistName) =
           console.error(error);
         })
         .finally(() => {
-          getAllArtistCompilationAlbumsRunning = false;
+          getAllArtistAppearanceAlbumsRunning = false;
         });
     }
   }
-};
-
-const getAllArtistCompilationAlbumIds = (libraryId, artistName) => {
-  const accessToken = store.getState().sessionModel.currentServer.accessToken;
-  const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-  const endpoint = endpointConfig.artist.getCompilationTracks(plexBaseUrl, libraryId, artistName);
-
-  return new Promise((resolve, reject) => {
-    fetchDataPromise(endpoint, accessToken)
-      .then((response) => {
-        // console.log(response.MediaContainer.Metadata);
-
-        const artistCompilationTracks =
-          response.MediaContainer.Metadata?.map((track) =>
-            plexTranspose.transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
-          ) || [];
-
-        // get a unique list of album IDs using the albumId key of each track
-        const artistCompilationAlbums = [...new Set(artistCompilationTracks.map((track) => track.albumId))];
-
-        // console.log('artistCompilationTracks', artistCompilationTracks);
-
-        resolve(artistCompilationAlbums);
-      })
-      .catch((error) => {
-        console.error(error);
-        reject(error);
-      });
-  });
 };
 
 // ======================================================================
@@ -926,77 +888,3 @@ export const logPlaybackQuit = (currentTrack, currentTime) => {
     );
   }
 };
-
-// ======================================================================
-// FETCH DATA
-// ======================================================================
-
-let abortControllers = [];
-
-export const abortAllRequests = () => {
-  if (abortControllers.length > 0) {
-    console.log('%c### plex - abortAllRequests ###', 'color:#f00;');
-    abortControllers.forEach((controller) => {
-      controller.abort();
-    });
-    abortControllers = [];
-  }
-};
-
-const fetchDataPromise = (endpoint, accessToken, canBeAborted = true) => {
-  return new Promise((resolve, reject) => {
-    let controller;
-    if (canBeAborted) {
-      controller = new AbortController();
-      abortControllers.push(controller);
-    }
-
-    fetch(endpoint, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-Plex-Token': accessToken,
-      },
-      signal: canBeAborted ? controller.signal : undefined,
-    })
-      .then((response) => response.json())
-      .then((data) => resolve(data))
-      .catch((error) => {
-        // Handle aborted request
-        if (error.name === 'AbortError') {
-          reject({
-            code: 'fetchDataPromise.1',
-            message: 'Request aborted',
-            error: error,
-          });
-        }
-        // Handle all other errors
-        else {
-          reject({
-            code: 'fetchDataPromise.2',
-            message: 'Failed to complete fetch request: ' + error.message,
-            error: error,
-          });
-        }
-      })
-      .finally(() => {
-        // Clean up the abort controller
-        if (canBeAborted) {
-          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
-        }
-      });
-  });
-};
-
-// const fetchData = async (endpoint, accessToken) => {
-//   const response = await fetch(endpoint, {
-//     headers: {
-//       Accept: 'application/json',
-//       'Content-Type': 'application/json',
-//       'X-Plex-Token': accessToken,
-//     },
-//   });
-
-//   const data = await response.json();
-//   return data;
-// };
