@@ -351,42 +351,14 @@ export const getAllArtistAppearanceAlbums = (libraryId, artistId, artistName) =>
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
 
       plexTools
-        .getAllArtistAppearanceAlbumIds(plexBaseUrl, libraryId, artistName, accessToken)
+        .getAllArtistAppearanceAlbums(plexBaseUrl, libraryId, artistName, store, accessToken)
         .then((response) => {
-          console.log(111);
-          console.log(response);
-          let artistCompilationAlbums = [];
-
-          if (response.length > 0) {
-            const allAlbums1 = store.getState().appModel.allAlbums;
-
-            const albumPromises = response.map((albumId) => {
-              // Check to see if we already have the album info
-              const albumInfo1 = allAlbums1 ? allAlbums1?.find((album) => album.albumId === albumId) : null;
-              if (albumInfo1) {
-                artistCompilationAlbums.push(albumInfo1);
-                return Promise.resolve();
-              }
-
-              // If not, get the album details
-              return new Promise((resolve) => {
-                getAlbumDetails(libraryId, albumId, () => {
-                  const allAlbums2 = store.getState().appModel.allAlbums;
-                  const albumInfo2 = allAlbums2?.find((album) => album.albumId === albumId);
-                  if (albumInfo2) {
-                    artistCompilationAlbums.push(albumInfo2);
-                  }
-                  resolve();
-                });
-              });
-            });
-
-            Promise.all(albumPromises).then(() => {
-              store.dispatch.appModel.storeArtistCompilationAlbums({ libraryId, artistId, artistCompilationAlbums });
-            });
-          } else {
-            store.dispatch.appModel.storeArtistCompilationAlbums({ libraryId, artistId, artistCompilationAlbums });
-          }
+          // console.log(response);
+          store.dispatch.appModel.storeArtistCompilationAlbums({
+            libraryId,
+            artistId,
+            artistCompilationAlbums: response,
+          });
         })
         .catch((error) => {
           console.error(error);

@@ -376,14 +376,14 @@ export const getUserInfo = () => {
           }
           reject({
             code: 'getUserInfo.1',
-            message: 'Failed to get user info: ' + error.message,
+            message: 'Failed to get user info: ' + error?.message,
             error: error,
           });
         });
     } catch (error) {
       reject({
         code: 'getUserInfo.2',
-        message: 'Failed to get user info: ' + error.message,
+        message: 'Failed to get user info: ' + error?.message,
         error: error,
       });
     }
@@ -418,14 +418,14 @@ export const getAllServers = () => {
         .catch((error) => {
           reject({
             code: 'getAllServers.1',
-            message: 'Failed to get all servers: ' + error.message,
+            message: 'Failed to get all servers: ' + error?.message,
             error: error,
           });
         });
     } catch (error) {
       reject({
         code: 'getAllServers.2',
-        message: 'Failed to get all servers: ' + error.message,
+        message: 'Failed to get all servers: ' + error?.message,
         error: error,
       });
     }
@@ -464,7 +464,7 @@ export const getFastestConnection = (server) => {
           .catch((error) => {
             reject({
               code: 'getFastestConnection.1',
-              message: `Failed to connect to ${connection.uri}: ${error.message}`,
+              message: `Failed to connect to ${connection.uri}: ${error?.message}`,
               error,
             });
           });
@@ -503,14 +503,14 @@ export const getAllLibraries = (plexBaseUrl, accessToken) => {
         .catch((error) => {
           reject({
             code: 'getAllLibraries.1',
-            message: 'Failed to get all libraries: ' + error.message,
+            message: 'Failed to get all libraries: ' + error?.message,
             error: error,
           });
         });
     } catch (error) {
       reject({
         code: 'getAllLibraries.2',
-        message: 'Failed to get all libraries: ' + error.message,
+        message: 'Failed to get all libraries: ' + error?.message,
         error: error,
       });
     }
@@ -570,7 +570,7 @@ export const searchHub = (plexBaseUrl, libraryId, accessToken, query, limit = 25
         .catch((error) => {
           reject({
             code: 'searchHub.1',
-            message: 'Failed to search hub: ' + error.message,
+            message: 'Failed to search hub: ' + error?.message,
             error: error,
           });
         })
@@ -580,7 +580,7 @@ export const searchHub = (plexBaseUrl, libraryId, accessToken, query, limit = 25
     } catch (error) {
       reject({
         code: 'searchHub.2',
-        message: 'Failed to search hub: ' + error.message,
+        message: 'Failed to search hub: ' + error?.message,
         error: error,
       });
     }
@@ -618,7 +618,7 @@ export const searchHub = (plexBaseUrl, libraryId, accessToken, query, limit = 25
 //         .catch((error) => {
 //           reject({
 //             code: 'searchLibrary.1',
-//             message: 'Failed to search library: ' + error.message,
+//             message: 'Failed to search library: ' + error?.message,
 //             error: error,
 //           });
 //         })
@@ -628,7 +628,7 @@ export const searchHub = (plexBaseUrl, libraryId, accessToken, query, limit = 25
 //     } catch (error) {
 //       reject({
 //         code: 'searchLibrary.2',
-//         message: 'Failed to search library: ' + error.message,
+//         message: 'Failed to search library: ' + error?.message,
 //         error: error,
 //       });
 //     }
@@ -665,7 +665,7 @@ export const getAllArtists = (plexBaseUrl, libraryId, accessToken) => {
         .catch((error) => {
           reject({
             code: 'getAllArtists.1',
-            message: 'Failed to get all artists: ' + error.message,
+            message: 'Failed to get all artists: ' + error?.message,
             error: error,
           });
         })
@@ -675,7 +675,7 @@ export const getAllArtists = (plexBaseUrl, libraryId, accessToken) => {
     } catch (error) {
       reject({
         code: 'getAllArtists.2',
-        message: 'Failed to get all artists: ' + error.message,
+        message: 'Failed to get all artists: ' + error?.message,
         error: error,
       });
     }
@@ -706,7 +706,7 @@ export const getArtistDetails = (plexBaseUrl, libraryId, artistId, accessToken) 
         .catch((error) => {
           reject({
             code: 'getArtistDetails.1',
-            message: 'Failed to get artist details: ' + error.message,
+            message: 'Failed to get artist details: ' + error?.message,
             error: error,
           });
         })
@@ -716,7 +716,7 @@ export const getArtistDetails = (plexBaseUrl, libraryId, artistId, accessToken) 
     } catch (error) {
       reject({
         code: 'getArtistDetails.2',
-        message: 'Failed to get artist details: ' + error.message,
+        message: 'Failed to get artist details: ' + error?.message,
         error: error,
       });
     }
@@ -753,7 +753,7 @@ export const getAllArtistAlbums = (plexBaseUrl, libraryId, artistId, accessToken
         .catch((error) => {
           reject({
             code: 'getAllArtistAlbums.1',
-            message: 'Failed to get all artist albums: ' + error.message,
+            message: 'Failed to get all artist albums: ' + error?.message,
             error: error,
           });
         })
@@ -763,7 +763,7 @@ export const getAllArtistAlbums = (plexBaseUrl, libraryId, artistId, accessToken
     } catch (error) {
       reject({
         code: 'getAllArtistAlbums.2',
-        message: 'Failed to get all artist albums: ' + error.message,
+        message: 'Failed to get all artist albums: ' + error?.message,
         error: error,
       });
     }
@@ -805,7 +805,7 @@ export const getAllArtistRelated = (plexBaseUrl, libraryId, artistId, accessToke
         .catch((error) => {
           reject({
             code: 'getAllArtistRelated.1',
-            message: 'Failed to get all artist related albums: ' + error.message,
+            message: 'Failed to get all artist related albums: ' + error?.message,
             error: error,
           });
         })
@@ -815,7 +815,7 @@ export const getAllArtistRelated = (plexBaseUrl, libraryId, artistId, accessToke
     } catch (error) {
       reject({
         code: 'getAllArtistRelated.2',
-        message: 'Failed to get all artist related albums: ' + error.message,
+        message: 'Failed to get all artist related albums: ' + error?.message,
         error: error,
       });
     }
@@ -825,6 +825,67 @@ export const getAllArtistRelated = (plexBaseUrl, libraryId, artistId, accessToke
 // ======================================================================
 // GET ALL ARTIST APPEARANCES
 // ======================================================================
+
+export const getAllArtistAppearanceAlbums = (plexBaseUrl, libraryId, artistName, store, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      getAllArtistAppearanceAlbumIds(plexBaseUrl, libraryId, artistName, accessToken)
+        .then((response) => {
+          if (response.length <= 0) {
+            resolve([]);
+          } else {
+            let artistCompilationAlbums = [];
+            const allAlbums1 = store.getState().appModel.allAlbums;
+
+            // For each returned album ID, get the album details
+            const albumPromises = response.map((albumId) => {
+              // Check to see if we already have the album info in the store
+              const albumInfo1 = allAlbums1 ? allAlbums1?.find((album) => album.albumId === albumId) : null;
+              if (albumInfo1) {
+                artistCompilationAlbums.push(albumInfo1);
+                return Promise.resolve();
+              }
+
+              // If not, get the album details
+              return new Promise((resolve2, reject2) => {
+                getAlbumDetails(plexBaseUrl, libraryId, albumId, accessToken)
+                  .then((response) => {
+                    artistCompilationAlbums.push(response);
+                    resolve2();
+                  })
+                  .catch((error) => {});
+              });
+            });
+
+            Promise.all(albumPromises)
+              .then(() => {
+                resolve(artistCompilationAlbums);
+              })
+              .catch((error) => {
+                reject({
+                  code: 'getAllArtistAppearanceAlbums.1',
+                  message: 'Failed to get all artist appearance albums: ' + error?.message,
+                  error: error,
+                });
+              });
+          }
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllArtistAppearanceAlbums.2',
+            message: 'Failed to get all artist appearance albums: ' + error?.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllArtistAppearanceAlbums.3',
+        message: 'Failed to get all artist appearance albums: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
 
 export const getAllArtistAppearanceAlbumIds = (plexBaseUrl, libraryId, artistName, accessToken) => {
   return new Promise((resolve, reject) => {
@@ -856,7 +917,7 @@ export const getAllArtistAppearanceAlbumIds = (plexBaseUrl, libraryId, artistNam
         .catch((error) => {
           reject({
             code: 'getAllArtistAppearanceAlbumIds.1',
-            message: 'Failed to get all artist appearance album IDs: ' + error.message,
+            message: 'Failed to get all artist appearance album IDs: ' + error?.message,
             error: error,
           });
         })
@@ -866,7 +927,7 @@ export const getAllArtistAppearanceAlbumIds = (plexBaseUrl, libraryId, artistNam
     } catch (error) {
       reject({
         code: 'getAllArtistAppearanceAlbumIds.2',
-        message: 'Failed to get all artist appearance album IDs: ' + error.message,
+        message: 'Failed to get all artist appearance album IDs: ' + error?.message,
         error: error,
       });
     }
@@ -902,7 +963,7 @@ export const getAllAlbums = (plexBaseUrl, libraryId, accessToken) => {
         .catch((error) => {
           reject({
             code: 'getAllAlbums.1',
-            message: 'Failed to get all albums: ' + error.message,
+            message: 'Failed to get all albums: ' + error?.message,
             error: error,
           });
         })
@@ -912,7 +973,7 @@ export const getAllAlbums = (plexBaseUrl, libraryId, accessToken) => {
     } catch (error) {
       reject({
         code: 'getAllAlbums.2',
-        message: 'Failed to get all albums: ' + error.message,
+        message: 'Failed to get all albums: ' + error?.message,
         error: error,
       });
     }
@@ -943,7 +1004,7 @@ export const getAlbumDetails = (plexBaseUrl, libraryId, albumId, accessToken) =>
         .catch((error) => {
           reject({
             code: 'getAlbumDetails.1',
-            message: 'Failed to get album details: ' + error.message,
+            message: 'Failed to get album details: ' + error?.message,
             error: error,
           });
         })
@@ -953,7 +1014,7 @@ export const getAlbumDetails = (plexBaseUrl, libraryId, albumId, accessToken) =>
     } catch (error) {
       reject({
         code: 'getAlbumDetails.2',
-        message: 'Failed to get album details: ' + error.message,
+        message: 'Failed to get album details: ' + error?.message,
         error: error,
       });
     }
@@ -986,7 +1047,7 @@ export const getAlbumTracks = (plexBaseUrl, libraryId, albumId, accessToken) => 
         .catch((error) => {
           reject({
             code: 'getAlbumTracks.1',
-            message: 'Failed to get album tracks: ' + error.message,
+            message: 'Failed to get album tracks: ' + error?.message,
             error: error,
           });
         })
@@ -996,7 +1057,7 @@ export const getAlbumTracks = (plexBaseUrl, libraryId, albumId, accessToken) => 
     } catch (error) {
       reject({
         code: 'getAlbumTracks.2',
-        message: 'Failed to get album tracks: ' + error.message,
+        message: 'Failed to get album tracks: ' + error?.message,
         error: error,
       });
     }
@@ -1056,7 +1117,7 @@ export const getFolderItems = (plexBaseUrl, libraryId, folderId, accessToken) =>
         .catch((error) => {
           reject({
             code: 'getFolderItems.1',
-            message: 'Failed to get folder items: ' + error.message,
+            message: 'Failed to get folder items: ' + error?.message,
             error: error,
           });
         })
@@ -1066,7 +1127,7 @@ export const getFolderItems = (plexBaseUrl, libraryId, folderId, accessToken) =>
     } catch (error) {
       reject({
         code: 'getFolderItems.2',
-        message: 'Failed to get folder items: ' + error.message,
+        message: 'Failed to get folder items: ' + error?.message,
         error: error,
       });
     }
@@ -1103,7 +1164,7 @@ export const getAllPlaylists = (plexBaseUrl, libraryId, accessToken) => {
         .catch((error) => {
           reject({
             code: 'getAllPlaylists.1',
-            message: 'Failed to get all playlists: ' + error.message,
+            message: 'Failed to get all playlists: ' + error?.message,
             error: error,
           });
         })
@@ -1113,7 +1174,7 @@ export const getAllPlaylists = (plexBaseUrl, libraryId, accessToken) => {
     } catch (error) {
       reject({
         code: 'getAllPlaylists.2',
-        message: 'Failed to get all playlists: ' + error.message,
+        message: 'Failed to get all playlists: ' + error?.message,
         error: error,
       });
     }
@@ -1144,7 +1205,7 @@ export const getPlaylistDetails = (plexBaseUrl, libraryId, playlistId, accessTok
         .catch((error) => {
           reject({
             code: 'getPlaylistDetails.1',
-            message: 'Failed to get playlist details: ' + error.message,
+            message: 'Failed to get playlist details: ' + error?.message,
             error: error,
           });
         })
@@ -1154,7 +1215,7 @@ export const getPlaylistDetails = (plexBaseUrl, libraryId, playlistId, accessTok
     } catch (error) {
       reject({
         code: 'getPlaylistDetails.2',
-        message: 'Failed to get playlist details: ' + error.message,
+        message: 'Failed to get playlist details: ' + error?.message,
         error: error,
       });
     }
@@ -1187,7 +1248,7 @@ export const getPlaylistTracks = (plexBaseUrl, libraryId, playlistId, accessToke
         .catch((error) => {
           reject({
             code: 'getPlaylistTracks.1',
-            message: 'Failed to get playlist tracks: ' + error.message,
+            message: 'Failed to get playlist tracks: ' + error?.message,
             error: error,
           });
         })
@@ -1197,7 +1258,7 @@ export const getPlaylistTracks = (plexBaseUrl, libraryId, playlistId, accessToke
     } catch (error) {
       reject({
         code: 'getPlaylistTracks.2',
-        message: 'Failed to get playlist tracks: ' + error.message,
+        message: 'Failed to get playlist tracks: ' + error?.message,
         error: error,
       });
     }
@@ -1238,7 +1299,7 @@ export const getAllCollections = (plexBaseUrl, libraryId, accessToken) => {
         .catch((error) => {
           reject({
             code: 'getAllCollections.1',
-            message: 'Failed to get all collections: ' + error.message,
+            message: 'Failed to get all collections: ' + error?.message,
             error: error,
           });
         })
@@ -1248,7 +1309,7 @@ export const getAllCollections = (plexBaseUrl, libraryId, accessToken) => {
     } catch (error) {
       reject({
         code: 'getAllCollections.2',
-        message: 'Failed to get all collections: ' + error.message,
+        message: 'Failed to get all collections: ' + error?.message,
         error: error,
       });
     }
@@ -1284,7 +1345,7 @@ export const getCollectionItems = (plexBaseUrl, libraryId, collectionId, typeKey
         .catch((error) => {
           reject({
             code: 'getCollectionItems.1',
-            message: 'Failed to get all collection items: ' + error.message,
+            message: 'Failed to get all collection items: ' + error?.message,
             error: error,
           });
         })
@@ -1294,7 +1355,7 @@ export const getCollectionItems = (plexBaseUrl, libraryId, collectionId, typeKey
     } catch (error) {
       reject({
         code: 'getCollectionItems.2',
-        message: 'Failed to get all collection items: ' + error.message,
+        message: 'Failed to get all collection items: ' + error?.message,
         error: error,
       });
     }
@@ -1340,7 +1401,7 @@ export const getAllTags = (plexBaseUrl, libraryId, typeKey, accessToken) => {
         .catch((error) => {
           reject({
             code: 'getAllTags.1',
-            message: 'Failed to get all tags: ' + error.message,
+            message: 'Failed to get all tags: ' + error?.message,
             error: error,
           });
         })
@@ -1350,7 +1411,7 @@ export const getAllTags = (plexBaseUrl, libraryId, typeKey, accessToken) => {
     } catch (error) {
       reject({
         code: 'getAllTags.2',
-        message: 'Failed to get all tags: ' + error.message,
+        message: 'Failed to get all tags: ' + error?.message,
         error: error,
       });
     }
@@ -1426,7 +1487,7 @@ export const getTagItems = (plexBaseUrl, libraryId, tagId, typeKey, accessToken)
         .catch((error) => {
           reject({
             code: 'getTagItems.1',
-            message: 'Failed to get all tag items: ' + error.message,
+            message: 'Failed to get all tag items: ' + error?.message,
             error: error,
           });
         })
@@ -1436,7 +1497,7 @@ export const getTagItems = (plexBaseUrl, libraryId, tagId, typeKey, accessToken)
     } catch (error) {
       reject({
         code: 'getTagItems.2',
-        message: 'Failed to get all tag items: ' + error.message,
+        message: 'Failed to get all tag items: ' + error?.message,
         error: error,
       });
     }
@@ -1479,14 +1540,14 @@ export const setStarRating = (plexBaseUrl, accessToken, sessionId, ratingKey, ra
         .catch((error) => {
           reject({
             code: 'setStarRating.1',
-            message: `Failed to set star rating for ${ratingKey}: ${error.message}`,
+            message: `Failed to set star rating for ${ratingKey}: ${error?.message}`,
             error: error,
           });
         });
     } catch (error) {
       reject({
         code: 'setStarRating.2',
-        message: `Failed to set star rating for ${ratingKey}: ${error.message}`,
+        message: `Failed to set star rating for ${ratingKey}: ${error?.message}`,
         error: error,
       });
     }
