@@ -200,7 +200,7 @@ export const transposeMoodData = (type, mood, libraryId) => {
   };
 };
 
-export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBaseUrl, accessToken) => {
+export const transposeHubSearchData = (result, libraryId, plexBaseUrl, accessToken) => {
   if (result?.type) {
     if (result.type === 'artist') {
       return {

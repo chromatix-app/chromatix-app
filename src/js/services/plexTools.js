@@ -526,6 +526,15 @@ export const getAllLibraries = (plexBaseUrl, accessToken) => {
 
 // /hubs/search?query=Epica&excludeFields=summary&limit=4&includeCollections=1&contentDirectoryID=23&includeFields=thumbBlurHash
 
+const typeOrder = {
+  artist: 1,
+  album: 2,
+  playlist: 3,
+  'artist collection': 4,
+  'album collection': 5,
+  track: 6,
+};
+
 export const searchHub = (plexBaseUrl, libraryId, accessToken, query, limit = 25, includeCollections = 1) => {
   return new Promise((resolve, reject) => {
     try {
@@ -546,7 +555,20 @@ export const searchHub = (plexBaseUrl, libraryId, accessToken, query, limit = 25
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(response?.data?.MediaContainer?.Hub);
+          const data =
+            response?.data?.MediaContainer?.Hub?.flatMap((result) => result.Metadata)
+              ?.map((result) => plexTranspose.transposeHubSearchData(result, libraryId, plexBaseUrl, accessToken))
+              .filter((result) => result !== null)
+              .sort((a, b) => {
+                if (b.score === a.score) {
+                  if (a.type === b.type) {
+                    return a.title.localeCompare(b.title);
+                  }
+                  return typeOrder[a.type] - typeOrder[b.type];
+                }
+                return b.score - a.score;
+              }) || [];
+          resolve(data);
         })
         .catch((error) => {
           reject({

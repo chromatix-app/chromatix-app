@@ -200,49 +200,19 @@ export const searchLibrary = (query) => {
 const searchLibrary2 = (query, searchCounter) => {
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-  const { libraryId, title } = store.getState().sessionModel.currentLibrary;
-
-  const typeOrder = {
-    artist: 1,
-    album: 2,
-    playlist: 3,
-    'artist collection': 4,
-    'album collection': 5,
-    track: 6,
-  };
+  const { libraryId } = store.getState().sessionModel.currentLibrary;
 
   plexTools
     .searchHub(plexBaseUrl, libraryId, accessToken, query)
-    // .searchLibrary(plexBaseUrl, accessToken, query)
     .then((response) => {
       // console.log(response);
-
-      const searchResults =
-        response
-          ?.flatMap((result) => result.Metadata)
-          ?.map((result) => plexTranspose.transposeHubSearchData(result, libraryId, title, plexBaseUrl, accessToken))
-          // .map((result) => plexTranspose.transposeLibrarySearchData(result, libraryId, title, plexBaseUrl, accessToken))
-          .filter((result) => result !== null)
-          .sort((a, b) => {
-            if (b.score === a.score) {
-              if (a.type === b.type) {
-                return a.title.localeCompare(b.title);
-              }
-              return typeOrder[a.type] - typeOrder[b.type];
-            }
-            return b.score - a.score;
-          }) || [];
-
-      // console.log(searchResults);
-
       const searchResultCounter = store.getState().appModel.searchResultCounter;
       if (searchCounter > searchResultCounter) {
         store.dispatch.appModel.setAppState({
-          searchResults,
+          searchResults: response,
           searchResultCounter: searchCounter,
         });
       }
-
       analyticsEvent('Plex: Search');
     })
     .catch((error) => {
