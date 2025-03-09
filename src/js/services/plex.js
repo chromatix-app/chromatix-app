@@ -11,16 +11,8 @@ import store from 'js/store/store';
 // OPTIONS
 // ======================================================================
 
-const artistExcludes = 'summary,guid,key,parentRatingKey,parentTitle,skipCount';
-
 const endpointConfig = {
   artist: {
-    getAllArtists: (baseUrl, libraryId) =>
-      `${baseUrl}/library/sections/${libraryId}/all?type=8&excludeFields=${artistExcludes}`,
-    getDetails: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}`,
-    getAllAlbums: (baseUrl, artistId) =>
-      `${baseUrl}/library/metadata/${artistId}/children?excludeAllLeaves=1&excludeFields=summary`,
-    getAllRelated: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/related?excludeFields=summary`,
     getCompilationTracks: (baseUrl, libraryId, artistName) =>
       `${baseUrl}/library/sections/${libraryId}/all?type=10&track.originalTitle=${encodeURIComponent(
         artistName
@@ -36,7 +28,7 @@ export const init = () => {
   console.log('%c--- plex - init ---', 'color:#f9743b;');
   plexTools
     .init()
-    .then((response) => {
+    .then((_response) => {
       getUserInfo();
     })
     .catch((error) => {
@@ -62,7 +54,7 @@ export const login = () => {
   console.log('%c--- plex - login ---', 'color:#f9743b;');
   plexTools
     .login()
-    .then((response) => {
+    .then((_response) => {
       analyticsEvent('Plex: Login Success');
     })
     .catch((error) => {
@@ -275,22 +267,13 @@ export const getAllArtists = () => {
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
-      const endpoint = endpointConfig.artist.getAllArtists(plexBaseUrl, libraryId);
-
-      fetchDataPromise(endpoint, accessToken)
+      plexTools
+        .getAllArtists(plexBaseUrl, libraryId, accessToken)
         .then((response) => {
-          // console.log(response.MediaContainer.Metadata);
-
-          const allArtists =
-            response.MediaContainer.Metadata?.map((artist) =>
-              plexTranspose.transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
-            ) || [];
-
-          // console.log('allArtists', allArtists);
-
+          // console.log(response);
           store.dispatch.appModel.setAppState({
             haveGotAllArtists: true,
-            allArtists,
+            allArtists: response,
           });
         })
         .catch((error) => {
@@ -317,18 +300,12 @@ export const getArtistDetails = (libraryId, artistId) => {
       getArtistDetailsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-      const endpoint = endpointConfig.artist.getDetails(plexBaseUrl, artistId);
 
-      fetchDataPromise(endpoint, accessToken)
+      plexTools
+        .getArtistDetails(plexBaseUrl, libraryId, artistId, accessToken)
         .then((response) => {
-          // console.log(response.MediaContainer.Metadata);
-
-          const artist = response.MediaContainer.Metadata[0];
-          const artistDetails = plexTranspose.transposeArtistData(artist, libraryId, plexBaseUrl, accessToken);
-
-          // console.log('artistDetails', artistDetails);
-
-          store.dispatch.appModel.storeArtistDetails(artistDetails);
+          // console.log(response);
+          store.dispatch.appModel.storeArtistDetails(response);
         })
         .catch((error) => {
           console.error(error);
@@ -354,20 +331,12 @@ export const getAllArtistAlbums = (libraryId, artistId) => {
       getAllArtistAlbumsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-      const endpoint = endpointConfig.artist.getAllAlbums(plexBaseUrl, artistId);
 
-      fetchDataPromise(endpoint, accessToken)
+      plexTools
+        .getAllArtistAlbums(plexBaseUrl, libraryId, artistId, accessToken)
         .then((response) => {
-          // console.log(response.MediaContainer.Metadata);
-
-          const artistAlbums =
-            response.MediaContainer.Metadata?.map((album) =>
-              plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
-            ) || [];
-
-          // console.log('artistAlbums', artistAlbums);
-
-          store.dispatch.appModel.storeArtistAlbums({ libraryId, artistId, artistAlbums });
+          // console.log(response);
+          store.dispatch.appModel.storeArtistAlbums({ libraryId, artistId, artistAlbums: response });
         })
         .catch((error) => {
           console.error(error);
@@ -393,25 +362,12 @@ export const getAllArtistRelated = (libraryId, artistId) => {
       getAllArtistRelatedRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-      const endpoint = endpointConfig.artist.getAllRelated(plexBaseUrl, artistId);
 
-      fetchDataPromise(endpoint, accessToken)
+      plexTools
+        .getAllArtistRelated(plexBaseUrl, libraryId, artistId, accessToken)
         .then((response) => {
-          // console.log(response.MediaContainer.Hub);
-
-          const artistRelated =
-            response.MediaContainer.Hub?.filter(
-              (hub) => hub.type === 'album' && hub.Metadata && hub.context && hub.context.includes('hub.artist.albums')
-            ).map((hub) => ({
-              title: hub.title,
-              related: hub.Metadata.map((album) =>
-                plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
-              ),
-            })) || [];
-
-          // console.log('artistRelated', artistRelated);
-
-          store.dispatch.appModel.storeArtistRelated({ libraryId, artistId, artistRelated });
+          // console.log(response);
+          store.dispatch.appModel.storeArtistRelated({ libraryId, artistId, artistRelated: response });
         })
         .catch((error) => {
           console.error(error);

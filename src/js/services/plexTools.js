@@ -50,7 +50,16 @@ const endpointConfig = {
     searchHub: (plexBaseUrl) => `${plexBaseUrl}/hubs/search`,
     searchLibrary: (plexBaseUrl) => `${plexBaseUrl}/library/search`,
   },
-  artist: {},
+  artist: {
+    getAllArtists: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
+    getArtistDetails: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}`,
+    getAllArtistAlbums: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/children`,
+    getAllArtistRelated: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/related`,
+    getCompilationTracks: (baseUrl, libraryId, artistName) =>
+      `${baseUrl}/library/sections/${libraryId}/all?type=10&track.originalTitle=${encodeURIComponent(
+        artistName
+      )}&artist.title!=${encodeURIComponent(artistName)}&excludeFields=summary`,
+  },
   album: {
     getAllAlbums: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
     getAlbumDetails: (plexBaseUrl, albumId) => `${plexBaseUrl}/library/metadata/${albumId}`,
@@ -606,6 +615,193 @@ export const searchHub = (plexBaseUrl, libraryId, accessToken, query, limit = 25
 //     }
 //   });
 // };
+
+// ======================================================================
+// GET ALL ARTISTS
+// ======================================================================
+
+export const getAllArtists = (plexBaseUrl, libraryId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.artist.getAllArtists(plexBaseUrl, libraryId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            type: 8,
+            excludeFields: artistExcludes,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          const data =
+            response?.data?.MediaContainer?.Metadata?.map((artist) =>
+              plexTranspose.transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
+            ) || [];
+          resolve(data);
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllArtists.1',
+            message: 'Failed to get all artists: ' + error.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllArtists.2',
+        message: 'Failed to get all artists: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ARTIST DETAILS
+// ======================================================================
+
+export const getArtistDetails = (plexBaseUrl, libraryId, artistId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.artist.getArtistDetails(plexBaseUrl, artistId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+        })
+        .then((response) => {
+          const artist = response?.data?.MediaContainer?.Metadata[0];
+          const artistDetails = plexTranspose.transposeArtistData(artist, libraryId, plexBaseUrl, accessToken);
+          resolve(artistDetails);
+        })
+        .catch((error) => {
+          reject({
+            code: 'getArtistDetails.1',
+            message: 'Failed to get artist details: ' + error.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getArtistDetails.2',
+        message: 'Failed to get artist details: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALL ARTIST ALBUMS
+// ======================================================================
+
+export const getAllArtistAlbums = (plexBaseUrl, libraryId, artistId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.artist.getAllArtistAlbums(plexBaseUrl, artistId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            excludeAllLeaves: 1,
+            excludeFields: albumExcludes,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          const data =
+            response?.data?.MediaContainer?.Metadata?.map((album) =>
+              plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
+            ) || [];
+          resolve(data);
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllArtistAlbums.1',
+            message: 'Failed to get all artist albums: ' + error.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllArtistAlbums.2',
+        message: 'Failed to get all artist albums: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALL ARTIST RELATED
+// ======================================================================
+
+export const getAllArtistRelated = (plexBaseUrl, libraryId, artistId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.artist.getAllArtistRelated(plexBaseUrl, artistId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            excludeAllLeaves: 1,
+            excludeFields: albumExcludes,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          const data =
+            response?.data?.MediaContainer?.Hub?.filter(
+              (hub) => hub.type === 'album' && hub.Metadata && hub.context && hub.context.includes('hub.artist.albums')
+            ).map((hub) => ({
+              title: hub.title,
+              related: hub.Metadata.map((album) =>
+                plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
+              ),
+            })) || [];
+          resolve(data);
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllArtistRelated.1',
+            message: 'Failed to get all artist related albums: ' + error.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllArtistRelated.2',
+        message: 'Failed to get all artist related albums: ' + error.message,
+        error: error,
+      });
+    }
+  });
+};
 
 // ======================================================================
 // GET ALL ALBUMS
