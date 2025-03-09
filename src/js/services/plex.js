@@ -173,41 +173,6 @@ export const getAllLibraries = async () => {
 };
 
 // ======================================================================
-// SEARCH
-// ======================================================================
-
-let searchCounter = 0;
-
-export const searchLibrary = (query) => {
-  searchCounter += 1;
-  searchLibrary2(query, searchCounter);
-};
-
-const searchLibrary2 = (query, searchCounter) => {
-  const accessToken = store.getState().sessionModel.currentServer.accessToken;
-  const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-  const { libraryId } = store.getState().sessionModel.currentLibrary;
-
-  plexTools
-    .searchHub(plexBaseUrl, libraryId, accessToken, query)
-    .then((response) => {
-      // console.log(response);
-      const searchResultCounter = store.getState().appModel.searchResultCounter;
-      if (searchCounter > searchResultCounter) {
-        store.dispatch.appModel.setAppState({
-          searchResults: response,
-          searchResultCounter: searchCounter,
-        });
-      }
-      analyticsEvent('Plex: Search');
-    })
-    .catch((error) => {
-      console.error(error);
-      analyticsEvent('Error: Plex Search');
-    });
-};
-
-// ======================================================================
 // GET ALL ARTISTS
 // ======================================================================
 
@@ -769,6 +734,41 @@ export const getTagItems = (libraryId, tagId, typeKey) => {
         });
     }
   }
+};
+
+// ======================================================================
+// SEARCH
+// ======================================================================
+
+let searchCounter = 0;
+
+export const searchLibrary = (query) => {
+  searchCounter += 1;
+  searchLibrary2(query, searchCounter);
+};
+
+const searchLibrary2 = (query, searchCounter) => {
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+  const { libraryId } = store.getState().sessionModel.currentLibrary;
+
+  plexTools
+    .searchHub(plexBaseUrl, libraryId, accessToken, query)
+    .then((response) => {
+      // console.log(response);
+      const searchResultCounter = store.getState().appModel.searchResultCounter;
+      if (searchCounter > searchResultCounter) {
+        store.dispatch.appModel.setAppState({
+          searchResults: response,
+          searchResultCounter: searchCounter,
+        });
+      }
+      analyticsEvent('Plex: Search');
+    })
+    .catch((error) => {
+      console.error(error);
+      analyticsEvent('Error: Plex Search');
+    });
 };
 
 // ======================================================================

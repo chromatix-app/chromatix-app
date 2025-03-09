@@ -4,7 +4,6 @@
 
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
-import { XMLParser } from 'fast-xml-parser';
 
 import config from 'js/_config/config';
 import * as plexTranspose from 'js/services/plexTranspose';
@@ -366,9 +365,7 @@ export const getUserInfo = () => {
           },
         })
         .then((response) => {
-          const parser = new XMLParser({ ignoreAttributes: false });
-          const data = plexTranspose.transposeUserData(parser.parse(response.data).user);
-          resolve(data);
+          resolve(plexTranspose.transposeUserData(response));
         })
         .catch((error) => {
           if (error?.code !== 'ERR_NETWORK') {
@@ -409,11 +406,7 @@ export const getAllServers = () => {
           },
         })
         .then((response) => {
-          const data =
-            response?.data
-              ?.filter((resource) => resource.provides === 'server')
-              ?.map((server) => plexTranspose.transposeServerData(server)) || [];
-          resolve(data);
+          resolve(plexTranspose.transposeServerArray(response));
         })
         .catch((error) => {
           reject({
@@ -495,10 +488,7 @@ export const getAllLibraries = (plexBaseUrl, accessToken) => {
           headers: getRequestHeaders(accessToken),
         })
         .then((response) => {
-          const data = response?.data?.MediaContainer?.Directory?.filter((library) => library.type === 'artist').map(
-            (library) => plexTranspose.transposeLibraryData(library)
-          );
-          resolve(data);
+          resolve(plexTranspose.transposeLibraryArray(response));
         })
         .catch((error) => {
           reject({
@@ -516,124 +506,6 @@ export const getAllLibraries = (plexBaseUrl, accessToken) => {
     }
   });
 };
-
-// ======================================================================
-// SEARCH
-// ======================================================================
-
-// /hubs/search?query=Epica&excludeFields=summary&limit=4&includeCollections=1&contentDirectoryID=23&includeFields=thumbBlurHash
-
-const typeOrder = {
-  artist: 1,
-  album: 2,
-  playlist: 3,
-  'artist collection': 4,
-  'album collection': 5,
-  track: 6,
-};
-
-export const searchHub = (plexBaseUrl, libraryId, accessToken, query, limit = 25, includeCollections = 1) => {
-  return new Promise((resolve, reject) => {
-    try {
-      const endpoint = endpointConfig.search.searchHub(plexBaseUrl);
-      const controller = new AbortController();
-      abortControllers.push(controller);
-
-      axios
-        .get(endpoint, {
-          headers: getRequestHeaders(accessToken),
-          params: {
-            query,
-            limit,
-            includeCollections,
-            contentDirectoryID: libraryId,
-            excludeFields: searchExcludes,
-          },
-          signal: controller.signal,
-        })
-        .then((response) => {
-          const data =
-            response?.data?.MediaContainer?.Hub?.flatMap((result) => result.Metadata)
-              ?.map((result) => plexTranspose.transposeHubSearchData(result, libraryId, plexBaseUrl, accessToken))
-              .filter((result) => result !== null)
-              .sort((a, b) => {
-                if (b.score === a.score) {
-                  if (a.type === b.type) {
-                    return a.title.localeCompare(b.title);
-                  }
-                  return typeOrder[a.type] - typeOrder[b.type];
-                }
-                return b.score - a.score;
-              }) || [];
-          resolve(data);
-        })
-        .catch((error) => {
-          reject({
-            code: 'searchHub.1',
-            message: 'Failed to search hub: ' + error?.message,
-            error: error,
-          });
-        })
-        .finally(() => {
-          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
-        });
-    } catch (error) {
-      reject({
-        code: 'searchHub.2',
-        message: 'Failed to search hub: ' + error?.message,
-        error: error,
-      });
-    }
-  });
-};
-
-// export const searchLibrary = (
-//   plexBaseUrl,
-//   accessToken,
-//   query,
-//   limit = 100,
-//   searchTypes = 'music',
-//   includeCollections = 1
-// ) => {
-//   return new Promise((resolve, reject) => {
-//     try {
-//       const endpoint = endpointConfig.search.searchLibrary(plexBaseUrl);
-//       const controller = new AbortController();
-//       abortControllers.push(controller);
-
-//       axios
-//         .get(endpoint, {
-//           headers: getRequestHeaders(accessToken),
-//           params: {
-//             query,
-//             limit,
-//             searchTypes,
-//             includeCollections,
-//           },
-//           signal: controller.signal,
-//         })
-//         .then((response) => {
-//           resolve(response?.data?.MediaContainer?.SearchResult);
-//         })
-//         .catch((error) => {
-//           reject({
-//             code: 'searchLibrary.1',
-//             message: 'Failed to search library: ' + error?.message,
-//             error: error,
-//           });
-//         })
-//         .finally(() => {
-//           abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
-//         });
-//     } catch (error) {
-//       reject({
-//         code: 'searchLibrary.2',
-//         message: 'Failed to search library: ' + error?.message,
-//         error: error,
-//       });
-//     }
-//   });
-// };
 
 // ======================================================================
 // GET ALL ARTISTS
@@ -656,11 +528,7 @@ export const getAllArtists = (plexBaseUrl, libraryId, accessToken) => {
           signal: controller.signal,
         })
         .then((response) => {
-          const data =
-            response?.data?.MediaContainer?.Metadata?.map((artist) =>
-              plexTranspose.transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
-            ) || [];
-          resolve(data);
+          resolve(plexTranspose.transposeArtistArray(response, libraryId, plexBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -699,9 +567,7 @@ export const getArtistDetails = (plexBaseUrl, libraryId, artistId, accessToken) 
           signal: controller.signal,
         })
         .then((response) => {
-          const artist = response?.data?.MediaContainer?.Metadata[0];
-          const artistDetails = plexTranspose.transposeArtistData(artist, libraryId, plexBaseUrl, accessToken);
-          resolve(artistDetails);
+          resolve(plexTranspose.transposeArtistDetails(response, libraryId, plexBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -744,11 +610,7 @@ export const getAllArtistAlbums = (plexBaseUrl, libraryId, artistId, accessToken
           signal: controller.signal,
         })
         .then((response) => {
-          const data =
-            response?.data?.MediaContainer?.Metadata?.map((album) =>
-              plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
-            ) || [];
-          resolve(data);
+          resolve(plexTranspose.transposeAlbumArray(response, libraryId, plexBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -771,7 +633,7 @@ export const getAllArtistAlbums = (plexBaseUrl, libraryId, artistId, accessToken
 };
 
 // ======================================================================
-// GET ALL ARTIST RELATED
+// GET ALL ARTIST RELATED ALBUMS
 // ======================================================================
 
 export const getAllArtistRelated = (plexBaseUrl, libraryId, artistId, accessToken) => {
@@ -791,16 +653,7 @@ export const getAllArtistRelated = (plexBaseUrl, libraryId, artistId, accessToke
           signal: controller.signal,
         })
         .then((response) => {
-          const data =
-            response?.data?.MediaContainer?.Hub?.filter(
-              (hub) => hub.type === 'album' && hub.Metadata && hub.context && hub.context.includes('hub.artist.albums')
-            ).map((hub) => ({
-              title: hub.title,
-              related: hub.Metadata.map((album) =>
-                plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
-              ),
-            })) || [];
-          resolve(data);
+          resolve(plexTranspose.transposeArtistRelatedArray(response, libraryId, plexBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -905,14 +758,7 @@ export const getAllArtistAppearanceAlbumIds = (plexBaseUrl, libraryId, artistNam
           signal: controller.signal,
         })
         .then((response) => {
-          const artistCompilationTracks =
-            response?.data?.MediaContainer?.Metadata?.map((track) =>
-              plexTranspose.transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
-            ) || [];
-
-          // get a unique list of album IDs using the albumId key of each track
-          const artistCompilationAlbums = [...new Set(artistCompilationTracks.map((track) => track.albumId))];
-          resolve(artistCompilationAlbums);
+          resolve(plexTranspose.transposeArtistAppearanceAlbumIdsArray(response, libraryId, plexBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -955,10 +801,7 @@ export const getAllAlbums = (plexBaseUrl, libraryId, accessToken) => {
           signal: controller.signal,
         })
         .then((response) => {
-          const data = response?.data?.MediaContainer?.Metadata?.map((album) =>
-            plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
-          );
-          resolve(data);
+          resolve(plexTranspose.transposeAlbumArray(response, libraryId, plexBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -997,9 +840,7 @@ export const getAlbumDetails = (plexBaseUrl, libraryId, albumId, accessToken) =>
           signal: controller.signal,
         })
         .then((response) => {
-          const album = response?.data?.MediaContainer?.Metadata[0];
-          const albumDetails = plexTranspose.transposeAlbumData(album, libraryId, plexBaseUrl, accessToken);
-          resolve(albumDetails);
+          resolve(plexTranspose.transposeAlbumDetails(response, libraryId, plexBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -1038,11 +879,7 @@ export const getAlbumTracks = (plexBaseUrl, libraryId, albumId, accessToken) => 
           signal: controller.signal,
         })
         .then((response) => {
-          const data =
-            response?.data?.MediaContainer?.Metadata?.map((track) =>
-              plexTranspose.transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
-            ) || [];
-          resolve(data);
+          resolve(plexTranspose.transposeTrackArray(response, libraryId, plexBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -1084,35 +921,7 @@ export const getFolderItems = (plexBaseUrl, libraryId, folderId, accessToken) =>
           signal: controller.signal,
         })
         .then((response) => {
-          const data =
-            response?.data?.MediaContainer?.Metadata?.map((item, index) =>
-              plexTranspose.transposeFolderData(item, index, libraryId, plexBaseUrl, accessToken)
-            ).filter((item) => item !== null) || [];
-
-          // Sort folderItems
-          data.sort((a, b) => {
-            if (a.kind === 'folder' && b.kind === 'track') return -1;
-            if (a.kind === 'track' && b.kind === 'folder') return 1;
-            if (a.kind === 'folder' && b.kind === 'folder') return a.title.localeCompare(b.title);
-            if (a.kind === 'track' && b.kind === 'track') {
-              if (a.album !== b.album) return a.album.localeCompare(b.album);
-              if (a.discNumber !== b.discNumber) return a.discNumber - b.discNumber;
-              return a.trackNumber - b.trackNumber;
-            }
-            return 0;
-          });
-
-          // Add sortOrder properties to each object
-          let trackSortOrder = 0;
-          data.forEach((item, index) => {
-            item.sortOrder = index;
-            if (item.kind === 'track') {
-              item.trackSortOrder = trackSortOrder;
-              trackSortOrder++;
-            }
-          });
-
-          resolve(data);
+          resolve(plexTranspose.transposeFolderArray(response, libraryId, plexBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -1155,11 +964,7 @@ export const getAllPlaylists = (plexBaseUrl, libraryId, accessToken) => {
           signal: controller.signal,
         })
         .then((response) => {
-          const data =
-            response?.data?.MediaContainer?.Metadata?.map((playlist) =>
-              plexTranspose.transposePlaylistData(playlist, libraryId, plexBaseUrl, accessToken)
-            ) || [];
-          resolve(data);
+          resolve(plexTranspose.transposePlaylistArray(response, libraryId, plexBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -1198,9 +1003,7 @@ export const getPlaylistDetails = (plexBaseUrl, libraryId, playlistId, accessTok
           signal: controller.signal,
         })
         .then((response) => {
-          const playlist = response?.data?.MediaContainer?.Metadata[0];
-          const playlistDetails = plexTranspose.transposePlaylistData(playlist, libraryId, plexBaseUrl, accessToken);
-          resolve(playlistDetails);
+          resolve(plexTranspose.transposePlaylistDetails(response, libraryId, plexBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -1239,11 +1042,7 @@ export const getPlaylistTracks = (plexBaseUrl, libraryId, playlistId, accessToke
           signal: controller.signal,
         })
         .then((response) => {
-          const data =
-            response?.data?.MediaContainer?.Metadata?.map((track) =>
-              plexTranspose.transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
-            ) || [];
-          resolve(data);
+          resolve(plexTranspose.transposeTrackArray(response, libraryId, plexBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -1282,19 +1081,7 @@ export const getAllCollections = (plexBaseUrl, libraryId, accessToken) => {
           signal: controller.signal,
         })
         .then((response) => {
-          const allCollections =
-            response?.data?.MediaContainer?.Metadata?.filter(
-              (collection) => collection.subtype === 'artist' || collection.subtype === 'album'
-            ).map((collection) =>
-              plexTranspose.transposeCollectionData(collection, libraryId, plexBaseUrl, accessToken)
-            ) || [];
-
-          const allArtistCollections = allCollections.filter((collection) => collection.type === 'artist');
-          const allAlbumCollections = allCollections.filter((collection) => collection.type === 'album');
-          resolve({
-            allArtistCollections,
-            allAlbumCollections,
-          });
+          resolve(plexTranspose.transposeCollectionArray(response, libraryId, plexBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -1336,11 +1123,7 @@ export const getCollectionItems = (plexBaseUrl, libraryId, collectionId, typeKey
           signal: controller.signal,
         })
         .then((response) => {
-          const data =
-            response?.data?.MediaContainer?.Metadata?.map((item) =>
-              plexTranspose[`transpose${typeKey}Data`](item, libraryId, plexBaseUrl, accessToken)
-            ) || [];
-          resolve(data);
+          resolve(plexTranspose.transposeCollectionItemArray(response, libraryId, plexBaseUrl, accessToken, typeKey));
         })
         .catch((error) => {
           reject({
@@ -1366,15 +1149,6 @@ export const getCollectionItems = (plexBaseUrl, libraryId, collectionId, typeKey
 // GET ALL TAGS
 // ======================================================================
 
-const tagOptions = {
-  AlbumGenres: { primaryKey: 'album', secondaryKey: 'Genre' },
-  AlbumMoods: { primaryKey: 'album', secondaryKey: 'Mood' },
-  AlbumStyles: { primaryKey: 'album', secondaryKey: 'Style' },
-  ArtistGenres: { primaryKey: 'artist', secondaryKey: 'Genre' },
-  ArtistMoods: { primaryKey: 'artist', secondaryKey: 'Mood' },
-  ArtistStyles: { primaryKey: 'artist', secondaryKey: 'Style' },
-};
-
 export const getAllTags = (plexBaseUrl, libraryId, typeKey, accessToken) => {
   return new Promise((resolve, reject) => {
     try {
@@ -1391,12 +1165,7 @@ export const getAllTags = (plexBaseUrl, libraryId, typeKey, accessToken) => {
           signal: controller.signal,
         })
         .then((response) => {
-          const { primaryKey, secondaryKey } = tagOptions[typeKey];
-          const data =
-            response?.data?.MediaContainer?.Directory?.map((entry) =>
-              plexTranspose[`transpose${secondaryKey}Data`](primaryKey, entry, libraryId)
-            ) || [];
-          resolve(data);
+          resolve(plexTranspose.transposeTagArray(response, libraryId, typeKey));
         })
         .catch((error) => {
           reject({
@@ -1421,15 +1190,6 @@ export const getAllTags = (plexBaseUrl, libraryId, typeKey, accessToken) => {
 // ======================================================================
 // GET TAG ITEMS
 // ======================================================================
-
-const tagItemOptions = {
-  AlbumGenreItems: { primaryKey: 'Album' },
-  AlbumMoodItems: { primaryKey: 'Album' },
-  AlbumStyleItems: { primaryKey: 'Album' },
-  ArtistGenreItems: { primaryKey: 'Artist' },
-  ArtistMoodItems: { primaryKey: 'Artist' },
-  ArtistStyleItems: { primaryKey: 'Artist' },
-};
 
 export const getTagItems = (plexBaseUrl, libraryId, tagId, typeKey, accessToken) => {
   return new Promise((resolve, reject) => {
@@ -1477,12 +1237,7 @@ export const getTagItems = (plexBaseUrl, libraryId, tagId, typeKey, accessToken)
           signal: controller.signal,
         })
         .then((response) => {
-          const { primaryKey } = tagItemOptions[typeKey];
-          const data =
-            response?.data?.MediaContainer?.Metadata?.map((entry) =>
-              plexTranspose[`transpose${primaryKey}Data`](entry, libraryId, plexBaseUrl, accessToken)
-            ) || [];
-          resolve(data);
+          resolve(plexTranspose.transposeTagItemArray(response, libraryId, plexBaseUrl, accessToken, typeKey));
         })
         .catch((error) => {
           reject({
@@ -1503,6 +1258,102 @@ export const getTagItems = (plexBaseUrl, libraryId, tagId, typeKey, accessToken)
     }
   });
 };
+
+// ======================================================================
+// SEARCH
+// ======================================================================
+
+// /hubs/search?query=Epica&excludeFields=summary&limit=4&includeCollections=1&contentDirectoryID=23&includeFields=thumbBlurHash
+
+export const searchHub = (plexBaseUrl, libraryId, accessToken, query, limit = 25, includeCollections = 1) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.search.searchHub(plexBaseUrl);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            query,
+            limit,
+            includeCollections,
+            contentDirectoryID: libraryId,
+            excludeFields: searchExcludes,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeSearchResultsArray(response, libraryId, plexBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'searchHub.1',
+            message: 'Failed to search hub: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'searchHub.2',
+        message: 'Failed to search hub: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// export const searchLibrary = (
+//   plexBaseUrl,
+//   accessToken,
+//   query,
+//   limit = 100,
+//   searchTypes = 'music',
+//   includeCollections = 1
+// ) => {
+//   return new Promise((resolve, reject) => {
+//     try {
+//       const endpoint = endpointConfig.search.searchLibrary(plexBaseUrl);
+//       const controller = new AbortController();
+//       abortControllers.push(controller);
+
+//       axios
+//         .get(endpoint, {
+//           headers: getRequestHeaders(accessToken),
+//           params: {
+//             query,
+//             limit,
+//             searchTypes,
+//             includeCollections,
+//           },
+//           signal: controller.signal,
+//         })
+//         .then((response) => {
+//           resolve(response?.data?.MediaContainer?.SearchResult);
+//         })
+//         .catch((error) => {
+//           reject({
+//             code: 'searchLibrary.1',
+//             message: 'Failed to search library: ' + error?.message,
+//             error: error,
+//           });
+//         })
+//         .finally(() => {
+//           abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+//         });
+//     } catch (error) {
+//       reject({
+//         code: 'searchLibrary.2',
+//         message: 'Failed to search library: ' + error?.message,
+//         error: error,
+//       });
+//     }
+//   });
+// };
 
 // ======================================================================
 // SET STAR RATING
@@ -1534,8 +1385,8 @@ export const setStarRating = (plexBaseUrl, accessToken, sessionId, ratingKey, ra
             'X-Plex-Device-Icon': clientIcon,
           },
         })
-        .then((response) => {
-          resolve(response?.data);
+        .then((_response) => {
+          resolve();
         })
         .catch((error) => {
           reject({
@@ -1597,8 +1448,8 @@ export const logPlaybackStatus = (
             'X-Plex-Device-Icon': clientIcon,
           },
         })
-        .then((response) => {
-          resolve(response);
+        .then((_response) => {
+          resolve();
         })
         .catch((error) => {
           reject({
