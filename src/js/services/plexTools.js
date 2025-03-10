@@ -700,13 +700,13 @@ export const getAllArtistAppearanceAlbums = (plexBaseUrl, libraryId, artistName,
               }
 
               // If not, get the album details
-              return new Promise((resolve2, reject2) => {
+              return new Promise((resolve2) => {
                 getAlbumDetails(plexBaseUrl, libraryId, albumId, accessToken)
                   .then((response) => {
                     artistCompilationAlbums.push(response);
                     resolve2();
                   })
-                  .catch((error) => {});
+                  .catch((_error) => {});
               });
             });
 

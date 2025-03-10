@@ -164,7 +164,7 @@ const ListEntry = React.memo(
 
     // Handle card click
     const handleCardClick = useCallback(
-      (event) => {
+      (_event) => {
         if (link) {
           history.push(link);
         }
