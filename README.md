@@ -35,7 +35,7 @@ Install with `npm install`
 
 Develop with `npm start`
 
-Deploy a new version to the staging environment with `npm run release:dev`
+Deploy a new version to the staging environment with `npm run release`
 
 (Essentially just tags a new version and pushes to the staging branch)
 
