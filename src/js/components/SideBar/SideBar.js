@@ -438,7 +438,7 @@ const SearchField = () => {
           <div className={style.searchInput}>
             <input
               ref={searchInputRef}
-              type="search"
+              type="text"
               name="Search"
               placeholder="Search"
               value={searchValue}
