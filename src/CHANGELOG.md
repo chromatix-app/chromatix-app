@@ -1,4 +1,13 @@
-<a name="0.32.0"></a>
+<a name="0.34.0"></a>
+# 0.34.0 (2025-03-17)
+Refactor:
+- Plex API code tidying and consistency improvements.
+Other:
+- Various small tweaks and fixes.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
+<a name="0.33.0"></a>
 # 0.33.0 (2025-03-02)
 Features:
 - Performance tweaks when browsing in list view.

@@ -28,7 +28,7 @@ export const loadTrack = (trackSrc, progress = 0, play = true) => {
     playerElement.currentTime = progress / 1000;
   }
   if (play) {
-    playerElement.play().catch((error) => null);
+    playerElement.play().catch((_error) => null);
   }
 };
 
@@ -37,12 +37,12 @@ export const pause = () => {
 };
 
 export const resume = () => {
-  playerElement.play().catch((error) => null);
+  playerElement.play().catch((_error) => null);
 };
 
 export const restart = () => {
   playerElement.currentTime = 0;
-  playerElement.play().catch((error) => null);
+  playerElement.play().catch((_error) => null);
 };
 
 export const setVolume = (volumeLevel) => {

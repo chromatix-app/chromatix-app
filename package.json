@@ -1,6 +1,6 @@
 {
   "name": "chromatix",
-  "version": "0.33.2",
+  "version": "0.34.1",
   "description": "",
   "license": "UNLICENSED",
   "private": "true",
@@ -11,7 +11,7 @@
     "test": "react-scripts test",
     "lint": "eslint .",
     "build": "REACT_APP_VERSION=$npm_package_version REACT_APP_ENV=$REACT_APP_ENV REACT_APP_DATE=$(date +%s) react-scripts build",
-    "release:dev": "release-it --preReleaseId=beta --config .release-it.dev.json"
+    "release": "release-it --preReleaseId=beta --config .release-it.json"
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.1.6",

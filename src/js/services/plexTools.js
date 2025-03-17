@@ -4,15 +4,13 @@
 
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
-import { XMLParser } from 'fast-xml-parser';
 
 import config from 'js/_config/config';
+import * as plexTranspose from 'js/services/plexTranspose';
 
 // ======================================================================
 // OPTIONS
 // ======================================================================
-
-const secretKey = 'your_secret_key_here';
 
 const appName = 'Chromatix';
 const clientId = 'chromatix.app';
@@ -20,10 +18,18 @@ const clientIcon = 'https://chromatix.app/icon/icon-512.png';
 
 const storagePinKey = config.storagePinKey;
 const storageAuthKey = config.storageAuthKey;
+const storageSecretKey = 'your_secret_key_here';
 
 const redirectPath = window.location.origin;
 const redirectQuery = 'plex-login';
 const redirectUrl = `${redirectPath}?${redirectQuery}=true`;
+
+const artistExcludes = 'summary,guid,key,parentRatingKey,parentTitle,skipCount';
+const albumExcludes =
+  'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,parentThumb,studio';
+const artistAndAlbumExcludes =
+  'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,skipCount,studio';
+const searchExcludes = 'summary';
 
 const endpointConfig = {
   auth: {
@@ -37,17 +43,58 @@ const endpointConfig = {
     getAllServers: () => 'https://plex.tv/api/v2/resources',
   },
   library: {
-    getAllLibraries: (base) => `${base}/library/sections`,
+    getAllLibraries: (plexBaseUrl) => `${plexBaseUrl}/library/sections`,
   },
   search: {
-    searchLibrary: (base) => `${base}/library/search`,
-    searchHub: (base) => `${base}/hubs/search`,
+    searchHub: (plexBaseUrl) => `${plexBaseUrl}/hubs/search`,
+    searchLibrary: (plexBaseUrl) => `${plexBaseUrl}/library/search`,
+  },
+  artist: {
+    getAllArtists: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
+    getArtistDetails: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}`,
+    getAllArtistAlbums: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/children`,
+    getAllArtistRelated: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/related`,
+    getAllArtistAppearanceTracks: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
+  },
+  album: {
+    getAllAlbums: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
+    getAlbumDetails: (plexBaseUrl, albumId) => `${plexBaseUrl}/library/metadata/${albumId}`,
+    getAlbumTracks: (plexBaseUrl, albumId) => `${plexBaseUrl}/library/metadata/${albumId}/children`,
+  },
+  folder: {
+    getFolderItems: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/folder`,
+  },
+  playlist: {
+    getAllPlaylists: (plexBaseUrl) => `${plexBaseUrl}/playlists`,
+    getPlaylistDetails: (plexBaseUrl, playlistId) => `${plexBaseUrl}/playlists/${playlistId}`,
+    getPlaylistTracks: (plexBaseUrl, playlistId) => `${plexBaseUrl}/playlists/${playlistId}/items`,
+  },
+  collection: {
+    getAllCollections: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/collections`,
+    getCollectionItems: (plexBaseUrl, collectionId) => `${plexBaseUrl}/library/collections/${collectionId}/children`,
+  },
+  tags: {
+    getAllArtistGenres: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/genre`,
+    getAllArtistMoods: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/mood`,
+    getAllArtistStyles: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/style`,
+
+    getAllAlbumGenres: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/genre`,
+    getAllAlbumMoods: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/mood`,
+    getAllAlbumStyles: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/style`,
+
+    getArtistGenreItems: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
+    getArtistMoodItems: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
+    getArtistStyleItems: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
+
+    getAlbumGenreItems: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
+    getAlbumMoodItems: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
+    getAlbumStyleItems: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
   },
   rating: {
-    setStarRating: (base) => `${base}/:/rate`,
+    setStarRating: (plexBaseUrl) => `${plexBaseUrl}/:/rate`,
   },
   status: {
-    postPlaybackStatus: (base) => `${base}/:/timeline`,
+    logPlaybackStatus: (plexBaseUrl) => `${plexBaseUrl}/:/timeline`,
   },
 };
 
@@ -59,18 +106,29 @@ const endpointConfig = {
 
 export const setLocalStorage = (key, value) => {
   const stringValue = String(value);
-  const encryptedValue = CryptoJS.AES.encrypt(stringValue, secretKey).toString();
+  const encryptedValue = CryptoJS.AES.encrypt(stringValue, storageSecretKey).toString();
   window.localStorage.setItem(key, encryptedValue);
 };
 
 export const getLocalStorage = (key) => {
   const encryptedValue = window.localStorage.getItem(key);
   if (encryptedValue) {
-    const bytes = CryptoJS.AES.decrypt(encryptedValue, secretKey);
+    const bytes = CryptoJS.AES.decrypt(encryptedValue, storageSecretKey);
     const decryptedValue = bytes.toString(CryptoJS.enc.Utf8);
     return decryptedValue;
   }
   return null;
+};
+
+// STANDARD HEADERS FOR MOST REQUESTS
+
+const getRequestHeaders = (plexToken) => {
+  return {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'X-Plex-Token': plexToken,
+    'X-Plex-Client-Identifier': clientId,
+  };
 };
 
 // A CUSTOM PROMISE FUNCTION THAT WAITS FOR THE FIRST RESOLVED PROMISE
@@ -114,6 +172,22 @@ const getBrowserName = () => {
     Array.isArray(b.identifier) ? b.identifier.some((id) => userAgent.includes(id)) : userAgent.includes(b.identifier)
   );
   return browser ? browser.name : 'Unknown';
+};
+
+// ======================================================================
+// ABORT HANDLING
+// ======================================================================
+
+let abortControllers = [];
+
+export const abortAllRequests = () => {
+  if (abortControllers.length > 0) {
+    console.log('%c### plexTools - abortAllRequests ###', 'color:#f00;');
+    abortControllers.forEach((controller) => {
+      controller.abort();
+    });
+    abortControllers = [];
+  }
 };
 
 // ======================================================================
@@ -291,9 +365,7 @@ export const getUserInfo = () => {
           },
         })
         .then((response) => {
-          const parser = new XMLParser({ ignoreAttributes: false });
-          const jsonObj = parser.parse(response.data).user;
-          resolve(jsonObj);
+          resolve(plexTranspose.transposeUserData(response));
         })
         .catch((error) => {
           if (error?.code !== 'ERR_NETWORK') {
@@ -301,14 +373,14 @@ export const getUserInfo = () => {
           }
           reject({
             code: 'getUserInfo.1',
-            message: 'Failed to get user info: ' + error.message,
+            message: 'Failed to get user info: ' + error?.message,
             error: error,
           });
         });
     } catch (error) {
       reject({
         code: 'getUserInfo.2',
-        message: 'Failed to get user info: ' + error.message,
+        message: 'Failed to get user info: ' + error?.message,
         error: error,
       });
     }
@@ -326,12 +398,7 @@ export const getAllServers = () => {
       const endpoint = endpointConfig.server.getAllServers();
       axios
         .get(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': authToken,
-            'X-Plex-Client-Identifier': clientId,
-          },
+          headers: getRequestHeaders(authToken),
           params: {
             includeHttps: 1,
             includeRelay: 1,
@@ -339,20 +406,19 @@ export const getAllServers = () => {
           },
         })
         .then((response) => {
-          const data = response?.data?.filter((resource) => resource.provides === 'server');
-          resolve(data);
+          resolve(plexTranspose.transposeServerArray(response));
         })
         .catch((error) => {
           reject({
             code: 'getAllServers.1',
-            message: 'Failed to get all servers: ' + error.message,
+            message: 'Failed to get all servers: ' + error?.message,
             error: error,
           });
         });
     } catch (error) {
       reject({
         code: 'getAllServers.2',
-        message: 'Failed to get all servers: ' + error.message,
+        message: 'Failed to get all servers: ' + error?.message,
         error: error,
       });
     }
@@ -384,19 +450,14 @@ export const getFastestConnection = (server) => {
       setTimeout(() => {
         axios
           .head(connection.uri, {
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-              'X-Plex-Token': accessToken,
-              'X-Plex-Client-Identifier': clientId,
-            },
+            headers: getRequestHeaders(accessToken),
             timeout: 3000,
           })
-          .then(() => resolve(connection))
+          .then(() => resolve(connection.uri))
           .catch((error) => {
             reject({
               code: 'getFastestConnection.1',
-              message: `Failed to connect to ${connection.uri}: ${error.message}`,
+              message: `Failed to connect to ${connection.uri}: ${error?.message}`,
               error,
             });
           });
@@ -418,33 +479,780 @@ export const getFastestConnection = (server) => {
 // GET ALL LIBRARIES
 // ======================================================================
 
-export const getAllLibraries = (baseUrl, accessToken) => {
+export const getAllLibraries = (plexBaseUrl, accessToken) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.library.getAllLibraries(baseUrl);
+      const endpoint = endpointConfig.library.getAllLibraries(plexBaseUrl);
       axios
         .get(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientId,
-          },
+          headers: getRequestHeaders(accessToken),
         })
         .then((response) => {
-          resolve(response?.data?.MediaContainer.Directory);
+          resolve(plexTranspose.transposeLibraryArray(response));
         })
         .catch((error) => {
           reject({
             code: 'getAllLibraries.1',
-            message: 'Failed to get all libraries: ' + error.message,
+            message: 'Failed to get all libraries: ' + error?.message,
             error: error,
           });
         });
     } catch (error) {
       reject({
         code: 'getAllLibraries.2',
-        message: 'Failed to get all libraries: ' + error.message,
+        message: 'Failed to get all libraries: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALL ARTISTS
+// ======================================================================
+
+export const getAllArtists = (plexBaseUrl, libraryId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.artist.getAllArtists(plexBaseUrl, libraryId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            type: 8,
+            excludeFields: artistExcludes,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeArtistArray(response, libraryId, plexBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllArtists.1',
+            message: 'Failed to get all artists: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllArtists.2',
+        message: 'Failed to get all artists: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ARTIST DETAILS
+// ======================================================================
+
+export const getArtistDetails = (plexBaseUrl, libraryId, artistId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.artist.getArtistDetails(plexBaseUrl, artistId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeArtistDetails(response, libraryId, plexBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'getArtistDetails.1',
+            message: 'Failed to get artist details: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getArtistDetails.2',
+        message: 'Failed to get artist details: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALL ARTIST ALBUMS
+// ======================================================================
+
+export const getAllArtistAlbums = (plexBaseUrl, libraryId, artistId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.artist.getAllArtistAlbums(plexBaseUrl, artistId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            excludeAllLeaves: 1,
+            excludeFields: albumExcludes,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeAlbumArray(response, libraryId, plexBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllArtistAlbums.1',
+            message: 'Failed to get all artist albums: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllArtistAlbums.2',
+        message: 'Failed to get all artist albums: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALL ARTIST RELATED ALBUMS
+// ======================================================================
+
+export const getAllArtistRelated = (plexBaseUrl, libraryId, artistId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.artist.getAllArtistRelated(plexBaseUrl, artistId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            excludeAllLeaves: 1,
+            excludeFields: albumExcludes,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeArtistRelatedArray(response, libraryId, plexBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllArtistRelated.1',
+            message: 'Failed to get all artist related albums: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllArtistRelated.2',
+        message: 'Failed to get all artist related albums: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALL ARTIST APPEARANCES
+// ======================================================================
+
+export const getAllArtistAppearanceAlbums = (plexBaseUrl, libraryId, artistName, store, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      getAllArtistAppearanceAlbumIds(plexBaseUrl, libraryId, artistName, accessToken)
+        .then((response) => {
+          if (response.length <= 0) {
+            resolve([]);
+          } else {
+            let artistCompilationAlbums = [];
+            const allAlbums1 = store.getState().appModel.allAlbums;
+
+            // For each returned album ID, get the album details
+            const albumPromises = response.map((albumId) => {
+              // Check to see if we already have the album info in the store
+              const albumInfo1 = allAlbums1 ? allAlbums1?.find((album) => album.albumId === albumId) : null;
+              if (albumInfo1) {
+                artistCompilationAlbums.push(albumInfo1);
+                return Promise.resolve();
+              }
+
+              // If not, get the album details
+              return new Promise((resolve2) => {
+                getAlbumDetails(plexBaseUrl, libraryId, albumId, accessToken)
+                  .then((response) => {
+                    artistCompilationAlbums.push(response);
+                    resolve2();
+                  })
+                  .catch((_error) => {});
+              });
+            });
+
+            Promise.all(albumPromises)
+              .then(() => {
+                resolve(artistCompilationAlbums);
+              })
+              .catch((error) => {
+                reject({
+                  code: 'getAllArtistAppearanceAlbums.1',
+                  message: 'Failed to get all artist appearance albums: ' + error?.message,
+                  error: error,
+                });
+              });
+          }
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllArtistAppearanceAlbums.2',
+            message: 'Failed to get all artist appearance albums: ' + error?.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllArtistAppearanceAlbums.3',
+        message: 'Failed to get all artist appearance albums: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+export const getAllArtistAppearanceAlbumIds = (plexBaseUrl, libraryId, artistName, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.artist.getAllArtistAppearanceTracks(plexBaseUrl, libraryId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      // We are using a query string ebcause of the use of a != operator
+      const queryString = `?type=10&track.originalTitle=${encodeURIComponent(
+        artistName
+      )}&artist.title!=${encodeURIComponent(artistName)}&excludeFields=summary`;
+
+      axios
+        .get(endpoint + queryString, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeArtistAppearanceAlbumIdsArray(response, libraryId, plexBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllArtistAppearanceAlbumIds.1',
+            message: 'Failed to get all artist appearance album IDs: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllArtistAppearanceAlbumIds.2',
+        message: 'Failed to get all artist appearance album IDs: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALL ALBUMS
+// ======================================================================
+
+export const getAllAlbums = (plexBaseUrl, libraryId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.album.getAllAlbums(plexBaseUrl, libraryId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            type: 9,
+            excludeFields: albumExcludes,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeAlbumArray(response, libraryId, plexBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllAlbums.1',
+            message: 'Failed to get all albums: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllAlbums.2',
+        message: 'Failed to get all albums: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALBUM DETAILS
+// ======================================================================
+
+export const getAlbumDetails = (plexBaseUrl, libraryId, albumId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.album.getAlbumDetails(plexBaseUrl, albumId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeAlbumDetails(response, libraryId, plexBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAlbumDetails.1',
+            message: 'Failed to get album details: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAlbumDetails.2',
+        message: 'Failed to get album details: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALBUM TRACKS
+// ======================================================================
+
+export const getAlbumTracks = (plexBaseUrl, libraryId, albumId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.album.getAlbumTracks(plexBaseUrl, albumId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeTrackArray(response, libraryId, plexBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAlbumTracks.1',
+            message: 'Failed to get album tracks: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAlbumTracks.2',
+        message: 'Failed to get album tracks: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET FOLDER ITEMS
+// ======================================================================
+
+export const getFolderItems = (plexBaseUrl, libraryId, folderId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.folder.getFolderItems(plexBaseUrl, libraryId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            parent: folderId,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeFolderArray(response, libraryId, plexBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'getFolderItems.1',
+            message: 'Failed to get folder items: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getFolderItems.2',
+        message: 'Failed to get folder items: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALL PLAYLISTS
+// ======================================================================
+
+export const getAllPlaylists = (plexBaseUrl, libraryId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.playlist.getAllPlaylists(plexBaseUrl, libraryId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            playlistType: 'audio',
+            sectionID: libraryId,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposePlaylistArray(response, libraryId, plexBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllPlaylists.1',
+            message: 'Failed to get all playlists: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllPlaylists.2',
+        message: 'Failed to get all playlists: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET PLAYLIST DETAILS
+// ======================================================================
+
+export const getPlaylistDetails = (plexBaseUrl, libraryId, playlistId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.playlist.getPlaylistDetails(plexBaseUrl, playlistId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposePlaylistDetails(response, libraryId, plexBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'getPlaylistDetails.1',
+            message: 'Failed to get playlist details: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getPlaylistDetails.2',
+        message: 'Failed to get playlist details: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET PLAYLIST TRACKS
+// ======================================================================
+
+export const getPlaylistTracks = (plexBaseUrl, libraryId, playlistId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.playlist.getPlaylistTracks(plexBaseUrl, playlistId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeTrackArray(response, libraryId, plexBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'getPlaylistTracks.1',
+            message: 'Failed to get playlist tracks: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getPlaylistTracks.2',
+        message: 'Failed to get playlist tracks: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALL COLLECTIONS
+// ======================================================================
+
+export const getAllCollections = (plexBaseUrl, libraryId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.collection.getAllCollections(plexBaseUrl, libraryId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeCollectionArray(response, libraryId, plexBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllCollections.1',
+            message: 'Failed to get all collections: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllCollections.2',
+        message: 'Failed to get all collections: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET COLLECTION ITEMS
+// ======================================================================
+
+export const getCollectionItems = (plexBaseUrl, libraryId, collectionId, typeKey, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.collection.getCollectionItems(plexBaseUrl, collectionId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            excludeFields: artistAndAlbumExcludes,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeCollectionItemArray(response, libraryId, plexBaseUrl, accessToken, typeKey));
+        })
+        .catch((error) => {
+          reject({
+            code: 'getCollectionItems.1',
+            message: 'Failed to get all collection items: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getCollectionItems.2',
+        message: 'Failed to get all collection items: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALL TAGS
+// ======================================================================
+
+export const getAllTags = (plexBaseUrl, libraryId, typeKey, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.tags[`getAll${typeKey}`](plexBaseUrl, libraryId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            type: typeKey.toLowerCase().includes('artist') ? 8 : 9,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeTagArray(response, libraryId, typeKey));
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllTags.1',
+            message: 'Failed to get all tags: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllTags.2',
+        message: 'Failed to get all tags: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET TAG ITEMS
+// ======================================================================
+
+export const getTagItems = (plexBaseUrl, libraryId, tagId, typeKey, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.tags[`get${typeKey}`](plexBaseUrl, libraryId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            ...(typeKey === 'ArtistGenreItems' && {
+              type: 8,
+              genre: tagId,
+              excludeFields: artistExcludes,
+            }),
+            ...(typeKey === 'ArtistMoodItems' && {
+              type: 8,
+              mood: tagId,
+              excludeFields: artistExcludes,
+            }),
+            ...(typeKey === 'ArtistStyleItems' && {
+              type: 8,
+              style: tagId,
+              excludeFields: artistExcludes,
+            }),
+
+            ...(typeKey === 'AlbumGenreItems' && {
+              type: 9,
+              genre: tagId,
+              excludeFields: albumExcludes,
+            }),
+            ...(typeKey === 'AlbumMoodItems' && {
+              type: 9,
+              mood: tagId,
+              excludeFields: albumExcludes,
+            }),
+            ...(typeKey === 'AlbumStyleItems' && {
+              type: 9,
+              style: tagId,
+              excludeFields: albumExcludes,
+            }),
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeTagItemArray(response, libraryId, plexBaseUrl, accessToken, typeKey));
+        })
+        .catch((error) => {
+          reject({
+            code: 'getTagItems.1',
+            message: 'Failed to get all tag items: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getTagItems.2',
+        message: 'Failed to get all tag items: ' + error?.message,
         error: error,
       });
     }
@@ -457,100 +1265,104 @@ export const getAllLibraries = (baseUrl, accessToken) => {
 
 // /hubs/search?query=Epica&excludeFields=summary&limit=4&includeCollections=1&contentDirectoryID=23&includeFields=thumbBlurHash
 
-export const searchHub = (baseUrl, libraryId, accessToken, query, limit = 25, includeCollections = 1) => {
+export const searchHub = (plexBaseUrl, libraryId, accessToken, query, limit = 25, includeCollections = 1) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.search.searchHub(baseUrl);
+      const endpoint = endpointConfig.search.searchHub(plexBaseUrl);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
       axios
         .get(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientId,
-          },
+          headers: getRequestHeaders(accessToken),
           params: {
             query,
             limit,
             includeCollections,
             contentDirectoryID: libraryId,
-            excludeFields: 'summary',
+            excludeFields: searchExcludes,
           },
+          signal: controller.signal,
         })
         .then((response) => {
-          resolve(response?.data?.MediaContainer?.Hub);
+          resolve(plexTranspose.transposeSearchResultsArray(response, libraryId, plexBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
             code: 'searchHub.1',
-            message: 'Failed to search library: ' + error.message,
+            message: 'Failed to search hub: ' + error?.message,
             error: error,
           });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
         });
     } catch (error) {
       reject({
         code: 'searchHub.2',
-        message: 'Failed to search library: ' + error.message,
+        message: 'Failed to search hub: ' + error?.message,
         error: error,
       });
     }
   });
 };
 
-export const searchLibrary = (
-  baseUrl,
-  accessToken,
-  query,
-  limit = 100,
-  searchTypes = 'music',
-  includeCollections = 1
-) => {
-  return new Promise((resolve, reject) => {
-    try {
-      const endpoint = endpointConfig.search.searchLibrary(baseUrl);
-      axios
-        .get(endpoint, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientId,
-          },
-          params: {
-            query,
-            limit,
-            searchTypes,
-            includeCollections,
-          },
-        })
-        .then((response) => {
-          resolve(response?.data?.MediaContainer?.SearchResult);
-        })
-        .catch((error) => {
-          reject({
-            code: 'searchLibrary.1',
-            message: 'Failed to search library: ' + error.message,
-            error: error,
-          });
-        });
-    } catch (error) {
-      reject({
-        code: 'searchLibrary.2',
-        message: 'Failed to search library: ' + error.message,
-        error: error,
-      });
-    }
-  });
-};
+// export const searchLibrary = (
+//   plexBaseUrl,
+//   accessToken,
+//   query,
+//   limit = 100,
+//   searchTypes = 'music',
+//   includeCollections = 1
+// ) => {
+//   return new Promise((resolve, reject) => {
+//     try {
+//       const endpoint = endpointConfig.search.searchLibrary(plexBaseUrl);
+//       const controller = new AbortController();
+//       abortControllers.push(controller);
+
+//       axios
+//         .get(endpoint, {
+//           headers: getRequestHeaders(accessToken),
+//           params: {
+//             query,
+//             limit,
+//             searchTypes,
+//             includeCollections,
+//           },
+//           signal: controller.signal,
+//         })
+//         .then((response) => {
+//           resolve(response?.data?.MediaContainer?.SearchResult);
+//         })
+//         .catch((error) => {
+//           reject({
+//             code: 'searchLibrary.1',
+//             message: 'Failed to search library: ' + error?.message,
+//             error: error,
+//           });
+//         })
+//         .finally(() => {
+//           abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+//         });
+//     } catch (error) {
+//       reject({
+//         code: 'searchLibrary.2',
+//         message: 'Failed to search library: ' + error?.message,
+//         error: error,
+//       });
+//     }
+//   });
+// };
 
 // ======================================================================
 // SET STAR RATING
 // ======================================================================
 
-export const setStarRating = (baseUrl, accessToken, sessionId, ratingKey, rating) => {
+export const setStarRating = (plexBaseUrl, accessToken, sessionId, ratingKey, rating) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.rating.setStarRating(baseUrl, ratingKey, rating);
+      const endpoint = endpointConfig.rating.setStarRating(plexBaseUrl, ratingKey, rating);
       const browserName = getBrowserName();
       const params = {
         identifier: 'com.plexapp.plugins.library',
@@ -573,20 +1385,20 @@ export const setStarRating = (baseUrl, accessToken, sessionId, ratingKey, rating
             'X-Plex-Device-Icon': clientIcon,
           },
         })
-        .then((response) => {
-          resolve(response.data);
+        .then((_response) => {
+          resolve();
         })
         .catch((error) => {
           reject({
             code: 'setStarRating.1',
-            message: `Failed to set star rating for ${ratingKey}: ${error.message}`,
+            message: `Failed to set star rating for ${ratingKey}: ${error?.message}`,
             error: error,
           });
         });
     } catch (error) {
       reject({
         code: 'setStarRating.2',
-        message: `Failed to set star rating for ${ratingKey}: ${error.message}`,
+        message: `Failed to set star rating for ${ratingKey}: ${error?.message}`,
         error: error,
       });
     }
@@ -598,7 +1410,7 @@ export const setStarRating = (baseUrl, accessToken, sessionId, ratingKey, rating
 // ======================================================================
 
 export const logPlaybackStatus = (
-  baseUrl,
+  plexBaseUrl,
   accessToken,
   sessionId,
   type,
@@ -610,7 +1422,7 @@ export const logPlaybackStatus = (
 ) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.status.postPlaybackStatus(baseUrl);
+      const endpoint = endpointConfig.status.logPlaybackStatus(plexBaseUrl);
       const browserName = getBrowserName();
       const params = {
         type: type,
@@ -636,8 +1448,8 @@ export const logPlaybackStatus = (
             'X-Plex-Device-Icon': clientIcon,
           },
         })
-        .then((response) => {
-          resolve(response);
+        .then((_response) => {
+          resolve();
         })
         .catch((error) => {
           reject({
@@ -662,7 +1474,7 @@ export const logPlaybackStatus = (
 // will allow the request to complete even if the page is closed.
 
 export const logPlaybackQuit = (
-  baseUrl,
+  plexBaseUrl,
   accessToken,
   sessionId,
   type,
@@ -673,7 +1485,8 @@ export const logPlaybackQuit = (
   duration
 ) => {
   try {
-    const endpoint = endpointConfig.status.postPlaybackStatus(baseUrl);
+    const endpoint = endpointConfig.status.logPlaybackStatus(plexBaseUrl);
+    const browserName = getBrowserName();
     const params = new URLSearchParams({
       type: type,
       key: trackId,
@@ -694,8 +1507,8 @@ export const logPlaybackQuit = (
         'X-Plex-Client-Identifier': clientId,
         'X-Plex-Session-Identifier': sessionId,
         'X-Plex-Product': appName,
-        'X-Plex-Device-Name': getBrowserName(),
-        'X-Plex-Platform': getBrowserName(),
+        'X-Plex-Device-Name': browserName,
+        'X-Plex-Platform': browserName,
         'X-Plex-Device-Icon': clientIcon,
       },
     });
@@ -703,31 +1516,3 @@ export const logPlaybackQuit = (
     // do nothing
   }
 };
-
-// ======================================================================
-// SCROBBLE ITEM
-// ======================================================================
-
-// export const scrobbleItem = (baseUrl, accessToken, key, identifier) => {
-//   return new Promise((resolve, reject) => {
-//     const endpoint = `${baseUrl}/:/scrobble?key=${key}&identifier=${identifier}`;
-//     axios
-//       .get(endpoint, {
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'X-Plex-Token': accessToken,
-//           'X-Plex-Client-Identifier': clientId,
-//         },
-//       })
-//       .then((response) => {
-//         resolve(response);
-//       })
-//       .catch((error) => {
-//         reject({
-//           code: 'scrobbleItem.1',
-//           message: `Failed to scrobble item to ${endpoint}: ${error.message}`,
-//           error,
-//         });
-//       });
-//   });
-// };

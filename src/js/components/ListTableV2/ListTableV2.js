@@ -322,7 +322,7 @@ const TableBodyStatic = ({
 
         {headerBlock}
 
-        {entries.map((staticRow, index) => {
+        {entries.map((_staticRow, index) => {
           const entry = entries[index];
 
           // Catch missing entries
@@ -572,7 +572,7 @@ const measureElement = (element) => {
 // DISC ROW
 // ======================================================================
 
-const DiscRow = ({ virtualRow, entry, discNumber }) => {
+const DiscRow = ({ virtualRow, entry }) => {
   return (
     <div
       className={style.discRow}
@@ -693,7 +693,7 @@ const StandardRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTempla
             case 'releaseDate':
               return (
                 <div key={rowKey + '-' + index} className={clsx(style.releaseDate, 'text-trim')}>
-                  {entry.releaseDate ? moment(entry.releaseDate).format('MMM YYYY') : null}
+                  {entry.releaseDate ? moment(entry.releaseDate).format('YYYY') : null}
                 </div>
               );
 
@@ -767,7 +767,7 @@ const TrackRow = ({
     trackNumber = entry.trackNumber;
   }
 
-  const handleDoubleClick = (event) => {
+  const handleDoubleClick = (_event) => {
     playTrack(tableVariant, trackIndex, true);
   };
 

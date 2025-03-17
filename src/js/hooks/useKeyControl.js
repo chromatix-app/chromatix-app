@@ -6,16 +6,18 @@ const useKeyControl = (keyCombination, callback, preventDefault) => {
     const keys = keyCombination.split('+').map((key) => key.trim().toLowerCase());
 
     const handleKeyDown = (event) => {
-      const pressedKeys = [];
-      if (event.ctrlKey || event.metaKey) pressedKeys.push('command');
-      if (event.altKey) pressedKeys.push('alt');
-      if (event.shiftKey) pressedKeys.push('shift');
-      pressedKeys.push(event.key.toLowerCase());
+      if (event.key) {
+        const pressedKeys = [];
+        if (event.ctrlKey || event.metaKey) pressedKeys.push('command');
+        if (event.altKey) pressedKeys.push('alt');
+        if (event.shiftKey) pressedKeys.push('shift');
+        pressedKeys.push(event.key.toLowerCase());
 
-      if (keys.every((key) => pressedKeys.includes(key))) {
-        console.log('Key pressed: ' + keyCombination);
-        if (preventDefault) event.preventDefault();
-        callback();
+        if (keys.every((key) => pressedKeys.includes(key))) {
+          console.log('Key pressed: ' + keyCombination);
+          if (preventDefault) event.preventDefault();
+          callback();
+        }
       }
     };
 
