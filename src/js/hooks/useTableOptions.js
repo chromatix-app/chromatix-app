@@ -47,7 +47,7 @@ const getTableOptions = (
   variant,
   albumId,
   playlistId,
-  // folderId,
+  folderId,
   sortKey,
   orderKey,
   colOptions,
