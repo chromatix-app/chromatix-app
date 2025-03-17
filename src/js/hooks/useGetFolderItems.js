@@ -30,7 +30,7 @@ const useGetFolderItems = (folderId) => {
         });
 
   let sortedTrackNumber = 0;
-  sortedWithFoldersOnTop?.forEach((item, index) => {
+  sortedWithFoldersOnTop?.forEach((item) => {
     if (item.kind === 'track') {
       sortedTrackNumber++;
       item.sortedTrackNumber = sortedTrackNumber;

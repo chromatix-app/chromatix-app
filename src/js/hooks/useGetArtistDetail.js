@@ -102,7 +102,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   // Get the artist compilation albums
   useEffect(() => {
     if (artistName && artistId && libraryId) {
-      plex.getAllArtistCompilationAlbums(libraryId, artistId, artistName);
+      plex.getAllArtistAppearanceAlbums(libraryId, artistId, artistName);
     }
   }, [artistName, artistId, libraryId]);
 

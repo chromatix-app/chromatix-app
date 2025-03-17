@@ -438,7 +438,8 @@ const SearchField = () => {
           <div className={style.searchInput}>
             <input
               ref={searchInputRef}
-              type="text"
+              type="search"
+              name="Search"
               placeholder="Search"
               value={searchValue}
               autoComplete="off"

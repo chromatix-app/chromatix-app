@@ -47,7 +47,7 @@ const useGetAllCollections = (collectionKey) => {
     if (collectionKey.includes('Collections')) {
       plex.getAllCollections();
     } else {
-      plex.getAllSets(collectionKey);
+      plex.getAllTags(collectionKey);
     }
   }, [collectionKey]);
 

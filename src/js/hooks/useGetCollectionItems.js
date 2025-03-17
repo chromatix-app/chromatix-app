@@ -67,8 +67,8 @@ const useGetCollectionItems = ({
       plex.getAllCollections();
       plex.getCollectionItems(libraryId, collectionId, collectionType);
     } else {
-      plex.getAllSets(collectionKey);
-      plex.getSetItems(libraryId, collectionId, itemsKey);
+      plex.getAllTags(collectionKey);
+      plex.getTagItems(libraryId, collectionId, itemsKey);
       // plex[`get${itemsKey}`](libraryId, collectionId);
     }
   }, [itemsKey, collectionId, collectionKey, libraryId]);

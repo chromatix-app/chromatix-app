@@ -1,3 +1,14 @@
+/*
+We are transposing the Plex data to a format that is easier to work with in the app and
+consistent between music services, and also doing some additional processing and validation.
+*/
+
+// ======================================================================
+// IMPORTS
+// ======================================================================
+
+import { XMLParser } from 'fast-xml-parser';
+
 // ======================================================================
 // OPTIONS
 // ======================================================================
@@ -7,30 +18,44 @@ const thumbSizeMedium = 600;
 // const thumbPlaceholder = '/images/artwork-placeholder.png';
 
 // ======================================================================
-// TRANSPOSE PLEX DATA
+// HELPERS
 // ======================================================================
 
-/*
-We are transposing the Plex data to a format that is easier to work with in the app,
-and doing some additional processing and validation.
-*/
-
 const getThumb = (plexBaseUrl, thumb, size, accessToken) => {
-  return thumb
+  const finalThumb = thumb
     ? `${plexBaseUrl}/photo/:/transcode?width=${size}&height=${size}&url=${encodeURIComponent(
-        thumb
+        thumb.split('?')[0]
       )}&minSize=1&X-Plex-Token=${accessToken}`
-    : null; // thumbPlaceholder;
+    : null;
+  return finalThumb;
 };
 
+// ======================================================================
+// USER
+// ======================================================================
+
 export const transposeUserData = (user) => {
+  const parser = new XMLParser({ ignoreAttributes: false });
+  const data = parser.parse(user.data).user;
+
   return {
-    userId: user['@_id'],
-    email: user['email'],
-    thumb: user['@_thumb'],
-    title: user['@_title'],
-    username: user['username'],
+    userId: data['@_id'],
+    email: data['email'],
+    thumb: data['@_thumb'],
+    title: data['@_title'],
+    username: data['username'],
   };
+};
+
+// ======================================================================
+// SERVERS
+// ======================================================================
+
+export const transposeServerArray = (array) => {
+  const data =
+    array?.data?.filter((resource) => resource.provides === 'server')?.map((server) => transposeServerData(server)) ||
+    [];
+  return data;
 };
 
 export const transposeServerData = (server) => {
@@ -42,11 +67,61 @@ export const transposeServerData = (server) => {
   };
 };
 
+// ======================================================================
+// LIBRARIES
+// ======================================================================
+
+export const transposeLibraryArray = (array) => {
+  const data = array?.data?.MediaContainer?.Directory?.filter((library) => library.type === 'artist').map((library) =>
+    transposeLibraryData(library)
+  );
+  return data;
+};
+
 export const transposeLibraryData = (library) => {
   return {
     libraryId: library.key,
     title: library.title,
   };
+};
+
+// ======================================================================
+// ARTISTS
+// ======================================================================
+
+export const transposeArtistArray = (array, libraryId, plexBaseUrl, accessToken) => {
+  const data =
+    array?.data?.MediaContainer?.Metadata?.map((artist) =>
+      transposeArtistData(artist, libraryId, plexBaseUrl, accessToken)
+    ) || [];
+  return data;
+};
+
+export const transposeArtistDetails = (array, libraryId, plexBaseUrl, accessToken) => {
+  const artist = array?.data?.MediaContainer?.Metadata[0];
+  const artistDetails = transposeArtistData(artist, libraryId, plexBaseUrl, accessToken);
+  return artistDetails;
+};
+
+export const transposeArtistRelatedArray = (array, libraryId, plexBaseUrl, accessToken) => {
+  const data =
+    array?.data?.MediaContainer?.Hub?.filter(
+      (hub) => hub.type === 'album' && hub.Metadata && hub.context && hub.context.includes('hub.artist.albums')
+    ).map((hub) => ({
+      title: hub.title,
+      related: hub.Metadata.map((album) => transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)),
+    })) || [];
+  return data;
+};
+
+export const transposeArtistAppearanceAlbumIdsArray = (array, libraryId, plexBaseUrl, accessToken) => {
+  const artistCompilationTracks =
+    array?.data?.MediaContainer?.Metadata?.map((track) =>
+      transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
+    ) || [];
+  // get a unique list of album IDs using the albumId key of each track
+  const artistCompilationAlbums = [...new Set(artistCompilationTracks.map((track) => track.albumId))];
+  return artistCompilationAlbums;
 };
 
 export const transposeArtistData = (artist, libraryId, plexBaseUrl, accessToken) => {
@@ -64,6 +139,24 @@ export const transposeArtistData = (artist, libraryId, plexBaseUrl, accessToken)
     thumb: getThumb(plexBaseUrl, artist.thumb, thumbSizeSmall, accessToken),
     thumbMedium: getThumb(plexBaseUrl, artist.thumb, thumbSizeMedium, accessToken),
   };
+};
+
+// ======================================================================
+// ALBUMS
+// ======================================================================
+
+export const transposeAlbumArray = (array, libraryId, plexBaseUrl, accessToken) => {
+  const data =
+    array?.data?.MediaContainer?.Metadata?.map((album) =>
+      transposeAlbumData(album, libraryId, plexBaseUrl, accessToken)
+    ) || [];
+  return data;
+};
+
+export const transposeAlbumDetails = (array, libraryId, plexBaseUrl, accessToken) => {
+  const album = array?.data?.MediaContainer?.Metadata[0];
+  const albumDetails = transposeAlbumData(album, libraryId, plexBaseUrl, accessToken);
+  return albumDetails;
 };
 
 export const transposeAlbumData = (album, libraryId, plexBaseUrl, accessToken) => {
@@ -85,7 +178,43 @@ export const transposeAlbumData = (album, libraryId, plexBaseUrl, accessToken) =
   };
 };
 
-export const transposeFolderData = (folder, index, libraryId, plexBaseUrl, accessToken) => {
+// ======================================================================
+// FOLDERS
+// ======================================================================
+
+export const transposeFolderArray = (array, libraryId, plexBaseUrl, accessToken) => {
+  const data =
+    array?.data?.MediaContainer?.Metadata?.map((item) =>
+      transposeFolderData(item, libraryId, plexBaseUrl, accessToken)
+    ).filter((item) => item !== null) || [];
+
+  // Sort folderItems
+  data.sort((a, b) => {
+    if (a.kind === 'folder' && b.kind === 'track') return -1;
+    if (a.kind === 'track' && b.kind === 'folder') return 1;
+    if (a.kind === 'folder' && b.kind === 'folder') return a.title.localeCompare(b.title);
+    if (a.kind === 'track' && b.kind === 'track') {
+      if (a.album !== b.album) return a.album.localeCompare(b.album);
+      if (a.discNumber !== b.discNumber) return a.discNumber - b.discNumber;
+      return a.trackNumber - b.trackNumber;
+    }
+    return 0;
+  });
+
+  // Add sortOrder properties to each object
+  let trackSortOrder = 0;
+  data.forEach((item, index) => {
+    item.sortOrder = index;
+    if (item.kind === 'track') {
+      item.trackSortOrder = trackSortOrder;
+      trackSortOrder++;
+    }
+  });
+
+  return data;
+};
+
+export const transposeFolderData = (folder, libraryId, plexBaseUrl, accessToken) => {
   if (folder.ratingKey) {
     if (folder.type !== 'track') {
       return null;
@@ -101,6 +230,24 @@ export const transposeFolderData = (folder, index, libraryId, plexBaseUrl, acces
     title: folder.title,
     link: '/folders/' + libraryId + '/' + folderId,
   };
+};
+
+// ======================================================================
+// PLAYLISTS
+// ======================================================================
+
+export const transposePlaylistArray = (array, libraryId, plexBaseUrl, accessToken) => {
+  const data =
+    array?.data?.MediaContainer?.Metadata?.map((playlist) =>
+      transposePlaylistData(playlist, libraryId, plexBaseUrl, accessToken)
+    ) || [];
+  return data;
+};
+
+export const transposePlaylistDetails = (array, libraryId, plexBaseUrl, accessToken) => {
+  const playlist = array?.data?.MediaContainer?.Metadata[0];
+  const playlistDetails = transposePlaylistData(playlist, libraryId, plexBaseUrl, accessToken);
+  return playlistDetails;
 };
 
 export const transposePlaylistData = (playlist, libraryId, plexBaseUrl, accessToken) => {
@@ -119,6 +266,135 @@ export const transposePlaylistData = (playlist, libraryId, plexBaseUrl, accessTo
     thumb: getThumb(plexBaseUrl, playlistThumb, thumbSizeSmall, accessToken),
     thumbMedium: getThumb(plexBaseUrl, playlistThumb, thumbSizeMedium, accessToken),
   };
+};
+
+// ======================================================================
+// COLLECTIONS
+// ======================================================================
+
+export const transposeCollectionArray = (array, libraryId, plexBaseUrl, accessToken) => {
+  const allCollections =
+    array?.data?.MediaContainer?.Metadata?.filter(
+      (collection) => collection.subtype === 'artist' || collection.subtype === 'album'
+    ).map((collection) => transposeCollectionData(collection, libraryId, plexBaseUrl, accessToken)) || [];
+  const allArtistCollections = allCollections.filter((collection) => collection.type === 'artist');
+  const allAlbumCollections = allCollections.filter((collection) => collection.type === 'album');
+  return {
+    allArtistCollections,
+    allAlbumCollections,
+  };
+};
+
+export const transposeCollectionItemArray = (array, libraryId, plexBaseUrl, accessToken, typeKey) => {
+  console.log(typeKey);
+  const data =
+    array?.data?.MediaContainer?.Metadata?.map((item) =>
+      lookups[`transpose${typeKey}Data`](item, libraryId, plexBaseUrl, accessToken)
+    ) || [];
+  console.log(data);
+  return data;
+};
+
+export const transposeCollectionData = (collection, libraryId, plexBaseUrl, accessToken) => {
+  const collectionThumb = collection.thumb ? collection.thumb : collection.composite ? collection.composite : null;
+  return {
+    kind: 'collection',
+    libraryId: libraryId,
+    collectionId: collection.ratingKey,
+    title: collection.title,
+    addedAt: collection.addedAt,
+    userRating: collection.userRating,
+    type: collection.subtype,
+    link:
+      (collection.subtype === 'artist' ? '/artist-collections/' : '/album-collections/') +
+      libraryId +
+      '/' +
+      collection.ratingKey,
+    thumb: getThumb(plexBaseUrl, collectionThumb, thumbSizeSmall, accessToken),
+    thumbMedium: getThumb(plexBaseUrl, collectionThumb, thumbSizeMedium, accessToken),
+  };
+};
+
+// ======================================================================
+// TAGS
+// ======================================================================
+
+const tagOptions = {
+  AlbumGenres: { primaryKey: 'album', secondaryKey: 'Genre' },
+  AlbumMoods: { primaryKey: 'album', secondaryKey: 'Mood' },
+  AlbumStyles: { primaryKey: 'album', secondaryKey: 'Style' },
+  ArtistGenres: { primaryKey: 'artist', secondaryKey: 'Genre' },
+  ArtistMoods: { primaryKey: 'artist', secondaryKey: 'Mood' },
+  ArtistStyles: { primaryKey: 'artist', secondaryKey: 'Style' },
+};
+
+const tagItemOptions = {
+  AlbumGenreItems: { primaryKey: 'Album' },
+  AlbumMoodItems: { primaryKey: 'Album' },
+  AlbumStyleItems: { primaryKey: 'Album' },
+  ArtistGenreItems: { primaryKey: 'Artist' },
+  ArtistMoodItems: { primaryKey: 'Artist' },
+  ArtistStyleItems: { primaryKey: 'Artist' },
+};
+
+export const transposeTagArray = (array, libraryId, typeKey) => {
+  const { primaryKey, secondaryKey } = tagOptions[typeKey];
+  const data =
+    array?.data?.MediaContainer?.Directory?.map((entry) =>
+      lookups[`transpose${secondaryKey}Data`](primaryKey, entry, libraryId)
+    ) || [];
+  return data;
+};
+
+export const transposeTagItemArray = (array, libraryId, plexBaseUrl, accessToken, typeKey) => {
+  const { primaryKey } = tagItemOptions[typeKey];
+  const data =
+    array?.data?.MediaContainer?.Metadata?.map((entry) =>
+      lookups[`transpose${primaryKey}Data`](entry, libraryId, plexBaseUrl, accessToken)
+    ) || [];
+  return data;
+};
+
+export const transposeGenreData = (type, genre, libraryId) => {
+  return {
+    kind: 'genre',
+    libraryId: libraryId,
+    genreId: genre.key,
+    title: genre.title.replace(/\//g, ' & '),
+    link: '/' + type + '-genres/' + libraryId + '/' + genre.key,
+  };
+};
+
+export const transposeMoodData = (type, mood, libraryId) => {
+  return {
+    kind: 'mood',
+    libraryId: libraryId,
+    moodId: mood.key,
+    title: mood.title.replace(/\//g, ' & '),
+    link: '/' + type + '-moods/' + libraryId + '/' + mood.key,
+  };
+};
+
+export const transposeStyleData = (type, style, libraryId) => {
+  return {
+    kind: 'style',
+    libraryId: libraryId,
+    styleId: style.key,
+    title: style.title.replace(/\//g, ' & '),
+    link: '/' + type + '-styles/' + libraryId + '/' + style.key,
+  };
+};
+
+// ======================================================================
+// TRACKS
+// ======================================================================
+
+export const transposeTrackArray = (array, libraryId, plexBaseUrl, accessToken) => {
+  const data =
+    array?.data?.MediaContainer?.Metadata?.map((track) =>
+      transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
+    ) || [];
+  return data;
 };
 
 export const transposeTrackData = (track, libraryId, plexBaseUrl, accessToken) => {
@@ -149,57 +425,37 @@ export const transposeTrackData = (track, libraryId, plexBaseUrl, accessToken) =
   };
 };
 
-export const transposeCollectionData = (collection, libraryId, plexBaseUrl, accessToken) => {
-  const collectionThumb = collection.thumb ? collection.thumb : collection.composite ? collection.composite : null;
-  return {
-    kind: 'collection',
-    libraryId: libraryId,
-    collectionId: collection.ratingKey,
-    title: collection.title,
-    addedAt: collection.addedAt,
-    userRating: collection.userRating,
-    type: collection.subtype,
-    link:
-      (collection.subtype === 'artist' ? '/artist-collections/' : '/album-collections/') +
-      libraryId +
-      '/' +
-      collection.ratingKey,
-    thumb: getThumb(plexBaseUrl, collectionThumb, thumbSizeSmall, accessToken),
-    thumbMedium: getThumb(plexBaseUrl, collectionThumb, thumbSizeMedium, accessToken),
-  };
+// ======================================================================
+// SEARCH RESULTS
+// ======================================================================
+
+const typeOrder = {
+  artist: 1,
+  album: 2,
+  playlist: 3,
+  'artist collection': 4,
+  'album collection': 5,
+  track: 6,
 };
 
-export const transposeGenreData = (type, genre, libraryId) => {
-  return {
-    kind: 'genre',
-    libraryId: libraryId,
-    genreId: genre.key,
-    title: genre.title.replace(/\//g, ' & '),
-    link: '/' + type + '-genres/' + libraryId + '/' + genre.key,
-  };
+export const transposeSearchResultsArray = (array, libraryId, plexBaseUrl, accessToken) => {
+  const data =
+    array?.data?.MediaContainer?.Hub?.flatMap((result) => result.Metadata)
+      ?.map((result) => transposeHubSearchResultData(result, libraryId, plexBaseUrl, accessToken))
+      .filter((result) => result !== null)
+      .sort((a, b) => {
+        if (b.score === a.score) {
+          if (a.type === b.type) {
+            return a.title.localeCompare(b.title);
+          }
+          return typeOrder[a.type] - typeOrder[b.type];
+        }
+        return b.score - a.score;
+      }) || [];
+  return data;
 };
 
-export const transposeStyleData = (type, style, libraryId) => {
-  return {
-    kind: 'style',
-    libraryId: libraryId,
-    styleId: style.key,
-    title: style.title.replace(/\//g, ' & '),
-    link: '/' + type + '-styles/' + libraryId + '/' + style.key,
-  };
-};
-
-export const transposeMoodData = (type, mood, libraryId) => {
-  return {
-    kind: 'mood',
-    libraryId: libraryId,
-    moodId: mood.key,
-    title: mood.title.replace(/\//g, ' & '),
-    link: '/' + type + '-moods/' + libraryId + '/' + mood.key,
-  };
-};
-
-export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBaseUrl, accessToken) => {
+export const transposeHubSearchResultData = (result, libraryId, plexBaseUrl, accessToken) => {
   if (result?.type) {
     if (result.type === 'artist') {
       return {
@@ -353,5 +609,13 @@ export const transposeHubSearchData = (result, libraryId, libraryTitle, plexBase
 // };
 
 // ======================================================================
-// HELPER FUNCTIONS
+// DYNAMIC LOOKUPS
 // ======================================================================
+
+const lookups = {
+  transposeArtistData,
+  transposeAlbumData,
+  transposeGenreData,
+  transposeMoodData,
+  transposeStyleData,
+};

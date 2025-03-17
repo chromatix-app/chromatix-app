@@ -48,7 +48,7 @@ export const FilterSelect = ({ value, options, setter, icon = 'ArrowsVerticalIco
   );
 };
 
-const SelectItem = forwardRef(({ children, className, ...props }, forwardedRef) => {
+const SelectItem = forwardRef(({ children, ...props }, forwardedRef) => {
   return (
     <RadixSelect.Item className={style.item} {...props} ref={forwardedRef}>
       <RadixSelect.ItemText>{children}</RadixSelect.ItemText>
