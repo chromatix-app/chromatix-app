@@ -53,7 +53,7 @@ const endpointConfig = {
     getAllArtists: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
     getArtistDetails: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}`,
     getAllArtistAlbums: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/children`,
-    getAllArtistRelated: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/related`,
+    // getAllArtistRelated: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/related`,
     getAllArtistAppearanceTracks: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
   },
   album: {
@@ -639,7 +639,7 @@ export const getAllArtistAlbums = (plexBaseUrl, libraryId, artistId, accessToken
 export const getAllArtistRelated = (plexBaseUrl, libraryId, artistId, accessToken) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.artist.getAllArtistRelated(plexBaseUrl, artistId);
+      const endpoint = endpointConfig.artist.getArtistDetails(plexBaseUrl, artistId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -647,8 +647,12 @@ export const getAllArtistRelated = (plexBaseUrl, libraryId, artistId, accessToke
         .get(endpoint, {
           headers: getRequestHeaders(accessToken),
           params: {
-            excludeAllLeaves: 1,
-            excludeFields: albumExcludes,
+            includeRelated: 1,
+            includeRelatedCount: 999,
+            excludeFields: 'summary',
+            excludeElements: 'Country,Genre,Guid,Image,Location,Mood,Similar,Style,UltraBlurColors',
+            // excludeAllLeaves: 1,
+            // excludeFields: albumExcludes,
           },
           signal: controller.signal,
         })
