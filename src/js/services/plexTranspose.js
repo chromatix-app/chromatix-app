@@ -105,7 +105,8 @@ export const transposeArtistDetails = (array, libraryId, plexBaseUrl, accessToke
 
 export const transposeArtistRelatedArray = (array, libraryId, plexBaseUrl, accessToken) => {
   const data =
-    array?.data?.MediaContainer?.Hub?.filter(
+    // array?.data?.MediaContainer?.Hub?.filter(
+    array?.data?.MediaContainer?.Metadata?.[0]?.Related?.Hub?.filter(
       (hub) => hub.type === 'album' && hub.Metadata && hub.context && hub.context.includes('hub.artist.albums')
     ).map((hub) => ({
       title: hub.title,
