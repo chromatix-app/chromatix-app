@@ -122,6 +122,22 @@
   }
 }
 
+.groupRow {
+  padding: 60px 15px 18px;
+  font-size: 16px;
+  line-height: 16px;
+  font-weight: bold;
+
+  :global(.cq-800) & {
+    padding: 60px 20px 18px;
+  }
+
+  .header + &,
+  .measure + & {
+    padding-top: 11px;
+  }
+}
+
 .discRow {
   display: flex;
   align-items: center;
