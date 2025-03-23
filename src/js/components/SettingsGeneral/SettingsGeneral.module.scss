@@ -1,6 +1,7 @@
 @import '../../../css/global';
 
 .wrap {
+  max-width: 800px;
   padding: 0 30px 50px;
 
   :global(.cq-800) & {

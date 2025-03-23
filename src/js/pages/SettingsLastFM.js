@@ -12,7 +12,7 @@ const Component = () => {
   return (
     <>
       <TitleHeading title="Last.fm" />
-      <PageText>
+      <PageText fontSize="small">
         <p>
           Linking your account to{' '}
           <a href="https://www.last.fm/" target="_blank" rel="noreferrer nofollow" draggable="false">
