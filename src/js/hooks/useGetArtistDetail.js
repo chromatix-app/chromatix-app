@@ -12,6 +12,12 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const allArtists = useSelector(({ appModel }) => appModel.allArtists);
   const artistInfo = allArtists?.find((artist) => artist.artistId === artistId);
 
+  const artistThumb = artistInfo?.thumb;
+  const artistName = artistInfo?.title;
+  const artistCountry = artistInfo?.country;
+  const artistGenre = artistInfo?.genre;
+  const artistRating = artistInfo?.userRating;
+
   const allArtistAlbums = useSelector(({ appModel }) => appModel.allArtistAlbums);
   const artistAlbums = allArtistAlbums[libraryId + '-' + artistId];
 
@@ -21,32 +27,28 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const allArtistCompilationAlbums = useSelector(({ appModel }) => appModel.allArtistCompilationAlbums);
   const artistCompilations = allArtistCompilationAlbums[libraryId + '-' + artistId];
 
-  const artistThumb = artistInfo?.thumb;
-  const artistName = artistInfo?.title;
   const artistAlbumTotal = artistAlbums?.length || 0;
   const artistRelatedTotal = artistRelated?.reduce((acc, entry) => acc + entry.related.length, 0) || 0;
-  const artistReleases = artistAlbumTotal + artistRelatedTotal;
-  const artistCountry = artistInfo?.country;
-  const artistGenre = artistInfo?.genre;
-  const artistRating = artistInfo?.userRating;
+  const artistCompilationsTotal = artistCompilations?.length || 0;
+  const artistReleasesTotal = artistAlbumTotal + artistRelatedTotal + artistCompilationsTotal;
 
   const viewArtistAlbums = useSelector(({ sessionModel }) => sessionModel.viewArtistAlbums);
   const sortArtistAlbums = useSelector(({ sessionModel }) => sessionModel.sortArtistAlbums);
   const orderArtistAlbums = useSelector(({ sessionModel }) => sessionModel.orderArtistAlbums);
 
-  // prevent sorting by rating if ratings are hidden
+  // Prevent sorting by rating if ratings are hidden
   const isRatingSortHidden = !optionShowStarRatings && sortArtistAlbums === 'userRating';
 
-  // prevent sub-sorting in list view
+  // Prevent sub-sorting in list view
   const isSubSortList = viewArtistAlbums === 'list' && sortArtistAlbums.split('-').length > 2;
 
   const actualSortArtistAlbums = isRatingSortHidden ? 'title' : isSubSortList ? 'artist' : sortArtistAlbums;
   const actualOrderArtistAlbums = isRatingSortHidden ? 'asc' : orderArtistAlbums;
 
+  // Sort albums
   const sortedArtistAlbums = artistAlbums
     ? sortList(artistAlbums, actualSortArtistAlbums, actualOrderArtistAlbums)
     : null;
-
   const sortedArtistRelated = artistRelated?.map((entry) => {
     const sortedEntry =
       entry && entry.related ? sortList(entry.related, actualSortArtistAlbums, actualOrderArtistAlbums) : null;
@@ -55,10 +57,44 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
       related: sortedEntry,
     };
   });
-
   const sortedArtistCompilations = artistCompilations
     ? sortList(artistCompilations, actualSortArtistAlbums, actualOrderArtistAlbums)
     : null;
+
+  // Combine all albums into a single array
+  const allAlbums = [];
+  if (sortedArtistAlbums) {
+    allAlbums.push(
+      ...sortedArtistAlbums.map((album) => {
+        return {
+          ...album,
+          albumGroup: 'Albums',
+        };
+      })
+    );
+  }
+  if (sortedArtistRelated) {
+    for (let i = 0; i < sortedArtistRelated.length; i++) {
+      const related = sortedArtistRelated[i];
+      for (let j = 0; j < related.related.length; j++) {
+        const album = related.related[j];
+        allAlbums.push({
+          ...album,
+          albumGroup: related.title,
+        });
+      }
+    }
+  }
+  if (sortedArtistCompilations) {
+    allAlbums.push(
+      ...sortedArtistCompilations.map((album) => {
+        return {
+          ...album,
+          albumGroup: 'Appears On',
+        };
+      })
+    );
+  }
 
   const setViewArtistAlbums = (viewArtistAlbums) => {
     dispatch.sessionModel.setSessionState({
@@ -108,19 +144,20 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
 
   return {
     artistInfo,
+    artistThumb,
+    artistName,
+    artistCountry,
+    artistGenre,
+    artistRating,
 
     artistAlbums: sortedArtistAlbums,
     artistRelated: sortedArtistRelated,
     artistCompilations: sortedArtistCompilations,
+    sortedArtistAlbums: allAlbums,
 
-    artistThumb,
-    artistName,
     artistAlbumTotal,
     artistRelatedTotal,
-    artistReleases,
-    artistCountry,
-    artistGenre,
-    artistRating,
+    artistReleasesTotal,
 
     viewArtistAlbums,
     sortArtistAlbums: actualSortArtistAlbums,

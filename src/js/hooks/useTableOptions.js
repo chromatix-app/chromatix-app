@@ -145,6 +145,7 @@ const getTableOptions = (
 
   // ALBUMS
   else if (
+    variant === 'artistAlbums' ||
     variant === 'albums' ||
     variant === 'albumCollectionItems' ||
     variant === 'albumGenreItems' ||
@@ -178,7 +179,7 @@ const getTableOptions = (
         colWidth: '1fr',
         isAsc: sortKey === 'artist' && orderKey === 'asc',
         isDesc: sortKey === 'artist' && orderKey === 'desc',
-        visible: colOptions?.colAlbumsArtist !== false,
+        visible: variant === 'artistAlbums' ? false : colOptions?.colAlbumsArtist !== false,
       },
       {
         colKey: 'releaseDate',

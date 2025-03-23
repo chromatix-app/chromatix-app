@@ -38,6 +38,7 @@ const ListTableV2 = ({ variant, ...props }) => {
 const ListTableBasic = ({
   children,
   variant,
+  groupBy,
   albumId,
   playlistId,
   folderId,
@@ -69,17 +70,29 @@ const ListTableBasic = ({
   };
 
   if (entries) {
+    // If items are grouped, we need to add a group row before each group
+    const entriesWithGroups = !groupBy
+      ? entries
+      : entries.reduce((acc, entry) => {
+          if (entry[groupBy] && acc[acc.length - 1]?.[groupBy] !== entry[groupBy]) {
+            acc.push({ kind: 'group', groupName: entry[groupBy] });
+          }
+          acc.push(entry);
+          return acc;
+        }, []);
+
     const TableBodyComponent = entries.length <= virtualThreshold ? TableBodyStatic : TableBodyVirtual;
 
     return (
       <div className={clsx(style.wrap, style['wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1)], {})}>
         <TableBodyComponent
-          entries={entries}
+          entries={entriesWithGroups}
           titleBlock={children}
           headerBlock={headerBlock()}
           tableVariant={tableVariant}
           tableOptions={tableOptions}
           gridTemplateColumns={gridTemplateColumns}
+          groupBy={groupBy}
         />
       </div>
     );
@@ -305,6 +318,8 @@ const TableBodyStatic = ({
   tableVariant,
   tableOptions,
   gridTemplateColumns,
+  // group related props
+  groupBy,
   // disc related props
   showDiscNumbers,
   // track related props
@@ -328,6 +343,11 @@ const TableBodyStatic = ({
           // Catch missing entries
           if (!entry) {
             return null;
+          }
+
+          // Disc numbers
+          else if (entry.kind === 'group') {
+            return <GroupRow key={index} entry={entry} />;
           }
 
           // Disc numbers
@@ -380,7 +400,10 @@ const TableBodyStatic = ({
 
 // Config
 const tableHeadHeight = 250;
-const discHeight = 68;
+const groupHeightFirst = 45;
+const groupHeightGeneral = 94;
+const discHeightFirst = 39;
+const discHeightGeneral = 68;
 const rowHeightDefault = 50;
 const rowHeightSmall = 39;
 const fixedElementCount = 1;
@@ -424,14 +447,34 @@ const TableBodyVirtual = ({
   // Helper to determine row heights
   const getItemSize = useCallback(
     (index) => {
-      const isDiscRow =
+      const isGroupRowFirst = entries[index - fixedElementCount]?.kind === 'group' && index - fixedElementCount === 0;
+
+      const isGroupRowGeneral = entries[index - fixedElementCount]?.kind === 'group' && !isGroupRowFirst;
+
+      const isDiscRowFirst =
         entries[index - fixedElementCount]?.kind === 'disc' &&
-        ((orderKey !== 'desc' && entries[index - fixedElementCount]?.discNumber > 1) ||
-          (orderKey === 'desc' && entries[index - fixedElementCount]?.discNumber < discCount));
+        ((orderKey !== 'desc' && entries[index - fixedElementCount]?.discNumber === 1) ||
+          (orderKey === 'desc' && entries[index - fixedElementCount]?.discNumber === discCount));
+
+      const isDiscRowGeneral = entries[index - fixedElementCount]?.kind === 'disc' && !isDiscRowFirst;
 
       const isExtraRow = orderKey === 'desc' && index === entries.length + fixedElementCount;
 
-      return index === 0 ? tableHeadHeight : isDiscRow ? discHeight : isExtraRow ? 0 : rowHeightActual;
+      if (index === 0) {
+        return tableHeadHeight;
+      } else if (isGroupRowFirst) {
+        return groupHeightFirst;
+      } else if (isGroupRowGeneral) {
+        return groupHeightGeneral;
+      } else if (isDiscRowFirst) {
+        return discHeightFirst;
+      } else if (isDiscRowGeneral) {
+        return discHeightGeneral;
+      } else if (isExtraRow) {
+        return 0;
+      } else {
+        return rowHeightActual;
+      }
     },
     [entries, discCount, orderKey, rowHeightActual]
   );
@@ -504,6 +547,11 @@ const TableBodyVirtual = ({
             }
 
             // Disc numbers
+            else if (entry.kind === 'group') {
+              return <GroupRow key={index} entry={entry} virtualRow={virtualRow} />;
+            }
+
+            // Disc numbers
             else if (entry.kind === 'disc') {
               return <DiscRow key={index} entry={entry} virtualRow={virtualRow} />;
             }
@@ -566,6 +614,29 @@ const measureElement = (element) => {
   const elementTop = element.getBoundingClientRect().top;
   // console.log(elementTop - innerTop);
   return elementTop - innerTop;
+};
+
+// ======================================================================
+// GROUP ROW
+// ======================================================================
+
+const GroupRow = ({ virtualRow, entry }) => {
+  return (
+    <div
+      className={style.groupRow}
+      style={{
+        ...(virtualRow && {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          transform: `translateY(${virtualRow.start}px)`,
+        }),
+      }}
+    >
+      {entry.groupName}
+    </div>
+  );
 };
 
 // ======================================================================
