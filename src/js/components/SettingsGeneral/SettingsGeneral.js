@@ -149,8 +149,9 @@ const ViewModeSettings = () => {
       <div className={style.menuEntry}>
         <div>
           <div className={style.label}>
-            You can already toggle between grid view and list view when browsing any section of your library, but if you
-            want to quickly toggle ALL sections at once you can use the buttons below.
+            Quickly toggle between grid view and list view for all sections of your library.
+            <br />
+            Note that you can independently toggle the view mode within each individual section whilst browsing.
           </div>
           <div className={style.buttons}>
             <Button
