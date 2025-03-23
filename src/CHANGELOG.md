@@ -1,3 +1,14 @@
+<a name="0.35.0"></a>
+# 0.35.0 (2025-03-23)
+Features:
+- Added list view for artist albums.
+  - (Note that this completes the adding of list views to all sections.)
+- Added buttons to globally toggle between grid and list view within the general settings section.
+Updated:
+- Moved accessibility settings into the general settings section for simplicity.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.34.0"></a>
 # 0.34.0 (2025-03-17)
 Refactor:

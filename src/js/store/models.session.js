@@ -85,6 +85,7 @@ const sessionState = {
 
   sortArtists: 'title',
   sortArtistAlbums: 'releaseDate',
+  sortArtistAlbumsList: 'title',
   sortAlbums: 'title', // artist-asc-releaseDate-asc
   sortAlbumTracks: {},
   sortFolders: 'sortOrder',
@@ -302,7 +303,11 @@ const reducers = {
         newOrderKey = 'desc';
       } else {
         // reset to default values
-        newSortKey = sessionState[sortIndex];
+        if (sessionState[sortIndex + 'List']) {
+          newSortKey = sessionState[sortIndex + 'List'];
+        } else {
+          newSortKey = sessionState[sortIndex];
+        }
         newOrderKey = sessionState[orderIndex];
       }
     }
