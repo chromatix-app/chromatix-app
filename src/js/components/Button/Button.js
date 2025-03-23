@@ -25,13 +25,13 @@ const getComponentType = (props) => {
 };
 
 export const Button = forwardRef(
-  ({ children, className, loading = false, variant, type = 'button', wrap = true, ...props }, ref) => {
+  ({ children, className, loading = false, variant, inline = false, type = 'button', wrap = true, ...props }, ref) => {
     const Component = getComponentType(props);
 
     const ToReturn = (
       <Component
         ref={ref}
-        className={clsx(style.btn, style[variant], className, { [style.loading]: loading })}
+        className={clsx(style.btn, style[variant], className, { [style.loading]: loading, [style.inline]: inline })}
         type={type}
         {...props}
       >
