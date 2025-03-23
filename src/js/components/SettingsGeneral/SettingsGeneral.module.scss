@@ -45,6 +45,9 @@
 }
 
 .label {
+  &.disabled {
+    text-decoration: line-through;
+  }
 }
 
 .description {

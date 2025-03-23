@@ -3,6 +3,7 @@
 // ======================================================================
 
 import { useDispatch, useSelector } from 'react-redux';
+import clsx from 'clsx';
 
 import style from './SettingsGeneral.module.scss';
 
@@ -14,8 +15,12 @@ export const SettingsGeneral = () => {
   return (
     <div className={style.wrap}>
       <div className={style.group}>
-        <div className={style.title}>Interface</div>
+        <div className={style.title}>User Interface</div>
         <InterfaceSettings />
+      </div>
+      <div className={style.group}>
+        <div className={style.title}>Accessibility</div>
+        <AccessibilitySettings />
       </div>
       <div className={style.group}>
         <div className={style.title}>Plex</div>
@@ -56,6 +61,46 @@ const InterfaceSettings = () => {
               checked={state}
               onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
               disabled={disabled}
+            />
+            <div>
+              {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
+              {description && <div className={style.description}>{description}</div>}
+            </div>
+          </label>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+//
+// ACCESSIBILITY
+//
+
+const AccessibilitySettings = () => {
+  const dispatch = useDispatch();
+
+  const accessibilityFocus = useSelector(({ sessionModel }) => sessionModel.accessibilityFocus);
+
+  const menuItems = [
+    {
+      key: 'accessibilityFocus',
+      label: 'Highlight focused elements',
+      description:
+        'When enabled, elements such as buttons, links, and form controls are highlighted when focused. For example, when using the keyboard to navigate the interface.',
+      state: accessibilityFocus,
+    },
+  ];
+
+  return (
+    <div className={style.menu}>
+      {menuItems.map(({ key, label, description, state }) => (
+        <div key={key} className={style.menuEntry}>
+          <label>
+            <input
+              type="checkbox"
+              checked={state}
+              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
             />
             <div>
               {label && <div className={style.label}>{label}</div>}
