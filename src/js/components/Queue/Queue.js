@@ -86,7 +86,7 @@ const QueueEmpty = () => {
 
 const QueueStatic = ({ entries, playingShuffle, queueExpandArtwork }) => {
   return (
-    <div className={style.scrollableOuter}>
+    <div className={clsx(style.scrollableOuter, 'u-scrollbars')}>
       <div className={style.scrollableInner}>
         {entries.map((entry, index) => {
           // Catch missing entries
@@ -129,7 +129,7 @@ const QueueStatic = ({ entries, playingShuffle, queueExpandArtwork }) => {
 
 // Config
 const nowPlayingLargeHeight = 369;
-const nowPlayingSmallHeight = 85;
+const nowPlayingSmallHeight = 92;
 const labelUpcomingHeight = 42;
 const labelRepeatHeight = 52;
 const trackHeight = 50;
@@ -168,7 +168,7 @@ const QueueVirtual = ({ entries, playingShuffle, queueExpandArtwork }) => {
   });
 
   return (
-    <div ref={outerRef} className={clsx(style.scrollableOuter, style.scrollableOuterVirtual)}>
+    <div ref={outerRef} className={clsx(style.scrollableOuter, style.scrollableOuterVirtual, 'u-scrollbars')}>
       <div
         className={style.scrollableInner}
         style={{
