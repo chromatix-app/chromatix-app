@@ -337,15 +337,13 @@ const TableBodyStatic = ({
 
         {headerBlock}
 
-        {entries.map((_staticRow, index) => {
-          const entry = entries[index];
-
+        {entries.map((entry, index) => {
           // Catch missing entries
           if (!entry) {
             return null;
           }
 
-          // Disc numbers
+          // Groups
           else if (entry.kind === 'group') {
             return <GroupRow key={index} entry={entry} />;
           }
