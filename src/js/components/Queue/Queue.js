@@ -2,8 +2,10 @@
 // IMPORTS
 // ======================================================================
 
+import { useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import clsx from 'clsx';
 
 import { Icon } from 'js/components';
@@ -15,9 +17,9 @@ import style from './Queue.module.scss';
 // OPTIONS
 // ======================================================================
 
-// const isLocal = process.env.REACT_APP_ENV === 'local';
+const isLocal = process.env.REACT_APP_ENV === 'local';
 
-// const virtualThreshold = !isLocal ? 150 : 150;
+const virtualThreshold = !isLocal ? 150 : 1;
 
 // ======================================================================
 // COMPONENT
@@ -54,14 +56,14 @@ const Queue = () => {
 
   const allEntries = [currentTrack, ...upcomingLabel, ...upcomingTracks, ...repeatTracks, ...repeatLabel];
 
+  const QueueComponent = allEntries.length <= virtualThreshold ? QueueStatic : QueueVirtual;
+
   return (
     <div className={style.wrap}>
-      <div className={style.inner}>
-        {!playingTrackKeys && <QueueEmpty />}
-        {playingTrackKeys && (
-          <QueueStatic entries={allEntries} playingShuffle={playingShuffle} queueExpandArtwork={queueExpandArtwork} />
-        )}
-      </div>
+      {!playingTrackKeys && <QueueEmpty />}
+      {playingTrackKeys && (
+        <QueueComponent entries={allEntries} playingShuffle={playingShuffle} queueExpandArtwork={queueExpandArtwork} />
+      )}
     </div>
   );
 };
@@ -71,7 +73,11 @@ const Queue = () => {
 // ======================================================================
 
 const QueueEmpty = () => {
-  return <div className={style.section}>No tracks in queue</div>;
+  return (
+    <div className={style.scrollableOuter}>
+      <div className={style.label}>No tracks in queue</div>
+    </div>
+  );
 };
 
 // ======================================================================
@@ -80,38 +86,129 @@ const QueueEmpty = () => {
 
 const QueueStatic = ({ entries, playingShuffle, queueExpandArtwork }) => {
   return (
-    <>
-      {entries.map((entry, index) => {
-        // Catch missing entries
-        if (!entry) {
-          return null;
-        }
-
-        // Now playing
-        else if (entry.rowType === 'playing') {
-          if (queueExpandArtwork) {
-            return <NowPlayingLarge key={index} entry={entry} />;
-          } else {
-            return <NowPlayingSmall key={index} entry={entry} />;
+    <div className={style.scrollableOuter}>
+      <div className={style.scrollableInner}>
+        {entries.map((entry, index) => {
+          // Catch missing entries
+          if (!entry) {
+            return null;
           }
-        }
 
-        // Label - Upcoming
-        else if (entry.rowType === 'upcomingLabel') {
-          return <LabelUpcoming key={index} playingShuffle={playingShuffle} />;
-        }
+          // Now playing
+          else if (entry.rowType === 'playing') {
+            if (queueExpandArtwork) {
+              return <NowPlayingLarge key={index} entry={entry} />;
+            } else {
+              return <NowPlayingSmall key={index} entry={entry} />;
+            }
+          }
 
-        // Label - Repeat
-        else if (entry.rowType === 'repeatLabel') {
-          return <LabelRepeat key={index} />;
-        }
+          // Label - Upcoming
+          else if (entry.rowType === 'upcomingLabel') {
+            return <LabelUpcoming key={index} playingShuffle={playingShuffle} />;
+          }
 
-        // Tracks
-        else {
-          return <TrackEntry key={index} entry={entry} />;
-        }
-      })}
-    </>
+          // Label - Repeat
+          else if (entry.rowType === 'repeatLabel') {
+            return <LabelRepeat key={index} />;
+          }
+
+          // Tracks
+          else {
+            return <TrackEntry key={index} entry={entry} />;
+          }
+        })}
+      </div>
+    </div>
+  );
+};
+
+// ======================================================================
+// QUEUE - VIRTUAL
+// ======================================================================
+
+// Config
+const nowPlayingLargeHeight = 369;
+const nowPlayingSmallHeight = 85;
+const labelUpcomingHeight = 42;
+const labelRepeatHeight = 52;
+const trackHeight = 50;
+
+const QueueVirtual = ({ entries, playingShuffle, queueExpandArtwork }) => {
+  const outerRef = useRef(null);
+
+  // Hacky workaround to force a re-render if queueExpandArtwork changes
+  const extraRows = queueExpandArtwork ? 1 : 0;
+
+  // Helper to determine row heights
+  const getItemSize = useCallback(
+    (index) => {
+      const entry = entries[index];
+      if (!entry) {
+        return 0;
+      } else if (entry.rowType === 'playing') {
+        return queueExpandArtwork ? nowPlayingLargeHeight : nowPlayingSmallHeight;
+      } else if (entry.rowType === 'upcomingLabel') {
+        return labelUpcomingHeight;
+      } else if (entry.rowType === 'repeatLabel') {
+        return labelRepeatHeight;
+      } else {
+        return trackHeight;
+      }
+    },
+    [entries, queueExpandArtwork]
+  );
+
+  // Setup the virtualizer
+  const rowVirtualizer = useVirtualizer({
+    count: entries.length + extraRows,
+    getScrollElement: () => outerRef.current,
+    estimateSize: getItemSize,
+    overscan: 3,
+  });
+
+  return (
+    <div ref={outerRef} className={clsx(style.scrollableOuter, style.scrollableOuterVirtual)}>
+      <div
+        className={style.scrollableInner}
+        style={{
+          height: `${rowVirtualizer.getTotalSize()}px`,
+        }}
+      >
+        {rowVirtualizer.getVirtualItems().map((virtualRow, index) => {
+          const entry = entries[virtualRow.index];
+
+          // Catch missing entries
+          if (!entry) {
+            return null;
+          }
+
+          // Now playing
+          else if (entry.rowType === 'playing') {
+            if (queueExpandArtwork) {
+              return <NowPlayingLarge key={index} entry={entry} virtualRow={virtualRow} />;
+            } else {
+              return <NowPlayingSmall key={index} entry={entry} virtualRow={virtualRow} />;
+            }
+          }
+
+          // Label - Upcoming
+          else if (entry.rowType === 'upcomingLabel') {
+            return <LabelUpcoming key={index} playingShuffle={playingShuffle} virtualRow={virtualRow} />;
+          }
+
+          // Label - Repeat
+          else if (entry.rowType === 'repeatLabel') {
+            return <LabelRepeat key={index} virtualRow={virtualRow} />;
+          }
+
+          // Tracks
+          else {
+            return <TrackEntry key={index} entry={entry} virtualRow={virtualRow} />;
+          }
+        })}
+      </div>
+    </div>
   );
 };
 
@@ -119,7 +216,7 @@ const QueueStatic = ({ entries, playingShuffle, queueExpandArtwork }) => {
 // NOW PLAYING - LARGE
 // ======================================================================
 
-const NowPlayingLarge = ({ entry }) => {
+const NowPlayingLarge = ({ entry, virtualRow }) => {
   const dispatch = useDispatch();
 
   const collapseArtwork = () => {
@@ -127,7 +224,18 @@ const NowPlayingLarge = ({ entry }) => {
   };
 
   return (
-    <div className={style.expandedEntry}>
+    <div
+      className={style.expandedEntry}
+      style={{
+        ...(virtualRow && {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          transform: `translateY(${virtualRow.start}px)`,
+        }),
+      }}
+    >
       <div className={style.expandedThumb}>
         {(entry.thumbMedium || entry.thumb) && (
           <img
@@ -164,7 +272,7 @@ const NowPlayingLarge = ({ entry }) => {
 // NOW PLAYING - SMALL
 // ======================================================================
 
-const NowPlayingSmall = ({ entry }) => {
+const NowPlayingSmall = ({ entry, virtualRow }) => {
   const dispatch = useDispatch();
 
   const expandArtwork = () => {
@@ -172,15 +280,25 @@ const NowPlayingSmall = ({ entry }) => {
   };
 
   return (
-    <>
-      <button className={style.section} onClick={expandArtwork}>
+    <div
+      style={{
+        ...(virtualRow && {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          transform: `translateY(${virtualRow.start}px)`,
+        }),
+      }}
+    >
+      <button className={style.label} onClick={expandArtwork}>
         Now playing
         <span className={style.expandIcon}>
           <Icon icon="ExpandIcon" cover stroke strokeWidth={1.4} />
         </span>
       </button>
       <TrackEntry entry={entry} isCurrentlyPlaying={true} />
-    </>
+    </div>
   );
 };
 
@@ -188,7 +306,7 @@ const NowPlayingSmall = ({ entry }) => {
 // TRACK ENTRY
 // ======================================================================
 
-const TrackEntry = ({ entry, isCurrentlyPlaying = false }) => {
+const TrackEntry = ({ entry, isCurrentlyPlaying = false, virtualRow }) => {
   const dispatch = useDispatch();
 
   const doPlay = () => {
@@ -196,38 +314,45 @@ const TrackEntry = ({ entry, isCurrentlyPlaying = false }) => {
   };
 
   return (
-    <>
-      <div
-        className={clsx(style.entry, 'text-trim', {
-          [style.entryCurrent]: isCurrentlyPlaying,
-        })}
-        onDoubleClick={() => {
+    <div
+      className={clsx(style.trackEntry, 'text-trim', {
+        [style.trackEntryCurrent]: isCurrentlyPlaying,
+      })}
+      style={{
+        ...(virtualRow && {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          transform: `translateY(${virtualRow.start}px)`,
+        }),
+      }}
+      onDoubleClick={() => {
+        doPlay(true);
+      }}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter') {
           doPlay(true);
-        }}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter') {
-            doPlay(true);
-          }
-        }}
-        tabIndex={0}
-      >
-        <div className={style.thumb}>
-          {entry.thumb && <img src={entry.thumb} alt={entry.title} loading="lazy" draggable="false" />}
-        </div>
+        }
+      }}
+      tabIndex={0}
+    >
+      <div className={style.trackThumb}>
+        {entry.thumb && <img src={entry.thumb} alt={entry.title} loading="lazy" draggable="false" />}
+      </div>
 
-        <div className={clsx(style.content, 'text-trim')}>
-          <div className={clsx(style.title, 'text-trim')}>{entry.title}</div>
-          <div className={clsx(style.artist, 'text-trim')}>
-            {entry.artistLink && (
-              <NavLink to={entry.artistLink} tabIndex={-1} draggable="false">
-                {entry.artist}
-              </NavLink>
-            )}
-            {!entry.artistLink && entry.artist}
-          </div>
+      <div className={clsx(style.trackContent, 'text-trim')}>
+        <div className={clsx(style.trackTitle, 'text-trim')}>{entry.title}</div>
+        <div className={clsx(style.trackArtist, 'text-trim')}>
+          {entry.artistLink && (
+            <NavLink to={entry.artistLink} tabIndex={-1} draggable="false">
+              {entry.artist}
+            </NavLink>
+          )}
+          {!entry.artistLink && entry.artist}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
@@ -235,9 +360,20 @@ const TrackEntry = ({ entry, isCurrentlyPlaying = false }) => {
 // LABEL - UPCOMING
 // ======================================================================
 
-const LabelUpcoming = ({ playingShuffle }) => {
+const LabelUpcoming = ({ playingShuffle, virtualRow }) => {
   return (
-    <div className={style.section}>
+    <div
+      className={style.label}
+      style={{
+        ...(virtualRow && {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          transform: `translateY(${virtualRow.start}px)`,
+        }),
+      }}
+    >
       Coming up
       {playingShuffle && (
         <span className={style.shuffleLabel}>
@@ -255,9 +391,20 @@ const LabelUpcoming = ({ playingShuffle }) => {
 // LABEL - REPEAT
 // ======================================================================
 
-const LabelRepeat = () => {
+const LabelRepeat = ({ virtualRow }) => {
   return (
-    <div className={style.repeat}>
+    <div
+      className={style.repeat}
+      style={{
+        ...(virtualRow && {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          transform: `translateY(${virtualRow.start}px)`,
+        }),
+      }}
+    >
       <span>Repeating</span>
     </div>
   );
