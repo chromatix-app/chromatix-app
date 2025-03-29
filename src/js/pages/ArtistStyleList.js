@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { FilterToggle, FilterWrap, ListCards, ListTableV2, Loading, TitleHeading } from 'js/components';
+import { FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
 import { useGetAllCollections } from 'js/hooks';
 
 // ======================================================================
@@ -39,7 +39,7 @@ const ArtistStyleList = () => {
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && <ListCards variant="artistStyles" entries={sortedCollections} />}
       {isListView && (
-        <ListTableV2
+        <ListTable
           variant="artistStyles"
           entries={sortedCollections}
           sortKey={sortCollections}
@@ -53,7 +53,7 @@ const ArtistStyleList = () => {
             sortedCollections={sortedCollections}
             viewCollections={viewCollections}
           />
-        </ListTableV2>
+        </ListTable>
       )}
     </>
   );
