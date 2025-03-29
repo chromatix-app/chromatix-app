@@ -37,32 +37,34 @@ const Queue = () => {
 
   return (
     <div className={style.wrap}>
-      {!playingTrackKeys && <QueueEmpty />}
-      {playingTrackKeys && (
-        <QueueList
-          entries={upcomingEntries}
-          initialIndex={playingTrackIndex}
-          isRepeat={false}
-          optionShowFullTitles_Deprecated={optionShowFullTitles_Deprecated}
-          playingShuffle={playingShuffle}
-          queueExpandArtwork={queueExpandArtwork}
-          totalTracksRemaining={totalTracksRemaining}
-        />
-      )}
-      {playingRepeat && (
-        <>
+      <div className={style.inner}>
+        {!playingTrackKeys && <QueueEmpty />}
+        {playingTrackKeys && (
           <QueueList
-            entries={repeatEntries}
-            initialIndex={0}
-            isRepeat={true}
+            entries={upcomingEntries}
+            initialIndex={playingTrackIndex}
+            isRepeat={false}
             optionShowFullTitles_Deprecated={optionShowFullTitles_Deprecated}
+            playingShuffle={playingShuffle}
+            queueExpandArtwork={queueExpandArtwork}
             totalTracksRemaining={totalTracksRemaining}
           />
-          <div className={style.repeat}>
-            <span>Repeating</span>
-          </div>
-        </>
-      )}
+        )}
+        {playingRepeat && (
+          <>
+            <QueueList
+              entries={repeatEntries}
+              initialIndex={0}
+              isRepeat={true}
+              optionShowFullTitles_Deprecated={optionShowFullTitles_Deprecated}
+              totalTracksRemaining={totalTracksRemaining}
+            />
+            <div className={style.repeat}>
+              <span>Repeating</span>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };

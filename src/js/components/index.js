@@ -13,7 +13,6 @@ export { default as PageHome } from './PageHome/PageHome';
 export { default as PageText } from './PageText/PageText';
 export { default as Queue } from './Queue/Queue';
 export { default as RangeSlider } from './RangeSlider/RangeSlider';
-export { default as RightBar } from './RightBar/RightBar';
 export { default as Settings } from './Settings/Settings';
 export { default as SettingsAbout } from './SettingsAbout/SettingsAbout';
 export { default as SettingsAccessibility } from './SettingsAccessibility/SettingsAccessibility';
