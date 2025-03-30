@@ -31,6 +31,7 @@
 }
 
 .cover,
+.coverArtwork,
 .coverLink {
   flex: 0 0 auto;
   width: 50px;
@@ -63,6 +64,7 @@
   }
 }
 
+.coverArtwork,
 .coverLink {
   position: absolute;
   overflow: hidden;
@@ -82,7 +84,9 @@
     height: 100%;
     object-fit: cover;
   }
+}
 
+.coverLink {
   &:hover {
     outline: 1px solid var(--color-opacity-02);
   }

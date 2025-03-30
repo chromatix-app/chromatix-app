@@ -75,17 +75,24 @@ const ControlBar = () => {
       <div className={style.current}>
         <div className={clsx(style.cover, { [style.coverPlaceholder]: !trackCurrent || !trackCurrent?.thumb })}>
           {trackCurrent && (
-            <NavLink
-              className={style.coverLink}
-              to={playingLink}
-              draggable="false"
-              onClick={() => {
-                dispatch.appModel.setAppState({ scrollToPlaying: true });
-                analyticsEvent('Navigate to Playing');
-              }}
-            >
-              {trackCurrent.thumb && <img src={trackCurrent.thumb} alt={trackCurrent.title} draggable="false" />}
-            </NavLink>
+            <>
+              {trackCurrent.thumb && (
+                <div className={style.coverArtwork}>
+                  <img src={trackCurrent.thumb} alt={trackCurrent.title} draggable="false" />
+                </div>
+              )}
+              {playingLink && (
+                <NavLink
+                  className={style.coverLink}
+                  to={playingLink}
+                  draggable="false"
+                  onClick={() => {
+                    dispatch.appModel.setAppState({ scrollToPlaying: true });
+                    analyticsEvent('Navigate to Playing');
+                  }}
+                />
+              )}
+            </>
           )}
         </div>
         <div className={style.text}>
