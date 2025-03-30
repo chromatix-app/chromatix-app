@@ -29,6 +29,7 @@
 //
 
 .expandedEntry {
+  min-height: 369px;
   padding: 4px 10px 20px;
 
   a {
@@ -119,6 +120,7 @@
   display: block;
   position: relative;
   width: 100%;
+  min-height: 42px;
   padding: 15px 10px 10px;
   border-radius: 6px;
   font-weight: bold;

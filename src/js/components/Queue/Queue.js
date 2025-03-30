@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -19,13 +19,16 @@ import style from './Queue.module.scss';
 
 const isLocal = process.env.REACT_APP_ENV === 'local';
 
-const virtualThreshold = !isLocal ? 150 : 1;
+const virtualThreshold = !isLocal ? 150 : 150;
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
 const Queue = () => {
+  const outerRef = useRef(null);
+  const scrollPositionRef = useRef(0);
+
   const queueExpandArtwork = useSelector(({ sessionModel }) => sessionModel.queueExpandArtwork);
 
   const {
@@ -56,14 +59,43 @@ const Queue = () => {
 
   const allEntries = [currentTrack, ...upcomingLabel, ...upcomingTracks, ...repeatTracks, ...repeatLabel];
 
-  const QueueComponent = allEntries.length <= virtualThreshold ? QueueStatic : QueueVirtual;
+  const isVirtual = allEntries.length > virtualThreshold;
+  const QueueComponent = isVirtual ? QueueVirtual : QueueStatic;
+
+  // In a non-virtual list, we need to track the scroll position
+  // to restore it if the list is re-rendered as a virtual list
+  useEffect(() => {
+    if (outerRef.current) {
+      const currentOuterRef = outerRef.current;
+      const handleScroll = () => {
+        scrollPositionRef.current = currentOuterRef.scrollTop;
+      };
+      currentOuterRef.addEventListener('scroll', handleScroll);
+      return () => {
+        currentOuterRef.removeEventListener('scroll', handleScroll);
+      };
+    }
+  }, [isVirtual, allEntries.length]);
 
   return (
     <div className={style.wrap}>
-      {!playingTrackKeys && <QueueEmpty />}
-      {playingTrackKeys && (
-        <QueueComponent entries={allEntries} playingShuffle={playingShuffle} queueExpandArtwork={queueExpandArtwork} />
-      )}
+      <div
+        ref={outerRef}
+        className={clsx(style.scrollableOuter, 'u-scrollbars', { [style.scrollableOuterVirtual]: isVirtual })}
+      >
+        {!playingTrackKeys && <QueueEmpty />}
+        {playingTrackKeys && (
+          <QueueComponent
+            entries={allEntries}
+            playingShuffle={playingShuffle}
+            queueExpandArtwork={queueExpandArtwork}
+            outerRef={outerRef}
+            {...(isVirtual && {
+              initialOffset: scrollPositionRef.current,
+            })}
+          />
+        )}
+      </div>
     </div>
   );
 };
@@ -86,39 +118,37 @@ const QueueEmpty = () => {
 
 const QueueStatic = ({ entries, playingShuffle, queueExpandArtwork }) => {
   return (
-    <div className={clsx(style.scrollableOuter, 'u-scrollbars')}>
-      <div className={style.scrollableInner}>
-        {entries.map((entry, index) => {
-          // Catch missing entries
-          if (!entry) {
-            return null;
-          }
+    <div className={style.scrollableInner}>
+      {entries.map((entry, index) => {
+        // Catch missing entries
+        if (!entry) {
+          return null;
+        }
 
-          // Now playing
-          else if (entry.rowType === 'playing') {
-            if (queueExpandArtwork) {
-              return <NowPlayingLarge key={index} entry={entry} />;
-            } else {
-              return <NowPlayingSmall key={index} entry={entry} />;
-            }
+        // Now playing
+        else if (entry.rowType === 'playing') {
+          if (queueExpandArtwork) {
+            return <NowPlayingLarge key={index} entry={entry} />;
+          } else {
+            return <NowPlayingSmall key={index} entry={entry} />;
           }
+        }
 
-          // Label - Upcoming
-          else if (entry.rowType === 'upcomingLabel') {
-            return <LabelUpcoming key={index} playingShuffle={playingShuffle} />;
-          }
+        // Label - Upcoming
+        else if (entry.rowType === 'upcomingLabel') {
+          return <LabelUpcoming key={index} playingShuffle={playingShuffle} />;
+        }
 
-          // Label - Repeat
-          else if (entry.rowType === 'repeatLabel') {
-            return <LabelRepeat key={index} />;
-          }
+        // Label - Repeat
+        else if (entry.rowType === 'repeatLabel') {
+          return <LabelRepeat key={index} />;
+        }
 
-          // Tracks
-          else {
-            return <TrackEntry key={index} entry={entry} />;
-          }
-        })}
-      </div>
+        // Tracks
+        else {
+          return <TrackEntry key={index} entry={entry} />;
+        }
+      })}
     </div>
   );
 };
@@ -134,9 +164,7 @@ const labelUpcomingHeight = 42;
 const labelRepeatHeight = 52;
 const trackHeight = 50;
 
-const QueueVirtual = ({ entries, playingShuffle, queueExpandArtwork }) => {
-  const outerRef = useRef(null);
-
+const QueueVirtual = ({ entries, playingShuffle, queueExpandArtwork, initialOffset, outerRef }) => {
   // Hacky workaround to force a re-render if queueExpandArtwork changes
   const extraRows = queueExpandArtwork ? 1 : 0;
 
@@ -163,51 +191,50 @@ const QueueVirtual = ({ entries, playingShuffle, queueExpandArtwork }) => {
   const rowVirtualizer = useVirtualizer({
     count: entries.length + extraRows,
     getScrollElement: () => outerRef.current,
+    initialOffset: initialOffset,
     estimateSize: getItemSize,
     overscan: 3,
   });
 
   return (
-    <div ref={outerRef} className={clsx(style.scrollableOuter, style.scrollableOuterVirtual, 'u-scrollbars')}>
-      <div
-        className={style.scrollableInner}
-        style={{
-          height: `${rowVirtualizer.getTotalSize()}px`,
-        }}
-      >
-        {rowVirtualizer.getVirtualItems().map((virtualRow, index) => {
-          const entry = entries[virtualRow.index];
+    <div
+      className={style.scrollableInner}
+      style={{
+        height: `${rowVirtualizer.getTotalSize()}px`,
+      }}
+    >
+      {rowVirtualizer.getVirtualItems().map((virtualRow, index) => {
+        const entry = entries[virtualRow.index];
 
-          // Catch missing entries
-          if (!entry) {
-            return null;
-          }
+        // Catch missing entries
+        if (!entry) {
+          return null;
+        }
 
-          // Now playing
-          else if (entry.rowType === 'playing') {
-            if (queueExpandArtwork) {
-              return <NowPlayingLarge key={index} entry={entry} virtualRow={virtualRow} />;
-            } else {
-              return <NowPlayingSmall key={index} entry={entry} virtualRow={virtualRow} />;
-            }
+        // Now playing
+        else if (entry.rowType === 'playing') {
+          if (queueExpandArtwork) {
+            return <NowPlayingLarge key={index} entry={entry} virtualRow={virtualRow} />;
+          } else {
+            return <NowPlayingSmall key={index} entry={entry} virtualRow={virtualRow} />;
           }
+        }
 
-          // Label - Upcoming
-          else if (entry.rowType === 'upcomingLabel') {
-            return <LabelUpcoming key={index} playingShuffle={playingShuffle} virtualRow={virtualRow} />;
-          }
+        // Label - Upcoming
+        else if (entry.rowType === 'upcomingLabel') {
+          return <LabelUpcoming key={index} playingShuffle={playingShuffle} virtualRow={virtualRow} />;
+        }
 
-          // Label - Repeat
-          else if (entry.rowType === 'repeatLabel') {
-            return <LabelRepeat key={index} virtualRow={virtualRow} />;
-          }
+        // Label - Repeat
+        else if (entry.rowType === 'repeatLabel') {
+          return <LabelRepeat key={index} virtualRow={virtualRow} />;
+        }
 
-          // Tracks
-          else {
-            return <TrackEntry key={index} entry={entry} virtualRow={virtualRow} />;
-          }
-        })}
-      </div>
+        // Tracks
+        else {
+          return <TrackEntry key={index} entry={entry} virtualRow={virtualRow} />;
+        }
+      })}
     </div>
   );
 };
