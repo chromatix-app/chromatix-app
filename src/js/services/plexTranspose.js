@@ -418,6 +418,8 @@ export const transposeTrackData = (track, libraryId, plexBaseUrl, accessToken) =
     albumLink: '/albums/' + libraryId + '/' + track.parentRatingKey,
     trackNumber: track.index,
     discNumber: track.parentIndex,
+    codec: track.Media[0].audioCodec,
+    bitrate: track.Media[0].bitrate,
     duration: track.Media[0].duration,
     userRating: track.userRating,
     thumb: getThumb(plexBaseUrl, track.thumb, thumbSizeSmall, accessToken),

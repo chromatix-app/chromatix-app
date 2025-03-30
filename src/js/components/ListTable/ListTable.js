@@ -984,6 +984,20 @@ const TrackRow = ({
                 </div>
               );
 
+            case 'codec':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.meta, 'text-trim')}>
+                  {entry.codec.toUpperCase()}
+                </div>
+              );
+
+            case 'bitrate':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.meta, 'text-trim')}>
+                  {entry.bitrate}
+                </div>
+              );
+
             case 'duration':
               return (
                 <div key={rowKey + '-' + index} className={clsx(style.duration, 'text-trim')}>

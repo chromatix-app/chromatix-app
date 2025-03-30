@@ -135,6 +135,12 @@ const sessionState = {
   colAlbumsAdded: true,
   colAlbumsLastPlayed: true,
   colAlbumsRating: true,
+
+  colAlbumArtist: true,
+  colAlbumCodec: true,
+  colAlbumBitrate: true,
+  colAlbumRating: true,
+  colAlbumDuration: true,
 };
 
 const playingState = {
@@ -164,6 +170,7 @@ const state = Object.assign({}, sessionState, playingState);
 const reducers = {
   setSessionState(rootState, payload) {
     console.log('%c--- setSessionState ---', 'color:#0f60b7');
+    // console.log(payload);
     return { ...rootState, ...payload };
   },
 

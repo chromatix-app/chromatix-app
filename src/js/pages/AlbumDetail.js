@@ -5,7 +5,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useParams } from 'react-router-dom';
 
-import { ListTable, Loading, StarRating, TitleHeading } from 'js/components';
+import { FilterMenu, ListTable, Loading, StarRating, TitleHeading } from 'js/components';
 import { useGetAlbumDetail } from 'js/hooks';
 
 // ======================================================================
@@ -31,6 +31,8 @@ const AlbumDetail = () => {
     albumTracks,
     albumOrder,
     albumSortString,
+    colOptions,
+    setColumnVisibility,
   } = useGetAlbumDetail({
     libraryId,
     albumId,
@@ -67,6 +69,8 @@ const AlbumDetail = () => {
           albumTitle={albumTitle}
           albumTrackCount={albumTrackCount}
           albumTracks={albumTracks}
+          colOptions={colOptions}
+          setColumnVisibility={setColumnVisibility}
           doPlay={doPlay}
           isListView={isListView}
           libraryId={libraryId}
@@ -81,6 +85,7 @@ const AlbumDetail = () => {
           entries={albumTracks}
           playingOrder={albumOrder}
           sortString={albumSortString}
+          colOptions={colOptions}
         >
           <Title
             albumArtist={albumArtist}
@@ -93,6 +98,8 @@ const AlbumDetail = () => {
             albumTitle={albumTitle}
             albumTrackCount={albumTrackCount}
             albumTracks={albumTracks}
+            colOptions={colOptions}
+            setColumnVisibility={setColumnVisibility}
             doPlay={doPlay}
             isListView={isListView}
             libraryId={libraryId}
@@ -114,6 +121,8 @@ const Title = ({
   albumTitle,
   albumTrackCount,
   albumTracks,
+  colOptions,
+  setColumnVisibility,
   doPlay,
   isListView,
   libraryId,
@@ -157,6 +166,46 @@ const Title = ({
         )
       }
       showPlay={true}
+      optionsMenu={
+        <FilterMenu
+          variant="Large"
+          icon="EllipsisCircleIcon"
+          iconStrokeWidth={1.2}
+          setter={setColumnVisibility}
+          entries={[
+            {
+              label: 'Title',
+              disabled: true,
+              checked: true,
+            },
+            {
+              label: 'Artist',
+              attr: 'colAlbumArtist',
+              checked: colOptions.artist,
+            },
+            {
+              label: 'Audio Codec',
+              attr: 'colAlbumCodec',
+              checked: colOptions.codec,
+            },
+            {
+              label: 'Bitrate',
+              attr: 'colAlbumBitrate',
+              checked: colOptions.bitrate,
+            },
+            {
+              label: 'Rating',
+              attr: 'colAlbumRating',
+              checked: colOptions.userRating,
+            },
+            {
+              label: 'Duration',
+              attr: 'colAlbumDuration',
+              checked: colOptions.duration,
+            },
+          ]}
+        />
+      }
       handlePlay={albumTracks && albumTracks.length > 0 ? doPlay : null}
       padding={!isListView}
     />

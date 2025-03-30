@@ -1,11 +1,13 @@
 import { useEffect, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 
 import { durationToStringLong, sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 const useGetAlbumDetail = ({ libraryId, albumId }) => {
+  const dispatch = useDispatch();
+
   const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
 
   const sortAlbumTracks = useSelector(({ sessionModel }) => sessionModel.sortAlbumTracks);
@@ -15,6 +17,12 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const isRatingSortHidden = !optionShowStarRatings && currentSortString?.startsWith('userRating');
 
   const albumSortString = isRatingSortHidden ? null : currentSortString;
+
+  const colAlbumArtist = useSelector(({ sessionModel }) => sessionModel.colAlbumArtist);
+  const colAlbumCodec = useSelector(({ sessionModel }) => sessionModel.colAlbumCodec);
+  const colAlbumBitrate = useSelector(({ sessionModel }) => sessionModel.colAlbumBitrate);
+  const colAlbumRating = useSelector(({ sessionModel }) => sessionModel.colAlbumRating);
+  const colAlbumDuration = useSelector(({ sessionModel }) => sessionModel.colAlbumDuration);
 
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums);
   const albumInfo = allAlbums?.find((album) => album.albumId === albumId);
@@ -66,6 +74,12 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
     return sortedAlbumTracks?.map((entry) => entry.originalIndex);
   }, [sortedAlbumTracks]);
 
+  const setColumnVisibility = (columnKey, columnValue) => {
+    dispatch.sessionModel.setSessionState({
+      [columnKey]: columnValue,
+    });
+  };
+
   // Get the required album data
   useEffect(() => {
     // plex.getAllAlbums();
@@ -102,6 +116,15 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
     albumTracks: sortedAlbumTracks,
     albumOrder,
     albumSortString,
+
+    colOptions: {
+      artist: colAlbumArtist,
+      codec: colAlbumCodec,
+      bitrate: colAlbumBitrate,
+      userRating: colAlbumRating,
+      duration: colAlbumDuration,
+    },
+    setColumnVisibility,
   };
 };
 
