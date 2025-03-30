@@ -1,3 +1,14 @@
+<a name="0.36.0"></a>
+# 0.36.0 (2025-03-30)
+Features:
+- Performance updates for the queue.
+  - The queue has been entirely rebuilt to use a virtualised list.
+    - (Note that virtualisation is only used when more than a certain number of items are in the queue.)
+    - This should prevent the UI from slowing down when browsing large queues.
+- Minor behavioural tweaks to the Queue.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.35.0"></a>
 # 0.35.0 (2025-03-23)
 Features:
@@ -23,7 +34,7 @@ Other:
 Features:
 - Performance tweaks when browsing in list view.
   - List view has been entirely rebuilt to use a virtualised list.
-    - (Note that vistualisation is only used when more than a certain number of items are in the list.)
+    - (Note that virtualisation is only used when more than a certain number of items are in the list.)
   - This should prevent the UI from slowing down when browsing large libraries.
   - This will also allow more flexibility in future for customising column visibility.
 - Updated and consistent placeholder icon for missing artwork.
