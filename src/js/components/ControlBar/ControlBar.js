@@ -29,24 +29,13 @@ const ControlBar = () => {
   const volumeLevel = useSelector(({ sessionModel }) => sessionModel.volumeLevel);
   const volumeMuted = useSelector(({ sessionModel }) => sessionModel.volumeMuted);
 
-  const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
-  const playingLibraryId = useSelector(({ sessionModel }) => sessionModel.playingLibraryId);
-  const playingAlbumId = useSelector(({ sessionModel }) => sessionModel.playingAlbumId);
-  const playingPlaylistId = useSelector(({ sessionModel }) => sessionModel.playingPlaylistId);
-  const playingFolderId = useSelector(({ sessionModel }) => sessionModel.playingFolderId);
+  const playingLink = useSelector(({ sessionModel }) => sessionModel.playingLink);
   const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
   const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
   const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
   const playingRepeat = useSelector(({ sessionModel }) => sessionModel.playingRepeat);
   const playingShuffle = useSelector(({ sessionModel }) => sessionModel.playingShuffle);
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
-
-  const playingLink =
-    playingVariant === 'albums'
-      ? `/albums/${playingLibraryId}/${playingAlbumId}`
-      : playingVariant === 'playlists'
-      ? `/playlists/${playingLibraryId}/${playingPlaylistId}`
-      : `/folders/${playingLibraryId}/${playingFolderId}`;
 
   const trackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
   const isDisabled = !trackCurrent ? true : false;
@@ -86,17 +75,24 @@ const ControlBar = () => {
       <div className={style.current}>
         <div className={clsx(style.cover, { [style.coverPlaceholder]: !trackCurrent || !trackCurrent?.thumb })}>
           {trackCurrent && (
-            <NavLink
-              className={style.coverLink}
-              to={playingLink}
-              draggable="false"
-              onClick={() => {
-                dispatch.appModel.setAppState({ scrollToPlaying: true });
-                analyticsEvent('Navigate to Playing');
-              }}
-            >
-              {trackCurrent.thumb && <img src={trackCurrent.thumb} alt={trackCurrent.title} draggable="false" />}
-            </NavLink>
+            <>
+              {trackCurrent.thumb && (
+                <div className={style.coverArtwork}>
+                  <img src={trackCurrent.thumb} alt={trackCurrent.title} draggable="false" />
+                </div>
+              )}
+              {playingLink && (
+                <NavLink
+                  className={style.coverLink}
+                  to={playingLink}
+                  draggable="false"
+                  onClick={() => {
+                    dispatch.appModel.setAppState({ scrollToPlaying: true });
+                    analyticsEvent('Navigate to Playing');
+                  }}
+                />
+              )}
+            </>
           )}
         </div>
         <div className={style.text}>

@@ -143,6 +143,7 @@ const playingState = {
   playingLibraryId: null,
   playingAlbumId: null,
   playingPlaylistId: null,
+  playingLink: null,
   playingOrder: null,
   playingTrackList: null,
   playingTrackCount: null,

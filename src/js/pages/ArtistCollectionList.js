@@ -4,7 +4,7 @@
 
 import { useSelector } from 'react-redux';
 
-import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTableV2, Loading, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
 import { useGetAllCollections } from 'js/hooks';
 
 // ======================================================================
@@ -44,7 +44,7 @@ const ArtistCollectionList = () => {
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && <ListCards variant="collections" entries={sortedCollections} />}
       {isListView && (
-        <ListTableV2
+        <ListTable
           variant="artistCollections"
           entries={sortedCollections}
           sortKey={sortCollections}
@@ -60,7 +60,7 @@ const ArtistCollectionList = () => {
             sortedCollections={sortedCollections}
             viewCollections={viewCollections}
           />
-        </ListTableV2>
+        </ListTable>
       )}
     </>
   );

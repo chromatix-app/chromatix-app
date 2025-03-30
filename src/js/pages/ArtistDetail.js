@@ -10,7 +10,7 @@ import {
   FilterSelect,
   FilterToggle,
   ListCards,
-  ListTableV2,
+  ListTable,
   Loading,
   StarRating,
   TitleHeading,
@@ -109,7 +109,7 @@ const ArtistDetail = () => {
         </>
       )}
       {isListView && (
-        <ListTableV2
+        <ListTable
           variant="artistAlbums"
           groupBy="albumGroup"
           entries={sortedArtistAlbums}
@@ -134,7 +134,7 @@ const ArtistDetail = () => {
             sortArtistAlbums={sortArtistAlbums}
             viewArtistAlbums={viewArtistAlbums}
           />
-        </ListTableV2>
+        </ListTable>
       )}
     </>
   );

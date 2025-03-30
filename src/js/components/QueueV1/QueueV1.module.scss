@@ -1,0 +1,231 @@
+@import '../../../css/global';
+
+.wrap {
+  overflow-x: hidden;
+  min-height: 100%;
+  padding: 17px 0 20px;
+  background: var(--color-panel-background);
+  border-left: 1px solid var(--color-border);
+
+  :global(html.electron.electron-platform-win) & {
+    padding-top: 30px;
+  }
+}
+
+.inner {
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.section {
+  display: block;
+  position: relative;
+  width: 100%;
+  padding: 8px 10px;
+  margin: 7px 0 2px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-align: left;
+}
+
+button.section {
+  @include electron-no-drag;
+  @include focus-self-outline();
+}
+
+.expandIcon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  opacity: 0;
+
+  .section:hover & {
+    opacity: var(--opacity-05);
+  }
+
+  @include focus-child-custom() {
+    opacity: var(--opacity-05);
+  }
+}
+
+.shuffleLabel {
+  font-weight: normal;
+  color: var(--color-opacity-05);
+}
+
+.shuffleIcon {
+  display: inline-block;
+  position: relative;
+  top: 3px;
+  width: 12px;
+  height: 12px;
+  margin-left: 1px;
+}
+
+.repeat {
+  padding: 25px 10px 10px;
+  font-weight: 600;
+  text-align: center;
+
+  span {
+    padding: 4px 18px;
+    background: var(--color-opacity-005);
+    border-radius: 99px;
+    font-size: 11px;
+    color: var(--color-opacity-05);
+  }
+}
+
+.entry {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 6px 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+
+  @include focus-self-outline();
+
+  &:hover {
+    background: var(--color-opacity-01);
+    border: 1px solid var(--color-opacity-005);
+  }
+
+  a {
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// .entryCurrent {
+//   color: var(--color-primary);
+// }
+
+.thumb {
+  overflow: hidden;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  background: var(--color-opacity-01);
+  background-image: $thumbnail;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 3px;
+
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.content {
+  flex: 0 1 auto;
+}
+
+.title {
+}
+
+.artist {
+  font-size: 11px;
+  color: var(--color-opacity-05);
+
+  // .entryCurrent & {
+  //   opacity: 1;
+  // }
+  .entry:hover & {
+    color: var(--color-text);
+  }
+}
+
+.expandedEntry {
+  padding: 4px 10px 20px;
+
+  a {
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.expandedThumb {
+  overflow: hidden;
+  margin: 15px 1px 12px;
+  background: var(--color-background);
+  background-image: $thumbnail;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 6px;
+  outline: 1px solid var(--color-opacity-01);
+  aspect-ratio: 1 / 1;
+
+  @include electron-no-drag;
+
+  img {
+    aspect-ratio: 1 / 1;
+  }
+}
+
+.expandedTitle {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.expandedArtist {
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--color-opacity-06);
+}
+
+.expandedCollapse {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  padding: 5px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: all ease-in-out 0.25s;
+
+  .expandedThumb:hover & {
+    opacity: 1;
+  }
+
+  .expandedThumb:hover &:hover {
+    transform: scale(1.1);
+  }
+
+  @include focus-self-outline;
+
+  @include focus-self-custom() {
+    opacity: 1;
+  }
+
+  > span {
+    display: block;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    padding: 12px;
+    background: var(--color-primary);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    color: var(--color-panel-background);
+
+    > span {
+      display: block;
+      position: relative;
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
