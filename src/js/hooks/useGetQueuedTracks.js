@@ -11,7 +11,7 @@ const useGetQueuedTracks = () => {
   const upcomingEntries = upcomingTrackKeys.map((key) => playingTrackList[key]);
 
   const repeatEntries = playingRepeat && playingTrackKeys ? playingTrackKeys.map((key) => playingTrackList[key]) : [];
-  const totalTracksRemaining = playingTrackKeys ? playingTrackKeys.length - playingTrackIndex : 0;
+  // const totalTracksRemaining = playingTrackKeys ? playingTrackKeys.length - playingTrackIndex : 0;
 
   return {
     playingTrackList,
@@ -24,7 +24,7 @@ const useGetQueuedTracks = () => {
     upcomingEntries,
 
     repeatEntries,
-    totalTracksRemaining,
+    // totalTracksRemaining,
   };
 };
 

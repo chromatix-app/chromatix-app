@@ -5,7 +5,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useParams } from 'react-router-dom';
 
-import { ListTableV2, Loading, StarRating, TitleHeading } from 'js/components';
+import { ListTable, Loading, StarRating, TitleHeading } from 'js/components';
 import { useGetAlbumDetail } from 'js/hooks';
 
 // ======================================================================
@@ -74,7 +74,7 @@ const AlbumDetail = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isListView && (
-        <ListTableV2
+        <ListTable
           variant="albumTracks"
           albumId={albumId}
           discCount={albumDiscCount}
@@ -97,7 +97,7 @@ const AlbumDetail = () => {
             isListView={isListView}
             libraryId={libraryId}
           />
-        </ListTableV2>
+        </ListTable>
       )}
     </>
   );

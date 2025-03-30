@@ -13,7 +13,7 @@ import { Icon, StarRating } from 'js/components';
 import { useScrollToTrack, useScrollToVirtualTrack, useTableOptions, useWindowSize } from 'js/hooks';
 import { durationToStringMed, durationToStringShort, formatRecentDate } from 'js/utils';
 
-import style from './ListTableV2.module.scss';
+import style from './ListTable.module.scss';
 
 // ======================================================================
 // OPTIONS
@@ -27,7 +27,7 @@ const virtualThreshold = !isLocal ? 150 : 150;
 // COMPONENT
 // ======================================================================
 
-const ListTableV2 = ({ variant, ...props }) => {
+const ListTable = ({ variant, ...props }) => {
   if (variant === 'albumTracks' || variant === 'playlistTracks' || variant === 'folders') {
     return <ListTableTracks variant={variant} {...props} />;
   } else {
@@ -337,15 +337,13 @@ const TableBodyStatic = ({
 
         {headerBlock}
 
-        {entries.map((_staticRow, index) => {
-          const entry = entries[index];
-
+        {entries.map((entry, index) => {
           // Catch missing entries
           if (!entry) {
             return null;
           }
 
-          // Disc numbers
+          // Groups
           else if (entry.kind === 'group') {
             return <GroupRow key={index} entry={entry} />;
           }
@@ -1058,4 +1056,4 @@ const lookupVariantFields = {
 // EXPORT
 // ======================================================================
 
-export default ListTableV2;
+export default ListTable;

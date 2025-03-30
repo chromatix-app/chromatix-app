@@ -5,7 +5,7 @@
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { FilterSelect, FilterToggle, ListCards, ListTableV2, Loading, StarRating, TitleHeading } from 'js/components';
+import { FilterSelect, FilterToggle, ListCards, ListTable, Loading, StarRating, TitleHeading } from 'js/components';
 import { useGetCollectionItems } from 'js/hooks';
 
 // ======================================================================
@@ -68,7 +68,7 @@ const ArtistCollectionItems = () => {
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && <ListCards variant={'artists'} entries={sortedCollectionItems} />}
       {isListView && (
-        <ListTableV2
+        <ListTable
           variant="artistCollectionItems"
           entries={sortedCollectionItems}
           sortKey={sortCollectionItems}
@@ -89,7 +89,7 @@ const ArtistCollectionItems = () => {
             sortedCollectionItems={sortedCollectionItems}
             viewCollectionItems={viewCollectionItems}
           />
-        </ListTableV2>
+        </ListTable>
       )}
     </>
   );

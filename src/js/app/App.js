@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 
-import { ControlBar, RightBar, SideBar, UserMenu } from 'js/components';
+import { ControlBar, Queue, SideBar, UserMenu } from 'js/components';
 import { useColorTheme, useGotRequiredData, useNetworkStatus, useScrollRestoration, useWindowSize } from 'js/hooks';
 import { ErrorPage } from 'js/pages';
 import { isElectron, electronPlatform } from 'js/utils';
@@ -277,7 +277,7 @@ const AppMain = () => {
         </div>
         {queueIsVisible && (
           <div className="layout-rightbar">
-            <RightBar />
+            <Queue />
           </div>
         )}
       </div>

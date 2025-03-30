@@ -10,7 +10,7 @@ import {
   FilterToggle,
   FilterWrap,
   ListCards,
-  ListTableV2,
+  ListTable,
   Loading,
   TitleHeading,
 } from 'js/components';
@@ -61,7 +61,7 @@ const AlbumList = () => {
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && <ListCards variant="albums" entries={sortedAlbums} />}
       {isListView && (
-        <ListTableV2
+        <ListTable
           variant="albums"
           entries={sortedAlbums}
           sortKey={sortAlbums}
@@ -80,7 +80,7 @@ const AlbumList = () => {
             sortedAlbums={sortedAlbums}
             viewAlbums={viewAlbums}
           />
-        </ListTableV2>
+        </ListTable>
       )}
     </>
   );
