@@ -10,6 +10,7 @@ import clsx from 'clsx';
 
 import { Icon } from 'js/components';
 import { useGetQueuedTracks } from 'js/hooks';
+import { analyticsEvent } from 'js/utils';
 
 import style from './Queue.module.scss';
 
@@ -246,6 +247,8 @@ const QueueVirtual = ({ entries, playingShuffle, queueExpandArtwork, initialOffs
 const NowPlayingLarge = ({ entry, virtualRow }) => {
   const dispatch = useDispatch();
 
+  const playingLink = useSelector(({ sessionModel }) => sessionModel.playingLink);
+
   const collapseArtwork = () => {
     dispatch.sessionModel.setSessionState({ queueExpandArtwork: false });
   };
@@ -271,6 +274,16 @@ const NowPlayingLarge = ({ entry, virtualRow }) => {
             draggable="false"
             loading="lazy"
           />
+        )}
+        {playingLink && (
+          <NavLink
+            to={playingLink}
+            className={style.expandedLink}
+            onClick={() => {
+              dispatch.appModel.setAppState({ scrollToPlaying: true });
+              analyticsEvent('Navigate to Playing');
+            }}
+          ></NavLink>
         )}
         <button className={style.expandedCollapse} onClick={collapseArtwork}>
           <span>

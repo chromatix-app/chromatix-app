@@ -17,14 +17,14 @@ const useScrollToVirtualTrack = (entries, callback) => {
 
     // scroll to the currently playing track
     if (scrollToPlaying) {
-      console.log('scrollToPlaying');
+      // console.log('scrollToPlaying');
       const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
       trackId = trackDetail?.trackId;
     }
 
     // scroll to a specified track (e.g. from search)
     else if (scrollToTrack) {
-      console.log('scrollToTrack');
+      // console.log('scrollToTrack');
       trackId = scrollToTrack;
     }
 
