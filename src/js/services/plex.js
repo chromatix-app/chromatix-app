@@ -801,8 +801,6 @@ export const setStarRating = (type, ratingKey, rating) => {
     });
 };
 
-window.setStarRating = setStarRating;
-
 // ======================================================================
 // LOG PLAYBACK STATUS
 // ======================================================================

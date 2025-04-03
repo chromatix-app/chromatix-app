@@ -1,6 +1,6 @@
-import { track } from '@vercel/analytics';
-
 import { isElectron, electronVersion, appPlatform } from './environment';
+
+const isLocal = process.env.REACT_APP_ENV === 'local';
 
 const analyticsEvent = (event: string, props: object = {}) => {
   const finalProps = {
@@ -10,8 +10,13 @@ const analyticsEvent = (event: string, props: object = {}) => {
     electronVersion: electronVersion,
   };
 
-  track(event, finalProps);
+  try {
+    if (!isLocal) {
+      window.umami.track(event, finalProps);
+    }
+  } catch (error) {
+    // Ignore errors
+  }
 };
 
-// Export the getTrackKeys function
 export default analyticsEvent;
