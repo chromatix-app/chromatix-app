@@ -1,6 +1,6 @@
 {
   "name": "chromatix",
-  "version": "0.36.1",
+  "version": "0.36.2",
   "description": "",
   "license": "UNLICENSED",
   "private": "true",
@@ -19,7 +19,6 @@
     "@radix-ui/react-select": "^2.1.6",
     "@rematch/core": "^2.2.0",
     "@tanstack/react-virtual": "^3.13.4",
-    "@vercel/analytics": "^1.5.0",
     "axios": "^1.8.3",
     "chroma-js": "^2.6.0",
     "clsx": "^2.1.1",
