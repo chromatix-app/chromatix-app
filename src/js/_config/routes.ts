@@ -246,6 +246,13 @@ export const authRoutes = [
     component: 'SettingsMenu',
   },
 
+  // dev
+  {
+    path: '/icons',
+    exact: true,
+    component: 'DevIcons',
+  },
+
   // other
   {
     component: 'Error404Auth',

@@ -93,7 +93,7 @@ import { ReactComponent as WindowsSiteIcon } from './icons/site/windows.svg';
 // COMPONENT
 // ======================================================================
 
-const customIcons = {
+export const customIcons = {
   AccessibilityIcon,
   AlbumCollectionsIcon,
   AlbumGenresIcon,

@@ -10,8 +10,8 @@ import style from './PageText.module.scss';
 // COMPONENT
 // ======================================================================
 
-export const PageText = ({ children, fontSize = 'medium' }) => {
-  return <div className={clsx(style.wrap, 'font-wysiwyg', style[fontSize])}>{children}</div>;
+export const PageText = ({ children, fontSize = 'medium', wysiwyg = true }) => {
+  return <div className={clsx(style.wrap, style[fontSize], { 'font-wysiwyg': wysiwyg })}>{children}</div>;
 };
 
 // ======================================================================

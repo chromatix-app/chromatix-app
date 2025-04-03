@@ -39,6 +39,8 @@ export { default as SettingsGeneral } from './SettingsGeneral';
 export { default as SettingsLastFM } from './SettingsLastFM';
 export { default as SettingsMenu } from './SettingsMenu';
 
+export { default as DevIcons } from './DevIcons';
+
 export { default as Error404Auth } from './Error404Auth';
 export { default as Error404Default } from './Error404Default';
 export { default as ErrorPage } from './ErrorPage';
