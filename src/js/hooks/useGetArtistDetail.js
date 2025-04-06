@@ -16,6 +16,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const artistGenre = artistInfo?.genre;
   const artistRating = artistInfo?.userRating;
 
+  const colArtistAlbumsGenre = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsGenre);
   const colArtistAlbumsReleaseDate = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsReleaseDate);
   const colArtistAlbumsAddedAt = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsAddedAt);
   const colArtistAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsLastPlayed);
@@ -159,6 +160,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     sortedArtistAlbums: allAlbums,
 
     colOptions: {
+      genre: colArtistAlbumsGenre,
       releaseDate: colArtistAlbumsReleaseDate,
       addedAt: colArtistAlbumsAddedAt,
       lastPlayed: colArtistAlbumsLastPlayed,

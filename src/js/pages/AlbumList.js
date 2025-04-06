@@ -165,6 +165,11 @@ const Title = ({
                 checked: colOptions.artist,
               },
               {
+                label: 'Genre',
+                attr: 'colAlbumsGenre',
+                checked: colOptions.genre,
+              },
+              {
                 label: 'Released',
                 attr: 'colAlbumsReleaseDate',
                 checked: colOptions.releaseDate,

@@ -15,6 +15,7 @@ const useGetAllAlbums = () => {
   const orderAlbums = useSelector(({ sessionModel }) => sessionModel.orderAlbums);
 
   const colAlbumsArtist = useSelector(({ sessionModel }) => sessionModel.colAlbumsArtist);
+  const colAlbumsGenre = useSelector(({ sessionModel }) => sessionModel.colAlbumsGenre);
   const colAlbumsReleaseDate = useSelector(({ sessionModel }) => sessionModel.colAlbumsReleaseDate);
   const colAlbumsAddedAt = useSelector(({ sessionModel }) => sessionModel.colAlbumsAddedAt);
   const colAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colAlbumsLastPlayed);
@@ -67,6 +68,7 @@ const useGetAllAlbums = () => {
 
     colOptions: {
       artist: colAlbumsArtist,
+      genre: colAlbumsGenre,
       releaseDate: colAlbumsReleaseDate,
       addedAt: colAlbumsAddedAt,
       lastPlayed: colAlbumsLastPlayed,

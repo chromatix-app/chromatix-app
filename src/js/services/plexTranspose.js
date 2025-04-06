@@ -171,6 +171,7 @@ export const transposeAlbumData = (album, libraryId, plexBaseUrl, accessToken) =
     artist: album.parentTitle,
     artistId: album.parentRatingKey,
     artistLink: '/artists/' + libraryId + '/' + album.parentRatingKey,
+    genre: album?.Genre?.[0]?.tag,
     userRating: album.userRating,
     releaseDate: album.originallyAvailableAt,
     link: '/albums/' + libraryId + '/' + album.ratingKey,

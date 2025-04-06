@@ -153,6 +153,14 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         visible: variant === 'artistAlbums' ? false : colOptions?.artist !== false,
       },
       {
+        colKey: 'genre',
+        label: 'Genre',
+        colWidth: '0.8fr',
+        isAsc: sortKey === 'genre' && orderKey === 'asc',
+        isDesc: sortKey === 'genre' && orderKey === 'desc',
+        visible: colOptions?.genre !== false,
+      },
+      {
         colKey: 'releaseDate',
         label: 'Released',
         colWidth: '0.8fr',

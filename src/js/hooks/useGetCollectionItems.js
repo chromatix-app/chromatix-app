@@ -46,6 +46,7 @@ const useGetCollectionItems = ({
   const colCollectionArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsUserRating);
 
   const colCollectionAlbumsArtist = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsArtist);
+  const colCollectionAlbumsGenre = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsGenre);
   const colCollectionAlbumsReleaseDate = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsReleaseDate);
   const colCollectionAlbumsAddedAt = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsAddedAt);
   const colCollectionAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsLastPlayed);
@@ -106,6 +107,7 @@ const useGetCollectionItems = ({
           }
         : {
             artist: colCollectionAlbumsArtist,
+            genre: colCollectionAlbumsGenre,
             releaseDate: colCollectionAlbumsReleaseDate,
             addedAt: colCollectionAlbumsAddedAt,
             lastPlayed: colCollectionAlbumsLastPlayed,

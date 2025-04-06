@@ -136,12 +136,14 @@ const sessionState = {
   colArtistsLastPlayed: false,
   colArtistsUserRating: true,
 
+  colArtistAlbumsGenre: false,
   colArtistAlbumsReleaseDate: true,
   colArtistAlbumsAddedAt: false,
   colArtistAlbumsLastPlayed: false,
   colArtistAlbumsUserRating: true,
 
   colAlbumsArtist: true,
+  colAlbumsGenre: false,
   colAlbumsReleaseDate: true,
   colAlbumsAddedAt: false,
   colAlbumsLastPlayed: false,
@@ -178,6 +180,7 @@ const sessionState = {
   colCollectionArtistsUserRating: true,
 
   colCollectionAlbumsArtist: true,
+  colCollectionAlbumsGenre: false,
   colCollectionAlbumsReleaseDate: true,
   colCollectionAlbumsAddedAt: false,
   colCollectionAlbumsLastPlayed: false,
