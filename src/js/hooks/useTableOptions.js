@@ -243,20 +243,20 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         visible: colOptions?.bitrate !== false,
       },
       {
-        colKey: 'userRating',
-        label: 'Rating',
-        colWidth: '0.7fr',
-        isAsc: sortKey === 'userRating' && orderKey === 'asc',
-        isDesc: sortKey === 'userRating' && orderKey === 'desc',
-        visible: colOptions?.userRating !== false,
-      },
-      {
         colKey: 'duration',
         label: 'Duration',
         colWidth: 'minmax(72px, auto)',
         isAsc: sortKey === 'duration' && orderKey === 'asc',
         isDesc: sortKey === 'duration' && orderKey === 'desc',
         visible: colOptions?.duration !== false,
+      },
+      {
+        colKey: 'userRating',
+        label: 'Rating',
+        colWidth: '0.7fr',
+        isAsc: sortKey === 'userRating' && orderKey === 'asc',
+        isDesc: sortKey === 'userRating' && orderKey === 'desc',
+        visible: colOptions?.userRating !== false,
       },
     ];
   }
@@ -302,11 +302,6 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         isAsc: sortKey === 'kind' && orderKey === 'asc',
         isDesc: sortKey === 'kind' && orderKey === 'desc',
         visible: colOptions?.kind !== false,
-      },
-      {
-        colKey: 'empty',
-        colWidth: '1px',
-        visible: true,
       },
     ];
   }
@@ -444,20 +439,20 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         visible: colOptions?.bitrate !== false,
       },
       {
-        colKey: 'userRating',
-        label: 'Rating',
-        colWidth: '0.5fr',
-        isAsc: sortKey === 'userRating' && orderKey === 'asc',
-        isDesc: sortKey === 'userRating' && orderKey === 'desc',
-        visible: colOptions?.userRating !== false,
-      },
-      {
         colKey: 'duration',
         label: 'Duration',
         colWidth: 'minmax(72px, auto)',
         isAsc: sortKey === 'duration' && orderKey === 'asc',
         isDesc: sortKey === 'duration' && orderKey === 'desc',
         visible: colOptions?.duration !== false,
+      },
+      {
+        colKey: 'userRating',
+        label: 'Rating',
+        colWidth: '0.5fr',
+        isAsc: sortKey === 'userRating' && orderKey === 'asc',
+        isDesc: sortKey === 'userRating' && orderKey === 'desc',
+        visible: colOptions?.userRating !== false,
       },
     ];
   }
@@ -533,11 +528,6 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         },
         isAsc: sortKey === 'title' && orderKey === 'asc',
         isDesc: sortKey === 'title' && orderKey === 'desc',
-        visible: true,
-      },
-      {
-        colKey: 'empty',
-        colWidth: '1fr',
         visible: true,
       },
     ];

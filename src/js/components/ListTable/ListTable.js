@@ -286,7 +286,7 @@ const SortableHeading = ({
       tabIndex={0}
       data-sort={colKey}
       style={headerStyle}
-      className={clsx({ [style[headerClassName]]: headerClassName })}
+      className={clsx(style[colKey], { [style[headerClassName]]: headerClassName })}
     >
       <span>{label}</span>
       {showArrows && (
@@ -732,21 +732,21 @@ const StandardRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTempla
 
             case 'kind':
               return (
-                <div key={rowKey + '-' + index} className={clsx(style.meta, 'text-trim')}>
+                <div key={rowKey + '-' + index} className={clsx(style.kind, 'text-trim')}>
                   {entry.kind.replace('aaa', '')}
                 </div>
               );
 
             case 'country':
               return (
-                <div key={rowKey + '-' + index} className={clsx(style.meta, 'text-trim')}>
+                <div key={rowKey + '-' + index} className={clsx(style.country, 'text-trim')}>
                   {entry.country}
                 </div>
               );
 
             case 'genre':
               return (
-                <div key={rowKey + '-' + index} className={clsx(style.meta, 'text-trim')}>
+                <div key={rowKey + '-' + index} className={clsx(style.genre, 'text-trim')}>
                   {entry.genre}
                 </div>
               );
@@ -799,9 +799,6 @@ const StandardRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTempla
                   />
                 </div>
               );
-
-            case 'empty':
-              return <div key={rowKey + '-' + index} className={style.empty}></div>;
 
             default:
               return null;
@@ -899,8 +896,11 @@ const TrackRow = ({
                     <div className={style.playingPausedIcon}>
                       <Icon icon="PauseIcon" cover stroke />
                     </div>
-                    // <div className={style.playingIcon}>
+                    // <div className={style.playingPausedIcon}>
                     //   <Icon icon="VolOffIcon" cover stroke />
+                    // </div>
+                    // <div className={clsx(style.trackNumber, style.colCenter, style.colorPrimary)}>
+                    //   <span>{trackNumber}</span>
                     // </div>
                   )}
 
@@ -986,21 +986,21 @@ const TrackRow = ({
 
             case 'kind':
               return (
-                <div key={rowKey + '-' + index} className={clsx(style.meta, 'text-trim')}>
+                <div key={rowKey + '-' + index} className={clsx(style.kind, 'text-trim')}>
                   {entry.kind.replace('aaa', '')}
                 </div>
               );
 
             case 'codec':
               return (
-                <div key={rowKey + '-' + index} className={clsx(style.meta, 'text-trim')}>
+                <div key={rowKey + '-' + index} className={clsx(style.codec, 'text-trim')}>
                   {entry.codec.toUpperCase()}
                 </div>
               );
 
             case 'bitrate':
               return (
-                <div key={rowKey + '-' + index} className={clsx(style.meta, 'text-trim')}>
+                <div key={rowKey + '-' + index} className={clsx(style.bitrate, 'text-trim')}>
                   {entry.bitrate}
                 </div>
               );
@@ -1024,9 +1024,6 @@ const TrackRow = ({
                   />
                 </div>
               );
-
-            case 'empty':
-              return <div key={rowKey + '-' + index} className={style.empty}></div>;
 
             default:
               return null;

@@ -177,14 +177,14 @@ const Title = ({
               checked: colOptions.bitrate,
             },
             {
-              label: 'Rating',
-              attr: 'colPlaylistUserRating',
-              checked: colOptions.userRating,
-            },
-            {
               label: 'Duration',
               attr: 'colPlaylistDuration',
               checked: colOptions.duration,
+            },
+            {
+              label: 'Rating',
+              attr: 'colPlaylistUserRating',
+              checked: colOptions.userRating,
             },
           ]}
         />
