@@ -288,12 +288,10 @@ export const transposeCollectionArray = (array, libraryId, plexBaseUrl, accessTo
 };
 
 export const transposeCollectionItemArray = (array, libraryId, plexBaseUrl, accessToken, typeKey) => {
-  console.log(typeKey);
   const data =
     array?.data?.MediaContainer?.Metadata?.map((item) =>
       lookups[`transpose${typeKey}Data`](item, libraryId, plexBaseUrl, accessToken)
     ) || [];
-  console.log(data);
   return data;
 };
 

@@ -30,7 +30,7 @@ export const FilterMenu = ({ variant, label, icon = 'EllipsisCircleIcon', iconSt
         <RadixMenu.Portal>
           <RadixMenu.Content side="bottom" align="start" className={clsx(style.content, style['content' + variant])}>
             {entries.map((entry, index) => (
-              <MenuEntry key={index} setter={setter} {...entry} />
+              <MenuEntry key={index} setter={setter} totalEntries={entries?.length} {...entry} />
             ))}
           </RadixMenu.Content>
         </RadixMenu.Portal>
@@ -39,14 +39,16 @@ export const FilterMenu = ({ variant, label, icon = 'EllipsisCircleIcon', iconSt
   );
 };
 
-const MenuEntry = ({ label, setter, ...entry }) => {
+const MenuEntry = ({ label, setter, totalEntries, ...entry }) => {
   const handleCheckedChange = (newValue) => {
     setter(entry.attr, newValue);
   };
 
   // Prevent menu closing when clicking an item
   const handleSelect = (event) => {
-    event.preventDefault();
+    if (totalEntries && totalEntries > 1) {
+      event.preventDefault();
+    }
   };
 
   return (

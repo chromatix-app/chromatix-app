@@ -61,6 +61,8 @@ const sessionState = {
   queueIsVisible: false,
   queueExpandArtwork: true,
 
+  // VIEW OPTIONS
+
   viewArtists: 'grid',
   viewArtistAlbums: 'grid',
   viewAlbums: 'grid',
@@ -82,6 +84,8 @@ const sessionState = {
   viewArtistStyleItems: 'grid',
   viewAlbumStyles: 'grid',
   viewAlbumStyleItems: 'grid',
+
+  // VIEW SORTING OPTIONS
 
   sortArtists: 'title',
   sortArtistAlbums: 'releaseDate',
@@ -108,6 +112,8 @@ const sessionState = {
   sortAlbumStyles: 'title',
   sortAlbumStyleItems: 'title',
 
+  // VIEW ORDERING OPTIONS
+
   orderArtists: 'asc',
   orderArtistAlbums: 'asc',
   orderAlbums: 'asc',
@@ -129,6 +135,8 @@ const sessionState = {
   orderArtistStyleItems: 'asc',
   orderAlbumStyles: 'asc',
   orderAlbumStyleItems: 'asc',
+
+  // LIST VIEW COLUMN VISIBILITY OPTIONS
 
   colArtistsCountry: true,
   colArtistsGenre: true,
