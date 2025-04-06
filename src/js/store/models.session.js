@@ -147,6 +147,21 @@ const sessionState = {
   colAlbumUserRating: true,
   colAlbumDuration: true,
 
+  colFoldersKind: true,
+
+  colPlaylistsTotalTracks: true,
+  colPlaylistsDuration: true,
+  colPlaylistsAddedAt: false,
+  colPlaylistsLastPlayed: false,
+  colPlaylistsUserRating: true,
+
+  colPlaylistArtist: true,
+  colPlaylistAlbum: true,
+  colPlaylistCodec: false,
+  colPlaylistBitrate: false,
+  colPlaylistUserRating: true,
+  colPlaylistDuration: true,
+
   colCollectionAddedAt: true,
   colCollectionUserRating: true,
 
@@ -155,13 +170,6 @@ const sessionState = {
   colCollectionAlbumsAddedAt: false,
   colCollectionAlbumsLastPlayed: false,
   colCollectionAlbumsUserRating: true,
-
-  colPlaylistArtist: true,
-  colPlaylistAlbum: true,
-  colPlaylistCodec: false,
-  colPlaylistBitrate: false,
-  colPlaylistUserRating: true,
-  colPlaylistDuration: true,
 };
 
 const playingState = {

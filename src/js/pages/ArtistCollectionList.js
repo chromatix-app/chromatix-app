@@ -154,6 +154,11 @@ const Title = ({
             setter={setColumnVisibility}
             entries={[
               {
+                label: 'Title',
+                disabled: true,
+                checked: true,
+              },
+              {
                 label: 'Added',
                 attr: 'colCollectionAddedAt',
                 checked: colOptions.addedAt,

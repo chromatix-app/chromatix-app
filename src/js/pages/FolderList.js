@@ -4,7 +4,16 @@
 
 import { useParams } from 'react-router-dom';
 
-import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
+import {
+  FilterMenu,
+  FilterSelect,
+  FilterToggle,
+  FilterWrap,
+  ListCards,
+  ListTable,
+  Loading,
+  TitleHeading,
+} from 'js/components';
 import { useGetFolderItems } from 'js/hooks';
 
 // ======================================================================
@@ -18,10 +27,12 @@ const FolderList = () => {
     viewFolders,
     sortFolders,
     orderFolders,
+    colOptions,
 
     setViewFolders,
     setSortFolders,
     setOrderFolders,
+    setColumnVisibility,
 
     sortedFolders,
     folderOrder,
@@ -36,9 +47,11 @@ const FolderList = () => {
     <>
       {(isLoading || isEmptyList || isGridView) && (
         <Title
+          colOptions={colOptions}
           folderId={folderId}
           isListView={isListView}
           orderFolders={orderFolders}
+          setColumnVisibility={setColumnVisibility}
           setOrderFolders={setOrderFolders}
           setSortFolders={setSortFolders}
           setViewFolders={setViewFolders}
@@ -65,11 +78,14 @@ const FolderList = () => {
           playingOrder={folderOrder}
           sortKey={sortFolders}
           orderKey={orderFolders}
+          colOptions={colOptions}
         >
           <Title
+            colOptions={colOptions}
             folderId={folderId}
             isListView={isListView}
             orderFolders={orderFolders}
+            setColumnVisibility={setColumnVisibility}
             setOrderFolders={setOrderFolders}
             setSortFolders={setSortFolders}
             setViewFolders={setViewFolders}
@@ -84,9 +100,11 @@ const FolderList = () => {
 };
 
 const Title = ({
+  colOptions,
   folderId,
   isListView,
   orderFolders,
+  setColumnVisibility,
   setOrderFolders,
   setSortFolders,
   setViewFolders,
@@ -135,6 +153,25 @@ const Title = ({
               icon={orderFolders === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
           </>
+        )}
+        {viewFolders === 'list' && (
+          <FilterMenu
+            label="Options"
+            icon="EllipsisCircleIcon"
+            setter={setColumnVisibility}
+            entries={[
+              {
+                label: 'Title',
+                disabled: true,
+                checked: true,
+              },
+              {
+                label: 'Kind',
+                attr: 'colFoldersKind',
+                checked: colOptions.kind,
+              },
+            ]}
+          />
         )}
       </FilterWrap>
     </>

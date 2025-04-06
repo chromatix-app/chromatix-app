@@ -285,7 +285,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         colWidth: '1fr',
         isAsc: sortKey === 'kind' && orderKey === 'asc',
         isDesc: sortKey === 'kind' && orderKey === 'desc',
-        visible: true,
+        visible: colOptions?.kind !== false,
       },
       {
         colKey: 'empty',
@@ -324,7 +324,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         colWidth: '1fr',
         isAsc: sortKey === 'totalTracks' && orderKey === 'asc',
         isDesc: sortKey === 'totalTracks' && orderKey === 'desc',
-        visible: true,
+        visible: colOptions?.totalTracks !== false,
       },
       {
         colKey: 'duration',
@@ -332,7 +332,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         colWidth: '1fr',
         isAsc: sortKey === 'duration' && orderKey === 'asc',
         isDesc: sortKey === 'duration' && orderKey === 'desc',
-        visible: true,
+        visible: colOptions?.duration !== false,
       },
       {
         colKey: 'addedAt',
@@ -340,7 +340,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         colWidth: '1fr',
         isAsc: sortKey === 'addedAt' && orderKey === 'asc',
         isDesc: sortKey === 'addedAt' && orderKey === 'desc',
-        visible: true,
+        visible: colOptions?.addedAt !== false,
       },
       {
         colKey: 'lastPlayed',
@@ -348,7 +348,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         colWidth: '1fr',
         isAsc: sortKey === 'lastPlayed' && orderKey === 'asc',
         isDesc: sortKey === 'lastPlayed' && orderKey === 'desc',
-        visible: true,
+        visible: colOptions?.lastPlayed !== false,
       },
       {
         colKey: 'userRating',
@@ -356,7 +356,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         colWidth: '0.5fr',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
-        visible: true,
+        visible: colOptions?.userRating !== false,
       },
     ];
   }

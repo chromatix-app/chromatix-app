@@ -14,6 +14,12 @@ const useGetAllPlaylists = () => {
   const sortPlaylists = useSelector(({ sessionModel }) => sessionModel.sortPlaylists);
   const orderPlaylists = useSelector(({ sessionModel }) => sessionModel.orderPlaylists);
 
+  const colPlaylistsTotalTracks = useSelector(({ sessionModel }) => sessionModel.colPlaylistsTotalTracks);
+  const colPlaylistsDuration = useSelector(({ sessionModel }) => sessionModel.colPlaylistsDuration);
+  const colPlaylistsAddedAt = useSelector(({ sessionModel }) => sessionModel.colPlaylistsAddedAt);
+  const colPlaylistsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colPlaylistsLastPlayed);
+  const colPlaylistsUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistsUserRating);
+
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists)?.filter(
     (playlist) => playlist.libraryId === currentLibraryId
   );
@@ -38,6 +44,12 @@ const useGetAllPlaylists = () => {
     });
   };
 
+  const setColumnVisibility = (columnKey, columnValue) => {
+    dispatch.sessionModel.setSessionState({
+      [columnKey]: columnValue,
+    });
+  };
+
   useEffect(() => {
     plex.getAllPlaylists();
   }, []);
@@ -46,10 +58,18 @@ const useGetAllPlaylists = () => {
     viewPlaylists,
     sortPlaylists,
     orderPlaylists,
+    colOptions: {
+      totalTracks: colPlaylistsTotalTracks,
+      duration: colPlaylistsDuration,
+      addedAt: colPlaylistsAddedAt,
+      lastPlayed: colPlaylistsLastPlayed,
+      userRating: colPlaylistsUserRating,
+    },
 
     setViewPlaylists,
     setSortPlaylists,
     setOrderPlaylists,
+    setColumnVisibility,
 
     sortedPlaylists,
   };

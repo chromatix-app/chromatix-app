@@ -13,6 +13,8 @@ const useGetFolderItems = (folderId) => {
   const sortFolders = useSelector(({ sessionModel }) => sessionModel.sortFolders);
   const orderFolders = useSelector(({ sessionModel }) => sessionModel.orderFolders);
 
+  const colFoldersKind = useSelector(({ sessionModel }) => sessionModel.colFoldersKind);
+
   const libraryId = currentLibrary?.libraryId;
   const allFolderItems = useSelector(({ appModel }) => appModel.allFolderItems);
   const folderItems = allFolderItems ? allFolderItems[libraryId + '-' + folderId] : null;
@@ -58,6 +60,12 @@ const useGetFolderItems = (folderId) => {
     });
   };
 
+  const setColumnVisibility = (columnKey, columnValue) => {
+    dispatch.sessionModel.setSessionState({
+      [columnKey]: columnValue,
+    });
+  };
+
   useEffect(() => {
     plex.getFolderItems(folderId).catch(() => {});
   }, [folderId]);
@@ -66,10 +74,14 @@ const useGetFolderItems = (folderId) => {
     viewFolders,
     sortFolders,
     orderFolders,
+    colOptions: {
+      kind: colFoldersKind,
+    },
 
     setViewFolders,
     setSortFolders,
     setOrderFolders,
+    setColumnVisibility,
 
     sortedFolders: sortedWithFoldersOnTop,
     folderOrder,

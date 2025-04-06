@@ -4,7 +4,16 @@
 
 import { useSelector } from 'react-redux';
 
-import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
+import {
+  FilterMenu,
+  FilterSelect,
+  FilterToggle,
+  FilterWrap,
+  ListCards,
+  ListTable,
+  Loading,
+  TitleHeading,
+} from 'js/components';
 import { useGetAllPlaylists } from 'js/hooks';
 
 // ======================================================================
@@ -16,9 +25,13 @@ const PlaylistList = () => {
     viewPlaylists,
     sortPlaylists,
     orderPlaylists,
+    colOptions,
+
     setViewPlaylists,
     setSortPlaylists,
     setOrderPlaylists,
+    setColumnVisibility,
+
     sortedPlaylists,
   } = useGetAllPlaylists();
 
@@ -31,8 +44,10 @@ const PlaylistList = () => {
     <>
       {(isLoading || isEmptyList || isGridView) && (
         <Title
+          colOptions={colOptions}
           isListView={isListView}
           orderPlaylists={orderPlaylists}
+          setColumnVisibility={setColumnVisibility}
           setOrderPlaylists={setOrderPlaylists}
           setSortPlaylists={setSortPlaylists}
           setViewPlaylists={setViewPlaylists}
@@ -44,10 +59,18 @@ const PlaylistList = () => {
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && <ListCards variant="playlists" entries={sortedPlaylists} />}
       {isListView && (
-        <ListTable variant="playlists" entries={sortedPlaylists} sortKey={sortPlaylists} orderKey={orderPlaylists}>
+        <ListTable
+          variant="playlists"
+          entries={sortedPlaylists}
+          sortKey={sortPlaylists}
+          orderKey={orderPlaylists}
+          colOptions={colOptions}
+        >
           <Title
+            colOptions={colOptions}
             isListView={isListView}
             orderPlaylists={orderPlaylists}
+            setColumnVisibility={setColumnVisibility}
             setOrderPlaylists={setOrderPlaylists}
             setSortPlaylists={setSortPlaylists}
             setViewPlaylists={setViewPlaylists}
@@ -62,8 +85,10 @@ const PlaylistList = () => {
 };
 
 const Title = ({
+  colOptions,
   isListView,
   orderPlaylists,
+  setColumnVisibility,
   setOrderPlaylists,
   setSortPlaylists,
   setViewPlaylists,
@@ -124,6 +149,45 @@ const Title = ({
               icon={orderPlaylists === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
           </>
+        )}
+        {viewPlaylists === 'list' && (
+          <FilterMenu
+            label="Options"
+            icon="EllipsisCircleIcon"
+            setter={setColumnVisibility}
+            entries={[
+              {
+                label: 'Title',
+                disabled: true,
+                checked: true,
+              },
+              {
+                label: 'Tracks',
+                attr: 'colPlaylistsTotalTracks',
+                checked: colOptions.totalTracks,
+              },
+              {
+                label: 'Duration',
+                attr: 'colPlaylistsDuration',
+                checked: colOptions.duration,
+              },
+              {
+                label: 'Added',
+                attr: 'colPlaylistsAddedAt',
+                checked: colOptions.addedAt,
+              },
+              {
+                label: 'Last Played',
+                attr: 'colPlaylistsLastPlayed',
+                checked: colOptions.lastPlayed,
+              },
+              {
+                label: 'Rating',
+                attr: 'colPlaylistsUserRating',
+                checked: colOptions.userRating,
+              },
+            ]}
+          />
         )}
       </FilterWrap>
     </>
