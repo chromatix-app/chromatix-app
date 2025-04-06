@@ -13,6 +13,9 @@ const useGetCollectionItems = ({
 }) => {
   const dispatch = useDispatch();
 
+  const mediaType = collectionKey.includes('Artist') ? 'Artist' : 'Album';
+  // const collectionType = collectionFilter.replace('Id', '');
+
   const viewCollectionItems = useSelector(({ sessionModel }) => sessionModel[`view${itemsKey}`]);
   const sortCollectionItems = useSelector(({ sessionModel }) => sessionModel[`sort${itemsKey}`]);
   const orderCollectionItems = useSelector(({ sessionModel }) => sessionModel[`order${itemsKey}`]);
@@ -36,6 +39,12 @@ const useGetCollectionItems = ({
   const collectionTitle = collectionInfo?.title;
   const collectionRating = collectionInfo?.userRating;
 
+  const colCollectionAlbumsArtist = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsArtist);
+  const colCollectionAlbumsReleaseDate = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsReleaseDate);
+  const colCollectionAlbumsAddedAt = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsAddedAt);
+  const colCollectionAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsLastPlayed);
+  const colCollectionAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsUserRating);
+
   const setViewCollectionItems = (viewCollectionItems) => {
     dispatch.sessionModel.setSessionState({
       [`view${itemsKey}`]: viewCollectionItems,
@@ -55,17 +64,22 @@ const useGetCollectionItems = ({
     });
   };
 
+  const setColumnVisibility = (columnKey, columnValue) => {
+    dispatch.sessionModel.setSessionState({
+      [columnKey]: columnValue,
+    });
+  };
+
   useEffect(() => {
     if (collectionKey.includes('Collections')) {
-      const collectionType = collectionKey.includes('Artist') ? 'Artist' : 'Album';
       plex.getAllCollections();
-      plex.getCollectionItems(libraryId, collectionId, collectionType);
+      plex.getCollectionItems(libraryId, collectionId, mediaType);
     } else {
       plex.getAllTags(collectionKey);
       plex.getTagItems(libraryId, collectionId, itemsKey);
       // plex[`get${itemsKey}`](libraryId, collectionId);
     }
-  }, [itemsKey, collectionId, collectionKey, libraryId]);
+  }, [itemsKey, collectionId, collectionKey, libraryId, mediaType]);
 
   return {
     collectionInfo,
@@ -75,9 +89,18 @@ const useGetCollectionItems = ({
     sortCollectionItems: actualSortCollectionItems,
     orderCollectionItems,
 
+    colOptions: {
+      artist: colCollectionAlbumsArtist,
+      releaseDate: colCollectionAlbumsReleaseDate,
+      addedAt: colCollectionAlbumsAddedAt,
+      lastPlayed: colCollectionAlbumsLastPlayed,
+      userRating: colCollectionAlbumsUserRating,
+    },
+
     setViewCollectionItems,
     setSortCollectionItems,
     setOrderCollectionItems,
+    setColumnVisibility,
 
     collectionThumb,
     collectionTitle,

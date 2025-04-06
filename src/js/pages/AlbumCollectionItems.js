@@ -5,7 +5,16 @@
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { FilterSelect, FilterToggle, ListCards, ListTable, Loading, StarRating, TitleHeading } from 'js/components';
+import {
+  FilterMenu,
+  FilterSelect,
+  FilterToggle,
+  ListCards,
+  ListTable,
+  Loading,
+  StarRating,
+  TitleHeading,
+} from 'js/components';
 import { useGetCollectionItems } from 'js/hooks';
 
 // ======================================================================
@@ -22,17 +31,19 @@ const AlbumCollectionItems = () => {
     viewCollectionItems,
     sortCollectionItems,
     orderCollectionItems,
+    colOptions,
 
     setViewCollectionItems,
     setSortCollectionItems,
     setOrderCollectionItems,
+    setColumnVisibility,
 
     collectionThumb,
     collectionTitle,
     collectionRating,
   } = useGetCollectionItems({
-    collectionId,
     libraryId,
+    collectionId,
     collectionKey: 'AlbumCollections',
     itemsKey: 'AlbumCollectionItems',
   });
@@ -54,9 +65,11 @@ const AlbumCollectionItems = () => {
           collectionRating={collectionRating}
           collectionThumb={collectionThumb}
           collectionTitle={collectionTitle}
+          colOptions={colOptions}
           isListView={isListView}
           libraryId={libraryId}
           orderCollectionItems={orderCollectionItems}
+          setColumnVisibility={setColumnVisibility}
           setOrderCollectionItems={setOrderCollectionItems}
           setSortCollectionItems={setSortCollectionItems}
           setViewCollectionItems={setViewCollectionItems}
@@ -73,15 +86,18 @@ const AlbumCollectionItems = () => {
           entries={sortedCollectionItems}
           sortKey={sortCollectionItems}
           orderKey={orderCollectionItems}
+          colOptions={colOptions}
         >
           <Title
             collectionId={collectionId}
             collectionRating={collectionRating}
             collectionThumb={collectionThumb}
             collectionTitle={collectionTitle}
+            colOptions={colOptions}
             isListView={isListView}
             libraryId={libraryId}
             orderCollectionItems={orderCollectionItems}
+            setColumnVisibility={setColumnVisibility}
             setOrderCollectionItems={setOrderCollectionItems}
             setSortCollectionItems={setSortCollectionItems}
             setViewCollectionItems={setViewCollectionItems}
@@ -100,9 +116,11 @@ const Title = ({
   collectionRating,
   collectionThumb,
   collectionTitle,
+  colOptions,
   isListView,
   libraryId,
   orderCollectionItems,
+  setColumnVisibility,
   setOrderCollectionItems,
   setSortCollectionItems,
   setViewCollectionItems,
@@ -173,6 +191,45 @@ const Title = ({
                 icon={orderCollectionItems === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
               />
             </>
+          )}
+          {viewCollectionItems === 'list' && (
+            <FilterMenu
+              label="Options"
+              icon="EllipsisCircleIcon"
+              setter={setColumnVisibility}
+              entries={[
+                {
+                  label: 'Title',
+                  disabled: true,
+                  checked: true,
+                },
+                {
+                  label: 'Artist',
+                  attr: 'colCollectionAlbumsArtist',
+                  checked: colOptions.artist,
+                },
+                {
+                  label: 'Released',
+                  attr: 'colCollectionAlbumsReleaseDate',
+                  checked: colOptions.releaseDate,
+                },
+                {
+                  label: 'Added',
+                  attr: 'colCollectionAlbumsAddedAt',
+                  checked: colOptions.addedAt,
+                },
+                {
+                  label: 'Last Played',
+                  attr: 'colCollectionAlbumsLastPlayed',
+                  checked: colOptions.lastPlayed,
+                },
+                {
+                  label: 'Rating',
+                  attr: 'colCollectionAlbumsUserRating',
+                  checked: colOptions.userRating,
+                },
+              ]}
+            />
           )}
         </>
       }
