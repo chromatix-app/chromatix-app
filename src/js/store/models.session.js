@@ -141,6 +141,13 @@ const sessionState = {
   colAlbumBitrate: false,
   colAlbumUserRating: true,
   colAlbumDuration: true,
+
+  colPlaylistArtist: true,
+  colPlaylistAlbum: true,
+  colPlaylistCodec: false,
+  colPlaylistBitrate: false,
+  colPlaylistUserRating: true,
+  colPlaylistDuration: true,
 };
 
 const playingState = {

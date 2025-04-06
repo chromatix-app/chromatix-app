@@ -1,12 +1,21 @@
 import { useEffect, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { durationToStringLong, sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
+  const dispatch = useDispatch();
+
   const sortPlaylistTracks = useSelector(({ sessionModel }) => sessionModel.sortPlaylistTracks);
   const playlistSortString = sortPlaylistTracks[playlistId] || null;
+
+  const colPlaylistArtist = useSelector(({ sessionModel }) => sessionModel.colPlaylistArtist);
+  const colPlaylistAlbum = useSelector(({ sessionModel }) => sessionModel.colPlaylistAlbum);
+  const colPlaylistCodec = useSelector(({ sessionModel }) => sessionModel.colPlaylistCodec);
+  const colPlaylistBitrate = useSelector(({ sessionModel }) => sessionModel.colPlaylistBitrate);
+  const colPlaylistUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistUserRating);
+  const colPlaylistDuration = useSelector(({ sessionModel }) => sessionModel.colPlaylistDuration);
 
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
   const playlistInfo = allPlaylists?.find((playlist) => playlist.playlistId === playlistId);
@@ -48,6 +57,12 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
     return sortedPlaylistTracks?.map((entry) => entry.originalIndex);
   }, [sortedPlaylistTracks]);
 
+  const setColumnVisibility = (columnKey, columnValue) => {
+    dispatch.sessionModel.setSessionState({
+      [columnKey]: columnValue,
+    });
+  };
+
   useEffect(() => {
     plex.getAllPlaylists();
     plex.getPlaylistTracks(libraryId, playlistId).catch(() => {});
@@ -72,6 +87,16 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
     playlistTracks: sortedPlaylistTracks,
     playlistOrder,
     playlistSortString,
+
+    colOptions: {
+      artist: colPlaylistArtist,
+      album: colPlaylistAlbum,
+      codec: colPlaylistCodec,
+      bitrate: colPlaylistBitrate,
+      userRating: colPlaylistUserRating,
+      duration: colPlaylistDuration,
+    },
+    setColumnVisibility,
   };
 };
 
