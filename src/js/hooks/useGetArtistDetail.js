@@ -16,6 +16,11 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const artistGenre = artistInfo?.genre;
   const artistRating = artistInfo?.userRating;
 
+  const colArtistAlbumsReleaseDate = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsReleaseDate);
+  const colArtistAlbumsAddedAt = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsAddedAt);
+  const colArtistAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsLastPlayed);
+  const colArtistAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsUserRating);
+
   const allArtistAlbums = useSelector(({ appModel }) => appModel.allArtistAlbums);
   const artistAlbums = allArtistAlbums[libraryId + '-' + artistId];
 
@@ -107,6 +112,12 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     });
   };
 
+  const setColumnVisibility = (columnKey, columnValue) => {
+    dispatch.sessionModel.setSessionState({
+      [columnKey]: columnValue,
+    });
+  };
+
   // Get the required artist data
   useEffect(() => {
     // plex.getAllArtists();
@@ -147,6 +158,13 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     artistCompilations: sortedArtistCompilations,
     sortedArtistAlbums: allAlbums,
 
+    colOptions: {
+      releaseDate: colArtistAlbumsReleaseDate,
+      addedAt: colArtistAlbumsAddedAt,
+      lastPlayed: colArtistAlbumsLastPlayed,
+      userRating: colArtistAlbumsUserRating,
+    },
+
     artistAlbumTotal,
     artistRelatedTotal,
     artistReleasesTotal,
@@ -158,6 +176,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     setViewArtistAlbums,
     setSortArtistAlbums,
     setOrderArtistAlbums,
+    setColumnVisibility,
   };
 };
 

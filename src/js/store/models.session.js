@@ -136,6 +136,11 @@ const sessionState = {
   colAlbumsLastPlayed: false,
   colAlbumsUserRating: true,
 
+  colArtistAlbumsReleaseDate: true,
+  colArtistAlbumsAddedAt: false,
+  colArtistAlbumsLastPlayed: false,
+  colArtistAlbumsUserRating: true,
+
   colAlbumArtist: true,
   colAlbumCodec: false,
   colAlbumBitrate: false,

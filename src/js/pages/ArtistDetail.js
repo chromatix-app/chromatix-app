@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import {
+  FilterMenu,
   FilterSelect,
   FilterToggle,
   ListCards,
@@ -32,6 +33,7 @@ const ArtistDetail = () => {
     artistCountry,
     artistGenre,
     artistRating,
+    colOptions,
 
     artistAlbums,
     artistRelated,
@@ -47,6 +49,7 @@ const ArtistDetail = () => {
     setViewArtistAlbums,
     setSortArtistAlbums,
     setOrderArtistAlbums,
+    setColumnVisibility,
   } = useGetArtistDetail({
     libraryId,
     artistId,
@@ -73,10 +76,12 @@ const ArtistDetail = () => {
           artistRating={artistRating}
           artistReleasesTotal={artistReleasesTotal}
           artistThumb={artistThumb}
+          colOptions={colOptions}
           isListView={isListView}
           isLoading={isLoading}
           libraryId={libraryId}
           orderArtistAlbums={orderArtistAlbums}
+          setColumnVisibility={setColumnVisibility}
           setOrderArtistAlbums={setOrderArtistAlbums}
           setSortArtistAlbums={setSortArtistAlbums}
           setViewArtistAlbums={setViewArtistAlbums}
@@ -115,6 +120,7 @@ const ArtistDetail = () => {
           entries={sortedArtistAlbums}
           sortKey={sortArtistAlbums}
           orderKey={orderArtistAlbums}
+          colOptions={colOptions}
         >
           <Title
             artistCountry={artistCountry}
@@ -124,10 +130,12 @@ const ArtistDetail = () => {
             artistRating={artistRating}
             artistReleasesTotal={artistReleasesTotal}
             artistThumb={artistThumb}
+            colOptions={colOptions}
             isListView={isListView}
             isLoading={isLoading}
             libraryId={libraryId}
             orderArtistAlbums={orderArtistAlbums}
+            setColumnVisibility={setColumnVisibility}
             setOrderArtistAlbums={setOrderArtistAlbums}
             setSortArtistAlbums={setSortArtistAlbums}
             setViewArtistAlbums={setViewArtistAlbums}
@@ -148,10 +156,12 @@ const Title = ({
   artistRating,
   artistReleasesTotal,
   artistThumb,
+  colOptions,
   isListView,
   isLoading,
   libraryId,
   orderArtistAlbums,
+  setColumnVisibility,
   setOrderArtistAlbums,
   setSortArtistAlbums,
   setViewArtistAlbums,
@@ -225,6 +235,40 @@ const Title = ({
                 icon={orderArtistAlbums === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
               />
             </>
+          )}
+          {viewArtistAlbums === 'list' && (
+            <FilterMenu
+              label="Options"
+              icon="EllipsisCircleIcon"
+              setter={setColumnVisibility}
+              entries={[
+                {
+                  label: 'Title',
+                  disabled: true,
+                  checked: true,
+                },
+                {
+                  label: 'Released',
+                  attr: 'colArtistAlbumsReleaseDate',
+                  checked: colOptions.releaseDate,
+                },
+                {
+                  label: 'Added',
+                  attr: 'colArtistAlbumsAddedAt',
+                  checked: colOptions.addedAt,
+                },
+                {
+                  label: 'Last Played',
+                  attr: 'colArtistAlbumsLastPlayed',
+                  checked: colOptions.lastPlayed,
+                },
+                {
+                  label: 'Rating',
+                  attr: 'colArtistAlbumsUserRating',
+                  checked: colOptions.userRating,
+                },
+              ]}
+            />
           )}
         </>
       }

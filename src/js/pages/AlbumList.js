@@ -16,8 +16,6 @@ import {
 } from 'js/components';
 import { useGetAllAlbums } from 'js/hooks';
 
-const isProduction = process.env.REACT_APP_ENV === 'production';
-
 // ======================================================================
 // COMPONENT
 // ======================================================================
@@ -150,7 +148,7 @@ const Title = ({
             />
           </>
         )}
-        {!isProduction && viewAlbums === 'list' && (
+        {viewAlbums === 'list' && (
           <FilterMenu
             label="Options"
             icon="EllipsisCircleIcon"
