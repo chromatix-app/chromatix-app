@@ -7,8 +7,6 @@ import * as plex from 'js/services/plex';
 const useGetAllPlaylists = () => {
   const dispatch = useDispatch();
 
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const currentLibraryId = currentLibrary?.libraryId;
 
@@ -16,16 +14,10 @@ const useGetAllPlaylists = () => {
   const sortPlaylists = useSelector(({ sessionModel }) => sessionModel.sortPlaylists);
   const orderPlaylists = useSelector(({ sessionModel }) => sessionModel.orderPlaylists);
 
-  // prevent sorting by rating if ratings are hidden
-  const isRatingSortHidden = !optionShowStarRatings && sortPlaylists === 'userRating';
-
-  const actualSortPlaylists = isRatingSortHidden ? 'title' : sortPlaylists;
-  const actualOrderPlaylists = isRatingSortHidden ? 'asc' : orderPlaylists;
-
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists)?.filter(
     (playlist) => playlist.libraryId === currentLibraryId
   );
-  const sortedPlaylists = allPlaylists ? sortList(allPlaylists, actualSortPlaylists, actualOrderPlaylists) : null;
+  const sortedPlaylists = allPlaylists ? sortList(allPlaylists, sortPlaylists, orderPlaylists) : null;
 
   const setViewPlaylists = (viewPlaylists) => {
     dispatch.sessionModel.setSessionState({
@@ -41,7 +33,7 @@ const useGetAllPlaylists = () => {
 
   const setOrderPlaylists = (orderPlaylists) => {
     dispatch.sessionModel.setSessionState({
-      sortPlaylists: actualSortPlaylists,
+      sortPlaylists,
       orderPlaylists,
     });
   };
@@ -52,8 +44,8 @@ const useGetAllPlaylists = () => {
 
   return {
     viewPlaylists,
-    sortPlaylists: actualSortPlaylists,
-    orderPlaylists: actualOrderPlaylists,
+    sortPlaylists,
+    orderPlaylists,
 
     setViewPlaylists,
     setSortPlaylists,

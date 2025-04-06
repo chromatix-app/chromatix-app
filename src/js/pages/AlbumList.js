@@ -98,7 +98,9 @@ const Title = ({
   sortedAlbums,
   viewAlbums,
 }) => {
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+  const optionShowStarRatings_Deprecated = useSelector(
+    ({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated
+  );
 
   return (
     <>
@@ -133,7 +135,7 @@ const Title = ({
                 { value: 'lastPlayed', label: 'Date played' },
                 { value: 'releaseDate', label: 'Date released' },
                 // only allow sorting by rating if the option is enabled
-                ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
+                ...(optionShowStarRatings_Deprecated ? [{ value: 'userRating', label: 'Rating' }] : []),
               ]}
               setter={setSortAlbums}
             />
@@ -150,8 +152,8 @@ const Title = ({
         )}
         {!isProduction && viewAlbums === 'list' && (
           <FilterMenu
-            label="Columns"
-            icon="ColumnsCircleIcon"
+            label="Options"
+            icon="EllipsisCircleIcon"
             setter={setColumnVisibility}
             entries={[
               {
@@ -179,11 +181,11 @@ const Title = ({
                 attr: 'colAlbumsLastPlayed',
                 checked: colOptions.colAlbumsLastPlayed,
               },
-              // {
-              //   label: 'Rating',
-              //   attr: 'colAlbumsRating',
-              //   checked: colOptions.colAlbumsRating,
-              // },
+              {
+                label: 'Rating',
+                attr: 'colAlbumsRating',
+                checked: colOptions.colAlbumsRating,
+              },
             ]}
           />
         )}

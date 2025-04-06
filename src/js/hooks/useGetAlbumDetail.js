@@ -8,15 +8,8 @@ import * as plex from 'js/services/plex';
 const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const dispatch = useDispatch();
 
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   const sortAlbumTracks = useSelector(({ sessionModel }) => sessionModel.sortAlbumTracks);
-  const currentSortString = sortAlbumTracks[albumId] || null;
-
-  // prevent sorting by rating if ratings are hidden
-  const isRatingSortHidden = !optionShowStarRatings && currentSortString?.startsWith('userRating');
-
-  const albumSortString = isRatingSortHidden ? null : currentSortString;
+  const albumSortString = sortAlbumTracks[albumId] || null;
 
   const colAlbumArtist = useSelector(({ sessionModel }) => sessionModel.colAlbumArtist);
   const colAlbumCodec = useSelector(({ sessionModel }) => sessionModel.colAlbumCodec);

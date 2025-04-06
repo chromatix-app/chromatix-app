@@ -5,15 +5,8 @@ import { durationToStringLong, sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   const sortPlaylistTracks = useSelector(({ sessionModel }) => sessionModel.sortPlaylistTracks);
-  const currentSortString = sortPlaylistTracks[playlistId] || null;
-
-  // prevent sorting by rating if ratings are hidden
-  const isRatingSortHidden = !optionShowStarRatings && currentSortString?.startsWith('userRating');
-
-  const playlistSortString = isRatingSortHidden ? null : currentSortString;
+  const playlistSortString = sortPlaylistTracks[playlistId] || null;
 
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
   const playlistInfo = allPlaylists?.find((playlist) => playlist.playlistId === playlistId);

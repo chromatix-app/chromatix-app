@@ -187,14 +187,21 @@ const UserInterfaceSettings = () => {
   const dispatch = useDispatch();
 
   // const optionShowFullTitles_Deprecated = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles_Deprecated);
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+  // const optionShowStarRatings_Deprecated = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated);
 
   const menuItems = [
-    { key: 'optionShowStarRatings', label: 'Show star ratings', state: optionShowStarRatings },
+    {
+      key: 'optionShowStarRatings_Deprecated',
+      label: 'Show star ratings',
+      description:
+        'This option has now been moved into each individual section of your library for more granular control.',
+      state: false,
+      disabled: true,
+    },
     {
       key: 'optionShowFullTitles_Deprecated',
       label: 'Always show full track, artist and album titles',
-      description: 'Sorry, this option has been removed for performance reasons.',
+      description: 'Sorry, this option has now been removed for performance reasons.',
       state: false,
       disabled: true,
     },

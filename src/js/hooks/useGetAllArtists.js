@@ -7,8 +7,6 @@ import * as plex from 'js/services/plex';
 const useGetAllArtists = () => {
   const dispatch = useDispatch();
 
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const currentLibraryId = currentLibrary?.libraryId;
 
@@ -16,18 +14,11 @@ const useGetAllArtists = () => {
   const sortArtists = useSelector(({ sessionModel }) => sessionModel.sortArtists);
   const orderArtists = useSelector(({ sessionModel }) => sessionModel.orderArtists);
 
-  // prevent sorting by rating if ratings are hidden
-  const isRatingSortHidden = !optionShowStarRatings && sortArtists === 'userRating';
-
-  const actualSortArtists = isRatingSortHidden ? 'title' : sortArtists;
-  const actualOrderArtists = isRatingSortHidden ? 'asc' : orderArtists;
-
   const haveGotAllArtists = useSelector(({ appModel }) => appModel.haveGotAllArtists);
   const allArtists = useSelector(({ appModel }) => appModel.allArtists)?.filter(
     (artist) => artist.libraryId === currentLibraryId
   );
-  const sortedArtists =
-    haveGotAllArtists && allArtists ? sortList(allArtists, actualSortArtists, actualOrderArtists) : null;
+  const sortedArtists = haveGotAllArtists && allArtists ? sortList(allArtists, sortArtists, orderArtists) : null;
 
   const setViewArtists = (viewArtists) => {
     dispatch.sessionModel.setSessionState({
@@ -43,7 +34,7 @@ const useGetAllArtists = () => {
 
   const setOrderArtists = (orderArtists) => {
     dispatch.sessionModel.setSessionState({
-      sortArtists: actualSortArtists,
+      sortArtists,
       orderArtists,
     });
   };
@@ -54,8 +45,8 @@ const useGetAllArtists = () => {
 
   return {
     viewArtists,
-    sortArtists: actualSortArtists,
-    orderArtists: actualOrderArtists,
+    sortArtists,
+    orderArtists,
 
     setViewArtists,
     setSortArtists,

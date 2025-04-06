@@ -110,7 +110,9 @@ const Title = ({
   sortedCollectionItems,
   viewCollectionItems,
 }) => {
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+  const optionShowStarRatings_Deprecated = useSelector(
+    ({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated
+  );
 
   return (
     <TitleHeading
@@ -118,7 +120,7 @@ const Title = ({
       thumb={collectionThumb}
       title={collectionTitle}
       detail={
-        optionShowStarRatings && (
+        optionShowStarRatings_Deprecated && (
           <StarRating
             variant="title"
             type="collection"
@@ -157,7 +159,7 @@ const Title = ({
                   { value: 'addedAt', label: 'Date added' },
                   { value: 'lastPlayed', label: 'Date played' },
                   // only allow sorting by rating if the option is enabled
-                  ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
+                  ...(optionShowStarRatings_Deprecated ? [{ value: 'userRating', label: 'Rating' }] : []),
                 ]}
                 setter={setSortCollectionItems}
               />

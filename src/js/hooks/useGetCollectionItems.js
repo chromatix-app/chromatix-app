@@ -13,20 +13,14 @@ const useGetCollectionItems = ({
 }) => {
   const dispatch = useDispatch();
 
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   const viewCollectionItems = useSelector(({ sessionModel }) => sessionModel[`view${itemsKey}`]);
   const sortCollectionItems = useSelector(({ sessionModel }) => sessionModel[`sort${itemsKey}`]);
   const orderCollectionItems = useSelector(({ sessionModel }) => sessionModel[`order${itemsKey}`]);
 
-  // prevent sorting by rating if ratings are hidden
-  const isRatingSortHidden = !optionShowStarRatings && sortCollectionItems === 'userRating';
-
   // prevent sub-sorting in list view
   const isSubSortList = viewCollectionItems === 'list' && sortCollectionItems.split('-').length > 2;
 
-  const actualSortCollectionItems = isRatingSortHidden ? 'title' : isSubSortList ? 'artist' : sortCollectionItems;
-  const actualOrderCollectionItems = isRatingSortHidden ? 'asc' : orderCollectionItems;
+  const actualSortCollectionItems = isSubSortList ? 'artist' : sortCollectionItems;
 
   const allCollections = useSelector(({ appModel }) => appModel[`all${collectionKey}`]);
   const collectionInfo = allCollections?.find((collection) => collection[collectionFilter] === collectionId);
@@ -35,7 +29,7 @@ const useGetCollectionItems = ({
   const collectionInfoItems = allCollectionItems[libraryId + '-' + collectionId];
 
   const sortedCollectionItems = collectionInfoItems
-    ? sortList(collectionInfoItems, actualSortCollectionItems, actualOrderCollectionItems)
+    ? sortList(collectionInfoItems, actualSortCollectionItems, orderCollectionItems)
     : null;
 
   const collectionThumb = collectionInfo?.thumb;
@@ -79,7 +73,7 @@ const useGetCollectionItems = ({
 
     viewCollectionItems,
     sortCollectionItems: actualSortCollectionItems,
-    orderCollectionItems: actualOrderCollectionItems,
+    orderCollectionItems,
 
     setViewCollectionItems,
     setSortCollectionItems,

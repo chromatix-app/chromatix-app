@@ -7,8 +7,6 @@ import * as plex from 'js/services/plex';
 const useGetArtistDetail = ({ libraryId, artistId }) => {
   const dispatch = useDispatch();
 
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   const allArtists = useSelector(({ appModel }) => appModel.allArtists);
   const artistInfo = allArtists?.find((artist) => artist.artistId === artistId);
 
@@ -36,29 +34,23 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const sortArtistAlbums = useSelector(({ sessionModel }) => sessionModel.sortArtistAlbums);
   const orderArtistAlbums = useSelector(({ sessionModel }) => sessionModel.orderArtistAlbums);
 
-  // Prevent sorting by rating if ratings are hidden
-  const isRatingSortHidden = !optionShowStarRatings && sortArtistAlbums === 'userRating';
-
   // Prevent sub-sorting in list view
   const isSubSortList = viewArtistAlbums === 'list' && sortArtistAlbums.split('-').length > 2;
 
-  const actualSortArtistAlbums = isRatingSortHidden ? 'title' : isSubSortList ? 'artist' : sortArtistAlbums;
-  const actualOrderArtistAlbums = isRatingSortHidden ? 'asc' : orderArtistAlbums;
+  const actualSortArtistAlbums = isSubSortList ? 'artist' : sortArtistAlbums;
 
   // Sort albums
-  const sortedArtistAlbums = artistAlbums
-    ? sortList(artistAlbums, actualSortArtistAlbums, actualOrderArtistAlbums)
-    : null;
+  const sortedArtistAlbums = artistAlbums ? sortList(artistAlbums, actualSortArtistAlbums, orderArtistAlbums) : null;
   const sortedArtistRelated = artistRelated?.map((entry) => {
     const sortedEntry =
-      entry && entry.related ? sortList(entry.related, actualSortArtistAlbums, actualOrderArtistAlbums) : null;
+      entry && entry.related ? sortList(entry.related, actualSortArtistAlbums, orderArtistAlbums) : null;
     return {
       ...entry,
       related: sortedEntry,
     };
   });
   const sortedArtistCompilations = artistCompilations
-    ? sortList(artistCompilations, actualSortArtistAlbums, actualOrderArtistAlbums)
+    ? sortList(artistCompilations, actualSortArtistAlbums, orderArtistAlbums)
     : null;
 
   // Combine all albums into a single array
@@ -161,7 +153,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
 
     viewArtistAlbums,
     sortArtistAlbums: actualSortArtistAlbums,
-    orderArtistAlbums: actualOrderArtistAlbums,
+    orderArtistAlbums,
 
     setViewArtistAlbums,
     setSortArtistAlbums,

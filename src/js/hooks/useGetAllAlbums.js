@@ -7,8 +7,6 @@ import * as plex from 'js/services/plex';
 const useGetAllAlbums = () => {
   const dispatch = useDispatch();
 
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const currentLibraryId = currentLibrary?.libraryId;
 
@@ -22,20 +20,16 @@ const useGetAllAlbums = () => {
   const colAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colAlbumsLastPlayed);
   const colAlbumsRating = useSelector(({ sessionModel }) => sessionModel.colAlbumsRating);
 
-  // prevent sorting by rating if ratings are hidden
-  const isRatingSortHidden = !optionShowStarRatings && sortAlbums === 'userRating';
-
   // prevent sub-sorting in list view
   const isSubSortList = viewAlbums === 'list' && sortAlbums.split('-').length > 2;
 
-  const actualSortAlbums = isRatingSortHidden ? 'title' : isSubSortList ? 'artist' : sortAlbums;
-  const actualOrderAlbums = isRatingSortHidden ? 'asc' : orderAlbums;
+  const actualSortAlbums = isSubSortList ? 'artist' : sortAlbums;
 
   const haveGotAllAlbums = useSelector(({ appModel }) => appModel.haveGotAllAlbums);
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums)?.filter(
     (album) => album.libraryId === currentLibraryId
   );
-  const sortedAlbums = haveGotAllAlbums && allAlbums ? sortList(allAlbums, actualSortAlbums, actualOrderAlbums) : null;
+  const sortedAlbums = haveGotAllAlbums && allAlbums ? sortList(allAlbums, actualSortAlbums, orderAlbums) : null;
 
   const setViewAlbums = (viewAlbums) => {
     dispatch.sessionModel.setSessionState({
@@ -69,7 +63,7 @@ const useGetAllAlbums = () => {
   return {
     viewAlbums,
     sortAlbums: actualSortAlbums,
-    orderAlbums: actualOrderAlbums,
+    orderAlbums,
 
     colOptions: {
       colAlbumsArtist,

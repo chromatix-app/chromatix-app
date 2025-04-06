@@ -104,7 +104,9 @@ const Title = ({
   playlistTrackCount,
   playlistTracks,
 }) => {
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+  const optionShowStarRatings_Deprecated = useSelector(
+    ({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated
+  );
 
   return (
     <TitleHeading
@@ -116,8 +118,8 @@ const Title = ({
         playlistTracks ? (
           <>
             {playlistDurationString}
-            {playlistDurationString && optionShowStarRatings && ' • '}
-            {optionShowStarRatings && (
+            {playlistDurationString && optionShowStarRatings_Deprecated && ' • '}
+            {optionShowStarRatings_Deprecated && (
               <StarRating
                 variant="title"
                 type="playlist"

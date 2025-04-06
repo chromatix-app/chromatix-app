@@ -127,7 +127,9 @@ const Title = ({
   isListView,
   libraryId,
 }) => {
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+  const optionShowStarRatings_Deprecated = useSelector(
+    ({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated
+  );
 
   return (
     <TitleHeading
@@ -149,8 +151,8 @@ const Title = ({
             {albumTrackCount} track{albumTrackCount !== 1 && 's'}
             {(albumReleaseDate || albumTrackCount) && albumDurationString && ' • '}
             {albumDurationString}
-            {(albumReleaseDate || albumTrackCount || albumDurationString) && optionShowStarRatings && ' • '}
-            {optionShowStarRatings && (
+            {(albumReleaseDate || albumTrackCount || albumDurationString) && optionShowStarRatings_Deprecated && ' • '}
+            {optionShowStarRatings_Deprecated && (
               <StarRating
                 variant="title"
                 type="album"

@@ -82,14 +82,6 @@
   }
 }
 
-.headerRating {
-  display: none;
-
-  :global(.cq-800) & {
-    display: block;
-  }
-}
-
 .entry {
   padding: 6px 14px;
   background: transparent;
@@ -297,14 +289,9 @@
 }
 
 .userRating {
-  display: none;
   font-size: 0;
   line-height: 0;
   color: var(--color-opacity-04);
-
-  :global(.cq-800) & {
-    display: block;
-  }
 
   .entry:hover & {
     color: var(--color-text);

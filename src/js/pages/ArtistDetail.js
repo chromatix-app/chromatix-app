@@ -158,7 +158,9 @@ const Title = ({
   sortArtistAlbums,
   viewArtistAlbums,
 }) => {
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+  const optionShowStarRatings_Deprecated = useSelector(
+    ({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated
+  );
 
   return (
     <TitleHeading
@@ -171,8 +173,8 @@ const Title = ({
           {artistCountry}
           {artistCountry && artistGenre && ' • '}
           {artistGenre}
-          {(artistCountry || artistGenre) && optionShowStarRatings && ' • '}
-          {optionShowStarRatings && (
+          {(artistCountry || artistGenre) && optionShowStarRatings_Deprecated && ' • '}
+          {optionShowStarRatings_Deprecated && (
             <StarRating
               variant="title"
               type="artist"
@@ -209,7 +211,7 @@ const Title = ({
                   { value: 'lastPlayed', label: 'Date played' },
                   { value: 'releaseDate', label: 'Date released' },
                   // only allow sorting by rating if the option is enabled
-                  ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
+                  ...(optionShowStarRatings_Deprecated ? [{ value: 'userRating', label: 'Rating' }] : []),
                 ]}
                 setter={setSortArtistAlbums}
               />

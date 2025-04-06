@@ -71,7 +71,9 @@ const Title = ({
   sortPlaylists,
   viewPlaylists,
 }) => {
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+  const optionShowStarRatings_Deprecated = useSelector(
+    ({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated
+  );
 
   return (
     <>
@@ -107,7 +109,7 @@ const Title = ({
                 { value: 'lastPlayed', label: 'Date played' },
                 { value: 'duration', label: 'Duration' },
                 // only allow sorting by rating if the option is enabled
-                ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
+                ...(optionShowStarRatings_Deprecated ? [{ value: 'userRating', label: 'Rating' }] : []),
                 { value: 'totalTracks', label: 'Track count' },
               ]}
               setter={setSortPlaylists}

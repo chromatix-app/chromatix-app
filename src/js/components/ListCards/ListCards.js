@@ -135,7 +135,9 @@ const ListEntry = React.memo(
     const optionShowFullTitles_Deprecated = useSelector(
       ({ sessionModel }) => sessionModel.optionShowFullTitles_Deprecated
     );
-    const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+    const optionShowStarRatings_Deprecated = useSelector(
+      ({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated
+    );
 
     // Play button handler
     const handlePlay = useCallback(
@@ -299,7 +301,7 @@ const ListEntry = React.memo(
             <div className={style.subtitle}>{lastPlayed ? moment(lastPlayed * 1000).format('YY-MM-DD') : '-'}</div>
           )} */}
 
-          {optionShowStarRatings && typeof userRating !== 'undefined' && (
+          {optionShowStarRatings_Deprecated && typeof userRating !== 'undefined' && (
             <div className={style.rating}>
               <StarRating variant="card" type={variant} ratingKey={ratingKey} rating={userRating} />
             </div>

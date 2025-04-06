@@ -1,59 +1,22 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 const useTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderKey, colOptions) => {
   const dispatch = useDispatch();
 
-  const contentBreakpoint = useSelector(({ appModel }) => appModel.contentBreakpoint);
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
-  const userRatingsAreVisible = optionShowStarRatings && contentBreakpoint >= 800;
-
   const [returnState, setReturnState] = useState(
-    getTableOptions(
-      variant,
-      albumId,
-      playlistId,
-      folderId,
-      sortKey,
-      orderKey,
-      colOptions,
-      userRatingsAreVisible,
-      dispatch
-    )
+    getTableOptions(variant, albumId, playlistId, folderId, sortKey, orderKey, colOptions, dispatch)
   );
 
   useEffect(() => {
-    setReturnState(
-      getTableOptions(
-        variant,
-        albumId,
-        playlistId,
-        folderId,
-        sortKey,
-        orderKey,
-        colOptions,
-        userRatingsAreVisible,
-        dispatch
-      )
-    );
+    setReturnState(getTableOptions(variant, albumId, playlistId, folderId, sortKey, orderKey, colOptions, dispatch));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [variant, sortKey, orderKey, colOptions, userRatingsAreVisible]);
+  }, [variant, sortKey, orderKey, colOptions]);
 
   return returnState;
 };
 
-const getTableOptions = (
-  variant,
-  albumId,
-  playlistId,
-  folderId,
-  sortKey,
-  orderKey,
-  colOptions,
-  userRatingsAreVisible,
-  dispatch
-) => {
+const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderKey, colOptions, dispatch) => {
   let tableVariant;
   let tableOptions;
 
@@ -138,7 +101,7 @@ const getTableOptions = (
         colWidth: '0.5fr',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
-        visible: userRatingsAreVisible,
+        visible: true,
       },
     ];
   }
@@ -211,7 +174,7 @@ const getTableOptions = (
         colWidth: '0.5fr',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
-        visible: userRatingsAreVisible,
+        visible: colOptions?.colAlbumsRating !== false,
       },
     ];
   }
@@ -269,7 +232,7 @@ const getTableOptions = (
         colWidth: '0.7fr',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
-        visible: userRatingsAreVisible,
+        visible: colOptions?.userRating !== false,
       },
       {
         colKey: 'duration',
@@ -393,7 +356,7 @@ const getTableOptions = (
         colWidth: '0.5fr',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
-        visible: userRatingsAreVisible,
+        visible: true,
       },
     ];
   }
@@ -454,7 +417,7 @@ const getTableOptions = (
         colWidth: '0.5fr',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
-        visible: userRatingsAreVisible,
+        visible: true,
       },
       {
         colKey: 'duration',
@@ -504,7 +467,7 @@ const getTableOptions = (
         colWidth: '0.5fr',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
-        visible: userRatingsAreVisible,
+        visible: true,
       },
     ];
   }
