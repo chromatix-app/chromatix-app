@@ -40,10 +40,10 @@ import { ReactComponent as ExternalLinkIcon } from './icons/music/external-link.
 import { ReactComponent as FastForwardIcon } from './icons/music/fast-forward.svg';
 import { ReactComponent as FolderIcon } from './icons/music/folder.svg';
 import { ReactComponent as GithubIcon } from './icons/music/github.svg';
-import { ReactComponent as GridIcon } from './icons/music/grid.svg';
+import { ReactComponent as GridIcon } from './icons/music/grid-small.svg';
 import { ReactComponent as InfoIcon } from './icons/music/info.svg';
 import { ReactComponent as LastFMIcon } from './icons/music/lastfm.svg';
-import { ReactComponent as ListIcon } from './icons/music/list.svg';
+import { ReactComponent as ListIcon } from './icons/music/list-small.svg';
 import { ReactComponent as LogoutIcon } from './icons/music/logout.svg';
 import { ReactComponent as MailIcon } from './icons/music/mail.svg';
 import { ReactComponent as MailPlaneIcon } from './icons/music/mail-plane.svg';
