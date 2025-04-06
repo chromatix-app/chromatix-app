@@ -14,6 +14,9 @@ const useGetAllCollections = (collectionKey) => {
   const allCollections = useSelector(({ appModel }) => appModel[`all${collectionKey}`]);
   const sortedCollections = allCollections ? sortList(allCollections, sortCollections, orderCollections) : null;
 
+  const colCollectionAddedAt = useSelector(({ sessionModel }) => sessionModel.colCollectionAddedAt);
+  const colCollectionUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionUserRating);
+
   const setViewCollections = (viewCollections) => {
     dispatch.sessionModel.setSessionState({
       [`view${collectionKey}`]: viewCollections,
@@ -33,6 +36,12 @@ const useGetAllCollections = (collectionKey) => {
     });
   };
 
+  const setColumnVisibility = (columnKey, columnValue) => {
+    dispatch.sessionModel.setSessionState({
+      [columnKey]: columnValue,
+    });
+  };
+
   useEffect(() => {
     if (collectionKey.includes('Collections')) {
       plex.getAllCollections();
@@ -46,9 +55,15 @@ const useGetAllCollections = (collectionKey) => {
     sortCollections,
     orderCollections,
 
+    colOptions: {
+      addedAt: colCollectionAddedAt,
+      userRating: colCollectionUserRating,
+    },
+
     setViewCollections,
     setSortCollections,
     setOrderCollections,
+    setColumnVisibility,
 
     sortedCollections,
   };

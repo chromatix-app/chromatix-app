@@ -475,7 +475,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         colWidth: '1fr',
         isAsc: sortKey === 'addedAt' && orderKey === 'asc',
         isDesc: sortKey === 'addedAt' && orderKey === 'desc',
-        visible: true,
+        visible: colOptions?.addedAt !== false,
       },
       {
         colKey: 'userRating',
@@ -483,7 +483,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         colWidth: '0.5fr',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
-        visible: true,
+        visible: colOptions?.userRating !== false,
       },
     ];
   }

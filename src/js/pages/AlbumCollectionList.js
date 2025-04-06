@@ -4,7 +4,16 @@
 
 import { useSelector } from 'react-redux';
 
-import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
+import {
+  FilterMenu,
+  FilterSelect,
+  FilterToggle,
+  FilterWrap,
+  ListCards,
+  ListTable,
+  Loading,
+  TitleHeading,
+} from 'js/components';
 import { useGetAllCollections } from 'js/hooks';
 
 // ======================================================================
@@ -16,9 +25,13 @@ const AlbumCollectionList = () => {
     viewCollections,
     sortCollections,
     orderCollections,
+    colOptions,
+
     setViewCollections,
     setSortCollections,
     setOrderCollections,
+    setColumnVisibility,
+
     sortedCollections,
   } = useGetAllCollections('AlbumCollections');
 
@@ -31,8 +44,10 @@ const AlbumCollectionList = () => {
     <>
       {(isLoading || isEmptyList || isGridView) && (
         <Title
+          colOptions={colOptions}
           isListView={isListView}
           orderCollections={orderCollections}
+          setColumnVisibility={setColumnVisibility}
           setOrderCollections={setOrderCollections}
           setSortCollections={setSortCollections}
           setViewCollections={setViewCollections}
@@ -49,10 +64,13 @@ const AlbumCollectionList = () => {
           entries={sortedCollections}
           sortKey={sortCollections}
           orderKey={orderCollections}
+          colOptions={colOptions}
         >
           <Title
+            colOptions={colOptions}
             isListView={isListView}
             orderCollections={orderCollections}
+            setColumnVisibility={setColumnVisibility}
             setOrderCollections={setOrderCollections}
             setSortCollections={setSortCollections}
             setViewCollections={setViewCollections}
@@ -67,8 +85,10 @@ const AlbumCollectionList = () => {
 };
 
 const Title = ({
+  colOptions,
   isListView,
   orderCollections,
+  setColumnVisibility,
   setOrderCollections,
   setSortCollections,
   setViewCollections,
@@ -126,6 +146,25 @@ const Title = ({
               icon={orderCollections === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
           </>
+        )}
+        {viewCollections === 'list' && (
+          <FilterMenu
+            label="Options"
+            icon="EllipsisCircleIcon"
+            setter={setColumnVisibility}
+            entries={[
+              {
+                label: 'Added',
+                attr: 'colCollectionAddedAt',
+                checked: colOptions.addedAt,
+              },
+              {
+                label: 'Rating',
+                attr: 'colCollectionUserRating',
+                checked: colOptions.userRating,
+              },
+            ]}
+          />
         )}
       </FilterWrap>
     </>

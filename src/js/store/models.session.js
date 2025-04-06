@@ -130,28 +130,31 @@ const sessionState = {
   orderAlbumStyles: 'asc',
   orderAlbumStyleItems: 'asc',
 
+  colArtistAlbumsReleaseDate: true,
+  colArtistAlbumsAddedAt: false,
+  colArtistAlbumsLastPlayed: false,
+  colArtistAlbumsUserRating: true,
+
   colAlbumsArtist: true,
   colAlbumsReleaseDate: true,
   colAlbumsAddedAt: false,
   colAlbumsLastPlayed: false,
   colAlbumsUserRating: true,
 
-  colArtistAlbumsReleaseDate: true,
-  colArtistAlbumsAddedAt: false,
-  colArtistAlbumsLastPlayed: false,
-  colArtistAlbumsUserRating: true,
+  colAlbumArtist: true,
+  colAlbumCodec: false,
+  colAlbumBitrate: false,
+  colAlbumUserRating: true,
+  colAlbumDuration: true,
+
+  colCollectionAddedAt: true,
+  colCollectionUserRating: true,
 
   colCollectionAlbumsArtist: true,
   colCollectionAlbumsReleaseDate: true,
   colCollectionAlbumsAddedAt: false,
   colCollectionAlbumsLastPlayed: false,
   colCollectionAlbumsUserRating: true,
-
-  colAlbumArtist: true,
-  colAlbumCodec: false,
-  colAlbumBitrate: false,
-  colAlbumUserRating: true,
-  colAlbumDuration: true,
 
   colPlaylistArtist: true,
   colPlaylistAlbum: true,
