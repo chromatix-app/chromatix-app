@@ -131,15 +131,15 @@ const sessionState = {
   orderAlbumStyleItems: 'asc',
 
   colAlbumsArtist: true,
-  colAlbumsReleased: true,
-  colAlbumsAdded: true,
-  colAlbumsLastPlayed: true,
-  colAlbumsRating: true,
+  colAlbumsReleaseDate: true,
+  colAlbumsAddedAt: false,
+  colAlbumsLastPlayed: false,
+  colAlbumsUserRating: true,
 
   colAlbumArtist: true,
-  colAlbumCodec: true,
-  colAlbumBitrate: true,
-  colAlbumRating: true,
+  colAlbumCodec: false,
+  colAlbumBitrate: false,
+  colAlbumUserRating: true,
   colAlbumDuration: true,
 };
 

@@ -142,7 +142,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         colWidth: '1fr',
         isAsc: sortKey === 'artist' && orderKey === 'asc',
         isDesc: sortKey === 'artist' && orderKey === 'desc',
-        visible: variant === 'artistAlbums' ? false : colOptions?.colAlbumsArtist !== false,
+        visible: variant === 'artistAlbums' ? false : colOptions?.artist !== false,
       },
       {
         colKey: 'releaseDate',
@@ -150,7 +150,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         colWidth: '0.8fr',
         isAsc: sortKey === 'releaseDate' && orderKey === 'asc',
         isDesc: sortKey === 'releaseDate' && orderKey === 'desc',
-        visible: colOptions?.colAlbumsReleased !== false,
+        visible: colOptions?.releaseDate !== false,
       },
       {
         colKey: 'addedAt',
@@ -158,7 +158,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         colWidth: '0.8fr',
         isAsc: sortKey === 'addedAt' && orderKey === 'asc',
         isDesc: sortKey === 'addedAt' && orderKey === 'desc',
-        visible: colOptions?.colAlbumsAdded !== false,
+        visible: colOptions?.addedAt !== false,
       },
       {
         colKey: 'lastPlayed',
@@ -166,7 +166,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         colWidth: '0.8fr',
         isAsc: sortKey === 'lastPlayed' && orderKey === 'asc',
         isDesc: sortKey === 'lastPlayed' && orderKey === 'desc',
-        visible: colOptions?.colAlbumsLastPlayed !== false,
+        visible: colOptions?.lastPlayed !== false,
       },
       {
         colKey: 'userRating',
@@ -174,7 +174,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         colWidth: '0.5fr',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
-        visible: colOptions?.colAlbumsRating !== false,
+        visible: colOptions?.userRating !== false,
       },
     ];
   }

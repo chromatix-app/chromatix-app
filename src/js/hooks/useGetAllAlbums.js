@@ -15,10 +15,10 @@ const useGetAllAlbums = () => {
   const orderAlbums = useSelector(({ sessionModel }) => sessionModel.orderAlbums);
 
   const colAlbumsArtist = useSelector(({ sessionModel }) => sessionModel.colAlbumsArtist);
-  const colAlbumsReleased = useSelector(({ sessionModel }) => sessionModel.colAlbumsReleased);
-  const colAlbumsAdded = useSelector(({ sessionModel }) => sessionModel.colAlbumsAdded);
+  const colAlbumsReleaseDate = useSelector(({ sessionModel }) => sessionModel.colAlbumsReleaseDate);
+  const colAlbumsAddedAt = useSelector(({ sessionModel }) => sessionModel.colAlbumsAddedAt);
   const colAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colAlbumsLastPlayed);
-  const colAlbumsRating = useSelector(({ sessionModel }) => sessionModel.colAlbumsRating);
+  const colAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumsUserRating);
 
   // prevent sub-sorting in list view
   const isSubSortList = viewAlbums === 'list' && sortAlbums.split('-').length > 2;
@@ -66,11 +66,11 @@ const useGetAllAlbums = () => {
     orderAlbums,
 
     colOptions: {
-      colAlbumsArtist,
-      colAlbumsReleased,
-      colAlbumsAdded,
-      colAlbumsLastPlayed,
-      colAlbumsRating,
+      artist: colAlbumsArtist,
+      releaseDate: colAlbumsReleaseDate,
+      addedAt: colAlbumsAddedAt,
+      lastPlayed: colAlbumsLastPlayed,
+      userRating: colAlbumsUserRating,
     },
 
     setViewAlbums,

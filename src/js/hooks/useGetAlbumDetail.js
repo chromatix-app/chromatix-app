@@ -14,7 +14,7 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const colAlbumArtist = useSelector(({ sessionModel }) => sessionModel.colAlbumArtist);
   const colAlbumCodec = useSelector(({ sessionModel }) => sessionModel.colAlbumCodec);
   const colAlbumBitrate = useSelector(({ sessionModel }) => sessionModel.colAlbumBitrate);
-  const colAlbumRating = useSelector(({ sessionModel }) => sessionModel.colAlbumRating);
+  const colAlbumUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumUserRating);
   const colAlbumDuration = useSelector(({ sessionModel }) => sessionModel.colAlbumDuration);
 
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums);
@@ -114,7 +114,7 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
       artist: colAlbumArtist,
       codec: colAlbumCodec,
       bitrate: colAlbumBitrate,
-      userRating: colAlbumRating,
+      userRating: colAlbumUserRating,
       duration: colAlbumDuration,
     },
     setColumnVisibility,

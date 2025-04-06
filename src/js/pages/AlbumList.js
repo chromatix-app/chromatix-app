@@ -164,27 +164,27 @@ const Title = ({
               {
                 label: 'Artist',
                 attr: 'colAlbumsArtist',
-                checked: colOptions.colAlbumsArtist,
+                checked: colOptions.artist,
               },
               {
                 label: 'Released',
-                attr: 'colAlbumsReleased',
-                checked: colOptions.colAlbumsReleased,
+                attr: 'colAlbumsReleaseDate',
+                checked: colOptions.releaseDate,
               },
               {
                 label: 'Added',
-                attr: 'colAlbumsAdded',
-                checked: colOptions.colAlbumsAdded,
+                attr: 'colAlbumsAddedAt',
+                checked: colOptions.addedAt,
               },
               {
                 label: 'Last Played',
                 attr: 'colAlbumsLastPlayed',
-                checked: colOptions.colAlbumsLastPlayed,
+                checked: colOptions.lastPlayed,
               },
               {
                 label: 'Rating',
-                attr: 'colAlbumsRating',
-                checked: colOptions.colAlbumsRating,
+                attr: 'colAlbumsUserRating',
+                checked: colOptions.userRating,
               },
             ]}
           />

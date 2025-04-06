@@ -197,7 +197,7 @@ const Title = ({
             },
             {
               label: 'Rating',
-              attr: 'colAlbumRating',
+              attr: 'colAlbumUserRating',
               checked: colOptions.userRating,
             },
             {
