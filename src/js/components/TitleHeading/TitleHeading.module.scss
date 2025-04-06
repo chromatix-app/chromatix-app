@@ -51,6 +51,16 @@
     height: 180px;
     margin-right: 30px;
   }
+  :global(.cq-1100) & {
+    width: 190px;
+    height: 190px;
+    margin-right: 30px;
+  }
+  :global(.cq-1220) & {
+    width: 200px;
+    height: 200px;
+    margin-right: 30px;
+  }
 
   img {
     position: absolute;
