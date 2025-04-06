@@ -71,21 +71,29 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         isDesc: sortKey === 'title' && orderKey === 'desc',
         visible: true,
       },
-      // {
-      //   colKey: 'genre',
-      //   label: 'Genre',
-      //   colWidth: '0.8fr',
-      //   isAsc: sortKey === 'genre' && orderKey === 'asc',
-      //   isDesc: sortKey === 'genre' && orderKey === 'desc',
-      //   visible: true,
-      // },
+      {
+        colKey: 'country',
+        label: 'Country',
+        colWidth: '1fr',
+        isAsc: sortKey === 'country' && orderKey === 'asc',
+        isDesc: sortKey === 'country' && orderKey === 'desc',
+        visible: colOptions?.country !== false,
+      },
+      {
+        colKey: 'genre',
+        label: 'Genre',
+        colWidth: '0.8fr',
+        isAsc: sortKey === 'genre' && orderKey === 'asc',
+        isDesc: sortKey === 'genre' && orderKey === 'desc',
+        visible: colOptions?.genre !== false,
+      },
       {
         colKey: 'addedAt',
         label: 'Added',
         colWidth: '0.8fr',
         isAsc: sortKey === 'addedAt' && orderKey === 'asc',
         isDesc: sortKey === 'addedAt' && orderKey === 'desc',
-        visible: true,
+        visible: colOptions?.addedAt !== false,
       },
       {
         colKey: 'lastPlayed',
@@ -93,7 +101,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         colWidth: '0.8fr',
         isAsc: sortKey === 'lastPlayed' && orderKey === 'asc',
         isDesc: sortKey === 'lastPlayed' && orderKey === 'desc',
-        visible: true,
+        visible: colOptions?.lastPlayed !== false,
       },
       {
         colKey: 'userRating',
@@ -101,7 +109,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         colWidth: '0.5fr',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
-        visible: true,
+        visible: colOptions?.userRating !== false,
       },
     ];
   }

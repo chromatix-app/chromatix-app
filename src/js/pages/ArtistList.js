@@ -4,7 +4,16 @@
 
 import { useSelector } from 'react-redux';
 
-import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
+import {
+  FilterMenu,
+  FilterSelect,
+  FilterToggle,
+  FilterWrap,
+  ListCards,
+  ListTable,
+  Loading,
+  TitleHeading,
+} from 'js/components';
 import { useGetAllArtists } from 'js/hooks';
 
 // ======================================================================
@@ -12,8 +21,19 @@ import { useGetAllArtists } from 'js/hooks';
 // ======================================================================
 
 const ArtistList = () => {
-  const { viewArtists, sortArtists, orderArtists, setViewArtists, setSortArtists, setOrderArtists, sortedArtists } =
-    useGetAllArtists();
+  const {
+    viewArtists,
+    sortArtists,
+    orderArtists,
+    colOptions,
+
+    setViewArtists,
+    setSortArtists,
+    setOrderArtists,
+    setColumnVisibility,
+
+    sortedArtists,
+  } = useGetAllArtists();
 
   const isLoading = !sortedArtists;
   const isEmptyList = !isLoading && sortedArtists?.length === 0;
@@ -24,8 +44,10 @@ const ArtistList = () => {
     <>
       {(isLoading || isEmptyList || isGridView) && (
         <Title
+          colOptions={colOptions}
           isListView={isListView}
           orderArtists={orderArtists}
+          setColumnVisibility={setColumnVisibility}
           setOrderArtists={setOrderArtists}
           setSortArtists={setSortArtists}
           setViewArtists={setViewArtists}
@@ -37,10 +59,18 @@ const ArtistList = () => {
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && <ListCards variant="artists" entries={sortedArtists} />}
       {isListView && (
-        <ListTable variant="artists" entries={sortedArtists} sortKey={sortArtists} orderKey={orderArtists}>
+        <ListTable
+          variant="artists"
+          entries={sortedArtists}
+          sortKey={sortArtists}
+          orderKey={orderArtists}
+          colOptions={colOptions}
+        >
           <Title
+            colOptions={colOptions}
             isListView={isListView}
             orderArtists={orderArtists}
+            setColumnVisibility={setColumnVisibility}
             setOrderArtists={setOrderArtists}
             setSortArtists={setSortArtists}
             setViewArtists={setViewArtists}
@@ -55,8 +85,10 @@ const ArtistList = () => {
 };
 
 const Title = ({
+  colOptions,
   isListView,
   orderArtists,
+  setColumnVisibility,
   setOrderArtists,
   setSortArtists,
   setViewArtists,
@@ -111,6 +143,45 @@ const Title = ({
               icon={orderArtists === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
           </>
+        )}
+        {viewArtists === 'list' && (
+          <FilterMenu
+            label="Options"
+            icon="EllipsisCircleIcon"
+            setter={setColumnVisibility}
+            entries={[
+              {
+                label: 'Title',
+                disabled: true,
+                checked: true,
+              },
+              {
+                label: 'Country',
+                attr: 'colArtistsCountry',
+                checked: colOptions.country,
+              },
+              {
+                label: 'Genre',
+                attr: 'colArtistsGenre',
+                checked: colOptions.genre,
+              },
+              {
+                label: 'Added',
+                attr: 'colArtistsAddedAt',
+                checked: colOptions.addedAt,
+              },
+              {
+                label: 'Last Played',
+                attr: 'colArtistsLastPlayed',
+                checked: colOptions.lastPlayed,
+              },
+              {
+                label: 'Rating',
+                attr: 'colArtistsUserRating',
+                checked: colOptions.userRating,
+              },
+            ]}
+          />
         )}
       </FilterWrap>
     </>

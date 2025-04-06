@@ -39,6 +39,12 @@ const useGetCollectionItems = ({
   const collectionTitle = collectionInfo?.title;
   const collectionRating = collectionInfo?.userRating;
 
+  const colCollectionArtistsCountry = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsCountry);
+  const colCollectionArtistsGenre = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsGenre);
+  const colCollectionArtistsAddedAt = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsAddedAt);
+  const colCollectionArtistsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsLastPlayed);
+  const colCollectionArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsUserRating);
+
   const colCollectionAlbumsArtist = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsArtist);
   const colCollectionAlbumsReleaseDate = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsReleaseDate);
   const colCollectionAlbumsAddedAt = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsAddedAt);
@@ -89,13 +95,22 @@ const useGetCollectionItems = ({
     sortCollectionItems: actualSortCollectionItems,
     orderCollectionItems,
 
-    colOptions: {
-      artist: colCollectionAlbumsArtist,
-      releaseDate: colCollectionAlbumsReleaseDate,
-      addedAt: colCollectionAlbumsAddedAt,
-      lastPlayed: colCollectionAlbumsLastPlayed,
-      userRating: colCollectionAlbumsUserRating,
-    },
+    colOptions:
+      mediaType === 'Artist'
+        ? {
+            country: colCollectionArtistsCountry,
+            genre: colCollectionArtistsGenre,
+            addedAt: colCollectionArtistsAddedAt,
+            lastPlayed: colCollectionArtistsLastPlayed,
+            userRating: colCollectionArtistsUserRating,
+          }
+        : {
+            artist: colCollectionAlbumsArtist,
+            releaseDate: colCollectionAlbumsReleaseDate,
+            addedAt: colCollectionAlbumsAddedAt,
+            lastPlayed: colCollectionAlbumsLastPlayed,
+            userRating: colCollectionAlbumsUserRating,
+          },
 
     setViewCollectionItems,
     setSortCollectionItems,

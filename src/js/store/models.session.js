@@ -130,6 +130,12 @@ const sessionState = {
   orderAlbumStyles: 'asc',
   orderAlbumStyleItems: 'asc',
 
+  colArtistsCountry: true,
+  colArtistsGenre: true,
+  colArtistsAddedAt: false,
+  colArtistsLastPlayed: false,
+  colArtistsUserRating: true,
+
   colArtistAlbumsReleaseDate: true,
   colArtistAlbumsAddedAt: false,
   colArtistAlbumsLastPlayed: false,
@@ -164,6 +170,12 @@ const sessionState = {
 
   colCollectionAddedAt: true,
   colCollectionUserRating: true,
+
+  colCollectionArtistsCountry: true,
+  colCollectionArtistsGenre: true,
+  colCollectionArtistsAddedAt: false,
+  colCollectionArtistsLastPlayed: false,
+  colCollectionArtistsUserRating: true,
 
   colCollectionAlbumsArtist: true,
   colCollectionAlbumsReleaseDate: true,

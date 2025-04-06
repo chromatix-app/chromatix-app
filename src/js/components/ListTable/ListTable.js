@@ -737,9 +737,16 @@ const StandardRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTempla
                 </div>
               );
 
+            case 'country':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.meta, 'text-trim')}>
+                  {entry.country}
+                </div>
+              );
+
             case 'genre':
               return (
-                <div key={rowKey + '-' + index} className={clsx(style.genre, 'text-trim')}>
+                <div key={rowKey + '-' + index} className={clsx(style.meta, 'text-trim')}>
                   {entry.genre}
                 </div>
               );

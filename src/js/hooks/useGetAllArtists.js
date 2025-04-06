@@ -14,6 +14,12 @@ const useGetAllArtists = () => {
   const sortArtists = useSelector(({ sessionModel }) => sessionModel.sortArtists);
   const orderArtists = useSelector(({ sessionModel }) => sessionModel.orderArtists);
 
+  const colArtistsCountry = useSelector(({ sessionModel }) => sessionModel.colArtistsCountry);
+  const colArtistsGenre = useSelector(({ sessionModel }) => sessionModel.colArtistsGenre);
+  const colArtistsAddedAt = useSelector(({ sessionModel }) => sessionModel.colArtistsAddedAt);
+  const colArtistsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colArtistsLastPlayed);
+  const colArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistsUserRating);
+
   const haveGotAllArtists = useSelector(({ appModel }) => appModel.haveGotAllArtists);
   const allArtists = useSelector(({ appModel }) => appModel.allArtists)?.filter(
     (artist) => artist.libraryId === currentLibraryId
@@ -39,6 +45,12 @@ const useGetAllArtists = () => {
     });
   };
 
+  const setColumnVisibility = (columnKey, columnValue) => {
+    dispatch.sessionModel.setSessionState({
+      [columnKey]: columnValue,
+    });
+  };
+
   useEffect(() => {
     plex.getAllArtists();
   }, []);
@@ -48,9 +60,18 @@ const useGetAllArtists = () => {
     sortArtists,
     orderArtists,
 
+    colOptions: {
+      country: colArtistsCountry,
+      genre: colArtistsGenre,
+      addedAt: colArtistsAddedAt,
+      lastPlayed: colArtistsLastPlayed,
+      userRating: colArtistsUserRating,
+    },
+
     setViewArtists,
     setSortArtists,
     setOrderArtists,
+    setColumnVisibility,
 
     sortedArtists,
   };

@@ -3,6 +3,7 @@ type Entry = {
   title?: string;
   album?: string;
   artist?: string;
+  country?: string;
   genre?: string;
   codec?: string;
   bitrate?: number;
@@ -86,6 +87,7 @@ const sortFunctions: Record<string, SortFunction> = {
   },
   album: (a, b) => (a.album ?? '').localeCompare(b.album ?? ''),
   artist: (a, b) => (a.artist ?? '').localeCompare(b.artist ?? ''),
+  country: (a, b) => (a.country ?? '').localeCompare(b.country ?? ''),
   genre: (a, b) => (a.genre ?? '').localeCompare(b.genre ?? ''),
   codec: (a, b) => (a.codec ?? '').localeCompare(b.codec ?? ''),
 

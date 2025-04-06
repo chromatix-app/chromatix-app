@@ -5,7 +5,7 @@
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { FilterSelect, FilterToggle, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
+import { FilterMenu, FilterSelect, FilterToggle, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
 import { useGetCollectionItems } from 'js/hooks';
 
 // ======================================================================
@@ -22,10 +22,12 @@ const ArtistGenreItems = () => {
     viewCollectionItems,
     sortCollectionItems,
     orderCollectionItems,
+    colOptions,
 
     setViewCollectionItems,
     setSortCollectionItems,
     setOrderCollectionItems,
+    setColumnVisibility,
 
     collectionThumb,
     collectionTitle,
@@ -52,10 +54,12 @@ const ArtistGenreItems = () => {
         <Title
           collectionThumb={collectionThumb}
           collectionTitle={collectionTitle}
+          colOptions={colOptions}
           genreId={genreId}
           isListView={isListView}
           libraryId={libraryId}
           orderCollectionItems={orderCollectionItems}
+          setColumnVisibility={setColumnVisibility}
           setOrderCollectionItems={setOrderCollectionItems}
           setSortCollectionItems={setSortCollectionItems}
           setViewCollectionItems={setViewCollectionItems}
@@ -72,14 +76,17 @@ const ArtistGenreItems = () => {
           entries={sortedCollectionItems}
           sortKey={sortCollectionItems}
           orderKey={orderCollectionItems}
+          colOptions={colOptions}
         >
           <Title
             collectionThumb={collectionThumb}
             collectionTitle={collectionTitle}
+            colOptions={colOptions}
             genreId={genreId}
             isListView={isListView}
             libraryId={libraryId}
             orderCollectionItems={orderCollectionItems}
+            setColumnVisibility={setColumnVisibility}
             setOrderCollectionItems={setOrderCollectionItems}
             setSortCollectionItems={setSortCollectionItems}
             setViewCollectionItems={setViewCollectionItems}
@@ -96,10 +103,12 @@ const ArtistGenreItems = () => {
 const Title = ({
   collectionThumb,
   collectionTitle,
+  colOptions,
   genreId,
   isListView,
   libraryId,
   orderCollectionItems,
+  setColumnVisibility,
   setOrderCollectionItems,
   setSortCollectionItems,
   setViewCollectionItems,
@@ -159,6 +168,45 @@ const Title = ({
                 icon={orderCollectionItems === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
               />
             </>
+          )}
+          {viewCollectionItems === 'list' && (
+            <FilterMenu
+              label="Options"
+              icon="EllipsisCircleIcon"
+              setter={setColumnVisibility}
+              entries={[
+                {
+                  label: 'Title',
+                  disabled: true,
+                  checked: true,
+                },
+                {
+                  label: 'Country',
+                  attr: 'colCollectionArtistsCountry',
+                  checked: colOptions.country,
+                },
+                {
+                  label: 'Genre',
+                  attr: 'colCollectionArtistsGenre',
+                  checked: colOptions.genre,
+                },
+                {
+                  label: 'Added',
+                  attr: 'colCollectionArtistsAddedAt',
+                  checked: colOptions.addedAt,
+                },
+                {
+                  label: 'Last Played',
+                  attr: 'colCollectionArtistsLastPlayed',
+                  checked: colOptions.lastPlayed,
+                },
+                {
+                  label: 'Rating',
+                  attr: 'colCollectionArtistsUserRating',
+                  checked: colOptions.userRating,
+                },
+              ]}
+            />
           )}
         </>
       }
