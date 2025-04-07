@@ -2,8 +2,6 @@
 // IMPORTS
 // ======================================================================
 
-import { useSelector } from 'react-redux';
-
 import {
   FilterMenu,
   FilterSelect,
@@ -25,6 +23,7 @@ const PlaylistList = () => {
     viewPlaylists,
     sortPlaylists,
     orderPlaylists,
+    gridOptions,
     colOptions,
 
     setViewPlaylists,
@@ -45,6 +44,7 @@ const PlaylistList = () => {
       {(isLoading || isEmptyList || isGridView) && (
         <Title
           colOptions={colOptions}
+          gridOptions={gridOptions}
           isListView={isListView}
           orderPlaylists={orderPlaylists}
           setColumnVisibility={setColumnVisibility}
@@ -57,7 +57,7 @@ const PlaylistList = () => {
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
-      {isGridView && <ListCards variant="playlists" entries={sortedPlaylists} />}
+      {isGridView && <ListCards variant="playlists" entries={sortedPlaylists} showRatings={gridOptions.userRating} />}
       {isListView && (
         <ListTable
           variant="playlists"
@@ -68,6 +68,7 @@ const PlaylistList = () => {
         >
           <Title
             colOptions={colOptions}
+            gridOptions={gridOptions}
             isListView={isListView}
             orderPlaylists={orderPlaylists}
             setColumnVisibility={setColumnVisibility}
@@ -86,6 +87,7 @@ const PlaylistList = () => {
 
 const Title = ({
   colOptions,
+  gridOptions,
   isListView,
   orderPlaylists,
   setColumnVisibility,
@@ -96,10 +98,6 @@ const Title = ({
   sortPlaylists,
   viewPlaylists,
 }) => {
-  const optionShowStarRatings_Deprecated = useSelector(
-    ({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated
-  );
-
   return (
     <>
       <TitleHeading
@@ -133,8 +131,7 @@ const Title = ({
                 { value: 'addedAt', label: 'Date added' },
                 { value: 'lastPlayed', label: 'Date played' },
                 { value: 'duration', label: 'Duration' },
-                // only allow sorting by rating if the option is enabled
-                ...(optionShowStarRatings_Deprecated ? [{ value: 'userRating', label: 'Rating' }] : []),
+                { value: 'userRating', label: 'Rating' },
                 { value: 'totalTracks', label: 'Track count' },
               ]}
               setter={setSortPlaylists}
@@ -148,12 +145,24 @@ const Title = ({
               setter={setOrderPlaylists}
               icon={orderPlaylists === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
+            <FilterMenu
+              label="Options"
+              icon="CogIcon"
+              setter={setColumnVisibility}
+              entries={[
+                {
+                  label: 'Show star ratings',
+                  attr: 'gridPlaylistsUserRating',
+                  checked: gridOptions.userRating,
+                },
+              ]}
+            />
           </>
         )}
         {viewPlaylists === 'list' && (
           <FilterMenu
             label="Options"
-            icon="EllipsisCircleIcon"
+            icon="CogIcon"
             setter={setColumnVisibility}
             entries={[
               {

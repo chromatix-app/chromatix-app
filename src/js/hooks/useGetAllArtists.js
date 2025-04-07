@@ -14,6 +14,8 @@ const useGetAllArtists = () => {
   const sortArtists = useSelector(({ sessionModel }) => sessionModel.sortArtists);
   const orderArtists = useSelector(({ sessionModel }) => sessionModel.orderArtists);
 
+  const gridArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.gridArtistsUserRating);
+
   const colArtistsCountry = useSelector(({ sessionModel }) => sessionModel.colArtistsCountry);
   const colArtistsGenre = useSelector(({ sessionModel }) => sessionModel.colArtistsGenre);
   const colArtistsAddedAt = useSelector(({ sessionModel }) => sessionModel.colArtistsAddedAt);
@@ -59,6 +61,10 @@ const useGetAllArtists = () => {
     viewArtists,
     sortArtists,
     orderArtists,
+
+    gridOptions: {
+      userRating: gridArtistsUserRating,
+    },
 
     colOptions: {
       country: colArtistsCountry,

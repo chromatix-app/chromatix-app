@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { NavLink, useParams } from 'react-router-dom';
 
 import { FilterMenu, ListTable, Loading, StarRating, TitleHeading } from 'js/components';
@@ -127,10 +127,6 @@ const Title = ({
   isListView,
   libraryId,
 }) => {
-  const optionShowStarRatings_Deprecated = useSelector(
-    ({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated
-  );
-
   return (
     <TitleHeading
       key={libraryId + '-' + albumId}
@@ -151,17 +147,8 @@ const Title = ({
             {albumTrackCount} track{albumTrackCount !== 1 && 's'}
             {(albumReleaseDate || albumTrackCount) && albumDurationString && ' • '}
             {albumDurationString}
-            {(albumReleaseDate || albumTrackCount || albumDurationString) && optionShowStarRatings_Deprecated && ' • '}
-            {optionShowStarRatings_Deprecated && (
-              <StarRating
-                variant="title"
-                type="album"
-                ratingKey={albumId}
-                rating={albumRating}
-                editable
-                alwaysVisible
-              />
-            )}
+            {(albumReleaseDate || albumTrackCount || albumDurationString) && ' • '}
+            <StarRating variant="title" type="album" ratingKey={albumId} rating={albumRating} editable alwaysVisible />
           </>
         ) : (
           <>&nbsp;</>
@@ -171,7 +158,7 @@ const Title = ({
       optionsMenu={
         <FilterMenu
           variant="Large"
-          icon="EllipsisCircleIcon"
+          icon="CogIcon"
           iconStrokeWidth={1.2}
           setter={setColumnVisibility}
           entries={[

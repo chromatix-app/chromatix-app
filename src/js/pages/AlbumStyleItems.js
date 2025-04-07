@@ -2,7 +2,6 @@
 // IMPORTS
 // ======================================================================
 
-import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { FilterMenu, FilterSelect, FilterToggle, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
@@ -22,6 +21,7 @@ const AlbumStyleItems = () => {
     viewCollectionItems,
     sortCollectionItems,
     orderCollectionItems,
+    gridOptions,
     colOptions,
 
     setViewCollectionItems,
@@ -55,7 +55,7 @@ const AlbumStyleItems = () => {
           collectionThumb={collectionThumb}
           collectionTitle={collectionTitle}
           colOptions={colOptions}
-          styleId={styleId}
+          gridOptions={gridOptions}
           isListView={isListView}
           libraryId={libraryId}
           orderCollectionItems={orderCollectionItems}
@@ -65,11 +65,14 @@ const AlbumStyleItems = () => {
           setViewCollectionItems={setViewCollectionItems}
           sortCollectionItems={sortCollectionItems}
           sortedCollectionItems={sortedCollectionItems}
+          styleId={styleId}
           viewCollectionItems={viewCollectionItems}
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
-      {isGridView && <ListCards variant={'albums'} entries={sortedCollectionItems} />}
+      {isGridView && (
+        <ListCards variant={'albums'} entries={sortedCollectionItems} showRatings={gridOptions.userRating} />
+      )}
       {isListView && (
         <ListTable
           variant="albumStyleItems"
@@ -82,7 +85,7 @@ const AlbumStyleItems = () => {
             collectionThumb={collectionThumb}
             collectionTitle={collectionTitle}
             colOptions={colOptions}
-            styleId={styleId}
+            gridOptions={gridOptions}
             isListView={isListView}
             libraryId={libraryId}
             orderCollectionItems={orderCollectionItems}
@@ -92,6 +95,7 @@ const AlbumStyleItems = () => {
             setViewCollectionItems={setViewCollectionItems}
             sortCollectionItems={sortCollectionItems}
             sortedCollectionItems={sortedCollectionItems}
+            styleId={styleId}
             viewCollectionItems={viewCollectionItems}
           />
         </ListTable>
@@ -104,7 +108,7 @@ const Title = ({
   collectionThumb,
   collectionTitle,
   colOptions,
-  styleId,
+  gridOptions,
   isListView,
   libraryId,
   orderCollectionItems,
@@ -114,12 +118,9 @@ const Title = ({
   setViewCollectionItems,
   sortCollectionItems,
   sortedCollectionItems,
+  styleId,
   viewCollectionItems,
 }) => {
-  const optionShowStarRatings_Deprecated = useSelector(
-    ({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated
-  );
-
   return (
     <TitleHeading
       key={libraryId + '-' + styleId}
@@ -157,8 +158,7 @@ const Title = ({
                   { value: 'addedAt', label: 'Date added' },
                   { value: 'lastPlayed', label: 'Date played' },
                   { value: 'releaseDate', label: 'Date released' },
-                  // only allow sorting by rating if the option is enabled
-                  ...(optionShowStarRatings_Deprecated ? [{ value: 'userRating', label: 'Rating' }] : []),
+                  { value: 'userRating', label: 'Rating' },
                 ]}
                 setter={setSortCollectionItems}
               />
@@ -171,12 +171,24 @@ const Title = ({
                 setter={setOrderCollectionItems}
                 icon={orderCollectionItems === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
               />
+              <FilterMenu
+                label="Options"
+                icon="CogIcon"
+                setter={setColumnVisibility}
+                entries={[
+                  {
+                    label: 'Show star ratings',
+                    attr: 'gridAlbumCollectionItemsUserRating',
+                    checked: gridOptions.userRating,
+                  },
+                ]}
+              />
             </>
           )}
           {viewCollectionItems === 'list' && (
             <FilterMenu
               label="Options"
-              icon="EllipsisCircleIcon"
+              icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
                 {

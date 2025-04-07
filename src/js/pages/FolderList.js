@@ -138,8 +138,8 @@ const Title = ({
               value={sortFolders}
               options={[
                 { value: 'sortOrder', label: 'Default' },
-                { value: 'title', label: 'Title' },
                 { value: 'kind', label: 'Kind' },
+                { value: 'title', label: 'Title' },
               ]}
               setter={setSortFolders}
             />
@@ -157,7 +157,7 @@ const Title = ({
         {viewFolders === 'list' && (
           <FilterMenu
             label="Options"
-            icon="EllipsisCircleIcon"
+            icon="CogIcon"
             setter={setColumnVisibility}
             entries={[
               {

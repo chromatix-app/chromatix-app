@@ -39,6 +39,13 @@ const useGetCollectionItems = ({
   const collectionTitle = collectionInfo?.title;
   const collectionRating = collectionInfo?.userRating;
 
+  const gridArtistCollectionItemsUserRating = useSelector(
+    ({ sessionModel }) => sessionModel.gridArtistCollectionItemsUserRating
+  );
+  const gridAlbumCollectionItemsUserRating = useSelector(
+    ({ sessionModel }) => sessionModel.gridAlbumCollectionItemsUserRating
+  );
+
   const colCollectionArtistsCountry = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsCountry);
   const colCollectionArtistsGenre = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsGenre);
   const colCollectionArtistsAddedAt = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsAddedAt);
@@ -95,6 +102,15 @@ const useGetCollectionItems = ({
     viewCollectionItems,
     sortCollectionItems: actualSortCollectionItems,
     orderCollectionItems,
+
+    gridOptions:
+      mediaType === 'Artist'
+        ? {
+            userRating: gridArtistCollectionItemsUserRating,
+          }
+        : {
+            userRating: gridAlbumCollectionItemsUserRating,
+          },
 
     colOptions:
       mediaType === 'Artist'

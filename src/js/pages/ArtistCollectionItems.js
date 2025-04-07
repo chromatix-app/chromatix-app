@@ -2,7 +2,6 @@
 // IMPORTS
 // ======================================================================
 
-import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -31,6 +30,7 @@ const ArtistCollectionItems = () => {
     viewCollectionItems,
     sortCollectionItems,
     orderCollectionItems,
+    gridOptions,
     colOptions,
 
     setViewCollectionItems,
@@ -66,6 +66,7 @@ const ArtistCollectionItems = () => {
           collectionThumb={collectionThumb}
           collectionTitle={collectionTitle}
           colOptions={colOptions}
+          gridOptions={gridOptions}
           isListView={isListView}
           libraryId={libraryId}
           orderCollectionItems={orderCollectionItems}
@@ -79,7 +80,9 @@ const ArtistCollectionItems = () => {
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
-      {isGridView && <ListCards variant={'artists'} entries={sortedCollectionItems} />}
+      {isGridView && (
+        <ListCards variant={'artists'} entries={sortedCollectionItems} showRatings={gridOptions.userRating} />
+      )}
       {isListView && (
         <ListTable
           variant="artistCollectionItems"
@@ -94,6 +97,7 @@ const ArtistCollectionItems = () => {
             collectionThumb={collectionThumb}
             collectionTitle={collectionTitle}
             colOptions={colOptions}
+            gridOptions={gridOptions}
             isListView={isListView}
             libraryId={libraryId}
             orderCollectionItems={orderCollectionItems}
@@ -117,6 +121,7 @@ const Title = ({
   collectionThumb,
   collectionTitle,
   colOptions,
+  gridOptions,
   isListView,
   libraryId,
   orderCollectionItems,
@@ -128,26 +133,20 @@ const Title = ({
   sortedCollectionItems,
   viewCollectionItems,
 }) => {
-  const optionShowStarRatings_Deprecated = useSelector(
-    ({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated
-  );
-
   return (
     <TitleHeading
       key={libraryId + '-' + collectionId}
       thumb={collectionThumb}
       title={collectionTitle}
       detail={
-        optionShowStarRatings_Deprecated && (
-          <StarRating
-            variant="title"
-            type="collection"
-            ratingKey={collectionId}
-            rating={collectionRating}
-            editable
-            alwaysVisible
-          />
-        )
+        <StarRating
+          variant="title"
+          type="collection"
+          ratingKey={collectionId}
+          rating={collectionRating}
+          editable
+          alwaysVisible
+        />
       }
       subtitle={
         sortedCollectionItems ? (
@@ -176,8 +175,7 @@ const Title = ({
                   { value: 'title', label: 'Alphabetical' },
                   { value: 'addedAt', label: 'Date added' },
                   { value: 'lastPlayed', label: 'Date played' },
-                  // only allow sorting by rating if the option is enabled
-                  ...(optionShowStarRatings_Deprecated ? [{ value: 'userRating', label: 'Rating' }] : []),
+                  { value: 'userRating', label: 'Rating' },
                 ]}
                 setter={setSortCollectionItems}
               />
@@ -190,12 +188,24 @@ const Title = ({
                 setter={setOrderCollectionItems}
                 icon={orderCollectionItems === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
               />
+              <FilterMenu
+                label="Options"
+                icon="CogIcon"
+                setter={setColumnVisibility}
+                entries={[
+                  {
+                    label: 'Show star ratings',
+                    attr: 'gridArtistCollectionItemsUserRating',
+                    checked: gridOptions.userRating,
+                  },
+                ]}
+              />
             </>
           )}
           {viewCollectionItems === 'list' && (
             <FilterMenu
               label="Options"
-              icon="EllipsisCircleIcon"
+              icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
                 {

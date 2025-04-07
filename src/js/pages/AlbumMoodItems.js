@@ -2,7 +2,6 @@
 // IMPORTS
 // ======================================================================
 
-import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { FilterMenu, FilterSelect, FilterToggle, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
@@ -22,6 +21,7 @@ const AlbumMoodItems = () => {
     viewCollectionItems,
     sortCollectionItems,
     orderCollectionItems,
+    gridOptions,
     colOptions,
 
     setViewCollectionItems,
@@ -55,9 +55,10 @@ const AlbumMoodItems = () => {
           collectionThumb={collectionThumb}
           collectionTitle={collectionTitle}
           colOptions={colOptions}
-          moodId={moodId}
+          gridOptions={gridOptions}
           isListView={isListView}
           libraryId={libraryId}
+          moodId={moodId}
           orderCollectionItems={orderCollectionItems}
           setColumnVisibility={setColumnVisibility}
           setOrderCollectionItems={setOrderCollectionItems}
@@ -69,7 +70,9 @@ const AlbumMoodItems = () => {
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
-      {isGridView && <ListCards variant={'albums'} entries={sortedCollectionItems} />}
+      {isGridView && (
+        <ListCards variant={'albums'} entries={sortedCollectionItems} showRatings={gridOptions.userRating} />
+      )}
       {isListView && (
         <ListTable
           variant="albumMoodItems"
@@ -82,9 +85,10 @@ const AlbumMoodItems = () => {
             collectionThumb={collectionThumb}
             collectionTitle={collectionTitle}
             colOptions={colOptions}
-            moodId={moodId}
+            gridOptions={gridOptions}
             isListView={isListView}
             libraryId={libraryId}
+            moodId={moodId}
             orderCollectionItems={orderCollectionItems}
             setColumnVisibility={setColumnVisibility}
             setOrderCollectionItems={setOrderCollectionItems}
@@ -104,9 +108,10 @@ const Title = ({
   collectionThumb,
   collectionTitle,
   colOptions,
-  moodId,
+  gridOptions,
   isListView,
   libraryId,
+  moodId,
   orderCollectionItems,
   setColumnVisibility,
   setOrderCollectionItems,
@@ -116,10 +121,6 @@ const Title = ({
   sortedCollectionItems,
   viewCollectionItems,
 }) => {
-  const optionShowStarRatings_Deprecated = useSelector(
-    ({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated
-  );
-
   return (
     <TitleHeading
       key={libraryId + '-' + moodId}
@@ -157,8 +158,7 @@ const Title = ({
                   { value: 'addedAt', label: 'Date added' },
                   { value: 'lastPlayed', label: 'Date played' },
                   { value: 'releaseDate', label: 'Date released' },
-                  // only allow sorting by rating if the option is enabled
-                  ...(optionShowStarRatings_Deprecated ? [{ value: 'userRating', label: 'Rating' }] : []),
+                  { value: 'userRating', label: 'Rating' },
                 ]}
                 setter={setSortCollectionItems}
               />
@@ -171,12 +171,24 @@ const Title = ({
                 setter={setOrderCollectionItems}
                 icon={orderCollectionItems === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
               />
+              <FilterMenu
+                label="Options"
+                icon="CogIcon"
+                setter={setColumnVisibility}
+                entries={[
+                  {
+                    label: 'Show star ratings',
+                    attr: 'gridAlbumCollectionItemsUserRating',
+                    checked: gridOptions.userRating,
+                  },
+                ]}
+              />
             </>
           )}
           {viewCollectionItems === 'list' && (
             <FilterMenu
               label="Options"
-              icon="EllipsisCircleIcon"
+              icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
                 {

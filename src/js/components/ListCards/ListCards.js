@@ -30,7 +30,7 @@ const iconImageMap = {
   albumStyles: 'AlbumStylesIcon',
 };
 
-const ListCards = ({ variant, folderId, entries, playingOrder, sortKey }) => {
+const ListCards = ({ variant, folderId, entries, playingOrder, sortKey, showRatings = false }) => {
   const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
 
   const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
@@ -88,6 +88,7 @@ const ListCards = ({ variant, folderId, entries, playingOrder, sortKey }) => {
               folderId={folderId}
               playingOrder={playingOrder}
               sortKey={sortKey}
+              showRatings={showRatings}
               isCurrentlyLoaded={isCurrentlyLoaded}
               isCurrentlyPlaying={playerPlaying}
               {...entry}
@@ -119,6 +120,7 @@ const ListEntry = React.memo(
 
     playingOrder,
     sortKey,
+    showRatings,
 
     isCurrentlyLoaded,
     isCurrentlyPlaying,
@@ -134,9 +136,6 @@ const ListEntry = React.memo(
 
     const optionShowFullTitles_Deprecated = useSelector(
       ({ sessionModel }) => sessionModel.optionShowFullTitles_Deprecated
-    );
-    const optionShowStarRatings_Deprecated = useSelector(
-      ({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated
     );
 
     // Play button handler
@@ -301,7 +300,7 @@ const ListEntry = React.memo(
             <div className={style.subtitle}>{lastPlayed ? moment(lastPlayed * 1000).format('YY-MM-DD') : '-'}</div>
           )} */}
 
-          {optionShowStarRatings_Deprecated && typeof userRating !== 'undefined' && (
+          {showRatings && typeof userRating !== 'undefined' && (
             <div className={style.rating}>
               <StarRating variant="card" type={variant} ratingKey={ratingKey} rating={userRating} />
             </div>

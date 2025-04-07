@@ -55,7 +55,6 @@ const sessionState = {
   menuShowAlbumStyles: true,
 
   optionShowFullTitles_Deprecated: false,
-  optionShowStarRatings_Deprecated: true,
   optionLogPlexPlayback: true,
 
   queueIsVisible: false,
@@ -135,6 +134,16 @@ const sessionState = {
   orderArtistStyleItems: 'asc',
   orderAlbumStyles: 'asc',
   orderAlbumStyleItems: 'asc',
+
+  // GRID VIEW OPTIONS
+
+  gridArtistsUserRating: true,
+  gridArtistAlbumsUserRating: true,
+  gridArtistCollectionItemsUserRating: true,
+  gridAlbumsUserRating: true,
+  gridAlbumCollectionItemsUserRating: true,
+  gridPlaylistsUserRating: true,
+  gridCollectionsUserRating: true,
 
   // LIST VIEW COLUMN VISIBILITY OPTIONS
 

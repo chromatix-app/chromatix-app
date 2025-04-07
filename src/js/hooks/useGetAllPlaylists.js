@@ -14,6 +14,8 @@ const useGetAllPlaylists = () => {
   const sortPlaylists = useSelector(({ sessionModel }) => sessionModel.sortPlaylists);
   const orderPlaylists = useSelector(({ sessionModel }) => sessionModel.orderPlaylists);
 
+  const gridPlaylistsUserRating = useSelector(({ sessionModel }) => sessionModel.gridPlaylistsUserRating);
+
   const colPlaylistsTotalTracks = useSelector(({ sessionModel }) => sessionModel.colPlaylistsTotalTracks);
   const colPlaylistsDuration = useSelector(({ sessionModel }) => sessionModel.colPlaylistsDuration);
   const colPlaylistsAddedAt = useSelector(({ sessionModel }) => sessionModel.colPlaylistsAddedAt);
@@ -58,6 +60,11 @@ const useGetAllPlaylists = () => {
     viewPlaylists,
     sortPlaylists,
     orderPlaylists,
+
+    gridOptions: {
+      userRating: gridPlaylistsUserRating,
+    },
+
     colOptions: {
       totalTracks: colPlaylistsTotalTracks,
       duration: colPlaylistsDuration,

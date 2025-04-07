@@ -2,7 +2,6 @@
 // IMPORTS
 // ======================================================================
 
-import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { FilterMenu, FilterSelect, FilterToggle, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
@@ -22,6 +21,7 @@ const ArtistGenreItems = () => {
     viewCollectionItems,
     sortCollectionItems,
     orderCollectionItems,
+    gridOptions,
     colOptions,
 
     setViewCollectionItems,
@@ -56,6 +56,7 @@ const ArtistGenreItems = () => {
           collectionTitle={collectionTitle}
           colOptions={colOptions}
           genreId={genreId}
+          gridOptions={gridOptions}
           isListView={isListView}
           libraryId={libraryId}
           orderCollectionItems={orderCollectionItems}
@@ -69,7 +70,9 @@ const ArtistGenreItems = () => {
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
-      {isGridView && <ListCards variant={'artists'} entries={sortedCollectionItems} />}
+      {isGridView && (
+        <ListCards variant={'artists'} entries={sortedCollectionItems} showRatings={gridOptions.userRating} />
+      )}
       {isListView && (
         <ListTable
           variant="artistGenreItems"
@@ -83,6 +86,7 @@ const ArtistGenreItems = () => {
             collectionTitle={collectionTitle}
             colOptions={colOptions}
             genreId={genreId}
+            gridOptions={gridOptions}
             isListView={isListView}
             libraryId={libraryId}
             orderCollectionItems={orderCollectionItems}
@@ -105,6 +109,7 @@ const Title = ({
   collectionTitle,
   colOptions,
   genreId,
+  gridOptions,
   isListView,
   libraryId,
   orderCollectionItems,
@@ -116,10 +121,6 @@ const Title = ({
   sortedCollectionItems,
   viewCollectionItems,
 }) => {
-  const optionShowStarRatings_Deprecated = useSelector(
-    ({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated
-  );
-
   return (
     <TitleHeading
       key={libraryId + '-' + genreId}
@@ -153,8 +154,7 @@ const Title = ({
                   { value: 'title', label: 'Alphabetical' },
                   { value: 'addedAt', label: 'Date added' },
                   { value: 'lastPlayed', label: 'Date played' },
-                  // only allow sorting by rating if the option is enabled
-                  ...(optionShowStarRatings_Deprecated ? [{ value: 'userRating', label: 'Rating' }] : []),
+                  { value: 'userRating', label: 'Rating' },
                 ]}
                 setter={setSortCollectionItems}
               />
@@ -167,12 +167,24 @@ const Title = ({
                 setter={setOrderCollectionItems}
                 icon={orderCollectionItems === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
               />
+              <FilterMenu
+                label="Options"
+                icon="CogIcon"
+                setter={setColumnVisibility}
+                entries={[
+                  {
+                    label: 'Show star ratings',
+                    attr: 'gridArtistCollectionItemsUserRating',
+                    checked: gridOptions.userRating,
+                  },
+                ]}
+              />
             </>
           )}
           {viewCollectionItems === 'list' && (
             <FilterMenu
               label="Options"
-              icon="EllipsisCircleIcon"
+              icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
                 {

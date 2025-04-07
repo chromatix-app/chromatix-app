@@ -14,6 +14,8 @@ const useGetAllAlbums = () => {
   const sortAlbums = useSelector(({ sessionModel }) => sessionModel.sortAlbums);
   const orderAlbums = useSelector(({ sessionModel }) => sessionModel.orderAlbums);
 
+  const gridAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.gridAlbumsUserRating);
+
   const colAlbumsArtist = useSelector(({ sessionModel }) => sessionModel.colAlbumsArtist);
   const colAlbumsGenre = useSelector(({ sessionModel }) => sessionModel.colAlbumsGenre);
   const colAlbumsReleaseDate = useSelector(({ sessionModel }) => sessionModel.colAlbumsReleaseDate);
@@ -65,6 +67,10 @@ const useGetAllAlbums = () => {
     viewAlbums,
     sortAlbums: actualSortAlbums,
     orderAlbums,
+
+    gridOptions: {
+      userRating: gridAlbumsUserRating,
+    },
 
     colOptions: {
       artist: colAlbumsArtist,

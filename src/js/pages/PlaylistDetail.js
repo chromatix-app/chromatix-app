@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { FilterMenu, ListTable, Loading, StarRating, TitleHeading } from 'js/components';
@@ -113,10 +113,6 @@ const Title = ({
   playlistTracks,
   setColumnVisibility,
 }) => {
-  const optionShowStarRatings_Deprecated = useSelector(
-    ({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated
-  );
-
   return (
     <TitleHeading
       key={libraryId + '-' + playlistId}
@@ -127,17 +123,16 @@ const Title = ({
         playlistTracks ? (
           <>
             {playlistDurationString}
-            {playlistDurationString && optionShowStarRatings_Deprecated && ' • '}
-            {optionShowStarRatings_Deprecated && (
-              <StarRating
-                variant="title"
-                type="playlist"
-                ratingKey={playlistId}
-                rating={playlistRating}
-                editable
-                alwaysVisible
-              />
-            )}
+            {playlistDurationString && ' • '}
+
+            <StarRating
+              variant="title"
+              type="playlist"
+              ratingKey={playlistId}
+              rating={playlistRating}
+              editable
+              alwaysVisible
+            />
           </>
         ) : (
           <>&nbsp;</>
@@ -147,7 +142,7 @@ const Title = ({
       optionsMenu={
         <FilterMenu
           variant="Large"
-          icon="EllipsisCircleIcon"
+          icon="CogIcon"
           iconStrokeWidth={1.2}
           setter={setColumnVisibility}
           entries={[

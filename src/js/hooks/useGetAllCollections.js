@@ -7,12 +7,16 @@ import * as plex from 'js/services/plex';
 const useGetAllCollections = (collectionKey) => {
   const dispatch = useDispatch();
 
+  // const mediaType = collectionKey.includes('Artist') ? 'Artist' : 'Album';
+
   const viewCollections = useSelector(({ sessionModel }) => sessionModel[`view${collectionKey}`]);
   const sortCollections = useSelector(({ sessionModel }) => sessionModel[`sort${collectionKey}`]);
   const orderCollections = useSelector(({ sessionModel }) => sessionModel[`order${collectionKey}`]);
 
   const allCollections = useSelector(({ appModel }) => appModel[`all${collectionKey}`]);
   const sortedCollections = allCollections ? sortList(allCollections, sortCollections, orderCollections) : null;
+
+  const gridCollectionsUserRating = useSelector(({ sessionModel }) => sessionModel.gridCollectionsUserRating);
 
   const colCollectionAddedAt = useSelector(({ sessionModel }) => sessionModel.colCollectionAddedAt);
   const colCollectionUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionUserRating);
@@ -54,6 +58,10 @@ const useGetAllCollections = (collectionKey) => {
     viewCollections,
     sortCollections,
     orderCollections,
+
+    gridOptions: {
+      userRating: gridCollectionsUserRating,
+    },
 
     colOptions: {
       addedAt: colCollectionAddedAt,

@@ -2,8 +2,6 @@
 // IMPORTS
 // ======================================================================
 
-import { useSelector } from 'react-redux';
-
 import {
   FilterMenu,
   FilterSelect,
@@ -25,6 +23,7 @@ const AlbumList = () => {
     viewAlbums,
     sortAlbums,
     orderAlbums,
+    gridOptions,
     colOptions,
 
     setViewAlbums,
@@ -45,6 +44,7 @@ const AlbumList = () => {
       {(isLoading || isEmptyList || isGridView) && (
         <Title
           colOptions={colOptions}
+          gridOptions={gridOptions}
           isListView={isListView}
           orderAlbums={orderAlbums}
           setColumnVisibility={setColumnVisibility}
@@ -57,7 +57,7 @@ const AlbumList = () => {
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
-      {isGridView && <ListCards variant="albums" entries={sortedAlbums} />}
+      {isGridView && <ListCards variant="albums" entries={sortedAlbums} showRatings={gridOptions.userRating} />}
       {isListView && (
         <ListTable
           variant="albums"
@@ -68,6 +68,7 @@ const AlbumList = () => {
         >
           <Title
             colOptions={colOptions}
+            gridOptions={gridOptions}
             isListView={isListView}
             orderAlbums={orderAlbums}
             setColumnVisibility={setColumnVisibility}
@@ -86,6 +87,7 @@ const AlbumList = () => {
 
 const Title = ({
   colOptions,
+  gridOptions,
   isListView,
   orderAlbums,
   setColumnVisibility,
@@ -96,10 +98,6 @@ const Title = ({
   sortedAlbums,
   viewAlbums,
 }) => {
-  const optionShowStarRatings_Deprecated = useSelector(
-    ({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated
-  );
-
   return (
     <>
       <TitleHeading
@@ -132,8 +130,7 @@ const Title = ({
                 { value: 'addedAt', label: 'Date added' },
                 { value: 'lastPlayed', label: 'Date played' },
                 { value: 'releaseDate', label: 'Date released' },
-                // only allow sorting by rating if the option is enabled
-                ...(optionShowStarRatings_Deprecated ? [{ value: 'userRating', label: 'Rating' }] : []),
+                { value: 'userRating', label: 'Rating' },
               ]}
               setter={setSortAlbums}
             />
@@ -146,12 +143,24 @@ const Title = ({
               setter={setOrderAlbums}
               icon={orderAlbums === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
+            <FilterMenu
+              label="Options"
+              icon="CogIcon"
+              setter={setColumnVisibility}
+              entries={[
+                {
+                  label: 'Show star ratings',
+                  attr: 'gridAlbumsUserRating',
+                  checked: gridOptions.userRating,
+                },
+              ]}
+            />
           </>
         )}
         {viewAlbums === 'list' && (
           <FilterMenu
             label="Options"
-            icon="EllipsisCircleIcon"
+            icon="CogIcon"
             setter={setColumnVisibility}
             entries={[
               {

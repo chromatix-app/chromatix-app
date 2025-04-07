@@ -3,7 +3,6 @@
 // ======================================================================
 
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -33,6 +32,7 @@ const ArtistDetail = () => {
     artistCountry,
     artistGenre,
     artistRating,
+    gridOptions,
     colOptions,
 
     artistAlbums,
@@ -77,6 +77,7 @@ const ArtistDetail = () => {
           artistReleasesTotal={artistReleasesTotal}
           artistThumb={artistThumb}
           colOptions={colOptions}
+          gridOptions={gridOptions}
           isListView={isListView}
           isLoading={isLoading}
           libraryId={libraryId}
@@ -95,20 +96,20 @@ const ArtistDetail = () => {
           {artistAlbums && artistAlbums.length > 0 && (
             <>
               <TitleSection title="Albums" />
-              <ListCards variant="albums" entries={artistAlbums} />
+              <ListCards variant="albums" entries={artistAlbums} showRatings={gridOptions.userRating} />
             </>
           )}
           {artistRelated &&
             artistRelated.map((entry, index) => (
               <React.Fragment key={index}>
                 <TitleSection title={entry.title} />
-                <ListCards variant="albums" entries={entry.related} />
+                <ListCards variant="albums" entries={entry.related} showRatings={gridOptions.userRating} />
               </React.Fragment>
             ))}
           {artistCompilations && artistCompilations.length > 0 && (
             <>
               <TitleSection title="Appears On" />
-              <ListCards variant="albums" entries={artistCompilations} />
+              <ListCards variant="albums" entries={artistCompilations} showRatings={gridOptions.userRating} />
             </>
           )}
         </>
@@ -131,6 +132,7 @@ const ArtistDetail = () => {
             artistReleasesTotal={artistReleasesTotal}
             artistThumb={artistThumb}
             colOptions={colOptions}
+            gridOptions={gridOptions}
             isListView={isListView}
             isLoading={isLoading}
             libraryId={libraryId}
@@ -157,6 +159,7 @@ const Title = ({
   artistReleasesTotal,
   artistThumb,
   colOptions,
+  gridOptions,
   isListView,
   isLoading,
   libraryId,
@@ -168,10 +171,6 @@ const Title = ({
   sortArtistAlbums,
   viewArtistAlbums,
 }) => {
-  const optionShowStarRatings_Deprecated = useSelector(
-    ({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated
-  );
-
   return (
     <TitleHeading
       key={libraryId + '-' + artistId}
@@ -183,17 +182,8 @@ const Title = ({
           {artistCountry}
           {artistCountry && artistGenre && ' • '}
           {artistGenre}
-          {(artistCountry || artistGenre) && optionShowStarRatings_Deprecated && ' • '}
-          {optionShowStarRatings_Deprecated && (
-            <StarRating
-              variant="title"
-              type="artist"
-              ratingKey={artistId}
-              rating={artistRating}
-              editable
-              alwaysVisible
-            />
-          )}
+          {(artistCountry || artistGenre) && ' • '}
+          <StarRating variant="title" type="artist" ratingKey={artistId} rating={artistRating} editable alwaysVisible />
         </>
       }
       padding={!isListView}
@@ -220,8 +210,7 @@ const Title = ({
                   { value: 'addedAt', label: 'Date added' },
                   { value: 'lastPlayed', label: 'Date played' },
                   { value: 'releaseDate', label: 'Date released' },
-                  // only allow sorting by rating if the option is enabled
-                  ...(optionShowStarRatings_Deprecated ? [{ value: 'userRating', label: 'Rating' }] : []),
+                  { value: 'userRating', label: 'Rating' },
                 ]}
                 setter={setSortArtistAlbums}
               />
@@ -234,12 +223,24 @@ const Title = ({
                 setter={setOrderArtistAlbums}
                 icon={orderArtistAlbums === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
               />
+              <FilterMenu
+                label="Options"
+                icon="CogIcon"
+                setter={setColumnVisibility}
+                entries={[
+                  {
+                    label: 'Show star ratings',
+                    attr: 'gridArtistAlbumsUserRating',
+                    checked: gridOptions.userRating,
+                  },
+                ]}
+              />
             </>
           )}
           {viewArtistAlbums === 'list' && (
             <FilterMenu
               label="Options"
-              icon="EllipsisCircleIcon"
+              icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
                 {
