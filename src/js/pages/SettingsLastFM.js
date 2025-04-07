@@ -28,7 +28,7 @@ const Component = () => {
           </a>
           .
         </p>
-        <hr />
+        {/* <hr />
         <p>
           <i>A fun fact...</i>
         </p>
@@ -38,7 +38,7 @@ const Component = () => {
             Last.fm dashboard
           </a>{' '}
           page!
-        </p>
+        </p> */}
       </PageText>
     </>
   );

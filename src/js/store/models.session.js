@@ -169,8 +169,8 @@ const sessionState = {
   colAlbumArtist: true,
   colAlbumCodec: false,
   colAlbumBitrate: false,
-  colAlbumUserRating: true,
   colAlbumDuration: true,
+  colAlbumUserRating: true,
 
   colFoldersKind: true,
 
@@ -184,8 +184,8 @@ const sessionState = {
   colPlaylistAlbum: true,
   colPlaylistCodec: false,
   colPlaylistBitrate: false,
-  colPlaylistUserRating: true,
   colPlaylistDuration: true,
+  colPlaylistUserRating: true,
 
   colCollectionAddedAt: true,
   colCollectionUserRating: true,

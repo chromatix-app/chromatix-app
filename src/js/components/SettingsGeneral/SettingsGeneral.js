@@ -21,6 +21,10 @@ export const SettingsGeneral = () => {
         <ViewModeSettings />
       </div>
       <div className={style.group}>
+        <div className={style.title}>Star Ratings</div>
+        <StarRatingSettings />
+      </div>
+      <div className={style.group}>
         <div className={style.title}>User Interface</div>
         <UserInterfaceSettings />
       </div>
@@ -151,7 +155,7 @@ const ViewModeSettings = () => {
           <div className={style.label}>
             Quickly toggle between grid view and list view for all sections of your library.
             <br />
-            Note that you can independently toggle the view mode within each individual section whilst browsing.
+            Note that you can independently toggle the view mode within each individual section of your library.
           </div>
           <div className={style.buttons}>
             <Button
@@ -171,6 +175,138 @@ const ViewModeSettings = () => {
               disabled={allSame && firstValue === 'list'}
             >
               Use list view everywhere
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+//
+// VIEW MODES
+//
+
+const StarRatingSettings = () => {
+  const dispatch = useDispatch();
+
+  const gridArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.gridArtistsUserRating);
+  const gridArtistAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.gridArtistAlbumsUserRating);
+  const gridArtistCollectionItemsUserRating = useSelector(
+    ({ sessionModel }) => sessionModel.gridArtistCollectionItemsUserRating
+  );
+  const gridAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.gridAlbumsUserRating);
+  const gridAlbumCollectionItemsUserRating = useSelector(
+    ({ sessionModel }) => sessionModel.gridAlbumCollectionItemsUserRating
+  );
+  const gridPlaylistsUserRating = useSelector(({ sessionModel }) => sessionModel.gridPlaylistsUserRating);
+  const gridCollectionsUserRating = useSelector(({ sessionModel }) => sessionModel.gridCollectionsUserRating);
+
+  const colArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistsUserRating);
+  const colArtistAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsUserRating);
+  const colAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumsUserRating);
+  const colAlbumUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumUserRating);
+  const colPlaylistsUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistsUserRating);
+  const colPlaylistUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistUserRating);
+  const colCollectionUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionUserRating);
+  const colCollectionArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsUserRating);
+  const colCollectionAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsUserRating);
+
+  const allValues = [
+    gridArtistsUserRating,
+    gridArtistAlbumsUserRating,
+    gridArtistCollectionItemsUserRating,
+    gridAlbumsUserRating,
+    gridAlbumCollectionItemsUserRating,
+    gridPlaylistsUserRating,
+    gridCollectionsUserRating,
+
+    colArtistsUserRating,
+    colArtistAlbumsUserRating,
+    colAlbumsUserRating,
+    colAlbumUserRating,
+    colPlaylistsUserRating,
+    colPlaylistUserRating,
+    colCollectionUserRating,
+    colCollectionArtistsUserRating,
+    colCollectionAlbumsUserRating,
+  ];
+
+  const firstValue = allValues[0];
+  const allSame = allValues.every((value) => value === firstValue);
+
+  const toggleShowUserRating = () => {
+    dispatch.sessionModel.setSessionState({
+      gridArtistsUserRating: true,
+      gridArtistAlbumsUserRating: true,
+      gridArtistCollectionItemsUserRating: true,
+      gridAlbumsUserRating: true,
+      gridAlbumCollectionItemsUserRating: true,
+      gridPlaylistsUserRating: true,
+      gridCollectionsUserRating: true,
+
+      colArtistsUserRating: true,
+      colArtistAlbumsUserRating: true,
+      colAlbumsUserRating: true,
+      colAlbumUserRating: true,
+      colPlaylistsUserRating: true,
+      colPlaylistUserRating: true,
+      colCollectionUserRating: true,
+      colCollectionArtistsUserRating: true,
+      colCollectionAlbumsUserRating: true,
+    });
+  };
+
+  const toggleHideUserRating = () => {
+    dispatch.sessionModel.setSessionState({
+      gridArtistsUserRating: false,
+      gridArtistAlbumsUserRating: false,
+      gridArtistCollectionItemsUserRating: false,
+      gridAlbumsUserRating: false,
+      gridAlbumCollectionItemsUserRating: false,
+      gridPlaylistsUserRating: false,
+      gridCollectionsUserRating: false,
+
+      colArtistsUserRating: false,
+      colArtistAlbumsUserRating: false,
+      colAlbumsUserRating: false,
+      colAlbumUserRating: false,
+      colPlaylistsUserRating: false,
+      colPlaylistUserRating: false,
+      colCollectionUserRating: false,
+      colCollectionArtistsUserRating: false,
+      colCollectionAlbumsUserRating: false,
+    });
+  };
+
+  return (
+    <div className={style.menu}>
+      <div className={style.menuEntry}>
+        <div>
+          <div className={style.label}>
+            Quickly toggle the visibility of star ratings for all sections of your library.
+            <br />
+            Note that you can independently toggle the visibility of star ratings within each individual section of your
+            library.
+          </div>
+          <div className={style.buttons}>
+            <Button
+              variant="smallBtn"
+              inline
+              wrap={false}
+              onClick={toggleShowUserRating}
+              disabled={allSame && firstValue === true}
+            >
+              Show star ratings everywhere
+            </Button>
+            <Button
+              variant="smallBtn"
+              inline
+              wrap={false}
+              onClick={toggleHideUserRating}
+              disabled={allSame && firstValue === false}
+            >
+              Hide star ratings everywhere
             </Button>
           </div>
         </div>
