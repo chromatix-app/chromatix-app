@@ -22,11 +22,24 @@ const useGetAllArtists = () => {
   const colArtistsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colArtistsLastPlayed);
   const colArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistsUserRating);
 
+  // prevent sorting by a hidden field
+  const allowedSort = {
+    title: true,
+    addedAt: viewArtists === 'grid' || (viewArtists === 'list' && colArtistsAddedAt),
+    country: viewArtists === 'list' && colArtistsCountry,
+    lastPlayed: viewArtists === 'grid' || (viewArtists === 'list' && colArtistsLastPlayed),
+    genre: viewArtists === 'list' && colArtistsGenre,
+    userRating: viewArtists === 'grid' || (viewArtists === 'list' && colArtistsUserRating),
+  };
+  const actualSortArtists = allowedSort[sortArtists] ? sortArtists : 'title';
+  const actualOrderArtists = allowedSort[sortArtists] ? orderArtists : 'asc';
+
   const haveGotAllArtists = useSelector(({ appModel }) => appModel.haveGotAllArtists);
   const allArtists = useSelector(({ appModel }) => appModel.allArtists)?.filter(
     (artist) => artist.libraryId === currentLibraryId
   );
-  const sortedArtists = haveGotAllArtists && allArtists ? sortList(allArtists, sortArtists, orderArtists) : null;
+  const sortedArtists =
+    haveGotAllArtists && allArtists ? sortList(allArtists, actualSortArtists, actualOrderArtists) : null;
 
   const setViewArtists = (viewArtists) => {
     dispatch.sessionModel.setSessionState({
@@ -42,7 +55,7 @@ const useGetAllArtists = () => {
 
   const setOrderArtists = (orderArtists) => {
     dispatch.sessionModel.setSessionState({
-      sortArtists,
+      sortArtists: actualSortArtists,
       orderArtists,
     });
   };
@@ -59,8 +72,8 @@ const useGetAllArtists = () => {
 
   return {
     viewArtists,
-    sortArtists,
-    orderArtists,
+    sortArtists: actualSortArtists,
+    orderArtists: actualOrderArtists,
 
     gridOptions: {
       userRating: gridArtistsUserRating,

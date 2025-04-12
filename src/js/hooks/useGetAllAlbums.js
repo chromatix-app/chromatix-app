@@ -23,16 +23,26 @@ const useGetAllAlbums = () => {
   const colAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colAlbumsLastPlayed);
   const colAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumsUserRating);
 
-  // prevent sub-sorting in list view
-  const isSubSortList = viewAlbums === 'list' && sortAlbums.split('-').length > 2;
-
-  const actualSortAlbums = isSubSortList ? 'artist' : sortAlbums;
+  // prevent sorting by a hidden field
+  const allowedSort = {
+    title: true,
+    artist: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsArtist),
+    'artist-asc-releaseDate-asc': viewAlbums === 'grid',
+    'artist-asc-releaseDate-desc': viewAlbums === 'grid',
+    addedAt: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsAddedAt),
+    lastPlayed: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsLastPlayed),
+    genre: viewAlbums === 'list' && colAlbumsGenre,
+    releaseDate: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsReleaseDate),
+    userRating: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsUserRating),
+  };
+  const actualSortAlbums = allowedSort[sortAlbums] ? sortAlbums : 'title';
+  const actualOrderAlbums = allowedSort[sortAlbums] ? orderAlbums : 'asc';
 
   const haveGotAllAlbums = useSelector(({ appModel }) => appModel.haveGotAllAlbums);
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums)?.filter(
     (album) => album.libraryId === currentLibraryId
   );
-  const sortedAlbums = haveGotAllAlbums && allAlbums ? sortList(allAlbums, actualSortAlbums, orderAlbums) : null;
+  const sortedAlbums = haveGotAllAlbums && allAlbums ? sortList(allAlbums, actualSortAlbums, actualOrderAlbums) : null;
 
   const setViewAlbums = (viewAlbums) => {
     dispatch.sessionModel.setSessionState({
@@ -66,7 +76,7 @@ const useGetAllAlbums = () => {
   return {
     viewAlbums,
     sortAlbums: actualSortAlbums,
-    orderAlbums,
+    orderAlbums: actualOrderAlbums,
 
     gridOptions: {
       userRating: gridAlbumsUserRating,

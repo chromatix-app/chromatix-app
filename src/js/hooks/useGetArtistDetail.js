@@ -42,23 +42,32 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const sortArtistAlbums = useSelector(({ sessionModel }) => sessionModel.sortArtistAlbums);
   const orderArtistAlbums = useSelector(({ sessionModel }) => sessionModel.orderArtistAlbums);
 
-  // Prevent sub-sorting in list view
-  const isSubSortList = viewArtistAlbums === 'list' && sortArtistAlbums.split('-').length > 2;
-
-  const actualSortArtistAlbums = isSubSortList ? 'artist' : sortArtistAlbums;
+  // prevent sorting by a hidden field
+  const allowedSort = {
+    title: true,
+    addedAt: viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsAddedAt),
+    lastPlayed: viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsLastPlayed),
+    genre: viewArtistAlbums === 'list' && colArtistAlbumsGenre,
+    releaseDate: viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsReleaseDate),
+    userRating: viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsUserRating),
+  };
+  const actualSortArtistAlbums = allowedSort[sortArtistAlbums] ? sortArtistAlbums : 'title';
+  const actualOrderArtistAlbums = allowedSort[sortArtistAlbums] ? orderArtistAlbums : 'asc';
 
   // Sort albums
-  const sortedArtistAlbums = artistAlbums ? sortList(artistAlbums, actualSortArtistAlbums, orderArtistAlbums) : null;
+  const sortedArtistAlbums = artistAlbums
+    ? sortList(artistAlbums, actualSortArtistAlbums, actualOrderArtistAlbums)
+    : null;
   const sortedArtistRelated = artistRelated?.map((entry) => {
     const sortedEntry =
-      entry && entry.related ? sortList(entry.related, actualSortArtistAlbums, orderArtistAlbums) : null;
+      entry && entry.related ? sortList(entry.related, actualSortArtistAlbums, actualOrderArtistAlbums) : null;
     return {
       ...entry,
       related: sortedEntry,
     };
   });
   const sortedArtistCompilations = artistCompilations
-    ? sortList(artistCompilations, actualSortArtistAlbums, orderArtistAlbums)
+    ? sortList(artistCompilations, actualSortArtistAlbums, actualOrderArtistAlbums)
     : null;
 
   // Combine all albums into a single array
@@ -179,7 +188,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
 
     viewArtistAlbums,
     sortArtistAlbums: actualSortArtistAlbums,
-    orderArtistAlbums,
+    orderArtistAlbums: actualOrderArtistAlbums,
 
     setViewArtistAlbums,
     setSortArtistAlbums,

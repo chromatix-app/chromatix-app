@@ -17,6 +17,19 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   const colPlaylistUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistUserRating);
   const colPlaylistDuration = useSelector(({ sessionModel }) => sessionModel.colPlaylistDuration);
 
+  // prevent sorting by a hidden field
+  const allowedSort = {
+    sortOrder: true,
+    title: true,
+    artist: colPlaylistArtist,
+    album: colPlaylistAlbum,
+    codec: colPlaylistCodec,
+    bitrate: colPlaylistBitrate,
+    userRating: colPlaylistUserRating,
+    duration: colPlaylistDuration,
+  };
+  const actualPlaylistSortString = allowedSort[playlistSortString?.split('-')[0]] ? playlistSortString : null;
+
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
   const playlistInfo = allPlaylists?.find((playlist) => playlist.playlistId === playlistId);
 
@@ -32,26 +45,26 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
 
   const sortedPlaylistTracks = useMemo(() => {
     if (!playlistTracks) return null;
-    if (playlistSortString) {
+    if (actualPlaylistSortString) {
       // Add originalIndex to each entry
       const entriesWithOriginalIndex = playlistTracks.map((entry, index) => ({
         ...entry,
         originalIndex: index,
       }));
       // Sort entries
-      if (playlistSortString === 'sortOrder-desc') {
+      if (actualPlaylistSortString === 'sortOrder-desc') {
         return entriesWithOriginalIndex.slice().reverse();
       } else {
-        return sortList(entriesWithOriginalIndex, playlistSortString);
+        return sortList(entriesWithOriginalIndex, actualPlaylistSortString);
       }
     }
-    // If not a playlist or no playlistSortString, return original entries
+    // If not a playlist or no actualPlaylistSortString, return original entries
     return playlistTracks.map((entry, index) => ({
       ...entry,
       originalIndex: index,
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allPlaylistTracks, playlistTracks, playlistSortString]);
+  }, [allPlaylistTracks, playlistTracks, actualPlaylistSortString]);
 
   const playlistOrder = useMemo(() => {
     return sortedPlaylistTracks?.map((entry) => entry.originalIndex);
@@ -86,7 +99,7 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
 
     playlistTracks: sortedPlaylistTracks,
     playlistOrder,
-    playlistSortString,
+    playlistSortString: actualPlaylistSortString,
 
     colOptions: {
       artist: colPlaylistArtist,

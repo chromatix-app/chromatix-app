@@ -20,32 +20,6 @@ const useGetCollectionItems = ({
   const sortCollectionItems = useSelector(({ sessionModel }) => sessionModel[`sort${itemsKey}`]);
   const orderCollectionItems = useSelector(({ sessionModel }) => sessionModel[`order${itemsKey}`]);
 
-  // prevent sub-sorting in list view
-  const isSubSortList = viewCollectionItems === 'list' && sortCollectionItems.split('-').length > 2;
-
-  const actualSortCollectionItems = isSubSortList ? 'artist' : sortCollectionItems;
-
-  const allCollections = useSelector(({ appModel }) => appModel[`all${collectionKey}`]);
-  const collectionInfo = allCollections?.find((collection) => collection[collectionFilter] === collectionId);
-
-  const allCollectionItems = useSelector(({ appModel }) => appModel[`all${itemsKey}`]);
-  const collectionInfoItems = allCollectionItems[libraryId + '-' + collectionId];
-
-  const sortedCollectionItems = collectionInfoItems
-    ? sortList(collectionInfoItems, actualSortCollectionItems, orderCollectionItems)
-    : null;
-
-  const collectionThumb = collectionInfo?.thumb;
-  const collectionTitle = collectionInfo?.title;
-  const collectionRating = collectionInfo?.userRating;
-
-  const gridArtistCollectionItemsUserRating = useSelector(
-    ({ sessionModel }) => sessionModel.gridArtistCollectionItemsUserRating
-  );
-  const gridAlbumCollectionItemsUserRating = useSelector(
-    ({ sessionModel }) => sessionModel.gridAlbumCollectionItemsUserRating
-  );
-
   const colCollectionArtistsCountry = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsCountry);
   const colCollectionArtistsGenre = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsGenre);
   const colCollectionArtistsAddedAt = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsAddedAt);
@@ -58,6 +32,57 @@ const useGetCollectionItems = ({
   const colCollectionAlbumsAddedAt = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsAddedAt);
   const colCollectionAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsLastPlayed);
   const colCollectionAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsUserRating);
+
+  // prevent sorting by a hidden field
+  const allowedSort =
+    mediaType === 'Artist'
+      ? {
+          title: true,
+          addedAt: viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsAddedAt),
+          country: viewCollectionItems === 'list' && colCollectionArtistsCountry,
+          lastPlayed:
+            viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsLastPlayed),
+          genre: viewCollectionItems === 'list' && colCollectionArtistsGenre,
+          userRating:
+            viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsUserRating),
+        }
+      : {
+          title: true,
+          artist: viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsArtist),
+          'artist-asc-releaseDate-asc': viewCollectionItems === 'grid',
+          'artist-asc-releaseDate-desc': viewCollectionItems === 'grid',
+          addedAt: viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsAddedAt),
+          lastPlayed:
+            viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsLastPlayed),
+          genre: viewCollectionItems === 'list' && colCollectionAlbumsGenre,
+          releaseDate:
+            viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsReleaseDate),
+          userRating:
+            viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsUserRating),
+        };
+  const actualSortCollectionItems = allowedSort[sortCollectionItems] ? sortCollectionItems : 'title';
+  const actualOrderCollectionItems = allowedSort[sortCollectionItems] ? orderCollectionItems : 'asc';
+
+  const allCollections = useSelector(({ appModel }) => appModel[`all${collectionKey}`]);
+  const collectionInfo = allCollections?.find((collection) => collection[collectionFilter] === collectionId);
+
+  const allCollectionItems = useSelector(({ appModel }) => appModel[`all${itemsKey}`]);
+  const collectionInfoItems = allCollectionItems[libraryId + '-' + collectionId];
+
+  const sortedCollectionItems = collectionInfoItems
+    ? sortList(collectionInfoItems, actualSortCollectionItems, actualOrderCollectionItems)
+    : null;
+
+  const collectionThumb = collectionInfo?.thumb;
+  const collectionTitle = collectionInfo?.title;
+  const collectionRating = collectionInfo?.userRating;
+
+  const gridArtistCollectionItemsUserRating = useSelector(
+    ({ sessionModel }) => sessionModel.gridArtistCollectionItemsUserRating
+  );
+  const gridAlbumCollectionItemsUserRating = useSelector(
+    ({ sessionModel }) => sessionModel.gridAlbumCollectionItemsUserRating
+  );
 
   const setViewCollectionItems = (viewCollectionItems) => {
     dispatch.sessionModel.setSessionState({
@@ -101,7 +126,7 @@ const useGetCollectionItems = ({
 
     viewCollectionItems,
     sortCollectionItems: actualSortCollectionItems,
-    orderCollectionItems,
+    orderCollectionItems: actualOrderCollectionItems,
 
     gridOptions:
       mediaType === 'Artist'

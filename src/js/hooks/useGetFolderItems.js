@@ -15,15 +15,22 @@ const useGetFolderItems = (folderId) => {
 
   const colFoldersKind = useSelector(({ sessionModel }) => sessionModel.colFoldersKind);
 
+  // prevent sorting by a hidden field
+  const allowedSort = {
+    sortOrder: true,
+    title: true,
+    kind: viewFolders === 'grid' || (viewFolders === 'list' && colFoldersKind),
+  };
+  const actualSortFolders = allowedSort[sortFolders] ? sortFolders : 'title';
+  const actualOrderFolders = allowedSort[sortFolders] ? orderFolders : 'asc';
+
   const libraryId = currentLibrary?.libraryId;
   const allFolderItems = useSelector(({ appModel }) => appModel.allFolderItems);
   const folderItems = allFolderItems ? allFolderItems[libraryId + '-' + folderId] : null;
-  const sortedFolders = folderItems ? sortList(folderItems, sortFolders, orderFolders) : null;
-
-  // console.log(sortFolders);
+  const sortedFolders = folderItems ? sortList(folderItems, actualSortFolders, actualOrderFolders) : null;
 
   const sortedWithFoldersOnTop =
-    sortFolders === 'kind'
+    actualSortFolders === 'kind'
       ? sortedFolders
       : sortedFolders?.sort((a, b) => {
           if (a.kind === 'aaafolder' && b.kind !== 'aaafolder') return -1;
@@ -56,6 +63,7 @@ const useGetFolderItems = (folderId) => {
 
   const setOrderFolders = (orderFolders) => {
     dispatch.sessionModel.setSessionState({
+      sortFolders: actualSortFolders,
       orderFolders,
     });
   };
@@ -72,8 +80,8 @@ const useGetFolderItems = (folderId) => {
 
   return {
     viewFolders,
-    sortFolders,
-    orderFolders,
+    sortFolders: actualSortFolders,
+    orderFolders: actualOrderFolders,
     colOptions: {
       kind: colFoldersKind,
     },

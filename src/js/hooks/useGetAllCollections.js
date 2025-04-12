@@ -13,13 +13,24 @@ const useGetAllCollections = (collectionKey) => {
   const sortCollections = useSelector(({ sessionModel }) => sessionModel[`sort${collectionKey}`]);
   const orderCollections = useSelector(({ sessionModel }) => sessionModel[`order${collectionKey}`]);
 
-  const allCollections = useSelector(({ appModel }) => appModel[`all${collectionKey}`]);
-  const sortedCollections = allCollections ? sortList(allCollections, sortCollections, orderCollections) : null;
-
   const gridCollectionsUserRating = useSelector(({ sessionModel }) => sessionModel.gridCollectionsUserRating);
 
   const colCollectionAddedAt = useSelector(({ sessionModel }) => sessionModel.colCollectionAddedAt);
   const colCollectionUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionUserRating);
+
+  // prevent sorting by a hidden field
+  const allowedSort = {
+    title: true,
+    addedAt: viewCollections === 'grid' || (viewCollections === 'list' && colCollectionAddedAt),
+    userRating: viewCollections === 'grid' || (viewCollections === 'list' && colCollectionUserRating),
+  };
+  const actualSortCollections = allowedSort[sortCollections] ? sortCollections : 'title';
+  const actualOrderCollections = allowedSort[sortCollections] ? orderCollections : 'asc';
+
+  const allCollections = useSelector(({ appModel }) => appModel[`all${collectionKey}`]);
+  const sortedCollections = allCollections
+    ? sortList(allCollections, actualSortCollections, actualOrderCollections)
+    : null;
 
   const setViewCollections = (viewCollections) => {
     dispatch.sessionModel.setSessionState({
@@ -35,7 +46,7 @@ const useGetAllCollections = (collectionKey) => {
 
   const setOrderCollections = (orderCollections) => {
     dispatch.sessionModel.setSessionState({
-      [`sort${collectionKey}`]: sortCollections,
+      [`sort${collectionKey}`]: actualSortCollections,
       [`order${collectionKey}`]: orderCollections,
     });
   };
@@ -56,8 +67,8 @@ const useGetAllCollections = (collectionKey) => {
 
   return {
     viewCollections,
-    sortCollections,
-    orderCollections,
+    sortCollections: actualSortCollections,
+    orderCollections: actualOrderCollections,
 
     gridOptions: {
       userRating: gridCollectionsUserRating,

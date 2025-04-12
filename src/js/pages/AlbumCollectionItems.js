@@ -173,8 +173,12 @@ const Title = ({
                 value={sortCollectionItems}
                 options={[
                   { value: 'title', label: 'Alphabetical' },
+                  { value: 'artist', label: 'Artist' },
+                  { value: 'artist-asc-releaseDate-asc', label: 'Artist, oldest release first' },
+                  { value: 'artist-asc-releaseDate-desc', label: 'Artist, newest release first' },
                   { value: 'addedAt', label: 'Date added' },
                   { value: 'lastPlayed', label: 'Date played' },
+                  { value: 'releaseDate', label: 'Date released' },
                   { value: 'userRating', label: 'Rating' },
                 ]}
                 setter={setSortCollectionItems}

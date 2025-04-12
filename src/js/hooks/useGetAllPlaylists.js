@@ -22,10 +22,22 @@ const useGetAllPlaylists = () => {
   const colPlaylistsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colPlaylistsLastPlayed);
   const colPlaylistsUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistsUserRating);
 
+  // prevent sorting by a hidden field
+  const allowedSort = {
+    title: true,
+    totalTracks: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsTotalTracks),
+    duration: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsDuration),
+    addedAt: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsAddedAt),
+    lastPlayed: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsLastPlayed),
+    userRating: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsUserRating),
+  };
+  const actualSortPlaylists = allowedSort[sortPlaylists] ? sortPlaylists : 'title';
+  const actualOrderPlaylists = allowedSort[sortPlaylists] ? orderPlaylists : 'asc';
+
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists)?.filter(
     (playlist) => playlist.libraryId === currentLibraryId
   );
-  const sortedPlaylists = allPlaylists ? sortList(allPlaylists, sortPlaylists, orderPlaylists) : null;
+  const sortedPlaylists = allPlaylists ? sortList(allPlaylists, actualSortPlaylists, actualOrderPlaylists) : null;
 
   const setViewPlaylists = (viewPlaylists) => {
     dispatch.sessionModel.setSessionState({
@@ -41,7 +53,7 @@ const useGetAllPlaylists = () => {
 
   const setOrderPlaylists = (orderPlaylists) => {
     dispatch.sessionModel.setSessionState({
-      sortPlaylists,
+      sortPlaylists: actualSortPlaylists,
       orderPlaylists,
     });
   };
@@ -58,8 +70,8 @@ const useGetAllPlaylists = () => {
 
   return {
     viewPlaylists,
-    sortPlaylists,
-    orderPlaylists,
+    sortPlaylists: actualSortPlaylists,
+    orderPlaylists: actualOrderPlaylists,
 
     gridOptions: {
       userRating: gridPlaylistsUserRating,
