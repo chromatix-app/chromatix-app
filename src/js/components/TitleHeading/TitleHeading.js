@@ -10,8 +10,6 @@ import { useNearTop } from 'js/hooks';
 
 import style from './TitleHeading.module.scss';
 
-const isProduction = process.env.REACT_APP_ENV === 'production';
-
 // ======================================================================
 // COMPONENT
 // ======================================================================
@@ -76,7 +74,7 @@ const TitleHeading = ({
                   </button>
                 </>
               )}
-              {!isProduction && optionsMenu && optionsMenu}
+              {optionsMenu && optionsMenu}
             </div>
           )}
           {filters && <div className={style.filters}>{filters}</div>}

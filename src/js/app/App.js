@@ -43,7 +43,7 @@ const App = () => {
   useNetworkStatus();
   useScrollRestoration();
 
-  // disable console logs
+  // disable console logs in production
   useEffect(() => {
     if (isProduction) {
       console.log = () => {};
