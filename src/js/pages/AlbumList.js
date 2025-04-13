@@ -2,8 +2,6 @@
 // IMPORTS
 // ======================================================================
 
-import { useSelector } from 'react-redux';
-
 import {
   FilterMenu,
   FilterSelect,
@@ -16,8 +14,6 @@ import {
 } from 'js/components';
 import { useGetAllAlbums } from 'js/hooks';
 
-const isProduction = process.env.REACT_APP_ENV === 'production';
-
 // ======================================================================
 // COMPONENT
 // ======================================================================
@@ -27,6 +23,7 @@ const AlbumList = () => {
     viewAlbums,
     sortAlbums,
     orderAlbums,
+    gridOptions,
     colOptions,
 
     setViewAlbums,
@@ -47,6 +44,7 @@ const AlbumList = () => {
       {(isLoading || isEmptyList || isGridView) && (
         <Title
           colOptions={colOptions}
+          gridOptions={gridOptions}
           isListView={isListView}
           orderAlbums={orderAlbums}
           setColumnVisibility={setColumnVisibility}
@@ -59,7 +57,7 @@ const AlbumList = () => {
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
-      {isGridView && <ListCards variant="albums" entries={sortedAlbums} />}
+      {isGridView && <ListCards variant="albums" entries={sortedAlbums} showRatings={gridOptions.userRating} />}
       {isListView && (
         <ListTable
           variant="albums"
@@ -70,6 +68,7 @@ const AlbumList = () => {
         >
           <Title
             colOptions={colOptions}
+            gridOptions={gridOptions}
             isListView={isListView}
             orderAlbums={orderAlbums}
             setColumnVisibility={setColumnVisibility}
@@ -88,6 +87,7 @@ const AlbumList = () => {
 
 const Title = ({
   colOptions,
+  gridOptions,
   isListView,
   orderAlbums,
   setColumnVisibility,
@@ -98,8 +98,6 @@ const Title = ({
   sortedAlbums,
   viewAlbums,
 }) => {
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   return (
     <>
       <TitleHeading
@@ -132,8 +130,7 @@ const Title = ({
                 { value: 'addedAt', label: 'Date added' },
                 { value: 'lastPlayed', label: 'Date played' },
                 { value: 'releaseDate', label: 'Date released' },
-                // only allow sorting by rating if the option is enabled
-                ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
+                { value: 'userRating', label: 'Rating' },
               ]}
               setter={setSortAlbums}
             />
@@ -146,12 +143,24 @@ const Title = ({
               setter={setOrderAlbums}
               icon={orderAlbums === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
+            <FilterMenu
+              label="Options"
+              icon="CogIcon"
+              setter={setColumnVisibility}
+              entries={[
+                {
+                  label: 'Show star ratings',
+                  attr: 'gridAlbumsUserRating',
+                  checked: gridOptions.userRating,
+                },
+              ]}
+            />
           </>
         )}
-        {!isProduction && viewAlbums === 'list' && (
+        {viewAlbums === 'list' && (
           <FilterMenu
-            label="Columns"
-            icon="ColumnsCircleIcon"
+            label="Options"
+            icon="CogIcon"
             setter={setColumnVisibility}
             entries={[
               {
@@ -162,28 +171,33 @@ const Title = ({
               {
                 label: 'Artist',
                 attr: 'colAlbumsArtist',
-                checked: colOptions.colAlbumsArtist,
+                checked: colOptions.artist,
+              },
+              {
+                label: 'Genre',
+                attr: 'colAlbumsGenre',
+                checked: colOptions.genre,
               },
               {
                 label: 'Released',
-                attr: 'colAlbumsReleased',
-                checked: colOptions.colAlbumsReleased,
+                attr: 'colAlbumsReleaseDate',
+                checked: colOptions.releaseDate,
               },
               {
                 label: 'Added',
-                attr: 'colAlbumsAdded',
-                checked: colOptions.colAlbumsAdded,
+                attr: 'colAlbumsAddedAt',
+                checked: colOptions.addedAt,
               },
               {
                 label: 'Last Played',
                 attr: 'colAlbumsLastPlayed',
-                checked: colOptions.colAlbumsLastPlayed,
+                checked: colOptions.lastPlayed,
               },
-              // {
-              //   label: 'Rating',
-              //   attr: 'colAlbumsRating',
-              //   checked: colOptions.colAlbumsRating,
-              // },
+              {
+                label: 'Rating',
+                attr: 'colAlbumsUserRating',
+                checked: colOptions.userRating,
+              },
             ]}
           />
         )}

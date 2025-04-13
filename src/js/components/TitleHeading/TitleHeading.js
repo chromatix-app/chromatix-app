@@ -10,11 +10,24 @@ import { useNearTop } from 'js/hooks';
 
 import style from './TitleHeading.module.scss';
 
+const isProduction = process.env.REACT_APP_ENV === 'production';
+
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const TitleHeading = ({ title, subtitle, detail, thumb, icon, showPlay, handlePlay, filters, padding = true }) => {
+const TitleHeading = ({
+  title,
+  subtitle,
+  detail,
+  thumb,
+  icon,
+  showPlay,
+  optionsMenu,
+  handlePlay,
+  filters,
+  padding = true,
+}) => {
   const triggerRef = useRef(null);
   const isNearTop = useNearTop(triggerRef, 90);
 
@@ -45,20 +58,25 @@ const TitleHeading = ({ title, subtitle, detail, thumb, icon, showPlay, handlePl
           {title && <h1 className={clsx(style.title, style[titleSize])}>{title}</h1>}
           {subtitle && <h2 className={style.subtitle}>{subtitle}</h2>}
           {detail && <div className={style.detail}>{detail}</div>}
-          {showPlay && (
+          {(showPlay || optionsMenu) && (
             <div className={style.buttons}>
-              <button className={style.playButton} onClick={() => handlePlay && handlePlay(false)}>
-                <span className={style.playIcon}>
-                  <Icon icon="PlayFilledIcon" cover />
-                </span>
-                <span className={style.playText}>Play</span>
-              </button>
-              <button className={style.shuffleButton} onClick={() => handlePlay && handlePlay(true)}>
-                <span className={style.shuffleIcon}>
-                  <Icon icon="ShuffleIcon" cover stroke strokeWidth={1.4} />
-                </span>
-                <span className={style.shuffleText}>Shuffle</span>
-              </button>
+              {showPlay && (
+                <>
+                  <button className={style.playButton} onClick={() => handlePlay && handlePlay(false)}>
+                    <span className={style.playIcon}>
+                      <Icon icon="PlayFilledIcon" cover />
+                    </span>
+                    <span className={style.playText}>Play</span>
+                  </button>
+                  <button className={style.shuffleButton} onClick={() => handlePlay && handlePlay(true)}>
+                    <span className={style.shuffleIcon}>
+                      <Icon icon="ShuffleIcon" cover stroke strokeWidth={1.4} />
+                    </span>
+                    <span className={style.shuffleText}>Shuffle</span>
+                  </button>
+                </>
+              )}
+              {!isProduction && optionsMenu && optionsMenu}
             </div>
           )}
           {filters && <div className={style.filters}>{filters}</div>}

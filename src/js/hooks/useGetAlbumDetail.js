@@ -1,20 +1,33 @@
 import { useEffect, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 
 import { durationToStringLong, sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
 
 const useGetAlbumDetail = ({ libraryId, albumId }) => {
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+  const dispatch = useDispatch();
 
   const sortAlbumTracks = useSelector(({ sessionModel }) => sessionModel.sortAlbumTracks);
-  const currentSortString = sortAlbumTracks[albumId] || null;
+  const albumSortString = sortAlbumTracks[albumId] || null;
 
-  // prevent sorting by rating if ratings are hidden
-  const isRatingSortHidden = !optionShowStarRatings && currentSortString?.startsWith('userRating');
+  const colAlbumArtist = useSelector(({ sessionModel }) => sessionModel.colAlbumArtist);
+  const colAlbumCodec = useSelector(({ sessionModel }) => sessionModel.colAlbumCodec);
+  const colAlbumBitrate = useSelector(({ sessionModel }) => sessionModel.colAlbumBitrate);
+  const colAlbumUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumUserRating);
+  const colAlbumDuration = useSelector(({ sessionModel }) => sessionModel.colAlbumDuration);
 
-  const albumSortString = isRatingSortHidden ? null : currentSortString;
+  // prevent sorting by a hidden field
+  const allowedSort = {
+    sortOrder: true,
+    title: true,
+    artist: colAlbumArtist,
+    codec: colAlbumCodec,
+    bitrate: colAlbumBitrate,
+    userRating: colAlbumUserRating,
+    duration: colAlbumDuration,
+  };
+  const actualAlbumSortString = allowedSort[albumSortString?.split('-')[0]] ? albumSortString : null;
 
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums);
   const albumInfo = allAlbums?.find((album) => album.albumId === albumId);
@@ -41,30 +54,36 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
 
   const sortedAlbumTracks = useMemo(() => {
     if (!albumTracks) return null;
-    if (albumSortString) {
+    if (actualAlbumSortString) {
       // Add originalIndex to each entry
       const entriesWithOriginalIndex = albumTracks.map((entry, index) => ({
         ...entry,
         originalIndex: index,
       }));
       // Sort entries
-      if (albumSortString === 'sortOrder-desc') {
+      if (actualAlbumSortString === 'sortOrder-desc') {
         return entriesWithOriginalIndex.slice().reverse();
       } else {
-        return sortList(entriesWithOriginalIndex, albumSortString);
+        return sortList(entriesWithOriginalIndex, actualAlbumSortString);
       }
     }
-    // If not an album or no albumSortString, return original entries
+    // If not an album or no actualAlbumSortString, return original entries
     return albumTracks.map((entry, index) => ({
       ...entry,
       originalIndex: index,
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allAlbumTracks, albumTracks, albumSortString]);
+  }, [allAlbumTracks, albumTracks, actualAlbumSortString]);
 
   const albumOrder = useMemo(() => {
     return sortedAlbumTracks?.map((entry) => entry.originalIndex);
   }, [sortedAlbumTracks]);
+
+  const setColumnVisibility = (columnKey, columnValue) => {
+    dispatch.sessionModel.setSessionState({
+      [columnKey]: columnValue,
+    });
+  };
 
   // Get the required album data
   useEffect(() => {
@@ -101,7 +120,16 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
 
     albumTracks: sortedAlbumTracks,
     albumOrder,
-    albumSortString,
+    albumSortString: actualAlbumSortString,
+
+    colOptions: {
+      artist: colAlbumArtist,
+      codec: colAlbumCodec,
+      bitrate: colAlbumBitrate,
+      userRating: colAlbumUserRating,
+      duration: colAlbumDuration,
+    },
+    setColumnVisibility,
   };
 };
 

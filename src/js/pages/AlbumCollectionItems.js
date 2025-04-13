@@ -2,10 +2,18 @@
 // IMPORTS
 // ======================================================================
 
-import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { FilterSelect, FilterToggle, ListCards, ListTable, Loading, StarRating, TitleHeading } from 'js/components';
+import {
+  FilterMenu,
+  FilterSelect,
+  FilterToggle,
+  ListCards,
+  ListTable,
+  Loading,
+  StarRating,
+  TitleHeading,
+} from 'js/components';
 import { useGetCollectionItems } from 'js/hooks';
 
 // ======================================================================
@@ -22,17 +30,20 @@ const AlbumCollectionItems = () => {
     viewCollectionItems,
     sortCollectionItems,
     orderCollectionItems,
+    gridOptions,
+    colOptions,
 
     setViewCollectionItems,
     setSortCollectionItems,
     setOrderCollectionItems,
+    setColumnVisibility,
 
     collectionThumb,
     collectionTitle,
     collectionRating,
   } = useGetCollectionItems({
-    collectionId,
     libraryId,
+    collectionId,
     collectionKey: 'AlbumCollections',
     itemsKey: 'AlbumCollectionItems',
   });
@@ -54,9 +65,12 @@ const AlbumCollectionItems = () => {
           collectionRating={collectionRating}
           collectionThumb={collectionThumb}
           collectionTitle={collectionTitle}
+          colOptions={colOptions}
+          gridOptions={gridOptions}
           isListView={isListView}
           libraryId={libraryId}
           orderCollectionItems={orderCollectionItems}
+          setColumnVisibility={setColumnVisibility}
           setOrderCollectionItems={setOrderCollectionItems}
           setSortCollectionItems={setSortCollectionItems}
           setViewCollectionItems={setViewCollectionItems}
@@ -66,22 +80,28 @@ const AlbumCollectionItems = () => {
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
-      {isGridView && <ListCards variant={'albums'} entries={sortedCollectionItems} />}
+      {isGridView && (
+        <ListCards variant={'albums'} entries={sortedCollectionItems} showRatings={gridOptions.userRating} />
+      )}
       {isListView && (
         <ListTable
           variant="albumCollectionItems"
           entries={sortedCollectionItems}
           sortKey={sortCollectionItems}
           orderKey={orderCollectionItems}
+          colOptions={colOptions}
         >
           <Title
             collectionId={collectionId}
             collectionRating={collectionRating}
             collectionThumb={collectionThumb}
             collectionTitle={collectionTitle}
+            colOptions={colOptions}
+            gridOptions={gridOptions}
             isListView={isListView}
             libraryId={libraryId}
             orderCollectionItems={orderCollectionItems}
+            setColumnVisibility={setColumnVisibility}
             setOrderCollectionItems={setOrderCollectionItems}
             setSortCollectionItems={setSortCollectionItems}
             setViewCollectionItems={setViewCollectionItems}
@@ -100,9 +120,12 @@ const Title = ({
   collectionRating,
   collectionThumb,
   collectionTitle,
+  colOptions,
+  gridOptions,
   isListView,
   libraryId,
   orderCollectionItems,
+  setColumnVisibility,
   setOrderCollectionItems,
   setSortCollectionItems,
   setViewCollectionItems,
@@ -110,24 +133,20 @@ const Title = ({
   sortedCollectionItems,
   viewCollectionItems,
 }) => {
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   return (
     <TitleHeading
       key={libraryId + '-' + collectionId}
       thumb={collectionThumb}
       title={collectionTitle}
       detail={
-        optionShowStarRatings && (
-          <StarRating
-            variant="title"
-            type="collection"
-            ratingKey={collectionId}
-            rating={collectionRating}
-            editable
-            alwaysVisible
-          />
-        )
+        <StarRating
+          variant="title"
+          type="collection"
+          ratingKey={collectionId}
+          rating={collectionRating}
+          editable
+          alwaysVisible
+        />
       }
       subtitle={
         sortedCollectionItems ? (
@@ -154,10 +173,13 @@ const Title = ({
                 value={sortCollectionItems}
                 options={[
                   { value: 'title', label: 'Alphabetical' },
+                  { value: 'artist', label: 'Artist' },
+                  { value: 'artist-asc-releaseDate-asc', label: 'Artist, oldest release first' },
+                  { value: 'artist-asc-releaseDate-desc', label: 'Artist, newest release first' },
                   { value: 'addedAt', label: 'Date added' },
                   { value: 'lastPlayed', label: 'Date played' },
-                  // only allow sorting by rating if the option is enabled
-                  ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
+                  { value: 'releaseDate', label: 'Date released' },
+                  { value: 'userRating', label: 'Rating' },
                 ]}
                 setter={setSortCollectionItems}
               />
@@ -170,7 +192,63 @@ const Title = ({
                 setter={setOrderCollectionItems}
                 icon={orderCollectionItems === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
               />
+              <FilterMenu
+                label="Options"
+                icon="CogIcon"
+                setter={setColumnVisibility}
+                entries={[
+                  {
+                    label: 'Show star ratings',
+                    attr: 'gridAlbumCollectionItemsUserRating',
+                    checked: gridOptions.userRating,
+                  },
+                ]}
+              />
             </>
+          )}
+          {viewCollectionItems === 'list' && (
+            <FilterMenu
+              label="Options"
+              icon="CogIcon"
+              setter={setColumnVisibility}
+              entries={[
+                {
+                  label: 'Title',
+                  disabled: true,
+                  checked: true,
+                },
+                {
+                  label: 'Artist',
+                  attr: 'colCollectionAlbumsArtist',
+                  checked: colOptions.artist,
+                },
+                {
+                  label: 'Genre',
+                  attr: 'colCollectionAlbumsGenre',
+                  checked: colOptions.genre,
+                },
+                {
+                  label: 'Released',
+                  attr: 'colCollectionAlbumsReleaseDate',
+                  checked: colOptions.releaseDate,
+                },
+                {
+                  label: 'Added',
+                  attr: 'colCollectionAlbumsAddedAt',
+                  checked: colOptions.addedAt,
+                },
+                {
+                  label: 'Last Played',
+                  attr: 'colCollectionAlbumsLastPlayed',
+                  checked: colOptions.lastPlayed,
+                },
+                {
+                  label: 'Rating',
+                  attr: 'colCollectionAlbumsUserRating',
+                  checked: colOptions.userRating,
+                },
+              ]}
+            />
           )}
         </>
       }

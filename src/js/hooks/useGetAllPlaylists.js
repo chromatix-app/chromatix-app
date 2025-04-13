@@ -7,8 +7,6 @@ import * as plex from 'js/services/plex';
 const useGetAllPlaylists = () => {
   const dispatch = useDispatch();
 
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const currentLibraryId = currentLibrary?.libraryId;
 
@@ -16,11 +14,25 @@ const useGetAllPlaylists = () => {
   const sortPlaylists = useSelector(({ sessionModel }) => sessionModel.sortPlaylists);
   const orderPlaylists = useSelector(({ sessionModel }) => sessionModel.orderPlaylists);
 
-  // prevent sorting by rating if ratings are hidden
-  const isRatingSortHidden = !optionShowStarRatings && sortPlaylists === 'userRating';
+  const gridPlaylistsUserRating = useSelector(({ sessionModel }) => sessionModel.gridPlaylistsUserRating);
 
-  const actualSortPlaylists = isRatingSortHidden ? 'title' : sortPlaylists;
-  const actualOrderPlaylists = isRatingSortHidden ? 'asc' : orderPlaylists;
+  const colPlaylistsTotalTracks = useSelector(({ sessionModel }) => sessionModel.colPlaylistsTotalTracks);
+  const colPlaylistsDuration = useSelector(({ sessionModel }) => sessionModel.colPlaylistsDuration);
+  const colPlaylistsAddedAt = useSelector(({ sessionModel }) => sessionModel.colPlaylistsAddedAt);
+  const colPlaylistsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colPlaylistsLastPlayed);
+  const colPlaylistsUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistsUserRating);
+
+  // prevent sorting by a hidden field
+  const allowedSort = {
+    title: true,
+    totalTracks: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsTotalTracks),
+    duration: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsDuration),
+    addedAt: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsAddedAt),
+    lastPlayed: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsLastPlayed),
+    userRating: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsUserRating),
+  };
+  const actualSortPlaylists = allowedSort[sortPlaylists] ? sortPlaylists : 'title';
+  const actualOrderPlaylists = allowedSort[sortPlaylists] ? orderPlaylists : 'asc';
 
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists)?.filter(
     (playlist) => playlist.libraryId === currentLibraryId
@@ -46,6 +58,12 @@ const useGetAllPlaylists = () => {
     });
   };
 
+  const setColumnVisibility = (columnKey, columnValue) => {
+    dispatch.sessionModel.setSessionState({
+      [columnKey]: columnValue,
+    });
+  };
+
   useEffect(() => {
     plex.getAllPlaylists();
   }, []);
@@ -55,9 +73,22 @@ const useGetAllPlaylists = () => {
     sortPlaylists: actualSortPlaylists,
     orderPlaylists: actualOrderPlaylists,
 
+    gridOptions: {
+      userRating: gridPlaylistsUserRating,
+    },
+
+    colOptions: {
+      totalTracks: colPlaylistsTotalTracks,
+      duration: colPlaylistsDuration,
+      addedAt: colPlaylistsAddedAt,
+      lastPlayed: colPlaylistsLastPlayed,
+      userRating: colPlaylistsUserRating,
+    },
+
     setViewPlaylists,
     setSortPlaylists,
     setOrderPlaylists,
+    setColumnVisibility,
 
     sortedPlaylists,
   };

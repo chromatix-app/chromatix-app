@@ -1,4 +1,5 @@
-@import '../../../css/global';
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
 
 .wrap {
   padding: 80px 15px 50px;
@@ -154,13 +155,13 @@
     display: inline-block;
     padding: 5px;
     border-radius: 4px;
-    color: $color-primary;
+    color: vars.$color-primary;
 
     &:hover {
       text-decoration: underline;
     }
 
-    @include focus-self-outline;
+    @include mixins.focus-self-outline;
   }
 }
 
@@ -197,7 +198,7 @@
   height: 48px;
   border-radius: 50%;
 
-  @include focus-self-outline;
+  @include mixins.focus-self-outline;
 }
 
 .kofi {
@@ -221,7 +222,7 @@
     height: 44px;
   }
 
-  @include focus-self-outline;
+  @include mixins.focus-self-outline;
 }
 
 //

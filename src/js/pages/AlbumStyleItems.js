@@ -2,10 +2,9 @@
 // IMPORTS
 // ======================================================================
 
-import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { FilterSelect, FilterToggle, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
+import { FilterMenu, FilterSelect, FilterToggle, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
 import { useGetCollectionItems } from 'js/hooks';
 
 // ======================================================================
@@ -22,10 +21,13 @@ const AlbumStyleItems = () => {
     viewCollectionItems,
     sortCollectionItems,
     orderCollectionItems,
+    gridOptions,
+    colOptions,
 
     setViewCollectionItems,
     setSortCollectionItems,
     setOrderCollectionItems,
+    setColumnVisibility,
 
     collectionThumb,
     collectionTitle,
@@ -52,39 +54,48 @@ const AlbumStyleItems = () => {
         <Title
           collectionThumb={collectionThumb}
           collectionTitle={collectionTitle}
-          styleId={styleId}
+          colOptions={colOptions}
+          gridOptions={gridOptions}
           isListView={isListView}
           libraryId={libraryId}
           orderCollectionItems={orderCollectionItems}
+          setColumnVisibility={setColumnVisibility}
           setOrderCollectionItems={setOrderCollectionItems}
           setSortCollectionItems={setSortCollectionItems}
           setViewCollectionItems={setViewCollectionItems}
           sortCollectionItems={sortCollectionItems}
           sortedCollectionItems={sortedCollectionItems}
+          styleId={styleId}
           viewCollectionItems={viewCollectionItems}
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
-      {isGridView && <ListCards variant={'albums'} entries={sortedCollectionItems} />}
+      {isGridView && (
+        <ListCards variant={'albums'} entries={sortedCollectionItems} showRatings={gridOptions.userRating} />
+      )}
       {isListView && (
         <ListTable
           variant="albumStyleItems"
           entries={sortedCollectionItems}
           sortKey={sortCollectionItems}
           orderKey={orderCollectionItems}
+          colOptions={colOptions}
         >
           <Title
             collectionThumb={collectionThumb}
             collectionTitle={collectionTitle}
-            styleId={styleId}
+            colOptions={colOptions}
+            gridOptions={gridOptions}
             isListView={isListView}
             libraryId={libraryId}
             orderCollectionItems={orderCollectionItems}
+            setColumnVisibility={setColumnVisibility}
             setOrderCollectionItems={setOrderCollectionItems}
             setSortCollectionItems={setSortCollectionItems}
             setViewCollectionItems={setViewCollectionItems}
             sortCollectionItems={sortCollectionItems}
             sortedCollectionItems={sortedCollectionItems}
+            styleId={styleId}
             viewCollectionItems={viewCollectionItems}
           />
         </ListTable>
@@ -96,19 +107,20 @@ const AlbumStyleItems = () => {
 const Title = ({
   collectionThumb,
   collectionTitle,
-  styleId,
+  colOptions,
+  gridOptions,
   isListView,
   libraryId,
   orderCollectionItems,
+  setColumnVisibility,
   setOrderCollectionItems,
   setSortCollectionItems,
   setViewCollectionItems,
   sortCollectionItems,
   sortedCollectionItems,
+  styleId,
   viewCollectionItems,
 }) => {
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   return (
     <TitleHeading
       key={libraryId + '-' + styleId}
@@ -146,8 +158,7 @@ const Title = ({
                   { value: 'addedAt', label: 'Date added' },
                   { value: 'lastPlayed', label: 'Date played' },
                   { value: 'releaseDate', label: 'Date released' },
-                  // only allow sorting by rating if the option is enabled
-                  ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
+                  { value: 'userRating', label: 'Rating' },
                 ]}
                 setter={setSortCollectionItems}
               />
@@ -160,7 +171,63 @@ const Title = ({
                 setter={setOrderCollectionItems}
                 icon={orderCollectionItems === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
               />
+              <FilterMenu
+                label="Options"
+                icon="CogIcon"
+                setter={setColumnVisibility}
+                entries={[
+                  {
+                    label: 'Show star ratings',
+                    attr: 'gridAlbumCollectionItemsUserRating',
+                    checked: gridOptions.userRating,
+                  },
+                ]}
+              />
             </>
+          )}
+          {viewCollectionItems === 'list' && (
+            <FilterMenu
+              label="Options"
+              icon="CogIcon"
+              setter={setColumnVisibility}
+              entries={[
+                {
+                  label: 'Title',
+                  disabled: true,
+                  checked: true,
+                },
+                {
+                  label: 'Artist',
+                  attr: 'colCollectionAlbumsArtist',
+                  checked: colOptions.artist,
+                },
+                {
+                  label: 'Genre',
+                  attr: 'colCollectionAlbumsGenre',
+                  checked: colOptions.genre,
+                },
+                {
+                  label: 'Released',
+                  attr: 'colCollectionAlbumsReleaseDate',
+                  checked: colOptions.releaseDate,
+                },
+                {
+                  label: 'Added',
+                  attr: 'colCollectionAlbumsAddedAt',
+                  checked: colOptions.addedAt,
+                },
+                {
+                  label: 'Last Played',
+                  attr: 'colCollectionAlbumsLastPlayed',
+                  checked: colOptions.lastPlayed,
+                },
+                {
+                  label: 'Rating',
+                  attr: 'colCollectionAlbumsUserRating',
+                  checked: colOptions.userRating,
+                },
+              ]}
+            />
           )}
         </>
       }
