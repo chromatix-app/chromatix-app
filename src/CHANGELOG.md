@@ -12,6 +12,7 @@ Updated:
 - Larger artwork in header sections, if the viewport is large enough.
 - Tweaked some icon sizes for filter buttons.
 - Made star ratings very slightly larger (they should have been that way from the start).
+- Updated various dependencies.
 
 <!-- CHANGELOG SPLIT MARKER -->
 
