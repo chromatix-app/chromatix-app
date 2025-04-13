@@ -21,7 +21,7 @@
   font-size: 12px;
 
   :global(html.electron.electron-platform-win) & {
-    height: calc(100% - 30px);
+    // height: calc(100% - 30px);
     padding-top: 0px;
   }
 }
