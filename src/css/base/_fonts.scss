@@ -1,3 +1,6 @@
+@use "../_config/mixins";
+@use "../_config/vars";
+
 // ======================================================================
 // FONTS
 // ======================================================================
@@ -9,7 +12,7 @@ body {
   font-size: 16px;
   line-height: 1.4;
   font-weight: normal;
-  color: $color-text;
+  color: vars.$color-text;
 }
 
 html.logged-in,
@@ -145,7 +148,7 @@ sup {
     text-decoration: underline;
     color: var(--color-primary);
 
-    @include focus-self-outline();
+    @include mixins.focus-self-outline();
   }
 }
 

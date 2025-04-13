@@ -1,4 +1,5 @@
-@import '../../../css/global';
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
 
 .loader {
   position: fixed;

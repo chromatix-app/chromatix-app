@@ -1,3 +1,6 @@
+@use "../_config/mixins";
+@use "../_config/vars";
+
 // ======================================================================
 // RESETS
 // ======================================================================
@@ -6,12 +9,12 @@ html,
 body {
   vertical-align: baseline;
   height: 100%;
-  background: $color-background;
+  background: vars.$color-background;
   // background: transparent;
 
   -webkit-tap-highlight-color: transparent;
 
-  @include noselect;
+  @include mixins.noselect;
 
   @media only screen and (max-device-width: 480px) {
     -webkit-text-size-adjust: none;
