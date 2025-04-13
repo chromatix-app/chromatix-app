@@ -18,8 +18,6 @@ import style from './SideBar.module.scss';
 // COMPONENT
 // ======================================================================
 
-// const isLocal = process.env.REACT_APP_ENV === 'local';
-
 const SideBar = () => {
   const dispatch = useDispatch();
 
