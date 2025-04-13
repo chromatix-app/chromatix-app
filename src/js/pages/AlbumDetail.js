@@ -2,10 +2,10 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { NavLink, useParams } from 'react-router-dom';
 
-import { ListTable, Loading, StarRating, TitleHeading } from 'js/components';
+import { FilterMenu, ListTable, Loading, StarRating, TitleHeading } from 'js/components';
 import { useGetAlbumDetail } from 'js/hooks';
 
 // ======================================================================
@@ -31,6 +31,8 @@ const AlbumDetail = () => {
     albumTracks,
     albumOrder,
     albumSortString,
+    colOptions,
+    setColumnVisibility,
   } = useGetAlbumDetail({
     libraryId,
     albumId,
@@ -67,6 +69,8 @@ const AlbumDetail = () => {
           albumTitle={albumTitle}
           albumTrackCount={albumTrackCount}
           albumTracks={albumTracks}
+          colOptions={colOptions}
+          setColumnVisibility={setColumnVisibility}
           doPlay={doPlay}
           isListView={isListView}
           libraryId={libraryId}
@@ -81,6 +85,7 @@ const AlbumDetail = () => {
           entries={albumTracks}
           playingOrder={albumOrder}
           sortString={albumSortString}
+          colOptions={colOptions}
         >
           <Title
             albumArtist={albumArtist}
@@ -93,6 +98,8 @@ const AlbumDetail = () => {
             albumTitle={albumTitle}
             albumTrackCount={albumTrackCount}
             albumTracks={albumTracks}
+            colOptions={colOptions}
+            setColumnVisibility={setColumnVisibility}
             doPlay={doPlay}
             isListView={isListView}
             libraryId={libraryId}
@@ -114,12 +121,12 @@ const Title = ({
   albumTitle,
   albumTrackCount,
   albumTracks,
+  colOptions,
+  setColumnVisibility,
   doPlay,
   isListView,
   libraryId,
 }) => {
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   return (
     <TitleHeading
       key={libraryId + '-' + albumId}
@@ -140,23 +147,54 @@ const Title = ({
             {albumTrackCount} track{albumTrackCount !== 1 && 's'}
             {(albumReleaseDate || albumTrackCount) && albumDurationString && ' • '}
             {albumDurationString}
-            {(albumReleaseDate || albumTrackCount || albumDurationString) && optionShowStarRatings && ' • '}
-            {optionShowStarRatings && (
-              <StarRating
-                variant="title"
-                type="album"
-                ratingKey={albumId}
-                rating={albumRating}
-                editable
-                alwaysVisible
-              />
-            )}
+            {(albumReleaseDate || albumTrackCount || albumDurationString) && ' • '}
+            <StarRating variant="title" type="album" ratingKey={albumId} rating={albumRating} editable alwaysVisible />
           </>
         ) : (
           <>&nbsp;</>
         )
       }
       showPlay={true}
+      optionsMenu={
+        <FilterMenu
+          variant="Large"
+          icon="CogIcon"
+          iconStrokeWidth={1.2}
+          setter={setColumnVisibility}
+          entries={[
+            {
+              label: 'Title',
+              disabled: true,
+              checked: true,
+            },
+            {
+              label: 'Artist',
+              attr: 'colAlbumArtist',
+              checked: colOptions.artist,
+            },
+            {
+              label: 'Audio Codec',
+              attr: 'colAlbumCodec',
+              checked: colOptions.codec,
+            },
+            {
+              label: 'Bitrate',
+              attr: 'colAlbumBitrate',
+              checked: colOptions.bitrate,
+            },
+            {
+              label: 'Duration',
+              attr: 'colAlbumDuration',
+              checked: colOptions.duration,
+            },
+            {
+              label: 'Rating',
+              attr: 'colAlbumUserRating',
+              checked: colOptions.userRating,
+            },
+          ]}
+        />
+      }
       handlePlay={albumTracks && albumTracks.length > 0 ? doPlay : null}
       padding={!isListView}
     />

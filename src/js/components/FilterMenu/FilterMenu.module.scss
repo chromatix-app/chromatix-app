@@ -4,6 +4,11 @@
   display: inline-block;
   margin-left: -6px;
   margin-right: 18px;
+
+  &Large {
+    margin-left: 0;
+    margin-right: 0;
+  }
 }
 
 .trigger {
@@ -16,6 +21,10 @@
   color: var(--color-opacity-06);
 
   @include focus-self-outline;
+
+  .wrapLarge & {
+    background: var(--color-opacity-03);
+  }
 }
 
 .icon {
@@ -31,6 +40,12 @@
   &:last-child {
     margin: 0 0 0 8px;
   }
+
+  .wrapLarge & {
+    margin: 0 !important;
+    opacity: 1;
+    color: var(--color-background);
+  }
 }
 
 .content {
@@ -44,6 +59,11 @@
   z-index: 99;
   font-size: 13px;
   line-height: 1;
+
+  &Large {
+    top: 4px;
+    left: 0;
+  }
 }
 
 .item {

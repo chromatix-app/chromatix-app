@@ -7,8 +7,6 @@ import * as plex from 'js/services/plex';
 const useGetAllArtists = () => {
   const dispatch = useDispatch();
 
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const currentLibraryId = currentLibrary?.libraryId;
 
@@ -16,11 +14,25 @@ const useGetAllArtists = () => {
   const sortArtists = useSelector(({ sessionModel }) => sessionModel.sortArtists);
   const orderArtists = useSelector(({ sessionModel }) => sessionModel.orderArtists);
 
-  // prevent sorting by rating if ratings are hidden
-  const isRatingSortHidden = !optionShowStarRatings && sortArtists === 'userRating';
+  const gridArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.gridArtistsUserRating);
 
-  const actualSortArtists = isRatingSortHidden ? 'title' : sortArtists;
-  const actualOrderArtists = isRatingSortHidden ? 'asc' : orderArtists;
+  const colArtistsCountry = useSelector(({ sessionModel }) => sessionModel.colArtistsCountry);
+  const colArtistsGenre = useSelector(({ sessionModel }) => sessionModel.colArtistsGenre);
+  const colArtistsAddedAt = useSelector(({ sessionModel }) => sessionModel.colArtistsAddedAt);
+  const colArtistsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colArtistsLastPlayed);
+  const colArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistsUserRating);
+
+  // prevent sorting by a hidden field
+  const allowedSort = {
+    title: true,
+    addedAt: viewArtists === 'grid' || (viewArtists === 'list' && colArtistsAddedAt),
+    country: viewArtists === 'list' && colArtistsCountry,
+    lastPlayed: viewArtists === 'grid' || (viewArtists === 'list' && colArtistsLastPlayed),
+    genre: viewArtists === 'list' && colArtistsGenre,
+    userRating: viewArtists === 'grid' || (viewArtists === 'list' && colArtistsUserRating),
+  };
+  const actualSortArtists = allowedSort[sortArtists] ? sortArtists : 'title';
+  const actualOrderArtists = allowedSort[sortArtists] ? orderArtists : 'asc';
 
   const haveGotAllArtists = useSelector(({ appModel }) => appModel.haveGotAllArtists);
   const allArtists = useSelector(({ appModel }) => appModel.allArtists)?.filter(
@@ -48,6 +60,12 @@ const useGetAllArtists = () => {
     });
   };
 
+  const setColumnVisibility = (columnKey, columnValue) => {
+    dispatch.sessionModel.setSessionState({
+      [columnKey]: columnValue,
+    });
+  };
+
   useEffect(() => {
     plex.getAllArtists();
   }, []);
@@ -57,9 +75,22 @@ const useGetAllArtists = () => {
     sortArtists: actualSortArtists,
     orderArtists: actualOrderArtists,
 
+    gridOptions: {
+      userRating: gridArtistsUserRating,
+    },
+
+    colOptions: {
+      country: colArtistsCountry,
+      genre: colArtistsGenre,
+      addedAt: colArtistsAddedAt,
+      lastPlayed: colArtistsLastPlayed,
+      userRating: colArtistsUserRating,
+    },
+
     setViewArtists,
     setSortArtists,
     setOrderArtists,
+    setColumnVisibility,
 
     sortedArtists,
   };

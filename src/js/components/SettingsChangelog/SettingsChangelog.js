@@ -27,8 +27,7 @@ const SettingsChangelog = () => {
   return (
     <div className={style.wrap}>
       <div className="font-markdown">
-        {markdownContent
-          .replace(/<!--[\s\S]*?-->/g, '')
+        {removeHtmlComments(markdownContent)
           .split(/<a[^>]*><\/a>/)
           .map((item, key) => {
             if (item) {
@@ -47,6 +46,15 @@ const SettingsChangelog = () => {
 // ======================================================================
 // HELPERS
 // ======================================================================
+
+const removeHtmlComments = (input) => {
+  let previous;
+  do {
+    previous = input;
+    input = input.replace(/<!--|--!?>/g, '');
+  } while (input !== previous);
+  return input;
+};
 
 const convertMarkdown = (text) => {
   let convertedMarkdown = convertLists(text);

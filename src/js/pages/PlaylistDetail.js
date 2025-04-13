@@ -2,10 +2,10 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { ListTable, Loading, StarRating, TitleHeading } from 'js/components';
+import { FilterMenu, ListTable, Loading, StarRating, TitleHeading } from 'js/components';
 import { useGetPlaylistDetail } from 'js/hooks';
 
 // ======================================================================
@@ -27,6 +27,8 @@ const PlaylistDetail = () => {
     playlistTracks,
     playlistOrder,
     playlistSortString,
+    colOptions,
+    setColumnVisibility,
   } = useGetPlaylistDetail({
     libraryId,
     playlistId,
@@ -53,6 +55,7 @@ const PlaylistDetail = () => {
     <>
       {(isLoading || isEmptyList) && (
         <Title
+          colOptions={colOptions}
           doPlay={doPlay}
           isListView={isListView}
           libraryId={libraryId}
@@ -63,6 +66,7 @@ const PlaylistDetail = () => {
           playlistTitle={playlistTitle}
           playlistTrackCount={playlistTrackCount}
           playlistTracks={playlistTracks}
+          setColumnVisibility={setColumnVisibility}
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
@@ -73,8 +77,10 @@ const PlaylistDetail = () => {
           entries={playlistTracks}
           playingOrder={playlistOrder}
           sortString={playlistSortString}
+          colOptions={colOptions}
         >
           <Title
+            colOptions={colOptions}
             doPlay={doPlay}
             isListView={isListView}
             libraryId={libraryId}
@@ -85,6 +91,7 @@ const PlaylistDetail = () => {
             playlistTitle={playlistTitle}
             playlistTrackCount={playlistTrackCount}
             playlistTracks={playlistTracks}
+            setColumnVisibility={setColumnVisibility}
           />
         </ListTable>
       )}
@@ -93,6 +100,7 @@ const PlaylistDetail = () => {
 };
 
 const Title = ({
+  colOptions,
   doPlay,
   isListView,
   libraryId,
@@ -103,9 +111,8 @@ const Title = ({
   playlistTitle,
   playlistTrackCount,
   playlistTracks,
+  setColumnVisibility,
 }) => {
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   return (
     <TitleHeading
       key={libraryId + '-' + playlistId}
@@ -116,23 +123,67 @@ const Title = ({
         playlistTracks ? (
           <>
             {playlistDurationString}
-            {playlistDurationString && optionShowStarRatings && ' • '}
-            {optionShowStarRatings && (
-              <StarRating
-                variant="title"
-                type="playlist"
-                ratingKey={playlistId}
-                rating={playlistRating}
-                editable
-                alwaysVisible
-              />
-            )}
+            {playlistDurationString && ' • '}
+
+            <StarRating
+              variant="title"
+              type="playlist"
+              ratingKey={playlistId}
+              rating={playlistRating}
+              editable
+              alwaysVisible
+            />
           </>
         ) : (
           <>&nbsp;</>
         )
       }
       showPlay={true}
+      optionsMenu={
+        <FilterMenu
+          variant="Large"
+          icon="CogIcon"
+          iconStrokeWidth={1.2}
+          setter={setColumnVisibility}
+          entries={[
+            {
+              label: 'Title',
+              disabled: true,
+              checked: true,
+            },
+            {
+              label: 'Artist',
+              attr: 'colPlaylistArtist',
+              checked: colOptions.artist,
+            },
+            {
+              label: 'Album',
+              attr: 'colPlaylistAlbum',
+              checked: colOptions.album,
+            },
+            {
+              label: 'Audio Codec',
+              attr: 'colPlaylistCodec',
+              checked: colOptions.codec,
+            },
+            {
+              label: 'Bitrate',
+              attr: 'colPlaylistBitrate',
+              checked: colOptions.bitrate,
+            },
+            {
+              label: 'Duration',
+              attr: 'colPlaylistDuration',
+              checked: colOptions.duration,
+            },
+            {
+              label: 'Rating',
+              attr: 'colPlaylistUserRating',
+              checked: colOptions.userRating,
+            },
+          ]}
+        />
+      }
       handlePlay={playlistTracks && playlistTracks.length > 0 ? doPlay : null}
       padding={!isListView}
     />

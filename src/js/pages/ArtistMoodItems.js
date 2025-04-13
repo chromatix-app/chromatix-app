@@ -2,10 +2,9 @@
 // IMPORTS
 // ======================================================================
 
-import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { FilterSelect, FilterToggle, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
+import { FilterMenu, FilterSelect, FilterToggle, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
 import { useGetCollectionItems } from 'js/hooks';
 
 // ======================================================================
@@ -22,10 +21,13 @@ const ArtistMoodItems = () => {
     viewCollectionItems,
     sortCollectionItems,
     orderCollectionItems,
+    gridOptions,
+    colOptions,
 
     setViewCollectionItems,
     setSortCollectionItems,
     setOrderCollectionItems,
+    setColumnVisibility,
 
     collectionThumb,
     collectionTitle,
@@ -52,10 +54,13 @@ const ArtistMoodItems = () => {
         <Title
           collectionThumb={collectionThumb}
           collectionTitle={collectionTitle}
-          moodId={moodId}
+          colOptions={colOptions}
+          gridOptions={gridOptions}
           isListView={isListView}
           libraryId={libraryId}
+          moodId={moodId}
           orderCollectionItems={orderCollectionItems}
+          setColumnVisibility={setColumnVisibility}
           setOrderCollectionItems={setOrderCollectionItems}
           setSortCollectionItems={setSortCollectionItems}
           setViewCollectionItems={setViewCollectionItems}
@@ -65,21 +70,27 @@ const ArtistMoodItems = () => {
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
-      {isGridView && <ListCards variant={'artists'} entries={sortedCollectionItems} />}
+      {isGridView && (
+        <ListCards variant={'artists'} entries={sortedCollectionItems} showRatings={gridOptions.userRating} />
+      )}
       {isListView && (
         <ListTable
           variant="artistMoodItems"
           entries={sortedCollectionItems}
           sortKey={sortCollectionItems}
           orderKey={orderCollectionItems}
+          colOptions={colOptions}
         >
           <Title
             collectionThumb={collectionThumb}
             collectionTitle={collectionTitle}
-            moodId={moodId}
+            colOptions={colOptions}
+            gridOptions={gridOptions}
             isListView={isListView}
             libraryId={libraryId}
+            moodId={moodId}
             orderCollectionItems={orderCollectionItems}
+            setColumnVisibility={setColumnVisibility}
             setOrderCollectionItems={setOrderCollectionItems}
             setSortCollectionItems={setSortCollectionItems}
             setViewCollectionItems={setViewCollectionItems}
@@ -96,10 +107,13 @@ const ArtistMoodItems = () => {
 const Title = ({
   collectionThumb,
   collectionTitle,
-  moodId,
+  colOptions,
+  gridOptions,
   isListView,
   libraryId,
+  moodId,
   orderCollectionItems,
+  setColumnVisibility,
   setOrderCollectionItems,
   setSortCollectionItems,
   setViewCollectionItems,
@@ -107,8 +121,6 @@ const Title = ({
   sortedCollectionItems,
   viewCollectionItems,
 }) => {
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   return (
     <TitleHeading
       key={libraryId + '-' + moodId}
@@ -142,8 +154,7 @@ const Title = ({
                   { value: 'title', label: 'Alphabetical' },
                   { value: 'addedAt', label: 'Date added' },
                   { value: 'lastPlayed', label: 'Date played' },
-                  // only allow sorting by rating if the option is enabled
-                  ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
+                  { value: 'userRating', label: 'Rating' },
                 ]}
                 setter={setSortCollectionItems}
               />
@@ -156,7 +167,53 @@ const Title = ({
                 setter={setOrderCollectionItems}
                 icon={orderCollectionItems === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
               />
+              <FilterMenu
+                label="Options"
+                icon="CogIcon"
+                setter={setColumnVisibility}
+                entries={[
+                  {
+                    label: 'Show star ratings',
+                    attr: 'gridArtistCollectionItemsUserRating',
+                    checked: gridOptions.userRating,
+                  },
+                ]}
+              />
             </>
+          )}
+          {viewCollectionItems === 'list' && (
+            <FilterMenu
+              label="Options"
+              icon="CogIcon"
+              setter={setColumnVisibility}
+              entries={[
+                {
+                  label: 'Title',
+                  disabled: true,
+                  checked: true,
+                },
+                {
+                  label: 'Genre',
+                  attr: 'colCollectionArtistsGenre',
+                  checked: colOptions.genre,
+                },
+                {
+                  label: 'Added',
+                  attr: 'colCollectionArtistsAddedAt',
+                  checked: colOptions.addedAt,
+                },
+                {
+                  label: 'Last Played',
+                  attr: 'colCollectionArtistsLastPlayed',
+                  checked: colOptions.lastPlayed,
+                },
+                {
+                  label: 'Rating',
+                  attr: 'colCollectionArtistsUserRating',
+                  checked: colOptions.userRating,
+                },
+              ]}
+            />
           )}
         </>
       }
