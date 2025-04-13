@@ -10,12 +10,12 @@ const analyticsEvent = (event: string, props: object = {}) => {
     electronVersion: electronVersion,
   };
 
-  try {
-    if (!isLocal) {
+  if (!isLocal) {
+    try {
       window.umami.track(event, finalProps);
+    } catch (error) {
+      // Ignore errors
     }
-  } catch (error) {
-    // Ignore errors
   }
 };
 
