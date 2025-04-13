@@ -40,8 +40,8 @@ const sortList = (entries: Entry[], options: string, direction: 'asc' | 'desc' =
     secondaryDirection = forcedSecondarySortKeys[primarySortKey]?.direction
       ? forcedSecondarySortKeys[primarySortKey].direction
       : secondaryDirection === 'asc'
-      ? 'desc'
-      : 'asc';
+        ? 'desc'
+        : 'asc';
   }
 
   // console.log(direction, primarySortKey, primaryDirection, secondarySortKey, secondaryDirection);
