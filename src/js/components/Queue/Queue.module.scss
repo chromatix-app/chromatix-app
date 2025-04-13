@@ -1,4 +1,5 @@
-@import '../../../css/global';
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
 
 .wrap {
   overflow: hidden;
@@ -48,7 +49,7 @@
   overflow: hidden;
   margin: 15px 1px 12px;
   background: var(--color-background);
-  background-image: $thumbnail;
+  background-image: vars.$thumbnail;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -56,7 +57,7 @@
   outline: 1px solid var(--color-opacity-01);
   aspect-ratio: 1 / 1;
 
-  @include electron-no-drag;
+  @include mixins.electron-no-drag;
 
   img {
     aspect-ratio: 1 / 1;
@@ -99,9 +100,9 @@
     transform: scale(1.1);
   }
 
-  @include focus-self-outline;
+  @include mixins.focus-self-outline;
 
-  @include focus-self-custom() {
+  @include mixins.focus-self-custom() {
     opacity: 1;
   }
 
@@ -147,8 +148,8 @@
 }
 
 button.label {
-  @include electron-no-drag;
-  @include focus-self-outline();
+  @include mixins.electron-no-drag;
+  @include mixins.focus-self-outline();
 }
 
 .expandIcon {
@@ -164,7 +165,7 @@ button.label {
     opacity: var(--opacity-05);
   }
 
-  @include focus-child-custom() {
+  @include mixins.focus-child-custom() {
     opacity: var(--opacity-05);
   }
 }
@@ -214,7 +215,7 @@ button.label {
   border: 1px solid transparent;
   border-radius: 8px;
 
-  @include focus-self-outline();
+  @include mixins.focus-self-outline();
 
   &:hover {
     background: var(--color-opacity-01);
@@ -238,7 +239,7 @@ button.label {
   width: 36px;
   height: 36px;
   background: var(--color-opacity-01);
-  background-image: $thumbnail;
+  background-image: vars.$thumbnail;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;

@@ -1,4 +1,5 @@
-@import '../../../css/global';
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
 
 .wrap {
   max-width: 800px;
@@ -28,7 +29,7 @@
 }
 
 .menuEntry {
-  @include focus-parent-outline;
+  @include mixins.focus-parent-outline;
 
   + .menuEntry {
     // margin-top: 4px;

@@ -1,4 +1,5 @@
-@import '../../../css/global';
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
 
 .wrap {
   width: 100%;
@@ -21,7 +22,7 @@
   border-radius: 8px;
   text-align: left;
 
-  @include focus-self-outline;
+  @include mixins.focus-self-outline;
 
   &:hover,
   &:focus {

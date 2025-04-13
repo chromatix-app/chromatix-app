@@ -1,4 +1,5 @@
-@import '../../../css/global';
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
 
 .wrap {
 }
@@ -12,8 +13,8 @@
   max-width: 220px;
   padding: 17px 16px;
   margin: 0;
-  background: $color-primary;
-  border: 1px solid $color-opacity-02;
+  background: vars.$color-primary;
+  border: 1px solid vars.$color-opacity-02;
   border-radius: 10px;
 
   font-size: 18px;
@@ -21,9 +22,9 @@
   font-weight: 600;
   text-align: center;
   text-decoration: none;
-  color: $color-background;
+  color: vars.$color-background;
 
-  @include focus-self-outline;
+  @include mixins.focus-self-outline;
 
   @media (min-width: 1024px) {
     max-width: 260px;

@@ -1,4 +1,5 @@
-@import '../../../css/global';
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
 
 .wrap {
   overflow: hidden;
@@ -56,7 +57,7 @@
     border-radius: 2px;
     color: var(--color-opacity-05);
 
-    @include focus-self-outline;
+    @include mixins.focus-self-outline;
   }
 
   &:after {
@@ -84,7 +85,7 @@
   border: 1px solid transparent;
   border-radius: 8px;
 
-  @include focus-self-outline;
+  @include mixins.focus-self-outline;
 
   :global(.cq-800) & {
     padding: 6px 19px;
@@ -230,7 +231,7 @@
   width: 36px;
   height: 36px;
   background: var(--color-opacity-01);
-  background-image: $thumbnail;
+  background-image: vars.$thumbnail;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;

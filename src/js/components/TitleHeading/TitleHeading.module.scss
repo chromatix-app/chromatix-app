@@ -1,4 +1,5 @@
-@import '../../../css/global';
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
 
 .wrap {
   display: flex;
@@ -73,7 +74,7 @@
 }
 
 .thumb {
-  background-image: $thumbnail;
+  background-image: vars.$thumbnail;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -121,7 +122,7 @@
   a {
     border-radius: 3px;
 
-    @include focus-self-outline;
+    @include mixins.focus-self-outline;
   }
 }
 
@@ -257,7 +258,7 @@
     padding: 4px 12px;
   }
 
-  @include focus-self-outline;
+  @include mixins.focus-self-outline;
 }
 
 .playIcon,
