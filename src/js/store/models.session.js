@@ -55,11 +55,12 @@ const sessionState = {
   menuShowAlbumStyles: true,
 
   optionShowFullTitles_Deprecated: false,
-  optionShowStarRatings: true,
   optionLogPlexPlayback: true,
 
   queueIsVisible: false,
   queueExpandArtwork: true,
+
+  // VIEW OPTIONS
 
   viewArtists: 'grid',
   viewArtistAlbums: 'grid',
@@ -82,6 +83,8 @@ const sessionState = {
   viewArtistStyleItems: 'grid',
   viewAlbumStyles: 'grid',
   viewAlbumStyleItems: 'grid',
+
+  // VIEW SORTING OPTIONS
 
   sortArtists: 'title',
   sortArtistAlbums: 'releaseDate',
@@ -108,6 +111,8 @@ const sessionState = {
   sortAlbumStyles: 'title',
   sortAlbumStyleItems: 'title',
 
+  // VIEW ORDERING OPTIONS
+
   orderArtists: 'asc',
   orderArtistAlbums: 'asc',
   orderAlbums: 'asc',
@@ -130,11 +135,73 @@ const sessionState = {
   orderAlbumStyles: 'asc',
   orderAlbumStyleItems: 'asc',
 
+  // GRID VIEW OPTIONS
+
+  gridArtistsUserRating: true,
+  gridArtistAlbumsUserRating: true,
+  gridArtistCollectionItemsUserRating: true,
+  gridAlbumsUserRating: true,
+  gridAlbumCollectionItemsUserRating: true,
+  gridPlaylistsUserRating: true,
+  gridCollectionsUserRating: true,
+
+  // LIST VIEW COLUMN VISIBILITY OPTIONS
+
+  colArtistsCountry: true,
+  colArtistsGenre: true,
+  colArtistsAddedAt: false,
+  colArtistsLastPlayed: false,
+  colArtistsUserRating: true,
+
+  colArtistAlbumsGenre: false,
+  colArtistAlbumsReleaseDate: true,
+  colArtistAlbumsAddedAt: false,
+  colArtistAlbumsLastPlayed: false,
+  colArtistAlbumsUserRating: true,
+
   colAlbumsArtist: true,
-  colAlbumsReleased: true,
-  colAlbumsAdded: true,
-  colAlbumsLastPlayed: true,
-  colAlbumsRating: true,
+  colAlbumsGenre: false,
+  colAlbumsReleaseDate: true,
+  colAlbumsAddedAt: false,
+  colAlbumsLastPlayed: false,
+  colAlbumsUserRating: true,
+
+  colAlbumArtist: true,
+  colAlbumCodec: false,
+  colAlbumBitrate: false,
+  colAlbumDuration: true,
+  colAlbumUserRating: true,
+
+  colFoldersKind: true,
+
+  colPlaylistsTotalTracks: true,
+  colPlaylistsDuration: true,
+  colPlaylistsAddedAt: false,
+  colPlaylistsLastPlayed: false,
+  colPlaylistsUserRating: true,
+
+  colPlaylistArtist: true,
+  colPlaylistAlbum: true,
+  colPlaylistCodec: false,
+  colPlaylistBitrate: false,
+  colPlaylistDuration: true,
+  colPlaylistUserRating: true,
+
+  colCollectionAddedAt: true,
+  colCollectionUserRating: true,
+
+  colCollectionArtistsCountry: true,
+  colCollectionArtistsGenre: true,
+  colCollectionArtistsAddedAt: false,
+  colCollectionArtistsLastPlayed: false,
+  colCollectionArtistsUserRating: true,
+
+  colCollectionAlbumsArtist: true,
+  colCollectionAlbumsGenre: false,
+  colCollectionAlbumsReleaseDate: true,
+  colCollectionAlbumsAddedAt: false,
+  colCollectionAlbumsLastPlayed: false,
+  colCollectionAlbumsUserRating: true,
 };
 
 const playingState = {
@@ -164,6 +231,7 @@ const state = Object.assign({}, sessionState, playingState);
 const reducers = {
   setSessionState(rootState, payload) {
     console.log('%c--- setSessionState ---', 'color:#0f60b7');
+    // console.log(payload);
     return { ...rootState, ...payload };
   },
 

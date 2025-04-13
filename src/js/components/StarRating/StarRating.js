@@ -12,7 +12,7 @@ const StarRating = ({
   ratingKey,
   rating = 0,
   inline,
-  size = 14,
+  size = 13,
   editable = false,
   alwaysVisible = false,
 }) => {
@@ -74,7 +74,7 @@ const StarRating = ({
         [style.wrapZero]: rating <= 0 && !displayRating,
       })}
       style={{
-        width: size * 5,
+        width: size * 5 + 8,
         height: size,
       }}
     >

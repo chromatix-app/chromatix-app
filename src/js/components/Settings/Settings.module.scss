@@ -1,4 +1,5 @@
-@import '../../../css/global';
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
 
 .wrap {
   padding: 0 30px 50px;
@@ -31,7 +32,7 @@
   padding: 10px 0 10px 1px;
   border-bottom: 1px solid var(--color-opacity-015);
 
-  @include focus-self-outline;
+  @include mixins.focus-self-outline;
 }
 
 .entryIconSmall,
@@ -91,7 +92,7 @@
   line-height: 0;
   text-indent: -9999px;
 
-  @include focus-self-outline;
+  @include mixins.focus-self-outline;
 }
 
 .legal {

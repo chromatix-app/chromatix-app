@@ -7,8 +7,6 @@ import * as plex from 'js/services/plex';
 const useGetAllAlbums = () => {
   const dispatch = useDispatch();
 
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const currentLibraryId = currentLibrary?.libraryId;
 
@@ -16,20 +14,29 @@ const useGetAllAlbums = () => {
   const sortAlbums = useSelector(({ sessionModel }) => sessionModel.sortAlbums);
   const orderAlbums = useSelector(({ sessionModel }) => sessionModel.orderAlbums);
 
+  const gridAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.gridAlbumsUserRating);
+
   const colAlbumsArtist = useSelector(({ sessionModel }) => sessionModel.colAlbumsArtist);
-  const colAlbumsReleased = useSelector(({ sessionModel }) => sessionModel.colAlbumsReleased);
-  const colAlbumsAdded = useSelector(({ sessionModel }) => sessionModel.colAlbumsAdded);
+  const colAlbumsGenre = useSelector(({ sessionModel }) => sessionModel.colAlbumsGenre);
+  const colAlbumsReleaseDate = useSelector(({ sessionModel }) => sessionModel.colAlbumsReleaseDate);
+  const colAlbumsAddedAt = useSelector(({ sessionModel }) => sessionModel.colAlbumsAddedAt);
   const colAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colAlbumsLastPlayed);
-  const colAlbumsRating = useSelector(({ sessionModel }) => sessionModel.colAlbumsRating);
+  const colAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumsUserRating);
 
-  // prevent sorting by rating if ratings are hidden
-  const isRatingSortHidden = !optionShowStarRatings && sortAlbums === 'userRating';
-
-  // prevent sub-sorting in list view
-  const isSubSortList = viewAlbums === 'list' && sortAlbums.split('-').length > 2;
-
-  const actualSortAlbums = isRatingSortHidden ? 'title' : isSubSortList ? 'artist' : sortAlbums;
-  const actualOrderAlbums = isRatingSortHidden ? 'asc' : orderAlbums;
+  // prevent sorting by a hidden field
+  const allowedSort = {
+    title: true,
+    artist: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsArtist),
+    'artist-asc-releaseDate-asc': viewAlbums === 'grid',
+    'artist-asc-releaseDate-desc': viewAlbums === 'grid',
+    addedAt: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsAddedAt),
+    lastPlayed: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsLastPlayed),
+    genre: viewAlbums === 'list' && colAlbumsGenre,
+    releaseDate: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsReleaseDate),
+    userRating: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsUserRating),
+  };
+  const actualSortAlbums = allowedSort[sortAlbums] ? sortAlbums : 'title';
+  const actualOrderAlbums = allowedSort[sortAlbums] ? orderAlbums : 'asc';
 
   const haveGotAllAlbums = useSelector(({ appModel }) => appModel.haveGotAllAlbums);
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums)?.filter(
@@ -71,12 +78,17 @@ const useGetAllAlbums = () => {
     sortAlbums: actualSortAlbums,
     orderAlbums: actualOrderAlbums,
 
+    gridOptions: {
+      userRating: gridAlbumsUserRating,
+    },
+
     colOptions: {
-      colAlbumsArtist,
-      colAlbumsReleased,
-      colAlbumsAdded,
-      colAlbumsLastPlayed,
-      colAlbumsRating,
+      artist: colAlbumsArtist,
+      genre: colAlbumsGenre,
+      releaseDate: colAlbumsReleaseDate,
+      addedAt: colAlbumsAddedAt,
+      lastPlayed: colAlbumsLastPlayed,
+      userRating: colAlbumsUserRating,
     },
 
     setViewAlbums,

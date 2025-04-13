@@ -171,6 +171,7 @@ export const transposeAlbumData = (album, libraryId, plexBaseUrl, accessToken) =
     artist: album.parentTitle,
     artistId: album.parentRatingKey,
     artistLink: '/artists/' + libraryId + '/' + album.parentRatingKey,
+    genre: album?.Genre?.[0]?.tag,
     userRating: album.userRating,
     releaseDate: album.originallyAvailableAt,
     link: '/albums/' + libraryId + '/' + album.ratingKey,
@@ -287,12 +288,10 @@ export const transposeCollectionArray = (array, libraryId, plexBaseUrl, accessTo
 };
 
 export const transposeCollectionItemArray = (array, libraryId, plexBaseUrl, accessToken, typeKey) => {
-  console.log(typeKey);
   const data =
     array?.data?.MediaContainer?.Metadata?.map((item) =>
       lookups[`transpose${typeKey}Data`](item, libraryId, plexBaseUrl, accessToken)
     ) || [];
-  console.log(data);
   return data;
 };
 
@@ -418,6 +417,8 @@ export const transposeTrackData = (track, libraryId, plexBaseUrl, accessToken) =
     albumLink: '/albums/' + libraryId + '/' + track.parentRatingKey,
     trackNumber: track.index,
     discNumber: track.parentIndex,
+    codec: track.Media[0].audioCodec,
+    bitrate: track.Media[0].bitrate,
     duration: track.Media[0].duration,
     userRating: track.userRating,
     thumb: getThumb(plexBaseUrl, track.thumb, thumbSizeSmall, accessToken),

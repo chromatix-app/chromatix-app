@@ -1,4 +1,5 @@
-@import '../../../css/global';
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
 
 .wrap {
   display: inline-block;
@@ -15,7 +16,7 @@
   line-height: 1;
   color: var(--color-opacity-06);
 
-  @include focus-self-outline;
+  @include mixins.focus-self-outline;
 }
 
 .icon {

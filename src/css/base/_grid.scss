@@ -1,3 +1,8 @@
+@use 'sass:map';
+@use 'sass:math';
+@use '../_config/mixins';
+@use '../_config/vars';
+
 // ======================================================================
 // ROWS
 // ======================================================================
@@ -61,8 +66,8 @@
 }
 
 @include rows;
-@each $key in $grid-breakpoints {
-  $breakpoint: map-get($breakpoints, $key);
+@each $key in vars.$grid-breakpoints {
+  $breakpoint: map.get(vars.$breakpoints, $key);
   @media (min-width: $breakpoint) {
     @include rows($key);
   }
@@ -80,8 +85,8 @@
 
   // @include dev-layout;
 
-  @include breakpoint-map($grid-padding) {
-    padding: 0 map-val();
+  @include mixins.breakpoint-map(vars.$grid-padding) {
+    padding: 0 mixins.map-val();
   }
 
   // &--no-padding-mobile {
@@ -141,9 +146,9 @@
   }
 
   // columns + offsets
-  @for $i from 1 through $grid-cols {
+  @for $i from 1 through vars.$grid-cols {
     .col#{$key}-#{$i} {
-      width: percentage($i/$grid-cols);
+      width: math.percentage(calc($i/vars.$grid-cols));
     }
     // .col#{$key}-#{$i}-half {
     //   width: percentage(($i + 0.5) / $grid-cols);
@@ -253,8 +258,8 @@
 }
 
 @include columns;
-@each $key in $grid-breakpoints {
-  $breakpoint: map-get($breakpoints, $key);
+@each $key in vars.$grid-breakpoints {
+  $breakpoint: map.get(vars.$breakpoints, $key);
   @media (min-width: $breakpoint) {
     @include columns($key);
   }
@@ -289,14 +294,14 @@
   grid-template-columns: repeat(12, 1fr);
   grid-template-columns: repeat(12, minmax(0, 1fr));
   width: 100%;
-  max-width: $grid-max-width;
+  max-width: vars.$grid-max-width;
   margin: 0 auto;
 
   // @include dev-layout;
 
-  @include breakpoint-map($grid-padding) {
-    gap: map-val() * 2;
-    padding: 0 map-val();
+  @include mixins.breakpoint-map(vars.$grid-padding) {
+    gap: mixins.map-val() * 2;
+    padding: 0 mixins.map-val();
   }
 
   // &--no-padding {
@@ -368,7 +373,7 @@
 }
 
 @include grid_columns;
-@each $key, $val in $breakpoints {
+@each $key, $val in vars.$breakpoints {
   @media (min-width: $val) {
     @include grid_columns($key);
   }
@@ -439,8 +444,8 @@
 }
 
 @include spacings;
-@each $key in $grid-breakpoints {
-  $breakpoint: map-get($breakpoints, $key);
+@each $key in vars.$grid-breakpoints {
+  $breakpoint: map.get(vars.$breakpoints, $key);
   @media (min-width: $breakpoint) {
     @include spacings($key);
   }
@@ -479,8 +484,8 @@
 }
 
 @include utilities;
-@each $key in $grid-breakpoints {
-  $breakpoint: map-get($breakpoints, $key);
+@each $key in vars.$grid-breakpoints {
+  $breakpoint: map.get(vars.$breakpoints, $key);
   @media (min-width: $breakpoint) {
     @include utilities($key);
   }

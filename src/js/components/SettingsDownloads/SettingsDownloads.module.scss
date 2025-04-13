@@ -1,4 +1,5 @@
-@import '../../../css/global';
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
 
 .wrap {
   padding: 0 30px 50px;
@@ -39,7 +40,7 @@
       text-decoration: underline;
     }
 
-    @include focus-self-outline;
+    @include mixins.focus-self-outline;
   }
 
   .note {

@@ -2,9 +2,16 @@
 // IMPORTS
 // ======================================================================
 
-import { useSelector } from 'react-redux';
-
-import { FilterSelect, FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
+import {
+  FilterMenu,
+  FilterSelect,
+  FilterToggle,
+  FilterWrap,
+  ListCards,
+  ListTable,
+  Loading,
+  TitleHeading,
+} from 'js/components';
 import { useGetAllCollections } from 'js/hooks';
 
 // ======================================================================
@@ -16,9 +23,14 @@ const AlbumCollectionList = () => {
     viewCollections,
     sortCollections,
     orderCollections,
+    gridOptions,
+    colOptions,
+
     setViewCollections,
     setSortCollections,
     setOrderCollections,
+    setColumnVisibility,
+
     sortedCollections,
   } = useGetAllCollections('AlbumCollections');
 
@@ -31,8 +43,11 @@ const AlbumCollectionList = () => {
     <>
       {(isLoading || isEmptyList || isGridView) && (
         <Title
+          colOptions={colOptions}
+          gridOptions={gridOptions}
           isListView={isListView}
           orderCollections={orderCollections}
+          setColumnVisibility={setColumnVisibility}
           setOrderCollections={setOrderCollections}
           setSortCollections={setSortCollections}
           setViewCollections={setViewCollections}
@@ -42,17 +57,23 @@ const AlbumCollectionList = () => {
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
-      {isGridView && <ListCards variant="collections" entries={sortedCollections} />}
+      {isGridView && (
+        <ListCards variant="collections" entries={sortedCollections} showRatings={gridOptions.userRating} />
+      )}
       {isListView && (
         <ListTable
           variant="albumCollections"
           entries={sortedCollections}
           sortKey={sortCollections}
           orderKey={orderCollections}
+          colOptions={colOptions}
         >
           <Title
+            colOptions={colOptions}
+            gridOptions={gridOptions}
             isListView={isListView}
             orderCollections={orderCollections}
+            setColumnVisibility={setColumnVisibility}
             setOrderCollections={setOrderCollections}
             setSortCollections={setSortCollections}
             setViewCollections={setViewCollections}
@@ -67,8 +88,11 @@ const AlbumCollectionList = () => {
 };
 
 const Title = ({
+  colOptions,
+  gridOptions,
   isListView,
   orderCollections,
+  setColumnVisibility,
   setOrderCollections,
   setSortCollections,
   setViewCollections,
@@ -76,8 +100,6 @@ const Title = ({
   sortedCollections,
   viewCollections,
 }) => {
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   return (
     <>
       <TitleHeading
@@ -109,8 +131,7 @@ const Title = ({
               options={[
                 { value: 'title', label: 'Alphabetical' },
                 { value: 'addedAt', label: 'Date added' },
-                // only allow sorting by rating if the option is enabled
-                ...(optionShowStarRatings ? [{ value: 'userRating', label: 'Rating' }] : []),
+                { value: 'userRating', label: 'Rating' },
               ]}
               setter={setSortCollections}
             />
@@ -123,7 +144,43 @@ const Title = ({
               setter={setOrderCollections}
               icon={orderCollections === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
+            <FilterMenu
+              label="Options"
+              icon="CogIcon"
+              setter={setColumnVisibility}
+              entries={[
+                {
+                  label: 'Show star ratings',
+                  attr: 'gridCollectionsUserRating',
+                  checked: gridOptions.userRating,
+                },
+              ]}
+            />
           </>
+        )}
+        {viewCollections === 'list' && (
+          <FilterMenu
+            label="Options"
+            icon="CogIcon"
+            setter={setColumnVisibility}
+            entries={[
+              {
+                label: 'Title',
+                disabled: true,
+                checked: true,
+              },
+              {
+                label: 'Added',
+                attr: 'colCollectionAddedAt',
+                checked: colOptions.addedAt,
+              },
+              {
+                label: 'Rating',
+                attr: 'colCollectionUserRating',
+                checked: colOptions.userRating,
+              },
+            ]}
+          />
         )}
       </FilterWrap>
     </>

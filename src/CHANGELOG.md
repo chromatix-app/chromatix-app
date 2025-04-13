@@ -1,3 +1,21 @@
+<a name="0.37.0"></a>
+# 0.37.0 (2025-04-13)
+Features:
+- List view columns can now be toggled on and off, using a new "options" menu.
+  - Additional list view columns have been added in a few places, such as audio codec and bitrate.
+  - Default list view columns have been configured with sensible defaults.
+- Grid view ratings can now be toggled on and off, using a new "options" menu.
+- Globally toggling star rating visibility has been deprecated now that individual toggles are available.
+  - However, new buttons to toggle star ratings on and off for all sections have been added to the settings page.
+Updated:
+- Minor Plex API performance improvements by omitting unnecessary fields.
+- Larger artwork in header sections, if the viewport is large enough.
+- Tweaked some icon sizes for filter buttons.
+- Made star ratings very slightly larger (they should have been that way from the start).
+- Updated various dependencies.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.36.0"></a>
 # 0.36.0 (2025-03-30)
 Features:

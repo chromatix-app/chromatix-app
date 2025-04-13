@@ -1,4 +1,5 @@
-@import '../../../css/global';
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
 
 .wrap {
   overflow: hidden;
@@ -37,10 +38,6 @@
   :global(.cq-800) & {
     gap: 15px;
   }
-
-  > *:last-child {
-    text-align: right;
-  }
 }
 
 .header {
@@ -60,7 +57,7 @@
     border-radius: 2px;
     color: var(--color-opacity-05);
 
-    @include focus-self-outline;
+    @include mixins.focus-self-outline;
   }
 
   &:after {
@@ -82,21 +79,13 @@
   }
 }
 
-.headerRating {
-  display: none;
-
-  :global(.cq-800) & {
-    display: block;
-  }
-}
-
 .entry {
   padding: 6px 14px;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 8px;
 
-  @include focus-self-outline;
+  @include mixins.focus-self-outline;
 
   :global(.cq-800) & {
     padding: 6px 19px;
@@ -122,6 +111,19 @@
   }
 }
 
+.sortIcon {
+  display: inline-block;
+  position: relative;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+}
+
+//
+// GROUPS
+//
+
 .groupRow {
   padding: 60px 15px 18px;
   font-size: 16px;
@@ -137,6 +139,10 @@
     padding-top: 11px;
   }
 }
+
+//
+// DISCS
+//
 
 .discRow {
   display: flex;
@@ -167,19 +173,18 @@
   }
 }
 
+//
+// COLUMNS
+//
+
+.colorPrimary {
+  color: var(--color-primary) !important;
+}
+
 .colCenter span {
   display: inline-block;
   min-width: 18px;
   text-align: center;
-}
-
-.sortIcon {
-  display: inline-block;
-  position: relative;
-  top: 2px;
-  left: 2px;
-  width: 14px;
-  height: 14px;
 }
 
 .trackNumber,
@@ -225,20 +230,12 @@
   overflow: hidden;
   width: 36px;
   height: 36px;
-  // margin: 0 -5px;
   background: var(--color-opacity-01);
-  background-image: $thumbnail;
+  background-image: vars.$thumbnail;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 3px;
-
-  // .wrap.wrapArtistGenres &,
-  // .wrap.wrapAlbumGenres &,
-  // .wrap.wrapArtistMoods &,
-  // .wrap.wrapAlbumMoods &,
-  // .wrap.wrapArtistStyles &,
-  // .wrap.wrapAlbumStyles & {
 
   &.thumbFolder {
     background: var(--color-primary);
@@ -276,37 +273,49 @@
   font-size: 11px;
 }
 
-.meta,
 .artist,
 .album,
-.duration,
+.kind,
+.country,
 .genre,
-.addedAt,
-.lastPlayed,
+.totalTracks,
+.codec,
+.bitrate,
+.duration,
 .releaseDate,
-.totalTracks {
-  color: var(--color-opacity-05);
+.addedAt,
+.lastPlayed {
+  .entry & {
+    color: var(--color-opacity-05);
+  }
 
   .entry:hover & {
     color: var(--color-text);
   }
 }
 
-.meta {
-  text-transform: capitalize;
-}
+// .kind,
+// .country,
+// .genre {
+//   text-transform: capitalize;
+// }
 
 .userRating {
-  display: none;
-  font-size: 0;
-  line-height: 0;
-  color: var(--color-opacity-04);
-
-  :global(.cq-800) & {
-    display: block;
+  .entry & {
+    font-size: 0;
+    line-height: 0;
+    color: var(--color-opacity-04);
   }
-
   .entry:hover & {
     color: var(--color-text);
+  }
+}
+
+.codec,
+.bitrate,
+.duration,
+.userRating {
+  &:last-child {
+    text-align: right;
   }
 }

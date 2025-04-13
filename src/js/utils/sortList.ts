@@ -3,7 +3,10 @@ type Entry = {
   title?: string;
   album?: string;
   artist?: string;
+  country?: string;
   genre?: string;
+  codec?: string;
+  bitrate?: number;
   duration?: number;
   sortOrder?: number;
   totalTracks?: number;
@@ -37,8 +40,8 @@ const sortList = (entries: Entry[], options: string, direction: 'asc' | 'desc' =
     secondaryDirection = forcedSecondarySortKeys[primarySortKey]?.direction
       ? forcedSecondarySortKeys[primarySortKey].direction
       : secondaryDirection === 'asc'
-      ? 'desc'
-      : 'asc';
+        ? 'desc'
+        : 'asc';
   }
 
   // console.log(direction, primarySortKey, primaryDirection, secondarySortKey, secondaryDirection);
@@ -84,9 +87,12 @@ const sortFunctions: Record<string, SortFunction> = {
   },
   album: (a, b) => (a.album ?? '').localeCompare(b.album ?? ''),
   artist: (a, b) => (a.artist ?? '').localeCompare(b.artist ?? ''),
+  country: (a, b) => (a.country ?? '').localeCompare(b.country ?? ''),
   genre: (a, b) => (a.genre ?? '').localeCompare(b.genre ?? ''),
+  codec: (a, b) => (a.codec ?? '').localeCompare(b.codec ?? ''),
 
   // Numbers
+  bitrate: (a, b) => (a.bitrate ?? 0) - (b.bitrate ?? 0),
   duration: (a, b) => (a.duration ?? 0) - (b.duration ?? 0),
   sortOrder: (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0),
   totalTracks: (a, b) => (a.totalTracks ?? 0) - (b.totalTracks ?? 0),

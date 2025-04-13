@@ -24,12 +24,18 @@ const redirectPath = window.location.origin;
 const redirectQuery = 'plex-login';
 const redirectUrl = `${redirectPath}?${redirectQuery}=true`;
 
-const artistExcludes = 'summary,guid,key,parentRatingKey,parentTitle,skipCount';
-const albumExcludes =
-  'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,parentThumb,studio';
-const artistAndAlbumExcludes =
-  'summary,guid,key,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,skipCount,studio';
-const searchExcludes = 'summary';
+const artistExcludeFields = 'art,guid,lastRatedAt,parentRatingKey,parentTitle,skipCount,summary,updatedAt,viewCount';
+const albumExcludeFields =
+  'art,guid,lastRatedAt,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,parentThumb,skipCount,studio,summary,updatedAt,viewCount';
+const artistAndAlbumExcludeFields =
+  'art,guid,lastRatedAt,librarySectionTitle,librarySectionID,librarySectionKey,loudnessAnalysisVersion,musicAnalysisVersion,parentGuid,parentKey,parentThumb,rating,skipCount,studio,summary,updatedAt,viewCount';
+const playlistExcludeFields = 'guid,lastRatedAt,summary,updatedAt,viewCount';
+const trackExcludeFields =
+  'art,grandparentArt,grandparentThumb,guid,librarySectionTitle,librarySectionID,librarySectionKey,musicAnalysisVersion,parentStudio,parentThumb,summary,updatedAt';
+const searchExcludeFields = 'summary';
+
+const excludeElements = 'Collection,Director,Image,UltraBlurColors';
+const artistRelatedExcludeElements = 'Country,Director,Guid,Image,Location,Mood,Similar,Style,UltraBlurColors';
 
 const endpointConfig = {
   auth: {
@@ -523,7 +529,8 @@ export const getAllArtists = (plexBaseUrl, libraryId, accessToken) => {
           headers: getRequestHeaders(accessToken),
           params: {
             type: 8,
-            excludeFields: artistExcludes,
+            excludeFields: artistExcludeFields,
+            excludeElements: excludeElements,
           },
           signal: controller.signal,
         })
@@ -604,8 +611,9 @@ export const getAllArtistAlbums = (plexBaseUrl, libraryId, artistId, accessToken
         .get(endpoint, {
           headers: getRequestHeaders(accessToken),
           params: {
-            excludeAllLeaves: 1,
-            excludeFields: albumExcludes,
+            excludeFields: albumExcludeFields,
+            excludeElements: excludeElements,
+            // excludeAllLeaves: 1,
           },
           signal: controller.signal,
         })
@@ -649,10 +657,9 @@ export const getAllArtistRelated = (plexBaseUrl, libraryId, artistId, accessToke
           params: {
             includeRelated: 1,
             includeRelatedCount: 999,
-            excludeFields: 'summary',
-            excludeElements: 'Country,Genre,Guid,Image,Location,Mood,Similar,Style,UltraBlurColors',
+            excludeFields: albumExcludeFields,
+            excludeElements: artistRelatedExcludeElements,
             // excludeAllLeaves: 1,
-            // excludeFields: albumExcludes,
           },
           signal: controller.signal,
         })
@@ -751,10 +758,10 @@ export const getAllArtistAppearanceAlbumIds = (plexBaseUrl, libraryId, artistNam
       const controller = new AbortController();
       abortControllers.push(controller);
 
-      // We are using a query string ebcause of the use of a != operator
+      // We are using a query string because of the use of a != operator
       const queryString = `?type=10&track.originalTitle=${encodeURIComponent(
         artistName
-      )}&artist.title!=${encodeURIComponent(artistName)}&excludeFields=summary`;
+      )}&artist.title!=${encodeURIComponent(artistName)}&excludeFields=${albumExcludeFields}`;
 
       axios
         .get(endpoint + queryString, {
@@ -800,7 +807,8 @@ export const getAllAlbums = (plexBaseUrl, libraryId, accessToken) => {
           headers: getRequestHeaders(accessToken),
           params: {
             type: 9,
-            excludeFields: albumExcludes,
+            excludeFields: albumExcludeFields,
+            excludeElements: excludeElements,
           },
           signal: controller.signal,
         })
@@ -880,6 +888,10 @@ export const getAlbumTracks = (plexBaseUrl, libraryId, albumId, accessToken) => 
       axios
         .get(endpoint, {
           headers: getRequestHeaders(accessToken),
+          params: {
+            excludeFields: trackExcludeFields,
+            excludeElements: excludeElements,
+          },
           signal: controller.signal,
         })
         .then((response) => {
@@ -964,6 +976,7 @@ export const getAllPlaylists = (plexBaseUrl, libraryId, accessToken) => {
           params: {
             playlistType: 'audio',
             sectionID: libraryId,
+            excludeFields: playlistExcludeFields,
           },
           signal: controller.signal,
         })
@@ -1043,6 +1056,10 @@ export const getPlaylistTracks = (plexBaseUrl, libraryId, playlistId, accessToke
       axios
         .get(endpoint, {
           headers: getRequestHeaders(accessToken),
+          params: {
+            excludeFields: trackExcludeFields,
+            excludeElements: excludeElements,
+          },
           signal: controller.signal,
         })
         .then((response) => {
@@ -1122,7 +1139,8 @@ export const getCollectionItems = (plexBaseUrl, libraryId, collectionId, typeKey
         .get(endpoint, {
           headers: getRequestHeaders(accessToken),
           params: {
-            excludeFields: artistAndAlbumExcludes,
+            excludeFields: artistAndAlbumExcludeFields,
+            excludeElements: excludeElements,
           },
           signal: controller.signal,
         })
@@ -1209,33 +1227,39 @@ export const getTagItems = (plexBaseUrl, libraryId, tagId, typeKey, accessToken)
             ...(typeKey === 'ArtistGenreItems' && {
               type: 8,
               genre: tagId,
-              excludeFields: artistExcludes,
+              excludeFields: artistExcludeFields,
+              excludeElements: excludeElements,
             }),
             ...(typeKey === 'ArtistMoodItems' && {
               type: 8,
               mood: tagId,
-              excludeFields: artistExcludes,
+              excludeFields: artistExcludeFields,
+              excludeElements: excludeElements,
             }),
             ...(typeKey === 'ArtistStyleItems' && {
               type: 8,
               style: tagId,
-              excludeFields: artistExcludes,
+              excludeFields: artistExcludeFields,
+              excludeElements: excludeElements,
             }),
 
             ...(typeKey === 'AlbumGenreItems' && {
               type: 9,
               genre: tagId,
-              excludeFields: albumExcludes,
+              excludeFields: albumExcludeFields,
+              excludeElements: excludeElements,
             }),
             ...(typeKey === 'AlbumMoodItems' && {
               type: 9,
               mood: tagId,
-              excludeFields: albumExcludes,
+              excludeFields: albumExcludeFields,
+              excludeElements: excludeElements,
             }),
             ...(typeKey === 'AlbumStyleItems' && {
               type: 9,
               style: tagId,
-              excludeFields: albumExcludes,
+              excludeFields: albumExcludeFields,
+              excludeElements: excludeElements,
             }),
           },
           signal: controller.signal,
@@ -1284,7 +1308,7 @@ export const searchHub = (plexBaseUrl, libraryId, accessToken, query, limit = 25
             limit,
             includeCollections,
             contentDirectoryID: libraryId,
-            excludeFields: searchExcludes,
+            excludeFields: searchExcludeFields,
           },
           signal: controller.signal,
         })

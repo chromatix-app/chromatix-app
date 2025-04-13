@@ -7,17 +7,25 @@ import * as plex from 'js/services/plex';
 const useGetAllCollections = (collectionKey) => {
   const dispatch = useDispatch();
 
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
+  // const mediaType = collectionKey.includes('Artist') ? 'Artist' : 'Album';
 
   const viewCollections = useSelector(({ sessionModel }) => sessionModel[`view${collectionKey}`]);
   const sortCollections = useSelector(({ sessionModel }) => sessionModel[`sort${collectionKey}`]);
   const orderCollections = useSelector(({ sessionModel }) => sessionModel[`order${collectionKey}`]);
 
-  // prevent sorting by rating if ratings are hidden
-  const isRatingSortHidden = !optionShowStarRatings && sortCollections === 'userRating';
+  const gridCollectionsUserRating = useSelector(({ sessionModel }) => sessionModel.gridCollectionsUserRating);
 
-  const actualSortCollections = isRatingSortHidden ? 'title' : sortCollections;
-  const actualOrderCollections = isRatingSortHidden ? 'asc' : orderCollections;
+  const colCollectionAddedAt = useSelector(({ sessionModel }) => sessionModel.colCollectionAddedAt);
+  const colCollectionUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionUserRating);
+
+  // prevent sorting by a hidden field
+  const allowedSort = {
+    title: true,
+    addedAt: viewCollections === 'grid' || (viewCollections === 'list' && colCollectionAddedAt),
+    userRating: viewCollections === 'grid' || (viewCollections === 'list' && colCollectionUserRating),
+  };
+  const actualSortCollections = allowedSort[sortCollections] ? sortCollections : 'title';
+  const actualOrderCollections = allowedSort[sortCollections] ? orderCollections : 'asc';
 
   const allCollections = useSelector(({ appModel }) => appModel[`all${collectionKey}`]);
   const sortedCollections = allCollections
@@ -43,6 +51,12 @@ const useGetAllCollections = (collectionKey) => {
     });
   };
 
+  const setColumnVisibility = (columnKey, columnValue) => {
+    dispatch.sessionModel.setSessionState({
+      [columnKey]: columnValue,
+    });
+  };
+
   useEffect(() => {
     if (collectionKey.includes('Collections')) {
       plex.getAllCollections();
@@ -56,9 +70,19 @@ const useGetAllCollections = (collectionKey) => {
     sortCollections: actualSortCollections,
     orderCollections: actualOrderCollections,
 
+    gridOptions: {
+      userRating: gridCollectionsUserRating,
+    },
+
+    colOptions: {
+      addedAt: colCollectionAddedAt,
+      userRating: colCollectionUserRating,
+    },
+
     setViewCollections,
     setSortCollections,
     setOrderCollections,
+    setColumnVisibility,
 
     sortedCollections,
   };

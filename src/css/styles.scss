@@ -3,20 +3,17 @@
 // ######################################################################
 
 // CONFIG
-@import '_config/_mixins';
-@import '_config/_vars';
-@import '_config/_props';
-@import '_config/_typography';
-
-// VENDOR
-// @import 'vendor/_firebaseui';
+@use '_config/_mixins';
+@use '_config/_vars';
+@use '_config/_props';
+@use '_config/_typography';
 
 // RESET
-@import 'base/_reset';
-@import 'base/_fonts';
-@import 'base/_font-face';
-@import 'base/_grid';
-@import 'base/_wrap';
+@use 'base/_reset';
+@use 'base/_fonts';
+@use 'base/_font-face';
+@use 'base/_grid';
+@use 'base/_wrap';
 
-@import 'base/_electron';
-@import 'base/_scrollbars';
+@use 'base/_electron';
+@use 'base/_scrollbars';

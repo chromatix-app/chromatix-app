@@ -7,8 +7,6 @@ import * as plex from 'js/services/plex';
 const useGetArtistDetail = ({ libraryId, artistId }) => {
   const dispatch = useDispatch();
 
-  const optionShowStarRatings = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings);
-
   const allArtists = useSelector(({ appModel }) => appModel.allArtists);
   const artistInfo = allArtists?.find((artist) => artist.artistId === artistId);
 
@@ -17,6 +15,14 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const artistCountry = artistInfo?.country;
   const artistGenre = artistInfo?.genre;
   const artistRating = artistInfo?.userRating;
+
+  const gridArtistAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.gridArtistAlbumsUserRating);
+
+  const colArtistAlbumsGenre = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsGenre);
+  const colArtistAlbumsReleaseDate = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsReleaseDate);
+  const colArtistAlbumsAddedAt = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsAddedAt);
+  const colArtistAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsLastPlayed);
+  const colArtistAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsUserRating);
 
   const allArtistAlbums = useSelector(({ appModel }) => appModel.allArtistAlbums);
   const artistAlbums = allArtistAlbums[libraryId + '-' + artistId];
@@ -36,14 +42,17 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const sortArtistAlbums = useSelector(({ sessionModel }) => sessionModel.sortArtistAlbums);
   const orderArtistAlbums = useSelector(({ sessionModel }) => sessionModel.orderArtistAlbums);
 
-  // Prevent sorting by rating if ratings are hidden
-  const isRatingSortHidden = !optionShowStarRatings && sortArtistAlbums === 'userRating';
-
-  // Prevent sub-sorting in list view
-  const isSubSortList = viewArtistAlbums === 'list' && sortArtistAlbums.split('-').length > 2;
-
-  const actualSortArtistAlbums = isRatingSortHidden ? 'title' : isSubSortList ? 'artist' : sortArtistAlbums;
-  const actualOrderArtistAlbums = isRatingSortHidden ? 'asc' : orderArtistAlbums;
+  // prevent sorting by a hidden field
+  const allowedSort = {
+    title: true,
+    addedAt: viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsAddedAt),
+    lastPlayed: viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsLastPlayed),
+    genre: viewArtistAlbums === 'list' && colArtistAlbumsGenre,
+    releaseDate: viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsReleaseDate),
+    userRating: viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsUserRating),
+  };
+  const actualSortArtistAlbums = allowedSort[sortArtistAlbums] ? sortArtistAlbums : 'title';
+  const actualOrderArtistAlbums = allowedSort[sortArtistAlbums] ? orderArtistAlbums : 'asc';
 
   // Sort albums
   const sortedArtistAlbums = artistAlbums
@@ -115,6 +124,12 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     });
   };
 
+  const setColumnVisibility = (columnKey, columnValue) => {
+    dispatch.sessionModel.setSessionState({
+      [columnKey]: columnValue,
+    });
+  };
+
   // Get the required artist data
   useEffect(() => {
     // plex.getAllArtists();
@@ -155,6 +170,18 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     artistCompilations: sortedArtistCompilations,
     sortedArtistAlbums: allAlbums,
 
+    gridOptions: {
+      userRating: gridArtistAlbumsUserRating,
+    },
+
+    colOptions: {
+      genre: colArtistAlbumsGenre,
+      releaseDate: colArtistAlbumsReleaseDate,
+      addedAt: colArtistAlbumsAddedAt,
+      lastPlayed: colArtistAlbumsLastPlayed,
+      userRating: colArtistAlbumsUserRating,
+    },
+
     artistAlbumTotal,
     artistRelatedTotal,
     artistReleasesTotal,
@@ -166,6 +193,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     setViewArtistAlbums,
     setSortArtistAlbums,
     setOrderArtistAlbums,
+    setColumnVisibility,
   };
 };
 
