@@ -1,3 +1,11 @@
+<a name="0.38.0"></a>
+# 0.38.0 (2025-04-16)
+Features:
+- Added a new hook for communicating with the Electron app.
+  - This will allow for displaying player controls in the Windows taskbar.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.37.0"></a>
 # 0.37.0 (2025-04-13)
 Features:
