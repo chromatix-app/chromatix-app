@@ -48,12 +48,8 @@ const SettingsChangelog = () => {
 // ======================================================================
 
 const removeHtmlComments = (input) => {
-  let previous;
-  do {
-    previous = input;
-    input = input.replace(/<!--|--!?>/g, '');
-  } while (input !== previous);
-  return input;
+  if (!input || typeof input !== 'string') return '';
+  return input.replace(/<!--[\s\S]*?-->/g, '');
 };
 
 const convertMarkdown = (text) => {
