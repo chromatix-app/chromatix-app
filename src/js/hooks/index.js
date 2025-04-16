@@ -1,4 +1,5 @@
 export { default as useColorTheme } from './useColorTheme';
+export { default as useElectronStatus } from './useElectronStatus';
 export { default as useGetAlbumDetail } from './useGetAlbumDetail';
 export { default as useGetAllAlbums } from './useGetAllAlbums';
 export { default as useGetAllArtists } from './useGetAllArtists';
