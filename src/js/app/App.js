@@ -54,9 +54,10 @@ const App = () => {
   // disable console logs in production
   useEffect(() => {
     if (isProduction) {
-      console.log = () => {};
-      console.error = () => {};
+      console.log('Console logs are disabled in production');
       console.debug = () => {};
+      console.error = () => {};
+      console.log = () => {};
     }
   }, []);
 
