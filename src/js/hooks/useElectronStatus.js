@@ -37,8 +37,9 @@ const useElectronStatus = () => {
           // artwork: trackCurrent?.thumb,
         });
       }
-    } catch (_error) {
+    } catch (error) {
       // Handle error
+      console.error(error);
     }
   }, [isDisabled, playerPlaying, trackCurrent, enableStatus]);
 
@@ -66,8 +67,9 @@ const useElectronStatus = () => {
                 default:
                   break;
               }
-            } catch (_error) {
+            } catch (error) {
               // Handle error
+              console.error(error);
             }
           } else {
             console.log('%c--- from electron (ignored) - ' + message + ' ---', 'font-weight:bold;');
@@ -75,8 +77,9 @@ const useElectronStatus = () => {
         });
         inited.current = true;
       }
-    } catch (_error) {
+    } catch (error) {
       // Handle error
+      console.error(error);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
