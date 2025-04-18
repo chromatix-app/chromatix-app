@@ -426,10 +426,29 @@ const effects = (dispatch) => ({
   playerRepeatToggle(payload, rootState) {
     // console.log('%c--- toggleRepeat ---', 'color:#5c16b1');
     const playingRepeatAll = rootState.sessionModel.playingRepeatAll;
-    dispatch.sessionModel.setSessionState({
-      playingRepeatAll: !playingRepeatAll,
-    });
-    analyticsEvent('Plex: Repeat ' + (!playingRepeatAll ? 'On' : 'Off'));
+    const playingRepeatOnce = rootState.sessionModel.playingRepeatOnce;
+    if (playingRepeatAll) {
+      // repeat once
+      dispatch.sessionModel.setSessionState({
+        playingRepeatAll: false,
+        playingRepeatOnce: true,
+      });
+      analyticsEvent('Plex: Repeat Once');
+    } else if (playingRepeatOnce) {
+      // repeat off
+      dispatch.sessionModel.setSessionState({
+        playingRepeatAll: false,
+        playingRepeatOnce: false,
+      });
+      analyticsEvent('Plex: Repeat Off');
+    } else {
+      // repeat all
+      dispatch.sessionModel.setSessionState({
+        playingRepeatAll: true,
+        playingRepeatOnce: false,
+      });
+      analyticsEvent('Plex: Repeat All');
+    }
   },
 
   playerShuffleToggle(payload, rootState) {
