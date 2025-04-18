@@ -372,7 +372,7 @@ const effects = (dispatch) => ({
   playerPrev(payload, rootState) {
     // console.log('%c--- playerPrev ---', 'color:#5c16b1');
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
-    const playingRepeat = rootState.sessionModel.playingRepeat;
+    const playingRepeatAll = rootState.sessionModel.playingRepeatAll;
     const playingTrackCount = rootState.sessionModel.playingTrackCount;
     const currentTime = playerX.getCurrentProgress();
     // play previous track, if available
@@ -380,7 +380,7 @@ const effects = (dispatch) => ({
       dispatch.playerModel.playerLoadIndex({ index: playingTrackIndex - 1, play: true });
     }
     // else play last track, if on repeat
-    else if (playingRepeat && currentTime <= 5) {
+    else if (playingRepeatAll && currentTime <= 5) {
       dispatch.playerModel.playerLoadIndex({ index: playingTrackCount - 1, play: true });
     }
     // else restart current track
@@ -396,7 +396,7 @@ const effects = (dispatch) => ({
     const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
     const playingTrackList = rootState.sessionModel.playingTrackList;
     const playingTrackCount = rootState.sessionModel.playingTrackCount;
-    const playingRepeat = rootState.sessionModel.playingRepeat;
+    const playingRepeatAll = rootState.sessionModel.playingRepeatAll;
     const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
     // play next track, if available
     if (playingTrackIndex < playingTrackCount - 1) {
@@ -408,7 +408,7 @@ const effects = (dispatch) => ({
       }
     }
     // else play first track, if on repeat
-    else if (playingRepeat) {
+    else if (playingRepeatAll) {
       dispatch.playerModel.playerLoadIndex({ index: 0, play: true });
       if (payload === true) {
         analyticsEvent('Plex: Next Track (Restart) (Auto)');
@@ -425,11 +425,11 @@ const effects = (dispatch) => ({
 
   playerRepeatToggle(payload, rootState) {
     // console.log('%c--- toggleRepeat ---', 'color:#5c16b1');
-    const playingRepeat = rootState.sessionModel.playingRepeat;
+    const playingRepeatAll = rootState.sessionModel.playingRepeatAll;
     dispatch.sessionModel.setSessionState({
-      playingRepeat: !playingRepeat,
+      playingRepeatAll: !playingRepeatAll,
     });
-    analyticsEvent('Plex: Repeat ' + (!playingRepeat ? 'On' : 'Off'));
+    analyticsEvent('Plex: Repeat ' + (!playingRepeatAll ? 'On' : 'Off'));
   },
 
   playerShuffleToggle(payload, rootState) {
