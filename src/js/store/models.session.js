@@ -218,7 +218,8 @@ const playingState = {
   playingTrackKeys: null,
   playingTrackProgress: 0,
 
-  playingRepeat: false,
+  playingRepeatAll: false,
+  playingRepeatOnce: false,
   playingShuffle: false,
 };
 

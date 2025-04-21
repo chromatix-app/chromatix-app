@@ -36,7 +36,7 @@ const Queue = () => {
     // playingTrackList,
     playingTrackIndex,
     playingTrackKeys,
-    playingRepeat,
+    playingRepeatAll,
     playingShuffle,
 
     // upcomingTrackKeys,
@@ -56,7 +56,7 @@ const Queue = () => {
     return { rowType: 'repeat', playIndex: index, ...entry };
   });
   const upcomingLabel = upcomingTracks.length > 0 || repeatTracks.length > 0 ? [{ rowType: 'upcomingLabel' }] : [];
-  const repeatLabel = playingRepeat ? [{ rowType: 'repeatLabel' }] : [];
+  const repeatLabel = playingRepeatAll ? [{ rowType: 'repeatLabel' }] : [];
 
   const allEntries = [currentTrack, ...upcomingLabel, ...upcomingTracks, ...repeatTracks, ...repeatLabel];
 

@@ -64,7 +64,8 @@ import { ReactComponent as PlaylistIcon } from './icons/music/playlist.svg';
 import { ReactComponent as PreviousIcon } from './icons/music/previous.svg';
 import { ReactComponent as QueueIcon } from './icons/music/queue.svg';
 import { ReactComponent as RedditIcon } from './icons/music/reddit.svg';
-import { ReactComponent as RepeatIcon } from './icons/music/repeat.svg';
+import { ReactComponent as RepeatAllIcon } from './icons/music/repeat-all.svg';
+import { ReactComponent as RepeatOnceIcon } from './icons/music/repeat-once.svg';
 import { ReactComponent as RewindIcon } from './icons/music/rewind.svg';
 import { ReactComponent as SearchIcon } from './icons/music/search.svg';
 import { ReactComponent as ServerIcon } from './icons/music/server.svg';
@@ -151,7 +152,8 @@ export const customIcons = {
   PreviousIcon,
   QueueIcon,
   RedditIcon,
-  RepeatIcon,
+  RepeatAllIcon,
+  RepeatOnceIcon,
   RewindIcon,
   SearchIcon,
   ServerIcon,
