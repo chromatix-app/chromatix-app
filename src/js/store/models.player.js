@@ -284,12 +284,16 @@ const effects = (dispatch) => ({
     dispatch.playerModel.setPlayerState({
       playerInteractionCount: rootState.playerModel.playerInteractionCount + 1,
     });
+    // log playback to plex server
     plex.logPlaybackPlay(currentTrack);
+    // disable repeat once
+    dispatch.playerModel.playerRepeatOff();
   },
 
   playerLoadIndex(payload, rootState) {
     // console.log('%c--- playerLoadIndex ---', 'color:#5c16b1');
     try {
+      const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
       const playingTrackList = rootState.sessionModel.playingTrackList;
       const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
       const { index, play, progress } = payload;
@@ -302,9 +306,14 @@ const effects = (dispatch) => ({
           playingTrackIndex: index,
         });
         playerX.loadTrack(currentTrack.src, progress, play);
+        // log playback to plex server
         if (play) {
           plex.logPlaybackPlay(currentTrack, progress);
           analyticsEvent('Plex: Play (Track)');
+        }
+        // disable repeat once
+        if (playingTrackIndex !== index) {
+          dispatch.playerModel.playerRepeatOff();
         }
       }
     } catch (error) {
@@ -372,64 +381,105 @@ const effects = (dispatch) => ({
   playerPrev(payload, rootState) {
     // console.log('%c--- playerPrev ---', 'color:#5c16b1');
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
-    const playingRepeat = rootState.sessionModel.playingRepeat;
+    const playingRepeatAll = rootState.sessionModel.playingRepeatAll;
     const playingTrackCount = rootState.sessionModel.playingTrackCount;
     const currentTime = playerX.getCurrentProgress();
     // play previous track, if available
     if (playingTrackIndex > 0 && currentTime <= 5) {
       dispatch.playerModel.playerLoadIndex({ index: playingTrackIndex - 1, play: true });
+      analyticsEvent('Plex: Previous Track');
     }
     // else play last track, if on repeat
-    else if (playingRepeat && currentTime <= 5) {
+    else if (playingRepeatAll && currentTime <= 5) {
       dispatch.playerModel.playerLoadIndex({ index: playingTrackCount - 1, play: true });
+      analyticsEvent('Plex: Previous Track');
     }
     // else restart current track
     else {
       dispatch.playerModel.playerRestart();
+      analyticsEvent('Plex: Restart Track');
     }
-    analyticsEvent('Plex: Previous Track');
   },
 
   playerNext(payload, rootState) {
-    // console.log('%c--- playerNext ---', 'color:#5c16b1');
+    console.log('%c--- playerNext - ' + (payload === true ? 'true' : 'false') + ' ---', 'color:#5c16b1');
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
     const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
     const playingTrackList = rootState.sessionModel.playingTrackList;
     const playingTrackCount = rootState.sessionModel.playingTrackCount;
-    const playingRepeat = rootState.sessionModel.playingRepeat;
+    const playingRepeatAll = rootState.sessionModel.playingRepeatAll;
+    const playingRepeatOnce = rootState.sessionModel.playingRepeatOnce;
     const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
-    // play next track, if available
-    if (playingTrackIndex < playingTrackCount - 1) {
-      dispatch.playerModel.playerLoadIndex({ index: playingTrackIndex + 1, play: true });
-      if (payload === true) {
-        analyticsEvent('Plex: Next Track (Auto)');
-      } else {
-        analyticsEvent('Plex: Next Track');
+
+    // repeat current track, if on repeat once
+    if (playingRepeatOnce && payload === true) {
+      dispatch.playerModel.playerLoadIndex({ index: playingTrackIndex, play: true });
+      analyticsEvent('Plex: Next Track (Repeat Once) (Auto)');
+    } else {
+      // play next track, if available
+      if (playingTrackIndex < playingTrackCount - 1) {
+        dispatch.playerModel.playerLoadIndex({ index: playingTrackIndex + 1, play: true });
+        if (payload === true) {
+          analyticsEvent('Plex: Next Track (Auto)');
+        } else {
+          analyticsEvent('Plex: Next Track');
+        }
       }
-    }
-    // else play first track, if on repeat
-    else if (playingRepeat) {
-      dispatch.playerModel.playerLoadIndex({ index: 0, play: true });
-      if (payload === true) {
-        analyticsEvent('Plex: Next Track (Restart) (Auto)');
-      } else {
-        analyticsEvent('Plex: Next Track (Restart)');
+      // else play first track, if on repeat all
+      else if (playingRepeatAll) {
+        dispatch.playerModel.playerLoadIndex({ index: 0, play: true });
+        if (payload === true) {
+          analyticsEvent('Plex: Next Track (Restart) (Auto)');
+        } else {
+          analyticsEvent('Plex: Next Track (Restart)');
+        }
       }
-    }
-    // else load first track, but don't play
-    else {
-      dispatch.playerModel.playerLoadIndex({ index: 0, play: false });
-      plex.logPlaybackStop(currentTrack);
+      // else load first track, but don't play
+      else {
+        dispatch.playerModel.playerLoadIndex({ index: 0, play: false });
+        plex.logPlaybackStop(currentTrack);
+      }
     }
   },
 
   playerRepeatToggle(payload, rootState) {
-    // console.log('%c--- toggleRepeat ---', 'color:#5c16b1');
-    const playingRepeat = rootState.sessionModel.playingRepeat;
-    dispatch.sessionModel.setSessionState({
-      playingRepeat: !playingRepeat,
-    });
-    analyticsEvent('Plex: Repeat ' + (!playingRepeat ? 'On' : 'Off'));
+    // console.log('%c--- playerRepeatToggle ---', 'color:#5c16b1');
+    const playingRepeatAll = rootState.sessionModel.playingRepeatAll;
+    const playingRepeatOnce = rootState.sessionModel.playingRepeatOnce;
+    if (playingRepeatAll) {
+      // repeat once
+      dispatch.sessionModel.setSessionState({
+        playingRepeatAll: false,
+        playingRepeatOnce: true,
+      });
+      analyticsEvent('Plex: Repeat Once');
+    } else if (playingRepeatOnce) {
+      // repeat off
+      dispatch.sessionModel.setSessionState({
+        playingRepeatAll: false,
+        playingRepeatOnce: false,
+      });
+      analyticsEvent('Plex: Repeat Off');
+    } else {
+      // repeat all
+      dispatch.sessionModel.setSessionState({
+        playingRepeatAll: true,
+        playingRepeatOnce: false,
+      });
+      analyticsEvent('Plex: Repeat All');
+    }
+  },
+
+  playerRepeatOff(payload, rootState) {
+    const playingRepeatOnce = rootState.sessionModel.playingRepeatOnce;
+    if (playingRepeatOnce) {
+      console.log('%c--- playerRepeatOff ---', 'color:#5c16b1');
+      dispatch.sessionModel.setSessionState({
+        playingRepeatAll: true,
+        playingRepeatOnce: false,
+      });
+      analyticsEvent('Plex: Repeat All');
+    }
   },
 
   playerShuffleToggle(payload, rootState) {
