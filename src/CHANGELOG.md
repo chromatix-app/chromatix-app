@@ -1,3 +1,10 @@
+<a name="0.39.0"></a>
+# 0.39.0 (2025-04-21)
+Features:
+- Added "repeat one" functionality to loop a single track. Press the repeat button twice to enable.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.38.0"></a>
 # 0.38.0 (2025-04-16)
 Features:

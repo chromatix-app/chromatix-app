@@ -33,7 +33,8 @@ const ControlBar = () => {
   const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
   const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
   const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
-  const playingRepeat = useSelector(({ sessionModel }) => sessionModel.playingRepeat);
+  const playingRepeatAll = useSelector(({ sessionModel }) => sessionModel.playingRepeatAll);
+  const playingRepeatOnce = useSelector(({ sessionModel }) => sessionModel.playingRepeatOnce);
   const playingShuffle = useSelector(({ sessionModel }) => sessionModel.playingShuffle);
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
 
@@ -139,11 +140,15 @@ const ControlBar = () => {
             <Icon icon="FastForwardIcon" cover stroke />
           </button>
           <button
-            className={clsx(style.repeat, { [style.active]: playingRepeat })}
+            className={clsx(style.repeat, { [style.active]: playingRepeatAll || playingRepeatOnce })}
             onClick={dispatch.playerModel.playerRepeatToggle}
             disabled={isDisabled}
           >
-            <Icon icon="RepeatIcon" cover stroke />
+            {playingRepeatOnce ? (
+              <Icon icon="RepeatOnceIcon" cover stroke />
+            ) : (
+              <Icon icon="RepeatAllIcon" cover stroke />
+            )}
           </button>
         </div>
 
