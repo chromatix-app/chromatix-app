@@ -55,10 +55,11 @@ const Queue = () => {
   const repeatTracks = repeatEntries.map((entry, index) => {
     return { rowType: 'repeat', playIndex: index, ...entry };
   });
-  const upcomingLabel = upcomingTracks.length > 0 || repeatTracks.length > 0 ? [{ rowType: 'upcomingLabel' }] : [];
+  // const upcomingLabel = upcomingTracks.length > 0 || repeatTracks.length > 0 ? [{ rowType: 'upcomingLabel' }] : [];
+  const upcomingLabel = upcomingTracks.length > 0 ? [{ rowType: 'upcomingLabel' }] : [];
   const repeatLabel = playingRepeatAll ? [{ rowType: 'repeatLabel' }] : [];
 
-  const allEntries = [currentTrack, ...upcomingLabel, ...upcomingTracks, ...repeatTracks, ...repeatLabel];
+  const allEntries = [currentTrack, ...upcomingLabel, ...upcomingTracks, ...repeatLabel, ...repeatTracks];
 
   const isVirtual = allEntries.length > virtualThreshold;
   const QueueComponent = isVirtual ? QueueVirtual : QueueStatic;
@@ -89,6 +90,7 @@ const Queue = () => {
           <QueueComponent
             entries={allEntries}
             playingShuffle={playingShuffle}
+            upcomingTracks={upcomingTracks.length}
             queueExpandArtwork={queueExpandArtwork}
             outerRef={outerRef}
             {...(isVirtual && {
@@ -117,7 +119,7 @@ const QueueEmpty = () => {
 // QUEUE - STATIC
 // ======================================================================
 
-const QueueStatic = ({ entries, playingShuffle, queueExpandArtwork }) => {
+const QueueStatic = ({ entries, playingShuffle, upcomingTracks, queueExpandArtwork }) => {
   return (
     <div className={style.scrollableInner}>
       {entries.map((entry, index) => {
@@ -142,7 +144,7 @@ const QueueStatic = ({ entries, playingShuffle, queueExpandArtwork }) => {
 
         // Label - Repeat
         else if (entry.rowType === 'repeatLabel') {
-          return <LabelRepeat key={index} />;
+          return <LabelRepeat key={index} playingShuffle={playingShuffle && !upcomingTracks} />;
         }
 
         // Tracks
@@ -162,10 +164,10 @@ const QueueStatic = ({ entries, playingShuffle, queueExpandArtwork }) => {
 const nowPlayingLargeHeight = 369;
 const nowPlayingSmallHeight = 92;
 const labelUpcomingHeight = 42;
-const labelRepeatHeight = 52;
+const labelRepeatHeight = 42; // 52;
 const trackHeight = 50;
 
-const QueueVirtual = ({ entries, playingShuffle, queueExpandArtwork, initialOffset, outerRef }) => {
+const QueueVirtual = ({ entries, playingShuffle, upcomingTracks, queueExpandArtwork, initialOffset, outerRef }) => {
   // Hacky workaround to force a re-render if queueExpandArtwork changes
   const extraRows = queueExpandArtwork ? 1 : 0;
 
@@ -228,7 +230,7 @@ const QueueVirtual = ({ entries, playingShuffle, queueExpandArtwork, initialOffs
 
         // Label - Repeat
         else if (entry.rowType === 'repeatLabel') {
-          return <LabelRepeat key={index} virtualRow={virtualRow} />;
+          return <LabelRepeat key={index} playingShuffle={playingShuffle && !upcomingTracks} virtualRow={virtualRow} />;
         }
 
         // Tracks
@@ -283,6 +285,7 @@ const NowPlayingLarge = ({ entry, virtualRow }) => {
               dispatch.appModel.setAppState({ scrollToPlaying: true });
               analyticsEvent('Navigate to Playing');
             }}
+            tabIndex={-1}
           ></NavLink>
         )}
         <button className={style.expandedCollapse} onClick={collapseArtwork}>
@@ -431,10 +434,10 @@ const LabelUpcoming = ({ playingShuffle, virtualRow }) => {
 // LABEL - REPEAT
 // ======================================================================
 
-const LabelRepeat = ({ virtualRow }) => {
+const LabelRepeat = ({ playingShuffle, virtualRow }) => {
   return (
     <div
-      className={style.repeat}
+      className={style.label}
       style={{
         ...(virtualRow && {
           position: 'absolute',
@@ -445,9 +448,34 @@ const LabelRepeat = ({ virtualRow }) => {
         }),
       }}
     >
-      <span>Repeating</span>
+      Repeating
+      {playingShuffle && (
+        <span className={style.shuffleLabel}>
+          &nbsp;&nbsp;•&nbsp; Shuffle is on{' '}
+          <span className={style.shuffleIcon}>
+            <Icon icon="ShuffleIcon" cover stroke />
+          </span>
+        </span>
+      )}
     </div>
   );
+
+  // return (
+  //   <div
+  //     className={style.repeat}
+  //     style={{
+  //       ...(virtualRow && {
+  //         position: 'absolute',
+  //         top: 0,
+  //         left: 0,
+  //         width: '100%',
+  //         transform: `translateY(${virtualRow.start}px)`,
+  //       }),
+  //     }}
+  //   >
+  //     <span>Repeating</span>
+  //   </div>
+  // );
 };
 
 // ======================================================================

@@ -1,3 +1,11 @@
+<a name="0.40.0"></a>
+# 0.40.0 (2025-05-08)
+Features:
+- Added options for configuring the "repeat one" behaviour.
+- Minor visual tweaks to the queue.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.39.0"></a>
 # 0.39.0 (2025-04-21)
 Features:

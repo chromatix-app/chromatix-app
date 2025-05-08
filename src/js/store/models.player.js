@@ -287,12 +287,16 @@ const effects = (dispatch) => ({
     // log playback to plex server
     plex.logPlaybackPlay(currentTrack);
     // disable repeat once
-    dispatch.playerModel.playerRepeatOff();
+    const disableRepeatOnceOnSourceChange = rootState.sessionModel.disableRepeatOnceOnSourceChange;
+    if (disableRepeatOnceOnSourceChange) {
+      dispatch.playerModel.playerRepeatOff();
+    }
   },
 
   playerLoadIndex(payload, rootState) {
     // console.log('%c--- playerLoadIndex ---', 'color:#5c16b1');
     try {
+      const disableRepeatOnceOnTrackChange = rootState.sessionModel.disableRepeatOnceOnTrackChange;
       const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
       const playingTrackList = rootState.sessionModel.playingTrackList;
       const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
@@ -312,7 +316,7 @@ const effects = (dispatch) => ({
           analyticsEvent('Plex: Play (Track)');
         }
         // disable repeat once
-        if (playingTrackIndex !== index) {
+        if (playingTrackIndex !== index && disableRepeatOnceOnTrackChange) {
           dispatch.playerModel.playerRepeatOff();
         }
       }
@@ -472,10 +476,11 @@ const effects = (dispatch) => ({
 
   playerRepeatOff(payload, rootState) {
     const playingRepeatOnce = rootState.sessionModel.playingRepeatOnce;
+    const revertRepeatOnceToRepeatAll = rootState.sessionModel.revertRepeatOnceToRepeatAll;
     if (playingRepeatOnce) {
       console.log('%c--- playerRepeatOff ---', 'color:#5c16b1');
       dispatch.sessionModel.setSessionState({
-        playingRepeatAll: true,
+        playingRepeatAll: revertRepeatOnceToRepeatAll,
         playingRepeatOnce: false,
       });
       analyticsEvent('Plex: Repeat All');

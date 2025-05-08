@@ -145,7 +145,7 @@ const SideBar = () => {
                     className={style.link}
                     activeClassName={style.linkActive}
                     to="/playlists"
-                    exact={playlistsIsVisible}
+                    exact={menuOpenPlaylists}
                     draggable="false"
                   >
                     {menuShowIcons && (

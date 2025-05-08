@@ -60,6 +60,12 @@ const sessionState = {
   queueIsVisible: false,
   queueExpandArtwork: true,
 
+  // PLAYBACK OPTIONS
+
+  disableRepeatOnceOnTrackChange: true,
+  disableRepeatOnceOnSourceChange: true,
+  revertRepeatOnceToRepeatAll: true,
+
   // VIEW OPTIONS
 
   viewArtists: 'grid',
