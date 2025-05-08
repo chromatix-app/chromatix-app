@@ -25,13 +25,13 @@ export const SettingsGeneral = () => {
         <StarRatingSettings />
       </div>
       <div className={style.group}>
+        <div className={style.title}>Playback</div>
+        <PlaybackSettings />
+      </div>
+      {/* <div className={style.group}>
         <div className={style.title}>User Interface</div>
         <UserInterfaceSettings />
-      </div>
-      <div className={style.group}>
-        <div className={style.title}>Accessibility</div>
-        <AccessibilitySettings />
-      </div>
+      </div> */}
       <div className={style.group}>
         <div className={style.title}>Plex</div>
         <PlexSettings />
@@ -184,7 +184,7 @@ const ViewModeSettings = () => {
 };
 
 //
-// VIEW MODES
+// STAR RATINGS
 //
 
 const StarRatingSettings = () => {
@@ -316,30 +316,37 @@ const StarRatingSettings = () => {
 };
 
 //
-// USER INTERFACE
+// PLAYBACK
 //
 
-const UserInterfaceSettings = () => {
+const PlaybackSettings = () => {
   const dispatch = useDispatch();
 
-  // const optionShowFullTitles_Deprecated = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles_Deprecated);
-  // const optionShowStarRatings_Deprecated = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated);
+  const disableRepeatOnceOnTrackChange = useSelector(({ sessionModel }) => sessionModel.disableRepeatOnceOnTrackChange);
+  const disableRepeatOnceOnSourceChange = useSelector(
+    ({ sessionModel }) => sessionModel.disableRepeatOnceOnSourceChange
+  );
+  const revertRepeatOnceToRepeatAll = useSelector(({ sessionModel }) => sessionModel.revertRepeatOnceToRepeatAll);
 
   const menuItems = [
     {
-      key: 'optionShowStarRatings_Deprecated',
-      label: 'Show star ratings',
-      description:
-        'This option has now been moved into each individual section of your library for more granular control.',
-      state: false,
-      disabled: true,
+      key: 'disableRepeatOnceOnTrackChange',
+      label: 'Disable "repeat 1" mode when changing tracks.',
+      description: '',
+      state: disableRepeatOnceOnTrackChange,
     },
     {
-      key: 'optionShowFullTitles_Deprecated',
-      label: 'Always show full track, artist and album titles',
-      description: 'Sorry, this option has now been removed for performance reasons.',
-      state: false,
-      disabled: true,
+      key: 'disableRepeatOnceOnSourceChange',
+      label: 'Disable "repeat 1" mode when loading a new album or playlist.',
+      description: '',
+      state: disableRepeatOnceOnSourceChange,
+    },
+    {
+      key: 'revertRepeatOnceToRepeatAll',
+      label: 'When automatically disabling "repeat 1" mode (in the above scenarios) enable "repeat all" mode instead.',
+      description: '',
+      state: revertRepeatOnceToRepeatAll,
+      disabled: !disableRepeatOnceOnTrackChange && !disableRepeatOnceOnSourceChange,
     },
   ];
 
@@ -366,44 +373,54 @@ const UserInterfaceSettings = () => {
 };
 
 //
-// ACCESSIBILITY
+// USER INTERFACE
 //
 
-const AccessibilitySettings = () => {
-  const dispatch = useDispatch();
+// const UserInterfaceSettings = () => {
+//   const dispatch = useDispatch();
 
-  const accessibilityFocus = useSelector(({ sessionModel }) => sessionModel.accessibilityFocus);
+//   // const optionShowFullTitles_Deprecated = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles_Deprecated);
+//   // const optionShowStarRatings_Deprecated = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated);
 
-  const menuItems = [
-    {
-      key: 'accessibilityFocus',
-      label: 'Highlight focused elements',
-      description:
-        'When enabled, elements such as buttons, links, and form controls are highlighted when focused. For example, when using the keyboard to navigate the interface.',
-      state: accessibilityFocus,
-    },
-  ];
+//   const menuItems = [
+//     {
+//       key: 'optionShowStarRatings_Deprecated',
+//       label: 'Show star ratings.',
+//       description:
+//         'This option has now been moved into each individual section of your library for more granular control.',
+//       state: false,
+//       disabled: true,
+//     },
+//     {
+//       key: 'optionShowFullTitles_Deprecated',
+//       label: 'Always show full track, artist and album titles.',
+//       description: 'Sorry, this option has now been removed for performance reasons.',
+//       state: false,
+//       disabled: true,
+//     },
+//   ];
 
-  return (
-    <div className={style.menu}>
-      {menuItems.map(({ key, label, description, state }) => (
-        <div key={key} className={style.menuEntry}>
-          <label>
-            <input
-              type="checkbox"
-              checked={state}
-              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
-            />
-            <div>
-              {label && <div className={style.label}>{label}</div>}
-              {description && <div className={style.description}>{description}</div>}
-            </div>
-          </label>
-        </div>
-      ))}
-    </div>
-  );
-};
+//   return (
+//     <div className={style.menu}>
+//       {menuItems.map(({ key, label, description, state, disabled }) => (
+//         <div key={key} className={style.menuEntry}>
+//           <label>
+//             <input
+//               type="checkbox"
+//               checked={state}
+//               onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
+//               disabled={disabled}
+//             />
+//             <div>
+//               {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
+//               {description && <div className={style.description}>{description}</div>}
+//             </div>
+//           </label>
+//         </div>
+//       ))}
+//     </div>
+//   );
+// };
 
 //
 // PLEX
@@ -417,7 +434,7 @@ const PlexSettings = () => {
   const menuItems = [
     {
       key: 'optionLogPlexPlayback',
-      label: 'Log playback events to Plex',
+      label: 'Log playback events to Plex.',
       description: 'This is used to tell the Plex server what is currently playing, and to update the play count.',
       state: optionLogPlexPlayback,
     },

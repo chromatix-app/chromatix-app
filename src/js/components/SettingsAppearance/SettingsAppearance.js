@@ -133,7 +133,7 @@ export const SettingsAppearance = () => {
       </div>
 
       <div className={style.group}>
-        <div className={style.title}>Options</div>
+        <div className={style.title}>Additional Options</div>
         <InterfaceSettings />
       </div>
     </div>
@@ -148,6 +148,7 @@ const InterfaceSettings = () => {
   const dispatch = useDispatch();
 
   const accessibilityContrast = useSelector(({ sessionModel }) => sessionModel.accessibilityContrast);
+  const accessibilityFocus = useSelector(({ sessionModel }) => sessionModel.accessibilityFocus);
 
   const menuItems = [
     {
@@ -156,6 +157,13 @@ const InterfaceSettings = () => {
       // description:
       //   'This will increase the contrast of the interface, making it easier to read and interact with. This is particularly useful for users with visual impairments.',
       state: accessibilityContrast,
+    },
+    {
+      key: 'accessibilityFocus',
+      label: 'Highlight focused elements.',
+      description:
+        'When enabled, elements such as buttons, links, and form controls are highlighted when focused. For example, when using the keyboard to navigate the interface.',
+      state: accessibilityFocus,
     },
   ];
 
