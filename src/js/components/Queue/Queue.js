@@ -55,10 +55,11 @@ const Queue = () => {
   const repeatTracks = repeatEntries.map((entry, index) => {
     return { rowType: 'repeat', playIndex: index, ...entry };
   });
-  const upcomingLabel = upcomingTracks.length > 0 || repeatTracks.length > 0 ? [{ rowType: 'upcomingLabel' }] : [];
+  // const upcomingLabel = upcomingTracks.length > 0 || repeatTracks.length > 0 ? [{ rowType: 'upcomingLabel' }] : [];
+  const upcomingLabel = upcomingTracks.length > 0 ? [{ rowType: 'upcomingLabel' }] : [];
   const repeatLabel = playingRepeatAll ? [{ rowType: 'repeatLabel' }] : [];
 
-  const allEntries = [currentTrack, ...upcomingLabel, ...upcomingTracks, ...repeatTracks, ...repeatLabel];
+  const allEntries = [currentTrack, ...upcomingLabel, ...upcomingTracks, ...repeatLabel, ...repeatTracks];
 
   const isVirtual = allEntries.length > virtualThreshold;
   const QueueComponent = isVirtual ? QueueVirtual : QueueStatic;
@@ -283,6 +284,7 @@ const NowPlayingLarge = ({ entry, virtualRow }) => {
               dispatch.appModel.setAppState({ scrollToPlaying: true });
               analyticsEvent('Navigate to Playing');
             }}
+            tabIndex={-1}
           ></NavLink>
         )}
         <button className={style.expandedCollapse} onClick={collapseArtwork}>
@@ -434,7 +436,7 @@ const LabelUpcoming = ({ playingShuffle, virtualRow }) => {
 const LabelRepeat = ({ virtualRow }) => {
   return (
     <div
-      className={style.repeat}
+      className={style.label}
       style={{
         ...(virtualRow && {
           position: 'absolute',
@@ -445,9 +447,26 @@ const LabelRepeat = ({ virtualRow }) => {
         }),
       }}
     >
-      <span>Repeating</span>
+      Repeating
     </div>
   );
+
+  // return (
+  //   <div
+  //     className={style.repeat}
+  //     style={{
+  //       ...(virtualRow && {
+  //         position: 'absolute',
+  //         top: 0,
+  //         left: 0,
+  //         width: '100%',
+  //         transform: `translateY(${virtualRow.start}px)`,
+  //       }),
+  //     }}
+  //   >
+  //     <span>Repeating</span>
+  //   </div>
+  // );
 };
 
 // ======================================================================
