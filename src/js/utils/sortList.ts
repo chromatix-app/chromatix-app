@@ -19,7 +19,7 @@ type Entry = {
 
 type SortFunction = (a: Entry, b: Entry) => number;
 
-const forcedSecondarySortKeys: { [key: string]: { key: string; direction: 'asc' | 'desc' } } = {
+const forcedSortKeys: { [key: string]: { key: string; direction: 'asc' | 'desc' } } = {
   kind: {
     key: 'sortOrder',
     direction: 'asc',
@@ -32,21 +32,41 @@ const sortList = (entries: Entry[], options: string, direction: 'asc' | 'desc' =
   const primarySortKey = optionsArray[0];
   let primaryDirection: 'asc' | 'desc' = (optionsArray[1] as 'asc' | 'desc') || 'asc';
 
-  const secondarySortKey = optionsArray[2] || forcedSecondarySortKeys[primarySortKey]?.key || 'title';
+  const secondarySortKey = optionsArray[2] || forcedSortKeys[primarySortKey]?.key || 'title';
   let secondaryDirection: 'asc' | 'desc' = (optionsArray[3] as 'asc' | 'desc') || 'asc';
 
+  const tertiarySortKey = optionsArray[4] || forcedSortKeys[primarySortKey]?.key || 'title';
+  let tertiaryDirection: 'asc' | 'desc' = (optionsArray[5] as 'asc' | 'desc') || 'asc';
+
+  // if the overall sort is reversed, reverse the sort keys (but ignore our forced sort keys)
+  // (this is essentially used to keep folders on top of tracks when viewing a folder)
   if (direction === 'desc') {
     primaryDirection = primaryDirection === 'asc' ? 'desc' : 'asc';
-    secondaryDirection = forcedSecondarySortKeys[primarySortKey]?.direction
-      ? forcedSecondarySortKeys[primarySortKey].direction
+    secondaryDirection = forcedSortKeys[primarySortKey]?.direction
+      ? forcedSortKeys[primarySortKey].direction
       : secondaryDirection === 'asc'
+        ? 'desc'
+        : 'asc';
+    tertiaryDirection = forcedSortKeys[primarySortKey]?.direction
+      ? forcedSortKeys[primarySortKey].direction
+      : tertiaryDirection === 'asc'
         ? 'desc'
         : 'asc';
   }
 
+  // console.log(primarySortKey, secondarySortKey, tertiarySortKey);
+  // console.log(direction, primaryDirection, secondaryDirection, tertiaryDirection);
   // console.log(direction, primarySortKey, primaryDirection, secondarySortKey, secondaryDirection);
 
-  return doSorting(entries, primarySortKey, primaryDirection, secondarySortKey, secondaryDirection);
+  return doSorting(
+    entries,
+    primarySortKey,
+    primaryDirection,
+    secondarySortKey,
+    secondaryDirection,
+    tertiarySortKey,
+    tertiaryDirection
+  );
 };
 
 const doSorting = (
@@ -54,18 +74,27 @@ const doSorting = (
   primarySortKey: string,
   primaryDirection: 'asc' | 'desc' = 'asc',
   secondarySortKey: string = 'title',
-  secondaryDirection: 'asc' | 'desc' = 'asc'
+  secondaryDirection: 'asc' | 'desc' = 'asc',
+  tertiarySortKey: string = 'title',
+  tertiaryDirection: 'asc' | 'desc' = 'asc'
 ): Entry[] => {
   primarySortKey = sortFunctions[primarySortKey] ? primarySortKey : 'title';
   secondarySortKey = sortFunctions[secondarySortKey] ? secondarySortKey : 'title';
+  tertiarySortKey = sortFunctions[tertiarySortKey] ? tertiarySortKey : 'title';
 
   const primaryDirectionFactor = primaryDirection === 'asc' ? 1 : -1;
   const secondaryDirectionFactor = secondaryDirection === 'asc' ? 1 : -1;
+  const tertiaryDirectionFactor = tertiaryDirection === 'asc' ? 1 : -1;
 
   return [...entries].sort((a, b) => {
     const primaryComparison = primaryDirectionFactor * sortFunctions[primarySortKey](a, b);
     if (primaryComparison === 0 && secondarySortKey) {
-      return secondaryDirectionFactor * sortFunctions[secondarySortKey](a, b);
+      const secondaryComparison = secondaryDirectionFactor * sortFunctions[secondarySortKey](a, b);
+      if (secondaryComparison === 0 && tertiarySortKey) {
+        const tertiaryComparison = tertiaryDirectionFactor * sortFunctions[tertiarySortKey](a, b);
+        return tertiaryComparison;
+      }
+      return secondaryComparison;
     }
     return primaryComparison;
   });

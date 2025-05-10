@@ -336,6 +336,45 @@ export const getAllArtistAppearanceAlbums = (libraryId, artistId, artistName) =>
 };
 
 // ======================================================================
+// GET ARTIST TRACKS
+// ======================================================================
+
+let getAllArtistTracksRunning;
+
+export const getAllArtistTracks = (libraryId, artistId, artistName) => {
+  if (!getAllArtistTracksRunning) {
+    const prevArtistTracks = store.getState().appModel.allArtistTracks[libraryId + '-' + artistId];
+    if (!prevArtistTracks) {
+      console.log('%c--- plex - getAllArtistTracks ---', 'color:#f9743b;');
+      getAllArtistTracksRunning = true;
+      const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+
+      Promise.all([
+        plexTools.getAllArtistTracks(plexBaseUrl, libraryId, artistId, artistName, accessToken),
+        plexTools.getAllArtistAppearanceTracks(plexBaseUrl, libraryId, artistId, artistName, accessToken),
+      ])
+        .then(([artistTracks, appearanceTracks]) => {
+          // Combine both track arrays (assume they need to be merged)
+          const combinedTracks = [...artistTracks, ...appearanceTracks];
+          // Store the combined tracks
+          store.dispatch.appModel.storeArtistTracks({
+            libraryId,
+            artistId,
+            artistTracks: combinedTracks,
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          getAllArtistTracksRunning = false;
+        });
+    }
+  }
+};
+
+// ======================================================================
 // GET ALL ALBUMS
 // ======================================================================
 

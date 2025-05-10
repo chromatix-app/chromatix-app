@@ -34,6 +34,8 @@ const PlaylistDetail = () => {
     playlistId,
   });
 
+  console.log(playlistSortString);
+
   const doPlay = (isShuffle) => {
     dispatch.playerModel.playerLoadPlaylist({
       playlistId,

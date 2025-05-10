@@ -28,7 +28,12 @@ const virtualThreshold = !isLocal ? 150 : 150;
 // ======================================================================
 
 const ListTable = ({ variant, ...props }) => {
-  if (variant === 'albumTracks' || variant === 'playlistTracks' || variant === 'folders') {
+  if (
+    variant === 'artistTracks' ||
+    variant === 'albumTracks' ||
+    variant === 'playlistTracks' ||
+    variant === 'folders'
+  ) {
     return <ListTableTracks variant={variant} {...props} />;
   } else {
     return <ListTableBasic variant={variant} {...props} />;
@@ -39,6 +44,7 @@ const ListTableBasic = ({
   children,
   variant,
   groupBy,
+  artistId,
   albumId,
   playlistId,
   folderId,
@@ -50,6 +56,7 @@ const ListTableBasic = ({
 }) => {
   const { tableVariant, tableOptions, gridTemplateColumns, handleSortFunction } = useTableOptions(
     variant,
+    artistId,
     albumId,
     playlistId,
     folderId,
@@ -102,6 +109,8 @@ const ListTableBasic = ({
 const ListTableTracks = ({
   children,
   variant,
+  artistId,
+  artistName,
   albumId,
   playlistId,
   folderId,
@@ -131,6 +140,7 @@ const ListTableTracks = ({
 
   const { tableVariant, tableOptions, gridTemplateColumns, handleSortFunction } = useTableOptions(
     variant,
+    artistId,
     albumId,
     playlistId,
     folderId,
@@ -145,6 +155,8 @@ const ListTableTracks = ({
         // console.log(222, trackVariant, trackIndex, albumId, playlistId, folderId, playingOrder, sortKey);
         dispatch.playerModel.playerLoadTrackItem({
           playingVariant: lookupVariantFields[trackVariant].playVariant,
+          playingArtistId: artistId,
+          playingArtistName: artistName,
           playingAlbumId: albumId,
           playingPlaylistId: playlistId,
           playingFolderId: folderId,
@@ -984,6 +996,13 @@ const TrackRow = ({
                 </div>
               );
 
+            case 'releaseDate':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.releaseDate, 'text-trim')}>
+                  {entry.releaseDate ? moment(entry.releaseDate).format('YYYY') : null}
+                </div>
+              );
+
             case 'kind':
               return (
                 <div key={rowKey + '-' + index} className={clsx(style.kind, 'text-trim')}>
@@ -1041,6 +1060,11 @@ const lookupVariantFields = {
   artists: {
     ratingType: 'artist',
     ratingKey: 'artistId',
+  },
+  artistTracks: {
+    ratingType: 'track',
+    ratingKey: 'trackId',
+    playVariant: 'artists',
   },
   albums: {
     ratingType: 'album',

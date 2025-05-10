@@ -49,6 +49,7 @@ const plexLibraryState = {
   allArtistAlbums: {},
   allArtistRelated: {},
   allArtistCompilationAlbums: {},
+  allArtistTracks: {},
   haveGotAllArtists: false,
   // albums
   allAlbums: null,
@@ -324,6 +325,22 @@ const effects = (dispatch) => ({
     allArtistCompilationAlbums[libraryId + '-' + artistId] = artistCompilationAlbums;
     dispatch.appModel.setAppState({
       allArtistCompilationAlbums,
+    });
+  },
+
+  storeArtistTracks(payload, rootState) {
+    console.log('%c--- storeArtistTracks ---', 'color:#07a098');
+    const { libraryId, artistId, artistTracks } = payload;
+    const allArtistTracks = { ...rootState.appModel.allArtistTracks };
+    // limit recent entries
+    const keys = Object.keys(allArtistTracks);
+    if (keys.length >= maxDataLength) {
+      delete allArtistTracks[keys[0]];
+    }
+    // add the new entry and save
+    allArtistTracks[libraryId + '-' + artistId] = artistTracks;
+    dispatch.appModel.setAppState({
+      allArtistTracks,
     });
   },
 
@@ -634,6 +651,18 @@ const effects = (dispatch) => ({
     console.log('%c--- setTrackRating ---', 'color:#07a098');
     const { ratingKey, rating } = payload;
 
+    // update artist tracks
+    const allArtistTracks = { ...rootState.appModel.allArtistTracks };
+    const artistKeys = Object.keys(allArtistTracks);
+    artistKeys.forEach((key) => {
+      const artistTracks = allArtistTracks[key];
+      const trackIndex = artistTracks.findIndex((track) => track.trackId === ratingKey);
+      if (trackIndex !== -1) {
+        artistTracks[trackIndex].userRating = rating;
+        allArtistTracks[key] = artistTracks;
+      }
+    });
+
     // update album tracks
     const allAlbumTracks = { ...rootState.appModel.allAlbumTracks };
     const albumKeys = Object.keys(allAlbumTracks);
@@ -658,6 +687,7 @@ const effects = (dispatch) => ({
       }
     });
     dispatch.appModel.setAppState({
+      allArtistTracks,
       allAlbumTracks,
       allPlaylistTracks,
     });

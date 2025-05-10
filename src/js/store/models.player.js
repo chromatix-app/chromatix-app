@@ -128,11 +128,27 @@ const effects = (dispatch) => ({
 
   playerLoadTrackItem(payload, rootState) {
     // console.log('%c--- playerLoadTrackItem ---', 'color:#5c16b1');
-
-    const { playingVariant, playingAlbumId, playingPlaylistId, playingFolderId, playingOrder, playingTrackIndex } =
-      payload;
+    const {
+      playingVariant,
+      playingArtistId,
+      playingArtistName,
+      playingAlbumId,
+      playingPlaylistId,
+      playingFolderId,
+      playingOrder,
+      playingTrackIndex,
+    } = payload;
     const isShuffle = rootState.sessionModel.playingShuffle;
-    if (playingVariant === 'albums') {
+    if (playingVariant === 'artists') {
+      dispatch.playerModel.playerLoadArtist({
+        artistId: playingArtistId,
+        artistName: playingArtistName,
+        playingOrder: playingOrder,
+        trackIndex: playingTrackIndex,
+        isShuffle: isShuffle,
+        isTrack: true, // this ensures that the trackIndex is used
+      });
+    } else if (playingVariant === 'albums') {
       dispatch.playerModel.playerLoadAlbum({
         albumId: playingAlbumId,
         playingOrder: playingOrder,
@@ -159,6 +175,45 @@ const effects = (dispatch) => ({
     }
   },
 
+  async playerLoadArtist(payload, rootState) {
+    console.log('%c--- playerLoadArtist ---', 'color:#5c16b1');
+    const { artistId, artistName, playingOrder = null, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
+
+    const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
+    const allArtistTracks = rootState.appModel.allArtistTracks;
+    const currentArtistTracks = allArtistTracks[libraryId + '-' + artistId];
+
+    // handle playing an artist before tracks are loaded
+    if (!currentArtistTracks) {
+      await plex.getAllArtistTracks(libraryId, artistId, artistName);
+      dispatch.playerModel.playerLoadArtist(payload);
+      return;
+    }
+
+    const trackKeys = getTrackKeys(currentArtistTracks.length, playingOrder, isShuffle, isTrack ? trackIndex : null);
+    const realIndex = isTrack ? trackKeys.indexOf(trackIndex) : 0;
+
+    dispatch.playerModel.playerLoadTrackList({
+      playingVariant: 'artists',
+      playingServerId: rootState.sessionModel.currentServer?.serverId,
+      playingLibraryId: rootState.sessionModel.currentLibrary?.libraryId,
+      playingArtistId: artistId,
+      playingAlbumId: null,
+      playingPlaylistId: null,
+      playingFolderId: null,
+      playingLink: `/artists/${rootState.sessionModel.currentLibrary?.libraryId}/${artistId}`,
+      playingOrder: playingOrder,
+      playingTrackIndex: realIndex,
+      playingTrackKeys: trackKeys,
+      playingTrackList: currentArtistTracks,
+      playingTrackCount: currentArtistTracks.length,
+      playingTrackProgress: 0,
+      playingShuffle: isShuffle,
+    });
+
+    analyticsEvent('Plex: Play (Artist)');
+  },
+
   async playerLoadAlbum(payload, rootState) {
     console.log('%c--- playerLoadAlbum ---', 'color:#5c16b1');
     const { albumId, playingOrder = null, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
@@ -167,9 +222,10 @@ const effects = (dispatch) => ({
     const allAlbumTracks = rootState.appModel.allAlbumTracks;
     const currentAlbumTracks = allAlbumTracks[libraryId + '-' + albumId];
 
+    // handle playing an album before tracks are loaded
     if (!currentAlbumTracks) {
       await plex.getAlbumTracks(libraryId, albumId);
-      dispatch.playerModel.playerLoadAlbum({ albumId, trackIndex });
+      dispatch.playerModel.playerLoadAlbum(payload);
       return;
     }
 
@@ -180,6 +236,7 @@ const effects = (dispatch) => ({
       playingVariant: 'albums',
       playingServerId: rootState.sessionModel.currentServer?.serverId,
       playingLibraryId: rootState.sessionModel.currentLibrary?.libraryId,
+      playingArtistId: null,
       playingAlbumId: albumId,
       playingPlaylistId: null,
       playingFolderId: null,
@@ -204,9 +261,10 @@ const effects = (dispatch) => ({
     const allPlaylistTracks = rootState.appModel.allPlaylistTracks;
     const currentPlaylistTracks = allPlaylistTracks[libraryId + '-' + playlistId];
 
+    // handle playing a playlist before tracks are loaded
     if (!currentPlaylistTracks) {
       await plex.getPlaylistTracks(libraryId, playlistId);
-      dispatch.playerModel.playerLoadPlaylist({ playlistId, trackIndex });
+      dispatch.playerModel.playerLoadPlaylist(payload);
       return;
     }
 
@@ -217,6 +275,7 @@ const effects = (dispatch) => ({
       playingVariant: 'playlists',
       playingServerId: rootState.sessionModel.currentServer?.serverId,
       playingLibraryId: rootState.sessionModel.currentLibrary?.libraryId,
+      playingArtistId: null,
       playingAlbumId: null,
       playingPlaylistId: playlistId,
       playingFolderId: null,
@@ -241,9 +300,10 @@ const effects = (dispatch) => ({
     const allFolderItems = rootState.appModel.allFolderItems;
     const currentFolderItems = allFolderItems[libraryId + '-' + folderId]?.filter((entry) => entry.kind === 'track');
 
+    // handle playing a folder before tracks are loaded
     if (!currentFolderItems) {
       await plex.getFolderItems(folderId);
-      dispatch.playerModel.playerLoadFolder({ folderId, trackIndex });
+      dispatch.playerModel.playerLoadFolder(payload);
       return;
     }
 
@@ -254,6 +314,7 @@ const effects = (dispatch) => ({
       playingVariant: 'folders',
       playingServerId: rootState.sessionModel.currentServer?.serverId,
       playingLibraryId: rootState.sessionModel.currentLibrary?.libraryId,
+      playingArtistId: null,
       playingAlbumId: null,
       playingPlaylistId: null,
       playingFolderId: folderId,

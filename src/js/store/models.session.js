@@ -94,7 +94,7 @@ const sessionState = {
 
   sortArtists: 'title',
   sortArtistAlbums: 'releaseDate',
-  sortArtistAlbumsList: 'title',
+  sortArtistTracks: 'releaseDate',
   sortAlbums: 'title', // artist-asc-releaseDate-asc
   sortAlbumTracks: {},
   sortFolders: 'sortOrder',
@@ -121,6 +121,7 @@ const sessionState = {
 
   orderArtists: 'asc',
   orderArtistAlbums: 'asc',
+  orderArtistTracks: 'asc',
   orderAlbums: 'asc',
   orderFolders: 'asc',
   orderPlaylists: 'asc',
@@ -164,6 +165,14 @@ const sessionState = {
   colArtistAlbumsAddedAt: false,
   colArtistAlbumsLastPlayed: false,
   colArtistAlbumsUserRating: true,
+
+  colArtistTracksArtist: false,
+  colArtistTracksAlbum: true,
+  colArtistTracksReleaseDate: true,
+  colArtistTracksCodec: false,
+  colArtistTracksBitrate: false,
+  colArtistTracksDuration: true,
+  colArtistTracksUserRating: true,
 
   colAlbumsArtist: true,
   colAlbumsGenre: false,
@@ -396,7 +405,12 @@ const reducers = {
 
   setSortTracks(rootState, payload) {
     const { variant, sortId, sortKey } = payload;
-    const sortType = variant === 'albumTracks' ? 'sortAlbumTracks' : 'sortPlaylistTracks';
+    const sortType =
+      variant === 'artistTracks'
+        ? 'sortArtistTracks'
+        : variant === 'albumTracks'
+          ? 'sortAlbumTracks'
+          : 'sortPlaylistTracks';
     const sortTracks = rootState[sortType];
     const currentSortValue = sortTracks[sortId] || null;
     let currentSortArray;
