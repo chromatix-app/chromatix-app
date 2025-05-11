@@ -4,6 +4,7 @@
 
 import { forwardRef } from 'react';
 import * as RadixSelect from '@radix-ui/react-select';
+import clsx from 'clsx';
 
 import { Icon } from 'js/components';
 
@@ -36,9 +37,9 @@ export const FilterSelect = ({ value, options, setter, icon = 'ArrowsVerticalIco
           <RadixSelect.Content position="popper" className={style.content}>
             <RadixSelect.Viewport className={style.viewport}>
               {options.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
+                <SelectEntry key={option.value} value={option.value}>
                   {option.label}
-                </SelectItem>
+                </SelectEntry>
               ))}
             </RadixSelect.Viewport>
           </RadixSelect.Content>
@@ -48,15 +49,24 @@ export const FilterSelect = ({ value, options, setter, icon = 'ArrowsVerticalIco
   );
 };
 
-const SelectItem = forwardRef(({ children, ...props }, forwardedRef) => {
+const SelectEntry = forwardRef(({ children, ...entry }, forwardedRef) => {
   return (
-    <RadixSelect.Item className={style.item} {...props} ref={forwardedRef}>
-      <RadixSelect.ItemText>{children}</RadixSelect.ItemText>
-      <RadixSelect.ItemIndicator className={style.indicator}>
-        <span className={style.indicatorIcon}>
-          <Icon icon="CheckIcon" cover stroke />
+    <RadixSelect.Item className={style.selectItem} {...entry} ref={forwardedRef}>
+      <RadixSelect.ItemIndicator className={style.selectIndicator}>
+        <span className={style.selectIcon}>
+          <Icon icon="CheckCircleEmptyIcon" cover stroke />
+          <span className={clsx(style.selectIcon, style.selectIconMiddle)}>
+            <Icon icon="CheckCircleMiddleIcon" cover />
+          </span>
         </span>
       </RadixSelect.ItemIndicator>
+
+      {/* Render unchecked icon when item is not checked */}
+      <span className={clsx(style.selectIcon, style.selectIconInactive)}>
+        <Icon icon="CheckCircleEmptyIcon" cover stroke />
+      </span>
+
+      <RadixSelect.ItemText>{children}</RadixSelect.ItemText>
     </RadixSelect.Item>
   );
 });

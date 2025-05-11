@@ -106,12 +106,12 @@ const UserMenu = ({ variant = 'default' }) => {
                               {library.title}
                               {isCurrentLibrary && (
                                 <span className={clsx(style.iconAfter, style.iconCurrent)}>
-                                  <Icon icon="CheckCircleIcon" cover stroke />
+                                  <Icon icon="CheckCircleCheckedIcon" cover stroke />
                                 </span>
                               )}
                               {!isCurrentLibrary && (
                                 <span className={clsx(style.iconAfter, style.iconHover)}>
-                                  <Icon icon="CheckCircleIcon" cover stroke />
+                                  <Icon icon="CheckCircleCheckedIcon" cover stroke />
                                 </span>
                               )}
                             </button>

@@ -49,28 +49,51 @@
   }
 }
 
+//
+// DROPDOWN
+//
+
 .content {
   top: 2px;
-  left: 14px;
+  left: -7px;
   padding: 4px;
   background: var(--color-panel-background);
   border: 1px solid var(--color-border);
   border-radius: 5px;
   box-shadow: 0 0 10px var(--color-shadow);
   z-index: 99;
-  font-size: 13px;
-  line-height: 1;
+  font-size: 12px;
+  line-height: 14px;
 
+  &WithGroups {
+    left: 16px;
+  }
+
+  // Variant used on album views alongside play buttons
   &Large {
     top: 4px;
     left: 0;
   }
 }
 
-.item {
+.sectionHeading {
+  padding: 7px 16px 6px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  // text-transform: uppercase;
+  color: var(--color-opacity-05);
+}
+
+.divider {
+  height: 1px;
+  margin: 4px 7px;
+  background: var(--color-opacity-015);
+}
+
+.checkboxItem {
   display: block;
   position: relative;
-  padding: 6px 14px 6px 10px;
+  padding: 6px 16px 6px 8px;
   border-radius: 2px;
 
   &:not([data-disabled]):hover,
@@ -81,27 +104,24 @@
     @include mixins.focus-self-fill;
   }
 
-  &[data-state='checked'] {
-    color: var(--color-primary);
-  }
-
   &[data-disabled] {
     color: var(--color-opacity-04);
   }
 
-  &[data-state='unchecked'] {
-    padding-right: 32px;
-  }
+  // &[data-state='checked'] {
+  //   color: var(--color-primary);
+  // }
 }
 
-.indicator {
-  margin: 0 0 0 8px;
-}
-
-.indicatorIcon {
+.checkboxIcon {
   display: inline-block;
   position: relative;
-  top: 1px;
-  width: 10px;
-  height: 10px;
+  // top: -1px;
+  width: 14px;
+  height: 14px;
+  margin-right: 8px;
+
+  &Inactive {
+    opacity: var(--opacity-02);
+  }
 }
