@@ -170,11 +170,15 @@
   min-width: 100%;
   max-height: calc(100vh - 95px);
   max-height: calc(100svh - 95px);
+  padding: 12px 6px;
   margin: 5px 0 0 auto;
   background: var(--color-panel-background);
+  border: 1px solid var(--color-border);
   border-radius: 9px;
   box-shadow: 0 0 10px var(--color-shadow);
-  font-size: 12px;
+  z-index: 888;
+  font-size: 13px;
+  line-height: 16px;
   text-align: left;
 
   .wrapInline & {
@@ -185,39 +189,63 @@
   }
 }
 
+.separator {
+  height: 1px;
+  margin: 10px 11px;
+  background: var(--color-border);
+}
+
+.label {
+  padding: 0 12px 4px;
+  font-size: 9px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: var(--color-opacity-04);
+
+  // &:first-child {
+  //   padding-top: 10px;
+  // }
+}
+
 .button {
   display: flex;
   position: relative;
   align-items: center;
   width: 100%;
-  padding: 10px 80px 10px 15px;
+  min-width: 186px;
+  // min-width: 206px;
+  padding: 6px 50px 6px 13px;
   background: var(--color-panel-background);
-  border: 1px solid var(--color-border);
+  border-radius: 5px;
   text-align: left;
 
   @include mixins.focus-self-fill;
 
-  &:first-child {
-    border-top-left-radius: 9px;
-    border-top-right-radius: 9px;
+  // &:first-child {
+  //   border-top-left-radius: 9px;
+  //   border-top-right-radius: 9px;
 
-    .wrapInline & {
-      border-top-left-radius: 6px;
-      border-top-right-radius: 6px;
-    }
-  }
-  &:last-child {
-    border-bottom-left-radius: 9px;
-    border-bottom-right-radius: 9px;
+  //   .wrapInline & {
+  //     border-top-left-radius: 6px;
+  //     border-top-right-radius: 6px;
+  //   }
+  // }
+  // &:last-child {
+  //   border-bottom-left-radius: 9px;
+  //   border-bottom-right-radius: 9px;
 
-    .wrapInline & {
-      border-bottom-left-radius: 6px;
-      border-bottom-right-radius: 6px;
-    }
-  }
+  //   .wrapInline & {
+  //     border-bottom-left-radius: 6px;
+  //     border-bottom-right-radius: 6px;
+  //   }
+  // }
 
   &.buttonLibrary {
     padding-left: 30px;
+  }
+
+  &.buttonCurrent {
+    color: var(--color-primary);
   }
 
   &:hover,
@@ -237,9 +265,9 @@
   }
 }
 
-.button + .button {
-  border-top: none;
-}
+// .button + .button {
+//   border-top: none;
+// }
 
 .iconBefore {
   display: block;
@@ -248,13 +276,17 @@
   height: 14px;
   margin-right: 10px;
   opacity: var(--opacity-05);
+
+  .buttonCurrent & {
+    opacity: 1;
+  }
 }
 
 .iconAfter {
   display: block;
   position: absolute;
   top: 50%;
-  right: 15px;
+  right: 13px;
   width: 14px;
   height: 14px;
   opacity: var(--opacity-05);
@@ -265,7 +297,7 @@
   display: block;
   position: absolute;
   top: 50%;
-  right: 16px;
+  right: 15px;
   width: 10px;
   height: 10px;
   opacity: var(--opacity-05);
