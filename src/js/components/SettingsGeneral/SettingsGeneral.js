@@ -17,6 +17,14 @@ export const SettingsGeneral = () => {
   return (
     <div className={style.wrap}>
       <div className={style.group}>
+        <div className={style.title}>Plex</div>
+        <PlexSettings />
+      </div>
+      <div className={style.group}>
+        <div className={style.title}>Playback</div>
+        <PlaybackSettings />
+      </div>
+      <div className={style.group}>
         <div className={style.title}>View Modes</div>
         <ViewModeSettings />
       </div>
@@ -24,18 +32,10 @@ export const SettingsGeneral = () => {
         <div className={style.title}>Star Ratings</div>
         <StarRatingSettings />
       </div>
-      <div className={style.group}>
-        <div className={style.title}>Playback</div>
-        <PlaybackSettings />
-      </div>
       {/* <div className={style.group}>
         <div className={style.title}>User Interface</div>
         <UserInterfaceSettings />
       </div> */}
-      <div className={style.group}>
-        <div className={style.title}>Plex</div>
-        <PlexSettings />
-      </div>
     </div>
   );
 };

@@ -390,6 +390,7 @@ export const transposeStyleData = (type, style, libraryId) => {
 // ======================================================================
 
 export const transposeTrackArray = (array, libraryId, plexBaseUrl, accessToken) => {
+  // console.log(array?.data?.MediaContainer?.Metadata);
   const data =
     array?.data?.MediaContainer?.Metadata?.map((track) =>
       transposeTrackData(track, libraryId, plexBaseUrl, accessToken)
@@ -421,6 +422,7 @@ export const transposeTrackData = (track, libraryId, plexBaseUrl, accessToken) =
     bitrate: track.Media[0].bitrate,
     duration: track.Media[0].duration,
     userRating: track.userRating,
+    releaseDate: track.parentYear ? track.parentYear + '-01-01' : null,
     thumb: getThumb(plexBaseUrl, track.thumb, thumbSizeSmall, accessToken),
     thumbMedium: getThumb(plexBaseUrl, track.thumb, thumbSizeMedium, accessToken),
     src: `${plexBaseUrl}${track.Media[0].Part[0].key}?X-Plex-Token=${accessToken}`,

@@ -25,7 +25,13 @@ import { ReactComponent as ArtistMoodsIcon } from './icons/music/artist-moods.sv
 import { ReactComponent as ArtistStylesIcon } from './icons/music/artist-styles.svg';
 import { ReactComponent as BlueskyIcon } from './icons/music/bluesky.svg';
 import { ReactComponent as CheckIcon } from './icons/music/check.svg';
-import { ReactComponent as CheckCircleIcon } from './icons/music/check-circle.svg';
+import { ReactComponent as CheckCircleCheckedIcon } from './icons/music/check-circle-checked.svg';
+import { ReactComponent as CheckCircleEmptyIcon } from './icons/music/check-circle-empty.svg';
+import { ReactComponent as CheckCircleFilledIcon } from './icons/music/check-circle-filled.svg';
+import { ReactComponent as CheckCircleMiddleIcon } from './icons/music/check-circle-middle.svg';
+import { ReactComponent as CheckSquareCheckedIcon } from './icons/music/check-square-checked.svg';
+import { ReactComponent as CheckSquareEmptyIcon } from './icons/music/check-square-empty.svg';
+import { ReactComponent as CheckSquareFilledIcon } from './icons/music/check-square-filled.svg';
 import { ReactComponent as ClockRewindIcon } from './icons/music/clock-rewind.svg';
 import { ReactComponent as CloudOfflineIcon } from './icons/music/cloud-offline.svg';
 import { ReactComponent as CogIcon } from './icons/music/cog.svg';
@@ -113,7 +119,13 @@ export const customIcons = {
   ArtistStylesIcon,
   BlueskyIcon,
   CheckIcon,
-  CheckCircleIcon,
+  CheckCircleCheckedIcon,
+  CheckCircleEmptyIcon,
+  CheckCircleFilledIcon,
+  CheckCircleMiddleIcon,
+  CheckSquareCheckedIcon,
+  CheckSquareEmptyIcon,
+  CheckSquareFilledIcon,
   ClockRewindIcon,
   CloudOfflineIcon,
   CogIcon,

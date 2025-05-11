@@ -94,7 +94,7 @@ const sessionState = {
 
   sortArtists: 'title',
   sortArtistAlbums: 'releaseDate',
-  sortArtistAlbumsList: 'title',
+  sortArtistTracks: 'releaseDate',
   sortAlbums: 'title', // artist-asc-releaseDate-asc
   sortAlbumTracks: {},
   sortFolders: 'sortOrder',
@@ -121,6 +121,7 @@ const sessionState = {
 
   orderArtists: 'asc',
   orderArtistAlbums: 'asc',
+  orderArtistTracks: 'asc',
   orderAlbums: 'asc',
   orderFolders: 'asc',
   orderPlaylists: 'asc',
@@ -140,6 +141,10 @@ const sessionState = {
   orderArtistStyleItems: 'asc',
   orderAlbumStyles: 'asc',
   orderAlbumStyleItems: 'asc',
+
+  // ARTIST DETAIL OPTIONS
+
+  artistAlbumsGroupByType: true,
 
   // GRID VIEW OPTIONS
 
@@ -165,6 +170,15 @@ const sessionState = {
   colArtistAlbumsLastPlayed: false,
   colArtistAlbumsUserRating: true,
 
+  colArtistTracksArtwork: true,
+  colArtistTracksArtist: false,
+  colArtistTracksAlbum: true,
+  colArtistTracksReleaseDate: true,
+  colArtistTracksCodec: false,
+  colArtistTracksBitrate: false,
+  colArtistTracksDuration: true,
+  colArtistTracksUserRating: true,
+
   colAlbumsArtist: true,
   colAlbumsGenre: false,
   colAlbumsReleaseDate: true,
@@ -186,6 +200,7 @@ const sessionState = {
   colPlaylistsLastPlayed: false,
   colPlaylistsUserRating: true,
 
+  colPlaylistArtwork: true,
   colPlaylistArtist: true,
   colPlaylistAlbum: true,
   colPlaylistCodec: false,
@@ -396,7 +411,12 @@ const reducers = {
 
   setSortTracks(rootState, payload) {
     const { variant, sortId, sortKey } = payload;
-    const sortType = variant === 'albumTracks' ? 'sortAlbumTracks' : 'sortPlaylistTracks';
+    const sortType =
+      variant === 'artistTracks'
+        ? 'sortArtistTracks'
+        : variant === 'albumTracks'
+          ? 'sortAlbumTracks'
+          : 'sortPlaylistTracks';
     const sortTracks = rootState[sortType];
     const currentSortValue = sortTracks[sortId] || null;
     let currentSortArray;
