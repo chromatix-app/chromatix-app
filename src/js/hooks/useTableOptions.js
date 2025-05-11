@@ -1,22 +1,24 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-const useTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderKey, colOptions) => {
+const useTableOptions = (variant, artistId, albumId, playlistId, folderId, sortKey, orderKey, colOptions) => {
   const dispatch = useDispatch();
 
   const [returnState, setReturnState] = useState(
-    getTableOptions(variant, albumId, playlistId, folderId, sortKey, orderKey, colOptions, dispatch)
+    getTableOptions(variant, artistId, albumId, playlistId, folderId, sortKey, orderKey, colOptions, dispatch)
   );
 
   useEffect(() => {
-    setReturnState(getTableOptions(variant, albumId, playlistId, folderId, sortKey, orderKey, colOptions, dispatch));
+    setReturnState(
+      getTableOptions(variant, artistId, albumId, playlistId, folderId, sortKey, orderKey, colOptions, dispatch)
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [variant, sortKey, orderKey, colOptions]);
 
   return returnState;
 };
 
-const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderKey, colOptions, dispatch) => {
+const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortKey, orderKey, colOptions, dispatch) => {
   let tableVariant;
   let tableOptions;
 
@@ -29,7 +31,11 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
     });
   };
 
-  const sortId = (variant === 'albumTracks' && albumId) || (variant === 'playlistTracks' && playlistId) || null;
+  const sortId =
+    (variant === 'artistTracks' && artistId) ||
+    (variant === 'albumTracks' && albumId) ||
+    (variant === 'playlistTracks' && playlistId) ||
+    null;
   const handleSortTracks = (event) => {
     const sortKey = event.currentTarget.dataset.sort;
     dispatch.sessionModel.setSortTracks({
@@ -82,7 +88,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
       {
         colKey: 'genre',
         label: 'Genre',
-        colWidth: '0.8fr',
+        colWidth: '0.7fr',
         isAsc: sortKey === 'genre' && orderKey === 'asc',
         isDesc: sortKey === 'genre' && orderKey === 'desc',
         visible: colOptions?.genre !== false,
@@ -90,7 +96,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
       {
         colKey: 'addedAt',
         label: 'Added',
-        colWidth: '0.8fr',
+        colWidth: '0.7fr',
         isAsc: sortKey === 'addedAt' && orderKey === 'asc',
         isDesc: sortKey === 'addedAt' && orderKey === 'desc',
         visible: colOptions?.addedAt !== false,
@@ -98,10 +104,106 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
       {
         colKey: 'lastPlayed',
         label: 'Last Played',
-        colWidth: '0.8fr',
+        colWidth: '0.7fr',
         isAsc: sortKey === 'lastPlayed' && orderKey === 'asc',
         isDesc: sortKey === 'lastPlayed' && orderKey === 'desc',
         visible: colOptions?.lastPlayed !== false,
+      },
+      {
+        colKey: 'userRating',
+        label: 'Rating',
+        colWidth: '0.5fr',
+        isAsc: sortKey === 'userRating' && orderKey === 'asc',
+        isDesc: sortKey === 'userRating' && orderKey === 'desc',
+        visible: colOptions?.userRating !== false,
+      },
+    ];
+  }
+
+  // ARTIST TRACKS
+  else if (variant === 'artistTracks') {
+    tableVariant = 'artistTracks';
+    tableOptions = [
+      {
+        colKey: 'sortOrder',
+        label: '#',
+        colWidth: '30px',
+        headerClassName: 'colCenter',
+        isAsc: sortKey === 'sortOrder' && orderKey === 'asc',
+        isDesc: sortKey === 'sortOrder' && orderKey === 'desc',
+        showArrows: false,
+        visible: true,
+      },
+      {
+        colKey: 'thumb',
+        label: '',
+        icon: 'FolderIcon',
+        colWidth: '41px',
+        visible: colOptions?.artwork !== false,
+        visibleInHeader: false,
+      },
+      {
+        colKey: 'title',
+        label: 'Title',
+        colWidth: '1.2fr',
+        headerStyle:
+          colOptions?.artwork !== false
+            ? {
+                gridColumn: '2 / span 2',
+              }
+            : {},
+        isAsc: sortKey === 'title' && orderKey === 'asc',
+        isDesc: sortKey === 'title' && orderKey === 'desc',
+        visible: true,
+      },
+      {
+        colKey: 'artist',
+        label: 'Artist',
+        colWidth: '1fr',
+        isAsc: sortKey === 'artist' && orderKey === 'asc',
+        isDesc: sortKey === 'artist' && orderKey === 'desc',
+        visible: colOptions?.artist !== false,
+      },
+      {
+        colKey: 'album',
+        label: 'Album',
+        colWidth: '1fr',
+        isAsc: sortKey === 'album' && orderKey === 'asc',
+        isDesc: sortKey === 'album' && orderKey === 'desc',
+        visible: colOptions?.album !== false,
+      },
+      {
+        colKey: 'releaseDate',
+        label: 'Released',
+        isDefault: true,
+        colWidth: '0.6fr',
+        isAsc: sortKey === 'releaseDate' && orderKey === 'asc',
+        isDesc: sortKey === 'releaseDate' && orderKey === 'desc',
+        visible: colOptions?.releaseDate !== false,
+      },
+      {
+        colKey: 'codec',
+        label: 'Audio Codec',
+        colWidth: '0.6fr',
+        isAsc: sortKey === 'codec' && orderKey === 'asc',
+        isDesc: sortKey === 'codec' && orderKey === 'desc',
+        visible: colOptions?.codec !== false,
+      },
+      {
+        colKey: 'bitrate',
+        label: 'Bitrate',
+        colWidth: '0.6fr',
+        isAsc: sortKey === 'bitrate' && orderKey === 'asc',
+        isDesc: sortKey === 'bitrate' && orderKey === 'desc',
+        visible: colOptions?.bitrate !== false,
+      },
+      {
+        colKey: 'duration',
+        label: 'Duration',
+        colWidth: 'minmax(72px, auto)',
+        isAsc: sortKey === 'duration' && orderKey === 'asc',
+        isDesc: sortKey === 'duration' && orderKey === 'desc',
+        visible: colOptions?.duration !== false,
       },
       {
         colKey: 'userRating',
@@ -135,7 +237,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
       {
         colKey: 'title',
         label: 'Title',
-        isDefault: true,
+        isDefault: variant !== 'artistAlbums',
         colWidth: '1.2fr',
         headerStyle: {
           gridColumn: '1 / span 2',
@@ -155,7 +257,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
       {
         colKey: 'genre',
         label: 'Genre',
-        colWidth: '0.8fr',
+        colWidth: '0.7fr',
         isAsc: sortKey === 'genre' && orderKey === 'asc',
         isDesc: sortKey === 'genre' && orderKey === 'desc',
         visible: colOptions?.genre !== false,
@@ -163,7 +265,8 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
       {
         colKey: 'releaseDate',
         label: 'Released',
-        colWidth: '0.8fr',
+        isDefault: variant === 'artistAlbums',
+        colWidth: '0.7fr',
         isAsc: sortKey === 'releaseDate' && orderKey === 'asc',
         isDesc: sortKey === 'releaseDate' && orderKey === 'desc',
         visible: colOptions?.releaseDate !== false,
@@ -171,7 +274,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
       {
         colKey: 'addedAt',
         label: 'Added',
-        colWidth: '0.8fr',
+        colWidth: '0.7fr',
         isAsc: sortKey === 'addedAt' && orderKey === 'asc',
         isDesc: sortKey === 'addedAt' && orderKey === 'desc',
         visible: colOptions?.addedAt !== false,
@@ -179,7 +282,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
       {
         colKey: 'lastPlayed',
         label: 'Last Played',
-        colWidth: '0.8fr',
+        colWidth: '0.7fr',
         isAsc: sortKey === 'lastPlayed' && orderKey === 'asc',
         isDesc: sortKey === 'lastPlayed' && orderKey === 'desc',
         visible: colOptions?.lastPlayed !== false,
@@ -229,7 +332,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
       {
         colKey: 'codec',
         label: 'Audio Codec',
-        colWidth: '0.7fr',
+        colWidth: '0.6fr',
         isAsc: sortKey === 'codec' && orderKey === 'asc',
         isDesc: sortKey === 'codec' && orderKey === 'desc',
         visible: colOptions?.codec !== false,
@@ -237,7 +340,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
       {
         colKey: 'bitrate',
         label: 'Bitrate',
-        colWidth: '0.7fr',
+        colWidth: '0.6fr',
         isAsc: sortKey === 'bitrate' && orderKey === 'asc',
         isDesc: sortKey === 'bitrate' && orderKey === 'desc',
         visible: colOptions?.bitrate !== false,
@@ -253,7 +356,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
       {
         colKey: 'userRating',
         label: 'Rating',
-        colWidth: '0.7fr',
+        colWidth: '0.6fr',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
         visible: colOptions?.userRating !== false,
@@ -392,16 +495,19 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
         label: '',
         icon: 'FolderIcon',
         colWidth: '41px',
-        visible: true,
+        visible: colOptions?.artwork !== false,
         visibleInHeader: false,
       },
       {
         colKey: 'title',
         label: 'Title',
         colWidth: '1.2fr',
-        headerStyle: {
-          gridColumn: '2 / span 2',
-        },
+        headerStyle:
+          colOptions?.artwork !== false
+            ? {
+                gridColumn: '2 / span 2',
+              }
+            : {},
         isAsc: sortKey === 'title' && orderKey === 'asc',
         isDesc: sortKey === 'title' && orderKey === 'desc',
         visible: true,
@@ -425,7 +531,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
       {
         colKey: 'codec',
         label: 'Audio Codec',
-        colWidth: '0.7fr',
+        colWidth: '0.6fr',
         isAsc: sortKey === 'codec' && orderKey === 'asc',
         isDesc: sortKey === 'codec' && orderKey === 'desc',
         visible: colOptions?.codec !== false,
@@ -433,7 +539,7 @@ const getTableOptions = (variant, albumId, playlistId, folderId, sortKey, orderK
       {
         colKey: 'bitrate',
         label: 'Bitrate',
-        colWidth: '0.7fr',
+        colWidth: '0.6fr',
         isAsc: sortKey === 'bitrate' && orderKey === 'asc',
         isDesc: sortKey === 'bitrate' && orderKey === 'desc',
         visible: colOptions?.bitrate !== false,

@@ -61,6 +61,7 @@ const endpointConfig = {
     getAllArtistAlbums: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/children`,
     // getAllArtistRelated: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/related`,
     getAllArtistAppearanceTracks: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
+    getAllArtistTracks: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
   },
   album: {
     getAllAlbums: (plexBaseUrl, libraryId) => `${plexBaseUrl}/library/sections/${libraryId}/all`,
@@ -785,6 +786,90 @@ export const getAllArtistAppearanceAlbumIds = (plexBaseUrl, libraryId, artistNam
       reject({
         code: 'getAllArtistAppearanceAlbumIds.2',
         message: 'Failed to get all artist appearance album IDs: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ARTIST TRACKS
+// ======================================================================
+
+export const getAllArtistTracks = (plexBaseUrl, libraryId, artistId, artistName, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.artist.getAllArtistTracks(plexBaseUrl, libraryId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            type: 10,
+            'artist.id': artistId,
+            excludeFields: albumExcludeFields,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeTrackArray(response, libraryId, plexBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllArtistTracks.1',
+            message: 'Failed to get all artist tracks: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllArtistTracks.2',
+        message: 'Failed to get all artist tracks: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+export const getAllArtistAppearanceTracks = (plexBaseUrl, libraryId, artistId, artistName, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.artist.getAllArtistTracks(plexBaseUrl, libraryId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      // We are using a query string because of the use of a != operator
+      const queryString = `?type=10&track.originalTitle=${encodeURIComponent(
+        artistName
+      )}&artist.title!=${encodeURIComponent(artistName)}&excludeFields=${albumExcludeFields}`;
+
+      axios
+        .get(endpoint + queryString, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeTrackArray(response, libraryId, plexBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'getAllArtistAppearanceTracks.1',
+            message: 'Failed to get all artist appearance tracks: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'getAllArtistAppearanceTracks.2',
+        message: 'Failed to get all artist appearance tracks: ' + error?.message,
         error: error,
       });
     }

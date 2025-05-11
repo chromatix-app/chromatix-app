@@ -8,26 +8,24 @@ const useGetQueuedTracks = () => {
   const playingRepeatOnce = useSelector(({ sessionModel }) => sessionModel.playingRepeatOnce);
   const playingShuffle = useSelector(({ sessionModel }) => sessionModel.playingShuffle);
 
-  const upcomingTrackKeys = playingTrackKeys ? playingTrackKeys.filter((_, index) => index >= playingTrackIndex) : [];
-  const upcomingEntries = upcomingTrackKeys.map((key) => playingTrackList[key]);
+  const queueTrackKeys = playingTrackKeys ? playingTrackKeys.filter((_, index) => index >= playingTrackIndex) : [];
+  const queueEntries = queueTrackKeys.map((key) => playingTrackList[key]);
 
-  const isRepeat = playingRepeatAll || playingRepeatOnce;
+  const playingRepeatAny = playingRepeatAll || playingRepeatOnce;
 
-  const repeatEntries = isRepeat && playingTrackKeys ? playingTrackKeys.map((key) => playingTrackList[key]) : [];
-  // const totalTracksRemaining = playingTrackKeys ? playingTrackKeys.length - playingTrackIndex : 0;
+  const queueCurrent = queueEntries[0];
+  const queueUpcoming = queueEntries.slice(1);
+  const queueRepeat = playingRepeatAny && playingTrackKeys ? playingTrackKeys.map((key) => playingTrackList[key]) : [];
 
   return {
-    playingTrackList,
     playingTrackIndex,
     playingTrackKeys,
-    playingRepeatAll: isRepeat,
+    playingRepeatAny,
     playingShuffle,
 
-    upcomingTrackKeys,
-    upcomingEntries,
-
-    repeatEntries,
-    // totalTracksRemaining,
+    queueCurrent,
+    queueUpcoming,
+    queueRepeat,
   };
 };
 

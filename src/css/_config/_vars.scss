@@ -61,8 +61,7 @@ $grid-cols: 12;
 $grid-max-width: 1500px; // 1370px; // 1440px - 35px side padding
 $grid-padding: (
   0: 8px,
-  md: 10px,
-  // lg: 12px,
+  md: 10px, // lg: 12px,
 );
 $grid-breakpoints: (xxs, xs, sm, md, lg, xl);
 
