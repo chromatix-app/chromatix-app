@@ -142,6 +142,10 @@ const sessionState = {
   orderAlbumStyles: 'asc',
   orderAlbumStyleItems: 'asc',
 
+  // ARTIST DETAIL OPTIONS
+
+  artistAlbumsGroupByType: true,
+
   // GRID VIEW OPTIONS
 
   gridArtistsUserRating: true,
