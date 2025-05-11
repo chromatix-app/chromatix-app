@@ -25,6 +25,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const colArtistAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsLastPlayed);
   const colArtistAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsUserRating);
 
+  const colArtistTracksArtwork = useSelector(({ sessionModel }) => sessionModel.colArtistTracksArtwork);
   const colArtistTracksArtist = useSelector(({ sessionModel }) => sessionModel.colArtistTracksArtist);
   const colArtistTracksAlbum = useSelector(({ sessionModel }) => sessionModel.colArtistTracksAlbum);
   const colArtistTracksReleaseDate = useSelector(({ sessionModel }) => sessionModel.colArtistTracksReleaseDate);
@@ -259,6 +260,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     },
 
     colTrackOptions: {
+      artwork: colArtistTracksArtwork,
       artist: colArtistTracksArtist,
       album: colArtistTracksAlbum,
       releaseDate: colArtistTracksReleaseDate,

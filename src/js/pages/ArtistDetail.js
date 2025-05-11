@@ -416,6 +416,11 @@ const Title = ({
                 //   label: 'Columns',
                 // },
                 {
+                  label: 'Artwork',
+                  attr: 'colArtistTracksArtwork',
+                  checked: colOptions.artwork,
+                },
+                {
                   label: 'Title',
                   disabled: true,
                   checked: true,

@@ -10,6 +10,7 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   const sortPlaylistTracks = useSelector(({ sessionModel }) => sessionModel.sortPlaylistTracks);
   const playlistSortString = sortPlaylistTracks[playlistId] || null;
 
+  const colPlaylistArtwork = useSelector(({ sessionModel }) => sessionModel.colPlaylistArtwork);
   const colPlaylistArtist = useSelector(({ sessionModel }) => sessionModel.colPlaylistArtist);
   const colPlaylistAlbum = useSelector(({ sessionModel }) => sessionModel.colPlaylistAlbum);
   const colPlaylistCodec = useSelector(({ sessionModel }) => sessionModel.colPlaylistCodec);
@@ -102,6 +103,7 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
     playlistSortString: actualPlaylistSortString,
 
     colOptions: {
+      artwork: colPlaylistArtwork,
       artist: colPlaylistArtist,
       album: colPlaylistAlbum,
       codec: colPlaylistCodec,

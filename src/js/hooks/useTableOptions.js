@@ -139,16 +139,19 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
         label: '',
         icon: 'FolderIcon',
         colWidth: '41px',
-        visible: true,
+        visible: colOptions?.artwork !== false,
         visibleInHeader: false,
       },
       {
         colKey: 'title',
         label: 'Title',
         colWidth: '1.2fr',
-        headerStyle: {
-          gridColumn: '2 / span 2',
-        },
+        headerStyle:
+          colOptions?.artwork !== false
+            ? {
+                gridColumn: '2 / span 2',
+              }
+            : {},
         isAsc: sortKey === 'title' && orderKey === 'asc',
         isDesc: sortKey === 'title' && orderKey === 'desc',
         visible: true,
@@ -492,16 +495,19 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
         label: '',
         icon: 'FolderIcon',
         colWidth: '41px',
-        visible: true,
+        visible: colOptions?.artwork !== false,
         visibleInHeader: false,
       },
       {
         colKey: 'title',
         label: 'Title',
         colWidth: '1.2fr',
-        headerStyle: {
-          gridColumn: '2 / span 2',
-        },
+        headerStyle:
+          colOptions?.artwork !== false
+            ? {
+                gridColumn: '2 / span 2',
+              }
+            : {},
         isAsc: sortKey === 'title' && orderKey === 'asc',
         isDesc: sortKey === 'title' && orderKey === 'desc',
         visible: true,

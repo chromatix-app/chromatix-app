@@ -170,6 +170,7 @@ const sessionState = {
   colArtistAlbumsLastPlayed: false,
   colArtistAlbumsUserRating: true,
 
+  colArtistTracksArtwork: true,
   colArtistTracksArtist: false,
   colArtistTracksAlbum: true,
   colArtistTracksReleaseDate: true,
@@ -199,6 +200,7 @@ const sessionState = {
   colPlaylistsLastPlayed: false,
   colPlaylistsUserRating: true,
 
+  colPlaylistArtwork: true,
   colPlaylistArtist: true,
   colPlaylistAlbum: true,
   colPlaylistCodec: false,
