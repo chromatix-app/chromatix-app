@@ -11,6 +11,7 @@ type Entry = {
   sortOrder?: number;
   totalTracks?: number;
   trackNumber?: number;
+  discNumber?: number;
   userRating?: number;
   addedAt?: string;
   lastPlayed?: string;
@@ -38,6 +39,9 @@ const sortList = (entries: Entry[], options: string, direction: 'asc' | 'desc' =
   const tertiarySortKey = optionsArray[4] || forcedSortKeys[primarySortKey]?.key || 'title';
   let tertiaryDirection: 'asc' | 'desc' = (optionsArray[5] as 'asc' | 'desc') || 'asc';
 
+  const quaternarySortKey = optionsArray[6] || forcedSortKeys[primarySortKey]?.key || 'title';
+  let quaternaryDirection: 'asc' | 'desc' = (optionsArray[7] as 'asc' | 'desc') || 'asc';
+
   // if the overall sort is reversed, reverse the sort keys (but ignore our forced sort keys)
   // (this is essentially used to keep folders on top of tracks when viewing a folder)
   if (direction === 'desc') {
@@ -50,6 +54,11 @@ const sortList = (entries: Entry[], options: string, direction: 'asc' | 'desc' =
     tertiaryDirection = forcedSortKeys[primarySortKey]?.direction
       ? forcedSortKeys[primarySortKey].direction
       : tertiaryDirection === 'asc'
+        ? 'desc'
+        : 'asc';
+    quaternaryDirection = forcedSortKeys[primarySortKey]?.direction
+      ? forcedSortKeys[primarySortKey].direction
+      : quaternaryDirection === 'asc'
         ? 'desc'
         : 'asc';
   }
@@ -65,7 +74,9 @@ const sortList = (entries: Entry[], options: string, direction: 'asc' | 'desc' =
     secondarySortKey,
     secondaryDirection,
     tertiarySortKey,
-    tertiaryDirection
+    tertiaryDirection,
+    quaternarySortKey,
+    quaternaryDirection
   );
 };
 
@@ -76,7 +87,9 @@ const doSorting = (
   secondarySortKey: string = 'title',
   secondaryDirection: 'asc' | 'desc' = 'asc',
   tertiarySortKey: string = 'title',
-  tertiaryDirection: 'asc' | 'desc' = 'asc'
+  tertiaryDirection: 'asc' | 'desc' = 'asc',
+  quaternarySortKey: string = 'title',
+  quaternaryDirection: 'asc' | 'desc' = 'asc'
 ): Entry[] => {
   primarySortKey = sortFunctions[primarySortKey] ? primarySortKey : 'title';
   secondarySortKey = sortFunctions[secondarySortKey] ? secondarySortKey : 'title';
@@ -92,6 +105,10 @@ const doSorting = (
       const secondaryComparison = secondaryDirectionFactor * sortFunctions[secondarySortKey](a, b);
       if (secondaryComparison === 0 && tertiarySortKey) {
         const tertiaryComparison = tertiaryDirectionFactor * sortFunctions[tertiarySortKey](a, b);
+        if (tertiaryComparison === 0 && quaternarySortKey) {
+          const quaternaryComparison = tertiaryDirectionFactor * sortFunctions[quaternarySortKey](a, b);
+          return quaternaryComparison;
+        }
         return tertiaryComparison;
       }
       return secondaryComparison;
@@ -126,6 +143,7 @@ const sortFunctions: Record<string, SortFunction> = {
   sortOrder: (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0),
   totalTracks: (a, b) => (a.totalTracks ?? 0) - (b.totalTracks ?? 0),
   trackNumber: (a, b) => (a.trackNumber ?? 0) - (b.trackNumber ?? 0),
+  discNumber: (a, b) => (a.discNumber ?? 0) - (b.discNumber ?? 0),
   userRating: (a, b) => (a.userRating ?? 0) - (b.userRating ?? 0),
 
   // Dates

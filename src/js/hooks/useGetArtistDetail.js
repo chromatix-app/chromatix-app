@@ -150,9 +150,9 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     // Modify sort string for specific cases
     let sortAppend = '';
     if (['album', 'releaseDate'].includes(actualSortArtistTracks)) {
-      sortAppend = '-asc-album-asc-trackNumber-asc';
+      sortAppend = '-asc-album-asc-discNumber-asc-trackNumber-asc';
       if (actualOrderArtistTracks === 'desc') {
-        sortAppend = sortAppend.replace('-trackNumber-asc', '-trackNumber-desc');
+        sortAppend = sortAppend.replace('-discNumber-asc-trackNumber-asc', '-discNumber-desc-trackNumber-desc');
       }
     }
     // Add originalIndex to each entry
