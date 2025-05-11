@@ -139,6 +139,7 @@ const ArtistDetail = () => {
             <>
               {sortedAllReleases && sortedAllReleases.length > 0 && (
                 <>
+                  <TitleSection title="All Releases" />
                   <ListCards variant="albums" entries={sortedAllReleases} showRatings={gridOptions.userRating} />
                 </>
               )}
@@ -415,11 +416,11 @@ const Title = ({
                 //   variant: 'sectionHeading',
                 //   label: 'Columns',
                 // },
-                // {
-                //   label: 'Artwork',
-                //   attr: 'colArtistTracksArtwork',
-                //   checked: colOptions.artwork,
-                // },
+                {
+                  label: 'Artwork',
+                  attr: 'colArtistTracksArtwork',
+                  checked: colOptions.artwork,
+                },
                 {
                   label: 'Title',
                   disabled: true,

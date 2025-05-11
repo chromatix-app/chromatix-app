@@ -124,4 +124,8 @@
   &Inactive {
     opacity: var(--opacity-02);
   }
+
+  [data-disabled] & {
+    opacity: var(--opacity-06);
+  }
 }

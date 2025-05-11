@@ -149,6 +149,8 @@ const ListTableTracks = ({
     colOptions
   );
 
+  const noArtworkVisible = tableVariant === 'albumTracks' || colOptions?.artwork === false;
+
   const playTrack = useCallback(
     (trackVariant, trackIndex, restart) => {
       if (restart) {
@@ -235,7 +237,11 @@ const ListTableTracks = ({
         }, []);
 
     return (
-      <div className={clsx(style.wrap, style['wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1)], {})}>
+      <div
+        className={clsx(style.wrap, style['wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1)], {
+          [style.wrapNoArtwork]: noArtworkVisible,
+        })}
+      >
         <TableBodyComponent
           entries={entriesWithDiscs}
           titleBlock={children}
@@ -243,6 +249,7 @@ const ListTableTracks = ({
           tableVariant={tableVariant}
           tableOptions={tableOptions}
           gridTemplateColumns={gridTemplateColumns}
+          noArtworkVisible={noArtworkVisible}
           // disc related props
           discCount={discCount}
           showDiscNumbers={showDiscNumbers}
@@ -416,7 +423,7 @@ const discHeightFirst = 39;
 const discHeightGeneral = 68;
 const rowHeightDefault = 50;
 const rowHeightSmall = 39;
-const fixedElementCount = 1;
+const fixedElementCount = 1; // 1 for the header
 
 // State
 let innerRef;
@@ -428,6 +435,7 @@ const TableBodyVirtual = ({
   tableVariant,
   tableOptions,
   gridTemplateColumns,
+  noArtworkVisible,
   // disc related props
   discCount,
   showDiscNumbers,
@@ -448,27 +456,32 @@ const TableBodyVirtual = ({
   // Hacky workaround to force a re-render if content breakpoint changes
   const contentBreakpoint = useSelector(({ appModel }) => appModel.contentBreakpoint);
 
-  // Hacky workaround to force a re-render if disc numbers are shown and the order changes
-  const extraRows = showDiscNumbers && orderKey === 'desc' ? 1 : 0;
+  // Hacky workaround to force a re-render if certain props change
+  const extraRows = [showDiscNumbers ? 1 : 0, noArtworkVisible ? 1 : 0, orderKey === 'desc' ? 1 : 0].reduce(
+    (a, b) => a + b,
+    0
+  );
 
   // Store which actual row height to use
-  const rowHeightActual = tableVariant === 'albumTracks' ? rowHeightSmall : rowHeightDefault;
+  const rowHeightActual = noArtworkVisible ? rowHeightSmall : rowHeightDefault;
 
   // Helper to determine row heights
   const getItemSize = useCallback(
     (index) => {
-      const isGroupRowFirst = entries[index - fixedElementCount]?.kind === 'group' && index - fixedElementCount === 0;
+      const currentEntry = entries[index - fixedElementCount];
 
-      const isGroupRowGeneral = entries[index - fixedElementCount]?.kind === 'group' && !isGroupRowFirst;
+      const isGroupRowFirst = currentEntry?.kind === 'group' && index - fixedElementCount === 0;
+
+      const isGroupRowGeneral = currentEntry?.kind === 'group' && !isGroupRowFirst;
 
       const isDiscRowFirst =
-        entries[index - fixedElementCount]?.kind === 'disc' &&
-        ((orderKey !== 'desc' && entries[index - fixedElementCount]?.discNumber === 1) ||
-          (orderKey === 'desc' && entries[index - fixedElementCount]?.discNumber === discCount));
+        currentEntry?.kind === 'disc' &&
+        ((orderKey !== 'desc' && currentEntry?.discNumber === 1) ||
+          (orderKey === 'desc' && currentEntry?.discNumber === discCount));
 
-      const isDiscRowGeneral = entries[index - fixedElementCount]?.kind === 'disc' && !isDiscRowFirst;
+      const isDiscRowGeneral = currentEntry?.kind === 'disc' && !isDiscRowFirst;
 
-      const isExtraRow = orderKey === 'desc' && index === entries.length + fixedElementCount;
+      const isExtraRow = index > fixedElementCount - 1 && !currentEntry;
 
       if (index === 0) {
         return tableHeadHeight;

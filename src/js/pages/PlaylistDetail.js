@@ -34,8 +34,6 @@ const PlaylistDetail = () => {
     playlistId,
   });
 
-  console.log(playlistSortString);
-
   const doPlay = (isShuffle) => {
     dispatch.playerModel.playerLoadPlaylist({
       playlistId,
@@ -148,11 +146,11 @@ const Title = ({
           iconStrokeWidth={1.2}
           setter={setColumnVisibility}
           entries={[
-            // {
-            //   label: 'Artwork',
-            //   attr: 'colPlaylistArtwork',
-            //   checked: colOptions.artwork,
-            // },
+            {
+              label: 'Artwork',
+              attr: 'colPlaylistArtwork',
+              checked: colOptions.artwork,
+            },
             {
               label: 'Title',
               disabled: true,
