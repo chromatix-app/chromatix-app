@@ -415,11 +415,11 @@ const Title = ({
                 //   variant: 'sectionHeading',
                 //   label: 'Columns',
                 // },
-                {
-                  label: 'Artwork',
-                  attr: 'colArtistTracksArtwork',
-                  checked: colOptions.artwork,
-                },
+                // {
+                //   label: 'Artwork',
+                //   attr: 'colArtistTracksArtwork',
+                //   checked: colOptions.artwork,
+                // },
                 {
                   label: 'Title',
                   disabled: true,
