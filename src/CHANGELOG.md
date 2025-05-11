@@ -1,3 +1,13 @@
+<a name="0.41.0"></a>
+# 0.41.0 (2025-05-11)
+Features:
+- Added track view to artist pages, for viewing and playing all tracks by an artist.
+- Redesigned filter dropdowns for clarity and consistency.
+- Minor tweaks to the queue.
+- Minor tweaks and fixes throughout.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.40.0"></a>
 # 0.40.0 (2025-05-08)
 Features:
