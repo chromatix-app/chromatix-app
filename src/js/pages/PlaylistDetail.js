@@ -164,7 +164,7 @@ const Title = ({
               checked: colOptions.album,
             },
             {
-              label: 'Audio Codec',
+              label: 'Audio codec',
               attr: 'colPlaylistCodec',
               checked: colOptions.codec,
             },

@@ -115,6 +115,7 @@ const ArtistDetail = () => {
         />
       )}
       {isLoading1 && <Loading forceVisible inline showOffline />}
+
       {isGridView && (
         <>
           {artistAlbumsGroupByType && (
@@ -151,6 +152,7 @@ const ArtistDetail = () => {
           )}
         </>
       )}
+
       {isListView && (
         <ListTable
           variant="artistAlbums"
@@ -186,6 +188,7 @@ const ArtistDetail = () => {
           />
         </ListTable>
       )}
+
       {isTrackView && (
         <ListTable
           variant="artistTracks"

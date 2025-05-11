@@ -238,7 +238,7 @@ const Title = ({
                   checked: colOptions.addedAt,
                 },
                 {
-                  label: 'Last Played',
+                  label: 'Last played',
                   attr: 'colCollectionAlbumsLastPlayed',
                   checked: colOptions.lastPlayed,
                 },
