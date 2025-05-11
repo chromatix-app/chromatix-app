@@ -11,6 +11,7 @@ type Entry = {
   sortOrder?: number;
   totalTracks?: number;
   trackNumber?: number;
+  discNumber?: number;
   userRating?: number;
   addedAt?: string;
   lastPlayed?: string;
@@ -19,7 +20,7 @@ type Entry = {
 
 type SortFunction = (a: Entry, b: Entry) => number;
 
-const forcedSecondarySortKeys: { [key: string]: { key: string; direction: 'asc' | 'desc' } } = {
+const forcedSortKeys: { [key: string]: { key: string; direction: 'asc' | 'desc' } } = {
   kind: {
     key: 'sortOrder',
     direction: 'asc',
@@ -32,21 +33,51 @@ const sortList = (entries: Entry[], options: string, direction: 'asc' | 'desc' =
   const primarySortKey = optionsArray[0];
   let primaryDirection: 'asc' | 'desc' = (optionsArray[1] as 'asc' | 'desc') || 'asc';
 
-  const secondarySortKey = optionsArray[2] || forcedSecondarySortKeys[primarySortKey]?.key || 'title';
+  const secondarySortKey = optionsArray[2] || forcedSortKeys[primarySortKey]?.key || 'title';
   let secondaryDirection: 'asc' | 'desc' = (optionsArray[3] as 'asc' | 'desc') || 'asc';
 
+  const tertiarySortKey = optionsArray[4] || forcedSortKeys[primarySortKey]?.key || 'title';
+  let tertiaryDirection: 'asc' | 'desc' = (optionsArray[5] as 'asc' | 'desc') || 'asc';
+
+  const quaternarySortKey = optionsArray[6] || forcedSortKeys[primarySortKey]?.key || 'title';
+  let quaternaryDirection: 'asc' | 'desc' = (optionsArray[7] as 'asc' | 'desc') || 'asc';
+
+  // if the overall sort is reversed, reverse the sort keys (but ignore our forced sort keys)
+  // (this is essentially used to keep folders on top of tracks when viewing a folder)
   if (direction === 'desc') {
     primaryDirection = primaryDirection === 'asc' ? 'desc' : 'asc';
-    secondaryDirection = forcedSecondarySortKeys[primarySortKey]?.direction
-      ? forcedSecondarySortKeys[primarySortKey].direction
+    secondaryDirection = forcedSortKeys[primarySortKey]?.direction
+      ? forcedSortKeys[primarySortKey].direction
       : secondaryDirection === 'asc'
+        ? 'desc'
+        : 'asc';
+    tertiaryDirection = forcedSortKeys[primarySortKey]?.direction
+      ? forcedSortKeys[primarySortKey].direction
+      : tertiaryDirection === 'asc'
+        ? 'desc'
+        : 'asc';
+    quaternaryDirection = forcedSortKeys[primarySortKey]?.direction
+      ? forcedSortKeys[primarySortKey].direction
+      : quaternaryDirection === 'asc'
         ? 'desc'
         : 'asc';
   }
 
+  // console.log(primarySortKey, secondarySortKey, tertiarySortKey);
+  // console.log(direction, primaryDirection, secondaryDirection, tertiaryDirection);
   // console.log(direction, primarySortKey, primaryDirection, secondarySortKey, secondaryDirection);
 
-  return doSorting(entries, primarySortKey, primaryDirection, secondarySortKey, secondaryDirection);
+  return doSorting(
+    entries,
+    primarySortKey,
+    primaryDirection,
+    secondarySortKey,
+    secondaryDirection,
+    tertiarySortKey,
+    tertiaryDirection,
+    quaternarySortKey,
+    quaternaryDirection
+  );
 };
 
 const doSorting = (
@@ -54,18 +85,33 @@ const doSorting = (
   primarySortKey: string,
   primaryDirection: 'asc' | 'desc' = 'asc',
   secondarySortKey: string = 'title',
-  secondaryDirection: 'asc' | 'desc' = 'asc'
+  secondaryDirection: 'asc' | 'desc' = 'asc',
+  tertiarySortKey: string = 'title',
+  tertiaryDirection: 'asc' | 'desc' = 'asc',
+  quaternarySortKey: string = 'title',
+  quaternaryDirection: 'asc' | 'desc' = 'asc'
 ): Entry[] => {
   primarySortKey = sortFunctions[primarySortKey] ? primarySortKey : 'title';
   secondarySortKey = sortFunctions[secondarySortKey] ? secondarySortKey : 'title';
+  tertiarySortKey = sortFunctions[tertiarySortKey] ? tertiarySortKey : 'title';
 
   const primaryDirectionFactor = primaryDirection === 'asc' ? 1 : -1;
   const secondaryDirectionFactor = secondaryDirection === 'asc' ? 1 : -1;
+  const tertiaryDirectionFactor = tertiaryDirection === 'asc' ? 1 : -1;
 
   return [...entries].sort((a, b) => {
     const primaryComparison = primaryDirectionFactor * sortFunctions[primarySortKey](a, b);
     if (primaryComparison === 0 && secondarySortKey) {
-      return secondaryDirectionFactor * sortFunctions[secondarySortKey](a, b);
+      const secondaryComparison = secondaryDirectionFactor * sortFunctions[secondarySortKey](a, b);
+      if (secondaryComparison === 0 && tertiarySortKey) {
+        const tertiaryComparison = tertiaryDirectionFactor * sortFunctions[tertiarySortKey](a, b);
+        if (tertiaryComparison === 0 && quaternarySortKey) {
+          const quaternaryComparison = tertiaryDirectionFactor * sortFunctions[quaternarySortKey](a, b);
+          return quaternaryComparison;
+        }
+        return tertiaryComparison;
+      }
+      return secondaryComparison;
     }
     return primaryComparison;
   });
@@ -97,6 +143,7 @@ const sortFunctions: Record<string, SortFunction> = {
   sortOrder: (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0),
   totalTracks: (a, b) => (a.totalTracks ?? 0) - (b.totalTracks ?? 0),
   trackNumber: (a, b) => (a.trackNumber ?? 0) - (b.trackNumber ?? 0),
+  discNumber: (a, b) => (a.discNumber ?? 0) - (b.discNumber ?? 0),
   userRating: (a, b) => (a.userRating ?? 0) - (b.userRating ?? 0),
 
   // Dates

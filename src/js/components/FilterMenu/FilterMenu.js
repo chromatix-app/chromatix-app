@@ -14,6 +14,8 @@ import style from './FilterMenu.module.scss';
 // ======================================================================
 
 export const FilterMenu = ({ variant, label, icon = 'EllipsisCircleIcon', iconStrokeWidth = 1, setter, entries }) => {
+  const hasGroups = entries.find((entry) => entry.variant === 'sectionHeading');
+
   return (
     <div className={clsx(style.wrap, style['wrap' + variant])}>
       <RadixMenu.Root
@@ -28,7 +30,13 @@ export const FilterMenu = ({ variant, label, icon = 'EllipsisCircleIcon', iconSt
         </RadixMenu.Trigger>
 
         <RadixMenu.Portal>
-          <RadixMenu.Content side="bottom" align="start" className={clsx(style.content, style['content' + variant])}>
+          <RadixMenu.Content
+            side="bottom"
+            align="start"
+            className={clsx(style.content, style['content' + variant], {
+              [style.contentWithGroups]: hasGroups,
+            })}
+          >
             {entries.map((entry, index) => (
               <MenuEntry key={index} setter={setter} totalEntries={entries?.length} {...entry} />
             ))}
@@ -39,7 +47,29 @@ export const FilterMenu = ({ variant, label, icon = 'EllipsisCircleIcon', iconSt
   );
 };
 
-const MenuEntry = ({ label, setter, totalEntries, ...entry }) => {
+const MenuEntry = ({ variant = 'checkbox', ...props }) => {
+  if (variant === 'sectionHeading') {
+    return <SectionHeadingEntry {...props} />;
+  } else if (variant === 'divider') {
+    return <DividerEntry {...props} />;
+  } else if (variant === 'checkbox') {
+    return <CheckboxEntry {...props} />;
+  }
+};
+
+const SectionHeadingEntry = ({ label }) => {
+  return (
+    <RadixMenu.Label className={style.sectionHeading}>
+      <span>{label}</span>
+    </RadixMenu.Label>
+  );
+};
+
+const DividerEntry = ({ ...entry }) => {
+  return <RadixMenu.Separator className={style.divider} />;
+};
+
+const CheckboxEntry = ({ label, setter, totalEntries, ...entry }) => {
   const handleCheckedChange = (newValue) => {
     setter(entry.attr, newValue);
   };
@@ -53,17 +83,25 @@ const MenuEntry = ({ label, setter, totalEntries, ...entry }) => {
 
   return (
     <RadixMenu.CheckboxItem
-      className={style.item}
+      className={style.checkboxItem}
       onCheckedChange={handleCheckedChange}
       onSelect={handleSelect}
       {...entry}
     >
-      <span>{label}</span>
-      <RadixMenu.ItemIndicator className={style.indicator}>
-        <span className={style.indicatorIcon}>
-          <Icon icon="CheckIcon" cover stroke />
+      <RadixMenu.ItemIndicator>
+        <span className={style.checkboxIcon}>
+          <Icon icon="CheckSquareFilledIcon" cover />
         </span>
       </RadixMenu.ItemIndicator>
+
+      {/* Render unchecked icon when item is not checked */}
+      {!entry.checked && (
+        <span className={clsx(style.checkboxIcon, style.checkboxIconInactive)}>
+          <Icon icon="CheckSquareEmptyIcon" cover stroke />
+        </span>
+      )}
+
+      <span>{label}</span>
     </RadixMenu.CheckboxItem>
   );
 };

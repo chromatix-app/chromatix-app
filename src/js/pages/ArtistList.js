@@ -180,7 +180,7 @@ const Title = ({
                 checked: colOptions.addedAt,
               },
               {
-                label: 'Last Played',
+                label: 'Last played',
                 attr: 'colArtistsLastPlayed',
                 checked: colOptions.lastPlayed,
               },

@@ -1,5 +1,5 @@
-@use "../_config/mixins";
-@use "../_config/vars";
+@use '../_config/mixins';
+@use '../_config/vars';
 
 // ======================================================================
 // FONTS
@@ -23,7 +23,14 @@ html.logged-in body {
 }
 
 html {
-  font-family: 'GeographWeb', -apple-system, 'SF Pro', 'Inter', Helvetica, Arial, sans-serif;
+  font-family:
+    'GeographWeb',
+    -apple-system,
+    'SF Pro',
+    'Inter',
+    Helvetica,
+    Arial,
+    sans-serif;
   font-size: 62.5%;
 
   &.logged-in {

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { sortList } from 'js/utils';
@@ -17,12 +17,22 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const artistRating = artistInfo?.userRating;
 
   const gridArtistAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.gridArtistAlbumsUserRating);
+  const artistAlbumsGroupByType = useSelector(({ sessionModel }) => sessionModel.artistAlbumsGroupByType);
 
   const colArtistAlbumsGenre = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsGenre);
   const colArtistAlbumsReleaseDate = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsReleaseDate);
   const colArtistAlbumsAddedAt = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsAddedAt);
   const colArtistAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsLastPlayed);
   const colArtistAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsUserRating);
+
+  const colArtistTracksArtwork = useSelector(({ sessionModel }) => sessionModel.colArtistTracksArtwork);
+  const colArtistTracksArtist = useSelector(({ sessionModel }) => sessionModel.colArtistTracksArtist);
+  const colArtistTracksAlbum = useSelector(({ sessionModel }) => sessionModel.colArtistTracksAlbum);
+  const colArtistTracksReleaseDate = useSelector(({ sessionModel }) => sessionModel.colArtistTracksReleaseDate);
+  const colArtistTracksCodec = useSelector(({ sessionModel }) => sessionModel.colArtistTracksCodec);
+  const colArtistTracksBitrate = useSelector(({ sessionModel }) => sessionModel.colArtistTracksBitrate);
+  const colArtistTracksDuration = useSelector(({ sessionModel }) => sessionModel.colArtistTracksDuration);
+  const colArtistTracksUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistTracksUserRating);
 
   const allArtistAlbums = useSelector(({ appModel }) => appModel.allArtistAlbums);
   const artistAlbums = allArtistAlbums[libraryId + '-' + artistId];
@@ -33,14 +43,21 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const allArtistCompilationAlbums = useSelector(({ appModel }) => appModel.allArtistCompilationAlbums);
   const artistCompilations = allArtistCompilationAlbums[libraryId + '-' + artistId];
 
+  const allArtistTracks = useSelector(({ appModel }) => appModel.allArtistTracks);
+  const artistTracks = allArtistTracks[libraryId + '-' + artistId];
+
   const artistAlbumTotal = artistAlbums?.length || 0;
   const artistRelatedTotal = artistRelated?.reduce((acc, entry) => acc + entry.related.length, 0) || 0;
   const artistCompilationsTotal = artistCompilations?.length || 0;
   const artistReleasesTotal = artistAlbumTotal + artistRelatedTotal + artistCompilationsTotal;
+  const artistTracksTotal = artistTracks?.length || 0;
 
   const viewArtistAlbums = useSelector(({ sessionModel }) => sessionModel.viewArtistAlbums);
   const sortArtistAlbums = useSelector(({ sessionModel }) => sessionModel.sortArtistAlbums);
   const orderArtistAlbums = useSelector(({ sessionModel }) => sessionModel.orderArtistAlbums);
+
+  const sortArtistTracks = useSelector(({ sessionModel }) => sessionModel.sortArtistTracks);
+  const orderArtistTracks = useSelector(({ sessionModel }) => sessionModel.orderArtistTracks);
 
   // prevent sorting by a hidden field
   const allowedSort = {
@@ -54,6 +71,19 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const actualSortArtistAlbums = allowedSort[sortArtistAlbums] ? sortArtistAlbums : 'title';
   const actualOrderArtistAlbums = allowedSort[sortArtistAlbums] ? orderArtistAlbums : 'asc';
 
+  const allowedTrackSort = {
+    title: true,
+    artist: colArtistTracksArtist,
+    album: colArtistTracksAlbum,
+    releaseDate: colArtistTracksReleaseDate,
+    codec: colArtistTracksCodec,
+    bitrate: colArtistTracksBitrate,
+    userRating: colArtistTracksUserRating,
+    duration: colArtistTracksDuration,
+  };
+  const actualSortArtistTracks = allowedTrackSort[sortArtistTracks] ? sortArtistTracks : 'title';
+  const actualOrderArtistTracks = allowedTrackSort[sortArtistTracks] ? orderArtistTracks : 'asc';
+
   // Sort albums
   const sortedArtistAlbums = artistAlbums
     ? sortList(artistAlbums, actualSortArtistAlbums, actualOrderArtistAlbums)
@@ -66,18 +96,19 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
       related: sortedEntry,
     };
   });
-  const sortedArtistCompilations = artistCompilations
+  const sortedArtistAppearances = artistCompilations
     ? sortList(artistCompilations, actualSortArtistAlbums, actualOrderArtistAlbums)
     : null;
 
-  // Combine all albums into a single array
-  const allAlbums = [];
+  // Combine all releases into a single array
+  let sortedAllReleases = [];
   if (sortedArtistAlbums) {
-    allAlbums.push(
+    sortedAllReleases.push(
       ...sortedArtistAlbums.map((album) => {
         return {
           ...album,
           albumGroup: 'Albums',
+          releaseGroup: '',
         };
       })
     );
@@ -87,23 +118,57 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
       const related = sortedArtistRelated[i];
       for (let j = 0; j < related.related.length; j++) {
         const album = related.related[j];
-        allAlbums.push({
+        sortedAllReleases.push({
           ...album,
           albumGroup: related.title,
+          releaseGroup: '',
         });
       }
     }
   }
-  if (sortedArtistCompilations) {
-    allAlbums.push(
-      ...sortedArtistCompilations.map((album) => {
+  if (!artistAlbumsGroupByType) {
+    sortedAllReleases = sortList(sortedAllReleases, actualSortArtistAlbums, actualOrderArtistAlbums);
+  }
+
+  // Combine all releases and appearances into a single array
+  let sortedAllReleasesAndAppearances = [...sortedAllReleases];
+  if (sortedArtistAppearances) {
+    sortedAllReleasesAndAppearances.push(
+      ...sortedArtistAppearances.map((album) => {
         return {
           ...album,
           albumGroup: 'Appears On',
+          releaseGroup: 'Appears On',
         };
       })
     );
   }
+
+  // Sort tracks
+  const sortedArtistTracks = useMemo(() => {
+    if (!artistTracks) return null;
+    // Modify sort string for specific cases
+    let sortAppend = '';
+    if (['album', 'releaseDate'].includes(actualSortArtistTracks)) {
+      sortAppend = '-asc-album-asc-discNumber-asc-trackNumber-asc';
+      if (actualOrderArtistTracks === 'desc') {
+        sortAppend = sortAppend.replace('-discNumber-asc-trackNumber-asc', '-discNumber-desc-trackNumber-desc');
+      }
+    }
+    // Add originalIndex to each entry
+    const entriesWithOriginalIndex = artistTracks?.map((entry, index) => ({
+      ...entry,
+      originalIndex: index,
+    }));
+    // Sort entries
+    return artistTracks
+      ? sortList(entriesWithOriginalIndex, actualSortArtistTracks + sortAppend, actualOrderArtistTracks)
+      : null;
+  }, [artistTracks, actualSortArtistTracks, actualOrderArtistTracks]);
+
+  const sortedArtistTracksOrder = useMemo(() => {
+    return sortedArtistTracks?.map((entry) => entry.originalIndex);
+  }, [sortedArtistTracks]);
 
   const setViewArtistAlbums = (viewArtistAlbums) => {
     dispatch.sessionModel.setSessionState({
@@ -140,7 +205,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     plex.getAllArtistRelated(libraryId, artistId);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [artistId, libraryId]);
+  }, [libraryId, artistId]);
 
   // Fallback in case artist data is not included in the allArtists array
   useEffect(() => {
@@ -152,10 +217,17 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
 
   // Get the artist compilation albums
   useEffect(() => {
-    if (artistName && artistId && libraryId) {
+    if (libraryId && artistId && artistName) {
       plex.getAllArtistAppearanceAlbums(libraryId, artistId, artistName);
     }
-  }, [artistName, artistId, libraryId]);
+  }, [libraryId, artistId, artistName]);
+
+  // Get the artist tracks
+  useEffect(() => {
+    if (viewArtistAlbums === 'track' && libraryId && artistId && artistName) {
+      plex.getAllArtistTracks(libraryId, artistId, artistName);
+    }
+  }, [libraryId, artistId, artistName, viewArtistAlbums]);
 
   return {
     artistInfo,
@@ -165,10 +237,15 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     artistGenre,
     artistRating,
 
-    artistAlbums: sortedArtistAlbums,
-    artistRelated: sortedArtistRelated,
-    artistCompilations: sortedArtistCompilations,
-    sortedArtistAlbums: allAlbums,
+    sortedArtistAlbums,
+    sortedArtistRelated,
+    sortedArtistAppearances,
+    sortedAllReleases,
+    sortedAllReleasesAndAppearances,
+    sortedArtistTracks: viewArtistAlbums === 'track' ? sortedArtistTracks : null,
+    sortedArtistTracksOrder: viewArtistAlbums === 'track' ? sortedArtistTracksOrder : null,
+
+    artistAlbumsGroupByType,
 
     gridOptions: {
       userRating: gridArtistAlbumsUserRating,
@@ -182,13 +259,28 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
       userRating: colArtistAlbumsUserRating,
     },
 
+    colTrackOptions: {
+      artwork: colArtistTracksArtwork,
+      artist: colArtistTracksArtist,
+      album: colArtistTracksAlbum,
+      releaseDate: colArtistTracksReleaseDate,
+      codec: colArtistTracksCodec,
+      bitrate: colArtistTracksBitrate,
+      duration: colArtistTracksDuration,
+      userRating: colArtistTracksUserRating,
+    },
+
     artistAlbumTotal,
     artistRelatedTotal,
     artistReleasesTotal,
+    artistTracksTotal,
 
     viewArtistAlbums,
     sortArtistAlbums: actualSortArtistAlbums,
     orderArtistAlbums: actualOrderArtistAlbums,
+
+    sortArtistTracks: actualSortArtistTracks,
+    orderArtistTracks: actualOrderArtistTracks,
 
     setViewArtistAlbums,
     setSortArtistAlbums,

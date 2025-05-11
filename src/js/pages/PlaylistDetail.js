@@ -147,6 +147,11 @@ const Title = ({
           setter={setColumnVisibility}
           entries={[
             {
+              label: 'Artwork',
+              attr: 'colPlaylistArtwork',
+              checked: colOptions.artwork,
+            },
+            {
               label: 'Title',
               disabled: true,
               checked: true,
@@ -162,7 +167,7 @@ const Title = ({
               checked: colOptions.album,
             },
             {
-              label: 'Audio Codec',
+              label: 'Audio codec',
               attr: 'colPlaylistCodec',
               checked: colOptions.codec,
             },

@@ -173,7 +173,7 @@ const Title = ({
               checked: colOptions.artist,
             },
             {
-              label: 'Audio Codec',
+              label: 'Audio codec',
               attr: 'colAlbumCodec',
               checked: colOptions.codec,
             },

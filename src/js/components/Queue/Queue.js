@@ -33,34 +33,44 @@ const Queue = () => {
   const queueExpandArtwork = useSelector(({ sessionModel }) => sessionModel.queueExpandArtwork);
 
   const {
-    // playingTrackList,
     playingTrackIndex,
     playingTrackKeys,
-    playingRepeatAll,
+    playingRepeatAny,
     playingShuffle,
 
-    // upcomingTrackKeys,
-    upcomingEntries,
-
-    repeatEntries,
-    // totalTracksRemaining,
+    queueCurrent,
+    queueUpcoming,
+    queueRepeat,
   } = useGetQueuedTracks();
 
-  const currentTrack = { rowType: 'playing', playIndex: playingTrackIndex, ...upcomingEntries[0] };
-  const upcomingTracks = upcomingEntries
-    .filter((entry, index) => index > 0)
-    .map((entry, index) => {
-      return { rowType: 'upcoming', playIndex: index + playingTrackIndex + 1, ...entry };
-    });
-  const repeatTracks = repeatEntries.map((entry, index) => {
+  // Build an array of queue entries to display
+
+  const currentTrack = { rowType: 'playing', playIndex: playingTrackIndex, ...queueCurrent };
+  const upcomingTracks = queueUpcoming.map((entry, index) => {
+    return { rowType: 'upcoming', playIndex: index + playingTrackIndex + 1, ...entry };
+  });
+  const repeatTracks = queueRepeat.map((entry, index) => {
     return { rowType: 'repeat', playIndex: index, ...entry };
   });
-  // const upcomingLabel = upcomingTracks.length > 0 || repeatTracks.length > 0 ? [{ rowType: 'upcomingLabel' }] : [];
-  const upcomingLabel = upcomingTracks.length > 0 ? [{ rowType: 'upcomingLabel' }] : [];
-  const repeatLabel = playingRepeatAll ? [{ rowType: 'repeatLabel' }] : [];
 
-  const allEntries = [currentTrack, ...upcomingLabel, ...upcomingTracks, ...repeatLabel, ...repeatTracks];
+  const showUpcomingLabel = queueUpcoming.length > 0;
+  const showRepeatLabel = playingRepeatAny;
+  const showEmptyLabel = queueUpcoming.length < 1 && !playingRepeatAny;
 
+  const upcomingLabel = showUpcomingLabel ? [{ rowType: 'upcomingLabel' }] : [];
+  const repeatLabel = showRepeatLabel ? [{ rowType: 'repeatLabel' }] : [];
+  const emptyLabel = showEmptyLabel ? [{ rowType: 'emptyLabel' }] : [];
+
+  const allEntries = [
+    currentTrack,
+    ...upcomingLabel,
+    ...upcomingTracks,
+    ...repeatLabel,
+    ...repeatTracks,
+    ...emptyLabel,
+  ];
+
+  // Determine if we should use a virtual list or a static list
   const isVirtual = allEntries.length > virtualThreshold;
   const QueueComponent = isVirtual ? QueueVirtual : QueueStatic;
 
@@ -109,7 +119,7 @@ const Queue = () => {
 
 const QueueEmpty = () => {
   return (
-    <div className={style.scrollableOuter}>
+    <div className={style.scrollableInner}>
       <div className={style.label}>No tracks in queue</div>
     </div>
   );
@@ -139,12 +149,17 @@ const QueueStatic = ({ entries, playingShuffle, upcomingTracks, queueExpandArtwo
 
         // Label - Upcoming
         else if (entry.rowType === 'upcomingLabel') {
-          return <LabelUpcoming key={index} playingShuffle={playingShuffle} />;
+          return <LabelEntry key={index} text="Coming up" playingShuffle={playingShuffle} />;
         }
 
         // Label - Repeat
         else if (entry.rowType === 'repeatLabel') {
-          return <LabelRepeat key={index} playingShuffle={playingShuffle && !upcomingTracks} />;
+          return <LabelEntry key={index} text="Repeating" playingShuffle={playingShuffle && !upcomingTracks} />;
+        }
+
+        // Label - Empty
+        else if (entry.rowType === 'emptyLabel') {
+          return <LabelEntry key={index} text="No tracks in queue" />;
         }
 
         // Tracks
@@ -163,8 +178,7 @@ const QueueStatic = ({ entries, playingShuffle, upcomingTracks, queueExpandArtwo
 // Config
 const nowPlayingLargeHeight = 369;
 const nowPlayingSmallHeight = 92;
-const labelUpcomingHeight = 42;
-const labelRepeatHeight = 42; // 52;
+const labelHeight = 42;
 const trackHeight = 50;
 
 const QueueVirtual = ({ entries, playingShuffle, upcomingTracks, queueExpandArtwork, initialOffset, outerRef }) => {
@@ -179,10 +193,8 @@ const QueueVirtual = ({ entries, playingShuffle, upcomingTracks, queueExpandArtw
         return 0;
       } else if (entry.rowType === 'playing') {
         return queueExpandArtwork ? nowPlayingLargeHeight : nowPlayingSmallHeight;
-      } else if (entry.rowType === 'upcomingLabel') {
-        return labelUpcomingHeight;
-      } else if (entry.rowType === 'repeatLabel') {
-        return labelRepeatHeight;
+      } else if (entry.rowType.endsWith('Label')) {
+        return labelHeight;
       } else {
         return trackHeight;
       }
@@ -225,12 +237,24 @@ const QueueVirtual = ({ entries, playingShuffle, upcomingTracks, queueExpandArtw
 
         // Label - Upcoming
         else if (entry.rowType === 'upcomingLabel') {
-          return <LabelUpcoming key={index} playingShuffle={playingShuffle} virtualRow={virtualRow} />;
+          return <LabelEntry key={index} text="Coming up" playingShuffle={playingShuffle} virtualRow={virtualRow} />;
         }
 
         // Label - Repeat
         else if (entry.rowType === 'repeatLabel') {
-          return <LabelRepeat key={index} playingShuffle={playingShuffle && !upcomingTracks} virtualRow={virtualRow} />;
+          return (
+            <LabelEntry
+              key={index}
+              text="Repeating"
+              playingShuffle={playingShuffle && !upcomingTracks}
+              virtualRow={virtualRow}
+            />
+          );
+        }
+
+        // Label - Empty
+        else if (entry.rowType === 'emptyLabel') {
+          return <LabelEntry key={index} text="No tracks in queue" virtualRow={virtualRow} />;
         }
 
         // Tracks
@@ -400,10 +424,10 @@ const TrackEntry = ({ entry, isCurrentlyPlaying = false, virtualRow }) => {
 };
 
 // ======================================================================
-// LABEL - UPCOMING
+// LABEL ENTRY
 // ======================================================================
 
-const LabelUpcoming = ({ playingShuffle, virtualRow }) => {
+const LabelEntry = ({ text, playingShuffle, virtualRow }) => {
   return (
     <div
       className={style.label}
@@ -417,7 +441,7 @@ const LabelUpcoming = ({ playingShuffle, virtualRow }) => {
         }),
       }}
     >
-      Coming up
+      {text}
       {playingShuffle && (
         <span className={style.shuffleLabel}>
           &nbsp;&nbsp;•&nbsp; Shuffle is on{' '}
@@ -434,49 +458,24 @@ const LabelUpcoming = ({ playingShuffle, virtualRow }) => {
 // LABEL - REPEAT
 // ======================================================================
 
-const LabelRepeat = ({ playingShuffle, virtualRow }) => {
-  return (
-    <div
-      className={style.label}
-      style={{
-        ...(virtualRow && {
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          transform: `translateY(${virtualRow.start}px)`,
-        }),
-      }}
-    >
-      Repeating
-      {playingShuffle && (
-        <span className={style.shuffleLabel}>
-          &nbsp;&nbsp;•&nbsp; Shuffle is on{' '}
-          <span className={style.shuffleIcon}>
-            <Icon icon="ShuffleIcon" cover stroke />
-          </span>
-        </span>
-      )}
-    </div>
-  );
-
-  // return (
-  //   <div
-  //     className={style.repeat}
-  //     style={{
-  //       ...(virtualRow && {
-  //         position: 'absolute',
-  //         top: 0,
-  //         left: 0,
-  //         width: '100%',
-  //         transform: `translateY(${virtualRow.start}px)`,
-  //       }),
-  //     }}
-  //   >
-  //     <span>Repeating</span>
-  //   </div>
-  // );
-};
+// const LabelRepeat = (props) => {
+//   return (
+//     <div
+//       className={style.repeat}
+//       style={{
+//         ...(virtualRow && {
+//           position: 'absolute',
+//           top: 0,
+//           left: 0,
+//           width: '100%',
+//           transform: `translateY(${virtualRow.start}px)`,
+//         }),
+//       }}
+//     >
+//       <span>Repeating</span>
+//     </div>
+//   );
+// };
 
 // ======================================================================
 // EXPORT
