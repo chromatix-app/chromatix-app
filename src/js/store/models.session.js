@@ -54,8 +54,9 @@ const sessionState = {
   menuShowArtistStyles: true,
   menuShowAlbumStyles: true,
 
-  optionShowFullTitles_Deprecated: false,
   optionLogPlexPlayback: true,
+  optionSortNumbersFirst: false,
+  optionShowFullTitles_Deprecated: false,
 
   queueIsVisible: false,
   queueExpandArtwork: true,
@@ -229,14 +230,17 @@ const playingState = {
   playingVariant: null,
   playingServerId: null,
   playingLibraryId: null,
+  playingArtistId: null,
   playingAlbumId: null,
   playingPlaylistId: null,
+  playingFolderId: null,
   playingLink: null,
+
   playingOrder: null,
-  playingTrackList: null,
-  playingTrackCount: null,
   playingTrackIndex: null,
   playingTrackKeys: null,
+  playingTrackList: null,
+  playingTrackCount: null,
   playingTrackProgress: 0,
 
   playingRepeatAll: false,
