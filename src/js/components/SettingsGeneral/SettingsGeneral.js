@@ -21,6 +21,10 @@ export const SettingsGeneral = () => {
         <PlexSettings />
       </div>
       <div className={style.group}>
+        <div className={style.title}>Sorting</div>
+        <SortSettings />
+      </div>
+      <div className={style.group}>
         <div className={style.title}>Playback</div>
         <PlaybackSettings />
       </div>
@@ -36,6 +40,141 @@ export const SettingsGeneral = () => {
         <div className={style.title}>User Interface</div>
         <UserInterfaceSettings />
       </div> */}
+    </div>
+  );
+};
+
+//
+// PLEX
+//
+
+const PlexSettings = () => {
+  const dispatch = useDispatch();
+
+  const optionLogPlexPlayback = useSelector(({ sessionModel }) => sessionModel.optionLogPlexPlayback);
+
+  const menuItems = [
+    {
+      key: 'optionLogPlexPlayback',
+      label: 'Log playback events to Plex.',
+      description: 'This is used to tell the Plex server what is currently playing, and to update the play count.',
+      state: optionLogPlexPlayback,
+    },
+  ];
+
+  return (
+    <div className={style.menu}>
+      {menuItems.map(({ key, label, description, state }) => (
+        <div key={key} className={style.menuEntry}>
+          <label>
+            <input
+              type="checkbox"
+              checked={state}
+              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
+            />
+            <div>
+              {label && <div className={style.label}>{label}</div>}
+              {description && <div className={style.description}>{description}</div>}
+            </div>
+          </label>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+//
+// SORTING
+//
+
+const SortSettings = () => {
+  const dispatch = useDispatch();
+
+  const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
+
+  const menuItems = [
+    {
+      key: 'optionSortNumbersFirst',
+      label: 'Sort with numbers on top.',
+      description: 'When sorting alphabetically, put entries that start with a number at the top of the list.',
+      state: optionSortNumbersFirst,
+    },
+  ];
+
+  return (
+    <div className={style.menu}>
+      {menuItems.map(({ key, label, description, state }) => (
+        <div key={key} className={style.menuEntry}>
+          <label>
+            <input
+              type="checkbox"
+              checked={state}
+              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
+            />
+            <div>
+              {label && <div className={style.label}>{label}</div>}
+              {description && <div className={style.description}>{description}</div>}
+            </div>
+          </label>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+//
+// PLAYBACK
+//
+
+const PlaybackSettings = () => {
+  const dispatch = useDispatch();
+
+  const disableRepeatOnceOnTrackChange = useSelector(({ sessionModel }) => sessionModel.disableRepeatOnceOnTrackChange);
+  const disableRepeatOnceOnSourceChange = useSelector(
+    ({ sessionModel }) => sessionModel.disableRepeatOnceOnSourceChange
+  );
+  const revertRepeatOnceToRepeatAll = useSelector(({ sessionModel }) => sessionModel.revertRepeatOnceToRepeatAll);
+
+  const menuItems = [
+    {
+      key: 'disableRepeatOnceOnTrackChange',
+      label: 'Disable "repeat 1" mode when changing tracks.',
+      description: '',
+      state: disableRepeatOnceOnTrackChange,
+    },
+    {
+      key: 'disableRepeatOnceOnSourceChange',
+      label: 'Disable "repeat 1" mode when loading a new album or playlist.',
+      description: '',
+      state: disableRepeatOnceOnSourceChange,
+    },
+    {
+      key: 'revertRepeatOnceToRepeatAll',
+      label: 'When automatically disabling "repeat 1" mode (in the above scenarios) enable "repeat all" mode instead.',
+      description: '',
+      state: revertRepeatOnceToRepeatAll,
+      disabled: !disableRepeatOnceOnTrackChange && !disableRepeatOnceOnSourceChange,
+    },
+  ];
+
+  return (
+    <div className={style.menu}>
+      {menuItems.map(({ key, label, description, state, disabled }) => (
+        <div key={key} className={style.menuEntry}>
+          <label>
+            <input
+              type="checkbox"
+              checked={state}
+              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
+              disabled={disabled}
+            />
+            <div>
+              {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
+              {description && <div className={style.description}>{description}</div>}
+            </div>
+          </label>
+        </div>
+      ))}
     </div>
   );
 };
@@ -316,63 +455,6 @@ const StarRatingSettings = () => {
 };
 
 //
-// PLAYBACK
-//
-
-const PlaybackSettings = () => {
-  const dispatch = useDispatch();
-
-  const disableRepeatOnceOnTrackChange = useSelector(({ sessionModel }) => sessionModel.disableRepeatOnceOnTrackChange);
-  const disableRepeatOnceOnSourceChange = useSelector(
-    ({ sessionModel }) => sessionModel.disableRepeatOnceOnSourceChange
-  );
-  const revertRepeatOnceToRepeatAll = useSelector(({ sessionModel }) => sessionModel.revertRepeatOnceToRepeatAll);
-
-  const menuItems = [
-    {
-      key: 'disableRepeatOnceOnTrackChange',
-      label: 'Disable "repeat 1" mode when changing tracks.',
-      description: '',
-      state: disableRepeatOnceOnTrackChange,
-    },
-    {
-      key: 'disableRepeatOnceOnSourceChange',
-      label: 'Disable "repeat 1" mode when loading a new album or playlist.',
-      description: '',
-      state: disableRepeatOnceOnSourceChange,
-    },
-    {
-      key: 'revertRepeatOnceToRepeatAll',
-      label: 'When automatically disabling "repeat 1" mode (in the above scenarios) enable "repeat all" mode instead.',
-      description: '',
-      state: revertRepeatOnceToRepeatAll,
-      disabled: !disableRepeatOnceOnTrackChange && !disableRepeatOnceOnSourceChange,
-    },
-  ];
-
-  return (
-    <div className={style.menu}>
-      {menuItems.map(({ key, label, description, state, disabled }) => (
-        <div key={key} className={style.menuEntry}>
-          <label>
-            <input
-              type="checkbox"
-              checked={state}
-              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
-              disabled={disabled}
-            />
-            <div>
-              {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
-              {description && <div className={style.description}>{description}</div>}
-            </div>
-          </label>
-        </div>
-      ))}
-    </div>
-  );
-};
-
-//
 // USER INTERFACE
 //
 
@@ -421,45 +503,6 @@ const PlaybackSettings = () => {
 //     </div>
 //   );
 // };
-
-//
-// PLEX
-//
-
-const PlexSettings = () => {
-  const dispatch = useDispatch();
-
-  const optionLogPlexPlayback = useSelector(({ sessionModel }) => sessionModel.optionLogPlexPlayback);
-
-  const menuItems = [
-    {
-      key: 'optionLogPlexPlayback',
-      label: 'Log playback events to Plex.',
-      description: 'This is used to tell the Plex server what is currently playing, and to update the play count.',
-      state: optionLogPlexPlayback,
-    },
-  ];
-
-  return (
-    <div className={style.menu}>
-      {menuItems.map(({ key, label, description, state }) => (
-        <div key={key} className={style.menuEntry}>
-          <label>
-            <input
-              type="checkbox"
-              checked={state}
-              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
-            />
-            <div>
-              {label && <div className={style.label}>{label}</div>}
-              {description && <div className={style.description}>{description}</div>}
-            </div>
-          </label>
-        </div>
-      ))}
-    </div>
-  );
-};
 
 // ======================================================================
 // EXPORT
