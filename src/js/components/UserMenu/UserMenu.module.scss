@@ -180,19 +180,10 @@
   line-height: 16px;
   text-align: left;
 
-  .wrapInline & {
-    max-height: none;
-    margin: 3px 0 0 auto;
+  &Inline {
+    margin: 0 auto 0 20px;
     border-radius: 6px;
-    box-shadow: none;
   }
-}
-
-.separator {
-  height: 1px;
-  margin: 6px 6px;
-  // background: var(--color-border);
-  background: var(--color-opacity-015);
 }
 
 .label {
@@ -205,6 +196,18 @@
   // &:first-child {
   //   padding-top: 10px;
   // }
+
+  :global(.electron-platform-win) & {
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+}
+
+.separator {
+  height: 1px;
+  margin: 6px 6px;
+  // background: var(--color-border);
+  background: var(--color-opacity-015);
 }
 
 .button {

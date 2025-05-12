@@ -9,7 +9,6 @@ import * as RadixMenu from '@radix-ui/react-dropdown-menu';
 import clsx from 'clsx';
 
 import { Icon } from 'js/components';
-// import { appPlatform } from 'js/utils';
 
 import style from './UserMenu.module.scss';
 
@@ -19,8 +18,6 @@ import style from './UserMenu.module.scss';
 
 const UserMenu = ({ variant = 'default' }) => {
   const dispatch = useDispatch();
-
-  // const [showMenu, setShowMenu] = useState(false);
 
   const currentUser = useSelector(({ appModel }) => appModel.currentUser);
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
@@ -33,14 +30,11 @@ const UserMenu = ({ variant = 'default' }) => {
   const hasSelectedLibrary = currentServer && currentLibrary;
   const hasQueueVisible = queueIsVisible && hasSelectedLibrary;
 
-  // const toggleMenu = () => {
-  //   setShowMenu(!showMenu);
-  // };
+  const anchorSide = variant === 'Inline' ? 'right' : 'bottom';
+  const anchorAlign = variant === 'Inline' ? 'start' : 'end';
 
   return (
     <>
-      {/* {showMenu && appPlatform !== 'win' && <div className={style.overlay} onClick={toggleMenu}></div>} */}
-
       <div
         className={clsx(style.wrap, style[`wrap${variant}`], {
           [style.wrapWithoutLibrary]: !hasSelectedLibrary,
@@ -51,10 +45,7 @@ const UserMenu = ({ variant = 'default' }) => {
         <RadixMenu.Root
         // open
         >
-          <RadixMenu.Trigger
-            className={style.status}
-            // onClick={toggleMenu}
-          >
+          <RadixMenu.Trigger className={style.status}>
             {hasSelectedLibrary && (
               <div className={style.content}>
                 <div className={style.library}>{currentLibrary.title}</div>
@@ -72,7 +63,11 @@ const UserMenu = ({ variant = 'default' }) => {
           </RadixMenu.Trigger>
 
           <RadixMenu.Portal>
-            <RadixMenu.Content side="bottom" align="end" className={style.menu}>
+            <RadixMenu.Content
+              side={anchorSide}
+              align={anchorAlign}
+              className={clsx(style.menu, style[`menu${variant}`])}
+            >
               {hasSelectedLibrary && allServers && (
                 <>
                   <RadixMenu.Group>
@@ -88,7 +83,6 @@ const UserMenu = ({ variant = 'default' }) => {
                             className={clsx(style.button, style.buttonServer)}
                             onClick={() => {
                               dispatch.sessionModel.switchCurrentServer(server.serverId);
-                              // toggleMenu();
                             }}
                           >
                             <span className={style.iconBefore}>
@@ -113,7 +107,6 @@ const UserMenu = ({ variant = 'default' }) => {
                                   })}
                                   onClick={() => {
                                     dispatch.sessionModel.switchCurrentLibrary(library.libraryId);
-                                    // toggleMenu();
                                   }}
                                 >
                                   <span className={style.iconBefore}>
@@ -145,14 +138,7 @@ const UserMenu = ({ variant = 'default' }) => {
               <RadixMenu.Group>
                 {hasSelectedLibrary && allServers && (
                   <RadixMenu.Item asChild>
-                    <NavLink
-                      className={style.button}
-                      to={'/settings'}
-                      // onClick={() => {
-                      //   toggleMenu();
-                      // }}
-                      draggable="false"
-                    >
+                    <NavLink className={style.button} to={'/settings'} draggable="false">
                       <span className={style.iconBefore}>
                         <Icon icon="CogIcon" cover stroke />
                       </span>
@@ -169,7 +155,6 @@ const UserMenu = ({ variant = 'default' }) => {
                     className={style.button}
                     onClick={() => {
                       dispatch.appModel.doLogout();
-                      // toggleMenu();
                     }}
                   >
                     <span className={style.iconBefore}>
