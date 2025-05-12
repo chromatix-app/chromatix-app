@@ -7,9 +7,12 @@ const useScrollToVirtualTrack = (entries, callback) => {
   const scrollToPlaying = useSelector(({ appModel }) => appModel.scrollToPlaying);
   const scrollToTrack = useSelector(({ appModel }) => appModel.scrollToTrack);
 
+  const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
   const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
   const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
   const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
+
+  const viewArtistAlbums = useSelector(({ sessionModel }) => sessionModel.viewArtistAlbums);
 
   // scroll to a specific track on page load, if required
   useEffect(() => {
@@ -18,8 +21,12 @@ const useScrollToVirtualTrack = (entries, callback) => {
     // scroll to the currently playing track
     if (scrollToPlaying) {
       // console.log('scrollToPlaying');
-      const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
-      trackId = trackDetail?.trackId;
+      if (playingVariant === 'artists' && viewArtistAlbums !== 'track') {
+        dispatch.sessionModel.setSessionState({ viewArtistAlbums: 'track' });
+      } else {
+        const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
+        trackId = trackDetail?.trackId;
+      }
     }
 
     // scroll to a specified track (e.g. from search)
