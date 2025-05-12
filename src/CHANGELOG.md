@@ -1,3 +1,12 @@
+<a name="0.42.0"></a>
+# 0.42.0 (2025-05-12)
+Features:
+- Redesigned and rebuilt user menu, using Radix UI for better accessibility and future proofing.
+- Add a setting to toggle sorting numbers before/after letters when sorting alphabetically.
+- Generally made alphabetical sorting more consistent throughout.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="0.41.0"></a>
 # 0.41.0 (2025-05-11)
 Features:

@@ -1,21 +1,23 @@
+import store from 'js/store/store';
+
 type Entry = {
-  kind?: string;
-  title?: string;
+  addedAt?: string;
   album?: string;
   artist?: string;
-  country?: string;
-  genre?: string;
-  codec?: string;
   bitrate?: number;
-  duration?: number;
-  sortOrder?: number;
-  totalTracks?: number;
-  trackNumber?: number;
+  codec?: string;
+  country?: string;
   discNumber?: number;
-  userRating?: number;
-  addedAt?: string;
+  duration?: number;
+  genre?: string;
+  kind?: string;
   lastPlayed?: string;
   releaseDate?: string;
+  sortOrder?: number;
+  title?: string;
+  totalTracks?: number;
+  trackNumber?: number;
+  userRating?: number;
 };
 
 type SortFunction = (a: Entry, b: Entry) => number;
@@ -91,6 +93,12 @@ const doSorting = (
   quaternarySortKey: string = 'title',
   quaternaryDirection: 'asc' | 'desc' = 'asc'
 ): Entry[] => {
+  // Get the setting once before sorting
+  const sortNumbersFirst = store.getState().sessionModel.optionSortNumbersFirst === true;
+
+  // Create enhanced sort functions with the setting captured in the closure
+  const sortFunctions = enhanceSortFunctions(sortNumbersFirst);
+
   primarySortKey = sortFunctions[primarySortKey] ? primarySortKey : 'title';
   secondarySortKey = sortFunctions[secondarySortKey] ? secondarySortKey : 'title';
   tertiarySortKey = sortFunctions[tertiarySortKey] ? tertiarySortKey : 'title';
@@ -98,6 +106,7 @@ const doSorting = (
   const primaryDirectionFactor = primaryDirection === 'asc' ? 1 : -1;
   const secondaryDirectionFactor = secondaryDirection === 'asc' ? 1 : -1;
   const tertiaryDirectionFactor = tertiaryDirection === 'asc' ? 1 : -1;
+  const quaternaryDirectionFactor = quaternaryDirection === 'asc' ? 1 : -1;
 
   return [...entries].sort((a, b) => {
     const primaryComparison = primaryDirectionFactor * sortFunctions[primarySortKey](a, b);
@@ -106,7 +115,7 @@ const doSorting = (
       if (secondaryComparison === 0 && tertiarySortKey) {
         const tertiaryComparison = tertiaryDirectionFactor * sortFunctions[tertiarySortKey](a, b);
         if (tertiaryComparison === 0 && quaternarySortKey) {
-          const quaternaryComparison = tertiaryDirectionFactor * sortFunctions[quaternarySortKey](a, b);
+          const quaternaryComparison = quaternaryDirectionFactor * sortFunctions[quaternarySortKey](a, b);
           return quaternaryComparison;
         }
         return tertiaryComparison;
@@ -117,33 +126,80 @@ const doSorting = (
   });
 };
 
-const sortFunctions: Record<string, SortFunction> = {
+// Function that enhances sort functions with the current settings
+const enhanceSortFunctions = (sortNumbersFirst: boolean): Record<string, SortFunction> => {
+  // If sortNumbersFirst is true, we can just use the base sort functions
+  if (sortNumbersFirst) {
+    return baseSortFunctions;
+  }
+
+  // Otherwise, we need to enhance the string sort functions
+  const createStringSortFunction = (key: keyof Entry): SortFunction => {
+    return (a, b) => {
+      const valueA = ((a[key] as string) ?? '').toUpperCase();
+      const valueB = ((b[key] as string) ?? '').toUpperCase();
+
+      const isFirstCharNumberA = valueA.length > 0 && !isNaN(Number(valueA[0]));
+      const isFirstCharNumberB = valueB.length > 0 && !isNaN(Number(valueB[0]));
+
+      // Handle cases when one starts with a number and the other doesn't
+      if (isFirstCharNumberA && !isFirstCharNumberB) {
+        return sortNumbersFirst ? -1 : 1; // Numbers first or last based on preference
+      }
+      if (!isFirstCharNumberA && isFirstCharNumberB) {
+        return sortNumbersFirst ? 1 : -1; // Numbers first or last based on preference
+      }
+
+      // If both start with numbers, try to compare them numerically
+      if (isFirstCharNumberA && isFirstCharNumberB) {
+        // Extract leading numbers from both strings
+        const numRegex = /^(\d+)/;
+        const matchA = valueA.match(numRegex);
+        const matchB = valueB.match(numRegex);
+
+        if (matchA && matchB) {
+          const numA = parseInt(matchA[1], 10);
+          const numB = parseInt(matchB[1], 10);
+          if (numA !== numB) {
+            return numA - numB; // Sort numerically
+          }
+        }
+      }
+
+      return valueA.localeCompare(valueB);
+    };
+  };
+
+  // Create enhanced sort functions only when sortNumbersFirst is true
+  return {
+    ...baseSortFunctions,
+    album: createStringSortFunction('album'),
+    artist: createStringSortFunction('artist'),
+    codec: createStringSortFunction('codec'),
+    country: createStringSortFunction('country'),
+    genre: createStringSortFunction('genre'),
+    kind: createStringSortFunction('kind'),
+    title: createStringSortFunction('title'),
+  };
+};
+
+const baseSortFunctions: Record<string, SortFunction> = {
   // Strings
-  kind: (a, b) => (a.kind ?? '').localeCompare(b.kind ?? ''),
-  title: (a, b) => {
-    const nameA = (a.title ?? '').toUpperCase();
-    const nameB = (b.title ?? '').toUpperCase();
-    if (!isNaN(Number(nameA[0])) && isNaN(Number(nameB[0]))) {
-      return 1;
-    }
-    if (isNaN(Number(nameA[0])) && !isNaN(Number(nameB[0]))) {
-      return -1;
-    }
-    return nameA.localeCompare(nameB);
-  },
-  album: (a, b) => (a.album ?? '').localeCompare(b.album ?? ''),
-  artist: (a, b) => (a.artist ?? '').localeCompare(b.artist ?? ''),
-  country: (a, b) => (a.country ?? '').localeCompare(b.country ?? ''),
-  genre: (a, b) => (a.genre ?? '').localeCompare(b.genre ?? ''),
-  codec: (a, b) => (a.codec ?? '').localeCompare(b.codec ?? ''),
+  album: (a, b) => (a.album ?? '').localeCompare(b.album ?? '', undefined, { numeric: true }),
+  artist: (a, b) => (a.artist ?? '').localeCompare(b.artist ?? '', undefined, { numeric: true }),
+  codec: (a, b) => (a.codec ?? '').localeCompare(b.codec ?? '', undefined, { numeric: true }),
+  country: (a, b) => (a.country ?? '').localeCompare(b.country ?? '', undefined, { numeric: true }),
+  genre: (a, b) => (a.genre ?? '').localeCompare(b.genre ?? '', undefined, { numeric: true }),
+  kind: (a, b) => (a.kind ?? '').localeCompare(b.kind ?? '', undefined, { numeric: true }),
+  title: (a, b) => (a.title ?? '').localeCompare(b.title ?? '', undefined, { numeric: true }),
 
   // Numbers
   bitrate: (a, b) => (a.bitrate ?? 0) - (b.bitrate ?? 0),
+  discNumber: (a, b) => (a.discNumber ?? 0) - (b.discNumber ?? 0),
   duration: (a, b) => (a.duration ?? 0) - (b.duration ?? 0),
   sortOrder: (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0),
   totalTracks: (a, b) => (a.totalTracks ?? 0) - (b.totalTracks ?? 0),
   trackNumber: (a, b) => (a.trackNumber ?? 0) - (b.trackNumber ?? 0),
-  discNumber: (a, b) => (a.discNumber ?? 0) - (b.discNumber ?? 0),
   userRating: (a, b) => (a.userRating ?? 0) - (b.userRating ?? 0),
 
   // Dates
