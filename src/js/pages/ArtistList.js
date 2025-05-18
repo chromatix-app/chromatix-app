@@ -7,7 +7,7 @@ import {
   FilterSelect,
   FilterToggle,
   FilterWrap,
-  ListCards,
+  ListCardsV2,
   ListTable,
   Loading,
   TitleHeading,
@@ -57,7 +57,7 @@ const ArtistList = () => {
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
-      {isGridView && <ListCards variant="artists" entries={sortedArtists} showRatings={gridOptions.userRating} />}
+      {isGridView && <ListCardsV2 variant="artists" entries={sortedArtists} showRatings={gridOptions.userRating} />}
       {isListView && (
         <ListTable
           variant="artists"
