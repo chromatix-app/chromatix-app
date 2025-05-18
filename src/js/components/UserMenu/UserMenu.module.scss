@@ -169,7 +169,7 @@
   min-width: 100%;
   max-height: calc(100vh - 95px);
   max-height: calc(100svh - 95px);
-  padding: 10px 6px 6px;
+  padding: 6px;
   margin: 5px 0 0 auto;
   background: var(--color-panel-background);
   border: 1px solid var(--color-border);
@@ -193,14 +193,17 @@
   text-transform: uppercase;
   color: var(--color-opacity-04);
 
-  // &:first-child {
-  //   padding-top: 10px;
-  // }
+  .group:first-child & {
+    padding-top: 4px;
+  }
 
   :global(.electron-platform-win) & {
     font-weight: 600;
     letter-spacing: 0.04em;
   }
+}
+
+.group {
 }
 
 .separator {
@@ -219,7 +222,7 @@
   // min-width: 206px;
   padding: 6px 40px 6px 8px;
   background: var(--color-panel-background);
-  border-radius: 5px;
+  border-radius: 4px;
   text-align: left;
 
   @include mixins.focus-self-fill;
