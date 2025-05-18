@@ -9,6 +9,7 @@ import * as RadixMenu from '@radix-ui/react-dropdown-menu';
 import clsx from 'clsx';
 
 import { Icon } from 'js/components';
+import { electronPlatform } from 'js/utils';
 
 import style from './UserMenu.module.scss';
 
@@ -16,7 +17,7 @@ import style from './UserMenu.module.scss';
 // COMPONENT
 // ======================================================================
 
-const UserMenu = ({ variant = 'default' }) => {
+const UserMenu = ({ variant = 'default', withoutLibrary = false }) => {
   const dispatch = useDispatch();
 
   const currentUser = useSelector(({ appModel }) => appModel.currentUser);
@@ -27,11 +28,11 @@ const UserMenu = ({ variant = 'default' }) => {
   const allServers = useSelector(({ appModel }) => appModel.allServers);
   const allLibraries = useSelector(({ appModel }) => appModel.allLibraries);
 
-  const hasSelectedLibrary = currentServer && currentLibrary;
+  const hasSelectedLibrary = currentServer && currentLibrary && withoutLibrary === false;
   const hasQueueVisible = queueIsVisible && hasSelectedLibrary;
 
   const anchorSide = variant === 'Inline' ? 'right' : 'bottom';
-  const anchorAlign = variant === 'Inline' ? 'start' : 'end';
+  const anchorAlign = variant === 'Inline' || electronPlatform === 'win' ? 'start' : 'end';
 
   return (
     <>
@@ -70,7 +71,7 @@ const UserMenu = ({ variant = 'default' }) => {
             >
               {hasSelectedLibrary && allServers && (
                 <>
-                  <RadixMenu.Group>
+                  <RadixMenu.Group className={style.group}>
                     <RadixMenu.Label className={style.label}>
                       {/* Plex •  */}
                       {currentUser.email}
@@ -135,7 +136,7 @@ const UserMenu = ({ variant = 'default' }) => {
                 </>
               )}
 
-              <RadixMenu.Group>
+              <RadixMenu.Group className={style.group}>
                 {hasSelectedLibrary && allServers && (
                   <RadixMenu.Item asChild>
                     <NavLink className={style.button} to={'/settings'} draggable="false">

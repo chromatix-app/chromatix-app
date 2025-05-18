@@ -118,6 +118,7 @@ const App = () => {
           buttonText="Ok"
           buttonClick={dispatch.appModel.dismissErrorPlexFastestConnection}
         />
+        {loggedIn && <UserMenu withoutLibrary />}
       </div>
     );
   } else if (errorPlexLibraries) {
@@ -137,6 +138,7 @@ const App = () => {
           buttonText="Ok"
           buttonClick={dispatch.appModel.dismissErrorPlexLibraries}
         />
+        {loggedIn && <UserMenu withoutLibrary />}
       </div>
     );
   } else if (errorPlexLogin) {
@@ -156,6 +158,7 @@ const App = () => {
           buttonText="Ok"
           buttonClick={dispatch.appModel.dismissErrorPlexLogin}
         />
+        {loggedIn && <UserMenu withoutLibrary />}
       </div>
     );
   } else if (errorPlexServers) {
@@ -175,6 +178,7 @@ const App = () => {
           buttonText="Ok"
           buttonClick={dispatch.appModel.dismissErrorPlexServers}
         />
+        {loggedIn && <UserMenu withoutLibrary />}
       </div>
     );
   } else if (errorPlexUser) {
@@ -194,6 +198,7 @@ const App = () => {
           buttonText="Ok"
           buttonClick={dispatch.appModel.dismissErrorPlexUser}
         />
+        {loggedIn && <UserMenu withoutLibrary />}
       </div>
     );
   }
