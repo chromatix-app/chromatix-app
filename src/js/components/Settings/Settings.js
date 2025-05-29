@@ -61,7 +61,7 @@ export const Settings = () => {
         </NavLink>
 
         <NavLink className={style.entry} to={'/settings/lastfm'} draggable="false">
-          <div className={style.entryIconSmall}>
+          <div className={style.entryIconMed}>
             <Icon icon="LastFMIcon" cover stroke strokeWidth={1.5} />
           </div>
           <div>Last.fm</div>
@@ -167,6 +167,27 @@ export const Settings = () => {
           </div>
           <div>
             Follow the developer on Bluesky
+            <div className={style.externalIcon}>
+              <Icon icon="ExternalLinkIcon" cover stroke />
+            </div>
+          </div>
+          <div className={style.entryArrow}>
+            <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
+          </div>
+        </a>
+
+        <a
+          className={style.entry}
+          href="https://chromatix.featurebase.app"
+          target="_blank"
+          rel="noreferrer nofollow"
+          draggable="false"
+        >
+          <div className={style.entryIconMed}>
+            <Icon icon="FeaturebaseIcon" cover stroke strokeWidth={1.5} />
+          </div>
+          <div>
+            Roadmap, feature requests and bug reports on Featurebase
             <div className={style.externalIcon}>
               <Icon icon="ExternalLinkIcon" cover stroke />
             </div>
