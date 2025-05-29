@@ -172,22 +172,35 @@ export const PageHome = () => {
           <a
             className={style.icon}
             href="https://www.reddit.com/r/chromatix/"
+            title="Join Chromatix on Reddit"
             target="_blank"
             rel="noreferrer nofollow"
             draggable="false"
           >
             <Icon icon="RedditSiteIcon" cover />
-            <span className="u-hide-text">Join us on Reddit</span>
+            <span className="u-hide-text">Join Chromatix on Reddit</span>
           </a>
           <a
             className={style.icon}
             href="https://github.com/chromatix-app"
+            title="View Chromatix on GitHub"
             target="_blank"
             rel="noreferrer nofollow"
             draggable="false"
           >
             <Icon icon="GithubSiteIcon" cover />
-            <span className="u-hide-text">View us on Github</span>
+            <span className="u-hide-text">View Chromatix on GitHub</span>
+          </a>
+          <a
+            className={style.icon}
+            href="https://chromatix.featurebase.app"
+            title="Roadmap, feature requests and bug reports on Featurebase"
+            target="_blank"
+            rel="noreferrer nofollow"
+            draggable="false"
+          >
+            <Icon icon="FeaturebaseSiteIcon" cover />
+            <span className="u-hide-text">Roadmap, feature requests and bug reports on Featurebase</span>
           </a>
         </div>
         <a
