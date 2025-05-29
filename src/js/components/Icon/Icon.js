@@ -44,6 +44,7 @@ import { ReactComponent as EllipsisCircleIcon } from './icons/music/ellipsis-cir
 import { ReactComponent as ExpandIcon } from './icons/music/expand.svg';
 import { ReactComponent as ExternalLinkIcon } from './icons/music/external-link.svg';
 import { ReactComponent as FastForwardIcon } from './icons/music/fast-forward.svg';
+import { ReactComponent as FeaturebaseIcon } from './icons/music/feature-base.svg';
 import { ReactComponent as FolderIcon } from './icons/music/folder.svg';
 import { ReactComponent as GithubIcon } from './icons/music/github.svg';
 import { ReactComponent as GridIcon } from './icons/music/grid-small.svg';
@@ -91,6 +92,7 @@ import { ReactComponent as VolUpIcon } from './icons/music/vol-up.svg';
 import { ReactComponent as VolXIcon } from './icons/music/vol-x.svg';
 
 import { ReactComponent as AppleSiteIcon } from './icons/site/apple.svg';
+import { ReactComponent as FeaturebaseSiteIcon } from './icons/site/featurebase.svg';
 import { ReactComponent as GithubSiteIcon } from './icons/site/github.svg';
 import { ReactComponent as LinuxSiteIcon } from './icons/site/linux.svg';
 import { ReactComponent as RedditSiteIcon } from './icons/site/reddit.svg';
@@ -138,6 +140,7 @@ export const customIcons = {
   ExpandIcon,
   ExternalLinkIcon,
   FastForwardIcon,
+  FeaturebaseIcon,
   FolderIcon,
   GithubIcon,
   GridIcon,
@@ -185,6 +188,7 @@ export const customIcons = {
   VolXIcon,
 
   AppleSiteIcon,
+  FeaturebaseSiteIcon,
   GithubSiteIcon,
   LinuxSiteIcon,
   RedditSiteIcon,
