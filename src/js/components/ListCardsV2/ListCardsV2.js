@@ -20,17 +20,7 @@ import style from './ListCardsV2.module.scss';
 
 // const isLocal = process.env.REACT_APP_ENV === 'local';
 
-const iconImageMap = {
-  folders: 'FolderIcon',
-  artistGenres: 'ArtistGenresIcon',
-  artistMoods: 'ArtistMoodsIcon',
-  artistStyles: 'ArtistStylesIcon',
-  albumGenres: 'AlbumGenresIcon',
-  albumMoods: 'AlbumMoodsIcon',
-  albumStyles: 'AlbumStylesIcon',
-};
-
-const ListCardsV2 = ({ variant, folderId, entries, playingOrder, sortKey, showRatings = false }) => {
+const ListCardsV2 = ({ children, variant, folderId, entries, playingOrder, sortKey, showRatings = false }) => {
   const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
 
   const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
@@ -44,25 +34,69 @@ const ListCardsV2 = ({ variant, folderId, entries, playingOrder, sortKey, showRa
 
   const trackDetail = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
 
-  const iconImage = iconImageMap[variant];
+  const iconImage = lookupIcons[variant];
 
-  useScrollToTrack();
-
-  let trackNumber = 0;
+  const isCurrentlyLoaded = useCallback(
+    (entryVariant, entryId) => {
+      return (
+        playingVariant === entryVariant &&
+        ((playingVariant === 'albums' && playingAlbumId === entryId) ||
+          (playingVariant === 'playlists' && playingPlaylistId === entryId) ||
+          (playingVariant === 'folders' && playingFolderId === folderId && trackDetail.trackId === entryId))
+      );
+    },
+    [folderId, playingAlbumId, playingFolderId, playingPlaylistId, playingVariant, trackDetail]
+  );
 
   if (entries) {
     return (
       <div className={clsx(style.wrap)}>
+        <ListBodyStatic
+          entries={entries}
+          folderId={folderId}
+          iconImage={iconImage}
+          isCurrentlyLoaded={isCurrentlyLoaded}
+          playerPlaying={playerPlaying}
+          playingOrder={playingOrder}
+          sortKey={sortKey}
+          showRatings={showRatings}
+          titleBlock={children}
+          variant={variant}
+        />
+      </div>
+    );
+  }
+};
+
+// ======================================================================
+// LIST BODY - STATIC
+// ======================================================================
+
+const ListBodyStatic = ({
+  entries,
+  folderId,
+  iconImage,
+  isCurrentlyLoaded,
+  playerPlaying,
+  playingOrder,
+  sortKey,
+  showRatings,
+  titleBlock,
+  variant,
+}) => {
+  useScrollToTrack();
+
+  let trackNumber = 0;
+
+  return (
+    <div id="scrollable" className={clsx(style.scrollableOuter, style.scrollableOuterStatic)}>
+      <div id="scrollable-inner" className={style.scrollableInner}>
+        {titleBlock}
+
         {entries.map((entry, index) => {
           if (entry.kind === 'track') {
             trackNumber++;
           }
-
-          const isCurrentlyLoaded =
-            playingVariant === variant &&
-            (((playingAlbumId === entry.albumId || (!playingAlbumId && !entry.albumId)) &&
-              (playingPlaylistId === entry.playlistId || (!playingPlaylistId && !entry.playlistId))) ||
-              (playingFolderId === folderId && trackDetail.trackId === entry.trackId));
 
           const entryKey =
             // prioritise track id
@@ -89,16 +123,20 @@ const ListCardsV2 = ({ variant, folderId, entries, playingOrder, sortKey, showRa
               playingOrder={playingOrder}
               sortKey={sortKey}
               showRatings={showRatings}
-              isCurrentlyLoaded={isCurrentlyLoaded}
+              isCurrentlyLoaded={isCurrentlyLoaded(variant, entryKey)}
               isCurrentlyPlaying={playerPlaying}
               {...entry}
             />
           );
         })}
       </div>
-    );
-  }
+    </div>
+  );
 };
+
+// ======================================================================
+// ENTRY
+// ======================================================================
 
 const ListEntry = React.memo(
   ({
@@ -124,12 +162,6 @@ const ListEntry = React.memo(
 
     isCurrentlyLoaded,
     isCurrentlyPlaying,
-
-    // duration,
-    // totalTracks,
-    // addedAt,
-    // lastPlayed,
-    // releaseDate,
   }) => {
     const history = useHistory();
     const dispatch = useDispatch();
@@ -221,7 +253,7 @@ const ListEntry = React.memo(
     const ratingKey = ratingKeyMap[variant] || null;
 
     // Icons
-    const isIconCard = iconImage && !thumb;
+    const isIconCard = iconImage && !thumb && !trackId;
     const isSquareCard = !isIconCard || variant === 'folders';
 
     return (
@@ -262,7 +294,7 @@ const ListEntry = React.memo(
           )}
         </div>
 
-        {/* Text */}
+        {/* Body */}
         <div className={style.body}>
           {title && <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles_Deprecated })}>{title}</div>}
 
@@ -282,7 +314,7 @@ const ListEntry = React.memo(
             </NavLink>
           )}
 
-          {showRatings && typeof userRating !== 'undefined' && (
+          {showRatings && typeof userRating !== 'undefined' && userRating > 0 && (
             <div className={style.rating}>
               <StarRating variant="card" type={variant} ratingKey={ratingKey} rating={userRating} />
             </div>
@@ -292,6 +324,20 @@ const ListEntry = React.memo(
     );
   }
 );
+
+// ======================================================================
+// HELPERS
+// ======================================================================
+
+const lookupIcons = {
+  folders: 'FolderIcon',
+  artistGenres: 'ArtistGenresIcon',
+  artistMoods: 'ArtistMoodsIcon',
+  artistStyles: 'ArtistStylesIcon',
+  albumGenres: 'AlbumGenresIcon',
+  albumMoods: 'AlbumMoodsIcon',
+  albumStyles: 'AlbumStylesIcon',
+};
 
 // ======================================================================
 // EXPORT

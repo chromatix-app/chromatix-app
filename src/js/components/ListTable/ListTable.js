@@ -190,13 +190,13 @@ const ListTableTracks = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       albumId,
-      playlistId,
       folderId,
       playingAlbumId,
-      playingPlaylistId,
       playingFolderId,
+      playingPlaylistId,
       playingTrackCurrent,
       playingVariant,
+      playlistId,
     ]
   );
 

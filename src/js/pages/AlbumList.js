@@ -7,7 +7,7 @@ import {
   FilterSelect,
   FilterToggle,
   FilterWrap,
-  ListCards,
+  ListCardsV2,
   ListTable,
   Loading,
   TitleHeading,
@@ -41,10 +41,11 @@ const AlbumList = () => {
 
   return (
     <>
-      {(isLoading || isEmptyList || isGridView) && (
+      {(isLoading || isEmptyList) && (
         <Title
           colOptions={colOptions}
           gridOptions={gridOptions}
+          isGridView={isGridView}
           isListView={isListView}
           orderAlbums={orderAlbums}
           setColumnVisibility={setColumnVisibility}
@@ -57,7 +58,24 @@ const AlbumList = () => {
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
-      {isGridView && <ListCards variant="albums" entries={sortedAlbums} showRatings={gridOptions.userRating} />}
+      {isGridView && (
+        <ListCardsV2 variant="albums" entries={sortedAlbums} showRatings={gridOptions.userRating}>
+          <Title
+            colOptions={colOptions}
+            gridOptions={gridOptions}
+            isGridView={isGridView}
+            isListView={isListView}
+            orderAlbums={orderAlbums}
+            setColumnVisibility={setColumnVisibility}
+            setOrderAlbums={setOrderAlbums}
+            setSortAlbums={setSortAlbums}
+            setViewAlbums={setViewAlbums}
+            sortAlbums={sortAlbums}
+            sortedAlbums={sortedAlbums}
+            viewAlbums={viewAlbums}
+          />
+        </ListCardsV2>
+      )}
       {isListView && (
         <ListTable
           variant="albums"
@@ -69,6 +87,7 @@ const AlbumList = () => {
           <Title
             colOptions={colOptions}
             gridOptions={gridOptions}
+            isGridView={isGridView}
             isListView={isListView}
             orderAlbums={orderAlbums}
             setColumnVisibility={setColumnVisibility}
@@ -88,6 +107,7 @@ const AlbumList = () => {
 const Title = ({
   colOptions,
   gridOptions,
+  isGridView,
   isListView,
   orderAlbums,
   setColumnVisibility,
@@ -106,9 +126,9 @@ const Title = ({
         subtitle={
           sortedAlbums ? sortedAlbums?.length + ' Album' + (sortedAlbums?.length !== 1 ? 's' : '') : <>&nbsp;</>
         }
-        padding={!isListView}
+        padding={!isListView && !isGridView}
       />
-      <FilterWrap padding={!isListView}>
+      <FilterWrap padding={!isListView && !isGridView}>
         <FilterToggle
           value={viewAlbums}
           options={[
