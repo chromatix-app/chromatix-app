@@ -99,7 +99,6 @@ const ListTableBasic = ({
           tableVariant={tableVariant}
           tableOptions={tableOptions}
           gridTemplateColumns={gridTemplateColumns}
-          groupBy={groupBy}
         />
       </div>
     );
@@ -337,8 +336,6 @@ const TableBodyStatic = ({
   tableVariant,
   tableOptions,
   gridTemplateColumns,
-  // group related props
-  groupBy,
   // disc related props
   showDiscNumbers,
   // track related props

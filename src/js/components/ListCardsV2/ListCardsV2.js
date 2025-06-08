@@ -15,10 +15,16 @@ import { useScrollToTrack } from 'js/hooks';
 import style from './ListCardsV2.module.scss';
 
 // ======================================================================
-// COMPONENT
+// OPTIONS
 // ======================================================================
 
-// const isLocal = process.env.REACT_APP_ENV === 'local';
+const isLocal = process.env.REACT_APP_ENV === 'local';
+
+const virtualThreshold = !isLocal ? 150 : 1;
+
+// ======================================================================
+// COMPONENT
+// ======================================================================
 
 const ListCardsV2 = ({ children, variant, folderId, entries, playingOrder, sortKey, showRatings = false }) => {
   const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
@@ -49,9 +55,11 @@ const ListCardsV2 = ({ children, variant, folderId, entries, playingOrder, sortK
   );
 
   if (entries) {
+    const ListBodyComponent = entries.length <= virtualThreshold ? ListBodyStatic : ListBodyVirtual;
+
     return (
       <div className={clsx(style.wrap)}>
-        <ListBodyStatic
+        <ListBodyComponent
           entries={entries}
           folderId={folderId}
           iconImage={iconImage}
@@ -133,6 +141,12 @@ const ListBodyStatic = ({
     </div>
   );
 };
+
+// ======================================================================
+// LIST BODY - VIRTUAL
+// ======================================================================
+
+const ListBodyVirtual = ({}) => {};
 
 // ======================================================================
 // ENTRY
