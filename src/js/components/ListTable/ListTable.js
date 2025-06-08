@@ -551,7 +551,7 @@ const TableBodyVirtual = ({
                   key={'title-' + contentBreakpoint}
                   id="measure"
                   className={style.measure}
-                  data-index={virtualEntry.index}
+                  data-index={index}
                   ref={rowVirtualizer.measureElement}
                 ></div>
               </React.Fragment>
