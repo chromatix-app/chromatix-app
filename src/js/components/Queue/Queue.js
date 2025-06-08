@@ -186,7 +186,7 @@ const QueueVirtual = ({ entries, playingShuffle, upcomingTracks, queueExpandArtw
   const extraRows = queueExpandArtwork ? 1 : 0;
 
   // Helper to determine row heights
-  const getItemSize = useCallback(
+  const estimateSize = useCallback(
     (index) => {
       const entry = entries[index];
       if (!entry) {
@@ -206,9 +206,9 @@ const QueueVirtual = ({ entries, playingShuffle, upcomingTracks, queueExpandArtw
   const rowVirtualizer = useVirtualizer({
     count: entries.length + extraRows,
     getScrollElement: () => outerRef.current,
-    initialOffset: initialOffset,
-    estimateSize: getItemSize,
     overscan: 3,
+    estimateSize,
+    initialOffset,
   });
 
   return (
@@ -229,22 +229,29 @@ const QueueVirtual = ({ entries, playingShuffle, upcomingTracks, queueExpandArtw
         // Now playing
         else if (entry.rowType === 'playing') {
           if (queueExpandArtwork) {
-            return <NowPlayingLarge key={index} entry={entry} virtualRow={virtualRow} />;
+            return <NowPlayingLarge key={virtualRow.index} entry={entry} virtualRow={virtualRow} />;
           } else {
-            return <NowPlayingSmall key={index} entry={entry} virtualRow={virtualRow} />;
+            return <NowPlayingSmall key={virtualRow.index} entry={entry} virtualRow={virtualRow} />;
           }
         }
 
         // Label - Upcoming
         else if (entry.rowType === 'upcomingLabel') {
-          return <LabelEntry key={index} text="Coming up" playingShuffle={playingShuffle} virtualRow={virtualRow} />;
+          return (
+            <LabelEntry
+              key={virtualRow.index}
+              text="Coming up"
+              playingShuffle={playingShuffle}
+              virtualRow={virtualRow}
+            />
+          );
         }
 
         // Label - Repeat
         else if (entry.rowType === 'repeatLabel') {
           return (
             <LabelEntry
-              key={index}
+              key={virtualRow.index}
               text="Repeating"
               playingShuffle={playingShuffle && !upcomingTracks}
               virtualRow={virtualRow}
@@ -254,12 +261,12 @@ const QueueVirtual = ({ entries, playingShuffle, upcomingTracks, queueExpandArtw
 
         // Label - Empty
         else if (entry.rowType === 'emptyLabel') {
-          return <LabelEntry key={index} text="No tracks in queue" virtualRow={virtualRow} />;
+          return <LabelEntry key={virtualRow.index} text="No tracks in queue" virtualRow={virtualRow} />;
         }
 
         // Tracks
         else {
-          return <TrackEntry key={index} entry={entry} virtualRow={virtualRow} />;
+          return <TrackEntry key={virtualRow.index} entry={entry} virtualRow={virtualRow} />;
         }
       })}
     </div>

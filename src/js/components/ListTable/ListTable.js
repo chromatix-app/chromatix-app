@@ -463,7 +463,7 @@ const TableBodyVirtual = ({
   const rowHeightActual = noArtworkVisible ? rowHeightSmall : rowHeightDefault;
 
   // Helper to determine row heights
-  const getItemSize = useCallback(
+  const estimateSize = useCallback(
     (index) => {
       const currentEntry = entries[index - fixedElementCount];
 
@@ -503,10 +503,10 @@ const TableBodyVirtual = ({
   const rowVirtualizer = useVirtualizer({
     count: entries.length + fixedElementCount + extraRows,
     getScrollElement: () => outerRef.current,
-    estimateSize: getItemSize,
     overscan: 3,
-    rangeExtractor,
+    estimateSize,
     measureElement,
+    rangeExtractor,
   });
 
   // Scroll to a specific track, when required
@@ -546,11 +546,11 @@ const TableBodyVirtual = ({
         {rowVirtualizer.getVirtualItems().map((virtualRow, index) => {
           if (index === 0) {
             return (
-              <React.Fragment key={index}>
+              <React.Fragment key={'title-' + contentBreakpoint}>
                 {titleBlock}
                 {headerBlock}
                 <div
-                  key={index + '-' + contentBreakpoint}
+                  key={'title-' + contentBreakpoint}
                   id="measure"
                   className={style.measure}
                   data-index={virtualRow.index}
@@ -568,19 +568,19 @@ const TableBodyVirtual = ({
 
             // Disc numbers
             else if (entry.kind === 'group') {
-              return <GroupRow key={index} entry={entry} virtualRow={virtualRow} />;
+              return <GroupRow key={virtualRow.index} entry={entry} virtualRow={virtualRow} />;
             }
 
             // Disc numbers
             else if (entry.kind === 'disc') {
-              return <DiscRow key={index} entry={entry} virtualRow={virtualRow} />;
+              return <DiscRow key={virtualRow.index} entry={entry} virtualRow={virtualRow} />;
             }
 
             // Tracks
             else if (entry.kind === 'track') {
               return (
                 <TrackRow
-                  key={index}
+                  key={virtualRow.index}
                   entry={entry}
                   virtualRow={virtualRow}
                   tableVariant={tableVariant}
@@ -601,7 +601,7 @@ const TableBodyVirtual = ({
             else {
               return (
                 <StandardRow
-                  key={index}
+                  key={virtualRow.index}
                   entry={entry}
                   virtualRow={virtualRow}
                   tableVariant={tableVariant}
