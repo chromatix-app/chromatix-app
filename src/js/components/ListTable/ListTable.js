@@ -512,13 +512,11 @@ const TableBodyVirtual = ({
   // Scroll to a specific track, when required
   const scrollToVirtualTrack = useCallback(
     (index) => {
-      rowVirtualizer.scrollToOffset(
-        tableHeadHeight + (index + fixedElementCount) * rowHeightActual - (windowHeight - 100) / 2,
-        {
-          align: 'start',
-          behavior: 'auto',
-        }
-      );
+      const rowIndex = index + 0.5;
+      rowVirtualizer.scrollToOffset(tableHeadHeight + rowIndex * rowHeightActual - (windowHeight - 100) / 2, {
+        align: 'start',
+        behavior: 'auto',
+      });
 
       // Using "scrollToIndex" would be better, but it is broken - it prevents me from scrolling the page.
       // It seems to clash with the use of "ref={rowVirtualizer.measureElement}" for some reason.
@@ -543,7 +541,7 @@ const TableBodyVirtual = ({
           height: `${rowVirtualizer.getTotalSize()}px`,
         }}
       >
-        {rowVirtualizer.getVirtualItems().map((virtualRow, index) => {
+        {rowVirtualizer.getVirtualItems().map((virtualEntry, index) => {
           if (index === 0) {
             return (
               <React.Fragment key={'title-' + contentBreakpoint}>
@@ -553,13 +551,13 @@ const TableBodyVirtual = ({
                   key={'title-' + contentBreakpoint}
                   id="measure"
                   className={style.measure}
-                  data-index={virtualRow.index}
+                  data-index={virtualEntry.index}
                   ref={rowVirtualizer.measureElement}
                 ></div>
               </React.Fragment>
             );
           } else {
-            const entry = entries[virtualRow.index - fixedElementCount];
+            const entry = entries[virtualEntry.index - fixedElementCount];
 
             // Catch missing entries
             if (!entry) {
@@ -568,21 +566,21 @@ const TableBodyVirtual = ({
 
             // Disc numbers
             else if (entry.kind === 'group') {
-              return <GroupRow key={virtualRow.index} entry={entry} virtualRow={virtualRow} />;
+              return <GroupRow key={virtualEntry.index} entry={entry} virtualEntry={virtualEntry} />;
             }
 
             // Disc numbers
             else if (entry.kind === 'disc') {
-              return <DiscRow key={virtualRow.index} entry={entry} virtualRow={virtualRow} />;
+              return <DiscRow key={virtualEntry.index} entry={entry} virtualEntry={virtualEntry} />;
             }
 
             // Tracks
             else if (entry.kind === 'track') {
               return (
                 <TrackRow
-                  key={virtualRow.index}
+                  key={virtualEntry.index}
                   entry={entry}
-                  virtualRow={virtualRow}
+                  virtualEntry={virtualEntry}
                   tableVariant={tableVariant}
                   tableOptions={tableOptions}
                   gridTemplateColumns={gridTemplateColumns}
@@ -601,9 +599,9 @@ const TableBodyVirtual = ({
             else {
               return (
                 <StandardRow
-                  key={virtualRow.index}
+                  key={virtualEntry.index}
                   entry={entry}
-                  virtualRow={virtualRow}
+                  virtualEntry={virtualEntry}
                   tableVariant={tableVariant}
                   tableOptions={tableOptions}
                   gridTemplateColumns={gridTemplateColumns}
@@ -632,25 +630,24 @@ const rangeExtractor = (range) => {
 const measureElement = (element) => {
   const innerTop = innerRef.current.getBoundingClientRect().top;
   const elementTop = element.getBoundingClientRect().top;
-  // console.log(elementTop - innerTop);
-  return elementTop - innerTop;
+  return Math.round(elementTop - innerTop);
 };
 
 // ======================================================================
 // GROUP ROW
 // ======================================================================
 
-const GroupRow = ({ virtualRow, entry }) => {
+const GroupRow = ({ virtualEntry, entry }) => {
   return (
     <div
       className={style.groupRow}
       style={{
-        ...(virtualRow && {
+        ...(virtualEntry && {
           position: 'absolute',
           top: 0,
           left: 0,
           width: '100%',
-          transform: `translateY(${virtualRow.start}px)`,
+          transform: `translateY(${virtualEntry.start}px)`,
         }),
       }}
     >
@@ -663,17 +660,17 @@ const GroupRow = ({ virtualRow, entry }) => {
 // DISC ROW
 // ======================================================================
 
-const DiscRow = ({ virtualRow, entry }) => {
+const DiscRow = ({ virtualEntry, entry }) => {
   return (
     <div
       className={style.discRow}
       style={{
-        ...(virtualRow && {
+        ...(virtualEntry && {
           position: 'absolute',
           top: 0,
           left: 0,
           width: '100%',
-          transform: `translateY(${virtualRow.start}px)`,
+          transform: `translateY(${virtualEntry.start}px)`,
         }),
       }}
     >
@@ -689,7 +686,7 @@ const DiscRow = ({ virtualRow, entry }) => {
 // STANDARD ROW
 // ======================================================================
 
-const StandardRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTemplateColumns }) => {
+const StandardRow = ({ virtualEntry, entry, tableVariant, tableOptions, gridTemplateColumns }) => {
   const rowKey = entry.albumId || entry.artistId || entry.playlistId || entry.collectionId;
 
   return (
@@ -698,12 +695,12 @@ const StandardRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTempla
       to={entry.link}
       draggable="false"
       style={{
-        ...(virtualRow && {
+        ...(virtualEntry && {
           position: 'absolute',
           top: 0,
           left: 0,
           width: '100%',
-          transform: `translateY(${virtualRow.start}px)`,
+          transform: `translateY(${virtualEntry.start}px)`,
         }),
         gridTemplateColumns,
       }}
@@ -835,7 +832,7 @@ const StandardRow = ({ virtualRow, entry, tableVariant, tableOptions, gridTempla
 // ======================================================================
 
 const TrackRow = ({
-  virtualRow,
+  virtualEntry,
   index,
   entry,
   tableVariant,
@@ -851,7 +848,7 @@ const TrackRow = ({
 }) => {
   const rowKey = entry.albumId || entry.artistId || entry.playlistId || entry.collectionId;
 
-  let trackNumber = entry.sortedTrackNumber ? entry.sortedTrackNumber : virtualRow ? virtualRow.index : index + 1;
+  let trackNumber = entry.sortedTrackNumber ? entry.sortedTrackNumber : virtualEntry ? virtualEntry.index : index + 1;
 
   const discIndex = entry.discIndex || 0;
   const trackIndex = trackNumber - 1 - discIndex;
@@ -882,12 +879,12 @@ const TrackRow = ({
       onKeyDown={handleKeyDown}
       tabIndex={0}
       style={{
-        ...(virtualRow && {
+        ...(virtualEntry && {
           position: 'absolute',
           top: 0,
           left: 0,
           width: '100%',
-          transform: `translateY(${virtualRow.start}px)`,
+          transform: `translateY(${virtualEntry.start}px)`,
         }),
         gridTemplateColumns,
       }}
@@ -978,7 +975,7 @@ const TrackRow = ({
             // case 'artist':
             //   return (
             //     <div key={rowKey + '-' + index} className={clsx(style.artist, 'text-trim')}>
-            //       {discIndex} - {virtualRow.index} - {trackIndex}
+            //       {discIndex} - {virtualEntry.index} - {trackIndex}
             //     </div>
             //   );
 

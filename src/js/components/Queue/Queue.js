@@ -218,8 +218,8 @@ const QueueVirtual = ({ entries, playingShuffle, upcomingTracks, queueExpandArtw
         height: `${rowVirtualizer.getTotalSize()}px`,
       }}
     >
-      {rowVirtualizer.getVirtualItems().map((virtualRow, index) => {
-        const entry = entries[virtualRow.index];
+      {rowVirtualizer.getVirtualItems().map((virtualEntry, index) => {
+        const entry = entries[virtualEntry.index];
 
         // Catch missing entries
         if (!entry) {
@@ -229,9 +229,9 @@ const QueueVirtual = ({ entries, playingShuffle, upcomingTracks, queueExpandArtw
         // Now playing
         else if (entry.rowType === 'playing') {
           if (queueExpandArtwork) {
-            return <NowPlayingLarge key={virtualRow.index} entry={entry} virtualRow={virtualRow} />;
+            return <NowPlayingLarge key={virtualEntry.index} entry={entry} virtualEntry={virtualEntry} />;
           } else {
-            return <NowPlayingSmall key={virtualRow.index} entry={entry} virtualRow={virtualRow} />;
+            return <NowPlayingSmall key={virtualEntry.index} entry={entry} virtualEntry={virtualEntry} />;
           }
         }
 
@@ -239,10 +239,10 @@ const QueueVirtual = ({ entries, playingShuffle, upcomingTracks, queueExpandArtw
         else if (entry.rowType === 'upcomingLabel') {
           return (
             <LabelEntry
-              key={virtualRow.index}
+              key={virtualEntry.index}
               text="Coming up"
               playingShuffle={playingShuffle}
-              virtualRow={virtualRow}
+              virtualEntry={virtualEntry}
             />
           );
         }
@@ -251,22 +251,22 @@ const QueueVirtual = ({ entries, playingShuffle, upcomingTracks, queueExpandArtw
         else if (entry.rowType === 'repeatLabel') {
           return (
             <LabelEntry
-              key={virtualRow.index}
+              key={virtualEntry.index}
               text="Repeating"
               playingShuffle={playingShuffle && !upcomingTracks}
-              virtualRow={virtualRow}
+              virtualEntry={virtualEntry}
             />
           );
         }
 
         // Label - Empty
         else if (entry.rowType === 'emptyLabel') {
-          return <LabelEntry key={virtualRow.index} text="No tracks in queue" virtualRow={virtualRow} />;
+          return <LabelEntry key={virtualEntry.index} text="No tracks in queue" virtualEntry={virtualEntry} />;
         }
 
         // Tracks
         else {
-          return <TrackEntry key={virtualRow.index} entry={entry} virtualRow={virtualRow} />;
+          return <TrackEntry key={virtualEntry.index} entry={entry} virtualEntry={virtualEntry} />;
         }
       })}
     </div>
@@ -277,7 +277,7 @@ const QueueVirtual = ({ entries, playingShuffle, upcomingTracks, queueExpandArtw
 // NOW PLAYING - LARGE
 // ======================================================================
 
-const NowPlayingLarge = ({ entry, virtualRow }) => {
+const NowPlayingLarge = ({ entry, virtualEntry }) => {
   const dispatch = useDispatch();
 
   const playingLink = useSelector(({ sessionModel }) => sessionModel.playingLink);
@@ -290,12 +290,12 @@ const NowPlayingLarge = ({ entry, virtualRow }) => {
     <div
       className={style.expandedEntry}
       style={{
-        ...(virtualRow && {
+        ...(virtualEntry && {
           position: 'absolute',
           top: 0,
           left: 0,
           width: '100%',
-          transform: `translateY(${virtualRow.start}px)`,
+          transform: `translateY(${virtualEntry.start}px)`,
         }),
       }}
     >
@@ -346,7 +346,7 @@ const NowPlayingLarge = ({ entry, virtualRow }) => {
 // NOW PLAYING - SMALL
 // ======================================================================
 
-const NowPlayingSmall = ({ entry, virtualRow }) => {
+const NowPlayingSmall = ({ entry, virtualEntry }) => {
   const dispatch = useDispatch();
 
   const expandArtwork = () => {
@@ -356,12 +356,12 @@ const NowPlayingSmall = ({ entry, virtualRow }) => {
   return (
     <div
       style={{
-        ...(virtualRow && {
+        ...(virtualEntry && {
           position: 'absolute',
           top: 0,
           left: 0,
           width: '100%',
-          transform: `translateY(${virtualRow.start}px)`,
+          transform: `translateY(${virtualEntry.start}px)`,
         }),
       }}
     >
@@ -380,7 +380,7 @@ const NowPlayingSmall = ({ entry, virtualRow }) => {
 // TRACK ENTRY
 // ======================================================================
 
-const TrackEntry = ({ entry, isCurrentlyPlaying = false, virtualRow }) => {
+const TrackEntry = ({ entry, isCurrentlyPlaying = false, virtualEntry }) => {
   const dispatch = useDispatch();
 
   const doPlay = () => {
@@ -393,12 +393,12 @@ const TrackEntry = ({ entry, isCurrentlyPlaying = false, virtualRow }) => {
         [style.trackEntryCurrent]: isCurrentlyPlaying,
       })}
       style={{
-        ...(virtualRow && {
+        ...(virtualEntry && {
           position: 'absolute',
           top: 0,
           left: 0,
           width: '100%',
-          transform: `translateY(${virtualRow.start}px)`,
+          transform: `translateY(${virtualEntry.start}px)`,
         }),
       }}
       onDoubleClick={() => {
@@ -434,17 +434,17 @@ const TrackEntry = ({ entry, isCurrentlyPlaying = false, virtualRow }) => {
 // LABEL ENTRY
 // ======================================================================
 
-const LabelEntry = ({ text, playingShuffle, virtualRow }) => {
+const LabelEntry = ({ text, playingShuffle, virtualEntry }) => {
   return (
     <div
       className={style.label}
       style={{
-        ...(virtualRow && {
+        ...(virtualEntry && {
           position: 'absolute',
           top: 0,
           left: 0,
           width: '100%',
-          transform: `translateY(${virtualRow.start}px)`,
+          transform: `translateY(${virtualEntry.start}px)`,
         }),
       }}
     >
@@ -470,12 +470,12 @@ const LabelEntry = ({ text, playingShuffle, virtualRow }) => {
 //     <div
 //       className={style.repeat}
 //       style={{
-//         ...(virtualRow && {
+//         ...(virtualEntry && {
 //           position: 'absolute',
 //           top: 0,
 //           left: 0,
 //           width: '100%',
-//           transform: `translateY(${virtualRow.start}px)`,
+//           transform: `translateY(${virtualEntry.start}px)`,
 //         }),
 //       }}
 //     >
