@@ -19,7 +19,8 @@
   }
 }
 
-.scrollableInner {
+.scrollableInner,
+.virtualRow {
   background: var(--color-background);
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -30,6 +31,16 @@
   }
   :global(.cq-860) & {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+
+  &Virtual {
+    display: block;
+  }
+}
+
+.virtualRow {
+  :global(.env-local) & {
+    background: rgba(255, 255, 255, 0.05);
   }
 }
 

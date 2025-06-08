@@ -2,15 +2,14 @@
 // IMPORTS
 // ======================================================================
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-// import moment from 'moment';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import clsx from 'clsx';
 
 import { Icon, StarRating } from 'js/components';
-import { useScrollToTrack } from 'js/hooks';
-// import { durationToStringLong } from 'js/utils';
+import { useScrollToTrack, useScrollToVirtualTrack, useWindowSize } from 'js/hooks';
 
 import style from './ListCardsV2.module.scss';
 
@@ -57,10 +56,21 @@ const ListCardsV2 = ({ children, variant, folderId, entries, playingOrder, sortK
   if (entries) {
     const ListBodyComponent = entries.length <= virtualThreshold ? ListBodyStatic : ListBodyVirtual;
 
+    let trackNumber = 0;
+    const entriesWithTrackNumbers = entries.map((entry, index) => {
+      if (entry.kind === 'track') {
+        trackNumber++;
+      }
+      return {
+        ...entry,
+        trackNumber: trackNumber - 1, // Adjust to zero-based index
+      };
+    });
+
     return (
       <div className={clsx(style.wrap)}>
         <ListBodyComponent
-          entries={entries}
+          entries={entriesWithTrackNumbers}
           folderId={folderId}
           iconImage={iconImage}
           isCurrentlyLoaded={isCurrentlyLoaded}
@@ -94,37 +104,17 @@ const ListBodyStatic = ({
 }) => {
   useScrollToTrack();
 
-  let trackNumber = 0;
-
   return (
     <div id="scrollable" className={clsx(style.scrollableOuter, style.scrollableOuterStatic)}>
       <div id="scrollable-inner" className={style.scrollableInner}>
         {titleBlock}
 
         {entries.map((entry, index) => {
-          if (entry.kind === 'track') {
-            trackNumber++;
-          }
-
-          const entryKey =
-            // prioritise track id
-            entry.trackId ||
-            entry.folderId ||
-            entry.collectionId ||
-            entry.genreId ||
-            entry.moodId ||
-            entry.playlistId ||
-            entry.styleId ||
-            // lastly, use album / artist, as these may be present in multiple variants
-            entry.albumId ||
-            entry.artistId ||
-            // fallback to index
-            index;
+          const entryKey = getEntryKey(entry, index);
 
           return (
             <ListEntry
               key={variant + '-' + entryKey}
-              index={trackNumber - 1}
               variant={variant}
               iconImage={iconImage}
               folderId={folderId}
@@ -146,7 +136,210 @@ const ListBodyStatic = ({
 // LIST BODY - VIRTUAL
 // ======================================================================
 
-const ListBodyVirtual = ({}) => {};
+const NUM_COLUMNS = 6;
+const ROW_HEIGHT = 248 + 20; // including gap
+
+/*
+TO DO:
+
+- Artist cards are shorter than album cards
+- Dynamic column count based on screen width
+- Dynamic row heights
+
+- Add grouping support (albums, compilations, live, etc.)
+- ExtraRows hack - when toggling groups on/off ??
+*/
+
+// Config
+const tableHeadHeight = 204;
+// const groupHeightFirst = 45;
+// const groupHeightGeneral = 94;
+const fixedElementCount = 1; // 1 for the header
+
+// State
+let innerRef;
+
+const ListBodyVirtual = ({
+  entries,
+  folderId,
+  iconImage,
+  isCurrentlyLoaded,
+  playerPlaying,
+  playingOrder,
+  sortKey,
+  showRatings,
+  titleBlock,
+  variant,
+}) => {
+  // Element refs
+  innerRef = useRef(null);
+  const outerRef = useRef(null);
+
+  const totalItems = entries.length;
+
+  // Used when scrolling to a specific track
+  const { windowHeight } = useWindowSize();
+
+  // Calculate number of rows needed given total items and columns
+  const numRows = Math.ceil(totalItems / NUM_COLUMNS);
+
+  // Helper to determine row heights
+  const estimateSize = useCallback(
+    (index) => {
+      const currentEntry = entries[index - fixedElementCount];
+
+      // const isGroupRowFirst = currentEntry?.kind === 'group' && index - fixedElementCount === 0;
+      // const isGroupRowGeneral = currentEntry?.kind === 'group' && !isGroupRowFirst;
+
+      const isExtraRow = index > fixedElementCount - 1 && !currentEntry;
+
+      if (index === 0) {
+        return tableHeadHeight;
+        // } else if (isGroupRowFirst) {
+        //   return groupHeightFirst;
+        // } else if (isGroupRowGeneral) {
+        //   return groupHeightGeneral;
+      } else if (isExtraRow) {
+        return 0;
+      } else {
+        return ROW_HEIGHT;
+      }
+    },
+    [entries]
+  );
+
+  // Setup the virtualizer
+  const rowVirtualizer = useVirtualizer({
+    count: numRows + fixedElementCount,
+    getScrollElement: () => outerRef.current,
+    overscan: 2,
+    estimateSize,
+    measureElement,
+  });
+
+  // Scroll to a specific track, when required
+  const scrollToVirtualTrack = useCallback(
+    (index) => {
+      const rowIndex = Math.floor(index / NUM_COLUMNS) + 0.5;
+      rowVirtualizer.scrollToOffset(tableHeadHeight + rowIndex * ROW_HEIGHT - (windowHeight - 100) / 2, {
+        align: 'start',
+        behavior: 'auto',
+      });
+
+      // Using "scrollToIndex" would be better, but it is broken - it prevents me from scrolling the page.
+      // It seems to clash with the use of "ref={rowVirtualizer.measureElement}" for some reason.
+
+      // rowVirtualizer.scrollToIndex(index, {
+      //   align: 'center',
+      //   behavior: 'auto',
+      // });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+  useScrollToVirtualTrack(entries, scrollToVirtualTrack);
+
+  window.rowVirtualizer = rowVirtualizer; // For debugging purposes
+
+  return (
+    <div ref={outerRef} id="scrollable" className={clsx(style.scrollableOuter, style.scrollableOuterVirtual)}>
+      <div
+        ref={innerRef}
+        id="scrollable-inner"
+        className={clsx(style.scrollableInner, style.scrollableInnerVirtual)}
+        style={{
+          height: `${rowVirtualizer.getTotalSize()}px`,
+        }}
+      >
+        {rowVirtualizer.getVirtualItems().map((virtualEntry, index) => {
+          if (index === 0) {
+            return (
+              <React.Fragment key={'title'}>
+                {titleBlock}
+                <div
+                  key={'title'}
+                  id="measure"
+                  className={style.measure}
+                  data-index={index}
+                  ref={rowVirtualizer.measureElement}
+                ></div>
+              </React.Fragment>
+            );
+          } else {
+            const items = [];
+
+            const rowIndex = virtualEntry.index - fixedElementCount;
+            const startIndex = rowIndex * NUM_COLUMNS;
+            const endIndex = Math.min(startIndex + NUM_COLUMNS, totalItems);
+
+            for (let i = startIndex; i < endIndex; i++) {
+              const entry = entries[i];
+
+              // Determine the entry key
+              const entryKey = getEntryKey(entry, virtualEntry.index);
+
+              // Catch missing entries
+              if (!entry) {
+                return null;
+              }
+
+              items.push(
+                <ListEntry
+                  key={variant + '-' + entryKey}
+                  variant={variant}
+                  iconImage={iconImage}
+                  folderId={folderId}
+                  playingOrder={playingOrder}
+                  sortKey={sortKey}
+                  showRatings={showRatings}
+                  isCurrentlyLoaded={isCurrentlyLoaded(variant, entryKey)}
+                  isCurrentlyPlaying={playerPlaying}
+                  {...entry}
+                />
+              );
+            }
+
+            return (
+              <VirtualRow key={virtualEntry.index} virtualEntry={virtualEntry}>
+                {items}
+              </VirtualRow>
+            );
+          }
+        })}
+      </div>
+    </div>
+  );
+};
+
+// Helper to determine the header height
+const measureElement = (element) => {
+  const innerTop = innerRef.current.getBoundingClientRect().top;
+  const elementTop = element.getBoundingClientRect().top;
+  return Math.round(elementTop - innerTop);
+};
+
+// ======================================================================
+// VIRTUAL ROW
+// ======================================================================
+
+const VirtualRow = ({ virtualEntry, children }) => {
+  return (
+    <div
+      className={style.virtualRow}
+      style={{
+        ...(virtualEntry && {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          transform: `translateY(${virtualEntry.start}px)`,
+        }),
+      }}
+    >
+      {children}
+    </div>
+  );
+};
 
 // ======================================================================
 // ENTRY
@@ -154,8 +347,8 @@ const ListBodyVirtual = ({}) => {};
 
 const ListEntry = React.memo(
   ({
-    index,
     variant,
+    trackNumber,
     thumb,
     title,
     albumId,
@@ -196,17 +389,17 @@ const ListEntry = React.memo(
           } else if (variant === 'playlists') {
             dispatch.playerModel.playerLoadPlaylist({ playlistId });
           } else if (variant === 'folders') {
-            // console.log(1111, index, folderId, playingOrder, sortKey);
+            // console.log(1111, trackNumber, folderId, playingOrder, sortKey);
             dispatch.playerModel.playerLoadTrackItem({
               playingVariant: 'folders',
               playingFolderId: folderId,
               playingOrder: sortKey ? playingOrder : null,
-              playingTrackIndex: sortKey ? playingOrder[index] : index,
+              playingTrackIndex: sortKey ? playingOrder[trackNumber] : trackNumber,
             });
           }
         }
       },
-      [variant, index, albumId, folderId, playlistId, playingOrder, sortKey, isCurrentlyLoaded, dispatch]
+      [variant, trackNumber, albumId, folderId, playlistId, playingOrder, sortKey, isCurrentlyLoaded, dispatch]
     );
 
     // Handle card click
@@ -342,6 +535,24 @@ const ListEntry = React.memo(
 // ======================================================================
 // HELPERS
 // ======================================================================
+
+const getEntryKey = (entry, fallback) => {
+  const entryKey =
+    // prioritise track id
+    entry.trackId ||
+    entry.folderId ||
+    entry.collectionId ||
+    entry.genreId ||
+    entry.moodId ||
+    entry.playlistId ||
+    entry.styleId ||
+    // lastly, use album / artist (as these may be present in the above variants)
+    entry.albumId ||
+    entry.artistId ||
+    // fallback
+    fallback;
+  return entryKey;
+};
 
 const lookupIcons = {
   folders: 'FolderIcon',
