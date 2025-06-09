@@ -21,6 +21,7 @@
 
 .scrollableInner,
 .virtualRow {
+  // Note: This grid layout MUST match the logic in the calculateColumnCount js function.
   background: var(--color-background);
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));

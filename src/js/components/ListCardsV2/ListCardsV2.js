@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -136,15 +136,13 @@ const ListBodyStatic = ({
 // LIST BODY - VIRTUAL
 // ======================================================================
 
-const NUM_COLUMNS = 6;
 const ROW_HEIGHT = 248 + 20; // including gap
 
 /*
 TO DO:
 
-- Artist cards are shorter than album cards
-- Dynamic column count based on screen width
 - Dynamic row heights
+- Artist cards are shorter than album cards
 
 - Add grouping support (albums, compilations, live, etc.)
 - ExtraRows hack - when toggling groups on/off ??
@@ -174,14 +172,36 @@ const ListBodyVirtual = ({
   // Element refs
   innerRef = useRef(null);
   const outerRef = useRef(null);
+  const [numColumns, setNumColumns] = useState(6);
+  const { windowHeight, windowWidth } = useWindowSize();
+  const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
 
   const totalItems = entries.length;
 
-  // Used when scrolling to a specific track
-  const { windowHeight } = useWindowSize();
+  // Calculate columns based on container width
+  useEffect(() => {
+    const calculateColumns = () => {
+      if (innerRef.current) {
+        const containerWidth = innerRef.current.clientWidth;
+        const columns = calculateColumnCount(containerWidth);
+
+        if (columns !== numColumns) {
+          setNumColumns(columns);
+        }
+      }
+    };
+
+    // Initial calculation
+    calculateColumns();
+
+    // Small delay to ensure measurements are accurate after DOM updates
+    const timer = setTimeout(calculateColumns, 100);
+
+    return () => clearTimeout(timer);
+  }, [windowWidth, queueIsVisible, numColumns]);
 
   // Calculate number of rows needed given total items and columns
-  const numRows = Math.ceil(totalItems / NUM_COLUMNS);
+  const numRows = Math.ceil(totalItems / numColumns);
 
   // Helper to determine row heights
   const estimateSize = useCallback(
@@ -220,7 +240,7 @@ const ListBodyVirtual = ({
   // Scroll to a specific track, when required
   const scrollToVirtualTrack = useCallback(
     (index) => {
-      const rowIndex = Math.floor(index / NUM_COLUMNS) + 0.5;
+      const rowIndex = Math.floor(index / numColumns) + 0.5;
       rowVirtualizer.scrollToOffset(tableHeadHeight + rowIndex * ROW_HEIGHT - (windowHeight - 100) / 2, {
         align: 'start',
         behavior: 'auto',
@@ -234,8 +254,7 @@ const ListBodyVirtual = ({
       //   behavior: 'auto',
       // });
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [rowVirtualizer, windowHeight, numColumns]
   );
   useScrollToVirtualTrack(entries, scrollToVirtualTrack);
 
@@ -269,8 +288,8 @@ const ListBodyVirtual = ({
             const items = [];
 
             const rowIndex = virtualEntry.index - fixedElementCount;
-            const startIndex = rowIndex * NUM_COLUMNS;
-            const endIndex = Math.min(startIndex + NUM_COLUMNS, totalItems);
+            const startIndex = rowIndex * numColumns;
+            const endIndex = Math.min(startIndex + numColumns, totalItems);
 
             for (let i = startIndex; i < endIndex; i++) {
               const entry = entries[i];
@@ -316,6 +335,21 @@ const measureElement = (element) => {
   const innerTop = innerRef.current.getBoundingClientRect().top;
   const elementTop = element.getBoundingClientRect().top;
   return Math.round(elementTop - innerTop);
+};
+
+// Helper to determine the number of columns based on container width
+// Note: This function must match the grid layout defined in the CSS.
+const calculateColumnCount = (containerWidth) => {
+  let minColumnWidth = 140;
+  if (containerWidth >= 860) {
+    minColumnWidth = 180;
+  } else if (containerWidth >= 620) {
+    minColumnWidth = 160;
+  }
+  const gap = 10;
+  const availableWidth = containerWidth + gap; // Add one gap because n columns have n-1 gaps between them
+  const columnCount = Math.floor(availableWidth / (minColumnWidth + gap));
+  return Math.max(1, columnCount); // Ensure at least 1 column
 };
 
 // ======================================================================
