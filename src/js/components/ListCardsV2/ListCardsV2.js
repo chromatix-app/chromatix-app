@@ -167,8 +167,8 @@ const ListBodyVirtual = ({
   // Element refs
   innerRef = useRef(null);
   const outerRef = useRef(null);
-  const [numColumns, setNumColumns] = useState(6);
-  const [rowHeight, setRowHeight] = useState(250);
+  const [numColumns, setNumColumns] = useState(0);
+  const [rowHeight, setRowHeight] = useState(0);
   const [toggleColumnHeight, setToggleColumnHeight] = useState(false);
   const { windowHeight, windowWidth } = useWindowSize();
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
@@ -194,7 +194,7 @@ const ListBodyVirtual = ({
   }, [variant, windowWidth, queueIsVisible, numColumns, rowHeight]);
 
   // Calculate number of rows needed given total items and columns
-  const numRows = Math.ceil(totalItems / numColumns);
+  const numRows = numColumns ? Math.ceil(totalItems / numColumns) : 0;
 
   // Hacky workaround to force a re-render if certain props change
   const extraRows = toggleColumnHeight ? 1 : 0;
@@ -256,8 +256,6 @@ const ListBodyVirtual = ({
   );
   useScrollToVirtualTrack(entries, scrollToVirtualTrack);
 
-  window.rowVirtualizer = rowVirtualizer; // For debugging purposes
-
   return (
     <div ref={outerRef} id="scrollable" className={clsx(style.scrollableOuter, style.scrollableOuterVirtual)}>
       <div
@@ -282,7 +280,7 @@ const ListBodyVirtual = ({
                 ></div>
               </React.Fragment>
             );
-          } else {
+          } else if (numColumns > 0 && rowHeight > 0) {
             const items = [];
 
             const rowIndex = virtualEntry.index - fixedElementCount;
@@ -321,6 +319,8 @@ const ListBodyVirtual = ({
                 {items}
               </VirtualRow>
             );
+          } else {
+            return null;
           }
         })}
       </div>
@@ -358,10 +358,12 @@ const calculateDimensions = (variant, outerWidth, innerWidth) => {
 
   // Calculate column height based on width plus additional elements
   // TODO: this will need to vary depending on the variant and whether ratings are shown
-  const contentHeight = variant === 'artists' ? 48 : 63;
-  const columnHeight = columnWidth + contentHeight + rowGap;
+  const titleHeight = 28.8;
+  const subtitleHeight = variant === 'albums' ? 15.4 : 0;
+  const ratingHeight = ['albums', 'artists', 'playlists', 'collections'].includes(variant) ? 19 : 0;
+  const columnHeight = Math.ceil(columnWidth + titleHeight + subtitleHeight + ratingHeight + rowGap);
 
-  // console.log(innerWidth, minColumnWidth, columnCount, columnWidth);
+  // console.log(columnHeight, columnWidth, titleHeight, subtitleHeight, ratingHeight, rowGap);
 
   return {
     columnCount: Math.max(1, columnCount),
