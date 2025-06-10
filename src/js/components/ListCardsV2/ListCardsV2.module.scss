@@ -19,9 +19,8 @@
   }
 }
 
-.scrollableInner,
-.virtualRow {
-  // Note: This grid layout MUST match the logic in the calculateColumnCount js function.
+.scrollableInner {
+  // Note: This grid layout MUST match the logic in the calculateDimensions js function.
   background: var(--color-background);
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -40,6 +39,9 @@
 }
 
 .virtualRow {
+  display: grid;
+  gap: 0 10px;
+
   :global(.env-local) & {
     background: rgba(255, 255, 255, 0.05);
   }
@@ -57,6 +59,10 @@
   &:hover {
     background: var(--color-opacity-01);
     border: 1px solid var(--color-opacity-005);
+  }
+
+  .virtualRow & {
+    margin-bottom: 0;
   }
 
   &Link {

@@ -136,16 +136,11 @@ const ListBodyStatic = ({
 // LIST BODY - VIRTUAL
 // ======================================================================
 
-const ROW_HEIGHT = 248 + 20; // including gap
-
 /*
 TO DO:
 
-- Dynamic row heights
-- Artist cards are shorter than album cards
-
+- Differing card heights - variant, genres, show ratings, etc.
 - Add grouping support (albums, compilations, live, etc.)
-- ExtraRows hack - when toggling groups on/off ??
 */
 
 // Config
@@ -164,8 +159,8 @@ const ListBodyVirtual = ({
   isCurrentlyLoaded,
   playerPlaying,
   playingOrder,
-  sortKey,
   showRatings,
+  sortKey,
   titleBlock,
   variant,
 }) => {
@@ -173,6 +168,8 @@ const ListBodyVirtual = ({
   innerRef = useRef(null);
   const outerRef = useRef(null);
   const [numColumns, setNumColumns] = useState(6);
+  const [rowHeight, setRowHeight] = useState(250);
+  const [toggleColumnHeight, setToggleColumnHeight] = useState(false);
   const { windowHeight, windowWidth } = useWindowSize();
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
 
@@ -180,38 +177,39 @@ const ListBodyVirtual = ({
 
   // Calculate columns based on container width
   useEffect(() => {
-    const calculateColumns = () => {
-      if (innerRef.current) {
-        const containerWidth = innerRef.current.clientWidth;
-        const columns = calculateColumnCount(containerWidth);
+    if (innerRef.current) {
+      const outerWidth = outerRef.current.clientWidth;
+      const innerWidth = innerRef.current.clientWidth;
+      const columnCount = calculateDimensions(variant, outerWidth, innerWidth).columnCount;
+      const columnHeight = calculateDimensions(variant, outerWidth, innerWidth).columnHeight;
 
-        if (columns !== numColumns) {
-          setNumColumns(columns);
-        }
+      if (columnCount !== numColumns) {
+        setNumColumns(columnCount);
       }
-    };
-
-    // Initial calculation
-    calculateColumns();
-
-    // Small delay to ensure measurements are accurate after DOM updates
-    const timer = setTimeout(calculateColumns, 100);
-
-    return () => clearTimeout(timer);
-  }, [windowWidth, queueIsVisible, numColumns]);
+      if (columnHeight !== rowHeight) {
+        setRowHeight(columnHeight);
+        setToggleColumnHeight((prev) => !prev);
+      }
+    }
+  }, [variant, windowWidth, queueIsVisible, numColumns, rowHeight]);
 
   // Calculate number of rows needed given total items and columns
   const numRows = Math.ceil(totalItems / numColumns);
 
+  // Hacky workaround to force a re-render if certain props change
+  const extraRows = toggleColumnHeight ? 1 : 0;
+
   // Helper to determine row heights
   const estimateSize = useCallback(
     (index) => {
-      const currentEntry = entries[index - fixedElementCount];
+      const totalExpectedRows = numRows + fixedElementCount;
+      const currentRow = index + 1;
 
+      // const currentEntry = entries[index - fixedElementCount];
       // const isGroupRowFirst = currentEntry?.kind === 'group' && index - fixedElementCount === 0;
       // const isGroupRowGeneral = currentEntry?.kind === 'group' && !isGroupRowFirst;
 
-      const isExtraRow = index > fixedElementCount - 1 && !currentEntry;
+      const isExtraRow = index > fixedElementCount - 1 && currentRow > totalExpectedRows;
 
       if (index === 0) {
         return tableHeadHeight;
@@ -222,15 +220,15 @@ const ListBodyVirtual = ({
       } else if (isExtraRow) {
         return 0;
       } else {
-        return ROW_HEIGHT;
+        return rowHeight;
       }
     },
-    [entries]
+    [numRows, rowHeight]
   );
 
   // Setup the virtualizer
   const rowVirtualizer = useVirtualizer({
-    count: numRows + fixedElementCount,
+    count: numRows + fixedElementCount + extraRows,
     getScrollElement: () => outerRef.current,
     overscan: 2,
     estimateSize,
@@ -241,7 +239,7 @@ const ListBodyVirtual = ({
   const scrollToVirtualTrack = useCallback(
     (index) => {
       const rowIndex = Math.floor(index / numColumns) + 0.5;
-      rowVirtualizer.scrollToOffset(tableHeadHeight + rowIndex * ROW_HEIGHT - (windowHeight - 100) / 2, {
+      rowVirtualizer.scrollToOffset(tableHeadHeight + rowIndex * rowHeight - (windowHeight - 100) / 2, {
         align: 'start',
         behavior: 'auto',
       });
@@ -254,7 +252,7 @@ const ListBodyVirtual = ({
       //   behavior: 'auto',
       // });
     },
-    [rowVirtualizer, windowHeight, numColumns]
+    [rowVirtualizer, windowHeight, numColumns, rowHeight]
   );
   useScrollToVirtualTrack(entries, scrollToVirtualTrack);
 
@@ -319,7 +317,7 @@ const ListBodyVirtual = ({
             }
 
             return (
-              <VirtualRow key={virtualEntry.index} virtualEntry={virtualEntry}>
+              <VirtualRow key={virtualEntry.index} virtualEntry={virtualEntry} numColumns={numColumns}>
                 {items}
               </VirtualRow>
             );
@@ -339,35 +337,53 @@ const measureElement = (element) => {
 
 // Helper to determine the number of columns based on container width
 // Note: This function must match the grid layout defined in the CSS.
-const calculateColumnCount = (containerWidth) => {
+const calculateDimensions = (variant, outerWidth, innerWidth) => {
   let minColumnWidth = 140;
-  if (containerWidth >= 860) {
+  if (outerWidth >= 860) {
     minColumnWidth = 180;
-  } else if (containerWidth >= 620) {
+  } else if (outerWidth >= 620) {
     minColumnWidth = 160;
   }
-  const gap = 10;
-  const availableWidth = containerWidth + gap; // Add one gap because n columns have n-1 gaps between them
-  const columnCount = Math.floor(availableWidth / (minColumnWidth + gap));
-  return Math.max(1, columnCount); // Ensure at least 1 column
+  const colGap = 10;
+  const rowGap = 20;
+
+  // This is how auto-fill with minmax() calculates columns:
+  // Find how many minimum-width columns (plus gaps) fit
+  const columnCount = Math.floor((innerWidth + colGap) / (minColumnWidth + colGap));
+
+  // In CSS grid, the remaining space is evenly distributed (1fr)
+  // Calculate the actual column width after distribution
+  const usableWidth = innerWidth - colGap * (columnCount - 1);
+  const columnWidth = Math.floor(usableWidth / columnCount);
+
+  // Calculate column height based on width plus additional elements
+  // TODO: this will need to vary depending on the variant and whether ratings are shown
+  const contentHeight = variant === 'artists' ? 48 : 63;
+  const columnHeight = columnWidth + contentHeight + rowGap;
+
+  // console.log(innerWidth, minColumnWidth, columnCount, columnWidth);
+
+  return {
+    columnCount: Math.max(1, columnCount),
+    columnHeight: columnHeight,
+  };
 };
 
 // ======================================================================
 // VIRTUAL ROW
 // ======================================================================
 
-const VirtualRow = ({ virtualEntry, children }) => {
+const VirtualRow = ({ children, numColumns, virtualEntry }) => {
   return (
     <div
       className={style.virtualRow}
       style={{
-        ...(virtualEntry && {
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          transform: `translateY(${virtualEntry.start}px)`,
-        }),
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        transform: `translateY(${virtualEntry.start}px)`,
+        gridTemplateColumns: `repeat(${numColumns}, minmax(0, 1fr))`,
       }}
     >
       {children}
