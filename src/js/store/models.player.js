@@ -66,7 +66,14 @@ const effects = (dispatch) => ({
     };
 
     // create and save player element
-    playerX.init(volumeLevel, volumeMuted, onLoadStart, onCanPlay, onEnded);
+    playerX.init({
+      volumeLevel,
+      volumeMuted,
+      onLoadStart,
+      onCanPlay,
+      onEnded,
+      onError: dispatch.playerModel.playerError,
+    });
     dispatch.playerModel.setPlayerState({
       playerInited: true,
     });
@@ -105,6 +112,50 @@ const effects = (dispatch) => ({
     playerX.unload();
     dispatch.playerModel.setPlayerState({
       playerPlaying: false,
+    });
+  },
+
+  playerError(payload, rootState) {
+    const { event, playerElement } = payload;
+    const mediaError = playerElement.error;
+    let errorDetails = 'Unknown error';
+
+    if (mediaError) {
+      switch (mediaError.code) {
+        case MediaError.MEDIA_ERR_ABORTED:
+          errorDetails = 'Fetching process aborted by user';
+          break;
+        case MediaError.MEDIA_ERR_NETWORK:
+          errorDetails = 'Network error occurred while fetching the media';
+          break;
+        case MediaError.MEDIA_ERR_DECODE:
+          errorDetails = 'Media decoding error - file might be corrupted or unsupported format';
+          break;
+        case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+          errorDetails = 'Media source not supported - check format or CORS issues';
+          break;
+        default:
+          errorDetails = 'An unknown error occurred';
+          break;
+      }
+
+      if (mediaError.message) {
+        errorDetails += `: ${mediaError.message}`;
+      }
+    }
+
+    if (rootState.playerModel.playerPlaying) {
+      // Player is currently playing - try next track
+      // dispatch.playerModel.playerNext(true);
+    } else {
+      // Player is not playing - log error and stop
+    }
+
+    console.error('%c--- player - error ---', 'color:#a18507', {
+      errorType: errorDetails,
+      sourceURL: playerElement.src,
+      sourceFormat: playerElement.src.split('.').pop().split('?')[0],
+      originalEvent: event,
     });
   },
 
