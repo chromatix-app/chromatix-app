@@ -7,7 +7,7 @@ import {
   FilterSelect,
   FilterToggle,
   FilterWrap,
-  ListCards,
+  ListCardsV2,
   ListTable,
   Loading,
   TitleHeading,
@@ -41,10 +41,11 @@ const ArtistCollectionList = () => {
 
   return (
     <>
-      {(isLoading || isEmptyList || isGridView) && (
+      {(isLoading || isEmptyList) && (
         <Title
           colOptions={colOptions}
           gridOptions={gridOptions}
+          isGridView={isGridView}
           isListView={isListView}
           orderCollections={orderCollections}
           setColumnVisibility={setColumnVisibility}
@@ -58,7 +59,22 @@ const ArtistCollectionList = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ListCards variant="collections" entries={sortedCollections} showRatings={gridOptions.userRating} />
+        <ListCardsV2 variant="collections" entries={sortedCollections} showRatings={gridOptions.userRating}>
+          <Title
+            colOptions={colOptions}
+            gridOptions={gridOptions}
+            isGridView={isGridView}
+            isListView={isListView}
+            orderCollections={orderCollections}
+            setColumnVisibility={setColumnVisibility}
+            setOrderCollections={setOrderCollections}
+            setSortCollections={setSortCollections}
+            setViewCollections={setViewCollections}
+            sortCollections={sortCollections}
+            sortedCollections={sortedCollections}
+            viewCollections={viewCollections}
+          />
+        </ListCardsV2>
       )}
       {isListView && (
         <ListTable
@@ -71,6 +87,7 @@ const ArtistCollectionList = () => {
           <Title
             colOptions={colOptions}
             gridOptions={gridOptions}
+            isGridView={isGridView}
             isListView={isListView}
             orderCollections={orderCollections}
             setColumnVisibility={setColumnVisibility}
@@ -90,6 +107,7 @@ const ArtistCollectionList = () => {
 const Title = ({
   colOptions,
   gridOptions,
+  isGridView,
   isListView,
   orderCollections,
   setColumnVisibility,
@@ -112,9 +130,9 @@ const Title = ({
             <>&nbsp;</>
           )
         }
-        padding={!isListView}
+        padding={!isListView && !isGridView}
       />
-      <FilterWrap padding={!isListView}>
+      <FilterWrap padding={!isListView && !isGridView}>
         <FilterToggle
           value={viewCollections}
           options={[

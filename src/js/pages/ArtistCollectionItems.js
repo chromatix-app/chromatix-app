@@ -8,7 +8,7 @@ import {
   FilterMenu,
   FilterSelect,
   FilterToggle,
-  ListCards,
+  ListCardsV2,
   ListTable,
   Loading,
   StarRating,
@@ -59,7 +59,7 @@ const ArtistCollectionItems = () => {
 
   return (
     <>
-      {(isLoading || isEmptyList || isGridView) && (
+      {(isLoading || isEmptyList) && (
         <Title
           collectionId={collectionId}
           collectionRating={collectionRating}
@@ -67,6 +67,7 @@ const ArtistCollectionItems = () => {
           collectionTitle={collectionTitle}
           colOptions={colOptions}
           gridOptions={gridOptions}
+          isGridView={isGridView}
           isListView={isListView}
           libraryId={libraryId}
           orderCollectionItems={orderCollectionItems}
@@ -81,7 +82,27 @@ const ArtistCollectionItems = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ListCards variant={'artists'} entries={sortedCollectionItems} showRatings={gridOptions.userRating} />
+        <ListCardsV2 variant={'artists'} entries={sortedCollectionItems} showRatings={gridOptions.userRating}>
+          <Title
+            collectionId={collectionId}
+            collectionRating={collectionRating}
+            collectionThumb={collectionThumb}
+            collectionTitle={collectionTitle}
+            colOptions={colOptions}
+            gridOptions={gridOptions}
+            isGridView={isGridView}
+            isListView={isListView}
+            libraryId={libraryId}
+            orderCollectionItems={orderCollectionItems}
+            setColumnVisibility={setColumnVisibility}
+            setOrderCollectionItems={setOrderCollectionItems}
+            setSortCollectionItems={setSortCollectionItems}
+            setViewCollectionItems={setViewCollectionItems}
+            sortCollectionItems={sortCollectionItems}
+            sortedCollectionItems={sortedCollectionItems}
+            viewCollectionItems={viewCollectionItems}
+          />
+        </ListCardsV2>
       )}
       {isListView && (
         <ListTable
@@ -98,6 +119,7 @@ const ArtistCollectionItems = () => {
             collectionTitle={collectionTitle}
             colOptions={colOptions}
             gridOptions={gridOptions}
+            isGridView={isGridView}
             isListView={isListView}
             libraryId={libraryId}
             orderCollectionItems={orderCollectionItems}
@@ -122,6 +144,7 @@ const Title = ({
   collectionTitle,
   colOptions,
   gridOptions,
+  isGridView,
   isListView,
   libraryId,
   orderCollectionItems,
@@ -155,7 +178,7 @@ const Title = ({
           <>&nbsp;</>
         )
       }
-      padding={!isListView}
+      padding={!isListView && !isGridView}
       filters={
         <>
           <FilterToggle

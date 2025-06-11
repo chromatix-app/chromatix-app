@@ -180,8 +180,8 @@ const ListBodyVirtual = ({
     if (innerRef.current) {
       const outerWidth = outerRef.current.clientWidth;
       const innerWidth = innerRef.current.clientWidth;
-      const columnCount = calculateDimensions(variant, outerWidth, innerWidth).columnCount;
-      const columnHeight = calculateDimensions(variant, outerWidth, innerWidth).columnHeight;
+      const columnCount = calculateDimensions(variant, iconImage, outerWidth, innerWidth).columnCount;
+      const columnHeight = calculateDimensions(variant, iconImage, outerWidth, innerWidth).columnHeight;
 
       if (columnCount !== numColumns) {
         setNumColumns(columnCount);
@@ -191,7 +191,7 @@ const ListBodyVirtual = ({
         setToggleColumnHeight((prev) => !prev);
       }
     }
-  }, [variant, windowWidth, queueIsVisible, numColumns, rowHeight]);
+  }, [variant, iconImage, numColumns, rowHeight, queueIsVisible, windowWidth]);
 
   // Calculate number of rows needed given total items and columns
   const numRows = numColumns ? Math.ceil(totalItems / numColumns) : 0;
@@ -337,7 +337,7 @@ const measureElement = (element) => {
 
 // Helper to determine the number of columns based on container width
 // Note: This function must match the grid layout defined in the CSS.
-const calculateDimensions = (variant, outerWidth, innerWidth) => {
+const calculateDimensions = (variant, iconImage, outerWidth, innerWidth) => {
   let minColumnWidth = 140;
   if (outerWidth >= 860) {
     minColumnWidth = 180;
@@ -356,14 +356,13 @@ const calculateDimensions = (variant, outerWidth, innerWidth) => {
   const usableWidth = innerWidth - colGap * (columnCount - 1);
   const columnWidth = Math.floor(usableWidth / columnCount);
 
-  // Calculate column height based on width plus additional elements
-  // TODO: this will need to vary depending on the variant and whether ratings are shown
+  // Calculate column height, based on variant
+  const isSquareCard = !iconImage || variant === 'folders';
+  const imageHeight = isSquareCard ? columnWidth : (columnWidth - 20) * 0.6 + 20;
   const titleHeight = 28.8;
-  const subtitleHeight = variant === 'albums' ? 15.4 : 0;
+  const subtitleHeight = ['albums', 'folders'].includes(variant) ? 15.4 : 0;
   const ratingHeight = ['albums', 'artists', 'playlists', 'collections'].includes(variant) ? 19 : 0;
-  const columnHeight = Math.ceil(columnWidth + titleHeight + subtitleHeight + ratingHeight + rowGap);
-
-  // console.log(columnHeight, columnWidth, titleHeight, subtitleHeight, ratingHeight, rowGap);
+  const columnHeight = Math.ceil(imageHeight + titleHeight + subtitleHeight + ratingHeight + rowGap);
 
   return {
     columnCount: Math.max(1, columnCount),

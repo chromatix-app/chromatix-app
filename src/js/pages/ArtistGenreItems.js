@@ -4,7 +4,7 @@
 
 import { useParams } from 'react-router-dom';
 
-import { FilterMenu, FilterSelect, FilterToggle, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
+import { FilterMenu, FilterSelect, FilterToggle, ListCardsV2, ListTable, Loading, TitleHeading } from 'js/components';
 import { useGetCollectionItems } from 'js/hooks';
 
 // ======================================================================
@@ -50,13 +50,14 @@ const ArtistGenreItems = () => {
 
   return (
     <>
-      {(isLoading || isEmptyList || isGridView) && (
+      {(isLoading || isEmptyList) && (
         <Title
           collectionThumb={collectionThumb}
           collectionTitle={collectionTitle}
           colOptions={colOptions}
           genreId={genreId}
           gridOptions={gridOptions}
+          isGridView={isGridView}
           isListView={isListView}
           libraryId={libraryId}
           orderCollectionItems={orderCollectionItems}
@@ -71,7 +72,26 @@ const ArtistGenreItems = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ListCards variant={'artists'} entries={sortedCollectionItems} showRatings={gridOptions.userRating} />
+        <ListCardsV2 variant={'artists'} entries={sortedCollectionItems} showRatings={gridOptions.userRating}>
+          <Title
+            collectionThumb={collectionThumb}
+            collectionTitle={collectionTitle}
+            colOptions={colOptions}
+            genreId={genreId}
+            gridOptions={gridOptions}
+            isGridView={isGridView}
+            isListView={isListView}
+            libraryId={libraryId}
+            orderCollectionItems={orderCollectionItems}
+            setColumnVisibility={setColumnVisibility}
+            setOrderCollectionItems={setOrderCollectionItems}
+            setSortCollectionItems={setSortCollectionItems}
+            setViewCollectionItems={setViewCollectionItems}
+            sortCollectionItems={sortCollectionItems}
+            sortedCollectionItems={sortedCollectionItems}
+            viewCollectionItems={viewCollectionItems}
+          />
+        </ListCardsV2>
       )}
       {isListView && (
         <ListTable
@@ -87,6 +107,7 @@ const ArtistGenreItems = () => {
             colOptions={colOptions}
             genreId={genreId}
             gridOptions={gridOptions}
+            isGridView={isGridView}
             isListView={isListView}
             libraryId={libraryId}
             orderCollectionItems={orderCollectionItems}
@@ -110,6 +131,7 @@ const Title = ({
   colOptions,
   genreId,
   gridOptions,
+  isGridView,
   isListView,
   libraryId,
   orderCollectionItems,
@@ -134,7 +156,7 @@ const Title = ({
         )
       }
       icon={'ArtistGenresIcon'}
-      padding={!isListView}
+      padding={!isListView && !isGridView}
       filters={
         <>
           <FilterToggle
