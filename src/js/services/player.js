@@ -1,15 +1,17 @@
 let playerElement = null;
 
-export const init = (volumeLevel, volumeMuted, onLoadStart, onCanPlay, onEnded) => {
+export const init = ({ volumeLevel, volumeMuted, onLoadStart, onCanPlay, onEnded, onError }) => {
   console.log('%c--- player - init ---', 'color:#a18507');
   if (!playerElement) {
     playerElement = document.createElement('audio');
 
+    playerElement.pause();
     playerElement.volume = volumeMuted ? 0 : volumeLevel / 100;
 
     playerElement.addEventListener('loadstart', onLoadStart);
     playerElement.addEventListener('canplay', onCanPlay);
     playerElement.addEventListener('ended', onEnded);
+    playerElement.addEventListener('error', (event) => onError({ event, playerElement }));
   }
 };
 
