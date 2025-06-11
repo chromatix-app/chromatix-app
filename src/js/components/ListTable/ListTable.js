@@ -518,7 +518,7 @@ const TableBodyVirtual = ({
         behavior: 'auto',
       });
 
-      // Using "scrollToIndex" would be better, but it is broken - it prevents me from scrolling the page.
+      // Note: using "scrollToIndex" would be better, but it is broken - it prevents me from scrolling the page.
       // It seems to clash with the use of "ref={rowVirtualizer.measureElement}" for some reason.
 
       // rowVirtualizer.scrollToIndex(index, {
@@ -815,6 +815,7 @@ const StandardRow = ({ virtualEntry, entry, tableVariant, tableOptions, gridTemp
                     ratingKey={entry[ratingKey]}
                     rating={entry.userRating}
                     editable
+                    onlyShowOnHover
                   />
                 </div>
               );
@@ -1047,6 +1048,7 @@ const TrackRow = ({
                     ratingKey={entry[ratingKey]}
                     rating={entry.userRating}
                     editable
+                    onlyShowOnHover
                   />
                 </div>
               );

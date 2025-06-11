@@ -148,7 +148,7 @@ const Title = ({
             {(albumReleaseDate || albumTrackCount) && albumDurationString && ' • '}
             {albumDurationString}
             {(albumReleaseDate || albumTrackCount || albumDurationString) && ' • '}
-            <StarRating variant="title" type="album" ratingKey={albumId} rating={albumRating} editable alwaysVisible />
+            <StarRating variant="title" type="album" ratingKey={albumId} rating={albumRating} editable />
           </>
         ) : (
           <>&nbsp;</>

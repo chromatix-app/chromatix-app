@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -136,13 +136,6 @@ const ListBodyStatic = ({
 // LIST BODY - VIRTUAL
 // ======================================================================
 
-/*
-TO DO:
-
-- Differing card heights - variant, genres, show ratings, etc.
-- Add grouping support (albums, compilations, live, etc.)
-*/
-
 // Config
 const tableHeadHeight = 204;
 // const groupHeightFirst = 45;
@@ -167,8 +160,21 @@ const ListBodyVirtual = ({
   // Element refs
   innerRef = useRef(null);
   const outerRef = useRef(null);
-  const [numColumns, setNumColumns] = useState(0);
-  const [rowHeight, setRowHeight] = useState(0);
+
+  const contentWidth = useSelector(({ appModel }) => appModel.contentWidth);
+  const contentBreakpoint = useSelector(({ appModel }) => appModel.contentBreakpoint);
+
+  const initialDimensions = useMemo(
+    () => {
+      const innerWidth = contentWidth >= 800 ? contentWidth - 60 : contentWidth - 40;
+      return calculateDimensions(variant, iconImage, showRatings, contentWidth, innerWidth);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
+  const [numColumns, setNumColumns] = useState(initialDimensions.columnCount);
+  const [rowHeight, setRowHeight] = useState(initialDimensions.columnHeight);
   const [toggleColumnHeight, setToggleColumnHeight] = useState(false);
   const { windowHeight, windowWidth } = useWindowSize();
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
@@ -180,8 +186,9 @@ const ListBodyVirtual = ({
     if (innerRef.current) {
       const outerWidth = outerRef.current.clientWidth;
       const innerWidth = innerRef.current.clientWidth;
-      const columnCount = calculateDimensions(variant, iconImage, outerWidth, innerWidth).columnCount;
-      const columnHeight = calculateDimensions(variant, iconImage, outerWidth, innerWidth).columnHeight;
+      const dimensions = calculateDimensions(variant, iconImage, showRatings, outerWidth, innerWidth);
+      const columnCount = dimensions.columnCount;
+      const columnHeight = dimensions.columnHeight;
 
       if (columnCount !== numColumns) {
         setNumColumns(columnCount);
@@ -191,7 +198,7 @@ const ListBodyVirtual = ({
         setToggleColumnHeight((prev) => !prev);
       }
     }
-  }, [variant, iconImage, numColumns, rowHeight, queueIsVisible, windowWidth]);
+  }, [variant, iconImage, showRatings, numColumns, rowHeight, queueIsVisible, windowWidth]);
 
   // Calculate number of rows needed given total items and columns
   const numRows = numColumns ? Math.ceil(totalItems / numColumns) : 0;
@@ -244,7 +251,7 @@ const ListBodyVirtual = ({
         behavior: 'auto',
       });
 
-      // Using "scrollToIndex" would be better, but it is broken - it prevents me from scrolling the page.
+      // Note: using "scrollToIndex" would be better, but it is broken - it prevents me from scrolling the page.
       // It seems to clash with the use of "ref={rowVirtualizer.measureElement}" for some reason.
 
       // rowVirtualizer.scrollToIndex(index, {
@@ -268,11 +275,12 @@ const ListBodyVirtual = ({
       >
         {rowVirtualizer.getVirtualItems().map((virtualEntry, index) => {
           if (index === 0) {
+            // Note - adding contentBreakpoint to the key is a hacky workaround to force a re-render if content breakpoint changes
             return (
-              <React.Fragment key={'title'}>
+              <React.Fragment key={'title-' + contentBreakpoint}>
                 {titleBlock}
                 <div
-                  key={'title'}
+                  key={'title-' + contentBreakpoint}
                   id="measure"
                   className={style.measure}
                   data-index={index}
@@ -337,7 +345,7 @@ const measureElement = (element) => {
 
 // Helper to determine the number of columns based on container width
 // Note: This function must match the grid layout defined in the CSS.
-const calculateDimensions = (variant, iconImage, outerWidth, innerWidth) => {
+const calculateDimensions = (variant, iconImage, showRatings, outerWidth, innerWidth) => {
   let minColumnWidth = 140;
   if (outerWidth >= 860) {
     minColumnWidth = 180;
@@ -361,7 +369,7 @@ const calculateDimensions = (variant, iconImage, outerWidth, innerWidth) => {
   const imageHeight = isSquareCard ? columnWidth : (columnWidth - 20) * 0.6 + 20;
   const titleHeight = 28.8;
   const subtitleHeight = ['albums', 'folders'].includes(variant) ? 15.4 : 0;
-  const ratingHeight = ['albums', 'artists', 'playlists', 'collections'].includes(variant) ? 19 : 0;
+  const ratingHeight = showRatings && ['albums', 'artists', 'playlists', 'collections'].includes(variant) ? 19 : 0;
   const columnHeight = Math.ceil(imageHeight + titleHeight + subtitleHeight + ratingHeight + rowGap);
 
   return {
@@ -423,10 +431,6 @@ const ListEntry = React.memo(
   }) => {
     const history = useHistory();
     const dispatch = useDispatch();
-
-    const optionShowFullTitles_Deprecated = useSelector(
-      ({ sessionModel }) => sessionModel.optionShowFullTitles_Deprecated
-    );
 
     // Play button handler
     const handlePlay = useCallback(
@@ -554,15 +558,13 @@ const ListEntry = React.memo(
 
         {/* Body */}
         <div className={style.body}>
-          {title && <div className={clsx(style.title, { 'text-trim': !optionShowFullTitles_Deprecated })}>{title}</div>}
+          {title && <div className={clsx(style.title, 'text-trim')}>{title}</div>}
 
-          {artist && !artistLink && (
-            <div className={clsx(style.subtitle, { 'text-trim': !optionShowFullTitles_Deprecated })}>{artist}</div>
-          )}
+          {artist && !artistLink && <div className={clsx(style.subtitle, 'text-trim')}>{artist}</div>}
 
           {artist && artistLink && (
             <NavLink
-              className={clsx(style.subtitle, { 'text-trim': !optionShowFullTitles_Deprecated })}
+              className={clsx(style.subtitle, 'text-trim')}
               to={artistLink}
               onClick={handleLinkClick}
               tabIndex={-1}
@@ -572,7 +574,8 @@ const ListEntry = React.memo(
             </NavLink>
           )}
 
-          {showRatings && typeof userRating !== 'undefined' && userRating > 0 && (
+          {showRatings && (
+            // typeof userRating !== 'undefined' && userRating > 0 && (
             <div className={style.rating}>
               <StarRating variant="card" type={variant} ratingKey={ratingKey} rating={userRating} />
             </div>

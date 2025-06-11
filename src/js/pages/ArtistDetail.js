@@ -276,7 +276,7 @@ const Title = ({
           {artistCountry && artistGenre && ' • '}
           {artistGenre}
           {(artistCountry || artistGenre) && ' • '}
-          <StarRating variant="title" type="artist" ratingKey={artistId} rating={artistRating} editable alwaysVisible />
+          <StarRating variant="title" type="artist" ratingKey={artistId} rating={artistRating} editable />
         </>
       }
       padding={!isListView && !isTrackView}

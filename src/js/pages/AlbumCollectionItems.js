@@ -162,14 +162,7 @@ const Title = ({
       thumb={collectionThumb}
       title={collectionTitle}
       detail={
-        <StarRating
-          variant="title"
-          type="collection"
-          ratingKey={collectionId}
-          rating={collectionRating}
-          editable
-          alwaysVisible
-        />
+        <StarRating variant="title" type="collection" ratingKey={collectionId} rating={collectionRating} editable />
       }
       subtitle={
         sortedCollectionItems ? (
