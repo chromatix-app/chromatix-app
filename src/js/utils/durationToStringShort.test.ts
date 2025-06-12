@@ -15,3 +15,36 @@ describe('Testing "durationToStringShort" function', () => {
     expect(durationToStringShort(2222222222)).toBe('617:17:02');
   });
 });
+test('Test edge cases', () => {
+  // Zero and small values
+  expect(durationToStringShort(0)).toBe('0:00');
+  expect(durationToStringShort(500)).toBe('0:00'); // Less than a second
+  expect(durationToStringShort(999)).toBe('0:00');
+  expect(durationToStringShort(1000)).toBe('0:01'); // Exactly one second
+
+  // Exact minute and hour boundaries
+  expect(durationToStringShort(60000)).toBe('1:00'); // Exactly one minute
+  expect(durationToStringShort(59999)).toBe('0:59'); // Just under one minute
+  expect(durationToStringShort(3599000)).toBe('59:59'); // Just under one hour
+  expect(durationToStringShort(3600000)).toBe('1:00:00'); // Exactly one hour
+
+  // Leading zeros in hours
+  expect(durationToStringShort(9 * 3600000)).toBe('9:00:00'); // Single digit hour
+
+  // Mixed precise values
+  expect(durationToStringShort(3661000)).toBe('1:01:01'); // 1h 1m 1s
+  expect(durationToStringShort(3661999)).toBe('1:01:01'); // Rounding check
+});
+
+test('Test handling of negative durations', () => {
+  // Negative values - depends on your intended behavior
+  expect(durationToStringShort(-1000)).toBe('0:00'); // Negative 1 second
+  expect(durationToStringShort(-60000)).toBe('0:00'); // Negative 1 minute
+  expect(durationToStringShort(-3600000)).toBe('0:00'); // Negative 1 hour
+});
+
+test('Test handling of special values', () => {
+  // Special numeric values - these test the robustness of your function
+  expect(durationToStringShort(NaN)).toBe('0:00'); // NaN handling
+  expect(durationToStringShort(Infinity)).toBe('0:00'); // Infinity handling
+});
