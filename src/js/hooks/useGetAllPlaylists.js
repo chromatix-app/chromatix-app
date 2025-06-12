@@ -22,6 +22,8 @@ const useGetAllPlaylists = () => {
   const colPlaylistsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colPlaylistsLastPlayed);
   const colPlaylistsUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistsUserRating);
 
+  const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
+
   // prevent sorting by a hidden field
   const allowedSort = {
     title: true,
@@ -37,7 +39,14 @@ const useGetAllPlaylists = () => {
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists)?.filter(
     (playlist) => playlist.libraryId === currentLibraryId
   );
-  const sortedPlaylists = allPlaylists ? sortList(allPlaylists, actualSortPlaylists, actualOrderPlaylists) : null;
+  const sortedPlaylists = allPlaylists
+    ? sortList({
+        entries: allPlaylists,
+        options: actualSortPlaylists,
+        direction: actualOrderPlaylists,
+        sortNumbersFirst: optionSortNumbersFirst,
+      })
+    : null;
 
   const setViewPlaylists = (viewPlaylists) => {
     dispatch.sessionModel.setSessionState({

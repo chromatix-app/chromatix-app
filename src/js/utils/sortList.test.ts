@@ -10,21 +10,21 @@ describe('Testing "sortList" function', () => {
   // TITLE
 
   test('Test sorting by title ascending', () => {
-    const sorted = sortList(entries, 'title-asc');
+    const sorted = sortList({ entries, options: 'title-asc' });
     expect(sorted[0].title).toBe('Song A');
     expect(sorted[1].title).toBe('Song B');
     expect(sorted[2].title).toBe('Song C');
   });
 
   test('Test sorting by title descending', () => {
-    const sorted = sortList(entries, 'title-asc', 'desc');
+    const sorted = sortList({ entries, options: 'title-asc', direction: 'desc' });
     expect(sorted[0].title).toBe('Song C');
     expect(sorted[1].title).toBe('Song B');
     expect(sorted[2].title).toBe('Song A');
   });
 
   test('Test sorting by title descending', () => {
-    const sorted = sortList(entries, 'title-desc');
+    const sorted = sortList({ entries, options: 'title-desc' });
     expect(sorted[0].title).toBe('Song C');
     expect(sorted[1].title).toBe('Song B');
     expect(sorted[2].title).toBe('Song A');
@@ -33,21 +33,21 @@ describe('Testing "sortList" function', () => {
   // DURATION
 
   test('Test simple duration ascending', () => {
-    const sorted = sortList(entries, 'duration-asc');
+    const sorted = sortList({ entries, options: 'duration-asc' });
     expect(sorted[0].title).toBe('Song B');
     expect(sorted[1].title).toBe('Song C');
     expect(sorted[2].title).toBe('Song A');
   });
 
   test('Test simple duration descending', () => {
-    const sorted = sortList(entries, 'duration-asc', 'desc');
+    const sorted = sortList({ entries, options: 'duration-asc', direction: 'desc' });
     expect(sorted[0].title).toBe('Song A');
     expect(sorted[1].title).toBe('Song C');
     expect(sorted[2].title).toBe('Song B');
   });
 
   test('Test simple duration descending', () => {
-    const sorted = sortList(entries, 'duration-desc');
+    const sorted = sortList({ entries, options: 'duration-desc' });
     expect(sorted[0].title).toBe('Song A');
     expect(sorted[1].title).toBe('Song C');
     expect(sorted[2].title).toBe('Song B');
@@ -59,7 +59,7 @@ describe('Testing "sortList" function', () => {
       { title: 'Song B', duration: 200, artist: 'Artist A' },
       { title: 'Song C', duration: 150, artist: 'Artist C' },
     ];
-    const sorted = sortList(entriesWithSameDuration, 'duration-asc-artist-asc');
+    const sorted = sortList({ entries: entriesWithSameDuration, options: 'duration-asc-artist-asc' });
     expect(sorted[0].title).toBe('Song C');
     expect(sorted[1].title).toBe('Song B');
     expect(sorted[2].title).toBe('Song A');
@@ -68,14 +68,14 @@ describe('Testing "sortList" function', () => {
   // ARTIST
 
   test('Test sorting by artist ascending', () => {
-    const sorted = sortList(entries, 'artist-asc');
+    const sorted = sortList({ entries, options: 'artist-asc' });
     expect(sorted[0].artist).toBe('Artist A');
     expect(sorted[1].artist).toBe('Artist B');
     expect(sorted[2].artist).toBe('Artist C');
   });
 
   test('Test sorting by artist descending', () => {
-    const sorted = sortList(entries, 'artist-desc');
+    const sorted = sortList({ entries, options: 'artist-desc' });
     expect(sorted[0].artist).toBe('Artist C');
     expect(sorted[1].artist).toBe('Artist B');
     expect(sorted[2].artist).toBe('Artist A');
@@ -84,17 +84,17 @@ describe('Testing "sortList" function', () => {
   // RELEASE DATE
 
   test('Test sorting by releaseDate ascending', () => {
-    const sorted = sortList(entries, 'releaseDate-asc');
-    expect(sorted[0].title).toBe('Song A');
-    expect(sorted[1].title).toBe('Song C');
-    expect(sorted[2].title).toBe('Song B');
-  });
-
-  test('Test sorting by releaseDate descending', () => {
-    const sorted = sortList(entries, 'releaseDate-desc');
+    const sorted = sortList({ entries, options: 'releaseDate-asc' });
     expect(sorted[0].title).toBe('Song B');
     expect(sorted[1].title).toBe('Song C');
     expect(sorted[2].title).toBe('Song A');
+  });
+
+  test('Test sorting by releaseDate descending', () => {
+    const sorted = sortList({ entries, options: 'releaseDate-desc' });
+    expect(sorted[0].title).toBe('Song A');
+    expect(sorted[1].title).toBe('Song C');
+    expect(sorted[2].title).toBe('Song B');
   });
 
   // ALBUM
@@ -105,7 +105,7 @@ describe('Testing "sortList" function', () => {
       { title: 'Song B', album: 'Album A' },
       { title: 'Song C', album: 'Album C' },
     ];
-    const sorted = sortList(entriesWithAlbums, 'album-asc');
+    const sorted = sortList({ entries: entriesWithAlbums, options: 'album-asc' });
     expect(sorted[0].album).toBe('Album A');
     expect(sorted[1].album).toBe('Album B');
     expect(sorted[2].album).toBe('Album C');
@@ -119,7 +119,7 @@ describe('Testing "sortList" function', () => {
       { title: 'Song B', genre: 'Jazz' },
       { title: 'Song C', genre: 'Pop' },
     ];
-    const sorted = sortList(entriesWithGenres, 'genre-desc');
+    const sorted = sortList({ entries: entriesWithGenres, options: 'genre-desc' });
     expect(sorted[0].genre).toBe('Rock');
     expect(sorted[1].genre).toBe('Pop');
     expect(sorted[2].genre).toBe('Jazz');
@@ -133,7 +133,7 @@ describe('Testing "sortList" function', () => {
       { title: 'Song B' },
       { title: 'Song C', duration: 180 },
     ];
-    const sorted = sortList(entriesWithMissingFields, 'duration-asc');
+    const sorted = sortList({ entries: entriesWithMissingFields, options: 'duration-asc' });
     expect(sorted[0].title).toBe('Song B');
     expect(sorted[1].title).toBe('Song C');
     expect(sorted[2].title).toBe('Song A');
@@ -142,7 +142,7 @@ describe('Testing "sortList" function', () => {
   // EMPTY ARRAY
 
   test('Test sorting with empty array', () => {
-    const sorted = sortList([], 'title-asc');
+    const sorted = sortList({ entries: [], options: 'title-asc' });
     expect(sorted).toEqual([]);
   });
 
@@ -150,16 +150,43 @@ describe('Testing "sortList" function', () => {
 
   test('Test sorting with single entry', () => {
     const singleEntry = [{ title: 'Song A', duration: 200 }];
-    const sorted = sortList(singleEntry, 'duration-asc');
+    const sorted = sortList({ entries: singleEntry, options: 'duration-asc' });
     expect(sorted).toEqual(singleEntry);
   });
 
   // INVALID SORT KEY
 
   test('Test sorting with invalid sort key', () => {
-    const sorted = sortList(entries, 'invalidKey-asc');
+    const sorted = sortList({ entries, options: 'invalidKey-asc' });
     expect(sorted[0].title).toBe('Song A');
     expect(sorted[1].title).toBe('Song B');
     expect(sorted[2].title).toBe('Song C');
+  });
+
+  // SORT NUMBERS LAST
+
+  test('Test sorting with sortNumbersLast option', () => {
+    const entriesWithMixedTitles = [{ title: 'Song A' }, { title: '1 Song' }, { title: '2 Song' }];
+    const sorted = sortList({
+      entries: entriesWithMixedTitles,
+      options: 'title-asc',
+    });
+    expect(sorted[0].title).toBe('Song A');
+    expect(sorted[1].title).toBe('1 Song');
+    expect(sorted[2].title).toBe('2 Song');
+  });
+
+  // SORT NUMBERS FIRST OPTION
+
+  test('Test sorting with sortNumbersFirst option', () => {
+    const entriesWithMixedTitles = [{ title: 'Song A' }, { title: '1 Song' }, { title: '2 Song' }];
+    const sorted = sortList({
+      entries: entriesWithMixedTitles,
+      options: 'title-asc',
+      sortNumbersFirst: true,
+    });
+    expect(sorted[0].title).toBe('1 Song');
+    expect(sorted[1].title).toBe('2 Song');
+    expect(sorted[2].title).toBe('Song A');
   });
 });

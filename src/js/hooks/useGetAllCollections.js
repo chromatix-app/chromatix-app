@@ -18,6 +18,8 @@ const useGetAllCollections = (collectionKey) => {
   const colCollectionAddedAt = useSelector(({ sessionModel }) => sessionModel.colCollectionAddedAt);
   const colCollectionUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionUserRating);
 
+  const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
+
   // prevent sorting by a hidden field
   const allowedSort = {
     title: true,
@@ -29,7 +31,12 @@ const useGetAllCollections = (collectionKey) => {
 
   const allCollections = useSelector(({ appModel }) => appModel[`all${collectionKey}`]);
   const sortedCollections = allCollections
-    ? sortList(allCollections, actualSortCollections, actualOrderCollections)
+    ? sortList({
+        entries: allCollections,
+        options: actualSortCollections,
+        direction: actualOrderCollections,
+        sortNumbersFirst: optionSortNumbersFirst,
+      })
     : null;
 
   const setViewCollections = (viewCollections) => {
