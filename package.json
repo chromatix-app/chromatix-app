@@ -11,7 +11,7 @@
     "build": "REACT_APP_VERSION=$npm_package_version REACT_APP_ENV=$REACT_APP_ENV REACT_APP_DATE=$(date +%s) react-scripts build",
     "release": "release-it --preReleaseId=beta --config .release-it.json",
     "lint": "eslint .",
-    "prettier-check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+    "prettier": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "prettier-fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "test": "react-scripts test",
     "test-all": "react-scripts test --watchAll=false"

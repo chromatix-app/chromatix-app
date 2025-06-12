@@ -1,6 +1,11 @@
 import moment from 'moment';
 
 const durationToStringLong = (durationMillisecs: number): string => {
+  // Handle negative durations and special cases by returning a default value
+  if (durationMillisecs < 0 || isNaN(durationMillisecs) || !isFinite(durationMillisecs)) {
+    return '';
+  }
+
   const duration = moment.duration(durationMillisecs, 'milliseconds');
   const days = Math.floor(duration.asDays());
   let hours = Math.floor(duration.asHours()) - days * 24;
