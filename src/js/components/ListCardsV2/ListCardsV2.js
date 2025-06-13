@@ -19,13 +19,13 @@ import style from './ListCardsV2.module.scss';
 
 const isLocal = process.env.REACT_APP_ENV === 'local';
 
-const virtualThreshold = !isLocal ? 150 : 1;
+const virtualThreshold = !isLocal ? 200 : 1;
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const ListCardsV2 = ({ children, variant, folderId, entries, playingOrder, sortKey, showRatings = false }) => {
+const ListCardsV2 = ({ children, variant, groupBy, folderId, entries, playingOrder, sortKey, showRatings = false }) => {
   const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
 
   const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
@@ -54,7 +54,7 @@ const ListCardsV2 = ({ children, variant, folderId, entries, playingOrder, sortK
   );
 
   if (entries) {
-    const ListBodyComponent = entries.length <= virtualThreshold ? ListBodyStatic : ListBodyVirtual;
+    const ListBodyComponent = entries.length <= virtualThreshold || groupBy ? ListBodyStatic : ListBodyVirtual;
 
     let trackNumber = 0;
     const entriesWithTrackNumbers = entries.map((entry, index) => {
@@ -72,6 +72,7 @@ const ListCardsV2 = ({ children, variant, folderId, entries, playingOrder, sortK
         <ListBodyComponent
           entries={entriesWithTrackNumbers}
           folderId={folderId}
+          groupBy={groupBy}
           iconImage={iconImage}
           isCurrentlyLoaded={isCurrentlyLoaded}
           playerPlaying={playerPlaying}
@@ -93,6 +94,7 @@ const ListCardsV2 = ({ children, variant, folderId, entries, playingOrder, sortK
 const ListBodyStatic = ({
   entries,
   folderId,
+  groupBy,
   iconImage,
   isCurrentlyLoaded,
   playerPlaying,
@@ -104,28 +106,43 @@ const ListBodyStatic = ({
 }) => {
   useScrollToTrack();
 
+  // If items are grouped, we need to add a group row before each group
+  const entriesWithGroups = !groupBy
+    ? entries
+    : entries.reduce((acc, entry) => {
+        if (entry[groupBy] && acc[acc.length - 1]?.[groupBy] !== entry[groupBy]) {
+          acc.push({ kind: 'group', groupName: entry[groupBy] });
+        }
+        acc.push(entry);
+        return acc;
+      }, []);
+
   return (
     <div id="scrollable" className={clsx(style.scrollableOuter, style.scrollableOuterStatic)}>
       <div id="scrollable-inner" className={style.scrollableInner}>
         {titleBlock}
 
-        {entries.map((entry, index) => {
+        {entriesWithGroups.map((entry, index) => {
           const entryKey = getEntryKey(entry, index);
 
-          return (
-            <ListEntry
-              key={variant + '-' + entryKey}
-              variant={variant}
-              iconImage={iconImage}
-              folderId={folderId}
-              playingOrder={playingOrder}
-              sortKey={sortKey}
-              showRatings={showRatings}
-              isCurrentlyLoaded={isCurrentlyLoaded(variant, entryKey)}
-              isCurrentlyPlaying={playerPlaying}
-              {...entry}
-            />
-          );
+          if (entry.kind === 'group') {
+            return <GroupRow key={index} entry={entry} />;
+          } else {
+            return (
+              <ListEntry
+                key={variant + '-' + entryKey}
+                variant={variant}
+                iconImage={iconImage}
+                folderId={folderId}
+                playingOrder={playingOrder}
+                sortKey={sortKey}
+                showRatings={showRatings}
+                isCurrentlyLoaded={isCurrentlyLoaded(variant, entryKey)}
+                isCurrentlyPlaying={playerPlaying}
+                {...entry}
+              />
+            );
+          }
         })}
       </div>
     </div>
@@ -246,7 +263,8 @@ const ListBodyVirtual = ({
   const scrollToVirtualTrack = useCallback(
     (index) => {
       const rowIndex = Math.floor(index / numColumns) + 0.5;
-      rowVirtualizer.scrollToOffset(tableHeadHeight + rowIndex * rowHeight - (windowHeight - 100) / 2, {
+      const scrollOffset = tableHeadHeight + rowIndex * rowHeight - (windowHeight - 100) / 2;
+      rowVirtualizer.scrollToOffset(scrollOffset, {
         align: 'start',
         behavior: 'auto',
       });
@@ -368,8 +386,9 @@ const calculateDimensions = (variant, iconImage, showRatings, outerWidth, innerW
   const isSquareCard = !iconImage || variant === 'folders';
   const imageHeight = isSquareCard ? columnWidth : (columnWidth - 20) * 0.6 + 20;
   const titleHeight = 28.8;
-  const subtitleHeight = ['albums', 'folders'].includes(variant) ? 15.4 : 0;
-  const ratingHeight = showRatings && ['albums', 'artists', 'playlists', 'collections'].includes(variant) ? 19 : 0;
+  const subtitleHeight = ['albums', 'artistAlbums', 'folders'].includes(variant) ? 15.4 : 0;
+  const ratingHeight =
+    showRatings && ['albums', 'artistAlbums', 'artists', 'playlists', 'collections'].includes(variant) ? 19 : 0;
   const columnHeight = Math.ceil(imageHeight + titleHeight + subtitleHeight + ratingHeight + rowGap);
 
   return {
@@ -398,6 +417,14 @@ const VirtualRow = ({ children, numColumns, virtualEntry }) => {
       {children}
     </div>
   );
+};
+
+// ======================================================================
+// GROUP ROW
+// ======================================================================
+
+const GroupRow = ({ entry }) => {
+  return <div className={style.groupRow}>{entry.groupName}</div>;
 };
 
 // ======================================================================
@@ -439,7 +466,7 @@ const ListEntry = React.memo(
         if (isCurrentlyLoaded) {
           dispatch.playerModel.playerResume();
         } else {
-          if (variant === 'albums') {
+          if (variant === 'albums' || variant === 'artistAlbums') {
             dispatch.playerModel.playerLoadAlbum({ albumId });
           } else if (variant === 'playlists') {
             dispatch.playerModel.playerLoadPlaylist({ playlistId });
@@ -540,7 +567,10 @@ const ListEntry = React.memo(
           )}
 
           {/* Play / Pause Button */}
-          {(variant === 'albums' || variant === 'playlists' || (variant === 'folders' && trackId)) && (
+          {(variant === 'albums' ||
+            variant === 'artistAlbums' ||
+            variant === 'playlists' ||
+            (variant === 'folders' && trackId)) && (
             <div className={style.controlButtonWrap}>
               {isCurrentlyLoaded && isCurrentlyPlaying && (
                 <button className={style.pauseButton} onClick={handlePause} tabIndex={-1}>

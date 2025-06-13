@@ -269,7 +269,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     sortedArtistAlbums,
     sortedArtistRelated,
     sortedArtistAppearances,
-    sortedAllReleases,
+
     sortedAllReleasesAndAppearances,
     sortedArtistTracks: viewArtistAlbums === 'track' ? sortedArtistTracks : null,
     sortedArtistTracksOrder: viewArtistAlbums === 'track' ? sortedArtistTracksOrder : null,

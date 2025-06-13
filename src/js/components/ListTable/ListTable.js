@@ -21,7 +21,7 @@ import style from './ListTable.module.scss';
 
 const isLocal = process.env.REACT_APP_ENV === 'local';
 
-const virtualThreshold = !isLocal ? 150 : 150;
+const virtualThreshold = !isLocal ? 200 : 1;
 
 // ======================================================================
 // COMPONENT
@@ -506,14 +506,15 @@ const TableBodyVirtual = ({
     overscan: 3,
     estimateSize,
     measureElement,
-    rangeExtractor,
+    // rangeExtractor,
   });
 
   // Scroll to a specific track, when required
   const scrollToVirtualTrack = useCallback(
     (index) => {
       const rowIndex = index + 0.5;
-      rowVirtualizer.scrollToOffset(tableHeadHeight + rowIndex * rowHeightActual - (windowHeight - 100) / 2, {
+      const scrollOffset = tableHeadHeight + rowIndex * rowHeightActual - (windowHeight - 100) / 2;
+      rowVirtualizer.scrollToOffset(scrollOffset, {
         align: 'start',
         behavior: 'auto',
       });
@@ -526,8 +527,7 @@ const TableBodyVirtual = ({
       //   behavior: 'auto',
       // });
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [rowVirtualizer, rowHeightActual, windowHeight]
   );
   useScrollToVirtualTrack(entries, scrollToVirtualTrack);
 
@@ -615,16 +615,16 @@ const TableBodyVirtual = ({
   );
 };
 
-// Helper to determine the visible range, including our sticky row
-const rangeExtractor = (range) => {
-  const start = Math.max(range.startIndex - range.overscan, 0);
-  const end = Math.min(range.endIndex + range.overscan, range.count - 1);
-  const indexes = Array.from({ length: end - start + 1 }, (_, i) => start + i);
-  if (!indexes.includes(0)) {
-    indexes.unshift(0);
-  }
-  return indexes;
-};
+// // Helper to determine the visible range, including our sticky row
+// const rangeExtractor = (range) => {
+//   const start = Math.max(range.startIndex - range.overscan, 0);
+//   const end = Math.min(range.endIndex + range.overscan, range.count - 1);
+//   const indexes = Array.from({ length: end - start + 1 }, (_, i) => start + i);
+//   if (!indexes.includes(0)) {
+//     indexes.unshift(0);
+//   }
+//   return indexes;
+// };
 
 // Helper to determine the header height
 const measureElement = (element) => {
