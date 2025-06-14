@@ -144,9 +144,16 @@ const effects = (dispatch) => ({
       }
     }
 
+    // dispatch.appModel.addNotification({
+    //   title: 'Playback error',
+    //   description: errorDetails,
+    // });
+
     if (rootState.playerModel.playerPlaying) {
       // Player is currently playing - try next track
-      // dispatch.playerModel.playerNext(true);
+      setTimeout(function () {
+        dispatch.playerModel.playerNext(true);
+      }, 200);
     } else {
       // Player is not playing - log error and stop
     }
