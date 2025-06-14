@@ -19,6 +19,10 @@
   font-size: 13px !important;
   line-height: 18px !important;
   color: var(--color-background) !important;
+
+  &Debug {
+    background: rgb(215, 90, 90) !important;
+  }
 }
 
 .title {

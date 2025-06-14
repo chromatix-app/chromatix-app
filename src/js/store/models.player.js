@@ -109,61 +109,100 @@ const effects = (dispatch) => ({
 
   playerUnload(payload, rootState) {
     console.log('%c--- playerUnload ---', 'color:#5c16b1');
-    playerX.unload();
     dispatch.playerModel.setPlayerState({
       playerPlaying: false,
     });
+    playerX.unload();
   },
+
+  //
+  // PLAYBACK ERROR HANDLING
+  //
 
   playerError(payload, rootState) {
     const { event, playerElement } = payload;
     const mediaError = playerElement.error;
-    let errorDetails = 'Unknown error';
+    let errorCode = 'Unknown';
+    let errorMessage = 'Unknown';
 
     if (mediaError) {
       switch (mediaError.code) {
         case MediaError.MEDIA_ERR_ABORTED:
-          errorDetails = 'Fetching process aborted by user';
+          errorCode = 'MEDIA_ERR_ABORTED';
+          errorMessage = 'Fetching process aborted by user';
           break;
         case MediaError.MEDIA_ERR_NETWORK:
-          errorDetails = 'Network error occurred while fetching the media';
+          errorCode = 'MEDIA_ERR_NETWORK';
+          errorMessage = 'Network error occurred while fetching the media';
           break;
         case MediaError.MEDIA_ERR_DECODE:
-          errorDetails = 'Media decoding error - file might be corrupted or unsupported format';
+          errorCode = 'MEDIA_ERR_DECODE';
+          errorMessage = 'Media decoding error - file might be corrupted or unsupported format';
           break;
         case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
-          errorDetails = 'Media source not supported - check format or CORS issues';
+          errorCode = 'MEDIA_ERR_SRC_NOT_SUPPORTED';
+          errorMessage = 'Media source not supported - check format or CORS issues';
           break;
         default:
-          errorDetails = 'An unknown error occurred';
           break;
       }
 
       if (mediaError.message) {
-        errorDetails += `: ${mediaError.message}`;
+        errorMessage += `: ${mediaError.message}`;
       }
     }
 
-    // dispatch.appModel.addNotification({
-    //   title: 'Playback error',
-    //   description: errorDetails,
-    // });
-
     if (rootState.playerModel.playerPlaying) {
       // Player is currently playing - try next track
-      setTimeout(function () {
-        dispatch.playerModel.playerNext(true);
-      }, 200);
+      dispatch.playerModel.playerErrorPlayback(true);
     } else {
       // Player is not playing - log error and stop
-    }
+      dispatch.appModel.addNotification({
+        title: 'Playback error',
+        description: errorMessage,
+        debug: true,
+      });
 
-    console.error('%c--- player - error ---', 'color:#a18507', {
-      errorType: errorDetails,
-      sourceURL: playerElement.src,
-      sourceFormat: playerElement.src.split('.').pop().split('?')[0],
-      originalEvent: event,
+      console.error('%c--- player - error ---', 'color:#a18507', {
+        errorCode,
+        errorMessage,
+        mediaError,
+        sourceURL: playerElement.src,
+        sourceFormat: playerElement.src.split('.').pop().split('?')[0],
+        originalEvent: event,
+      });
+    }
+  },
+
+  playerErrorPlayback(payload, rootState) {
+    // Determine the current track
+    const playingTrackList = rootState.sessionModel.playingTrackList;
+    const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+    const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
+    const trackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
+
+    // Display notification
+    dispatch.appModel.addNotification({
+      title: 'Playback error',
+      description: (
+        <>
+          <em>"{trackCurrent.title}"</em> by <em>{trackCurrent.artist}</em> could not be played.
+        </>
+      ),
     });
+
+    // Try to play the next track (after a short delay)
+    if (payload) {
+      setTimeout(function () {
+        dispatch.playerModel.playerErrorNext();
+      }, 500);
+    }
+  },
+
+  playerErrorNext(payload, rootState) {
+    if (rootState.playerModel.playerPlaying) {
+      dispatch.playerModel.playerNext(true);
+    }
   },
 
   playerLogQuit(payload, rootState) {

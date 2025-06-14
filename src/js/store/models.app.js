@@ -180,20 +180,18 @@ const effects = (dispatch) => ({
 
   addNotification(payload, rootState) {
     // console.log('%c--- addNotification ---', 'color:#07a098');
-    const { title, description, duration = 3000 } = payload;
+    const notifications = [...(rootState.appModel.notifications || [])];
     const newNotification = {
       id: Date.now() + Math.floor(Math.random() * 1000),
-      title,
-      description,
-      duration,
+      ...payload,
     };
-    const notifications = [...(rootState.appModel.notifications || [])];
     notifications.push(newNotification);
     // limit total entries
     const maxNotifications = 10;
     if (notifications.length > maxNotifications) {
       notifications.splice(0, notifications.length - maxNotifications);
     }
+    // save
     dispatch.appModel.setAppState({ notifications });
   },
 
