@@ -20,7 +20,6 @@
     "@radix-ui/react-dropdown-menu": "^2.1.7",
     "@radix-ui/react-popover": "^1.1.7",
     "@radix-ui/react-select": "^2.1.7",
-    "@radix-ui/react-toast": "^1.2.14",
     "@rematch/core": "^2.2.0",
     "@tanstack/react-virtual": "^3.13.6",
     "@vercel/analytics": "^1.5.0",
@@ -35,7 +34,8 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^5.3.4",
     "react-scripts": "^5.0.1",
-    "sass": "^1.89.2"
+    "sass": "^1.89.2",
+    "sonner": "^2.0.5"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
