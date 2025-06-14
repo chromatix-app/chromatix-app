@@ -1,0 +1,124 @@
+$numLines: 3;
+$fontSize: 13px;
+$lineHeight: 18px;
+$vPadding: 14px;
+
+.viewport {
+  display: flex;
+  position: fixed;
+  flex-direction: column;
+  gap: 6px;
+  bottom: 100px;
+  left: 0;
+  padding: 12px 20px;
+  // background: rgba(255, 255, 255, 0.05);
+  z-index: 888;
+
+  @media (min-width: 1024px) {
+    padding: 12px 26px;
+  }
+}
+
+.toast {
+  display: flex;
+  position: relative;
+  list-style: none;
+  align-items: center;
+  width: 360px;
+  height: calc($lineHeight * $numLines + 20px);
+  padding: $vPadding 26px $vPadding 18px;
+  background: var(--color-primary);
+  border-radius: 6px;
+  border: 1px solid var(--color-opacity-01);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+
+  font-size: $fontSize;
+  line-height: $lineHeight;
+  color: var(--color-background);
+
+  // the last item should be in front
+  &:last-child {
+    z-index: 3;
+  }
+
+  // the second last item should be visually behind the last one, a bit smaller, peeking out from behind
+  &:nth-last-child(2) {
+    transform: scale(0.95) translateY(100%);
+    z-index: 2;
+  }
+
+  // the third last item should be visually behind the second last one, even smaller, peeking out from behind
+  &:nth-last-child(3) {
+    transform: scale(0.9) translateY(200%) translateY(8px);
+    z-index: 1;
+  }
+
+  // the rest should be hidden
+  &:nth-last-child(n + 4) {
+    opacity: 0;
+    transform: scale(0.8) translateY(300%) translateY(8px);
+  }
+
+  .viewport:hover & {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+    transition: all 0.3s ease-in-out;
+  }
+}
+
+.content {
+  // This is some hacky CSS to achieve multiline ellipsis
+  display: -webkit-box;
+  overflow: hidden;
+  max-height: calc($lineHeight * $numLines);
+  text-overflow: ellipsis;
+  -webkit-line-clamp: $numLines;
+  -webkit-box-orient: vertical;
+}
+
+.title {
+  font-weight: bold;
+}
+
+.description {
+  text-wrap: balance;
+}
+
+.closeButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  padding: 6px;
+  background: transparent;
+  // background: rgba(255, 255, 255, 0.05);
+  opacity: 0;
+
+  font-size: 18px;
+  line-height: 18px;
+  color: var(--color-background);
+  cursor: pointer;
+
+  .toast:hover & {
+    opacity: 1;
+    transition: all 0.25s ease-in-out;
+  }
+}
+
+//
+// DEV
+//
+
+.dev {
+  position: fixed;
+  bottom: 100px;
+  right: 0;
+  padding: 20px;
+  background: var(--color-background);
+
+  button {
+    padding: 10px;
+    background: var(--color-primary);
+  }
+}
