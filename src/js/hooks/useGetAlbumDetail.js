@@ -18,6 +18,9 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const colAlbumDuration = useSelector(({ sessionModel }) => sessionModel.colAlbumDuration);
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
+  const optionSortIgnoreLeadingArticles = useSelector(
+    ({ sessionModel }) => sessionModel.optionSortIgnoreLeadingArticles
+  );
 
   // prevent sorting by a hidden field
   const allowedSort = {
@@ -70,6 +73,7 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
           entries: entriesWithOriginalIndex,
           options: actualAlbumSortString,
           sortNumbersFirst: optionSortNumbersFirst,
+          ignoreLeadingArticles: optionSortIgnoreLeadingArticles,
         });
       }
     }
