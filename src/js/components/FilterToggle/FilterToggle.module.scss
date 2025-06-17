@@ -37,8 +37,8 @@
 .content {
   left: 8px;
   padding: 6px 0;
-  background: var(--color-panel-background);
-  border: 1px solid var(--color-border);
+  background: var(--color-secondary-background);
+  border: 1px solid var(--color-secondary-border);
   border-radius: 5px;
   box-shadow: 0 0 10px var(--color-shadow);
   z-index: 99;
@@ -54,7 +54,7 @@
   cursor: pointer;
 
   &[data-state='checked'] {
-    color: var(--color-primary);
+    color: var(--color-core);
   }
 }
 

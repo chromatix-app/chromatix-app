@@ -20,48 +20,77 @@ function useColorTheme() {
   const currentTheme = useSelector(({ sessionModel }) => sessionModel.currentTheme);
 
   const currentColorBackground = useSelector(({ sessionModel }) => sessionModel.currentColorBackground);
-  const currentColorText = useSelector(({ sessionModel }) => sessionModel.currentColorText);
   const currentColorPrimary = useSelector(({ sessionModel }) => sessionModel.currentColorPrimary);
+  const currentColorText = useSelector(({ sessionModel }) => sessionModel.currentColorText);
 
   useEffect(() => {
     const actualTheme = themes[currentTheme] ? currentTheme : defaultTheme;
 
-    const colorBackground = currentTheme === 'custom' ? currentColorBackground : themes[actualTheme].background;
+    const colorCore = currentTheme === 'custom' ? currentColorPrimary : themes[actualTheme].primary;
     const colorText = currentTheme === 'custom' ? currentColorText : themes[actualTheme].text;
-    const colorPrimary = currentTheme === 'custom' ? currentColorPrimary : themes[actualTheme].primary;
+    const colorPrimaryBackground = currentTheme === 'custom' ? currentColorBackground : themes[actualTheme].background;
 
     const chromaMultiplier = accessibilityContrast ? 1.4 : 1.1;
     const opacityMultiplier = accessibilityContrast ? 1.6 : 1;
 
-    const isLightTheme = chroma(colorBackground).luminance() > 0.5;
+    const isLightTheme = chroma(colorPrimaryBackground).luminance() > 0.5;
 
-    let colorPanelBackground;
-    let colorHover;
-    let colorBorder;
+    let colorSecondaryBackground;
+    let colorSecondaryBorder;
+    let colorSecondaryCard;
+    let colorSecondaryHover;
+    let colorSecondaryActive;
+
+    let colorTertiaryBackground;
+    let colorTertiaryBorder;
 
     // Light theme handling
     if (isLightTheme) {
-      colorPanelBackground = chroma(colorBackground)
+      colorSecondaryBackground = chroma(colorPrimaryBackground)
         .darken(0.4 * chromaMultiplier)
         .hex();
-      colorHover = chroma(colorBackground)
-        .darken(0.6 * chromaMultiplier)
-        .hex();
-      colorBorder = chroma(colorBackground)
+      colorSecondaryBorder = chroma(colorPrimaryBackground)
         .darken(0.8 * chromaMultiplier)
+        .hex();
+      colorSecondaryCard = chroma(colorPrimaryBackground)
+        .darken(0.55 * chromaMultiplier)
+        .hex();
+      colorSecondaryHover = chroma(colorPrimaryBackground)
+        .darken(0.65 * chromaMultiplier)
+        .hex();
+      colorSecondaryActive = chroma(colorPrimaryBackground)
+        .darken(0.75 * chromaMultiplier)
+        .hex();
+      colorTertiaryBackground = chroma(colorPrimaryBackground)
+        .darken(0.9 * chromaMultiplier)
+        .hex();
+      colorTertiaryBorder = chroma(colorPrimaryBackground)
+        .darken(1.2 * chromaMultiplier)
         .hex();
     }
 
     // Dark theme handling
     else {
-      colorPanelBackground = chroma(colorBackground)
+      colorSecondaryBackground = chroma(colorPrimaryBackground)
         .brighten(0.4 * chromaMultiplier)
         .hex();
-      colorHover = chroma(colorBackground)
-        .brighten(0.6 * chromaMultiplier)
-        .hex();
-      colorBorder = chroma(colorBackground)
+      colorSecondaryBorder = chroma(colorPrimaryBackground)
         .brighten(0.8 * chromaMultiplier)
+        .hex();
+      colorSecondaryCard = chroma(colorPrimaryBackground)
+        .brighten(0.55 * chromaMultiplier)
+        .hex();
+      colorSecondaryHover = chroma(colorPrimaryBackground)
+        .brighten(0.65 * chromaMultiplier)
+        .hex();
+      colorSecondaryActive = chroma(colorPrimaryBackground)
+        .brighten(0.75 * chromaMultiplier)
+        .hex();
+      colorTertiaryBackground = chroma(colorPrimaryBackground)
+        .brighten(0.9 * chromaMultiplier)
+        .hex();
+      colorTertiaryBorder = chroma(colorPrimaryBackground)
+        .brighten(1.2 * chromaMultiplier)
         .hex();
     }
 
@@ -79,7 +108,7 @@ function useColorTheme() {
     const colorOpacity07 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.7));
     const colorOpacity08 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.8));
 
-    const colorShadow = isLightTheme ? '' : '#00000066';
+    const colorShadow = isLightTheme ? '' : 'rgba(0, 0, 0, 0.4)';
 
     const opacity02 = decimalMultiplier(opacityMultiplier, 0.2);
     const opacity025 = decimalMultiplier(opacityMultiplier, 0.25);
@@ -91,13 +120,18 @@ function useColorTheme() {
     const opacity08 = decimalMultiplier(opacityMultiplier, 0.8);
 
     const colors = {
-      '--color-background': colorBackground,
+      '--color-core': colorCore,
       '--color-text': colorText,
-      '--color-primary': colorPrimary,
+      '--color-primary-background': colorPrimaryBackground,
 
-      '--color-panel-background': colorPanelBackground,
-      '--color-hover': colorHover,
-      '--color-border': colorBorder,
+      '--color-secondary-background': colorSecondaryBackground,
+      '--color-secondary-border': colorSecondaryBorder,
+      '--color-secondary-card': colorSecondaryCard,
+      '--color-secondary-hover': colorSecondaryHover,
+      '--color-secondary-active': colorSecondaryActive,
+
+      '--color-tertiary-background': colorTertiaryBackground,
+      '--color-tertiary-border': colorTertiaryBorder,
 
       '--color-opacity-0025': colorOpacity0025,
       '--color-opacity-005': colorOpacity005,
@@ -130,9 +164,9 @@ function useColorTheme() {
     }
 
     sendToElectron('win', 'color-theme', {
-      background: hasQueueVisible ? colorPanelBackground : colorBackground,
+      background: hasQueueVisible ? colorSecondaryBackground : colorPrimaryBackground,
       text: colorText,
-      primary: colorPrimary,
+      primary: colorCore,
     });
   }, [
     accessibilityContrast,
