@@ -23,6 +23,9 @@ const useGetAllArtists = () => {
   const colArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistsUserRating);
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
+  const optionSortIgnoreLeadingArticles = useSelector(
+    ({ sessionModel }) => sessionModel.optionSortIgnoreLeadingArticles
+  );
 
   // prevent sorting by a hidden field
   const allowedSort = {
@@ -47,6 +50,7 @@ const useGetAllArtists = () => {
           options: actualSortArtists,
           direction: actualOrderArtists,
           sortNumbersFirst: optionSortNumbersFirst,
+          ignoreLeadingArticles: optionSortIgnoreLeadingArticles,
         })
       : null;
 

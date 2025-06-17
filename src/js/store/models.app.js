@@ -31,6 +31,8 @@ const appState = {
 
   scrollToPlaying: false,
   scrollToTrack: false,
+
+  notifications: [],
 };
 
 const plexUserState = {
@@ -170,6 +172,37 @@ const effects = (dispatch) => ({
     });
     dispatch.playerModel.playerUnload();
     dispatch.sessionModel.setLoggedOut();
+  },
+
+  //
+  // NOTIFICATIONS
+  //
+
+  addNotification(payload, rootState) {
+    // console.log('%c--- addNotification ---', 'color:#07a098');
+    const notifications = [...(rootState.appModel.notifications || [])];
+    const newNotification = {
+      id: Date.now() + Math.floor(Math.random() * 1000),
+      ...payload,
+    };
+    notifications.push(newNotification);
+    // limit total entries
+    const maxNotifications = 10;
+    if (notifications.length > maxNotifications) {
+      notifications.splice(0, notifications.length - maxNotifications);
+    }
+    // save
+    dispatch.appModel.setAppState({ notifications });
+  },
+
+  removeNotification(payload, rootState) {
+    // console.log('%c--- removeNotification - ' + payload + ' ---', 'color:#07a098');
+    const notifications = [...(rootState.appModel.notifications || [])];
+    const index = notifications.findIndex((n) => n.id === payload);
+    if (index !== -1) {
+      notifications.splice(index, 1);
+      dispatch.appModel.setAppState({ notifications });
+    }
   },
 
   //

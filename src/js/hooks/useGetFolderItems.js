@@ -16,6 +16,9 @@ const useGetFolderItems = (folderId) => {
   const colFoldersKind = useSelector(({ sessionModel }) => sessionModel.colFoldersKind);
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
+  const optionSortIgnoreLeadingArticles = useSelector(
+    ({ sessionModel }) => sessionModel.optionSortIgnoreLeadingArticles
+  );
 
   // prevent sorting by a hidden field
   const allowedSort = {
@@ -35,6 +38,7 @@ const useGetFolderItems = (folderId) => {
         options: actualSortFolders,
         direction: actualOrderFolders,
         sortNumbersFirst: optionSortNumbersFirst,
+        ignoreLeadingArticles: optionSortIgnoreLeadingArticles,
       })
     : null;
 

@@ -19,6 +19,9 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   const colPlaylistDuration = useSelector(({ sessionModel }) => sessionModel.colPlaylistDuration);
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
+  const optionSortIgnoreLeadingArticles = useSelector(
+    ({ sessionModel }) => sessionModel.optionSortIgnoreLeadingArticles
+  );
 
   // prevent sorting by a hidden field
   const allowedSort = {
@@ -62,6 +65,7 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
           entries: entriesWithOriginalIndex,
           options: actualPlaylistSortString,
           sortNumbersFirst: optionSortNumbersFirst,
+          ignoreLeadingArticles: optionSortIgnoreLeadingArticles,
         });
       }
     }

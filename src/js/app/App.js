@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 
-import { ControlBar, Queue, SideBar, UserMenu } from 'js/components';
+import { ControlBar, Queue, SideBar, ToastNotification, UserMenu } from 'js/components';
 import {
   useColorTheme,
   useElectronStatus,
@@ -307,6 +307,7 @@ const AppMain = () => {
           </div>
         )}
       </div>
+      <ToastNotification />
     </div>
   );
 };

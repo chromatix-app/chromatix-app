@@ -56,6 +56,7 @@ const sessionState = {
 
   optionLogPlexPlayback: true,
   optionSortNumbersFirst: false,
+  optionSortIgnoreLeadingArticles: true,
   optionShowFullTitles_Deprecated: false,
 
   queueIsVisible: false,

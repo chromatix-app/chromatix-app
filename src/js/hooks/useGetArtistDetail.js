@@ -35,6 +35,9 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const colArtistTracksUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistTracksUserRating);
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
+  const optionSortIgnoreLeadingArticles = useSelector(
+    ({ sessionModel }) => sessionModel.optionSortIgnoreLeadingArticles
+  );
 
   const allArtistAlbums = useSelector(({ appModel }) => appModel.allArtistAlbums);
   const artistAlbums = allArtistAlbums[libraryId + '-' + artistId];
@@ -93,6 +96,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
         options: actualSortArtistAlbums,
         direction: actualOrderArtistAlbums,
         sortNumbersFirst: optionSortNumbersFirst,
+        ignoreLeadingArticles: optionSortIgnoreLeadingArticles,
       })
     : null;
   const sortedArtistRelated = artistRelated?.map((entry) => {
@@ -103,6 +107,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
             options: actualSortArtistAlbums,
             direction: actualOrderArtistAlbums,
             sortNumbersFirst: optionSortNumbersFirst,
+            ignoreLeadingArticles: optionSortIgnoreLeadingArticles,
           })
         : null;
     return {
@@ -116,6 +121,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
         options: actualSortArtistAlbums,
         direction: actualOrderArtistAlbums,
         sortNumbersFirst: optionSortNumbersFirst,
+        ignoreLeadingArticles: optionSortIgnoreLeadingArticles,
       })
     : null;
 
@@ -151,6 +157,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
       options: actualSortArtistAlbums,
       direction: actualOrderArtistAlbums,
       sortNumbersFirst: optionSortNumbersFirst,
+      ignoreLeadingArticles: optionSortIgnoreLeadingArticles,
     });
   }
 
@@ -191,9 +198,16 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
           options: actualSortArtistTracks + sortAppend,
           direction: actualOrderArtistTracks,
           sortNumbersFirst: optionSortNumbersFirst,
+          ignoreLeadingArticles: optionSortIgnoreLeadingArticles,
         })
       : null;
-  }, [artistTracks, actualSortArtistTracks, actualOrderArtistTracks, optionSortNumbersFirst]);
+  }, [
+    artistTracks,
+    actualSortArtistTracks,
+    actualOrderArtistTracks,
+    optionSortNumbersFirst,
+    optionSortIgnoreLeadingArticles,
+  ]);
 
   const sortedArtistTracksOrder = useMemo(() => {
     return sortedArtistTracks?.map((entry) => entry.originalIndex);

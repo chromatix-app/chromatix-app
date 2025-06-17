@@ -163,9 +163,9 @@ describe('Testing "sortList" function', () => {
     expect(sorted[2].title).toBe('Song C');
   });
 
-  // SORT NUMBERS LAST
+  // SORT NUMBERS LAST (DEFAULT)
 
-  test('Test sorting with sortNumbersLast option', () => {
+  test('Test sorting with numbers last (default)', () => {
     const entriesWithMixedTitles = [{ title: 'Song A' }, { title: '1 Song' }, { title: '2 Song' }];
     const sorted = sortList({
       entries: entriesWithMixedTitles,
@@ -178,7 +178,7 @@ describe('Testing "sortList" function', () => {
 
   // SORT NUMBERS FIRST OPTION
 
-  test('Test sorting with sortNumbersFirst option', () => {
+  test('Test sorting with numbers first', () => {
     const entriesWithMixedTitles = [{ title: 'Song A' }, { title: '1 Song' }, { title: '2 Song' }];
     const sorted = sortList({
       entries: entriesWithMixedTitles,
@@ -188,5 +188,211 @@ describe('Testing "sortList" function', () => {
     expect(sorted[0].title).toBe('1 Song');
     expect(sorted[1].title).toBe('2 Song');
     expect(sorted[2].title).toBe('Song A');
+  });
+});
+
+describe('Testing "ignoreLeadingArticles" option', () => {
+  // TITLE SORTING TESTS
+
+  test('Test sorting titles with ignoreLeadingArticles=true', () => {
+    const entriesWithArticles = [
+      { title: 'The Beatles' },
+      { title: 'A Perfect Circle' },
+      { title: 'Beatles' },
+      { title: 'An Old Soul' },
+    ];
+    const sorted = sortList({
+      entries: entriesWithArticles,
+      options: 'title-asc',
+      ignoreLeadingArticles: true,
+    });
+    // Should sort by title without articles
+    expect(sorted[0].title).toBe('Beatles');
+    expect(sorted[1].title).toBe('The Beatles');
+    expect(sorted[2].title).toBe('An Old Soul');
+    expect(sorted[3].title).toBe('A Perfect Circle');
+  });
+
+  test('Test sorting titles with ignoreLeadingArticles=false', () => {
+    const entriesWithArticles = [
+      { title: 'The Beatles' },
+      { title: 'A Perfect Circle' },
+      { title: 'Beatles' },
+      { title: 'An Old Soul' },
+    ];
+    const sorted = sortList({
+      entries: entriesWithArticles,
+      options: 'title-asc',
+      ignoreLeadingArticles: false,
+    });
+    // Should sort alphabetically with articles included
+    expect(sorted[0].title).toBe('A Perfect Circle');
+    expect(sorted[1].title).toBe('An Old Soul');
+    expect(sorted[2].title).toBe('Beatles');
+    expect(sorted[3].title).toBe('The Beatles');
+  });
+
+  // ARTIST SORTING TESTS
+
+  test('Test sorting artists with ignoreLeadingArticles=true', () => {
+    const entriesWithArticles = [
+      { artist: 'The Rolling Stones' },
+      { artist: 'Rolling Stones' },
+      { artist: 'A Tribe Called Quest' },
+      { artist: 'An Orchestra' },
+    ];
+    const sorted = sortList({
+      entries: entriesWithArticles,
+      options: 'artist-asc',
+      ignoreLeadingArticles: true,
+    });
+    // Should sort by artist name without articles
+    expect(sorted[0].artist).toBe('An Orchestra');
+    expect(sorted[1].artist).toBe('Rolling Stones');
+    expect(sorted[2].artist).toBe('The Rolling Stones');
+    expect(sorted[3].artist).toBe('A Tribe Called Quest');
+  });
+
+  test('Test sorting artists with ignoreLeadingArticles=false', () => {
+    const entriesWithArticles = [
+      { artist: 'The Rolling Stones' },
+      { artist: 'Rolling Stones' },
+      { artist: 'A Tribe Called Quest' },
+      { artist: 'An Orchestra' },
+    ];
+    const sorted = sortList({
+      entries: entriesWithArticles,
+      options: 'artist-asc',
+      ignoreLeadingArticles: false,
+    });
+    // Should sort alphabetically with articles included
+    expect(sorted[0].artist).toBe('A Tribe Called Quest');
+    expect(sorted[1].artist).toBe('An Orchestra');
+    expect(sorted[2].artist).toBe('Rolling Stones');
+    expect(sorted[3].artist).toBe('The Rolling Stones');
+  });
+
+  // ALBUM SORTING TESTS
+
+  test('Test sorting albums with ignoreLeadingArticles=true', () => {
+    const entriesWithArticles = [
+      { album: 'The Dark Side of the Moon' },
+      { album: 'Dark Side' },
+      { album: 'A Night at the Opera' },
+      { album: 'An Evening With' },
+    ];
+    const sorted = sortList({
+      entries: entriesWithArticles,
+      options: 'album-asc',
+      ignoreLeadingArticles: true,
+    });
+    // Should sort by album name without articles
+    expect(sorted[0].album).toBe('Dark Side');
+    expect(sorted[1].album).toBe('The Dark Side of the Moon');
+    expect(sorted[2].album).toBe('An Evening With');
+    expect(sorted[3].album).toBe('A Night at the Opera');
+  });
+
+  // GENRE SORTING TESTS
+
+  test('Test sorting genres with ignoreLeadingArticles=true', () => {
+    const entriesWithArticles = [
+      { genre: 'The Blues' },
+      { genre: 'Blues' },
+      { genre: 'A Cappella' },
+      { genre: 'An Electronic Genre' },
+    ];
+    const sorted = sortList({
+      entries: entriesWithArticles,
+      options: 'genre-asc',
+      ignoreLeadingArticles: true,
+    });
+    // Should sort by genre without articles
+    expect(sorted[0].genre).toBe('Blues');
+    expect(sorted[1].genre).toBe('The Blues');
+    expect(sorted[2].genre).toBe('A Cappella');
+    expect(sorted[3].genre).toBe('An Electronic Genre');
+  });
+
+  // TESTING NON-ARTICLE FIELDS
+
+  test('Test ignoreLeadingArticles does not affect non-article fields', () => {
+    const entriesWithArticles = [
+      { title: 'The Song', codec: 'The AAC' },
+      { title: 'A Song', codec: 'A MP3' },
+      { title: 'Song', codec: 'AAC' },
+      { title: 'An Song', codec: 'An OGG' },
+    ];
+    const sorted = sortList({
+      entries: entriesWithArticles,
+      options: 'codec-asc',
+      ignoreLeadingArticles: true,
+    });
+    // Should sort normally since codec doesn't have article handling
+    expect(sorted[0].codec).toBe('A MP3');
+    expect(sorted[1].codec).toBe('AAC');
+    expect(sorted[2].codec).toBe('An OGG');
+    expect(sorted[3].codec).toBe('The AAC');
+  });
+
+  // TESTING MULTI-FIELD SORTING
+
+  test('Test multi-field sorting with ignoreLeadingArticles=true', () => {
+    const entriesWithArticles = [
+      { title: 'The Song Z', artist: 'Artist Z', album: 'The Album Z' },
+      { title: 'A Song X', artist: 'The Artist X', album: 'Album X' },
+      { title: 'Song Y', artist: 'A Artist Y', album: 'An Album Y' },
+    ];
+    const sorted = sortList({
+      entries: entriesWithArticles,
+      options: 'artist-asc-album-asc-title-asc',
+      ignoreLeadingArticles: true,
+    });
+    // Should sort by artist first (ignoring articles), then album, then title
+    expect(sorted[0].artist).toBe('The Artist X');
+    expect(sorted[1].artist).toBe('A Artist Y');
+    expect(sorted[2].artist).toBe('Artist Z');
+  });
+
+  // TESTING INTERACTION WITH OTHER OPTIONS
+
+  test('Test ignoreLeadingArticles works with sortNumbersFirst option', () => {
+    const entriesWithArticlesAndNumbers = [
+      { title: 'The 1 Song' },
+      { title: 'A 2 Song' },
+      { title: '3 Song' },
+      { title: 'An 4 Song' },
+    ];
+    const sorted = sortList({
+      entries: entriesWithArticlesAndNumbers,
+      options: 'title-asc',
+      ignoreLeadingArticles: true,
+      sortNumbersFirst: true,
+    });
+    // Should first group by numbers/non-numbers, then apply article handling
+    expect(sorted[0].title).toBe('The 1 Song');
+    expect(sorted[1].title).toBe('A 2 Song');
+    expect(sorted[2].title).toBe('3 Song');
+    expect(sorted[3].title).toBe('An 4 Song');
+  });
+
+  test('Test with descending direction and ignoreLeadingArticles', () => {
+    const entriesWithArticles = [
+      { title: 'The Beatles' },
+      { title: 'A Perfect Circle' },
+      { title: 'Beatles' },
+      { title: 'An Old Soul' },
+    ];
+    const sorted = sortList({
+      entries: entriesWithArticles,
+      options: 'title-asc',
+      ignoreLeadingArticles: true,
+      direction: 'desc',
+    });
+    // Should sort by title without articles in reverse order
+    expect(sorted[0].title).toBe('A Perfect Circle');
+    expect(sorted[1].title).toBe('An Old Soul');
+    expect(sorted[2].title).toBe('The Beatles');
+    expect(sorted[3].title).toBe('Beatles');
   });
 });

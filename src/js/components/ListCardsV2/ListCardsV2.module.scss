@@ -44,7 +44,7 @@
   :global(.env-local) & {
     height: 1px;
     background: var(--color-primary);
-    opacity: 0.6;
+    opacity: 0.15;
   }
 }
 
@@ -52,9 +52,9 @@
   display: grid;
   gap: 0 10px;
 
-  :global(.env-local) & {
-    background: rgba(255, 255, 255, 0.05);
-  }
+  // :global(.env-local) & {
+  //   background: rgba(255, 255, 255, 0.05);
+  // }
 }
 
 .groupRow {

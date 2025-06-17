@@ -19,6 +19,9 @@ const useGetAllCollections = (collectionKey) => {
   const colCollectionUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionUserRating);
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
+  const optionSortIgnoreLeadingArticles = useSelector(
+    ({ sessionModel }) => sessionModel.optionSortIgnoreLeadingArticles
+  );
 
   // prevent sorting by a hidden field
   const allowedSort = {
@@ -36,6 +39,7 @@ const useGetAllCollections = (collectionKey) => {
         options: actualSortCollections,
         direction: actualOrderCollections,
         sortNumbersFirst: optionSortNumbersFirst,
+        ignoreLeadingArticles: optionSortIgnoreLeadingArticles,
       })
     : null;
 

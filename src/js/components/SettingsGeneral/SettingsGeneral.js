@@ -91,6 +91,9 @@ const SortSettings = () => {
   const dispatch = useDispatch();
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
+  const optionSortIgnoreLeadingArticles = useSelector(
+    ({ sessionModel }) => sessionModel.optionSortIgnoreLeadingArticles
+  );
 
   const menuItems = [
     {
@@ -98,6 +101,13 @@ const SortSettings = () => {
       label: 'Sort with numbers on top.',
       description: 'When sorting alphabetically, put entries that start with a number at the top of the list.',
       state: optionSortNumbersFirst,
+    },
+    {
+      key: 'optionSortIgnoreLeadingArticles',
+      label: 'Ignore "a", "an" and "the" when sorting.',
+      description:
+        'When sorting alphabetically, ignore leading prefixes like "A", "An", and "The" at the start of titles.',
+      state: optionSortIgnoreLeadingArticles,
     },
   ];
 
