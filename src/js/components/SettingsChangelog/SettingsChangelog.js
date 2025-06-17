@@ -27,17 +27,15 @@ const SettingsChangelog = () => {
   return (
     <div className={style.wrap}>
       <div className="font-markdown">
-        {removeHtmlComments(markdownContent)
-          .split(/<a[^>]*><\/a>/)
-          .map((item, key) => {
-            if (item) {
-              const myHtml = convertMarkdown(item.trim());
-              if (myHtml) {
-                return <div key={key} dangerouslySetInnerHTML={{ __html: myHtml }}></div>;
-              }
+        {markdownContent.split(/<!--[\s\S]*?-->/g).map((item, key) => {
+          if (item) {
+            const myHtml = convertMarkdown(item.trim());
+            if (myHtml) {
+              return <div key={key} dangerouslySetInnerHTML={{ __html: myHtml }}></div>;
             }
-            return null;
-          })}
+          }
+          return null;
+        })}
       </div>
     </div>
   );
@@ -47,10 +45,10 @@ const SettingsChangelog = () => {
 // HELPERS
 // ======================================================================
 
-const removeHtmlComments = (input) => {
-  if (!input || typeof input !== 'string') return '';
-  return input.replace(/<!--[\s\S]*?-->/g, '');
-};
+// const removeHtmlComments = (input) => {
+//   if (!input || typeof input !== 'string') return '';
+//   return input.replace(/<!--[\s\S]*?-->/g, '');
+// };
 
 const convertMarkdown = (text) => {
   let convertedMarkdown = convertLists(text);
