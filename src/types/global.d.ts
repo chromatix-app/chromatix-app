@@ -9,9 +9,9 @@ declare global {
     ipcRenderer: {
       send: (key: string, data: any) => void;
     };
-    umami: {
-      track: (event: string, props: object) => void;
-    };
+    // umami: {
+    //   track: (event: string, props: object) => void;
+    // };
   }
 }
 

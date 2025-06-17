@@ -45,7 +45,7 @@
   .wrapLarge & {
     margin: 0 !important;
     opacity: 1;
-    color: var(--color-background);
+    color: var(--color-primary-background);
   }
 }
 
@@ -57,8 +57,8 @@
   top: 2px;
   left: -7px;
   padding: 4px;
-  background: var(--color-panel-background);
-  border: 1px solid var(--color-border);
+  background: var(--color-secondary-background);
+  border: 1px solid var(--color-secondary-border);
   border-radius: 5px;
   box-shadow: 0 0 10px var(--color-shadow);
   z-index: 99;
@@ -87,7 +87,7 @@
 .divider {
   height: 1px;
   margin: 4px 7px;
-  background: var(--color-opacity-015);
+  background: var(--color-secondary-border);
 }
 
 .checkboxItem {
@@ -98,7 +98,7 @@
 
   &:not([data-disabled]):hover,
   &:not([data-disabled]):focus {
-    background: var(--color-hover);
+    background: var(--color-secondary-hover);
     cursor: pointer;
 
     @include mixins.focus-self-fill;
@@ -109,7 +109,7 @@
   }
 
   // &[data-state='checked'] {
-  //   color: var(--color-primary);
+  //   color: var(--color-core);
   // }
 }
 
