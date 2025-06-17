@@ -41,10 +41,11 @@ const ArtistList = () => {
 
   return (
     <>
-      {(isLoading || isEmptyList || isGridView) && (
+      {(isLoading || isEmptyList) && (
         <Title
           colOptions={colOptions}
           gridOptions={gridOptions}
+          isGridView={isGridView}
           isListView={isListView}
           orderArtists={orderArtists}
           setColumnVisibility={setColumnVisibility}
@@ -57,7 +58,24 @@ const ArtistList = () => {
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
-      {isGridView && <ListCards variant="artists" entries={sortedArtists} showRatings={gridOptions.userRating} />}
+      {isGridView && (
+        <ListCards variant="artists" entries={sortedArtists} showRatings={gridOptions.userRating}>
+          <Title
+            colOptions={colOptions}
+            gridOptions={gridOptions}
+            isGridView={isGridView}
+            isListView={isListView}
+            orderArtists={orderArtists}
+            setColumnVisibility={setColumnVisibility}
+            setOrderArtists={setOrderArtists}
+            setSortArtists={setSortArtists}
+            setViewArtists={setViewArtists}
+            sortArtists={sortArtists}
+            sortedArtists={sortedArtists}
+            viewArtists={viewArtists}
+          />
+        </ListCards>
+      )}
       {isListView && (
         <ListTable
           variant="artists"
@@ -69,6 +87,7 @@ const ArtistList = () => {
           <Title
             colOptions={colOptions}
             gridOptions={gridOptions}
+            isGridView={isGridView}
             isListView={isListView}
             orderArtists={orderArtists}
             setColumnVisibility={setColumnVisibility}
@@ -88,6 +107,7 @@ const ArtistList = () => {
 const Title = ({
   colOptions,
   gridOptions,
+  isGridView,
   isListView,
   orderArtists,
   setColumnVisibility,
@@ -106,9 +126,9 @@ const Title = ({
         subtitle={
           sortedArtists ? sortedArtists?.length + ' Artist' + (sortedArtists?.length !== 1 ? 's' : '') : <>&nbsp;</>
         }
-        padding={!isListView}
+        padding={!isListView && !isGridView}
       />
-      <FilterWrap padding={!isListView}>
+      <FilterWrap padding={!isListView && !isGridView}>
         <FilterToggle
           value={viewArtists}
           options={[

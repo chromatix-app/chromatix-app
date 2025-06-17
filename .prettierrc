@@ -7,10 +7,5 @@
   "singleQuote": true,
   "tabWidth": 2,
   "trailingComma": "es5",
-  "useTabs": false,
-
-  "braceStyle": "1tbs",
-  "trailingCommaPHP": true,
-
-  "twigPrintWidth": 120
+  "useTabs": false
 }

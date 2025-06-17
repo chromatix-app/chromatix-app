@@ -45,10 +45,11 @@ const FolderList = () => {
 
   return (
     <>
-      {(isLoading || isEmptyList || isGridView) && (
+      {(isLoading || isEmptyList) && (
         <Title
           colOptions={colOptions}
           folderId={folderId}
+          isGridView={isGridView}
           isListView={isListView}
           orderFolders={orderFolders}
           setColumnVisibility={setColumnVisibility}
@@ -68,7 +69,22 @@ const FolderList = () => {
           entries={sortedFolders}
           playingOrder={folderOrder}
           sortKey={sortFolders}
-        />
+        >
+          <Title
+            colOptions={colOptions}
+            folderId={folderId}
+            isGridView={isGridView}
+            isListView={isListView}
+            orderFolders={orderFolders}
+            setColumnVisibility={setColumnVisibility}
+            setOrderFolders={setOrderFolders}
+            setSortFolders={setSortFolders}
+            setViewFolders={setViewFolders}
+            sortedFolders={sortedFolders}
+            sortFolders={sortFolders}
+            viewFolders={viewFolders}
+          />
+        </ListCards>
       )}
       {isListView && (
         <ListTable
@@ -83,6 +99,7 @@ const FolderList = () => {
           <Title
             colOptions={colOptions}
             folderId={folderId}
+            isGridView={isGridView}
             isListView={isListView}
             orderFolders={orderFolders}
             setColumnVisibility={setColumnVisibility}
@@ -102,6 +119,7 @@ const FolderList = () => {
 const Title = ({
   colOptions,
   folderId,
+  isGridView,
   isListView,
   orderFolders,
   setColumnVisibility,
@@ -120,9 +138,9 @@ const Title = ({
         subtitle={
           sortedFolders ? sortedFolders?.length + ' Item' + (sortedFolders?.length !== 1 ? 's' : '') : <>&nbsp;</>
         }
-        padding={!isListView}
+        padding={!isListView && !isGridView}
       />
-      <FilterWrap padding={!isListView}>
+      <FilterWrap padding={!isListView && !isGridView}>
         <FilterToggle
           value={viewFolders}
           options={[

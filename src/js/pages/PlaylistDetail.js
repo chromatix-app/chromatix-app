@@ -125,14 +125,7 @@ const Title = ({
             {playlistDurationString}
             {playlistDurationString && ' • '}
 
-            <StarRating
-              variant="title"
-              type="playlist"
-              ratingKey={playlistId}
-              rating={playlistRating}
-              editable
-              alwaysVisible
-            />
+            <StarRating variant="title" type="playlist" ratingKey={playlistId} rating={playlistRating} editable />
           </>
         ) : (
           <>&nbsp;</>

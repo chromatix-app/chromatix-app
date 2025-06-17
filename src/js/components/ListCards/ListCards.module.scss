@@ -2,25 +2,77 @@
 @use '../../../css/_config/_vars';
 
 .wrap {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.scrollableOuter {
+  overflow: auto;
+  width: 100%;
+  height: 100%;
+  padding: 0 20px 30px;
+  background: var(--color-background);
+
+  :global(.cq-800) & {
+    padding: 0 30px 30px;
+  }
+}
+
+.scrollableInner {
+  // Note: This grid layout MUST match the logic in the calculateDimensions js function.
   display: grid;
-  // overflow: hidden;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 20px 10px;
-  padding: 0 20px 50px;
+  gap: 0 10px;
+  background: var(--color-background);
 
   :global(.cq-620) & {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   }
-  :global(.cq-800) & {
-    padding: 0 30px 50px;
-  }
   :global(.cq-860) & {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+
+  &Virtual {
+    display: block;
+  }
+}
+
+.measure {
+  height: 0;
+
+  :global(.env-local) & {
+    height: 1px;
+    background: var(--color-primary);
+    opacity: 0.15;
+  }
+}
+
+.virtualRow {
+  display: grid;
+  gap: 0 10px;
+
+  // :global(.env-local) & {
+  //   background: rgba(255, 255, 255, 0.05);
+  // }
+}
+
+.groupRow {
+  display: block;
+  grid-column: 1 / -1;
+  width: 100%;
+  padding: 0 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+
+  .card + & {
+    padding-top: 30px;
   }
 }
 
 .card {
   padding: 9px;
+  margin-bottom: 20px;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 13px;
@@ -30,6 +82,10 @@
   &:hover {
     background: var(--color-opacity-01);
     border: 1px solid var(--color-opacity-005);
+  }
+
+  .virtualRow & {
+    margin-bottom: 0;
   }
 
   &Link {
@@ -146,5 +202,5 @@
 
 .rating {
   margin-top: 6px;
-  color: var(--color-opacity-03);
+  color: var(--color-opacity-04);
 }

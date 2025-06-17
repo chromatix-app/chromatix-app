@@ -22,6 +22,11 @@ const useGetAllArtists = () => {
   const colArtistsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colArtistsLastPlayed);
   const colArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistsUserRating);
 
+  const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
+  const optionSortIgnoreLeadingArticles = useSelector(
+    ({ sessionModel }) => sessionModel.optionSortIgnoreLeadingArticles
+  );
+
   // prevent sorting by a hidden field
   const allowedSort = {
     title: true,
@@ -39,7 +44,15 @@ const useGetAllArtists = () => {
     (artist) => artist.libraryId === currentLibraryId
   );
   const sortedArtists =
-    haveGotAllArtists && allArtists ? sortList(allArtists, actualSortArtists, actualOrderArtists) : null;
+    haveGotAllArtists && allArtists
+      ? sortList({
+          entries: allArtists,
+          options: actualSortArtists,
+          direction: actualOrderArtists,
+          sortNumbersFirst: optionSortNumbersFirst,
+          ignoreLeadingArticles: optionSortIgnoreLeadingArticles,
+        })
+      : null;
 
   const setViewArtists = (viewArtists) => {
     dispatch.sessionModel.setSessionState({

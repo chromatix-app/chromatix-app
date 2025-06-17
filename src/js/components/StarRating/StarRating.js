@@ -14,7 +14,8 @@ const StarRating = ({
   inline,
   size = 13,
   editable = false,
-  alwaysVisible = false,
+  showIfZero = true,
+  onlyShowOnHover = false,
 }) => {
   const [displayRating, setDisplayRating] = useState(null);
 
@@ -35,7 +36,7 @@ const StarRating = ({
     [type, ratingKey]
   );
 
-  if (!editable && (!rating || rating === null || rating <= 0)) {
+  if (!showIfZero && (!rating || rating === null || rating <= 0)) {
     return null;
   }
 
@@ -62,7 +63,7 @@ const StarRating = ({
           height: size,
         }}
       >
-        {(displayRating || alwaysVisible || rating > 0) && <Icon icon={icon} cover />}
+        {(!onlyShowOnHover || displayRating || rating > 0) && <Icon icon={icon} cover />}
       </div>
     );
   });

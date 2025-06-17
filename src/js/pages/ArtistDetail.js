@@ -2,7 +2,6 @@
 // IMPORTS
 // ======================================================================
 
-import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -14,7 +13,6 @@ import {
   Loading,
   StarRating,
   TitleHeading,
-  TitleSection,
 } from 'js/components';
 import { useGetArtistDetail } from 'js/hooks';
 
@@ -39,7 +37,7 @@ const ArtistDetail = () => {
     sortedArtistAlbums,
     sortedArtistRelated,
     sortedArtistAppearances,
-    sortedAllReleases,
+
     sortedAllReleasesAndAppearances,
     sortedArtistTracks,
     sortedArtistTracksOrder,
@@ -69,26 +67,29 @@ const ArtistDetail = () => {
     return <Loading forceVisible inline showOffline />;
   }
 
-  const isLoading1 =
-    !artistInfo ||
-    !sortedArtistAlbums ||
-    !sortedArtistRelated ||
-    !sortedArtistAppearances ||
-    (viewArtistAlbums === 'track' && !sortedArtistTracks);
-  const isLoading2 = !artistInfo || !sortedArtistAlbums || !sortedArtistRelated || !sortedArtistAppearances;
+  // Check everything is loaded for album views
+  const isLoading1 = !artistInfo || !sortedArtistAlbums || !sortedArtistRelated || !sortedArtistAppearances;
+
+  // Check if everything is loaded for track views
+  const isLoading2 = isLoading1 || (viewArtistAlbums === 'track' && !sortedArtistTracks);
+
+  // Check if album view is empty
   const isEmptyList1 =
-    !isLoading1 &&
+    !isLoading2 &&
     sortedArtistAlbums?.length === 0 &&
     sortedArtistRelated?.length === 0 &&
     sortedArtistAppearances?.length === 0;
-  const isEmptyList2 = !isLoading1 && sortedArtistTracks?.length === 0;
-  const isGridView = !isLoading1 && !isEmptyList1 && viewArtistAlbums === 'grid';
-  const isListView = !isLoading1 && !isEmptyList1 && viewArtistAlbums === 'list';
-  const isTrackView = !isLoading1 && !isEmptyList1 && viewArtistAlbums === 'track';
+
+  // Check if track view is empty
+  const isEmptyList2 = !isLoading2 && sortedArtistTracks?.length === 0;
+
+  const isGridView = !isLoading2 && !isEmptyList1 && viewArtistAlbums === 'grid';
+  const isListView = !isLoading2 && !isEmptyList1 && viewArtistAlbums === 'list';
+  const isTrackView = !isLoading2 && !isEmptyList1 && viewArtistAlbums === 'track';
 
   return (
     <>
-      {(isLoading1 || isEmptyList1 || isEmptyList2 || isGridView) && (
+      {(isLoading2 || isEmptyList1 || isEmptyList2) && (
         <Title
           artistAlbumsGroupByType={artistAlbumsGroupByType}
           artistCountry={artistCountry}
@@ -101,8 +102,9 @@ const ArtistDetail = () => {
           artistTracksTotal={artistTracksTotal}
           colOptions={colOptions}
           gridOptions={gridOptions}
+          isGridView={isGridView}
           isListView={isListView}
-          isLoading2={isLoading2}
+          isLoading1={isLoading1}
           isTrackView={isTrackView}
           libraryId={libraryId}
           orderArtistAlbums={orderArtistAlbums}
@@ -114,44 +116,41 @@ const ArtistDetail = () => {
           viewArtistAlbums={viewArtistAlbums}
         />
       )}
-      {isLoading1 && <Loading forceVisible inline showOffline />}
+      {isLoading2 && <Loading forceVisible inline showOffline />}
 
       {isGridView && (
-        <>
-          {artistAlbumsGroupByType && (
-            <>
-              {sortedArtistAlbums && sortedArtistAlbums.length > 0 && (
-                <>
-                  <TitleSection title="Albums" />
-                  <ListCards variant="albums" entries={sortedArtistAlbums} showRatings={gridOptions.userRating} />
-                </>
-              )}
-              {sortedArtistRelated &&
-                sortedArtistRelated.map((entry, index) => (
-                  <React.Fragment key={index}>
-                    <TitleSection title={entry.title} />
-                    <ListCards variant="albums" entries={entry.related} showRatings={gridOptions.userRating} />
-                  </React.Fragment>
-                ))}
-            </>
-          )}
-          {!artistAlbumsGroupByType && (
-            <>
-              {sortedAllReleases && sortedAllReleases.length > 0 && (
-                <>
-                  <TitleSection title="All Releases" />
-                  <ListCards variant="albums" entries={sortedAllReleases} showRatings={gridOptions.userRating} />
-                </>
-              )}
-            </>
-          )}
-          {sortedArtistAppearances && sortedArtistAppearances.length > 0 && (
-            <>
-              <TitleSection title="Appears On" />
-              <ListCards variant="albums" entries={sortedArtistAppearances} showRatings={gridOptions.userRating} />
-            </>
-          )}
-        </>
+        <ListCards
+          variant="artistAlbums"
+          {...(artistAlbumsGroupByType ? { groupBy: 'albumGroup' } : { groupBy: 'releaseGroup' })}
+          entries={sortedAllReleasesAndAppearances}
+          showRatings={gridOptions.userRating}
+        >
+          <Title
+            artistAlbumsGroupByType={artistAlbumsGroupByType}
+            artistCountry={artistCountry}
+            artistGenre={artistGenre}
+            artistId={artistId}
+            artistName={artistName}
+            artistRating={artistRating}
+            artistReleasesTotal={artistReleasesTotal}
+            artistThumb={artistThumb}
+            artistTracksTotal={artistTracksTotal}
+            colOptions={colOptions}
+            gridOptions={gridOptions}
+            isGridView={isGridView}
+            isListView={isListView}
+            isLoading1={isLoading1}
+            isTrackView={isTrackView}
+            libraryId={libraryId}
+            orderArtistAlbums={orderArtistAlbums}
+            setColumnVisibility={setColumnVisibility}
+            setOrderArtistAlbums={setOrderArtistAlbums}
+            setSortArtistAlbums={setSortArtistAlbums}
+            setViewArtistAlbums={setViewArtistAlbums}
+            sortArtistAlbums={sortArtistAlbums}
+            viewArtistAlbums={viewArtistAlbums}
+          />
+        </ListCards>
       )}
 
       {isListView && (
@@ -175,8 +174,9 @@ const ArtistDetail = () => {
             artistTracksTotal={artistTracksTotal}
             colOptions={colOptions}
             gridOptions={gridOptions}
+            isGridView={isGridView}
             isListView={isListView}
-            isLoading2={isLoading2}
+            isLoading1={isLoading1}
             isTrackView={isTrackView}
             libraryId={libraryId}
             orderArtistAlbums={orderArtistAlbums}
@@ -214,8 +214,9 @@ const ArtistDetail = () => {
             artistTracksTotal={artistTracksTotal}
             colOptions={colTrackOptions}
             gridOptions={gridOptions}
+            isGridView={isGridView}
             isListView={isListView}
-            isLoading2={isLoading2}
+            isLoading1={isLoading1}
             isTrackView={isTrackView}
             libraryId={libraryId}
             orderArtistAlbums={orderArtistAlbums}
@@ -244,8 +245,9 @@ const Title = ({
   artistTracksTotal,
   colOptions,
   gridOptions,
+  isGridView,
   isListView,
-  isLoading2,
+  isLoading1,
   isTrackView,
   libraryId,
   orderArtistAlbums,
@@ -256,30 +258,32 @@ const Title = ({
   sortArtistAlbums,
   viewArtistAlbums,
 }) => {
+  let subtitle = <>&nbsp;</>;
+  // Track view count
+  if (isTrackView && artistTracksTotal) {
+    subtitle = artistTracksTotal + ' Track' + (artistTracksTotal > 1 ? 's' : '');
+  }
+  // Album view count
+  else if (!isLoading1) {
+    subtitle = artistReleasesTotal + ' Release' + (artistReleasesTotal > 1 ? 's' : '');
+  }
+
   return (
     <TitleHeading
       key={libraryId + '-' + artistId}
       thumb={artistThumb}
       title={artistName}
-      subtitle={
-        isTrackView && artistTracksTotal ? (
-          artistTracksTotal + ' Track' + (artistTracksTotal > 1 ? 's' : '')
-        ) : !isLoading2 ? (
-          artistReleasesTotal + ' Release' + (artistReleasesTotal > 1 ? 's' : '')
-        ) : (
-          <>&nbsp;</>
-        )
-      }
+      subtitle={subtitle}
       detail={
         <>
           {artistCountry}
           {artistCountry && artistGenre && ' • '}
           {artistGenre}
           {(artistCountry || artistGenre) && ' • '}
-          <StarRating variant="title" type="artist" ratingKey={artistId} rating={artistRating} editable alwaysVisible />
+          <StarRating variant="title" type="artist" ratingKey={artistId} rating={artistRating} editable />
         </>
       }
-      padding={!isListView && !isTrackView}
+      padding={!isGridView && !isListView && !isTrackView}
       filters={
         <>
           {/* <FilterToggle

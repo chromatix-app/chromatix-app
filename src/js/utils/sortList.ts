@@ -1,5 +1,3 @@
-import store from 'js/store/store';
-
 type Entry = {
   addedAt?: string;
   album?: string;
@@ -21,87 +19,73 @@ type Entry = {
 };
 
 type SortFunction = (a: Entry, b: Entry) => number;
+type SortDirection = 'asc' | 'desc';
 
-const forcedSortKeys: { [key: string]: { key: string; direction: 'asc' | 'desc' } } = {
+const LEADING_ARTICLES = ['A', 'An', 'The'];
+const ARTICLE_AWARE_FIELDS = ['album', 'artist', 'title', 'genre'];
+
+// We forcibly add "sortOrder" as a secondary sort key after "kind" to ensure
+// order is maintained when sorting with folders on top.
+const FORCED_SORT_KEYS: { [key: string]: { key: string; direction: SortDirection } } = {
   kind: {
     key: 'sortOrder',
     direction: 'asc',
   },
 };
 
-const sortList = (entries: Entry[], options: string, direction: 'asc' | 'desc' = 'asc'): Entry[] => {
+const sortList = ({
+  entries,
+  options,
+  direction = 'asc',
+  sortNumbersFirst = false,
+  ignoreLeadingArticles = true,
+}: {
+  entries: Entry[];
+  options: string;
+  direction?: SortDirection;
+  sortNumbersFirst?: boolean;
+  ignoreLeadingArticles?: boolean;
+}): Entry[] => {
   const optionsArray = options.split('-');
 
   const primarySortKey = optionsArray[0];
-  let primaryDirection: 'asc' | 'desc' = (optionsArray[1] as 'asc' | 'desc') || 'asc';
+  let primaryDirection: SortDirection = (optionsArray[1] as SortDirection) || 'asc';
 
-  const secondarySortKey = optionsArray[2] || forcedSortKeys[primarySortKey]?.key || 'title';
-  let secondaryDirection: 'asc' | 'desc' = (optionsArray[3] as 'asc' | 'desc') || 'asc';
+  const secondarySortKey = optionsArray[2] || FORCED_SORT_KEYS[primarySortKey]?.key || 'title';
+  let secondaryDirection: SortDirection = (optionsArray[3] as SortDirection) || 'asc';
 
-  const tertiarySortKey = optionsArray[4] || forcedSortKeys[primarySortKey]?.key || 'title';
-  let tertiaryDirection: 'asc' | 'desc' = (optionsArray[5] as 'asc' | 'desc') || 'asc';
+  const tertiarySortKey = optionsArray[4] || FORCED_SORT_KEYS[primarySortKey]?.key || 'title';
+  let tertiaryDirection: SortDirection = (optionsArray[5] as SortDirection) || 'asc';
 
-  const quaternarySortKey = optionsArray[6] || forcedSortKeys[primarySortKey]?.key || 'title';
-  let quaternaryDirection: 'asc' | 'desc' = (optionsArray[7] as 'asc' | 'desc') || 'asc';
+  const quaternarySortKey = optionsArray[6] || FORCED_SORT_KEYS[primarySortKey]?.key || 'title';
+  let quaternaryDirection: SortDirection = (optionsArray[7] as SortDirection) || 'asc';
 
-  // if the overall sort is reversed, reverse the sort keys (but ignore our forced sort keys)
-  // (this is essentially used to keep folders on top of tracks when viewing a folder)
+  // If the overall sort is reversed, reverse the sort keys
   if (direction === 'desc') {
     primaryDirection = primaryDirection === 'asc' ? 'desc' : 'asc';
-    secondaryDirection = forcedSortKeys[primarySortKey]?.direction
-      ? forcedSortKeys[primarySortKey].direction
+    secondaryDirection = FORCED_SORT_KEYS[primarySortKey]?.direction
+      ? FORCED_SORT_KEYS[primarySortKey].direction
       : secondaryDirection === 'asc'
         ? 'desc'
         : 'asc';
-    tertiaryDirection = forcedSortKeys[primarySortKey]?.direction
-      ? forcedSortKeys[primarySortKey].direction
+    tertiaryDirection = FORCED_SORT_KEYS[primarySortKey]?.direction
+      ? FORCED_SORT_KEYS[primarySortKey].direction
       : tertiaryDirection === 'asc'
         ? 'desc'
         : 'asc';
-    quaternaryDirection = forcedSortKeys[primarySortKey]?.direction
-      ? forcedSortKeys[primarySortKey].direction
+    quaternaryDirection = FORCED_SORT_KEYS[primarySortKey]?.direction
+      ? FORCED_SORT_KEYS[primarySortKey].direction
       : quaternaryDirection === 'asc'
         ? 'desc'
         : 'asc';
   }
 
-  // console.log(primarySortKey, secondarySortKey, tertiarySortKey);
-  // console.log(direction, primaryDirection, secondaryDirection, tertiaryDirection);
-  // console.log(direction, primarySortKey, primaryDirection, secondarySortKey, secondaryDirection);
-
-  return doSorting(
-    entries,
-    primarySortKey,
-    primaryDirection,
-    secondarySortKey,
-    secondaryDirection,
-    tertiarySortKey,
-    tertiaryDirection,
-    quaternarySortKey,
-    quaternaryDirection
-  );
-};
-
-const doSorting = (
-  entries: Entry[],
-  primarySortKey: string,
-  primaryDirection: 'asc' | 'desc' = 'asc',
-  secondarySortKey: string = 'title',
-  secondaryDirection: 'asc' | 'desc' = 'asc',
-  tertiarySortKey: string = 'title',
-  tertiaryDirection: 'asc' | 'desc' = 'asc',
-  quaternarySortKey: string = 'title',
-  quaternaryDirection: 'asc' | 'desc' = 'asc'
-): Entry[] => {
-  // Get the setting once before sorting
-  const sortNumbersFirst = store.getState().sessionModel.optionSortNumbersFirst === true;
-
   // Create enhanced sort functions with the setting captured in the closure
-  const sortFunctions = enhanceSortFunctions(sortNumbersFirst);
+  const sortFunctions = getSortFunctions(sortNumbersFirst, ignoreLeadingArticles);
 
-  primarySortKey = sortFunctions[primarySortKey] ? primarySortKey : 'title';
-  secondarySortKey = sortFunctions[secondarySortKey] ? secondarySortKey : 'title';
-  tertiarySortKey = sortFunctions[tertiarySortKey] ? tertiarySortKey : 'title';
+  const validPrimaryKey = sortFunctions[primarySortKey] ? primarySortKey : 'title';
+  const validSecondaryKey = sortFunctions[secondarySortKey] ? secondarySortKey : 'title';
+  const validTertiaryKey = sortFunctions[tertiarySortKey] ? tertiarySortKey : 'title';
 
   const primaryDirectionFactor = primaryDirection === 'asc' ? 1 : -1;
   const secondaryDirectionFactor = secondaryDirection === 'asc' ? 1 : -1;
@@ -109,11 +93,11 @@ const doSorting = (
   const quaternaryDirectionFactor = quaternaryDirection === 'asc' ? 1 : -1;
 
   return [...entries].sort((a, b) => {
-    const primaryComparison = primaryDirectionFactor * sortFunctions[primarySortKey](a, b);
+    const primaryComparison = primaryDirectionFactor * sortFunctions[validPrimaryKey](a, b);
     if (primaryComparison === 0 && secondarySortKey) {
-      const secondaryComparison = secondaryDirectionFactor * sortFunctions[secondarySortKey](a, b);
+      const secondaryComparison = secondaryDirectionFactor * sortFunctions[validSecondaryKey](a, b);
       if (secondaryComparison === 0 && tertiarySortKey) {
-        const tertiaryComparison = tertiaryDirectionFactor * sortFunctions[tertiarySortKey](a, b);
+        const tertiaryComparison = tertiaryDirectionFactor * sortFunctions[validTertiaryKey](a, b);
         if (tertiaryComparison === 0 && quaternarySortKey) {
           const quaternaryComparison = quaternaryDirectionFactor * sortFunctions[quaternarySortKey](a, b);
           return quaternaryComparison;
@@ -126,88 +110,173 @@ const doSorting = (
   });
 };
 
-// Function that enhances sort functions with the current settings
-const enhanceSortFunctions = (sortNumbersFirst: boolean): Record<string, SortFunction> => {
-  // If sortNumbersFirst is true, we can just use the base sort functions
-  if (sortNumbersFirst) {
-    return baseSortFunctions;
-  }
-
-  // Otherwise, we need to enhance the string sort functions
-  const createStringSortFunction = (key: keyof Entry): SortFunction => {
+// Get all sort functions based on settings
+const getSortFunctions = (sortNumbersFirst: boolean, ignoreLeadingArticles: boolean): Record<string, SortFunction> => {
+  // Create string field comparer
+  const createStringFieldComparer = (field: keyof Entry, isArticleAware: boolean): SortFunction => {
     return (a, b) => {
-      const valueA = ((a[key] as string) ?? '').toUpperCase();
-      const valueB = ((b[key] as string) ?? '').toUpperCase();
+      const aValue = (a[field] as string) ?? '';
+      const bValue = (b[field] as string) ?? '';
 
-      const isFirstCharNumberA = valueA.length > 0 && !isNaN(Number(valueA[0]));
-      const isFirstCharNumberB = valueB.length > 0 && !isNaN(Number(valueB[0]));
-
-      // Handle cases when one starts with a number and the other doesn't
-      if (isFirstCharNumberA && !isFirstCharNumberB) {
-        return sortNumbersFirst ? -1 : 1; // Numbers first or last based on preference
-      }
-      if (!isFirstCharNumberA && isFirstCharNumberB) {
-        return sortNumbersFirst ? 1 : -1; // Numbers first or last based on preference
-      }
-
-      // If both start with numbers, try to compare them numerically
-      if (isFirstCharNumberA && isFirstCharNumberB) {
-        // Extract leading numbers from both strings
-        const numRegex = /^(\d+)/;
-        const matchA = valueA.match(numRegex);
-        const matchB = valueB.match(numRegex);
-
-        if (matchA && matchB) {
-          const numA = parseInt(matchA[1], 10);
-          const numB = parseInt(matchB[1], 10);
-          if (numA !== numB) {
-            return numA - numB; // Sort numerically
-          }
-        }
-      }
-
-      return valueA.localeCompare(valueB);
+      // Only apply article handling for article-aware fields
+      return isArticleAware
+        ? compareStringsWithArticles(aValue, bValue, ignoreLeadingArticles, sortNumbersFirst)
+        : compareStringsWithArticles(aValue, bValue, false, sortNumbersFirst); // No articles but still handle number sorting
     };
   };
 
-  // Create enhanced sort functions only when sortNumbersFirst is true
-  return {
-    ...baseSortFunctions,
-    album: createStringSortFunction('album'),
-    artist: createStringSortFunction('artist'),
-    codec: createStringSortFunction('codec'),
-    country: createStringSortFunction('country'),
-    genre: createStringSortFunction('genre'),
-    kind: createStringSortFunction('kind'),
-    title: createStringSortFunction('title'),
+  // Base sort functions
+  const baseFunctions: Record<string, SortFunction> = {
+    // String fields with article awareness
+    album: createStringFieldComparer('album', true),
+    artist: createStringFieldComparer('artist', true),
+    title: createStringFieldComparer('title', true),
+    genre: createStringFieldComparer('genre', true),
+
+    // String fields without article awareness
+    codec: createStringFieldComparer('codec', false),
+    country: createStringFieldComparer('country', false),
+    kind: createStringFieldComparer('kind', false),
+
+    // Number fields
+    bitrate: (a, b) => (a.bitrate ?? 0) - (b.bitrate ?? 0),
+    discNumber: (a, b) => (a.discNumber ?? 0) - (b.discNumber ?? 0),
+    duration: (a, b) => (a.duration ?? 0) - (b.duration ?? 0),
+    sortOrder: (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0),
+    totalTracks: (a, b) => (a.totalTracks ?? 0) - (b.totalTracks ?? 0),
+    trackNumber: (a, b) => (a.trackNumber ?? 0) - (b.trackNumber ?? 0),
+    userRating: (a, b) => (a.userRating ?? 0) - (b.userRating ?? 0),
+
+    // Date fields
+    addedAt: (a, b) => new Date(a.addedAt ?? '1970-01-01').getTime() - new Date(b.addedAt ?? '1970-01-01').getTime(),
+    lastPlayed: (a, b) =>
+      new Date(a.lastPlayed ?? '1970-01-01').getTime() - new Date(b.lastPlayed ?? '1970-01-01').getTime(),
+    releaseDate: (a, b) =>
+      new Date(a.releaseDate ?? '1970-01-01').getTime() - new Date(b.releaseDate ?? '1970-01-01').getTime(),
   };
+
+  // If sortNumbersFirst is false, we don't need special handling since that's the default
+  if (sortNumbersFirst) {
+    // Create enhanced string comparers with number-first handling
+    const createNumberFirstComparer = (field: keyof Entry): SortFunction => {
+      return (a, b) => {
+        const aValue = (a[field] as string) ?? '';
+        const bValue = (b[field] as string) ?? '';
+
+        let valueA = aValue.toUpperCase();
+        let valueB = bValue.toUpperCase();
+
+        const isArticleAware = ARTICLE_AWARE_FIELDS.includes(field as string);
+
+        // Apply article handling if needed
+        if (ignoreLeadingArticles && isArticleAware) {
+          valueA = removeLeadingArticle(valueA).toUpperCase();
+          valueB = removeLeadingArticle(valueB).toUpperCase();
+        }
+
+        // Check for leading numbers
+        const isFirstCharNumberA = valueA.length > 0 && !isNaN(Number(valueA[0]));
+        const isFirstCharNumberB = valueB.length > 0 && !isNaN(Number(valueB[0]));
+
+        // One has number, one doesn't
+        if (isFirstCharNumberA && !isFirstCharNumberB) {
+          return -1; // Numbers first
+        }
+        if (!isFirstCharNumberA && isFirstCharNumberB) {
+          return 1; // Numbers first
+        }
+
+        // Both start with numbers
+        if (isFirstCharNumberA && isFirstCharNumberB) {
+          const numRegex = /^(\d+)/;
+          const matchA = valueA.match(numRegex);
+          const matchB = valueB.match(numRegex);
+
+          if (matchA && matchB) {
+            const numA = parseInt(matchA[1], 10);
+            const numB = parseInt(matchB[1], 10);
+            if (numA !== numB) {
+              return numA - numB; // Sort numerically
+            }
+          }
+        }
+
+        // Use standard string comparison with article handling for the rest
+        return isArticleAware
+          ? compareStringsWithArticles(aValue, bValue, ignoreLeadingArticles)
+          : valueA.localeCompare(valueB);
+      };
+    };
+
+    // Override string comparers with number-first versions
+    return {
+      ...baseFunctions,
+      album: createNumberFirstComparer('album'),
+      artist: createNumberFirstComparer('artist'),
+      codec: createNumberFirstComparer('codec'),
+      country: createNumberFirstComparer('country'),
+      genre: createNumberFirstComparer('genre'),
+      kind: createNumberFirstComparer('kind'),
+      title: createNumberFirstComparer('title'),
+    };
+  }
+
+  return baseFunctions;
 };
 
-const baseSortFunctions: Record<string, SortFunction> = {
-  // Strings
-  album: (a, b) => (a.album ?? '').localeCompare(b.album ?? '', undefined, { numeric: true }),
-  artist: (a, b) => (a.artist ?? '').localeCompare(b.artist ?? '', undefined, { numeric: true }),
-  codec: (a, b) => (a.codec ?? '').localeCompare(b.codec ?? '', undefined, { numeric: true }),
-  country: (a, b) => (a.country ?? '').localeCompare(b.country ?? '', undefined, { numeric: true }),
-  genre: (a, b) => (a.genre ?? '').localeCompare(b.genre ?? '', undefined, { numeric: true }),
-  kind: (a, b) => (a.kind ?? '').localeCompare(b.kind ?? '', undefined, { numeric: true }),
-  title: (a, b) => (a.title ?? '').localeCompare(b.title ?? '', undefined, { numeric: true }),
+// Helper to remove leading articles
+const removeLeadingArticle = (str: string): string => {
+  const normalizedStr = str.toUpperCase();
+  for (const article of LEADING_ARTICLES) {
+    if (normalizedStr.startsWith(article.toUpperCase() + ' ')) {
+      return str.substring(article.length + 1).trim();
+    }
+  }
+  return str;
+};
 
-  // Numbers
-  bitrate: (a, b) => (a.bitrate ?? 0) - (b.bitrate ?? 0),
-  discNumber: (a, b) => (a.discNumber ?? 0) - (b.discNumber ?? 0),
-  duration: (a, b) => (a.duration ?? 0) - (b.duration ?? 0),
-  sortOrder: (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0),
-  totalTracks: (a, b) => (a.totalTracks ?? 0) - (b.totalTracks ?? 0),
-  trackNumber: (a, b) => (a.trackNumber ?? 0) - (b.trackNumber ?? 0),
-  userRating: (a, b) => (a.userRating ?? 0) - (b.userRating ?? 0),
+// Helper to compare strings with article handling
+const compareStringsWithArticles = (
+  strA: string,
+  strB: string,
+  ignoreLeadingArticles: boolean = true,
+  sortNumbersFirst: boolean = false
+): number => {
+  let valueA = strA.toUpperCase();
+  let valueB = strB.toUpperCase();
 
-  // Dates
-  addedAt: (a, b) => new Date(a.addedAt ?? '1970-01-01').getTime() - new Date(b.addedAt ?? '1970-01-01').getTime(),
-  lastPlayed: (a, b) =>
-    new Date(a.lastPlayed ?? '1970-01-01').getTime() - new Date(b.lastPlayed ?? '1970-01-01').getTime(),
-  releaseDate: (a, b) =>
-    new Date(a.releaseDate ?? '1970-01-01').getTime() - new Date(b.releaseDate ?? '1970-01-01').getTime(),
+  // Store original values for secondary sorting
+  const originalA = valueA;
+  const originalB = valueB;
+
+  if (ignoreLeadingArticles) {
+    valueA = removeLeadingArticle(valueA).toUpperCase();
+    valueB = removeLeadingArticle(valueB).toUpperCase();
+
+    // If they're equal after removing articles, prefer the one without article
+    if (valueA === valueB) {
+      const aHasArticle = originalA !== valueA;
+      const bHasArticle = originalB !== valueB;
+      if (aHasArticle && !bHasArticle) return 1; // b comes first
+      if (!aHasArticle && bHasArticle) return -1; // a comes first
+    }
+  }
+
+  // Check for leading numbers - do this AFTER article removal
+  const isFirstCharNumberA = valueA.length > 0 && !isNaN(Number(valueA[0]));
+  const isFirstCharNumberB = valueB.length > 0 && !isNaN(Number(valueB[0]));
+
+  // If sortNumbersFirst is false (default), put numbers last
+  if (!sortNumbersFirst) {
+    if (isFirstCharNumberA && !isFirstCharNumberB) {
+      return 1; // Letters first, numbers last
+    }
+    if (!isFirstCharNumberA && isFirstCharNumberB) {
+      return -1; // Letters first, numbers last
+    }
+  }
+
+  return valueA.localeCompare(valueB, undefined, { numeric: true });
 };
 
 export default sortList;

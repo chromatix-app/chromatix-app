@@ -59,7 +59,7 @@ const AlbumCollectionItems = () => {
 
   return (
     <>
-      {(isLoading || isEmptyList || isGridView) && (
+      {(isLoading || isEmptyList) && (
         <Title
           collectionId={collectionId}
           collectionRating={collectionRating}
@@ -67,6 +67,7 @@ const AlbumCollectionItems = () => {
           collectionTitle={collectionTitle}
           colOptions={colOptions}
           gridOptions={gridOptions}
+          isGridView={isGridView}
           isListView={isListView}
           libraryId={libraryId}
           orderCollectionItems={orderCollectionItems}
@@ -81,7 +82,27 @@ const AlbumCollectionItems = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ListCards variant={'albums'} entries={sortedCollectionItems} showRatings={gridOptions.userRating} />
+        <ListCards variant={'albums'} entries={sortedCollectionItems} showRatings={gridOptions.userRating}>
+          <Title
+            collectionId={collectionId}
+            collectionRating={collectionRating}
+            collectionThumb={collectionThumb}
+            collectionTitle={collectionTitle}
+            colOptions={colOptions}
+            gridOptions={gridOptions}
+            isGridView={isGridView}
+            isListView={isListView}
+            libraryId={libraryId}
+            orderCollectionItems={orderCollectionItems}
+            setColumnVisibility={setColumnVisibility}
+            setOrderCollectionItems={setOrderCollectionItems}
+            setSortCollectionItems={setSortCollectionItems}
+            setViewCollectionItems={setViewCollectionItems}
+            sortCollectionItems={sortCollectionItems}
+            sortedCollectionItems={sortedCollectionItems}
+            viewCollectionItems={viewCollectionItems}
+          />
+        </ListCards>
       )}
       {isListView && (
         <ListTable
@@ -98,6 +119,7 @@ const AlbumCollectionItems = () => {
             collectionTitle={collectionTitle}
             colOptions={colOptions}
             gridOptions={gridOptions}
+            isGridView={isGridView}
             isListView={isListView}
             libraryId={libraryId}
             orderCollectionItems={orderCollectionItems}
@@ -122,6 +144,7 @@ const Title = ({
   collectionTitle,
   colOptions,
   gridOptions,
+  isGridView,
   isListView,
   libraryId,
   orderCollectionItems,
@@ -139,14 +162,7 @@ const Title = ({
       thumb={collectionThumb}
       title={collectionTitle}
       detail={
-        <StarRating
-          variant="title"
-          type="collection"
-          ratingKey={collectionId}
-          rating={collectionRating}
-          editable
-          alwaysVisible
-        />
+        <StarRating variant="title" type="collection" ratingKey={collectionId} rating={collectionRating} editable />
       }
       subtitle={
         sortedCollectionItems ? (
@@ -155,7 +171,7 @@ const Title = ({
           <>&nbsp;</>
         )
       }
-      padding={!isListView}
+      padding={!isListView && !isGridView}
       filters={
         <>
           <FilterToggle

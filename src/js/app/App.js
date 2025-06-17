@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 
-import { ControlBar, Queue, SideBar, UserMenu } from 'js/components';
+import { ControlBar, Queue, SideBar, ToastNotification, UserMenu } from 'js/components';
 import {
   useColorTheme,
   useElectronStatus,
@@ -245,8 +245,9 @@ const AppMain = () => {
   const dispatch = useDispatch();
   const contentRef = useRef();
 
-  const [contentContainerClass, setContentContainerClass] = useState(0);
   const [contentBreakpoint, setContentBreakpoint] = useState(0);
+  const [contentContainerClass, setContentContainerClass] = useState(0);
+  const [contentWidth, setContentWidth] = useState(0);
 
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
 
@@ -254,12 +255,15 @@ const AppMain = () => {
 
   // Handle window resizing
   useEffect(() => {
-    const contentWidth = contentRef.current.offsetWidth;
-    const bpList = breakPoints.filter((bp) => bp <= contentWidth);
+    const newWidth = contentRef.current.offsetWidth;
+    const bpList = breakPoints.filter((bp) => bp <= newWidth);
     const newContainerClass = bpList.map((bp) => 'cq-' + bp).join(' ');
     const newBreakpoint = bpList[bpList.length - 1] || 0;
     if (contentContainerClass !== newContainerClass) {
       setContentContainerClass(newContainerClass);
+    }
+    if (contentWidth !== newWidth) {
+      setContentWidth(newWidth);
     }
     if (contentBreakpoint !== newBreakpoint) {
       setContentBreakpoint(newBreakpoint);
@@ -274,6 +278,14 @@ const AppMain = () => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contentBreakpoint]);
+
+  // Store current content width
+  useEffect(() => {
+    dispatch.appModel.setAppState({
+      contentWidth,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contentWidth]);
 
   return (
     <div className="wrap">
@@ -295,6 +307,7 @@ const AppMain = () => {
           </div>
         )}
       </div>
+      <ToastNotification />
     </div>
   );
 };

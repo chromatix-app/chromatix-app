@@ -26,8 +26,9 @@ const AlbumMoodList = () => {
 
   return (
     <>
-      {(isLoading || isEmptyList || isGridView) && (
+      {(isLoading || isEmptyList) && (
         <Title
+          isGridView={isGridView}
           isListView={isListView}
           orderCollections={orderCollections}
           setOrderCollections={setOrderCollections}
@@ -37,7 +38,19 @@ const AlbumMoodList = () => {
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
-      {isGridView && <ListCards variant="albumMoods" entries={sortedCollections} />}
+      {isGridView && (
+        <ListCards variant="albumMoods" entries={sortedCollections}>
+          <Title
+            isGridView={isGridView}
+            isListView={isListView}
+            orderCollections={orderCollections}
+            setOrderCollections={setOrderCollections}
+            setViewCollections={setViewCollections}
+            sortedCollections={sortedCollections}
+            viewCollections={viewCollections}
+          />
+        </ListCards>
+      )}
       {isListView && (
         <ListTable
           variant="albumMoods"
@@ -46,6 +59,7 @@ const AlbumMoodList = () => {
           orderKey={orderCollections}
         >
           <Title
+            isGridView={isGridView}
             isListView={isListView}
             orderCollections={orderCollections}
             setOrderCollections={setOrderCollections}
@@ -60,6 +74,7 @@ const AlbumMoodList = () => {
 };
 
 const Title = ({
+  isGridView,
   isListView,
   orderCollections,
   setOrderCollections,
@@ -79,9 +94,9 @@ const Title = ({
             <>&nbsp;</>
           )
         }
-        padding={!isListView}
+        padding={!isListView && !isGridView}
       />
-      <FilterWrap padding={!isListView}>
+      <FilterWrap padding={!isListView && !isGridView}>
         <FilterToggle
           value={viewCollections}
           options={[

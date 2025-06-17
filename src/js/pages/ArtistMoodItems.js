@@ -50,12 +50,13 @@ const ArtistMoodItems = () => {
 
   return (
     <>
-      {(isLoading || isEmptyList || isGridView) && (
+      {(isLoading || isEmptyList) && (
         <Title
           collectionThumb={collectionThumb}
           collectionTitle={collectionTitle}
           colOptions={colOptions}
           gridOptions={gridOptions}
+          isGridView={isGridView}
           isListView={isListView}
           libraryId={libraryId}
           moodId={moodId}
@@ -71,7 +72,26 @@ const ArtistMoodItems = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ListCards variant={'artists'} entries={sortedCollectionItems} showRatings={gridOptions.userRating} />
+        <ListCards variant={'artists'} entries={sortedCollectionItems} showRatings={gridOptions.userRating}>
+          <Title
+            collectionThumb={collectionThumb}
+            collectionTitle={collectionTitle}
+            colOptions={colOptions}
+            gridOptions={gridOptions}
+            isGridView={isGridView}
+            isListView={isListView}
+            libraryId={libraryId}
+            moodId={moodId}
+            orderCollectionItems={orderCollectionItems}
+            setColumnVisibility={setColumnVisibility}
+            setOrderCollectionItems={setOrderCollectionItems}
+            setSortCollectionItems={setSortCollectionItems}
+            setViewCollectionItems={setViewCollectionItems}
+            sortCollectionItems={sortCollectionItems}
+            sortedCollectionItems={sortedCollectionItems}
+            viewCollectionItems={viewCollectionItems}
+          />
+        </ListCards>
       )}
       {isListView && (
         <ListTable
@@ -86,6 +106,7 @@ const ArtistMoodItems = () => {
             collectionTitle={collectionTitle}
             colOptions={colOptions}
             gridOptions={gridOptions}
+            isGridView={isGridView}
             isListView={isListView}
             libraryId={libraryId}
             moodId={moodId}
@@ -109,6 +130,7 @@ const Title = ({
   collectionTitle,
   colOptions,
   gridOptions,
+  isGridView,
   isListView,
   libraryId,
   moodId,
@@ -134,7 +156,7 @@ const Title = ({
         )
       }
       icon={'ArtistMoodsIcon'}
-      padding={!isListView}
+      padding={!isListView && !isGridView}
       filters={
         <>
           <FilterToggle
