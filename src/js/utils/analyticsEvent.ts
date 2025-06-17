@@ -15,7 +15,7 @@ const analyticsEvent = (event: string, props: object = {}) => {
   if (!isLocal) {
     try {
       track(event, finalProps);
-      window.umami.track(event, finalProps);
+      // window.umami.track(event, finalProps);
     } catch (error) {
       // Ignore errors
     }
