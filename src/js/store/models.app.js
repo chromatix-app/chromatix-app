@@ -21,6 +21,7 @@ const appState = {
   history: null,
 
   contentBreakpoint: 0,
+  contentWidth: 0,
 
   errorPlexFastestConnection: false,
   errorPlexLibraries: false,

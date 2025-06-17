@@ -9,7 +9,7 @@ import {
   FilterSelect,
   FilterToggle,
   FilterWrap,
-  ListCards,
+  ListCardsV2,
   ListTable,
   Loading,
   TitleHeading,
@@ -45,10 +45,11 @@ const FolderList = () => {
 
   return (
     <>
-      {(isLoading || isEmptyList || isGridView) && (
+      {(isLoading || isEmptyList) && (
         <Title
           colOptions={colOptions}
           folderId={folderId}
+          isGridView={isGridView}
           isListView={isListView}
           orderFolders={orderFolders}
           setColumnVisibility={setColumnVisibility}
@@ -62,13 +63,28 @@ const FolderList = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ListCards
+        <ListCardsV2
           variant="folders"
           folderId={folderId}
           entries={sortedFolders}
           playingOrder={folderOrder}
           sortKey={sortFolders}
-        />
+        >
+          <Title
+            colOptions={colOptions}
+            folderId={folderId}
+            isGridView={isGridView}
+            isListView={isListView}
+            orderFolders={orderFolders}
+            setColumnVisibility={setColumnVisibility}
+            setOrderFolders={setOrderFolders}
+            setSortFolders={setSortFolders}
+            setViewFolders={setViewFolders}
+            sortedFolders={sortedFolders}
+            sortFolders={sortFolders}
+            viewFolders={viewFolders}
+          />
+        </ListCardsV2>
       )}
       {isListView && (
         <ListTable
@@ -83,6 +99,7 @@ const FolderList = () => {
           <Title
             colOptions={colOptions}
             folderId={folderId}
+            isGridView={isGridView}
             isListView={isListView}
             orderFolders={orderFolders}
             setColumnVisibility={setColumnVisibility}
@@ -102,6 +119,7 @@ const FolderList = () => {
 const Title = ({
   colOptions,
   folderId,
+  isGridView,
   isListView,
   orderFolders,
   setColumnVisibility,
@@ -120,9 +138,9 @@ const Title = ({
         subtitle={
           sortedFolders ? sortedFolders?.length + ' Item' + (sortedFolders?.length !== 1 ? 's' : '') : <>&nbsp;</>
         }
-        padding={!isListView}
+        padding={!isListView && !isGridView}
       />
-      <FilterWrap padding={!isListView}>
+      <FilterWrap padding={!isListView && !isGridView}>
         <FilterToggle
           value={viewFolders}
           options={[

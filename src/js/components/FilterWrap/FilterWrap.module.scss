@@ -2,6 +2,7 @@
 @use '../../../css/_config/_vars';
 
 .wrap {
+  grid-column: 1 / -1; // this is here to make the element full widht when within a grid
   padding: 0 10px 40px;
   margin-top: -33px;
 

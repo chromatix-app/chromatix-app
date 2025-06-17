@@ -23,6 +23,8 @@ const useGetAllAlbums = () => {
   const colAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colAlbumsLastPlayed);
   const colAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumsUserRating);
 
+  const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
+
   // prevent sorting by a hidden field
   const allowedSort = {
     title: true,
@@ -42,7 +44,15 @@ const useGetAllAlbums = () => {
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums)?.filter(
     (album) => album.libraryId === currentLibraryId
   );
-  const sortedAlbums = haveGotAllAlbums && allAlbums ? sortList(allAlbums, actualSortAlbums, actualOrderAlbums) : null;
+  const sortedAlbums =
+    haveGotAllAlbums && allAlbums
+      ? sortList({
+          entries: allAlbums,
+          options: actualSortAlbums,
+          direction: actualOrderAlbums,
+          sortNumbersFirst: optionSortNumbersFirst,
+        })
+      : null;
 
   const setViewAlbums = (viewAlbums) => {
     dispatch.sessionModel.setSessionState({

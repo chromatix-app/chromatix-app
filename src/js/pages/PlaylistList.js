@@ -7,7 +7,7 @@ import {
   FilterSelect,
   FilterToggle,
   FilterWrap,
-  ListCards,
+  ListCardsV2,
   ListTable,
   Loading,
   TitleHeading,
@@ -41,10 +41,11 @@ const PlaylistList = () => {
 
   return (
     <>
-      {(isLoading || isEmptyList || isGridView) && (
+      {(isLoading || isEmptyList) && (
         <Title
           colOptions={colOptions}
           gridOptions={gridOptions}
+          isGridView={isGridView}
           isListView={isListView}
           orderPlaylists={orderPlaylists}
           setColumnVisibility={setColumnVisibility}
@@ -57,7 +58,24 @@ const PlaylistList = () => {
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
-      {isGridView && <ListCards variant="playlists" entries={sortedPlaylists} showRatings={gridOptions.userRating} />}
+      {isGridView && (
+        <ListCardsV2 variant="playlists" entries={sortedPlaylists} showRatings={gridOptions.userRating}>
+          <Title
+            colOptions={colOptions}
+            gridOptions={gridOptions}
+            isGridView={isGridView}
+            isListView={isListView}
+            orderPlaylists={orderPlaylists}
+            setColumnVisibility={setColumnVisibility}
+            setOrderPlaylists={setOrderPlaylists}
+            setSortPlaylists={setSortPlaylists}
+            setViewPlaylists={setViewPlaylists}
+            sortedPlaylists={sortedPlaylists}
+            sortPlaylists={sortPlaylists}
+            viewPlaylists={viewPlaylists}
+          />
+        </ListCardsV2>
+      )}
       {isListView && (
         <ListTable
           variant="playlists"
@@ -69,6 +87,7 @@ const PlaylistList = () => {
           <Title
             colOptions={colOptions}
             gridOptions={gridOptions}
+            isGridView={isGridView}
             isListView={isListView}
             orderPlaylists={orderPlaylists}
             setColumnVisibility={setColumnVisibility}
@@ -88,6 +107,7 @@ const PlaylistList = () => {
 const Title = ({
   colOptions,
   gridOptions,
+  isGridView,
   isListView,
   orderPlaylists,
   setColumnVisibility,
@@ -110,9 +130,9 @@ const Title = ({
             <>&nbsp;</>
           )
         }
-        padding={!isListView}
+        padding={!isListView && !isGridView}
       />
-      <FilterWrap padding={!isListView}>
+      <FilterWrap padding={!isListView && !isGridView}>
         <FilterToggle
           value={viewPlaylists}
           options={[

@@ -4,6 +4,7 @@
 .wrap {
   display: flex;
   align-items: center;
+  grid-column: 1 / -1; // this is here to make the element full widht when within a grid
   padding: 55px 10px 40px;
 
   :global(.cq-800) & {
@@ -283,6 +284,7 @@
 .stickyWrap {
   position: sticky;
   pointer-events: none;
+  grid-column: 1 / -1; // this is here to make the element full widht when within a grid
   top: 0;
   opacity: 0;
   z-index: 2;

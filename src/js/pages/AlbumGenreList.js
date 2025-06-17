@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
+import { FilterToggle, FilterWrap, ListCardsV2, ListTable, Loading, TitleHeading } from 'js/components';
 import { useGetAllCollections } from 'js/hooks';
 
 // ======================================================================
@@ -26,8 +26,9 @@ const AlbumGenreList = () => {
 
   return (
     <>
-      {(isLoading || isEmptyList || isGridView) && (
+      {(isLoading || isEmptyList) && (
         <Title
+          isGridView={isGridView}
           isListView={isListView}
           orderCollections={orderCollections}
           setOrderCollections={setOrderCollections}
@@ -37,7 +38,19 @@ const AlbumGenreList = () => {
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
-      {isGridView && <ListCards variant="albumGenres" entries={sortedCollections} />}
+      {isGridView && (
+        <ListCardsV2 variant="albumGenres" entries={sortedCollections}>
+          <Title
+            isGridView={isGridView}
+            isListView={isListView}
+            orderCollections={orderCollections}
+            setOrderCollections={setOrderCollections}
+            setViewCollections={setViewCollections}
+            sortedCollections={sortedCollections}
+            viewCollections={viewCollections}
+          />
+        </ListCardsV2>
+      )}
       {isListView && (
         <ListTable
           variant="albumGenres"
@@ -46,6 +59,7 @@ const AlbumGenreList = () => {
           orderKey={orderCollections}
         >
           <Title
+            isGridView={isGridView}
             isListView={isListView}
             orderCollections={orderCollections}
             setOrderCollections={setOrderCollections}
@@ -60,6 +74,7 @@ const AlbumGenreList = () => {
 };
 
 const Title = ({
+  isGridView,
   isListView,
   orderCollections,
   setOrderCollections,
@@ -79,9 +94,9 @@ const Title = ({
             <>&nbsp;</>
           )
         }
-        padding={!isListView}
+        padding={!isListView && !isGridView}
       />
-      <FilterWrap padding={!isListView}>
+      <FilterWrap padding={!isListView && !isGridView}>
         <FilterToggle
           value={viewCollections}
           options={[

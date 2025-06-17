@@ -18,6 +18,8 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   const colPlaylistUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistUserRating);
   const colPlaylistDuration = useSelector(({ sessionModel }) => sessionModel.colPlaylistDuration);
 
+  const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
+
   // prevent sorting by a hidden field
   const allowedSort = {
     sortOrder: true,
@@ -56,7 +58,11 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
       if (actualPlaylistSortString === 'sortOrder-desc') {
         return entriesWithOriginalIndex.slice().reverse();
       } else {
-        return sortList(entriesWithOriginalIndex, actualPlaylistSortString);
+        return sortList({
+          entries: entriesWithOriginalIndex,
+          options: actualPlaylistSortString,
+          sortNumbersFirst: optionSortNumbersFirst,
+        });
       }
     }
     // If not a playlist or no actualPlaylistSortString, return original entries

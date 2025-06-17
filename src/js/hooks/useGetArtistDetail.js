@@ -34,6 +34,8 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const colArtistTracksDuration = useSelector(({ sessionModel }) => sessionModel.colArtistTracksDuration);
   const colArtistTracksUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistTracksUserRating);
 
+  const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
+
   const allArtistAlbums = useSelector(({ appModel }) => appModel.allArtistAlbums);
   const artistAlbums = allArtistAlbums[libraryId + '-' + artistId];
 
@@ -86,18 +88,35 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
 
   // Sort albums
   const sortedArtistAlbums = artistAlbums
-    ? sortList(artistAlbums, actualSortArtistAlbums, actualOrderArtistAlbums)
+    ? sortList({
+        entries: artistAlbums,
+        options: actualSortArtistAlbums,
+        direction: actualOrderArtistAlbums,
+        sortNumbersFirst: optionSortNumbersFirst,
+      })
     : null;
   const sortedArtistRelated = artistRelated?.map((entry) => {
     const sortedEntry =
-      entry && entry.related ? sortList(entry.related, actualSortArtistAlbums, actualOrderArtistAlbums) : null;
+      entry && entry.related
+        ? sortList({
+            entries: entry.related,
+            options: actualSortArtistAlbums,
+            direction: actualOrderArtistAlbums,
+            sortNumbersFirst: optionSortNumbersFirst,
+          })
+        : null;
     return {
       ...entry,
       related: sortedEntry,
     };
   });
   const sortedArtistAppearances = artistCompilations
-    ? sortList(artistCompilations, actualSortArtistAlbums, actualOrderArtistAlbums)
+    ? sortList({
+        entries: artistCompilations,
+        options: actualSortArtistAlbums,
+        direction: actualOrderArtistAlbums,
+        sortNumbersFirst: optionSortNumbersFirst,
+      })
     : null;
 
   // Combine all releases into a single array
@@ -127,7 +146,12 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     }
   }
   if (!artistAlbumsGroupByType) {
-    sortedAllReleases = sortList(sortedAllReleases, actualSortArtistAlbums, actualOrderArtistAlbums);
+    sortedAllReleases = sortList({
+      entries: sortedAllReleases,
+      options: actualSortArtistAlbums,
+      direction: actualOrderArtistAlbums,
+      sortNumbersFirst: optionSortNumbersFirst,
+    });
   }
 
   // Combine all releases and appearances into a single array
@@ -162,9 +186,14 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     }));
     // Sort entries
     return artistTracks
-      ? sortList(entriesWithOriginalIndex, actualSortArtistTracks + sortAppend, actualOrderArtistTracks)
+      ? sortList({
+          entries: entriesWithOriginalIndex,
+          options: actualSortArtistTracks + sortAppend,
+          direction: actualOrderArtistTracks,
+          sortNumbersFirst: optionSortNumbersFirst,
+        })
       : null;
-  }, [artistTracks, actualSortArtistTracks, actualOrderArtistTracks]);
+  }, [artistTracks, actualSortArtistTracks, actualOrderArtistTracks, optionSortNumbersFirst]);
 
   const sortedArtistTracksOrder = useMemo(() => {
     return sortedArtistTracks?.map((entry) => entry.originalIndex);
@@ -240,7 +269,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     sortedArtistAlbums,
     sortedArtistRelated,
     sortedArtistAppearances,
-    sortedAllReleases,
+
     sortedAllReleasesAndAppearances,
     sortedArtistTracks: viewArtistAlbums === 'track' ? sortedArtistTracks : null,
     sortedArtistTracksOrder: viewArtistAlbums === 'track' ? sortedArtistTracksOrder : null,

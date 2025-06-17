@@ -1,5 +1,3 @@
-import store from 'js/store/store';
-
 type Entry = {
   addedAt?: string;
   album?: string;
@@ -29,7 +27,17 @@ const forcedSortKeys: { [key: string]: { key: string; direction: 'asc' | 'desc' 
   },
 };
 
-const sortList = (entries: Entry[], options: string, direction: 'asc' | 'desc' = 'asc'): Entry[] => {
+const sortList = ({
+  entries,
+  options,
+  direction = 'asc',
+  sortNumbersFirst = false,
+}: {
+  entries: Entry[];
+  options: string;
+  direction?: 'asc' | 'desc';
+  sortNumbersFirst?: boolean;
+}): Entry[] => {
   const optionsArray = options.split('-');
 
   const primarySortKey = optionsArray[0];
@@ -78,7 +86,8 @@ const sortList = (entries: Entry[], options: string, direction: 'asc' | 'desc' =
     tertiarySortKey,
     tertiaryDirection,
     quaternarySortKey,
-    quaternaryDirection
+    quaternaryDirection,
+    sortNumbersFirst
   );
 };
 
@@ -91,11 +100,9 @@ const doSorting = (
   tertiarySortKey: string = 'title',
   tertiaryDirection: 'asc' | 'desc' = 'asc',
   quaternarySortKey: string = 'title',
-  quaternaryDirection: 'asc' | 'desc' = 'asc'
+  quaternaryDirection: 'asc' | 'desc' = 'asc',
+  sortNumbersFirst: boolean = false
 ): Entry[] => {
-  // Get the setting once before sorting
-  const sortNumbersFirst = store.getState().sessionModel.optionSortNumbersFirst === true;
-
   // Create enhanced sort functions with the setting captured in the closure
   const sortFunctions = enhanceSortFunctions(sortNumbersFirst);
 

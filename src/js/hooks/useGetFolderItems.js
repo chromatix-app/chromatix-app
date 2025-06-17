@@ -15,6 +15,8 @@ const useGetFolderItems = (folderId) => {
 
   const colFoldersKind = useSelector(({ sessionModel }) => sessionModel.colFoldersKind);
 
+  const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
+
   // prevent sorting by a hidden field
   const allowedSort = {
     sortOrder: true,
@@ -27,7 +29,14 @@ const useGetFolderItems = (folderId) => {
   const libraryId = currentLibrary?.libraryId;
   const allFolderItems = useSelector(({ appModel }) => appModel.allFolderItems);
   const folderItems = allFolderItems ? allFolderItems[libraryId + '-' + folderId] : null;
-  const sortedFolders = folderItems ? sortList(folderItems, actualSortFolders, actualOrderFolders) : null;
+  const sortedFolders = folderItems
+    ? sortList({
+        entries: folderItems,
+        options: actualSortFolders,
+        direction: actualOrderFolders,
+        sortNumbersFirst: optionSortNumbersFirst,
+      })
+    : null;
 
   const sortedWithFoldersOnTop =
     actualSortFolders === 'kind'
