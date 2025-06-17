@@ -1,3 +1,16 @@
+# 0.43.0 (2025-06-17)
+
+Features:
+
+- Performance tweaks when browsing in grid view.
+  - Grid view has been entirely rebuilt to use a virtualised list.
+    - This should prevent the UI from slowing down when browsing large libraries.
+- Improved handling of unplayable tracks, including visible error messages and automatically moving on to the next track.
+- Leading articles ("A", "An", "The") are now ignored when sorting items alphabetically.
+  - This can be optionally disabled in general settings.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.42.0 (2025-05-12)
 
 Features:
