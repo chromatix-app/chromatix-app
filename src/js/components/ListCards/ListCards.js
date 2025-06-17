@@ -11,7 +11,7 @@ import clsx from 'clsx';
 import { Icon, StarRating } from 'js/components';
 import { useScrollToTrack, useScrollToVirtualTrack, useWindowSize } from 'js/hooks';
 
-import style from './ListCardsV2.module.scss';
+import style from './ListCards.module.scss';
 
 // ======================================================================
 // OPTIONS
@@ -25,7 +25,7 @@ const virtualThreshold = !isLocal ? 200 : 1;
 // COMPONENT
 // ======================================================================
 
-const ListCardsV2 = ({ children, variant, groupBy, folderId, entries, playingOrder, sortKey, showRatings = false }) => {
+const ListCards = ({ children, variant, groupBy, folderId, entries, playingOrder, sortKey, showRatings = false }) => {
   const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
 
   const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
@@ -652,4 +652,4 @@ const lookupIcons = {
 // EXPORT
 // ======================================================================
 
-export default ListCardsV2;
+export default ListCards;

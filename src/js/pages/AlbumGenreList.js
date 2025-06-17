@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { FilterToggle, FilterWrap, ListCardsV2, ListTable, Loading, TitleHeading } from 'js/components';
+import { FilterToggle, FilterWrap, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
 import { useGetAllCollections } from 'js/hooks';
 
 // ======================================================================
@@ -39,7 +39,7 @@ const AlbumGenreList = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ListCardsV2 variant="albumGenres" entries={sortedCollections}>
+        <ListCards variant="albumGenres" entries={sortedCollections}>
           <Title
             isGridView={isGridView}
             isListView={isListView}
@@ -49,7 +49,7 @@ const AlbumGenreList = () => {
             sortedCollections={sortedCollections}
             viewCollections={viewCollections}
           />
-        </ListCardsV2>
+        </ListCards>
       )}
       {isListView && (
         <ListTable

@@ -8,7 +8,7 @@ import {
   FilterMenu,
   FilterSelect,
   FilterToggle,
-  ListCardsV2,
+  ListCards,
   ListTable,
   Loading,
   StarRating,
@@ -82,7 +82,7 @@ const AlbumCollectionItems = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ListCardsV2 variant={'albums'} entries={sortedCollectionItems} showRatings={gridOptions.userRating}>
+        <ListCards variant={'albums'} entries={sortedCollectionItems} showRatings={gridOptions.userRating}>
           <Title
             collectionId={collectionId}
             collectionRating={collectionRating}
@@ -102,7 +102,7 @@ const AlbumCollectionItems = () => {
             sortedCollectionItems={sortedCollectionItems}
             viewCollectionItems={viewCollectionItems}
           />
-        </ListCardsV2>
+        </ListCards>
       )}
       {isListView && (
         <ListTable

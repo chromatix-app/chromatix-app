@@ -7,7 +7,7 @@ import {
   FilterSelect,
   FilterToggle,
   FilterWrap,
-  ListCardsV2,
+  ListCards,
   ListTable,
   Loading,
   TitleHeading,
@@ -59,7 +59,7 @@ const PlaylistList = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ListCardsV2 variant="playlists" entries={sortedPlaylists} showRatings={gridOptions.userRating}>
+        <ListCards variant="playlists" entries={sortedPlaylists} showRatings={gridOptions.userRating}>
           <Title
             colOptions={colOptions}
             gridOptions={gridOptions}
@@ -74,7 +74,7 @@ const PlaylistList = () => {
             sortPlaylists={sortPlaylists}
             viewPlaylists={viewPlaylists}
           />
-        </ListCardsV2>
+        </ListCards>
       )}
       {isListView && (
         <ListTable

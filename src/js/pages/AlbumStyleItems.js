@@ -4,7 +4,7 @@
 
 import { useParams } from 'react-router-dom';
 
-import { FilterMenu, FilterSelect, FilterToggle, ListCardsV2, ListTable, Loading, TitleHeading } from 'js/components';
+import { FilterMenu, FilterSelect, FilterToggle, ListCards, ListTable, Loading, TitleHeading } from 'js/components';
 import { useGetCollectionItems } from 'js/hooks';
 
 // ======================================================================
@@ -72,7 +72,7 @@ const AlbumStyleItems = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ListCardsV2 variant={'albums'} entries={sortedCollectionItems} showRatings={gridOptions.userRating}>
+        <ListCards variant={'albums'} entries={sortedCollectionItems} showRatings={gridOptions.userRating}>
           <Title
             collectionThumb={collectionThumb}
             collectionTitle={collectionTitle}
@@ -91,7 +91,7 @@ const AlbumStyleItems = () => {
             styleId={styleId}
             viewCollectionItems={viewCollectionItems}
           />
-        </ListCardsV2>
+        </ListCards>
       )}
       {isListView && (
         <ListTable

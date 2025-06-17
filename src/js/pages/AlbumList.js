@@ -7,7 +7,7 @@ import {
   FilterSelect,
   FilterToggle,
   FilterWrap,
-  ListCardsV2,
+  ListCards,
   ListTable,
   Loading,
   TitleHeading,
@@ -59,7 +59,7 @@ const AlbumList = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ListCardsV2 variant="albums" entries={sortedAlbums} showRatings={gridOptions.userRating}>
+        <ListCards variant="albums" entries={sortedAlbums} showRatings={gridOptions.userRating}>
           <Title
             colOptions={colOptions}
             gridOptions={gridOptions}
@@ -74,7 +74,7 @@ const AlbumList = () => {
             sortedAlbums={sortedAlbums}
             viewAlbums={viewAlbums}
           />
-        </ListCardsV2>
+        </ListCards>
       )}
       {isListView && (
         <ListTable
