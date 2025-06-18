@@ -2,51 +2,122 @@
 // IMPORTS
 // ======================================================================
 
+import * as jellyTools from 'js/services/jellyTools';
 import * as plexTools from 'js/services/plexTools';
-import { analyticsEvent } from 'js/utils';
+import { analyticsEvent, getLocalStorage } from 'js/utils';
+import config from 'js/_config/config';
 import store from 'js/store/store';
 
 // ======================================================================
-// LOAD
+// OPTIONS
+// ======================================================================
+
+const serviceTools = {
+  jellyfin: jellyTools,
+  plex: plexTools,
+};
+
+const storageServiceKey = config.storageServiceKey;
+const storageTokenKey = config.storageTokenKey;
+
+// ======================================================================
+// INIT - CHECKS IF AN AUTH TOKEN EXISTS
 // ======================================================================
 
 export const init = () => {
-  console.log('%c--- plex - init ---', 'color:#f9743b;');
+  console.log('%c--- bridge - init ---', 'color:#f9743b;');
   plexTools
-    .init()
+    // Check for a Plex login PIN
+    .checkPinStatus()
+    // Check if the user is (theoretically) logged in
     .then((_response) => {
-      getUserInfo();
+      return checkIfLoggedIn();
+    })
+    // Attempt to fetch the logged in user's info
+    .then((response) => {
+      getUserInfo(response.service);
     })
     .catch((error) => {
       store.dispatch.appModel.setLoggedOut();
-      if (error?.code !== 'init.2') {
-        console.error(error);
-        if (error?.code === 'init.1') {
-          analyticsEvent('Error: Plex Init - No Pin ID');
-        } else if (error?.code === 'checkPlexPinStatus.2') {
-          analyticsEvent('Error: Plex Init - Pin Check Failed');
-        } else {
-          analyticsEvent('Error: Plex Init - Unknown Error');
+      if (error?.code) {
+        if (error.code !== 'plex.checkPinStatus.1') {
+          console.error(error);
+          analyticsEvent('Error: Init - ' + error.code);
         }
+      } else {
+        analyticsEvent('Error: Init - Unknown Error');
       }
     });
 };
 
+const checkIfLoggedIn = () => {
+  console.log('%c--- bridge - checkIfLoggedIn ---', 'color:#f9743b;');
+  return new Promise((resolve, reject) => {
+    const accessToken = getLocalStorage(storageTokenKey);
+    if (accessToken) {
+      let service = getLocalStorage(storageServiceKey);
+      // NOTE this is here for backwards compatibility
+      if (!service) {
+        service = 'plex';
+      }
+      resolve({ service });
+    } else {
+      reject({
+        code: 'bridge.checkIfLoggedIn.1',
+        message: 'No auth token found',
+        error: null,
+      });
+    }
+  });
+};
+
 // ======================================================================
-// LOGIN
+// LOGIN - JELLYFIN
 // ======================================================================
 
-export const login = () => {
-  console.log('%c--- plex - login ---', 'color:#f9743b;');
+/*
+Note:
+Jellyfin login is API based and does not redirect you away.
+*/
+
+export const jellyLogin = (values) => {
+  console.log('%c--- bridge - jellyLogin ---', 'color:#f9743b;');
+  return new Promise((resolve, reject) => {
+    jellyTools
+      .login(values)
+      .then((_response) => {
+        analyticsEvent('Bridge: Jellyfin Login Success');
+        getUserInfo('jellyfin');
+      })
+      .catch((error) => {
+        console.error(error);
+        analyticsEvent('Bridge: Login Error');
+        reject(error);
+      });
+  });
+};
+
+// ======================================================================
+// LOGIN - PLEX
+// ======================================================================
+
+/*
+Note:
+Plex login actually redirects you away to a Plex login page on their site.
+On return, a Plex PIN is verified in the init function, and then user data is fetched.
+*/
+
+export const plexLogin = () => {
+  console.log('%c--- bridge - plexLogin ---', 'color:#f9743b;');
   plexTools
     .login()
     .then((_response) => {
-      analyticsEvent('Plex: Login Success');
+      analyticsEvent('Bridge: Plex Login Success');
     })
     .catch((error) => {
       console.error(error);
       store.dispatch.appModel.setAppState({ errorPlexLogin: true });
-      analyticsEvent('Plex: Login Error');
+      analyticsEvent('Bridge: Login Error');
     });
 };
 
@@ -55,27 +126,31 @@ export const login = () => {
 // ======================================================================
 
 export const logout = () => {
-  console.log('%c--- plex - logout ---', 'color:#f9743b;');
+  console.log('%c--- bridge - logout ---', 'color:#f9743b;');
+  jellyTools.logout();
   plexTools.logout();
   store.dispatch.appModel.setLoggedOut();
-  analyticsEvent('Plex: Logout');
+  analyticsEvent('Bridge: Logout');
 };
 
 // ======================================================================
 // GET USER INFO
 // ======================================================================
 
-export const getUserInfo = () => {
-  console.log('%c--- plex - getUserInfo ---', 'color:#f9743b;');
-  plexTools
+export const getUserInfo = (service) => {
+  console.log('%c--- bridge - getUserInfo ---', 'color:#f9743b;');
+  serviceTools[service]
     .getUserInfo()
     .then((response) => {
-      store.dispatch.appModel.setLoggedIn(response);
+      store.dispatch.appModel.setLoggedIn({
+        currentService: service,
+        currentUser: response,
+      });
     })
     .catch((error) => {
       console.error(error);
       store.dispatch.appModel.setAppState({ errorPlexUser: true });
-      analyticsEvent('Error: Plex Get User Info');
+      analyticsEvent('Error: ' + toUpperFirst(service) + ' - Get User Info');
     });
 };
 
@@ -89,17 +164,22 @@ export const getAllServers = () => {
   if (!getUserServersRunning) {
     const prevAllResources = store.getState().appModel.allServers;
     if (!prevAllResources) {
-      console.log('%c--- plex - getAllServers ---', 'color:#f9743b;');
+      console.log('%c--- bridge - getAllServers ---', 'color:#f9743b;');
       getUserServersRunning = true;
-      plexTools
-        .getAllServers()
+
+      const currentService = store.getState().appModel.currentService;
+      const serverBaseUrl = currentService === 'jellyfin' ? store.getState().appModel.currentUser.serverBaseUrl : null;
+
+      serviceTools[currentService]
+        .getAllServers(serverBaseUrl)
         .then((response) => {
+          // console.log(response);
           store.dispatch.appModel.storeAllServers(response);
         })
         .catch((error) => {
           console.error(error);
           store.dispatch.appModel.setAppState({ errorPlexServers: true });
-          analyticsEvent('Error: Plex Get All Servers');
+          analyticsEvent('Error: Bridge - Get All Servers');
         })
         .finally(() => {
           getUserServersRunning = false;
@@ -112,20 +192,25 @@ export const getAllServers = () => {
 // GET FASTEST SERVER CONNECTION
 // ======================================================================
 
-const getFastestConnection = async (currentServer) => {
-  let plexBaseUrl;
+const getFastestConnection = async (currentServer, currentUser) => {
+  let serverBaseUrl;
   try {
-    await plexTools.getFastestConnection(currentServer).then((response) => {
-      plexBaseUrl = response;
-      store.dispatch.appModel.setAppState({ plexBaseUrl });
-    });
+    if (currentUser?.serverBaseUrl) {
+      serverBaseUrl = currentUser.serverBaseUrl;
+      store.dispatch.appModel.setAppState({ serverBaseUrl });
+    } else {
+      await plexTools.getFastestConnection(currentServer).then((response) => {
+        serverBaseUrl = response;
+        store.dispatch.appModel.setAppState({ serverBaseUrl });
+      });
+    }
   } catch (error) {
     console.error(error);
     store.dispatch.appModel.setAppState({ errorPlexFastestConnection: true });
-    analyticsEvent('Error: Plex Get Fastest Server Connection');
+    analyticsEvent('Error: Bridge - Get Fastest Server Connection');
     throw error;
   }
-  return plexBaseUrl;
+  return serverBaseUrl;
 };
 
 // ======================================================================
@@ -140,21 +225,25 @@ export const getAllLibraries = async () => {
     if (!prevAllLibraries) {
       const currentServer = store.getState().sessionModel.currentServer;
       if (currentServer) {
-        console.log('%c--- plex - getAllLibraries ---', 'color:#f9743b;');
+        console.log('%c--- bridge - getAllLibraries ---', 'color:#f9743b;');
         getUserLibrariesRunning = true;
 
+        const currentService = store.getState().appModel.currentService;
+        const currentUser = currentService === 'jellyfin' ? store.getState().appModel.currentUser : null;
+
         // before getting libraries, get the fastest server connection
-        let plexBaseUrl;
+        let serverBaseUrl;
         try {
-          plexBaseUrl = await getFastestConnection(currentServer);
+          serverBaseUrl = await getFastestConnection(currentServer, currentUser);
         } catch (error) {
           getUserLibrariesRunning = false;
           return;
         }
 
+        const userId = currentUser?.userId;
         const accessToken = store.getState().sessionModel.currentServer.accessToken;
-        plexTools
-          .getAllLibraries(plexBaseUrl, accessToken)
+        serviceTools[currentService]
+          .getAllLibraries(serverBaseUrl, accessToken, userId)
           .then((response) => {
             store.dispatch.sessionModel.refreshCurrentLibrary(response);
             store.dispatch.appModel.setAppState({ allLibraries: response });
@@ -162,7 +251,7 @@ export const getAllLibraries = async () => {
           .catch((error) => {
             console.error(error);
             store.dispatch.appModel.setAppState({ errorPlexLibraries: true });
-            analyticsEvent('Error: Plex Get All Libraries');
+            analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get All Libraries');
           })
           .finally(() => {
             getUserLibrariesRunning = false;
@@ -182,14 +271,15 @@ export const getAllArtists = () => {
   if (!getAllArtistsRunning) {
     const haveGotAllArtists = store.getState().appModel.haveGotAllArtists;
     if (!haveGotAllArtists) {
-      console.log('%c--- plex - getAllArtists ---', 'color:#f9743b;');
+      console.log('%c--- bridge - getAllArtists ---', 'color:#f9743b;');
       getAllArtistsRunning = true;
+      const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
-      plexTools
-        .getAllArtists(plexBaseUrl, libraryId, accessToken)
+      serviceTools[currentService]
+        .getAllArtists(serverBaseUrl, libraryId, accessToken)
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.setAppState({
@@ -217,13 +307,13 @@ export const getArtistDetails = (libraryId, artistId) => {
   if (!getArtistDetailsRunning) {
     const prevArtistDetails = store.getState().appModel.allArtists?.find((artist) => artist.artistId === artistId);
     if (!prevArtistDetails) {
-      console.log('%c--- plex - getArtistDetails ---', 'color:#f9743b;');
+      console.log('%c--- bridge - getArtistDetails ---', 'color:#f9743b;');
       getArtistDetailsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
       plexTools
-        .getArtistDetails(plexBaseUrl, libraryId, artistId, accessToken)
+        .getArtistDetails(serverBaseUrl, libraryId, artistId, accessToken)
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.storeArtistDetails(response);
@@ -248,13 +338,13 @@ export const getAllArtistAlbums = (libraryId, artistId) => {
   if (!getAllArtistAlbumsRunning) {
     const prevAllAlbums = store.getState().appModel.allArtistAlbums[libraryId + '-' + artistId];
     if (!prevAllAlbums) {
-      console.log('%c--- plex - getAllArtistAlbums ---', 'color:#f9743b;');
+      console.log('%c--- bridge - getAllArtistAlbums ---', 'color:#f9743b;');
       getAllArtistAlbumsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
       plexTools
-        .getAllArtistAlbums(plexBaseUrl, libraryId, artistId, accessToken)
+        .getAllArtistAlbums(serverBaseUrl, libraryId, artistId, accessToken)
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.storeArtistAlbums({ libraryId, artistId, artistAlbums: response });
@@ -279,13 +369,13 @@ export const getAllArtistRelated = (libraryId, artistId) => {
   if (!getAllArtistRelatedRunning) {
     const prevAllRelated = store.getState().appModel.allArtistRelated[libraryId + '-' + artistId];
     if (!prevAllRelated) {
-      console.log('%c--- plex - getAllArtistRelated ---', 'color:#f9743b;');
+      console.log('%c--- bridge - getAllArtistRelated ---', 'color:#f9743b;');
       getAllArtistRelatedRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
       plexTools
-        .getAllArtistRelated(plexBaseUrl, libraryId, artistId, accessToken)
+        .getAllArtistRelated(serverBaseUrl, libraryId, artistId, accessToken)
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.storeArtistRelated({ libraryId, artistId, artistRelated: response });
@@ -310,13 +400,13 @@ export const getAllArtistAppearanceAlbums = (libraryId, artistId, artistName) =>
   if (!getAllArtistAppearanceAlbumsRunning) {
     const prevAllCompilationAlbums = store.getState().appModel.allArtistCompilationAlbums[libraryId + '-' + artistId];
     if (!prevAllCompilationAlbums) {
-      console.log('%c--- plex - getAllArtistAppearanceAlbums ---', 'color:#f9743b;');
+      console.log('%c--- bridge - getAllArtistAppearanceAlbums ---', 'color:#f9743b;');
       getAllArtistAppearanceAlbumsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
       plexTools
-        .getAllArtistAppearanceAlbums(plexBaseUrl, libraryId, artistName, store, accessToken)
+        .getAllArtistAppearanceAlbums(serverBaseUrl, libraryId, artistName, store, accessToken)
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.storeArtistCompilationAlbums({
@@ -345,14 +435,14 @@ export const getAllArtistTracks = (libraryId, artistId, artistName) => {
   if (!getAllArtistTracksRunning) {
     const prevArtistTracks = store.getState().appModel.allArtistTracks[libraryId + '-' + artistId];
     if (!prevArtistTracks) {
-      console.log('%c--- plex - getAllArtistTracks ---', 'color:#f9743b;');
+      console.log('%c--- bridge - getAllArtistTracks ---', 'color:#f9743b;');
       getAllArtistTracksRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
       Promise.all([
-        plexTools.getAllArtistTracks(plexBaseUrl, libraryId, artistId, artistName, accessToken),
-        plexTools.getAllArtistAppearanceTracks(plexBaseUrl, libraryId, artistId, artistName, accessToken),
+        plexTools.getAllArtistTracks(serverBaseUrl, libraryId, artistId, artistName, accessToken),
+        plexTools.getAllArtistAppearanceTracks(serverBaseUrl, libraryId, artistId, artistName, accessToken),
       ])
         .then(([artistTracks, appearanceTracks]) => {
           // Combine both track arrays (assume they need to be merged)
@@ -384,14 +474,15 @@ export const getAllAlbums = () => {
   if (!getAllAlbumsRunning) {
     const haveGotAllAlbums = store.getState().appModel.haveGotAllAlbums;
     if (!haveGotAllAlbums) {
-      console.log('%c--- plex - getAllAlbums ---', 'color:#f9743b;');
+      console.log('%c--- bridge - getAllAlbums ---', 'color:#f9743b;');
       getAllAlbumsRunning = true;
+      const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
-      plexTools
-        .getAllAlbums(plexBaseUrl, libraryId, accessToken)
+      serviceTools[currentService]
+        .getAllAlbums(serverBaseUrl, libraryId, accessToken)
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.setAppState({
@@ -419,13 +510,14 @@ export const getAlbumDetails = (libraryId, albumId, callback) => {
   if (!getAlbumDetailsRunning) {
     const prevAlbumDetails = store.getState().appModel.allAlbums?.find((album) => album.albumId === albumId);
     if (!prevAlbumDetails) {
-      console.log('%c--- plex - getAlbumDetails ---', 'color:#f9743b;');
+      console.log('%c--- bridge - getAlbumDetails ---', 'color:#f9743b;');
       getAlbumDetailsRunning = true;
+      const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
-      plexTools
-        .getAlbumDetails(plexBaseUrl, libraryId, albumId, accessToken)
+      serviceTools[currentService]
+        .getAlbumDetails(serverBaseUrl, libraryId, albumId, accessToken)
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.storeAlbumDetails(response);
@@ -454,13 +546,15 @@ export const getAlbumTracks = (libraryId, albumId) => {
     if (!getAlbumTracksRunning) {
       const prevAlbumTracks = store.getState().appModel.allAlbumTracks[libraryId + '-' + albumId];
       if (!prevAlbumTracks) {
-        console.log('%c--- plex - getAlbumTracks ---', 'color:#f9743b;');
+        console.log('%c--- bridge - getAlbumTracks ---', 'color:#f9743b;');
         getAlbumTracksRunning = true;
+        const currentService = store.getState().appModel.currentService;
         const accessToken = store.getState().sessionModel.currentServer.accessToken;
-        const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+        const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+        const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
 
-        plexTools
-          .getAlbumTracks(plexBaseUrl, libraryId, albumId, accessToken)
+        serviceTools[currentService]
+          .getAlbumTracks(serverBaseUrl, libraryId, albumId, accessToken, userId)
           .then((response) => {
             // console.log(response);
             store.dispatch.appModel.storeAlbumTracks({ libraryId, albumId, albumTracks: response });
@@ -494,13 +588,13 @@ export const getFolderItems = (folderId) => {
       const { libraryId } = store.getState().sessionModel.currentLibrary;
       const prevFolderItems = store.getState().appModel.allFolderItems[libraryId + '-' + folderId];
       if (!prevFolderItems) {
-        console.log('%c--- plex - getFolderItems ---', 'color:#f9743b;');
+        console.log('%c--- bridge - getFolderItems ---', 'color:#f9743b;');
         getFolderItemsRunning = true;
         const accessToken = store.getState().sessionModel.currentServer.accessToken;
-        const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+        const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
         plexTools
-          .getFolderItems(plexBaseUrl, libraryId, folderId, accessToken)
+          .getFolderItems(serverBaseUrl, libraryId, folderId, accessToken)
           .then((response) => {
             // console.log(response);
             store.dispatch.appModel.storeFolderItems({ libraryId, folderId, folderItems: response });
@@ -532,14 +626,16 @@ export const getAllPlaylists = () => {
   if (!getAllPlaylistsRunning) {
     const prevAllPlaylists = store.getState().appModel.allPlaylists;
     if (!prevAllPlaylists) {
-      console.log('%c--- plex - getAllPlaylists ---', 'color:#f9743b;');
+      console.log('%c--- bridge - getAllPlaylists ---', 'color:#f9743b;');
       getAllPlaylistsRunning = true;
+      const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
-      plexTools
-        .getAllPlaylists(plexBaseUrl, libraryId, accessToken)
+      serviceTools[currentService]
+        .getAllPlaylists(serverBaseUrl, libraryId, accessToken, userId)
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.setAppState({ allPlaylists: response });
@@ -566,13 +662,15 @@ export const getPlaylistDetails = (libraryId, playlistId) => {
       .getState()
       .appModel.allPlaylists?.find((playlist) => playlist.playlistId === playlistId);
     if (!prevPlaylistDetails) {
-      console.log('%c--- plex - getPlaylistDetails ---', 'color:#f9743b;');
+      console.log('%c--- bridge - getPlaylistDetails ---', 'color:#f9743b;');
       getPlaylistDetailsRunning = true;
+      const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
 
-      plexTools
-        .getPlaylistDetails(plexBaseUrl, libraryId, playlistId, accessToken)
+      serviceTools[currentService]
+        .getPlaylistDetails(serverBaseUrl, libraryId, playlistId, accessToken, userId)
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.storePlaylistDetails(response);
@@ -598,13 +696,14 @@ export const getPlaylistTracks = (libraryId, playlistId) => {
     if (!getPlaylistTracksRunning) {
       const prevPlaylistTracks = store.getState().appModel.allPlaylistTracks[libraryId + '-' + playlistId];
       if (!prevPlaylistTracks) {
-        console.log('%c--- plex - getPlaylistTracks ---', 'color:#f9743b;');
+        console.log('%c--- bridge - getPlaylistTracks ---', 'color:#f9743b;');
         getPlaylistTracksRunning = true;
+        const currentService = store.getState().appModel.currentService;
         const accessToken = store.getState().sessionModel.currentServer.accessToken;
-        const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+        const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
-        plexTools
-          .getPlaylistTracks(plexBaseUrl, libraryId, playlistId, accessToken)
+        serviceTools[currentService]
+          .getPlaylistTracks(serverBaseUrl, libraryId, playlistId, accessToken)
           .then((response) => {
             // console.log(response);
             store.dispatch.appModel.storePlaylistTracks({ libraryId, playlistId, playlistTracks: response });
@@ -637,14 +736,14 @@ export const getAllCollections = () => {
     const prevAllArtistCollections = store.getState().appModel.allArtistCollections;
     const prevAllAlbumCollections = store.getState().appModel.allAlbumCollections;
     if (!prevAllArtistCollections || !prevAllAlbumCollections) {
-      console.log('%c--- plex - getAllCollections ---', 'color:#f9743b;');
+      console.log('%c--- bridge - getAllCollections ---', 'color:#f9743b;');
       getAllCollectionsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
       plexTools
-        .getAllCollections(plexBaseUrl, libraryId, accessToken)
+        .getAllCollections(serverBaseUrl, libraryId, accessToken)
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.setAppState(response);
@@ -673,13 +772,13 @@ export const getCollectionItems = (libraryId, collectionId, typeKey) => {
     const prevCollectionItems =
       store.getState().appModel[`all${typeKey}CollectionItems`][libraryId + '-' + collectionId];
     if (!prevCollectionItems) {
-      console.log('%c--- plex - getCollectionItems - ' + typeKey + ' ---', 'color:#f9743b;');
+      console.log('%c--- bridge - getCollectionItems - ' + typeKey + ' ---', 'color:#f9743b;');
       getCollectionItemsRunning[typeKey] = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
       plexTools
-        .getCollectionItems(plexBaseUrl, libraryId, collectionId, typeKey, accessToken)
+        .getCollectionItems(serverBaseUrl, libraryId, collectionId, typeKey, accessToken)
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel[`store${typeKey}CollectionItems`]({
@@ -715,14 +814,14 @@ export const getAllTags = (typeKey) => {
   if (!getAllTagsRunning[typeKey]) {
     const prevAllTags = store.getState().appModel[`all${typeKey}`];
     if (!prevAllTags) {
-      console.log('%c--- plex - getAllTags - ' + typeKey + ' ---', 'color:#f9743b;');
+      console.log('%c--- bridge - getAllTags - ' + typeKey + ' ---', 'color:#f9743b;');
       getAllTagsRunning[typeKey] = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
       plexTools
-        .getAllTags(plexBaseUrl, libraryId, typeKey, accessToken)
+        .getAllTags(serverBaseUrl, libraryId, typeKey, accessToken)
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.setAppState({ [`all${typeKey}`]: response });
@@ -754,13 +853,13 @@ export const getTagItems = (libraryId, tagId, typeKey) => {
   if (!getTagItemsRunning[typeKey]) {
     const prevTagItems = store.getState().appModel[`all${typeKey}`][libraryId + '-' + tagId];
     if (!prevTagItems) {
-      console.log('%c--- plex - getTagItems ---', 'color:#f9743b;');
+      console.log('%c--- bridge - getTagItems ---', 'color:#f9743b;');
       getTagItemsRunning[typeKey] = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
       plexTools
-        .getTagItems(plexBaseUrl, libraryId, tagId, typeKey, accessToken)
+        .getTagItems(serverBaseUrl, libraryId, tagId, typeKey, accessToken)
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel[`store${typeKey}`]({ libraryId, tagId, tagItems: response });
@@ -788,11 +887,11 @@ export const searchLibrary = (query) => {
 
 const searchLibrary2 = (query, searchCounter) => {
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
-  const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+  const serverBaseUrl = store.getState().appModel.serverBaseUrl;
   const { libraryId } = store.getState().sessionModel.currentLibrary;
 
   plexTools
-    .searchHub(plexBaseUrl, libraryId, accessToken, query)
+    .searchLibrary(serverBaseUrl, libraryId, accessToken, query)
     .then((response) => {
       // console.log(response);
       const searchResultCounter = store.getState().appModel.searchResultCounter;
@@ -802,11 +901,11 @@ const searchLibrary2 = (query, searchCounter) => {
           searchResultCounter: searchCounter,
         });
       }
-      analyticsEvent('Plex: Search');
+      analyticsEvent('Bridge: Search');
     })
     .catch((error) => {
       console.error(error);
-      analyticsEvent('Error: Plex Search');
+      analyticsEvent('Error: Bridge - Search');
     });
 };
 
@@ -815,11 +914,11 @@ const searchLibrary2 = (query, searchCounter) => {
 // ======================================================================
 
 export const setStarRating = (type, ratingKey, rating) => {
-  const plexBaseUrl = store.getState().appModel.plexBaseUrl;
+  const serverBaseUrl = store.getState().appModel.serverBaseUrl;
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const sessionId = store.getState().sessionModel.sessionId;
   plexTools
-    .setStarRating(plexBaseUrl, accessToken, sessionId, ratingKey, rating)
+    .setStarRating(serverBaseUrl, accessToken, sessionId, ratingKey, rating)
     .then(() => {
       if (type === 'artist' || type === 'artists') {
         store.dispatch.appModel.setArtistRating({ ratingKey, rating });
@@ -832,11 +931,11 @@ export const setStarRating = (type, ratingKey, rating) => {
       } else if (type === 'collection' || type === 'collections') {
         store.dispatch.appModel.setCollectionRating({ ratingKey, rating });
       }
-      analyticsEvent('Plex: Set Star Rating');
+      analyticsEvent('Bridge: Set Star Rating');
     })
     .catch((error) => {
       console.error(error);
-      analyticsEvent('Error: Plex Set Star Rating');
+      analyticsEvent('Error: Bridge - Set Star Rating');
     });
 };
 
@@ -862,38 +961,62 @@ export const logPlaybackStop = (currentTrack) => {
 };
 
 export const logPlaybackStatus = (currentTrack, state, currentTime) => {
-  const optionLogPlexPlayback = store.getState().sessionModel.optionLogPlexPlayback;
-  if (optionLogPlexPlayback) {
-    const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-    const accessToken = store.getState().sessionModel.currentServer.accessToken;
-    const sessionId = store.getState().sessionModel.sessionId;
-    const { trackId, trackKey, duration } = currentTrack || {};
-    plexTools
-      .logPlaybackStatus(plexBaseUrl, accessToken, sessionId, 'music', trackId, trackKey, state, currentTime, duration)
-      .catch((error) => {
-        console.error(error);
-        analyticsEvent('Error: Plex Update Playback Status');
-      });
+  const currentService = store.getState().appModel.currentService;
+  if (currentService === 'plex') {
+    const optionLogPlexPlayback = store.getState().sessionModel.optionLogPlexPlayback;
+    if (optionLogPlexPlayback) {
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+      const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const sessionId = store.getState().sessionModel.sessionId;
+      const { trackId, trackKey, duration } = currentTrack || {};
+      plexTools
+        .logPlaybackStatus(
+          serverBaseUrl,
+          accessToken,
+          sessionId,
+          'music',
+          trackId,
+          trackKey,
+          state,
+          currentTime,
+          duration
+        )
+        .catch((error) => {
+          console.error(error);
+          analyticsEvent('Error: Bridge - Update Playback Status');
+        });
+    }
   }
 };
 
 export const logPlaybackQuit = (currentTrack, currentTime) => {
-  const optionLogPlexPlayback = store.getState().sessionModel.optionLogPlexPlayback;
-  if (optionLogPlexPlayback) {
-    const plexBaseUrl = store.getState().appModel.plexBaseUrl;
-    const accessToken = store.getState().sessionModel.currentServer.accessToken;
-    const sessionId = store.getState().sessionModel.sessionId;
-    const { trackId, trackKey, duration } = currentTrack || {};
-    plexTools.logPlaybackQuit(
-      plexBaseUrl,
-      accessToken,
-      sessionId,
-      'music',
-      trackId,
-      trackKey,
-      'stopped',
-      currentTime,
-      duration
-    );
+  const currentService = store.getState().appModel.currentService;
+  if (currentService === 'plex') {
+    const optionLogPlexPlayback = store.getState().sessionModel.optionLogPlexPlayback;
+    if (optionLogPlexPlayback) {
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+      const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const sessionId = store.getState().sessionModel.sessionId;
+      const { trackId, trackKey, duration } = currentTrack || {};
+      plexTools.logPlaybackQuit(
+        serverBaseUrl,
+        accessToken,
+        sessionId,
+        'music',
+        trackId,
+        trackKey,
+        'stopped',
+        currentTime,
+        duration
+      );
+    }
   }
+};
+
+// ======================================================================
+// HELPER FUNCTIONS
+// ======================================================================
+
+const toUpperFirst = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 };

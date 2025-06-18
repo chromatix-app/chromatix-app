@@ -3,14 +3,17 @@ export const config = {
   globalStore: true,
 
   // local storage keys
-  storagePinKey: 'chromatix-pin-id',
-  storageTokenKey: 'chromatix-auth-token',
+  storageJellyServerKey: 'chromatix-jelly-server',
+  storageJellyUserKey: 'chromatix-jelly-user',
   storagePersistentKey: 'chromatix-persist-v1',
+  storagePinKey: 'chromatix-pin-id',
+  storageServiceKey: 'chromatix-service',
   storageSessionKey: 'chromatix-session-v1',
+  storageTokenKey: 'chromatix-auth-token',
 
   // session storage keys
-  windowPosKey: 'chromatix-window-positions',
   contentPosKey: 'chromatix-content-positions',
+  windowPosKey: 'chromatix-window-positions',
 
   // encryption keys
   encryptionKey: 'your_secret_key_here',

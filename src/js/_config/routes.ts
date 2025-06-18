@@ -9,7 +9,12 @@ export const defaultRoutes = [
   {
     path: '/',
     exact: true,
-    component: 'Login',
+    component: 'Home',
+  },
+  {
+    path: '/login-jellyfin',
+    exact: true,
+    component: 'LoginJelly',
   },
 
   // other

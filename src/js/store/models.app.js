@@ -37,12 +37,31 @@ const appState = {
 
 const userState = {
   loggedIn: false,
+
+  // TBC remove these...
+  currentService: null,
   currentUser: null,
   allServers: null,
+
+  // TBC add this...
+  // allAccounts: [{
+  //   service: 'plex',
+  //   userId: null,
+  //   userName: null,
+  //   userThumb: null,
+  //   userEmail: null,
+  // }],
 };
 
+// TBC add this...
+// const accountState = {
+//   currentService: 'plex',
+//   currentAccount: null,
+//   allServers: null,
+// };
+
 const serverState = {
-  plexBaseUrl: null,
+  serverBaseUrl: null,
   allLibraries: null,
 };
 
@@ -138,9 +157,9 @@ const effects = (dispatch) => ({
   // AUTH
   //
 
-  doLogin(payload, rootState) {
-    console.log('%c--- login ---', 'color:#07a098');
-    bridge.login();
+  doPlexLogin(payload, rootState) {
+    console.log('%c--- login - plex ---', 'color:#07a098');
+    bridge.plexLogin();
   },
 
   doLogout(payload, rootState) {
@@ -152,10 +171,12 @@ const effects = (dispatch) => ({
 
   setLoggedIn(payload, rootState) {
     console.log('%c--- setLoggedIn ---', 'color:#07a098');
+    const { currentService, currentUser } = payload;
     dispatch.appModel.setAppState({
       inited: true,
       loggedIn: true,
-      currentUser: payload,
+      currentService,
+      currentUser,
     });
     dispatch.sessionModel.loadLocalStorage();
     dispatch.playerModel.playerRefresh();

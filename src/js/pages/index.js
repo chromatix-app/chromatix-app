@@ -1,4 +1,6 @@
-export { default as Login } from './Login';
+export { default as Home } from './Home';
+export { default as LoginJelly } from './LoginJelly';
+
 export { default as ServerList } from './ServerList';
 export { default as LibraryList } from './LibraryList';
 

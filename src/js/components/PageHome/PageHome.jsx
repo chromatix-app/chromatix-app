@@ -16,6 +16,8 @@ import style from './PageHome.module.scss';
 // COMPONENT
 // ======================================================================
 
+const isLocal = process.env.REACT_APP_ENV === 'local';
+
 export const PageHome = () => {
   const dispatch = useDispatch();
   const downloadsRef = useRef(null);
@@ -60,7 +62,13 @@ export const PageHome = () => {
 
         <div className="mt-45 mt-lg-50"></div>
 
-        <Button onClick={dispatch.appModel.doLogin}>Login with Plex</Button>
+        <Button onClick={dispatch.appModel.doPlexLogin}>Login with Plex</Button>
+        {isLocal && (
+          <>
+            <div className="mt-10"></div>
+            <Button to="/login-jellyfin">Login with Jellyfin (Alpha)</Button>
+          </>
+        )}
 
         {!isElectron && (
           <>
@@ -94,7 +102,7 @@ export const PageHome = () => {
 
         <div className="mt-50"></div>
 
-        <Button onClick={dispatch.appModel.doLogin}>Login with Plex</Button>
+        <Button onClick={dispatch.appModel.doPlexLogin}>Login with Plex</Button>
 
         {!isElectron && (
           <>

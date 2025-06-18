@@ -10,6 +10,7 @@ export { default as ListTable } from './ListTable/ListTable';
 export { default as ListServers } from './ListServers/ListServers';
 export { default as Loading } from './Loading/Loading';
 export { default as PageHome } from './PageHome/PageHome';
+export { default as PageLoginJelly } from './PageLoginJelly/PageLoginJelly';
 export { default as PageText } from './PageText/PageText';
 export { default as Queue } from './Queue/Queue';
 export { default as RangeSlider } from './RangeSlider/RangeSlider';
