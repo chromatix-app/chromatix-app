@@ -18,7 +18,7 @@ const clientIcon = 'https://chromatix.app/icon/icon-512.png';
 
 const storagePinKey = config.storagePinKey;
 const storageTokenKey = config.storageTokenKey;
-const storageSecretKey = 'your_secret_key_here';
+const encryptionKey = config.encryptionKey;
 
 const redirectPath = window.location.origin;
 const redirectQuery = 'plex-login';
@@ -113,14 +113,14 @@ const endpointConfig = {
 
 export const setLocalStorage = (key, value) => {
   const stringValue = String(value);
-  const encryptedValue = CryptoJS.AES.encrypt(stringValue, storageSecretKey).toString();
+  const encryptedValue = CryptoJS.AES.encrypt(stringValue, encryptionKey).toString();
   window.localStorage.setItem(key, encryptedValue);
 };
 
 export const getLocalStorage = (key) => {
   const encryptedValue = window.localStorage.getItem(key);
   if (encryptedValue) {
-    const bytes = CryptoJS.AES.decrypt(encryptedValue, storageSecretKey);
+    const bytes = CryptoJS.AES.decrypt(encryptedValue, encryptionKey);
     const decryptedValue = bytes.toString(CryptoJS.enc.Utf8);
     return decryptedValue;
   }

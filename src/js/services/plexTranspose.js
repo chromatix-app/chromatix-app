@@ -42,7 +42,6 @@ export const transposeUserData = (user) => {
     userId: data['@_id'],
     email: data['email'],
     thumb: data['@_thumb'],
-    title: data['@_title'],
     username: data['username'],
   };
 };

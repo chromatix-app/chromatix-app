@@ -11,6 +11,9 @@ export const config = {
   // session storage keys
   windowPosKey: 'chromatix-window-positions',
   contentPosKey: 'chromatix-content-positions',
+
+  // encryption keys
+  encryptionKey: 'your_secret_key_here',
 };
 
 const exports = { ...config };
