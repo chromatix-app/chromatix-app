@@ -17,7 +17,7 @@ const clientId = 'chromatix.app';
 const clientIcon = 'https://chromatix.app/icon/icon-512.png';
 
 const storagePinKey = config.storagePinKey;
-const storageAuthKey = config.storageAuthKey;
+const storageTokenKey = config.storageTokenKey;
 const storageSecretKey = 'your_secret_key_here';
 
 const redirectPath = window.location.origin;
@@ -221,7 +221,7 @@ export const init = () => {
     }
     // otherwise, check if the user is already logged in
     else {
-      const authToken = getLocalStorage(storageAuthKey);
+      const authToken = getLocalStorage(storageTokenKey);
       if (authToken) {
         resolve();
       } else {
@@ -313,7 +313,7 @@ const checkPlexPinStatus = (pinId, retryCount = 0) => {
 
           // if valid, store the authToken in the local storage
           if (pinStatusData.authToken) {
-            setLocalStorage(storageAuthKey, pinStatusData.authToken);
+            setLocalStorage(storageTokenKey, pinStatusData.authToken);
             window.localStorage.removeItem(storagePinKey);
             resolve();
           }
@@ -353,7 +353,7 @@ const checkPlexPinStatus = (pinId, retryCount = 0) => {
 // ======================================================================
 
 export const logout = () => {
-  window.localStorage.removeItem(storageAuthKey);
+  window.localStorage.removeItem(storageTokenKey);
 };
 
 // ======================================================================
@@ -363,7 +363,7 @@ export const logout = () => {
 export const getUserInfo = () => {
   return new Promise((resolve, reject) => {
     try {
-      const authToken = getLocalStorage(storageAuthKey);
+      const authToken = getLocalStorage(storageTokenKey);
       const endpoint = endpointConfig.user.getUserInfo();
       axios
         .get(endpoint, {
@@ -401,7 +401,7 @@ export const getUserInfo = () => {
 export const getAllServers = () => {
   return new Promise((resolve, reject) => {
     try {
-      const authToken = getLocalStorage(storageAuthKey);
+      const authToken = getLocalStorage(storageTokenKey);
       const endpoint = endpointConfig.server.getAllServers();
       axios
         .get(endpoint, {

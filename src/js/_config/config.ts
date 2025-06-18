@@ -4,7 +4,7 @@ export const config = {
 
   // local storage keys
   storagePinKey: 'chromatix-pin-id',
-  storageAuthKey: 'chromatix-auth-token',
+  storageTokenKey: 'chromatix-auth-token',
   storagePersistentKey: 'chromatix-persist-v1',
   storageSessionKey: 'chromatix-session-v1',
 
