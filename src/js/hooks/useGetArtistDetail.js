@@ -42,8 +42,8 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const allArtistAlbums = useSelector(({ appModel }) => appModel.allArtistAlbums);
   const artistAlbums = allArtistAlbums[libraryId + '-' + artistId];
 
-  const allArtistRelated = useSelector(({ appModel }) => appModel.allArtistRelated);
-  const artistRelated = allArtistRelated[libraryId + '-' + artistId];
+  const allArtistRelatedAlbums = useSelector(({ appModel }) => appModel.allArtistRelatedAlbums);
+  const artistRelated = allArtistRelatedAlbums[libraryId + '-' + artistId];
 
   const allArtistAppearanceAlbums = useSelector(({ appModel }) => appModel.allArtistAppearanceAlbums);
   const artistAppearances = allArtistAppearanceAlbums[libraryId + '-' + artistId];

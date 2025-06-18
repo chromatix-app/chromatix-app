@@ -371,7 +371,7 @@ let getAllArtistRelatedAlbumsRunning;
 
 export const getAllArtistRelatedAlbums = (libraryId, artistId) => {
   if (!getAllArtistRelatedAlbumsRunning) {
-    const prevAllRelated = store.getState().appModel.allArtistRelated[libraryId + '-' + artistId];
+    const prevAllRelated = store.getState().appModel.allArtistRelatedAlbums[libraryId + '-' + artistId];
     if (!prevAllRelated) {
       console.log('%c--- bridge - getAllArtistRelatedAlbums ---', 'color:#f9743b;');
       getAllArtistRelatedAlbumsRunning = true;
