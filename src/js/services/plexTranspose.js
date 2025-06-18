@@ -114,12 +114,12 @@ export const transposeArtistRelatedArray = (array, libraryId, baseUrl, accessTok
 };
 
 export const transposeArtistAppearanceAlbumIdsArray = (array, libraryId, baseUrl, accessToken) => {
-  const artistCompilationTracks =
+  const artistAppearanceTracks =
     array?.data?.MediaContainer?.Metadata?.map((track) => transposeTrackData(track, libraryId, baseUrl, accessToken)) ||
     [];
   // get a unique list of album IDs using the albumId key of each track
-  const artistCompilationAlbums = [...new Set(artistCompilationTracks.map((track) => track.albumId))];
-  return artistCompilationAlbums;
+  const artistAppearanceAlbums = [...new Set(artistAppearanceTracks.map((track) => track.albumId))];
+  return artistAppearanceAlbums;
 };
 
 export const transposeArtistData = (artist, libraryId, baseUrl, accessToken) => {
@@ -397,10 +397,10 @@ export const transposeTrackArray = (array, libraryId, baseUrl, accessToken) => {
 };
 
 export const transposeTrackData = (track, libraryId, baseUrl, accessToken) => {
-  const isLikelyCompilation = track.originalTitle && track.originalTitle !== track.grandparentTitle;
+  const isLikelyAppearance = track.originalTitle && track.originalTitle !== track.grandparentTitle;
 
-  const artistTitle = isLikelyCompilation ? track.originalTitle : track.grandparentTitle;
-  const artistLink = isLikelyCompilation ? null : '/artists/' + libraryId + '/' + track.grandparentRatingKey;
+  const artistTitle = isLikelyAppearance ? track.originalTitle : track.grandparentTitle;
+  const artistLink = isLikelyAppearance ? null : '/artists/' + libraryId + '/' + track.grandparentRatingKey;
 
   return {
     kind: 'track',

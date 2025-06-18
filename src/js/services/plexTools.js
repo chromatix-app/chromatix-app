@@ -628,7 +628,7 @@ export const getAllArtistAppearanceAlbums = (baseUrl, libraryId, artistName, sto
           if (response.length <= 0) {
             resolve([]);
           } else {
-            let artistCompilationAlbums = [];
+            let artistAppearanceAlbums = [];
             const allAlbums1 = store.getState().appModel.allAlbums;
 
             // For each returned album ID, get the album details
@@ -636,7 +636,7 @@ export const getAllArtistAppearanceAlbums = (baseUrl, libraryId, artistName, sto
               // Check to see if we already have the album info in the store
               const albumInfo1 = allAlbums1 ? allAlbums1?.find((album) => album.albumId === albumId) : null;
               if (albumInfo1) {
-                artistCompilationAlbums.push(albumInfo1);
+                artistAppearanceAlbums.push(albumInfo1);
                 return Promise.resolve();
               }
 
@@ -644,7 +644,7 @@ export const getAllArtistAppearanceAlbums = (baseUrl, libraryId, artistName, sto
               return new Promise((resolve2) => {
                 getAlbumDetails(baseUrl, libraryId, albumId, accessToken)
                   .then((response) => {
-                    artistCompilationAlbums.push(response);
+                    artistAppearanceAlbums.push(response);
                     resolve2();
                   })
                   .catch((_error) => {});
@@ -653,7 +653,7 @@ export const getAllArtistAppearanceAlbums = (baseUrl, libraryId, artistName, sto
 
             Promise.all(albumPromises)
               .then(() => {
-                resolve(artistCompilationAlbums);
+                resolve(artistAppearanceAlbums);
               })
               .catch((error) => {
                 reject({

@@ -403,8 +403,8 @@ let getAllArtistAppearanceAlbumsRunning;
 
 export const getAllArtistAppearanceAlbums = (libraryId, artistId, artistName) => {
   if (!getAllArtistAppearanceAlbumsRunning) {
-    const prevAllCompilationAlbums = store.getState().appModel.allArtistCompilationAlbums[libraryId + '-' + artistId];
-    if (!prevAllCompilationAlbums) {
+    const prevAllAppearanceAlbums = store.getState().appModel.allArtistAppearanceAlbums[libraryId + '-' + artistId];
+    if (!prevAllAppearanceAlbums) {
       console.log('%c--- bridge - getAllArtistAppearanceAlbums ---', 'color:#f9743b;');
       getAllArtistAppearanceAlbumsRunning = true;
       const currentService = store.getState().appModel.currentService;
@@ -416,10 +416,10 @@ export const getAllArtistAppearanceAlbums = (libraryId, artistId, artistName) =>
         .getAllArtistAppearanceAlbums(serverBaseUrl, libraryId, artistName, store, accessToken, artistId, userId)
         .then((response) => {
           // console.log(response);
-          store.dispatch.appModel.storeArtistCompilationAlbums({
+          store.dispatch.appModel.storeArtistAppearanceAlbums({
             libraryId,
             artistId,
-            artistCompilationAlbums: response,
+            artistAppearanceAlbums: response,
           });
         })
         .catch((error) => {

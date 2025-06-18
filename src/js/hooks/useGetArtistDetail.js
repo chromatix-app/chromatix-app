@@ -45,16 +45,16 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const allArtistRelated = useSelector(({ appModel }) => appModel.allArtistRelated);
   const artistRelated = allArtistRelated[libraryId + '-' + artistId];
 
-  const allArtistCompilationAlbums = useSelector(({ appModel }) => appModel.allArtistCompilationAlbums);
-  const artistCompilations = allArtistCompilationAlbums[libraryId + '-' + artistId];
+  const allArtistAppearanceAlbums = useSelector(({ appModel }) => appModel.allArtistAppearanceAlbums);
+  const artistAppearances = allArtistAppearanceAlbums[libraryId + '-' + artistId];
 
   const allArtistTracks = useSelector(({ appModel }) => appModel.allArtistTracks);
   const artistTracks = allArtistTracks[libraryId + '-' + artistId];
 
   const artistAlbumTotal = artistAlbums?.length || 0;
   const artistRelatedTotal = artistRelated?.reduce((acc, entry) => acc + entry.related.length, 0) || 0;
-  const artistCompilationsTotal = artistCompilations?.length || 0;
-  const artistReleasesTotal = artistAlbumTotal + artistRelatedTotal + artistCompilationsTotal;
+  const artistAppearancesTotal = artistAppearances?.length || 0;
+  const artistReleasesTotal = artistAlbumTotal + artistRelatedTotal + artistAppearancesTotal;
   const artistTracksTotal = artistTracks?.length || 0;
 
   const viewArtistAlbums = useSelector(({ sessionModel }) => sessionModel.viewArtistAlbums);
@@ -115,9 +115,9 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
       related: sortedEntry,
     };
   });
-  const sortedArtistAppearances = artistCompilations
+  const sortedArtistAppearances = artistAppearances
     ? sortList({
-        entries: artistCompilations,
+        entries: artistAppearances,
         options: actualSortArtistAlbums,
         direction: actualOrderArtistAlbums,
         sortNumbersFirst: optionSortNumbersFirst,
@@ -258,7 +258,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allArtists, artistInfo]);
 
-  // Get the artist compilation albums
+  // Get the artist appearance albums
   useEffect(() => {
     if (libraryId && artistId && artistName) {
       bridge.getAllArtistAppearanceAlbums(libraryId, artistId, artistName);

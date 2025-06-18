@@ -70,7 +70,7 @@ const libraryState = {
   allArtists: null,
   allArtistAlbums: {},
   allArtistRelated: {},
-  allArtistCompilationAlbums: {},
+  allArtistAppearanceAlbums: {},
   allArtistTracks: {},
   haveGotAllArtists: false,
   // albums
@@ -367,19 +367,19 @@ const effects = (dispatch) => ({
     });
   },
 
-  storeArtistCompilationAlbums(payload, rootState) {
-    console.log('%c--- storeArtistCompilationAlbums ---', 'color:#07a098');
-    const { libraryId, artistId, artistCompilationAlbums } = payload;
-    const allArtistCompilationAlbums = { ...rootState.appModel.allArtistCompilationAlbums };
+  storeArtistAppearanceAlbums(payload, rootState) {
+    console.log('%c--- storeArtistAppearanceAlbums ---', 'color:#07a098');
+    const { libraryId, artistId, artistAppearanceAlbums } = payload;
+    const allArtistAppearanceAlbums = { ...rootState.appModel.allArtistAppearanceAlbums };
     // limit recent entries
-    const keys = Object.keys(allArtistCompilationAlbums);
+    const keys = Object.keys(allArtistAppearanceAlbums);
     if (keys.length >= maxDataLength) {
-      delete allArtistCompilationAlbums[keys[0]];
+      delete allArtistAppearanceAlbums[keys[0]];
     }
     // add the new entry and save
-    allArtistCompilationAlbums[libraryId + '-' + artistId] = artistCompilationAlbums;
+    allArtistAppearanceAlbums[libraryId + '-' + artistId] = artistAppearanceAlbums;
     dispatch.appModel.setAppState({
-      allArtistCompilationAlbums,
+      allArtistAppearanceAlbums,
     });
   },
 
@@ -553,15 +553,15 @@ const effects = (dispatch) => ({
       allArtistRelated[artistKey] = artistGroups;
     });
 
-    // update artist compilation albums
-    const allArtistCompilationAlbums = { ...rootState.appModel.allArtistCompilationAlbums };
-    const compilationKeys = Object.keys(allArtistCompilationAlbums);
-    compilationKeys.forEach((key) => {
-      const artistCompilationAlbums = allArtistCompilationAlbums[key];
-      const albumIndex = artistCompilationAlbums.findIndex((album) => album.albumId === ratingKey);
+    // update artist appearance albums
+    const allArtistAppearanceAlbums = { ...rootState.appModel.allArtistAppearanceAlbums };
+    const appearanceKeys = Object.keys(allArtistAppearanceAlbums);
+    appearanceKeys.forEach((key) => {
+      const artistAppearanceAlbums = allArtistAppearanceAlbums[key];
+      const albumIndex = artistAppearanceAlbums.findIndex((album) => album.albumId === ratingKey);
       if (albumIndex !== -1) {
-        artistCompilationAlbums[albumIndex].userRating = rating;
-        allArtistCompilationAlbums[key] = artistCompilationAlbums;
+        artistAppearanceAlbums[albumIndex].userRating = rating;
+        allArtistAppearanceAlbums[key] = artistAppearanceAlbums;
       }
     });
 
