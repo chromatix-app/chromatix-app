@@ -89,6 +89,13 @@ export const transposeArtistArray = (array, libraryId, baseUrl, accessToken) => 
   return data;
 };
 
+export const transposeArtistDetails = (array, libraryId, baseUrl, accessToken) => {
+  // console.log(array?.data);
+  const artist = array?.data;
+  const artistDetails = transposeArtistData(artist, libraryId, baseUrl, accessToken);
+  return artistDetails;
+};
+
 export const transposeArtistData = (artist, libraryId, baseUrl, accessToken) => {
   return {
     kind: 'artist',

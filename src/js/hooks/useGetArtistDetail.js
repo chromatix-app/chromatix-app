@@ -245,7 +245,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
       bridge.getArtistDetails(libraryId, artistId);
     }
     bridge.getAllArtistAlbums(libraryId, artistId);
-    bridge.getAllArtistRelated(libraryId, artistId);
+    bridge.getAllArtistRelatedAlbums(libraryId, artistId);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [libraryId, artistId]);

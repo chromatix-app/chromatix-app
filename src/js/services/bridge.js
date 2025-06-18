@@ -309,11 +309,13 @@ export const getArtistDetails = (libraryId, artistId) => {
     if (!prevArtistDetails) {
       console.log('%c--- bridge - getArtistDetails ---', 'color:#f9743b;');
       getArtistDetailsRunning = true;
+      const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
 
-      plexTools
-        .getArtistDetails(serverBaseUrl, libraryId, artistId, accessToken)
+      serviceTools[currentService]
+        .getArtistDetails(serverBaseUrl, libraryId, artistId, accessToken, userId)
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.storeArtistDetails(response);
@@ -340,11 +342,13 @@ export const getAllArtistAlbums = (libraryId, artistId) => {
     if (!prevAllAlbums) {
       console.log('%c--- bridge - getAllArtistAlbums ---', 'color:#f9743b;');
       getAllArtistAlbumsRunning = true;
+      const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
 
-      plexTools
-        .getAllArtistAlbums(serverBaseUrl, libraryId, artistId, accessToken)
+      serviceTools[currentService]
+        .getAllArtistAlbums(serverBaseUrl, libraryId, artistId, accessToken, userId)
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.storeArtistAlbums({ libraryId, artistId, artistAlbums: response });
@@ -360,22 +364,23 @@ export const getAllArtistAlbums = (libraryId, artistId) => {
 };
 
 // ======================================================================
-// GET ARTIST RELATED
+// GET ARTIST RELATED ALBUMS
 // ======================================================================
 
-let getAllArtistRelatedRunning;
+let getAllArtistRelatedAlbumsRunning;
 
-export const getAllArtistRelated = (libraryId, artistId) => {
-  if (!getAllArtistRelatedRunning) {
+export const getAllArtistRelatedAlbums = (libraryId, artistId) => {
+  if (!getAllArtistRelatedAlbumsRunning) {
     const prevAllRelated = store.getState().appModel.allArtistRelated[libraryId + '-' + artistId];
     if (!prevAllRelated) {
-      console.log('%c--- bridge - getAllArtistRelated ---', 'color:#f9743b;');
-      getAllArtistRelatedRunning = true;
+      console.log('%c--- bridge - getAllArtistRelatedAlbums ---', 'color:#f9743b;');
+      getAllArtistRelatedAlbumsRunning = true;
+      const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
-      plexTools
-        .getAllArtistRelated(serverBaseUrl, libraryId, artistId, accessToken)
+      serviceTools[currentService]
+        .getAllArtistRelatedAlbums(serverBaseUrl, libraryId, artistId, accessToken)
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.storeArtistRelated({ libraryId, artistId, artistRelated: response });
@@ -384,14 +389,14 @@ export const getAllArtistRelated = (libraryId, artistId) => {
           console.error(error);
         })
         .finally(() => {
-          getAllArtistRelatedRunning = false;
+          getAllArtistRelatedAlbumsRunning = false;
         });
     }
   }
 };
 
 // ======================================================================
-// GET ARTIST COMPILATION ALBUMS
+// GET ARTIST APPEARANCE ALBUMS
 // ======================================================================
 
 let getAllArtistAppearanceAlbumsRunning;
@@ -402,11 +407,13 @@ export const getAllArtistAppearanceAlbums = (libraryId, artistId, artistName) =>
     if (!prevAllCompilationAlbums) {
       console.log('%c--- bridge - getAllArtistAppearanceAlbums ---', 'color:#f9743b;');
       getAllArtistAppearanceAlbumsRunning = true;
+      const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
 
-      plexTools
-        .getAllArtistAppearanceAlbums(serverBaseUrl, libraryId, artistName, store, accessToken)
+      serviceTools[currentService]
+        .getAllArtistAppearanceAlbums(serverBaseUrl, libraryId, artistName, store, accessToken, artistId, userId)
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.storeArtistCompilationAlbums({

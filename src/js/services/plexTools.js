@@ -62,7 +62,7 @@ const endpointConfig = {
     getAllArtists: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
     getArtistDetails: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}`,
     getAllArtistAlbums: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/children`,
-    // getAllArtistRelated: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/related`,
+    // getAllArtistRelatedAlbums: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/related`,
     getAllArtistAppearanceTracks: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
     getAllArtistTracks: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
   },
@@ -574,7 +574,7 @@ export const getAllArtistAlbums = (baseUrl, libraryId, artistId, accessToken) =>
 // GET ALL ARTIST RELATED ALBUMS
 // ======================================================================
 
-export const getAllArtistRelated = (baseUrl, libraryId, artistId, accessToken) => {
+export const getAllArtistRelatedAlbums = (baseUrl, libraryId, artistId, accessToken) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.artist.getArtistDetails(baseUrl, artistId);
@@ -598,7 +598,7 @@ export const getAllArtistRelated = (baseUrl, libraryId, artistId, accessToken) =
         })
         .catch((error) => {
           reject({
-            code: 'plex.getAllArtistRelated.1',
+            code: 'plex.getAllArtistRelatedAlbums.1',
             message: 'Failed to get all artist related albums: ' + error?.message,
             error: error,
           });
@@ -608,7 +608,7 @@ export const getAllArtistRelated = (baseUrl, libraryId, artistId, accessToken) =
         });
     } catch (error) {
       reject({
-        code: 'plex.getAllArtistRelated.2',
+        code: 'plex.getAllArtistRelatedAlbums.2',
         message: 'Failed to get all artist related albums: ' + error?.message,
         error: error,
       });

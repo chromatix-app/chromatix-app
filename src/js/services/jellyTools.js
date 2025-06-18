@@ -44,10 +44,10 @@ const endpointConfig = {
   },
   artist: {
     getAllArtists: (baseUrl) => `${baseUrl}/Artists`,
-    getArtistDetails: null,
-    getAllArtistAlbums: null,
-    // getAllArtistRelated: null,
-    getAllArtistAppearanceTracks: null,
+    getArtistDetails: (baseUrl, userId, artistId) => `${baseUrl}/Users/${userId}/Items/${artistId}`,
+    getAllArtistAlbums: (baseUrl, userId) => `${baseUrl}/Users/${userId}/Items`,
+    // getAllArtistRelatedAlbums: null,
+    getAllArtistAppearanceAlbums: (baseUrl, userId) => `${baseUrl}/Users/${userId}/Items`,
     getAllArtistTracks: null,
   },
   album: {
@@ -259,10 +259,6 @@ export const getAllServers = (baseUrl) => {
 };
 
 // ======================================================================
-// GET FASTEST SERVER CONNECTION
-// ======================================================================
-
-// ======================================================================
 // GET ALL LIBRARIES
 // ======================================================================
 
@@ -348,17 +344,153 @@ export const getAllArtists = (baseUrl, libraryId, accessToken) => {
 // GET ARTIST DETAILS
 // ======================================================================
 
+export const getArtistDetails = (baseUrl, libraryId, artistId, accessToken, userId) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.artist.getArtistDetails(baseUrl, userId, artistId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(jellyTranspose.transposeArtistDetails(response, libraryId, baseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'jellyfin.getArtistDetails.1',
+            message: 'Failed to get artist details: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'jellyfin.getArtistDetails.2',
+        message: 'Failed to get artist details: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
 // ======================================================================
 // GET ALL ARTIST ALBUMS
 // ======================================================================
+
+export const getAllArtistAlbums = (baseUrl, libraryId, artistId, accessToken, userId) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.artist.getAllArtistAlbums(baseUrl, userId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+          params: {
+            ParentId: libraryId,
+            AlbumArtistIds: artistId,
+            IncludeItemTypes: 'MusicAlbum',
+            Recursive: true,
+            SortBy: 'SortName',
+            SortOrder: 'Ascending',
+            // Filters: 'IsNotFolder', // Helps filter out compilation albums
+            // ExcludeLocationTypes: 'Virtual', // Excludes virtual items, often compilations
+          },
+        })
+        .then((response) => {
+          resolve(jellyTranspose.transposeAlbumArray(response, libraryId, baseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'jellyfin.getAllArtistAlbums.1',
+            message: 'Failed to get all artist albums: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'jellyfin.getAllArtistAlbums.2',
+        message: 'Failed to get all artist albums: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
 
 // ======================================================================
 // GET ALL ARTIST RELATED ALBUMS
 // ======================================================================
 
+/*
+This does not exist in the Jellyfin API, but is here for consistency with other services.
+*/
+
+export const getAllArtistRelatedAlbums = () => {
+  return new Promise((resolve, reject) => {
+    resolve([]);
+  });
+};
+
 // ======================================================================
 // GET ALL ARTIST APPEARANCES
 // ======================================================================
+
+export const getAllArtistAppearanceAlbums = (baseUrl, libraryId, artistName, store, accessToken, artistId, userId) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.artist.getAllArtistAppearanceAlbums(baseUrl, userId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+          params: {
+            ParentId: libraryId,
+            ExcludeItemIds: artistId,
+            ContributingArtistIds: artistId,
+            IncludeItemTypes: 'MusicAlbum',
+            Recursive: true,
+            SortBy: 'SortName',
+            SortOrder: 'Ascending',
+            // Filters: 'IsNotFolder', // Helps filter out compilation albums
+            // ExcludeLocationTypes: 'Virtual', // Excludes virtual items, often compilations
+          },
+        })
+        .then((response) => {
+          resolve(jellyTranspose.transposeAlbumArray(response, libraryId, baseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'jellyfin.getAllArtistAppearanceAlbums.1',
+            message: 'Failed to get all artist albums: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'jellyfin.getAllArtistAppearanceAlbums.2',
+        message: 'Failed to get all artist albums: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
 
 // ======================================================================
 // GET ARTIST TRACKS
