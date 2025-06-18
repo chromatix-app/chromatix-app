@@ -109,7 +109,7 @@ const App = () => {
           title="Oops!"
           body={
             <>
-              Sorry, it was not possible to connect to the requested Plex server.
+              Sorry, it was not possible to connect to the requested server.
               <br />
               <br />
               Please try again later.
@@ -129,7 +129,7 @@ const App = () => {
           title="Oops!"
           body={
             <>
-              Sorry, there was an error retrieving your available Plex libraries.
+              Sorry, there was an error retrieving your available libraries.
               <br />
               <br />
               Please try again later.
@@ -149,7 +149,7 @@ const App = () => {
           title="Oops!"
           body={
             <>
-              Sorry, there was an error logging in to Plex.
+              Sorry, there was an error logging in to your account.
               <br />
               <br />
               Please try again later.
@@ -169,7 +169,7 @@ const App = () => {
           title="Oops!"
           body={
             <>
-              Sorry, there was an error retrieving your available Plex servers.
+              Sorry, there was an error retrieving your available servers.
               <br />
               <br />
               Please try again later.
@@ -189,7 +189,7 @@ const App = () => {
           title="Oops!"
           body={
             <>
-              Sorry, there was an error retrieving your user data from Plex.
+              Sorry, there was an error retrieving your user data.
               <br />
               <br />
               Please try again later.
