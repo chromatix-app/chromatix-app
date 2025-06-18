@@ -523,7 +523,7 @@ const effects = (dispatch) => ({
       currentLibrary: null,
       ...Object.assign({}, playingState),
     });
-    dispatch.appModel.clearPlexServerState();
+    dispatch.appModel.clearServerState();
   },
 
   switchCurrentServer(payload, rootState) {
@@ -542,7 +542,7 @@ const effects = (dispatch) => ({
         currentLibrary: null,
         ...Object.assign({}, playingState),
       });
-      dispatch.appModel.clearPlexServerState();
+      dispatch.appModel.clearServerState();
       dispatch.persistentModel.clearHistoryState();
     }
   },
@@ -558,7 +558,7 @@ const effects = (dispatch) => ({
       dispatch.sessionModel.setSessionState({
         currentLibrary: newLibrary,
       });
-      dispatch.appModel.clearPlexLibraryState();
+      dispatch.appModel.clearLibraryState();
       dispatch.persistentModel.clearHistoryState();
     }
   },
