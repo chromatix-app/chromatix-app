@@ -13,7 +13,7 @@ import style from './ListServers.module.scss';
 // ======================================================================
 
 // const isProduction = process.env.REACT_APP_ENV === 'production';
-// const plexServerProtocol = isProduction ? 'https://' : 'http://';
+// const serverProtocol = isProduction ? 'https://' : 'http://';
 
 const ListServers = ({ entries, variant }) => {
   const dispatch = useDispatch();
@@ -37,7 +37,7 @@ const ListServers = ({ entries, variant }) => {
                 <div>
                   <div className={style.title}>{entry.name}</div>
                   {/* <div className={style.url}>
-                    {plexServerProtocol}
+                    {serverProtocol}
                     {entry.host}:{entry.port}
                   </div> */}
                 </div>

@@ -130,7 +130,7 @@ const effects = (dispatch) => ({
     dispatch.playerModel.playerInit();
     // initialise persistent state
     dispatch.persistentModel.init();
-    // initialise plex
+    // initialise bridge
     bridge.init();
   },
 
@@ -206,7 +206,7 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX ERROR HANDLING
+  // ERROR HANDLING
   //
 
   dismissErrorPlexFastestConnection(payload, rootState) {
@@ -253,7 +253,7 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX SERVERS & LIBRARIES
+  // SERVER & LIBRARY HANDLING
   //
 
   clearServerState(payload, rootState) {
@@ -292,7 +292,7 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX - ARTISTS
+  // MUSIC - ARTISTS
   //
 
   storeArtistDetails(payload, rootState) {
@@ -451,7 +451,7 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX - ALBUMS
+  // MUSIC - ALBUMS
   //
 
   storeAlbumDetails(payload, rootState) {
@@ -605,7 +605,7 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX - FOLDERS
+  // MUSIC - FOLDERS
   //
 
   storeFolderItems(payload, rootState) {
@@ -625,7 +625,7 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX - PLAYLISTS
+  // MUSIC - PLAYLISTS
   //
 
   storePlaylistDetails(payload, rootState) {
@@ -678,7 +678,7 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX - TRACKS
+  // MUSIC - TRACKS
   //
 
   setTrackRating(payload, rootState) {
@@ -728,7 +728,7 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX - COLLECTIONS
+  // MUSIC - COLLECTIONS
   //
 
   storeArtistCollectionItems(payload, rootState) {
@@ -791,7 +791,7 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX - GENRES
+  // MUSIC - GENRES
   //
 
   storeArtistGenreItems(payload, rootState) {
@@ -827,7 +827,7 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX - MOODS
+  // MUSIC - MOODS
   //
 
   storeArtistMoodItems(payload, rootState) {
@@ -863,7 +863,7 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX - STYLES
+  // MUSIC - STYLES
   //
 
   storeArtistStyleItems(payload, rootState) {

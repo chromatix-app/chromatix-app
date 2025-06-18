@@ -396,8 +396,8 @@ Refactor:
 
 Refactor:
 
-- Lots of plex API tidying up.
-- Setup plexTools.js to handle all plex API calls.
+- Lots of Plex API tidying up.
+- Setup plexTools.js to handle all Plex API calls.
 - Improved token encryption.
 
 <!-- CHANGELOG SPLIT MARKER -->
