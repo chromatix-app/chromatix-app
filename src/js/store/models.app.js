@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import * as plex from 'js/services/plex';
+import * as bridge from 'js/services/bridge';
 
 // ======================================================================
 // OPTIONS
@@ -131,7 +131,7 @@ const effects = (dispatch) => ({
     // initialise persistent state
     dispatch.persistentModel.init();
     // initialise plex
-    plex.init();
+    bridge.init();
   },
 
   //
@@ -140,13 +140,13 @@ const effects = (dispatch) => ({
 
   doLogin(payload, rootState) {
     console.log('%c--- login ---', 'color:#07a098');
-    plex.login();
+    bridge.login();
   },
 
   doLogout(payload, rootState) {
     console.log('%c--- logout ---', 'color:#07a098');
     dispatch.playerModel.playerLogQuit();
-    plex.logout();
+    bridge.logout();
     rootState.appModel.history.replace('/');
   },
 
@@ -159,7 +159,7 @@ const effects = (dispatch) => ({
     });
     dispatch.sessionModel.loadLocalStorage();
     dispatch.playerModel.playerRefresh();
-    plex.getAllServers();
+    bridge.getAllServers();
   },
 
   setLoggedOut(payload, rootState) {
@@ -241,7 +241,7 @@ const effects = (dispatch) => ({
     dispatch.appModel.setAppState({
       errorPlexServers: false,
     });
-    plex.getAllServers();
+    bridge.getAllServers();
   },
 
   dismissErrorPlexUser(payload, rootState) {
@@ -249,7 +249,7 @@ const effects = (dispatch) => ({
     dispatch.appModel.setAppState({
       errorPlexUser: false,
     });
-    plex.getUserInfo();
+    bridge.getUserInfo();
   },
 
   //
@@ -271,7 +271,7 @@ const effects = (dispatch) => ({
       ...Object.assign({}, libraryState),
     });
     rootState.appModel.history.push('/');
-    plex.getAllPlaylists();
+    bridge.getAllPlaylists();
   },
 
   storeAllServers(payload, rootState) {
@@ -280,7 +280,7 @@ const effects = (dispatch) => ({
       allServers: payload,
     });
     dispatch.sessionModel.refreshCurrentServer(payload);
-    plex.getAllLibraries();
+    bridge.getAllLibraries();
   },
 
   storeAllLibraries(payload, rootState) {

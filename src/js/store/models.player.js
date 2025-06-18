@@ -4,7 +4,7 @@
 
 import { analyticsEvent, getTrackKeys } from 'js/utils';
 import * as playerX from 'js/services/player';
-import * as plex from 'js/services/plex';
+import * as bridge from 'js/services/bridge';
 
 // ======================================================================
 // STATE
@@ -225,7 +225,7 @@ const effects = (dispatch) => ({
       const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
       const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
       const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
-      plex.logPlaybackQuit(currentTrack, playingTrackProgress);
+      bridge.logPlaybackQuit(currentTrack, playingTrackProgress);
     } catch (error) {
       // do nothing
     }
@@ -294,7 +294,7 @@ const effects = (dispatch) => ({
 
     // handle playing an artist before tracks are loaded
     if (!currentArtistTracks) {
-      await plex.getAllArtistTracks(libraryId, artistId, artistName);
+      await bridge.getAllArtistTracks(libraryId, artistId, artistName);
       dispatch.playerModel.playerLoadArtist(payload);
       return;
     }
@@ -333,7 +333,7 @@ const effects = (dispatch) => ({
 
     // handle playing an album before tracks are loaded
     if (!currentAlbumTracks) {
-      await plex.getAlbumTracks(libraryId, albumId);
+      await bridge.getAlbumTracks(libraryId, albumId);
       dispatch.playerModel.playerLoadAlbum(payload);
       return;
     }
@@ -372,7 +372,7 @@ const effects = (dispatch) => ({
 
     // handle playing a playlist before tracks are loaded
     if (!currentPlaylistTracks) {
-      await plex.getPlaylistTracks(libraryId, playlistId);
+      await bridge.getPlaylistTracks(libraryId, playlistId);
       dispatch.playerModel.playerLoadPlaylist(payload);
       return;
     }
@@ -411,7 +411,7 @@ const effects = (dispatch) => ({
 
     // handle playing a folder before tracks are loaded
     if (!currentFolderItems) {
-      await plex.getFolderItems(folderId);
+      await bridge.getFolderItems(folderId);
       dispatch.playerModel.playerLoadFolder(payload);
       return;
     }
@@ -457,7 +457,7 @@ const effects = (dispatch) => ({
       playerInteractionCount: rootState.playerModel.playerInteractionCount + 1,
     });
     // log playback state to plex server
-    plex.logPlaybackPlay(currentTrack);
+    bridge.logPlaybackPlay(currentTrack);
     // disable repeat once
     const disableRepeatOnceOnSourceChange = rootState.sessionModel.disableRepeatOnceOnSourceChange;
     if (disableRepeatOnceOnSourceChange) {
@@ -486,7 +486,7 @@ const effects = (dispatch) => ({
         playerX.loadTrack(currentTrack.src, progress, play);
         // log playback state to plex server
         if (play) {
-          plex.logPlaybackPlay(currentTrack, progress);
+          bridge.logPlaybackPlay(currentTrack, progress);
           analyticsEvent('Plex: Play (Track)');
         }
         // disable repeat once
@@ -524,7 +524,7 @@ const effects = (dispatch) => ({
       const playingTrackList = rootState.sessionModel.playingTrackList;
       const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
       const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
-      plex.logPlaybackPlay(currentTrack, playingTrackProgress);
+      bridge.logPlaybackPlay(currentTrack, playingTrackProgress);
       analyticsEvent('Plex: Play (Resume)');
     }
   },
@@ -539,7 +539,7 @@ const effects = (dispatch) => ({
       const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
       const playingTrackList = rootState.sessionModel.playingTrackList;
       const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
-      plex.logPlaybackProgress(currentTrack, payload);
+      bridge.logPlaybackProgress(currentTrack, payload);
     }
   },
 
@@ -555,7 +555,7 @@ const effects = (dispatch) => ({
     const playingTrackList = rootState.sessionModel.playingTrackList;
     const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
     const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
-    plex.logPlaybackPause(currentTrack, playingTrackProgress);
+    bridge.logPlaybackPause(currentTrack, playingTrackProgress);
     analyticsEvent('Plex: Pause');
   },
 
@@ -628,7 +628,7 @@ const effects = (dispatch) => ({
       else {
         dispatch.playerModel.playerLoadIndex({ index: 0, play: false });
         // log playback state to plex server
-        plex.logPlaybackStop(currentTrack);
+        bridge.logPlaybackStop(currentTrack);
       }
     }
   },

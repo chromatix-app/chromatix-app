@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { ListServers, Loading, TitleBasic } from 'js/components';
-import * as plex from 'js/services/plex';
+import * as bridge from 'js/services/bridge';
 
 // ======================================================================
 // COMPONENT
@@ -16,7 +16,7 @@ const ServerList = () => {
   const allServers = useSelector(({ appModel }) => appModel.allServers);
 
   useEffect(() => {
-    plex.getAllServers();
+    bridge.getAllServers();
   }, []);
 
   return (

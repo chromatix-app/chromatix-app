@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { sortList } from 'js/utils';
-import * as plex from 'js/services/plex';
+import * as bridge from 'js/services/bridge';
 
 const useGetAllArtists = () => {
   const dispatch = useDispatch();
@@ -80,7 +80,7 @@ const useGetAllArtists = () => {
   };
 
   useEffect(() => {
-    plex.getAllArtists();
+    bridge.getAllArtists();
   }, []);
 
   return {

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { sortList } from 'js/utils';
-import * as plex from 'js/services/plex';
+import * as bridge from 'js/services/bridge';
 
 const useGetAllCollections = (collectionKey) => {
   const dispatch = useDispatch();
@@ -70,9 +70,9 @@ const useGetAllCollections = (collectionKey) => {
 
   useEffect(() => {
     if (collectionKey.includes('Collections')) {
-      plex.getAllCollections();
+      bridge.getAllCollections();
     } else {
-      plex.getAllTags(collectionKey);
+      bridge.getAllTags(collectionKey);
     }
   }, [collectionKey]);
 

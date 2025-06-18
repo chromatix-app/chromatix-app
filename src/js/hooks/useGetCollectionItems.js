@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { sortList } from 'js/utils';
-import * as plex from 'js/services/plex';
+import * as bridge from 'js/services/bridge';
 
 const useGetCollectionItems = ({
   libraryId,
@@ -122,12 +122,12 @@ const useGetCollectionItems = ({
 
   useEffect(() => {
     if (collectionKey.includes('Collections')) {
-      plex.getAllCollections();
-      plex.getCollectionItems(libraryId, collectionId, mediaType);
+      bridge.getAllCollections();
+      bridge.getCollectionItems(libraryId, collectionId, mediaType);
     } else {
-      plex.getAllTags(collectionKey);
-      plex.getTagItems(libraryId, collectionId, itemsKey);
-      // plex[`get${itemsKey}`](libraryId, collectionId);
+      bridge.getAllTags(collectionKey);
+      bridge.getTagItems(libraryId, collectionId, itemsKey);
+      // bridge[`get${itemsKey}`](libraryId, collectionId);
     }
   }, [itemsKey, collectionId, collectionKey, libraryId, mediaType]);
 

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 
 import { durationToStringLong, sortList } from 'js/utils';
-import * as plex from 'js/services/plex';
+import * as bridge from 'js/services/bridge';
 
 const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const dispatch = useDispatch();
@@ -97,11 +97,11 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
 
   // Get the required album data
   useEffect(() => {
-    // plex.getAllAlbums();
+    // bridge.getAllAlbums();
     if (!albumInfo) {
-      plex.getAlbumDetails(libraryId, albumId);
+      bridge.getAlbumDetails(libraryId, albumId);
     }
-    plex.getAlbumTracks(libraryId, albumId).catch(() => {});
+    bridge.getAlbumTracks(libraryId, albumId).catch(() => {});
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [albumId, libraryId]);
@@ -110,7 +110,7 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   // useEffect(() => {
   //   console.log(allAlbums);
   //   if (allAlbums && !albumInfo) {
-  //     plex.getAlbumDetails(libraryId, albumId);
+  //     bridge.getAlbumDetails(libraryId, albumId);
   //   }
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [allAlbums, albumInfo]);

@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Button, ListServers, Loading, TitleBasic } from 'js/components';
-import * as plex from 'js/services/plex';
+import * as bridge from 'js/services/bridge';
 
 // ======================================================================
 // COMPONENT
@@ -18,7 +18,7 @@ const LibraryList = () => {
   const allLibraries = useSelector(({ appModel }) => appModel.allLibraries);
 
   useEffect(() => {
-    plex.getAllLibraries();
+    bridge.getAllLibraries();
   }, []);
 
   return (

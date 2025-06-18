@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { durationToStringLong, sortList } from 'js/utils';
-import * as plex from 'js/services/plex';
+import * as bridge from 'js/services/bridge';
 
 const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   const dispatch = useDispatch();
@@ -88,13 +88,13 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   };
 
   useEffect(() => {
-    plex.getAllPlaylists();
-    plex.getPlaylistTracks(libraryId, playlistId).catch(() => {});
+    bridge.getAllPlaylists();
+    bridge.getPlaylistTracks(libraryId, playlistId).catch(() => {});
   }, [libraryId, playlistId]);
 
   useEffect(() => {
     if (allPlaylists && !playlistInfo) {
-      plex.getPlaylistDetails(libraryId, playlistId);
+      bridge.getPlaylistDetails(libraryId, playlistId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allPlaylists, playlistInfo]);

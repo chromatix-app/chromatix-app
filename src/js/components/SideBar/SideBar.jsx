@@ -10,7 +10,7 @@ import * as RadixPopover from '@radix-ui/react-popover';
 import { Icon, UserMenu } from 'js/components';
 import { useKeyControl, useNavigationHistory } from 'js/hooks';
 import { electronPlatform } from 'js/utils';
-import * as plex from 'js/services/plex';
+import * as bridge from 'js/services/bridge';
 
 import style from './SideBar.module.scss';
 
@@ -69,7 +69,7 @@ const SideBar = () => {
 
   // Get playlists on load
   useEffect(() => {
-    plex.getAllPlaylists();
+    bridge.getAllPlaylists();
   }, []);
 
   return (
@@ -414,7 +414,7 @@ const SearchField = () => {
   // Submit search value when the debounced value changes
   useEffect(() => {
     if (debouncedSearchValue && debouncedSearchValue.length > 1) {
-      plex.searchLibrary(debouncedSearchValue);
+      bridge.searchLibrary(debouncedSearchValue);
       if (!searchResultsVisible) {
         setSearchResultsVisible(true);
       }
