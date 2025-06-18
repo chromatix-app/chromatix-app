@@ -254,10 +254,21 @@ export const getAllArtistAlbums = (libraryId, artistId) => {
       const plexBaseUrl = store.getState().appModel.plexBaseUrl;
 
       plexTools
-        .getAllArtistAlbums(plexBaseUrl, libraryId, artistId, accessToken)
-        .then((response) => {
-          // console.log(response);
-          store.dispatch.appModel.storeArtistAlbums({ libraryId, artistId, artistAlbums: response });
+        .getAllArtistAlbumsWithDetails(plexBaseUrl, libraryId, artistId, accessToken)
+        .then(async (albums) => {
+          const enrichedAlbums = await Promise.all(
+            albums.map(async (album) => {
+              try {
+                await plexTools.getAlbumDetails(plexBaseUrl, libraryId, album.albumId, accessToken);
+                return {
+                  ...album,
+                };
+              } catch (e) {
+                return album;
+              }
+            })
+          );
+          store.dispatch.appModel.storeArtistAlbums({ libraryId, artistId, artistAlbums: enrichedAlbums });
         })
         .catch((error) => {
           console.error(error);

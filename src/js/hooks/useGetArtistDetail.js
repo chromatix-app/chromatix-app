@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import _ from 'lodash';
 
 import { sortList } from 'js/utils';
 import * as plex from 'js/services/plex';
@@ -127,25 +128,35 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
 
   // Combine all releases into a single array
   let sortedAllReleases = [];
+  const capitalizeAndPluralize = (group) => {
+    if (!group) return 'Unknown';
+
+    const trimmed = group.trim().toLowerCase();
+    let plural = trimmed;
+
+    // Naive pluralization
+    if (!trimmed.endsWith('s')) {
+      plural = trimmed + 's';
+    }
+
+    return plural.charAt(0).toUpperCase() + plural.slice(1);
+  };
   if (sortedArtistAlbums) {
-    sortedAllReleases.push(
-      ...sortedArtistAlbums.map((album) => {
-        return {
-          ...album,
-          albumGroup: 'Albums',
-          releaseGroup: '',
-        };
-      })
-    );
+    const normalizedAlbums = sortedArtistAlbums.map((album) => ({
+      ...album,
+      albumGroup: capitalizeAndPluralize(album.releaseType),
+      releaseGroup: '',
+    }));
+    const sortedAlbums = _.orderBy(normalizedAlbums, ['albumGroup', 'releaseDate'], ['asc', 'desc']);
+
+    sortedAllReleases.push(...sortedAlbums);
   }
   if (sortedArtistRelated) {
-    for (let i = 0; i < sortedArtistRelated.length; i++) {
-      const related = sortedArtistRelated[i];
-      for (let j = 0; j < related.related.length; j++) {
-        const album = related.related[j];
+    for (const related of sortedArtistRelated) {
+      for (const album of related.related) {
         sortedAllReleases.push({
           ...album,
-          albumGroup: related.title,
+          albumGroup: related.title, // e.g. 'Related: XYZ'
           releaseGroup: '',
         });
       }

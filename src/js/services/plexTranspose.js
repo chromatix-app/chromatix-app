@@ -174,6 +174,7 @@ export const transposeAlbumData = (album, libraryId, plexBaseUrl, accessToken) =
     genre: album?.Genre?.[0]?.tag,
     userRating: album.userRating,
     releaseDate: album.originallyAvailableAt,
+    releaseType: album?.Format?.[0]?.tag || 'Unknown',
     link: '/albums/' + libraryId + '/' + album.ratingKey,
     thumb: getThumb(plexBaseUrl, album.thumb, thumbSizeSmall, accessToken),
     thumbMedium: getThumb(plexBaseUrl, album.thumb, thumbSizeMedium, accessToken),

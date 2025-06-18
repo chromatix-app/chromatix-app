@@ -641,6 +641,34 @@ export const getAllArtistAlbums = (plexBaseUrl, libraryId, artistId, accessToken
   });
 };
 
+export const getAllArtistAlbumsWithDetails = (plexBaseUrl, libraryId, artistId, accessToken) => {
+  return new Promise((resolve, reject) => {
+    getAllArtistAlbums(plexBaseUrl, libraryId, artistId, accessToken)
+      .then((albumsBasic) => {
+        const albumPromises = albumsBasic.map((album) =>
+          getAlbumDetails(plexBaseUrl, libraryId, album.albumId, accessToken)
+        );
+
+        Promise.all(albumPromises)
+          .then((albumsWithDetails) => resolve(albumsWithDetails))
+          .catch((error) => {
+            reject({
+              code: 'getAllArtistAlbumsWithDetails.1',
+              message: 'Failed to fetch detailed album data',
+              error,
+            });
+          });
+      })
+      .catch((error) => {
+        reject({
+          code: 'getAllArtistAlbumsWithDetails.2',
+          message: 'Failed to fetch basic artist albums',
+          error,
+        });
+      });
+  });
+};
+
 // ======================================================================
 // GET ALL ARTIST RELATED ALBUMS
 // ======================================================================
