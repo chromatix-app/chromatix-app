@@ -35,6 +35,11 @@ export const authRoutes = [
     redirect: '/artists',
   },
   {
+    path: '/login-jellyfin',
+    exact: true,
+    redirect: '/artists',
+  },
+  {
     path: '/servers',
     exact: true,
     component: 'ServerList',
