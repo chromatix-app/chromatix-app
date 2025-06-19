@@ -11,6 +11,7 @@ import { Icon, UserMenu } from 'js/components';
 import { useKeyControl, useNavigationHistory } from 'js/hooks';
 import { electronPlatform } from 'js/utils';
 import * as bridge from 'js/services/bridge';
+import platformFeatures from 'js/_config/platformFeatures';
 
 import style from './SideBar.module.scss';
 
@@ -22,6 +23,8 @@ const SideBar = () => {
   const dispatch = useDispatch();
 
   const { canGoBack, canGoForward, goBack, goForward } = useNavigationHistory();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
 
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
 
@@ -66,6 +69,8 @@ const SideBar = () => {
   const playlistsIsVisible = menuShowAllPlaylists && allPlaylists && allPlaylists.length > 0;
 
   const browseIsOpen = menuShowSeparateBrowseSection ? menuOpenBrowse : menuOpenLibrary;
+
+  const platformOpts = platformFeatures[currentService] || {};
 
   // Get playlists on load
   useEffect(() => {
@@ -130,7 +135,7 @@ const SideBar = () => {
                     Albums
                   </NavLink>
                 )}
-                {menuShowFolders && (
+                {menuShowFolders && platformOpts.menuFolders && (
                   <NavLink className={style.link} activeClassName={style.linkActive} to="/folders" draggable="false">
                     {menuShowIcons && (
                       <span className={style.icon}>
@@ -161,7 +166,7 @@ const SideBar = () => {
           </>
         )}
 
-        {browseIsVisible && (
+        {browseIsVisible && platformOpts.menuBrowse && (
           <>
             {menuShowSeparateBrowseSection && (
               <button
