@@ -25,5 +25,5 @@ export { default as SideBar } from './SideBar/SideBar';
 export { default as StarRating } from './StarRating/StarRating';
 export { default as TitleBasic } from './TitleBasic/TitleBasic';
 export { default as TitleHeading } from './TitleHeading/TitleHeading';
-export { default as TitleSection } from './TitleSection/TitleSection';
+export { default as ToastNotification } from './ToastNotification/ToastNotification';
 export { default as UserMenu } from './UserMenu/UserMenu';

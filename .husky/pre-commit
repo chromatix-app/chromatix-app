@@ -1,0 +1,8 @@
+# If you want to skip running this husky hook, uncomment the next line
+# exit 0
+
+# Run linting and formatting checks on staged files
+npx lint-staged
+
+# Run tests non-interactively
+CI=true npm test -- --watchAll=false

@@ -50,7 +50,7 @@
   overflow: auto;
   grid-area: sidebar;
   width: 200px;
-  background: var(--color-background);
+  background: var(--color-primary-background);
 
   @media (min-width: 1024px) {
     width: 220px;
@@ -68,20 +68,20 @@
 .layout-content {
   overflow: auto;
   grid-area: content;
-  background: var(--color-background);
+  background: var(--color-primary-background);
   // container-type: inline-size;
 }
 
 .layout-controls {
   grid-area: controls;
-  background: var(--color-panel-background);
+  background: var(--color-secondary-background);
 }
 
 .layout-rightbar {
   overflow: auto;
   grid-area: rightbar;
   width: 280px;
-  background: var(--color-panel-background);
+  background: var(--color-secondary-background);
 
   @media (min-width: 1024px) {
     width: 320px;
@@ -95,7 +95,7 @@
       right: 0;
       width: 279px;
       height: 30px;
-      background: var(--color-panel-background);
+      background: var(--color-secondary-background);
 
       @media (min-width: 1024px) {
         width: 319px;
@@ -111,7 +111,7 @@
   height: 100vh;
   height: 100svh;
 
-  background: var(--color-background);
+  background: var(--color-primary-background);
   background-image: url(../../images/loading-white.png);
   background-size: 30px auto;
   background-position: center;

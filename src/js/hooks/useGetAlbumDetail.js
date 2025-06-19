@@ -17,6 +17,11 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const colAlbumUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumUserRating);
   const colAlbumDuration = useSelector(({ sessionModel }) => sessionModel.colAlbumDuration);
 
+  const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
+  const optionSortIgnoreLeadingArticles = useSelector(
+    ({ sessionModel }) => sessionModel.optionSortIgnoreLeadingArticles
+  );
+
   // prevent sorting by a hidden field
   const allowedSort = {
     sortOrder: true,
@@ -64,7 +69,12 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
       if (actualAlbumSortString === 'sortOrder-desc') {
         return entriesWithOriginalIndex.slice().reverse();
       } else {
-        return sortList(entriesWithOriginalIndex, actualAlbumSortString);
+        return sortList({
+          entries: entriesWithOriginalIndex,
+          options: actualAlbumSortString,
+          sortNumbersFirst: optionSortNumbersFirst,
+          ignoreLeadingArticles: optionSortIgnoreLeadingArticles,
+        });
       }
     }
     // If not an album or no actualAlbumSortString, return original entries

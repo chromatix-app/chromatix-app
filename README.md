@@ -4,8 +4,8 @@ Chromatix is a desktop music player for Plex, that transforms your listening exp
 
 Get started at [https://chromatix.app/](https://chromatix.app/)
 
-
 # Table of Contents<!-- omit in toc -->
+
 - [1. Introduction](#1-introduction)
 - [2. License](#2-license)
 - [3. Getting Started](#3-getting-started)
@@ -17,7 +17,6 @@ Get started at [https://chromatix.app/](https://chromatix.app/)
   - [8.1. Want to help?](#81-want-to-help)
   - [8.2. Please let me know what you’re working on](#82-please-let-me-know-what-youre-working-on)
 
-
 # 1. Introduction
 
 > [!IMPORTANT]
@@ -25,13 +24,11 @@ Get started at [https://chromatix.app/](https://chromatix.app/)
 >
 > I also started migrating a few utilities to TypeScript, but it’s a slow process, not complete yet, and not a high priority for me.
 
-
 # 2. License
 
 At the moment the code is open source for transparency, but not for re-distribution in any form. You’re of course welcome to download, modify and build the code for personal use.
 
 That said, if this repo goes more than 12 months without any commits, take this as advance permission that the code is free to use and distribute without limitation from 12 months after the last commit onwards.
-
 
 # 3. Getting Started
 
@@ -44,7 +41,6 @@ Deploy a new version to the staging environment with `npm run release`
 (Essentially just tags a new version and pushes to the `staging` branch)
 
 Deploy to production by merging the `staging` branch into the `production` branch.
-
 
 # 4. Tech Stack
 
@@ -64,7 +60,6 @@ The Plex API is entirely undocumented, as far as I can tell, so all Plex API req
 
 All data from the Plex API is transposed into a slightly different format - partly to exclude some data we don’t need, partly to make it a bit easier to understand, and partly because I hope to add other services in future and want to make it easier to switch between them with a consistent data structure.
 
-
 # 5. Code Structure
 
 Folder structure is hopefully fairly self-explanatory, but a few pointers:
@@ -75,12 +70,10 @@ Connections to the Plex API can be found in `/src/js/services`.
 
 The audio player is at `/src/js/services/player.js` but playback management is handled in the store, in the `models.player.js` file.
 
-
 # 6. Things I need to improve
 
 - Queue handling.
 - Playback - gapless playback, transcoding etc.
-
 
 # 7. Things I hope to add
 
@@ -94,11 +87,9 @@ The audio player is at `/src/js/services/player.js` but playback management is h
 - Playlist management
 - Apple AirPlay / Google Cast / Sonos support etc
 
-
 # 8. Contributing
 
 I’m not particularly looking for contributors, and hadn’t really planned to open the code base as I’m happy keeping this as a personal side project, but I keep getting requests to open source it for the sake of transparency, so here it is.
-
 
 ## 8.1. Want to help?
 
@@ -109,7 +100,6 @@ I don’t expect help, but if any keen devs with good knowledge of the tech do w
    - Especially the List components which use virtualisation.
    - API calls to Plex may be able to be optimised.
 3. Automated testing. (I DEFINITELY don’t expect people to take on the grunt work, but hey, if that's something that floats anyone's boat then go for it.)
-
 
 ## 8.2. Please let me know what you’re working on
 

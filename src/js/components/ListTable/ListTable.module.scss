@@ -5,7 +5,6 @@
   overflow: hidden;
   width: 100%;
   height: 100%;
-  // padding: 0 20px 50px;
 }
 
 .scrollableOuter {
@@ -13,7 +12,7 @@
   width: 100%;
   height: 100%;
   padding: 0 20px 50px;
-  background: var(--color-background);
+  background: var(--color-primary-background);
 
   :global(.cq-800) & {
     padding: 0 30px 50px;
@@ -21,7 +20,7 @@
 }
 
 .scrollableInner {
-  background: var(--color-background);
+  background: var(--color-primary-background);
 }
 
 .measure {
@@ -45,7 +44,7 @@
   top: 90px;
   padding: 0 20px 8px;
   margin: 0 -5px 20px;
-  background: var(--color-background);
+  background: var(--color-primary-background);
   z-index: 3;
   font-weight: bold;
 
@@ -72,7 +71,7 @@
 
     .scrollableOuterVirtual & {
       :global(.env-local) & {
-        background: var(--color-primary);
+        background: var(--color-core);
         opacity: 0.6;
       }
     }
@@ -101,8 +100,8 @@
   }
 
   &:hover {
-    background: var(--color-opacity-01);
-    border: 1px solid var(--color-opacity-005);
+    background: var(--color-secondary-card);
+    border: 1px solid var(--color-secondary-border);
   }
 
   a {
@@ -179,7 +178,7 @@
 //
 
 .colorPrimary {
-  color: var(--color-primary) !important;
+  color: var(--color-core) !important;
 }
 
 .colCenter span {
@@ -204,7 +203,7 @@
   width: 18px;
   height: 16px;
   padding: 0 1px;
-  color: var(--color-primary);
+  color: var(--color-core);
 
   .entry:hover & {
     display: none;
@@ -220,7 +219,7 @@
   width: 18px;
   height: 16px;
   padding: 3px 4px;
-  // color: var(--color-primary);
+  // color: var(--color-core);
 
   .entry:hover & {
     display: block;
@@ -239,9 +238,9 @@
   border-radius: 3px;
 
   &.thumbFolder {
-    background: var(--color-primary);
-    background: linear-gradient(to bottom, var(--color-primary) 0%, var(--color-background) 400%);
-    color: var(--color-background);
+    background: var(--color-core);
+    background: linear-gradient(to bottom, var(--color-core) 0%, var(--color-primary-background) 400%);
+    color: var(--color-primary-background);
   }
 
   img {
@@ -266,7 +265,7 @@
 .title {
   .entry.entryPlaying & {
     font-weight: 500;
-    color: var(--color-primary);
+    color: var(--color-core);
   }
 }
 

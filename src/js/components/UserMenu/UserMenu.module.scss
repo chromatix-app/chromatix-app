@@ -57,8 +57,8 @@
   align-items: center;
   padding: 6px;
   margin: 0 0 0 auto;
-  background: var(--color-panel-background);
-  border: 1px solid var(--color-border);
+  background: var(--color-secondary-background);
+  border: 1px solid var(--color-secondary-border);
   border-radius: 9px;
   box-shadow: 0 0 10px var(--color-shadow);
 
@@ -69,13 +69,13 @@
   @include mixins.focus-self-outline;
 
   &:hover {
-    background: var(--color-hover);
+    background: var(--color-secondary-hover);
   }
 
   .wrapInline & {
     flex-direction: row-reverse;
     width: 100%;
-    background: var(--color-border);
+    background: var(--color-secondary-border);
     border: 1px solid var(--color-opacity-005);
     border-radius: 6px;
     box-shadow: none;
@@ -171,8 +171,8 @@
   max-height: calc(100svh - 95px);
   padding: 6px;
   margin: 5px 0 0 auto;
-  background: var(--color-panel-background);
-  border: 1px solid var(--color-border);
+  background: var(--color-secondary-background);
+  border: 1px solid var(--color-secondary-border);
   border-radius: 9px;
   box-shadow: 0 0 10px var(--color-shadow);
   z-index: 888;
@@ -209,8 +209,7 @@
 .separator {
   height: 1px;
   margin: 6px 6px;
-  // background: var(--color-border);
-  background: var(--color-opacity-015);
+  background: var(--color-secondary-border);
 }
 
 .button {
@@ -221,7 +220,7 @@
   min-width: 186px;
   // min-width: 206px;
   padding: 6px 40px 6px 8px;
-  background: var(--color-panel-background);
+  background: var(--color-secondary-background);
   border-radius: 4px;
   text-align: left;
 
@@ -251,12 +250,12 @@
   }
 
   &.buttonCurrent {
-    color: var(--color-primary);
+    color: var(--color-core);
   }
 
   &:hover,
   &:focus {
-    background: var(--color-hover);
+    background: var(--color-secondary-hover);
   }
 
   .wrapInline & {
@@ -266,7 +265,7 @@
 
     &:hover,
     &:focus {
-      background: var(--color-hover);
+      background: var(--color-secondary-hover);
     }
   }
 }
@@ -312,7 +311,7 @@
 
 .iconCurrent {
   opacity: 1;
-  color: var(--color-primary);
+  color: var(--color-core);
 }
 
 .iconHover {

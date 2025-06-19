@@ -14,6 +14,8 @@ const playerState = {
   playerInited: false,
   playerLoading: false,
   playerPlaying: false,
+  playerTrackLoaded: false,
+  playerTrackError: false,
   playerInteractionCount: 0,
 };
 
@@ -53,7 +55,7 @@ const effects = (dispatch) => ({
       clearTimeout(loadstartTimeoutId);
       loadstartTimeoutId = setTimeout(() => {
         dispatch.playerModel.playerSetLoading(true);
-      }, 1000);
+      }, 600);
     };
     const onCanPlay = () => {
       // console.log('canplay');
@@ -66,7 +68,14 @@ const effects = (dispatch) => ({
     };
 
     // create and save player element
-    playerX.init(volumeLevel, volumeMuted, onLoadStart, onCanPlay, onEnded);
+    playerX.init({
+      volumeLevel,
+      volumeMuted,
+      onLoadStart,
+      onCanPlay,
+      onEnded,
+      onError: dispatch.playerModel.playerError,
+    });
     dispatch.playerModel.setPlayerState({
       playerInited: true,
     });
@@ -102,15 +111,115 @@ const effects = (dispatch) => ({
 
   playerUnload(payload, rootState) {
     console.log('%c--- playerUnload ---', 'color:#5c16b1');
-    playerX.unload();
     dispatch.playerModel.setPlayerState({
       playerPlaying: false,
+      playerTrackLoaded: false,
     });
+    playerX.unload();
+  },
+
+  //
+  // PLAYBACK ERROR HANDLING
+  //
+
+  playerError(payload, rootState) {
+    const { event, playerElement } = payload;
+    const mediaError = playerElement.error;
+    let errorCode = 'Unknown';
+    let errorMessage = 'Unknown';
+
+    // Attempt to determine the error type
+    if (mediaError) {
+      switch (mediaError.code) {
+        case MediaError.MEDIA_ERR_ABORTED:
+          errorCode = 'MEDIA_ERR_ABORTED';
+          errorMessage = 'Fetching process aborted by user';
+          break;
+        case MediaError.MEDIA_ERR_NETWORK:
+          errorCode = 'MEDIA_ERR_NETWORK';
+          errorMessage = 'Network error occurred while fetching the media';
+          break;
+        case MediaError.MEDIA_ERR_DECODE:
+          errorCode = 'MEDIA_ERR_DECODE';
+          errorMessage = 'Media decoding error - file might be corrupted or unsupported format';
+          break;
+        case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+          errorCode = 'MEDIA_ERR_SRC_NOT_SUPPORTED';
+          errorMessage = 'Media source not supported - check format or CORS issues';
+          break;
+        default:
+          break;
+      }
+      if (mediaError.message) {
+        errorMessage += `: ${mediaError.message}`;
+      }
+    }
+
+    const playerTrackLoaded = rootState.playerModel.playerTrackLoaded;
+
+    if (playerTrackLoaded) {
+      // Player is currently playing - try next track
+      dispatch.playerModel.setPlayerState({
+        playerTrackError: true,
+      });
+      dispatch.playerModel.playerErrorPlayback(true);
+    } else {
+      // Player is not playing - log error and stop
+      console.error('%c--- player - error ---', 'color:#a18507', {
+        errorCode,
+        errorMessage,
+        mediaError,
+        sourceURL: playerElement.src,
+        sourceFormat: playerElement.src.split('.').pop().split('?')[0],
+        originalEvent: event,
+      });
+    }
+  },
+
+  playerErrorPlayback(payload, rootState) {
+    // Determine the current track
+    const playingTrackList = rootState.sessionModel.playingTrackList;
+    const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+    const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
+    const trackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
+
+    // Display notification
+    dispatch.appModel.addNotification({
+      title: 'Playback error',
+      description: (
+        <>
+          <em>"{trackCurrent.title}"</em> by <em>{trackCurrent.artist}</em> could not be played.
+        </>
+      ),
+    });
+
+    // Try to play the next track (after a short delay)
+    if (payload) {
+      const isLastTrack = playingTrackIndex === playingTrackKeys.length - 1;
+      const playingRepeatAll = rootState.sessionModel.playingRepeatAll;
+      const playingRepeatOnce = rootState.sessionModel.playingRepeatOnce;
+      if (isLastTrack && (playingRepeatAll || playingRepeatOnce)) {
+        dispatch.sessionModel.setSessionState({
+          playingRepeatAll: false,
+          playingRepeatOnce: false,
+        });
+      }
+      setTimeout(function () {
+        dispatch.playerModel.playerErrorNext();
+      }, 700);
+    }
+  },
+
+  playerErrorNext(payload, rootState) {
+    if (rootState.playerModel.playerPlaying) {
+      dispatch.playerModel.playerNext(true);
+    }
   },
 
   playerLogQuit(payload, rootState) {
     // console.log('%c--- playerLogQuit ---', 'color:#5c16b1');
     try {
+      // log playback state to plex server
       const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
       const playingTrackList = rootState.sessionModel.playingTrackList;
       const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
@@ -335,6 +444,8 @@ const effects = (dispatch) => ({
     // console.log('%c--- playerLoadTrackList ---', 'color:#5c16b1');
     dispatch.playerModel.setPlayerState({
       playerPlaying: true,
+      playerTrackLoaded: true,
+      playerTrackError: false,
     });
     dispatch.sessionModel.setSessionState({
       ...payload,
@@ -345,7 +456,7 @@ const effects = (dispatch) => ({
     dispatch.playerModel.setPlayerState({
       playerInteractionCount: rootState.playerModel.playerInteractionCount + 1,
     });
-    // log playback to plex server
+    // log playback state to plex server
     plex.logPlaybackPlay(currentTrack);
     // disable repeat once
     const disableRepeatOnceOnSourceChange = rootState.sessionModel.disableRepeatOnceOnSourceChange;
@@ -366,12 +477,14 @@ const effects = (dispatch) => ({
         const currentTrack = playingTrackList[playingTrackKeys[index]];
         dispatch.playerModel.setPlayerState({
           playerPlaying: play,
+          playerTrackLoaded: true,
+          playerTrackError: false,
         });
         dispatch.sessionModel.setSessionState({
           playingTrackIndex: index,
         });
         playerX.loadTrack(currentTrack.src, progress, play);
-        // log playback to plex server
+        // log playback state to plex server
         if (play) {
           plex.logPlaybackPlay(currentTrack, progress);
           analyticsEvent('Plex: Play (Track)');
@@ -393,28 +506,39 @@ const effects = (dispatch) => ({
 
   playerResume(payload, rootState) {
     // console.log('%c--- playerResume ---', 'color:#5c16b1');
-    playerX.resume();
-    const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
-    const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
-    const playingTrackList = rootState.sessionModel.playingTrackList;
-    const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
-    const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
-    dispatch.playerModel.setPlayerState({
-      playerPlaying: true,
-    });
-    plex.logPlaybackPlay(currentTrack, playingTrackProgress);
-    analyticsEvent('Plex: Play (Resume)');
+    const playerTrackError = rootState.playerModel.playerTrackError;
+    // If we know there was previously an error with the current track, try to load it again
+    if (playerTrackError) {
+      const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+      dispatch.playerModel.playerLoadIndex({ index: playingTrackIndex, play: true });
+    }
+    // Otherwise, resume as normal
+    else {
+      playerX.resume();
+      dispatch.playerModel.setPlayerState({
+        playerPlaying: true,
+      });
+      // log playback state to plex server
+      const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+      const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
+      const playingTrackList = rootState.sessionModel.playingTrackList;
+      const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
+      const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
+      plex.logPlaybackPlay(currentTrack, playingTrackProgress);
+      analyticsEvent('Plex: Play (Resume)');
+    }
   },
 
   playerProgress(payload, rootState) {
     // console.log('%c--- playerProgress ---', 'color:#5c16b1');
     const playerPlaying = rootState.playerModel.playerPlaying;
     if (playerPlaying) {
+      dispatch.sessionModel.setPlayingTrackProgress(payload);
+      // log playback state to plex server
       const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
       const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
       const playingTrackList = rootState.sessionModel.playingTrackList;
       const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
-      dispatch.sessionModel.setPlayingTrackProgress(payload);
       plex.logPlaybackProgress(currentTrack, payload);
     }
   },
@@ -422,14 +546,15 @@ const effects = (dispatch) => ({
   playerPause(payload, rootState) {
     // console.log('%c--- playerPause ---', 'color:#5c16b1');
     playerX.pause();
+    dispatch.playerModel.setPlayerState({
+      playerPlaying: false,
+    });
+    // log playback state to plex server
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
     const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
     const playingTrackList = rootState.sessionModel.playingTrackList;
     const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
     const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
-    dispatch.playerModel.setPlayerState({
-      playerPlaying: false,
-    });
     plex.logPlaybackPause(currentTrack, playingTrackProgress);
     analyticsEvent('Plex: Pause');
   },
@@ -467,7 +592,7 @@ const effects = (dispatch) => ({
   },
 
   playerNext(payload, rootState) {
-    console.log('%c--- playerNext - ' + (payload === true ? 'true' : 'false') + ' ---', 'color:#5c16b1');
+    // console.log('%c--- playerNext - ' + (payload === true ? 'true' : 'false') + ' ---', 'color:#5c16b1');
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
     const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
     const playingTrackList = rootState.sessionModel.playingTrackList;
@@ -502,6 +627,7 @@ const effects = (dispatch) => ({
       // else load first track, but don't play
       else {
         dispatch.playerModel.playerLoadIndex({ index: 0, play: false });
+        // log playback state to plex server
         plex.logPlaybackStop(currentTrack);
       }
     }

@@ -33,6 +33,11 @@ const useGetCollectionItems = ({
   const colCollectionAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsLastPlayed);
   const colCollectionAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsUserRating);
 
+  const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
+  const optionSortIgnoreLeadingArticles = useSelector(
+    ({ sessionModel }) => sessionModel.optionSortIgnoreLeadingArticles
+  );
+
   // prevent sorting by a hidden field
   const allowedSort =
     mediaType === 'Artist'
@@ -70,7 +75,13 @@ const useGetCollectionItems = ({
   const collectionInfoItems = allCollectionItems[libraryId + '-' + collectionId];
 
   const sortedCollectionItems = collectionInfoItems
-    ? sortList(collectionInfoItems, actualSortCollectionItems, actualOrderCollectionItems)
+    ? sortList({
+        entries: collectionInfoItems,
+        options: actualSortCollectionItems,
+        direction: actualOrderCollectionItems,
+        sortNumbersFirst: optionSortNumbersFirst,
+        ignoreLeadingArticles: optionSortIgnoreLeadingArticles,
+      })
     : null;
 
   const collectionThumb = collectionInfo?.thumb;

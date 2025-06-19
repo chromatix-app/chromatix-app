@@ -42,8 +42,8 @@
   top: 2px;
   left: -7px;
   padding: 4px;
-  background: var(--color-panel-background);
-  border: 1px solid var(--color-border);
+  background: var(--color-secondary-background);
+  border: 1px solid var(--color-secondary-border);
   border-radius: 5px;
   box-shadow: 0 0 10px var(--color-shadow);
   z-index: 99;
@@ -65,11 +65,11 @@
 
   &:hover,
   &:focus {
-    background: var(--color-hover);
+    background: var(--color-secondary-hover);
   }
 
   // &[data-state='checked'] {
-  //   color: var(--color-primary);
+  //   color: var(--color-core);
   // }
 }
 
