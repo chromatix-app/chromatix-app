@@ -308,7 +308,7 @@ const ViewModeSettings = () => {
           </div>
           <div className={style.buttons}>
             <Button
-              variant="smallBtn"
+              size="small"
               inline
               wrap={false}
               onClick={toggleGridView}
@@ -317,7 +317,7 @@ const ViewModeSettings = () => {
               Use grid view everywhere
             </Button>
             <Button
-              variant="smallBtn"
+              size="small"
               inline
               wrap={false}
               onClick={toggleListView}
@@ -440,7 +440,7 @@ const StarRatingSettings = () => {
           </div>
           <div className={style.buttons}>
             <Button
-              variant="smallBtn"
+              size="small"
               inline
               wrap={false}
               onClick={toggleShowUserRating}
@@ -449,7 +449,7 @@ const StarRatingSettings = () => {
               Show star ratings everywhere
             </Button>
             <Button
-              variant="smallBtn"
+              size="small"
               inline
               wrap={false}
               onClick={toggleHideUserRating}

@@ -13,28 +13,29 @@
   max-width: 220px;
   padding: 17px 16px;
   margin: 0;
-  background: vars.$color-primary;
+  background: vars.$color-core;
   border: 1px solid vars.$color-opacity-02;
   border-radius: 10px;
 
   font-size: 18px;
-  line-height: 1.2;
-  font-weight: 600;
+  line-height: 22px;
+  font-weight: 500;
   text-align: center;
   text-decoration: none;
-  color: vars.$color-background;
+  color: vars.$color-primary-background;
 
   @include mixins.focus-self-outline;
 
   @media (min-width: 1024px) {
-    max-width: 260px;
+    max-width: 240px;
   }
 
   &:disabled {
+    background: var(--color-opacity-005) !important;
+    border: 1px solid var(--color-opacity-01) !important;
+    color: var(--color-opacity-03) !important;
     cursor: default;
     cursor: not-allowed;
-    background-color: var(--color-opacity-02) !important;
-    color: var(--color-opacity-05) !important;
   }
 
   :global(.text-center) & {
@@ -87,36 +88,52 @@
       margin-inline: auto;
     }
   }
-}
 
-.smallBtn {
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-.download,
-.downloadMac {
-  max-width: 180px;
-  padding: 16px 10px;
-  font-size: 14px;
-  line-height: 1;
-
+  // icon
   .icon {
     display: inline-block;
     position: relative;
-    top: -2px;
+    top: 2px;
     width: 18px;
     height: 18px;
-    margin: 0 7px -8px -1px;
+    margin: -2px 10px -2px 0;
   }
 }
 
-.downloadMac {
-  .icon {
-    top: -5px;
-    width: 22px;
-    height: 22px;
-    margin: 0 7px -8px -3px;
-  }
+//
+// VARIANTS
+//
+
+.colorTertiary {
+  background: vars.$color-secondary-border;
+  border: 1px solid vars.$color-opacity-01;
+  color: vars.$color-text;
+}
+
+.sizeMedium {
+  max-width: 210px;
+  padding: 15px 10px;
+  font-size: 16px;
+  line-height: 20px;
+
+  // max-width: 180px;
+  // padding: 16px 10px;
+  // font-size: 14px;
+  // line-height: 16px;
+
+  // .icon {
+  //   display: inline-block;
+  //   position: relative;
+  //   top: -1px;
+  //   width: 18px;
+  //   height: 18px;
+  //   margin: 0 7px -8px -1px;
+  // }
+}
+
+.sizeSmall {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 16px;
 }

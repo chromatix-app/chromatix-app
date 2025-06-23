@@ -94,7 +94,9 @@ import { ReactComponent as VolXIcon } from './icons/music/vol-x.svg';
 import { ReactComponent as AppleSiteIcon } from './icons/site/apple.svg';
 import { ReactComponent as FeaturebaseSiteIcon } from './icons/site/featurebase.svg';
 import { ReactComponent as GithubSiteIcon } from './icons/site/github.svg';
+import { ReactComponent as JellyfinSiteIcon } from './icons/site/jellyfin.svg';
 import { ReactComponent as LinuxSiteIcon } from './icons/site/linux.svg';
+import { ReactComponent as PlexSiteIcon } from './icons/site/plex.svg';
 import { ReactComponent as RedditSiteIcon } from './icons/site/reddit.svg';
 import { ReactComponent as WindowsSiteIcon } from './icons/site/windows.svg';
 
@@ -190,7 +192,9 @@ export const customIcons = {
   AppleSiteIcon,
   FeaturebaseSiteIcon,
   GithubSiteIcon,
+  JellyfinSiteIcon,
   LinuxSiteIcon,
+  PlexSiteIcon,
   RedditSiteIcon,
   WindowsSiteIcon,
 };

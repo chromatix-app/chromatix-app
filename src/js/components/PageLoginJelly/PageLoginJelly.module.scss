@@ -54,11 +54,12 @@
     width: 100%;
     padding: 10px 15px;
     margin: 8px 0 0;
-    background: #333;
-    border: 1px solid #444;
+    background: vars.$color-primary-background;
+    border: 1px solid vars.$color-secondary-border;
     border-radius: 10px;
     font-size: 16px;
     line-height: 26px;
+    color: vars.$color-text;
   }
 }
 
@@ -66,7 +67,7 @@
 .errorGeneral {
   margin: 8px 0 0;
   font-size: 14px;
-  color: vars.$color-primary;
+  color: vars.$color-core;
 }
 .errorGeneral {
   margin: 16px 0 0;

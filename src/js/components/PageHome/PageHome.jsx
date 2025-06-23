@@ -62,31 +62,47 @@ export const PageHome = () => {
 
         <div className="mt-45 mt-lg-50"></div>
 
-        <Button onClick={dispatch.appModel.doPlexLogin}>Login with Plex</Button>
-        {isLocal && (
-          <>
-            <div className="mt-10"></div>
-            <Button to="/login-jellyfin">Login with Jellyfin (Alpha)</Button>
-          </>
-        )}
-
         {!isElectron && (
           <>
-            <div className="mt-10"></div>
-
-            <Button variant={'download'} onClick={scrollToDownloads}>
-              Download
+            <Button onClick={scrollToDownloads} icon={<Icon icon="DownloadIcon" cover stroke strokeWidth={2} />}>
+              Download the App
             </Button>
+            <div className={isLocal ? 'mt-20' : 'mt-10'}></div>
           </>
         )}
+
+        <div className={style.buttons}>
+          <Button
+            onClick={dispatch.appModel.doPlexLogin}
+            color="tertiary"
+            size="medium"
+            wrap={false}
+            icon={<Icon icon="PlexSiteIcon" cover />}
+          >
+            Login with Plex
+          </Button>
+          {isLocal && (
+            <>
+              <Button
+                to="/login-jellyfin"
+                color="tertiary"
+                size="medium"
+                wrap={false}
+                icon={<Icon icon="JellyfinSiteIcon" cover />}
+              >
+                Login with Jellyfin
+              </Button>
+            </>
+          )}
+        </div>
       </div>
 
       <div className={clsx(style.image, style.margin)}>
         <img
-          src="/images/chromatix004.jpg"
+          src="/images/chromatix005.jpg"
           alt="Chromatix music player for Plex"
-          width="2000"
-          height="1484"
+          width="1920"
+          height="1425"
           draggable="false"
         />
       </div>
@@ -102,7 +118,30 @@ export const PageHome = () => {
 
         <div className="mt-50"></div>
 
-        <Button onClick={dispatch.appModel.doPlexLogin}>Login with Plex</Button>
+        <div className={style.buttons}>
+          <Button
+            onClick={dispatch.appModel.doPlexLogin}
+            color="tertiary"
+            size="medium"
+            wrap={false}
+            icon={<Icon icon="PlexSiteIcon" cover />}
+          >
+            Login with Plex
+          </Button>
+          {isLocal && (
+            <>
+              <Button
+                to="/login-jellyfin"
+                color="tertiary"
+                size="medium"
+                wrap={false}
+                icon={<Icon icon="JellyfinSiteIcon" cover />}
+              >
+                Login with Jellyfin
+              </Button>
+            </>
+          )}
+        </div>
 
         {!isElectron && (
           <>
