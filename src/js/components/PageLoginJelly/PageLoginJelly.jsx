@@ -54,7 +54,8 @@ export const PageLoginJelly = () => {
   return (
     <div className={clsx(style.wrap, 'text-center')}>
       <div className={style.main}>
-        <h1 className={style.title}>Login</h1>
+        <h1 className={style.title}>Login with Jellyfin</h1>
+        <h2 className={style.subtitle}>(Beta)</h2>
 
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
           {({ errors, touched, isSubmitting }) => (
@@ -86,7 +87,7 @@ export const PageLoginJelly = () => {
               {errors.general && touched.general && <div className={style.errorGeneral}>{errors.general}</div>}
 
               <div className={style.links}>
-                <NavLink to="/">Home</NavLink>
+                <NavLink to="/">Back to Home</NavLink>
               </div>
             </Form>
           )}

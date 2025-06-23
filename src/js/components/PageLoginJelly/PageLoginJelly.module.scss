@@ -29,9 +29,14 @@
   font-weight: 700;
 }
 
+.subtitle {
+  font-size: 32px;
+  font-weight: 700;
+}
+
 .form {
   max-width: 400px;
-  margin: 0 auto;
+  margin: 40px auto 0;
 }
 
 .formRow {
@@ -78,7 +83,7 @@
   font-size: 14px;
 
   a {
-    opacity: 0.4;
+    opacity: 0.6;
 
     &:hover {
       opacity: 1;
