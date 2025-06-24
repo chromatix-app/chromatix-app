@@ -40,7 +40,7 @@ const endpointConfig = {
     getAllLibraries: (serverBaseUrl, userId) => `${serverBaseUrl}/Users/${userId}/Views`,
   },
   search: {
-    searchLibrary: null,
+    searchLibrary: (serverBaseUrl) => `${serverBaseUrl}/Items`,
   },
   artist: {
     getAllArtists: (serverBaseUrl) => `${serverBaseUrl}/Artists`,
@@ -851,6 +851,85 @@ export const getPlaylistTracks = ({ accessToken, libraryId, playlistId, serverBa
 // ======================================================================
 // SEARCH
 // ======================================================================
+
+export const searchLibrary = ({
+  accessToken,
+  includeCollections = 1,
+  libraryId,
+  limit = 25,
+  query,
+  serverBaseUrl,
+  userId,
+}) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.search.searchLibrary(serverBaseUrl);
+      const controller1 = new AbortController();
+      const controller2 = new AbortController();
+      abortControllers.push(controller1, controller2);
+
+      // Request 1: Search within library (artists, albums, tracks)
+      const libraryRequest = axios.get(endpoint, {
+        headers: getRequestHeaders(accessToken),
+        signal: controller1.signal,
+        params: {
+          Fields: '',
+          IncludeItemTypes: 'Audio,MusicAlbum,MusicArtist',
+          Limit: limit,
+          ParentId: libraryId,
+          Recursive: true,
+          SearchTerm: query,
+          SortBy: 'SortName',
+          SortOrder: 'Ascending',
+          UserId: userId,
+        },
+      });
+
+      // Request 2: Search for playlists (without ParentId)
+      const playlistRequest = axios.get(endpoint, {
+        headers: getRequestHeaders(accessToken),
+        signal: controller2.signal,
+        params: {
+          Fields: '',
+          IncludeItemTypes: 'Playlist',
+          Limit: limit,
+          Recursive: true,
+          SearchTerm: query,
+          SortBy: 'SortName',
+          SortOrder: 'Ascending',
+          UserId: userId,
+        },
+      });
+
+      Promise.all([libraryRequest, playlistRequest])
+        .then(([libraryResponse, playlistResponse]) => {
+          const combinedResponse = {
+            data: {
+              Items: [...(libraryResponse.data?.Items || []), ...(playlistResponse.data?.Items || [])],
+            },
+          };
+          console.log(combinedResponse);
+          resolve(jellyTranspose.transposeSearchResultsArray(combinedResponse, libraryId, serverBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'jellyfin.searchLibrary.1',
+            message: 'Error searching library: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller1 && ctrl !== controller2);
+        });
+    } catch (error) {
+      reject({
+        code: 'jellyfin.searchLibrary.2',
+        message: 'Error searching library: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
 
 // ======================================================================
 // SET STAR RATING

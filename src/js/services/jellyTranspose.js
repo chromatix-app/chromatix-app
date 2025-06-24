@@ -434,97 +434,75 @@ export const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken)
 // SEARCH RESULTS
 // ======================================================================
 
-// const typeOrder = {
-//   artist: 1,
-//   album: 2,
-//   playlist: 3,
-//   'artist collection': 4,
-//   'album collection': 5,
-//   track: 6,
-// };
+const typeOrder = {
+  artist: 1,
+  album: 2,
+  playlist: 3,
+  // 'artist collection': 4,
+  // 'album collection': 5,
+  track: 4,
+};
 
-// export const transposeSearchResultsArray = (array, libraryId, serverBaseUrl, accessToken) => {
-//   const data =
-//     array?.data?.MediaContainer?.Hub?.flatMap((result) => result.Metadata)
-//       ?.map((result) => transposeSearchResultData(result, libraryId, serverBaseUrl, accessToken))
-//       .filter((result) => result !== null)
-//       .sort((a, b) => {
-//         if (b.score === a.score) {
-//           if (a.type === b.type) {
-//             return a.title.localeCompare(b.title);
-//           }
-//           return typeOrder[a.type] - typeOrder[b.type];
-//         }
-//         return b.score - a.score;
-//       }) || [];
-//   return data;
-// };
+export const transposeSearchResultsArray = (array, libraryId, serverBaseUrl, accessToken) => {
+  const data =
+    array?.data?.Items?.map((result) => transposeSearchResultData(result, libraryId, serverBaseUrl, accessToken))
+      .filter((result) => result !== null)
+      .sort((a, b) => {
+        if (a.type === b.type) {
+          return a.title.localeCompare(b.title);
+        }
+        return typeOrder[a.type] - typeOrder[b.type];
+      }) || [];
+  return data;
+};
 
-// export const transposeSearchResultData = (result, libraryId, serverBaseUrl, accessToken) => {
-//   if (result?.type) {
-//     if (result.type === 'artist') {
-//       return {
-//         score: result.score,
-//         artistId: result.ratingKey,
-//         type: 'artist',
-//         icon: 'PeopleIcon',
-//         title: result.title,
-//         link: '/artists/' + libraryId + '/' + result.ratingKey,
-//         thumb: getThumb(serverBaseUrl, result.thumb, thumbSizeSmall, accessToken),
-//       };
-//     } else if (result.type === 'album') {
-//       return {
-//         score: result.score,
-//         albumId: result.ratingKey,
-//         type: 'album',
-//         icon: 'PlayCircleIcon',
-//         title: result.title,
-//         link: '/albums/' + libraryId + '/' + result.ratingKey,
+export const transposeSearchResultData = (result, libraryId, serverBaseUrl, accessToken) => {
+  if (result?.Type) {
+    if (result.Type === 'MusicArtist') {
+      return {
+        // score: null,
+        artistId: result.Id,
+        type: 'artist',
+        icon: 'PeopleIcon',
+        title: result.Name,
+        link: '/artists/' + libraryId + '/' + result.Id,
+        thumb: getThumb(result.ImageTags?.Primary, result.Id, serverBaseUrl, accessToken, thumbSizeSmall),
+      };
+    } else if (result.Type === 'MusicAlbum') {
+      return {
+        // score: null,
+        albumId: result.Id,
+        type: 'album',
+        icon: 'PlayCircleIcon',
+        title: result.Name,
+        link: '/albums/' + libraryId + '/' + result.Id,
+        thumb: getThumb(result.ImageTags?.Primary, result.Id, serverBaseUrl, accessToken, thumbSizeSmall),
+      };
+    } else if (result.Type === 'Playlist') {
+      return {
+        // score: null,
+        playlistId: result.Id,
+        type: 'playlist',
+        icon: 'PlaylistIcon',
+        title: result.Name,
+        link: '/playlists/' + libraryId + '/' + result.Id,
+        thumb: getThumb(result.ImageTags?.Primary, result.Id, serverBaseUrl, accessToken, thumbSizeSmall),
+      };
+    } else if (result.Type === 'Audio') {
+      return {
+        // score: null,
+        trackId: result.Id,
+        type: 'track',
+        icon: 'MusicNoteSingleIcon',
+        title: result.Name,
+        link: '/albums/' + libraryId + '/' + (result.ParentId || result.AlbumId),
+        thumb: getThumb(result.ImageTags?.Primary, result.Id, serverBaseUrl, accessToken, thumbSizeSmall),
+      };
+    }
+  }
 
-//         thumb: getThumb(serverBaseUrl, result.thumb, thumbSizeSmall, accessToken),
-//       };
-//     } else if (result.type === 'playlist') {
-//       const playlistThumb = result.thumb ? result.thumb : result.composite ? result.composite : null;
-//       return {
-//         score: result.score,
-//         playlistId: result.ratingKey,
-//         type: 'playlist',
-//         icon: 'PlaylistIcon',
-//         title: result.title,
-//         link: '/playlists/' + libraryId + '/' + result.ratingKey,
-//         thumb: getThumb(serverBaseUrl, playlistThumb, thumbSizeSmall, accessToken),
-//       };
-//     } else if (result.type === 'collection') {
-//       const collectionThumb = result.thumb ? result.thumb : result.composite ? result.composite : null;
-//       return {
-//         score: result.score,
-//         collectionId: result.ratingKey,
-//         type: result.subtype + ' collection',
-//         icon: result.subtype === 'artist' ? 'ArtistCollectionsIcon' : 'AlbumCollectionsIcon',
-//         title: result.title,
-//         link:
-//           (result.subtype === 'artist' ? '/artist-collections/' : '/album-collections/') +
-//           libraryId +
-//           '/' +
-//           result.ratingKey,
-//         thumb: getThumb(serverBaseUrl, collectionThumb, thumbSizeSmall, accessToken),
-//       };
-//     } else if (result.type === 'track') {
-//       return {
-//         score: result.score,
-//         trackId: result.ratingKey,
-//         type: 'track',
-//         icon: 'MusicNoteSingleIcon',
-//         title: result.title,
-//         link: '/albums/' + libraryId + '/' + result.parentRatingKey,
-
-//         thumb: getThumb(serverBaseUrl, result.thumb, thumbSizeSmall, accessToken),
-//       };
-//     }
-//   }
-
-//   return null;
-// };
+  return null;
+};
 
 // ======================================================================
 // DYNAMIC LOOKUPS

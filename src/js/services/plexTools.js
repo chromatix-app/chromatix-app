@@ -1321,7 +1321,15 @@ export const getTagItems = ({ accessToken, libraryId, serverBaseUrl, tagId, type
 // SEARCH
 // ======================================================================
 
-export const searchLibrary = ({ accessToken, includeCollections = 1, libraryId, limit = 25, query, serverBaseUrl }) => {
+export const searchLibrary = ({
+  accessToken,
+  includeCollections = 1,
+  libraryId,
+  limit = 25,
+  query,
+  serverBaseUrl,
+  userId,
+}) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.search.searchLibrary(serverBaseUrl);

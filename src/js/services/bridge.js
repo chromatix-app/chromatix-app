@@ -485,6 +485,7 @@ export const getAllArtistTracks = (libraryId, artistId, artistName) => {
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
 
+      // TO DO: This promise.all should probably be in plexTools
       Promise.all([
         serviceTools[currentService].getAllArtistTracks({
           accessToken,
@@ -1002,15 +1003,18 @@ export const searchLibrary = (query) => {
 
 const searchLibrary2 = (query, searchCounter) => {
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const currentService = store.getState().appModel.currentService;
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
   const { libraryId } = store.getState().sessionModel.currentLibrary;
 
-  plexTools
+  serviceTools[currentService]
     .searchLibrary({
       accessToken,
       libraryId,
       query,
       serverBaseUrl,
+      userId,
     })
     .then((response) => {
       // console.log(response);
