@@ -56,7 +56,7 @@ const endpointConfig = {
     getAllLibraries: (serverBaseUrl) => `${serverBaseUrl}/library/sections`,
   },
   search: {
-    searchLibrary: (serverBaseUrl) => `${serverBaseUrl}/library/search`,
+    searchLibrary: (serverBaseUrl) => `${serverBaseUrl}/hubs/search`,
   },
   artist: {
     getAllArtists: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/all`,
