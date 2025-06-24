@@ -240,8 +240,9 @@ export const getAllLibraries = async () => {
           return;
         }
 
-        const userId = currentUser?.userId;
         const accessToken = store.getState().sessionModel.currentServer.accessToken;
+        const userId = currentUser?.userId;
+
         serviceTools[currentService]
           .getAllLibraries(serverBaseUrl, accessToken, userId)
           .then((response) => {
@@ -273,8 +274,8 @@ export const getAllArtists = () => {
     if (!haveGotAllArtists) {
       console.log('%c--- bridge - getAllArtists ---', 'color:#f9743b;');
       getAllArtistsRunning = true;
-      const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
@@ -309,8 +310,8 @@ export const getArtistDetails = (libraryId, artistId) => {
     if (!prevArtistDetails) {
       console.log('%c--- bridge - getArtistDetails ---', 'color:#f9743b;');
       getArtistDetailsRunning = true;
-      const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
 
@@ -342,8 +343,8 @@ export const getAllArtistAlbums = (libraryId, artistId) => {
     if (!prevAllAlbums) {
       console.log('%c--- bridge - getAllArtistAlbums ---', 'color:#f9743b;');
       getAllArtistAlbumsRunning = true;
-      const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
 
@@ -375,8 +376,8 @@ export const getAllArtistRelatedAlbums = (libraryId, artistId) => {
     if (!prevAllRelated) {
       console.log('%c--- bridge - getAllArtistRelatedAlbums ---', 'color:#f9743b;');
       getAllArtistRelatedAlbumsRunning = true;
-      const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
       serviceTools[currentService]
@@ -407,8 +408,8 @@ export const getAllArtistAppearanceAlbums = (libraryId, artistId, artistName) =>
     if (!prevAllAppearanceAlbums) {
       console.log('%c--- bridge - getAllArtistAppearanceAlbums ---', 'color:#f9743b;');
       getAllArtistAppearanceAlbumsRunning = true;
-      const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
 
@@ -445,11 +446,27 @@ export const getAllArtistTracks = (libraryId, artistId, artistName) => {
       console.log('%c--- bridge - getAllArtistTracks ---', 'color:#f9743b;');
       getAllArtistTracksRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
 
       Promise.all([
-        plexTools.getAllArtistTracks(serverBaseUrl, libraryId, artistId, artistName, accessToken),
-        plexTools.getAllArtistAppearanceTracks(serverBaseUrl, libraryId, artistId, artistName, accessToken),
+        serviceTools[currentService].getAllArtistTracks(
+          serverBaseUrl,
+          libraryId,
+          artistId,
+          artistName,
+          accessToken,
+          userId
+        ),
+        serviceTools[currentService].getAllArtistAppearanceTracks(
+          serverBaseUrl,
+          libraryId,
+          artistId,
+          artistName,
+          accessToken,
+          userId
+        ),
       ])
         .then(([artistTracks, appearanceTracks]) => {
           // Combine both track arrays (assume they need to be merged)
@@ -483,8 +500,8 @@ export const getAllAlbums = () => {
     if (!haveGotAllAlbums) {
       console.log('%c--- bridge - getAllAlbums ---', 'color:#f9743b;');
       getAllAlbumsRunning = true;
-      const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
@@ -519,8 +536,8 @@ export const getAlbumDetails = (libraryId, albumId, callback) => {
     if (!prevAlbumDetails) {
       console.log('%c--- bridge - getAlbumDetails ---', 'color:#f9743b;');
       getAlbumDetailsRunning = true;
-      const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
       serviceTools[currentService]
@@ -555,8 +572,8 @@ export const getAlbumTracks = (libraryId, albumId) => {
       if (!prevAlbumTracks) {
         console.log('%c--- bridge - getAlbumTracks ---', 'color:#f9743b;');
         getAlbumTracksRunning = true;
-        const currentService = store.getState().appModel.currentService;
         const accessToken = store.getState().sessionModel.currentServer.accessToken;
+        const currentService = store.getState().appModel.currentService;
         const serverBaseUrl = store.getState().appModel.serverBaseUrl;
         const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
 
@@ -598,9 +615,10 @@ export const getFolderItems = (folderId) => {
         console.log('%c--- bridge - getFolderItems ---', 'color:#f9743b;');
         getFolderItemsRunning = true;
         const accessToken = store.getState().sessionModel.currentServer.accessToken;
+        const currentService = store.getState().appModel.currentService;
         const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
-        plexTools
+        serviceTools[currentService]
           .getFolderItems(serverBaseUrl, libraryId, folderId, accessToken)
           .then((response) => {
             // console.log(response);
@@ -705,8 +723,8 @@ export const getPlaylistTracks = (libraryId, playlistId) => {
       if (!prevPlaylistTracks) {
         console.log('%c--- bridge - getPlaylistTracks ---', 'color:#f9743b;');
         getPlaylistTracksRunning = true;
-        const currentService = store.getState().appModel.currentService;
         const accessToken = store.getState().sessionModel.currentServer.accessToken;
+        const currentService = store.getState().appModel.currentService;
         const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
         serviceTools[currentService]
@@ -921,8 +939,8 @@ const searchLibrary2 = (query, searchCounter) => {
 // ======================================================================
 
 export const setStarRating = (type, ratingKey, rating) => {
-  const serverBaseUrl = store.getState().appModel.serverBaseUrl;
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const serverBaseUrl = store.getState().appModel.serverBaseUrl;
   const sessionId = store.getState().sessionModel.sessionId;
   plexTools
     .setStarRating(serverBaseUrl, accessToken, sessionId, ratingKey, rating)
@@ -972,8 +990,8 @@ export const logPlaybackStatus = (currentTrack, state, currentTime) => {
   if (currentService === 'plex') {
     const optionLogPlexPlayback = store.getState().sessionModel.optionLogPlexPlayback;
     if (optionLogPlexPlayback) {
-      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const sessionId = store.getState().sessionModel.sessionId;
       const { trackId, trackKey, duration } = currentTrack || {};
       plexTools
@@ -1001,8 +1019,8 @@ export const logPlaybackQuit = (currentTrack, currentTime) => {
   if (currentService === 'plex') {
     const optionLogPlexPlayback = store.getState().sessionModel.optionLogPlexPlayback;
     if (optionLogPlexPlayback) {
-      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const sessionId = store.getState().sessionModel.sessionId;
       const { trackId, trackKey, duration } = currentTrack || {};
       plexTools.logPlaybackQuit(

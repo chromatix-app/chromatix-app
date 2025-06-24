@@ -48,7 +48,7 @@ const endpointConfig = {
     getAllArtistAlbums: (baseUrl, userId) => `${baseUrl}/Users/${userId}/Items`,
     // getAllArtistRelatedAlbums: null,
     getAllArtistAppearanceAlbums: (baseUrl, userId) => `${baseUrl}/Users/${userId}/Items`,
-    getAllArtistTracks: null,
+    getAllArtistTracks: (baseUrl, userId) => `${baseUrl}/Users/${userId}/Items`,
   },
   album: {
     getAllAlbums: (baseUrl) => `${baseUrl}/Items`,
@@ -433,7 +433,7 @@ export const getAllArtistAlbums = (baseUrl, libraryId, artistId, accessToken, us
 // ======================================================================
 
 /*
-This does not exist in the Jellyfin API, but is here for consistency with other services.
+This is not required when usingthe Jellyfin API, but is here for consistency with other services.
 */
 
 export const getAllArtistRelatedAlbums = () => {
@@ -495,6 +495,63 @@ export const getAllArtistAppearanceAlbums = (baseUrl, libraryId, artistName, sto
 // ======================================================================
 // GET ARTIST TRACKS
 // ======================================================================
+
+export const getAllArtistTracks = (baseUrl, libraryId, artistId, artistName, accessToken, userId) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.artist.getAllArtistTracks(baseUrl, userId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+          params: {
+            ParentId: libraryId,
+            ArtistIds: artistId,
+            IncludeItemTypes: 'Audio',
+            Recursive: true,
+            SortBy: 'Album,SortName',
+            SortOrder: 'Ascending',
+            Fields:
+              'CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,ProductionLocations,Tags,UserData',
+            // Filters: 'IsNotFolder', // Helps filter out compilation albums
+            // ExcludeLocationTypes: 'Virtual', // Excludes virtual items, often compilations
+          },
+        })
+        .then((response) => {
+          resolve(jellyTranspose.transposeTrackArray(response, libraryId, baseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'jelly.getAllArtistTracks.1',
+            message: 'Failed to get all artist tracks: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'jelly.getAllArtistTracks.2',
+        message: 'Failed to get all artist tracks: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+/*
+This is not required when usingthe Jellyfin API, but is here for consistency with other services.
+*/
+
+export const getAllArtistAppearanceTracks = (baseUrl, libraryId, artistId, artistName, accessToken) => {
+  return new Promise((resolve, reject) => {
+    resolve([]);
+  });
+};
 
 // ======================================================================
 // GET ALL ALBUMS

@@ -63,8 +63,8 @@ const endpointConfig = {
     getArtistDetails: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}`,
     getAllArtistAlbums: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/children`,
     // getAllArtistRelatedAlbums: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/related`,
-    getAllArtistAppearanceTracks: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
     getAllArtistTracks: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
+    getAllArtistAppearanceTracks: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
   },
   album: {
     getAllAlbums: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
