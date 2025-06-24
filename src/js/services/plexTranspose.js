@@ -20,9 +20,9 @@ const thumbSizeMedium = 600;
 // HELPERS
 // ======================================================================
 
-const getThumb = (thumb, baseUrl, accessToken, size) => {
+const getThumb = (thumb, serverBaseUrl, accessToken, size) => {
   const finalThumb = thumb
-    ? `${baseUrl}/photo/:/transcode?width=${size}&height=${size}&url=${encodeURIComponent(
+    ? `${serverBaseUrl}/photo/:/transcode?width=${size}&height=${size}&url=${encodeURIComponent(
         thumb.split('?')[0]
       )}&minSize=1&X-Plex-Token=${accessToken}`
     : null;
@@ -87,42 +87,43 @@ export const transposeLibraryData = (library) => {
 // ARTISTS
 // ======================================================================
 
-export const transposeArtistArray = (array, libraryId, baseUrl, accessToken) => {
+export const transposeArtistArray = (array, libraryId, serverBaseUrl, accessToken) => {
   const data =
     array?.data?.MediaContainer?.Metadata?.map((artist) =>
-      transposeArtistData(artist, libraryId, baseUrl, accessToken)
+      transposeArtistData(artist, libraryId, serverBaseUrl, accessToken)
     ) || [];
   return data;
 };
 
-export const transposeArtistDetails = (array, libraryId, baseUrl, accessToken) => {
+export const transposeArtistDetails = (array, libraryId, serverBaseUrl, accessToken) => {
   const artist = array?.data?.MediaContainer?.Metadata[0];
-  const artistDetails = transposeArtistData(artist, libraryId, baseUrl, accessToken);
+  const artistDetails = transposeArtistData(artist, libraryId, serverBaseUrl, accessToken);
   return artistDetails;
 };
 
-export const transposeArtistRelatedArray = (array, libraryId, baseUrl, accessToken) => {
+export const transposeArtistRelatedArray = (array, libraryId, serverBaseUrl, accessToken) => {
   const data =
     // array?.data?.MediaContainer?.Hub?.filter(
     array?.data?.MediaContainer?.Metadata?.[0]?.Related?.Hub?.filter(
       (hub) => hub.type === 'album' && hub.Metadata && hub.context && hub.context.includes('hub.artist.albums')
     ).map((hub) => ({
       title: hub.title,
-      related: hub.Metadata.map((album) => transposeAlbumData(album, libraryId, baseUrl, accessToken)),
+      related: hub.Metadata.map((album) => transposeAlbumData(album, libraryId, serverBaseUrl, accessToken)),
     })) || [];
   return data;
 };
 
-export const transposeArtistAppearanceAlbumIdsArray = (array, libraryId, baseUrl, accessToken) => {
+export const transposeArtistAppearanceAlbumIdsArray = (array, libraryId, serverBaseUrl, accessToken) => {
   const artistAppearanceTracks =
-    array?.data?.MediaContainer?.Metadata?.map((track) => transposeTrackData(track, libraryId, baseUrl, accessToken)) ||
-    [];
+    array?.data?.MediaContainer?.Metadata?.map((track) =>
+      transposeTrackData(track, libraryId, serverBaseUrl, accessToken)
+    ) || [];
   // get a unique list of album IDs using the albumId key of each track
   const artistAppearanceAlbums = [...new Set(artistAppearanceTracks.map((track) => track.albumId))];
   return artistAppearanceAlbums;
 };
 
-export const transposeArtistData = (artist, libraryId, baseUrl, accessToken) => {
+export const transposeArtistData = (artist, libraryId, serverBaseUrl, accessToken) => {
   return {
     kind: 'artist',
     libraryId: libraryId,
@@ -135,8 +136,8 @@ export const transposeArtistData = (artist, libraryId, baseUrl, accessToken) => 
     userRating: artist.userRating,
     isFavourite: false,
     link: '/artists/' + libraryId + '/' + artist.ratingKey,
-    thumb: getThumb(artist.thumb, baseUrl, accessToken, thumbSizeSmall),
-    thumbMedium: getThumb(artist.thumb, baseUrl, accessToken, thumbSizeMedium),
+    thumb: getThumb(artist.thumb, serverBaseUrl, accessToken, thumbSizeSmall),
+    thumbMedium: getThumb(artist.thumb, serverBaseUrl, accessToken, thumbSizeMedium),
   };
 };
 
@@ -144,20 +145,21 @@ export const transposeArtistData = (artist, libraryId, baseUrl, accessToken) => 
 // ALBUMS
 // ======================================================================
 
-export const transposeAlbumArray = (array, libraryId, baseUrl, accessToken) => {
+export const transposeAlbumArray = (array, libraryId, serverBaseUrl, accessToken) => {
   const data =
-    array?.data?.MediaContainer?.Metadata?.map((album) => transposeAlbumData(album, libraryId, baseUrl, accessToken)) ||
-    [];
+    array?.data?.MediaContainer?.Metadata?.map((album) =>
+      transposeAlbumData(album, libraryId, serverBaseUrl, accessToken)
+    ) || [];
   return data;
 };
 
-export const transposeAlbumDetails = (array, libraryId, baseUrl, accessToken) => {
+export const transposeAlbumDetails = (array, libraryId, serverBaseUrl, accessToken) => {
   const album = array?.data?.MediaContainer?.Metadata[0];
-  const albumDetails = transposeAlbumData(album, libraryId, baseUrl, accessToken);
+  const albumDetails = transposeAlbumData(album, libraryId, serverBaseUrl, accessToken);
   return albumDetails;
 };
 
-export const transposeAlbumData = (album, libraryId, baseUrl, accessToken) => {
+export const transposeAlbumData = (album, libraryId, serverBaseUrl, accessToken) => {
   return {
     kind: 'album',
     libraryId: libraryId,
@@ -173,8 +175,8 @@ export const transposeAlbumData = (album, libraryId, baseUrl, accessToken) => {
     isFavourite: false,
     releaseDate: album.originallyAvailableAt,
     link: '/albums/' + libraryId + '/' + album.ratingKey,
-    thumb: getThumb(album.thumb, baseUrl, accessToken, thumbSizeSmall),
-    thumbMedium: getThumb(album.thumb, baseUrl, accessToken, thumbSizeMedium),
+    thumb: getThumb(album.thumb, serverBaseUrl, accessToken, thumbSizeSmall),
+    thumbMedium: getThumb(album.thumb, serverBaseUrl, accessToken, thumbSizeMedium),
   };
 };
 
@@ -182,10 +184,10 @@ export const transposeAlbumData = (album, libraryId, baseUrl, accessToken) => {
 // FOLDERS
 // ======================================================================
 
-export const transposeFolderArray = (array, libraryId, baseUrl, accessToken) => {
+export const transposeFolderArray = (array, libraryId, serverBaseUrl, accessToken) => {
   const data =
     array?.data?.MediaContainer?.Metadata?.map((item) =>
-      transposeFolderData(item, libraryId, baseUrl, accessToken)
+      transposeFolderData(item, libraryId, serverBaseUrl, accessToken)
     ).filter((item) => item !== null) || [];
 
   // Sort folderItems
@@ -214,12 +216,12 @@ export const transposeFolderArray = (array, libraryId, baseUrl, accessToken) => 
   return data;
 };
 
-export const transposeFolderData = (folder, libraryId, baseUrl, accessToken) => {
+export const transposeFolderData = (folder, libraryId, serverBaseUrl, accessToken) => {
   if (folder.ratingKey) {
     if (folder.type !== 'track') {
       return null;
     }
-    return transposeTrackData(folder, libraryId, baseUrl, accessToken);
+    return transposeTrackData(folder, libraryId, serverBaseUrl, accessToken);
   }
 
   const folderId = folder.key.split('?parent=')[1];
@@ -236,21 +238,21 @@ export const transposeFolderData = (folder, libraryId, baseUrl, accessToken) => 
 // PLAYLISTS
 // ======================================================================
 
-export const transposePlaylistArray = (array, libraryId, baseUrl, accessToken) => {
+export const transposePlaylistArray = (array, libraryId, serverBaseUrl, accessToken) => {
   const data =
     array?.data?.MediaContainer?.Metadata?.map((playlist) =>
-      transposePlaylistData(playlist, libraryId, baseUrl, accessToken)
+      transposePlaylistData(playlist, libraryId, serverBaseUrl, accessToken)
     ) || [];
   return data;
 };
 
-export const transposePlaylistDetails = (array, libraryId, baseUrl, accessToken) => {
+export const transposePlaylistDetails = (array, libraryId, serverBaseUrl, accessToken) => {
   const playlist = array?.data?.MediaContainer?.Metadata[0];
-  const playlistDetails = transposePlaylistData(playlist, libraryId, baseUrl, accessToken);
+  const playlistDetails = transposePlaylistData(playlist, libraryId, serverBaseUrl, accessToken);
   return playlistDetails;
 };
 
-export const transposePlaylistData = (playlist, libraryId, baseUrl, accessToken) => {
+export const transposePlaylistData = (playlist, libraryId, serverBaseUrl, accessToken) => {
   const playlistThumb = playlist.thumb ? playlist.thumb : playlist.composite ? playlist.composite : null;
   return {
     kind: 'playlist',
@@ -264,8 +266,8 @@ export const transposePlaylistData = (playlist, libraryId, baseUrl, accessToken)
     link: '/playlists/' + libraryId + '/' + playlist.ratingKey,
     totalTracks: playlist.leafCount,
     duration: playlist.duration,
-    thumb: getThumb(playlistThumb, baseUrl, accessToken, thumbSizeSmall),
-    thumbMedium: getThumb(playlistThumb, baseUrl, accessToken, thumbSizeMedium),
+    thumb: getThumb(playlistThumb, serverBaseUrl, accessToken, thumbSizeSmall),
+    thumbMedium: getThumb(playlistThumb, serverBaseUrl, accessToken, thumbSizeMedium),
   };
 };
 
@@ -273,11 +275,11 @@ export const transposePlaylistData = (playlist, libraryId, baseUrl, accessToken)
 // COLLECTIONS
 // ======================================================================
 
-export const transposeCollectionArray = (array, libraryId, baseUrl, accessToken) => {
+export const transposeCollectionArray = (array, libraryId, serverBaseUrl, accessToken) => {
   const allCollections =
     array?.data?.MediaContainer?.Metadata?.filter(
       (collection) => collection.subtype === 'artist' || collection.subtype === 'album'
-    ).map((collection) => transposeCollectionData(collection, libraryId, baseUrl, accessToken)) || [];
+    ).map((collection) => transposeCollectionData(collection, libraryId, serverBaseUrl, accessToken)) || [];
   const allArtistCollections = allCollections.filter((collection) => collection.type === 'artist');
   const allAlbumCollections = allCollections.filter((collection) => collection.type === 'album');
   return {
@@ -286,15 +288,15 @@ export const transposeCollectionArray = (array, libraryId, baseUrl, accessToken)
   };
 };
 
-export const transposeCollectionItemArray = (array, libraryId, baseUrl, accessToken, typeKey) => {
+export const transposeCollectionItemArray = (array, libraryId, serverBaseUrl, accessToken, typeKey) => {
   const data =
     array?.data?.MediaContainer?.Metadata?.map((item) =>
-      lookups[`transpose${typeKey}Data`](item, libraryId, baseUrl, accessToken)
+      lookups[`transpose${typeKey}Data`](item, libraryId, serverBaseUrl, accessToken)
     ) || [];
   return data;
 };
 
-export const transposeCollectionData = (collection, libraryId, baseUrl, accessToken) => {
+export const transposeCollectionData = (collection, libraryId, serverBaseUrl, accessToken) => {
   const collectionThumb = collection.thumb ? collection.thumb : collection.composite ? collection.composite : null;
   return {
     kind: 'collection',
@@ -309,8 +311,8 @@ export const transposeCollectionData = (collection, libraryId, baseUrl, accessTo
       libraryId +
       '/' +
       collection.ratingKey,
-    thumb: getThumb(collectionThumb, baseUrl, accessToken, thumbSizeSmall),
-    thumbMedium: getThumb(collectionThumb, baseUrl, accessToken, thumbSizeMedium),
+    thumb: getThumb(collectionThumb, serverBaseUrl, accessToken, thumbSizeSmall),
+    thumbMedium: getThumb(collectionThumb, serverBaseUrl, accessToken, thumbSizeMedium),
   };
 };
 
@@ -345,11 +347,11 @@ export const transposeTagArray = (array, libraryId, typeKey) => {
   return data;
 };
 
-export const transposeTagItemArray = (array, libraryId, baseUrl, accessToken, typeKey) => {
+export const transposeTagItemArray = (array, libraryId, serverBaseUrl, accessToken, typeKey) => {
   const { primaryKey } = tagItemOptions[typeKey];
   const data =
     array?.data?.MediaContainer?.Metadata?.map((entry) =>
-      lookups[`transpose${primaryKey}Data`](entry, libraryId, baseUrl, accessToken)
+      lookups[`transpose${primaryKey}Data`](entry, libraryId, serverBaseUrl, accessToken)
     ) || [];
   return data;
 };
@@ -388,15 +390,16 @@ export const transposeStyleData = (type, style, libraryId) => {
 // TRACKS
 // ======================================================================
 
-export const transposeTrackArray = (array, libraryId, baseUrl, accessToken) => {
+export const transposeTrackArray = (array, libraryId, serverBaseUrl, accessToken) => {
   // console.log(array?.data?.MediaContainer?.Metadata);
   const data =
-    array?.data?.MediaContainer?.Metadata?.map((track) => transposeTrackData(track, libraryId, baseUrl, accessToken)) ||
-    [];
+    array?.data?.MediaContainer?.Metadata?.map((track) =>
+      transposeTrackData(track, libraryId, serverBaseUrl, accessToken)
+    ) || [];
   return data;
 };
 
-export const transposeTrackData = (track, libraryId, baseUrl, accessToken) => {
+export const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
   const isLikelyAppearance = track.originalTitle && track.originalTitle !== track.grandparentTitle;
 
   const artistTitle = isLikelyAppearance ? track.originalTitle : track.grandparentTitle;
@@ -421,9 +424,9 @@ export const transposeTrackData = (track, libraryId, baseUrl, accessToken) => {
     duration: track.Media[0].duration,
     userRating: track.userRating,
     releaseDate: track.parentYear ? track.parentYear + '-01-01' : null,
-    thumb: getThumb(track.thumb, baseUrl, accessToken, thumbSizeSmall),
-    thumbMedium: getThumb(track.thumb, baseUrl, accessToken, thumbSizeMedium),
-    src: `${baseUrl}${track.Media[0].Part[0].key}?X-Plex-Token=${accessToken}`,
+    thumb: getThumb(track.thumb, serverBaseUrl, accessToken, thumbSizeSmall),
+    thumbMedium: getThumb(track.thumb, serverBaseUrl, accessToken, thumbSizeMedium),
+    src: `${serverBaseUrl}${track.Media[0].Part[0].key}?X-Plex-Token=${accessToken}`,
   };
 };
 
@@ -440,10 +443,10 @@ const typeOrder = {
   track: 6,
 };
 
-export const transposeSearchResultsArray = (array, libraryId, baseUrl, accessToken) => {
+export const transposeSearchResultsArray = (array, libraryId, serverBaseUrl, accessToken) => {
   const data =
     array?.data?.MediaContainer?.Hub?.flatMap((result) => result.Metadata)
-      ?.map((result) => transposeSearchResultData(result, libraryId, baseUrl, accessToken))
+      ?.map((result) => transposeSearchResultData(result, libraryId, serverBaseUrl, accessToken))
       .filter((result) => result !== null)
       .sort((a, b) => {
         if (b.score === a.score) {
@@ -457,7 +460,7 @@ export const transposeSearchResultsArray = (array, libraryId, baseUrl, accessTok
   return data;
 };
 
-export const transposeSearchResultData = (result, libraryId, baseUrl, accessToken) => {
+export const transposeSearchResultData = (result, libraryId, serverBaseUrl, accessToken) => {
   if (result?.type) {
     if (result.type === 'artist') {
       return {
@@ -467,7 +470,7 @@ export const transposeSearchResultData = (result, libraryId, baseUrl, accessToke
         icon: 'PeopleIcon',
         title: result.title,
         link: '/artists/' + libraryId + '/' + result.ratingKey,
-        thumb: getThumb(result.thumb, baseUrl, accessToken, thumbSizeSmall),
+        thumb: getThumb(result.thumb, serverBaseUrl, accessToken, thumbSizeSmall),
       };
     } else if (result.type === 'album') {
       return {
@@ -477,7 +480,7 @@ export const transposeSearchResultData = (result, libraryId, baseUrl, accessToke
         icon: 'PlayCircleIcon',
         title: result.title,
         link: '/albums/' + libraryId + '/' + result.ratingKey,
-        thumb: getThumb(result.thumb, baseUrl, accessToken, thumbSizeSmall),
+        thumb: getThumb(result.thumb, serverBaseUrl, accessToken, thumbSizeSmall),
       };
     } else if (result.type === 'playlist') {
       const playlistThumb = result.thumb ? result.thumb : result.composite ? result.composite : null;
@@ -488,7 +491,7 @@ export const transposeSearchResultData = (result, libraryId, baseUrl, accessToke
         icon: 'PlaylistIcon',
         title: result.title,
         link: '/playlists/' + libraryId + '/' + result.ratingKey,
-        thumb: getThumb(playlistThumb, baseUrl, accessToken, thumbSizeSmall),
+        thumb: getThumb(playlistThumb, serverBaseUrl, accessToken, thumbSizeSmall),
       };
     } else if (result.type === 'collection') {
       const collectionThumb = result.thumb ? result.thumb : result.composite ? result.composite : null;
@@ -503,7 +506,7 @@ export const transposeSearchResultData = (result, libraryId, baseUrl, accessToke
           libraryId +
           '/' +
           result.ratingKey,
-        thumb: getThumb(collectionThumb, baseUrl, accessToken, thumbSizeSmall),
+        thumb: getThumb(collectionThumb, serverBaseUrl, accessToken, thumbSizeSmall),
       };
     } else if (result.type === 'track') {
       return {
@@ -513,7 +516,7 @@ export const transposeSearchResultData = (result, libraryId, baseUrl, accessToke
         icon: 'MusicNoteSingleIcon',
         title: result.title,
         link: '/albums/' + libraryId + '/' + result.parentRatingKey,
-        thumb: getThumb(result.thumb, baseUrl, accessToken, thumbSizeSmall),
+        thumb: getThumb(result.thumb, serverBaseUrl, accessToken, thumbSizeSmall),
       };
     }
   }

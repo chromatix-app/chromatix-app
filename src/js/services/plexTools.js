@@ -53,58 +53,59 @@ const endpointConfig = {
     getAllServers: () => 'https://plex.tv/api/v2/resources',
   },
   library: {
-    getAllLibraries: (baseUrl) => `${baseUrl}/library/sections`,
+    getAllLibraries: (serverBaseUrl) => `${serverBaseUrl}/library/sections`,
   },
   search: {
-    searchLibrary: (baseUrl) => `${baseUrl}/library/search`,
+    searchLibrary: (serverBaseUrl) => `${serverBaseUrl}/library/search`,
   },
   artist: {
-    getAllArtists: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
-    getArtistDetails: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}`,
-    getAllArtistAlbums: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/children`,
-    // getAllArtistRelatedAlbums: (baseUrl, artistId) => `${baseUrl}/library/metadata/${artistId}/related`,
-    getAllArtistTracks: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
-    getAllArtistAppearanceTracks: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
+    getAllArtists: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/all`,
+    getArtistDetails: (serverBaseUrl, artistId) => `${serverBaseUrl}/library/metadata/${artistId}`,
+    getAllArtistAlbums: (serverBaseUrl, artistId) => `${serverBaseUrl}/library/metadata/${artistId}/children`,
+    // getAllArtistRelatedAlbums: (serverBaseUrl, artistId) => `${serverBaseUrl}/library/metadata/${artistId}/related`,
+    getAllArtistTracks: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/all`,
+    getAllArtistAppearanceTracks: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/all`,
   },
   album: {
-    getAllAlbums: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
-    getAlbumDetails: (baseUrl, albumId) => `${baseUrl}/library/metadata/${albumId}`,
-    getAlbumTracks: (baseUrl, albumId) => `${baseUrl}/library/metadata/${albumId}/children`,
+    getAllAlbums: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/all`,
+    getAlbumDetails: (serverBaseUrl, albumId) => `${serverBaseUrl}/library/metadata/${albumId}`,
+    getAlbumTracks: (serverBaseUrl, albumId) => `${serverBaseUrl}/library/metadata/${albumId}/children`,
   },
   folder: {
-    getFolderItems: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/folder`,
+    getFolderItems: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/folder`,
   },
   playlist: {
-    getAllPlaylists: (baseUrl) => `${baseUrl}/playlists`,
-    getPlaylistDetails: (baseUrl, playlistId) => `${baseUrl}/playlists/${playlistId}`,
-    getPlaylistTracks: (baseUrl, playlistId) => `${baseUrl}/playlists/${playlistId}/items`,
+    getAllPlaylists: (serverBaseUrl) => `${serverBaseUrl}/playlists`,
+    getPlaylistDetails: (serverBaseUrl, playlistId) => `${serverBaseUrl}/playlists/${playlistId}`,
+    getPlaylistTracks: (serverBaseUrl, playlistId) => `${serverBaseUrl}/playlists/${playlistId}/items`,
   },
   collection: {
-    getAllCollections: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/collections`,
-    getCollectionItems: (baseUrl, collectionId) => `${baseUrl}/library/collections/${collectionId}/children`,
+    getAllCollections: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/collections`,
+    getCollectionItems: (serverBaseUrl, collectionId) =>
+      `${serverBaseUrl}/library/collections/${collectionId}/children`,
   },
   tags: {
-    getAllArtistGenres: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/genre`,
-    getAllArtistMoods: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/mood`,
-    getAllArtistStyles: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/style`,
+    getAllArtistGenres: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/genre`,
+    getAllArtistMoods: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/mood`,
+    getAllArtistStyles: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/style`,
 
-    getAllAlbumGenres: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/genre`,
-    getAllAlbumMoods: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/mood`,
-    getAllAlbumStyles: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/style`,
+    getAllAlbumGenres: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/genre`,
+    getAllAlbumMoods: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/mood`,
+    getAllAlbumStyles: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/style`,
 
-    getArtistGenreItems: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
-    getArtistMoodItems: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
-    getArtistStyleItems: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
+    getArtistGenreItems: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/all`,
+    getArtistMoodItems: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/all`,
+    getArtistStyleItems: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/all`,
 
-    getAlbumGenreItems: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
-    getAlbumMoodItems: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
-    getAlbumStyleItems: (baseUrl, libraryId) => `${baseUrl}/library/sections/${libraryId}/all`,
+    getAlbumGenreItems: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/all`,
+    getAlbumMoodItems: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/all`,
+    getAlbumStyleItems: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/all`,
   },
   rating: {
-    setStarRating: (baseUrl) => `${baseUrl}/:/rate`,
+    setStarRating: (serverBaseUrl) => `${serverBaseUrl}/:/rate`,
   },
   status: {
-    logPlaybackStatus: (baseUrl) => `${baseUrl}/:/timeline`,
+    logPlaybackStatus: (serverBaseUrl) => `${serverBaseUrl}/:/timeline`,
   },
 };
 
@@ -415,10 +416,10 @@ export const getFastestConnection = ({ server }) => {
 // GET ALL LIBRARIES
 // ======================================================================
 
-export const getAllLibraries = ({ accessToken, baseUrl, userId }) => {
+export const getAllLibraries = ({ accessToken, serverBaseUrl, userId }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.library.getAllLibraries(baseUrl);
+      const endpoint = endpointConfig.library.getAllLibraries(serverBaseUrl);
       axios
         .get(endpoint, {
           headers: getRequestHeaders(accessToken),
@@ -447,10 +448,10 @@ export const getAllLibraries = ({ accessToken, baseUrl, userId }) => {
 // GET ALL ARTISTS
 // ======================================================================
 
-export const getAllArtists = ({ accessToken, baseUrl, libraryId }) => {
+export const getAllArtists = ({ accessToken, libraryId, serverBaseUrl }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.artist.getAllArtists(baseUrl, libraryId);
+      const endpoint = endpointConfig.artist.getAllArtists(serverBaseUrl, libraryId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -465,7 +466,7 @@ export const getAllArtists = ({ accessToken, baseUrl, libraryId }) => {
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposeArtistArray(response, libraryId, baseUrl, accessToken));
+          resolve(plexTranspose.transposeArtistArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -491,10 +492,10 @@ export const getAllArtists = ({ accessToken, baseUrl, libraryId }) => {
 // GET ARTIST DETAILS
 // ======================================================================
 
-export const getArtistDetails = ({ accessToken, artistId, baseUrl, libraryId, userId }) => {
+export const getArtistDetails = ({ accessToken, artistId, libraryId, serverBaseUrl, userId }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.artist.getArtistDetails(baseUrl, artistId);
+      const endpoint = endpointConfig.artist.getArtistDetails(serverBaseUrl, artistId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -504,7 +505,7 @@ export const getArtistDetails = ({ accessToken, artistId, baseUrl, libraryId, us
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposeArtistDetails(response, libraryId, baseUrl, accessToken));
+          resolve(plexTranspose.transposeArtistDetails(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -530,10 +531,10 @@ export const getArtistDetails = ({ accessToken, artistId, baseUrl, libraryId, us
 // GET ALL ARTIST ALBUMS
 // ======================================================================
 
-export const getAllArtistAlbums = ({ accessToken, artistId, baseUrl, libraryId, userId }) => {
+export const getAllArtistAlbums = ({ accessToken, artistId, libraryId, serverBaseUrl, userId }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.artist.getAllArtistAlbums(baseUrl, artistId);
+      const endpoint = endpointConfig.artist.getAllArtistAlbums(serverBaseUrl, artistId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -548,7 +549,7 @@ export const getAllArtistAlbums = ({ accessToken, artistId, baseUrl, libraryId, 
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposeAlbumArray(response, libraryId, baseUrl, accessToken));
+          resolve(plexTranspose.transposeAlbumArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -574,10 +575,10 @@ export const getAllArtistAlbums = ({ accessToken, artistId, baseUrl, libraryId, 
 // GET ALL ARTIST RELATED ALBUMS
 // ======================================================================
 
-export const getAllArtistRelatedAlbums = ({ accessToken, artistId, baseUrl, libraryId }) => {
+export const getAllArtistRelatedAlbums = ({ accessToken, artistId, libraryId, serverBaseUrl }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.artist.getArtistDetails(baseUrl, artistId);
+      const endpoint = endpointConfig.artist.getArtistDetails(serverBaseUrl, artistId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -594,7 +595,7 @@ export const getAllArtistRelatedAlbums = ({ accessToken, artistId, baseUrl, libr
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposeArtistRelatedArray(response, libraryId, baseUrl, accessToken));
+          resolve(plexTranspose.transposeArtistRelatedArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -624,8 +625,8 @@ export const getAllArtistAppearanceAlbums = ({
   accessToken,
   artistId,
   artistName,
-  baseUrl,
   libraryId,
+  serverBaseUrl,
   store,
   userId,
 }) => {
@@ -634,7 +635,7 @@ export const getAllArtistAppearanceAlbums = ({
       getAllArtistAppearanceAlbumIds({
         accessToken,
         artistName,
-        baseUrl,
+        serverBaseUrl,
         libraryId,
       })
         .then((response) => {
@@ -655,7 +656,7 @@ export const getAllArtistAppearanceAlbums = ({
 
               // If not, get the album details
               return new Promise((resolve2) => {
-                getAlbumDetails(baseUrl, libraryId, albumId, accessToken)
+                getAlbumDetails(serverBaseUrl, libraryId, albumId, accessToken)
                   .then((response) => {
                     artistAppearanceAlbums.push(response);
                     resolve2();
@@ -694,10 +695,10 @@ export const getAllArtistAppearanceAlbums = ({
   });
 };
 
-export const getAllArtistAppearanceAlbumIds = ({ accessToken, artistName, baseUrl, libraryId }) => {
+export const getAllArtistAppearanceAlbumIds = ({ accessToken, artistName, libraryId, serverBaseUrl }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.artist.getAllArtistAppearanceTracks(baseUrl, libraryId);
+      const endpoint = endpointConfig.artist.getAllArtistAppearanceTracks(serverBaseUrl, libraryId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -712,7 +713,9 @@ export const getAllArtistAppearanceAlbumIds = ({ accessToken, artistName, baseUr
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposeArtistAppearanceAlbumIdsArray(response, libraryId, baseUrl, accessToken));
+          resolve(
+            plexTranspose.transposeArtistAppearanceAlbumIdsArray(response, libraryId, serverBaseUrl, accessToken)
+          );
         })
         .catch((error) => {
           reject({
@@ -738,10 +741,10 @@ export const getAllArtistAppearanceAlbumIds = ({ accessToken, artistName, baseUr
 // GET ARTIST TRACKS
 // ======================================================================
 
-export const getAllArtistTracks = ({ accessToken, artistId, artistName, baseUrl, libraryId, userId }) => {
+export const getAllArtistTracks = ({ accessToken, artistId, artistName, libraryId, serverBaseUrl, userId }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.artist.getAllArtistTracks(baseUrl, libraryId);
+      const endpoint = endpointConfig.artist.getAllArtistTracks(serverBaseUrl, libraryId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -756,7 +759,7 @@ export const getAllArtistTracks = ({ accessToken, artistId, artistName, baseUrl,
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposeTrackArray(response, libraryId, baseUrl, accessToken));
+          resolve(plexTranspose.transposeTrackArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -778,10 +781,10 @@ export const getAllArtistTracks = ({ accessToken, artistId, artistName, baseUrl,
   });
 };
 
-export const getAllArtistAppearanceTracks = ({ accessToken, artistName, baseUrl, libraryId }) => {
+export const getAllArtistAppearanceTracks = ({ accessToken, artistName, libraryId, serverBaseUrl }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.artist.getAllArtistTracks(baseUrl, libraryId);
+      const endpoint = endpointConfig.artist.getAllArtistTracks(serverBaseUrl, libraryId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -796,7 +799,7 @@ export const getAllArtistAppearanceTracks = ({ accessToken, artistName, baseUrl,
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposeTrackArray(response, libraryId, baseUrl, accessToken));
+          resolve(plexTranspose.transposeTrackArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -822,10 +825,10 @@ export const getAllArtistAppearanceTracks = ({ accessToken, artistName, baseUrl,
 // GET ALL ALBUMS
 // ======================================================================
 
-export const getAllAlbums = ({ accessToken, baseUrl, libraryId }) => {
+export const getAllAlbums = ({ accessToken, libraryId, serverBaseUrl }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.album.getAllAlbums(baseUrl, libraryId);
+      const endpoint = endpointConfig.album.getAllAlbums(serverBaseUrl, libraryId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -840,7 +843,7 @@ export const getAllAlbums = ({ accessToken, baseUrl, libraryId }) => {
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposeAlbumArray(response, libraryId, baseUrl, accessToken));
+          resolve(plexTranspose.transposeAlbumArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -866,10 +869,10 @@ export const getAllAlbums = ({ accessToken, baseUrl, libraryId }) => {
 // GET ALBUM DETAILS
 // ======================================================================
 
-export const getAlbumDetails = ({ accessToken, albumId, baseUrl, libraryId }) => {
+export const getAlbumDetails = ({ accessToken, albumId, libraryId, serverBaseUrl }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.album.getAlbumDetails(baseUrl, albumId);
+      const endpoint = endpointConfig.album.getAlbumDetails(serverBaseUrl, albumId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -879,7 +882,7 @@ export const getAlbumDetails = ({ accessToken, albumId, baseUrl, libraryId }) =>
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposeAlbumDetails(response, libraryId, baseUrl, accessToken));
+          resolve(plexTranspose.transposeAlbumDetails(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -905,10 +908,10 @@ export const getAlbumDetails = ({ accessToken, albumId, baseUrl, libraryId }) =>
 // GET ALBUM TRACKS
 // ======================================================================
 
-export const getAlbumTracks = ({ accessToken, albumId, baseUrl, libraryId, userId }) => {
+export const getAlbumTracks = ({ accessToken, albumId, libraryId, serverBaseUrl, userId }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.album.getAlbumTracks(baseUrl, albumId);
+      const endpoint = endpointConfig.album.getAlbumTracks(serverBaseUrl, albumId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -922,7 +925,7 @@ export const getAlbumTracks = ({ accessToken, albumId, baseUrl, libraryId, userI
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposeTrackArray(response, libraryId, baseUrl, accessToken));
+          resolve(plexTranspose.transposeTrackArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -948,10 +951,10 @@ export const getAlbumTracks = ({ accessToken, albumId, baseUrl, libraryId, userI
 // GET FOLDER ITEMS
 // ======================================================================
 
-export const getFolderItems = ({ accessToken, baseUrl, folderId, libraryId }) => {
+export const getFolderItems = ({ accessToken, folderId, libraryId, serverBaseUrl }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.folder.getFolderItems(baseUrl, libraryId);
+      const endpoint = endpointConfig.folder.getFolderItems(serverBaseUrl, libraryId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -964,7 +967,7 @@ export const getFolderItems = ({ accessToken, baseUrl, folderId, libraryId }) =>
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposeFolderArray(response, libraryId, baseUrl, accessToken));
+          resolve(plexTranspose.transposeFolderArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -990,10 +993,10 @@ export const getFolderItems = ({ accessToken, baseUrl, folderId, libraryId }) =>
 // GET ALL PLAYLISTS
 // ======================================================================
 
-export const getAllPlaylists = ({ accessToken, baseUrl, libraryId }) => {
+export const getAllPlaylists = ({ accessToken, libraryId, serverBaseUrl }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.playlist.getAllPlaylists(baseUrl, libraryId);
+      const endpoint = endpointConfig.playlist.getAllPlaylists(serverBaseUrl, libraryId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -1008,7 +1011,7 @@ export const getAllPlaylists = ({ accessToken, baseUrl, libraryId }) => {
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposePlaylistArray(response, libraryId, baseUrl, accessToken));
+          resolve(plexTranspose.transposePlaylistArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -1034,10 +1037,10 @@ export const getAllPlaylists = ({ accessToken, baseUrl, libraryId }) => {
 // GET PLAYLIST DETAILS
 // ======================================================================
 
-export const getPlaylistDetails = ({ accessToken, baseUrl, libraryId, playlistId, userId }) => {
+export const getPlaylistDetails = ({ accessToken, libraryId, playlistId, serverBaseUrl, userId }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.playlist.getPlaylistDetails(baseUrl, playlistId);
+      const endpoint = endpointConfig.playlist.getPlaylistDetails(serverBaseUrl, playlistId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -1047,7 +1050,7 @@ export const getPlaylistDetails = ({ accessToken, baseUrl, libraryId, playlistId
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposePlaylistDetails(response, libraryId, baseUrl, accessToken));
+          resolve(plexTranspose.transposePlaylistDetails(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -1073,10 +1076,10 @@ export const getPlaylistDetails = ({ accessToken, baseUrl, libraryId, playlistId
 // GET PLAYLIST TRACKS
 // ======================================================================
 
-export const getPlaylistTracks = ({ accessToken, baseUrl, libraryId, playlistId }) => {
+export const getPlaylistTracks = ({ accessToken, libraryId, playlistId, serverBaseUrl }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.playlist.getPlaylistTracks(baseUrl, playlistId);
+      const endpoint = endpointConfig.playlist.getPlaylistTracks(serverBaseUrl, playlistId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -1090,7 +1093,7 @@ export const getPlaylistTracks = ({ accessToken, baseUrl, libraryId, playlistId 
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposeTrackArray(response, libraryId, baseUrl, accessToken));
+          resolve(plexTranspose.transposeTrackArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -1116,10 +1119,10 @@ export const getPlaylistTracks = ({ accessToken, baseUrl, libraryId, playlistId 
 // GET ALL COLLECTIONS
 // ======================================================================
 
-export const getAllCollections = ({ accessToken, baseUrl, libraryId }) => {
+export const getAllCollections = ({ accessToken, libraryId, serverBaseUrl }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.collection.getAllCollections(baseUrl, libraryId);
+      const endpoint = endpointConfig.collection.getAllCollections(serverBaseUrl, libraryId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -1129,7 +1132,7 @@ export const getAllCollections = ({ accessToken, baseUrl, libraryId }) => {
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposeCollectionArray(response, libraryId, baseUrl, accessToken));
+          resolve(plexTranspose.transposeCollectionArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -1155,10 +1158,10 @@ export const getAllCollections = ({ accessToken, baseUrl, libraryId }) => {
 // GET COLLECTION ITEMS
 // ======================================================================
 
-export const getCollectionItems = ({ accessToken, baseUrl, collectionId, libraryId, typeKey }) => {
+export const getCollectionItems = ({ accessToken, collectionId, libraryId, serverBaseUrl, typeKey }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.collection.getCollectionItems(baseUrl, collectionId);
+      const endpoint = endpointConfig.collection.getCollectionItems(serverBaseUrl, collectionId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -1172,7 +1175,7 @@ export const getCollectionItems = ({ accessToken, baseUrl, collectionId, library
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposeCollectionItemArray(response, libraryId, baseUrl, accessToken, typeKey));
+          resolve(plexTranspose.transposeCollectionItemArray(response, libraryId, serverBaseUrl, accessToken, typeKey));
         })
         .catch((error) => {
           reject({
@@ -1198,10 +1201,10 @@ export const getCollectionItems = ({ accessToken, baseUrl, collectionId, library
 // GET ALL TAGS
 // ======================================================================
 
-export const getAllTags = ({ accessToken, baseUrl, libraryId, typeKey }) => {
+export const getAllTags = ({ accessToken, libraryId, serverBaseUrl, typeKey }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.tags[`getAll${typeKey}`](baseUrl, libraryId);
+      const endpoint = endpointConfig.tags[`getAll${typeKey}`](serverBaseUrl, libraryId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -1240,10 +1243,10 @@ export const getAllTags = ({ accessToken, baseUrl, libraryId, typeKey }) => {
 // GET TAG ITEMS
 // ======================================================================
 
-export const getTagItems = ({ accessToken, baseUrl, libraryId, tagId, typeKey }) => {
+export const getTagItems = ({ accessToken, libraryId, serverBaseUrl, tagId, typeKey }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.tags[`get${typeKey}`](baseUrl, libraryId);
+      const endpoint = endpointConfig.tags[`get${typeKey}`](serverBaseUrl, libraryId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -1292,7 +1295,7 @@ export const getTagItems = ({ accessToken, baseUrl, libraryId, tagId, typeKey })
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposeTagItemArray(response, libraryId, baseUrl, accessToken, typeKey));
+          resolve(plexTranspose.transposeTagItemArray(response, libraryId, serverBaseUrl, accessToken, typeKey));
         })
         .catch((error) => {
           reject({
@@ -1318,10 +1321,10 @@ export const getTagItems = ({ accessToken, baseUrl, libraryId, tagId, typeKey })
 // SEARCH
 // ======================================================================
 
-export const searchLibrary = ({ accessToken, baseUrl, includeCollections = 1, libraryId, limit = 25, query }) => {
+export const searchLibrary = ({ accessToken, includeCollections = 1, libraryId, limit = 25, query, serverBaseUrl }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.search.searchLibrary(baseUrl);
+      const endpoint = endpointConfig.search.searchLibrary(serverBaseUrl);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -1338,7 +1341,7 @@ export const searchLibrary = ({ accessToken, baseUrl, includeCollections = 1, li
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposeSearchResultsArray(response, libraryId, baseUrl, accessToken));
+          resolve(plexTranspose.transposeSearchResultsArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -1364,10 +1367,10 @@ export const searchLibrary = ({ accessToken, baseUrl, includeCollections = 1, li
 // SET STAR RATING
 // ======================================================================
 
-export const setStarRating = ({ accessToken, baseUrl, rating, ratingKey, sessionId }) => {
+export const setStarRating = ({ accessToken, rating, ratingKey, serverBaseUrl, sessionId }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.rating.setStarRating(baseUrl, ratingKey, rating);
+      const endpoint = endpointConfig.rating.setStarRating(serverBaseUrl, ratingKey, rating);
       const browserName = getBrowserName();
       const params = {
         identifier: 'com.plexapp.plugins.library',
@@ -1416,10 +1419,10 @@ export const setStarRating = ({ accessToken, baseUrl, rating, ratingKey, session
 
 export const logPlaybackStatus = ({
   accessToken,
-  baseUrl,
   currentTime,
   duration,
   ratingKey,
+  serverBaseUrl,
   sessionId,
   state,
   trackId,
@@ -1427,7 +1430,7 @@ export const logPlaybackStatus = ({
 }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.status.logPlaybackStatus(baseUrl);
+      const endpoint = endpointConfig.status.logPlaybackStatus(serverBaseUrl);
       const browserName = getBrowserName();
       const params = {
         type: type,
@@ -1480,17 +1483,17 @@ export const logPlaybackStatus = ({
 
 export const logPlaybackQuit = ({
   accessToken,
-  baseUrl,
   currentTime,
   duration,
   ratingKey,
+  serverBaseUrl,
   sessionId,
   state,
   trackId,
   type,
 }) => {
   try {
-    const endpoint = endpointConfig.status.logPlaybackStatus(baseUrl);
+    const endpoint = endpointConfig.status.logPlaybackStatus(serverBaseUrl);
     const browserName = getBrowserName();
     const params = new URLSearchParams({
       type: type,

@@ -171,7 +171,9 @@ export const getAllServers = () => {
       const serverBaseUrl = currentService === 'jellyfin' ? store.getState().appModel.currentUser.serverBaseUrl : null;
 
       serviceTools[currentService]
-        .getAllServers({ baseUrl: serverBaseUrl })
+        .getAllServers({
+          serverBaseUrl,
+        })
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.storeAllServers(response);
@@ -244,7 +246,11 @@ export const getAllLibraries = async () => {
         const userId = currentUser?.userId;
 
         serviceTools[currentService]
-          .getAllLibraries({ accessToken, baseUrl: serverBaseUrl, userId })
+          .getAllLibraries({
+            accessToken,
+            serverBaseUrl,
+            userId,
+          })
           .then((response) => {
             store.dispatch.sessionModel.refreshCurrentLibrary(response);
             store.dispatch.appModel.setAppState({ allLibraries: response });
@@ -280,7 +286,11 @@ export const getAllArtists = () => {
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
       serviceTools[currentService]
-        .getAllArtists({ accessToken, baseUrl: serverBaseUrl, libraryId })
+        .getAllArtists({
+          accessToken,
+          libraryId,
+          serverBaseUrl,
+        })
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.setAppState({
@@ -319,8 +329,8 @@ export const getArtistDetails = (libraryId, artistId) => {
         .getArtistDetails({
           accessToken,
           artistId,
-          baseUrl: serverBaseUrl,
           libraryId,
+          serverBaseUrl,
           userId,
         })
         .then((response) => {
@@ -358,8 +368,8 @@ export const getAllArtistAlbums = (libraryId, artistId) => {
         .getAllArtistAlbums({
           accessToken,
           artistId,
-          baseUrl: serverBaseUrl,
           libraryId,
+          serverBaseUrl,
           userId,
         })
         .then((response) => {
@@ -396,8 +406,8 @@ export const getAllArtistRelatedAlbums = (libraryId, artistId) => {
         .getAllArtistRelatedAlbums({
           accessToken,
           artistId,
-          baseUrl: serverBaseUrl,
           libraryId,
+          serverBaseUrl,
         })
         .then((response) => {
           // console.log(response);
@@ -435,8 +445,8 @@ export const getAllArtistAppearanceAlbums = (libraryId, artistId, artistName) =>
           accessToken,
           artistId,
           artistName,
-          baseUrl: serverBaseUrl,
           libraryId,
+          serverBaseUrl,
           store,
           userId,
         })
@@ -480,15 +490,15 @@ export const getAllArtistTracks = (libraryId, artistId, artistName) => {
           accessToken,
           artistId,
           artistName,
-          baseUrl: serverBaseUrl,
           libraryId,
+          serverBaseUrl,
           userId,
         }),
         serviceTools[currentService].getAllArtistAppearanceTracks({
           accessToken,
           artistName,
-          baseUrl: serverBaseUrl,
           libraryId,
+          serverBaseUrl,
         }),
       ])
         .then(([artistTracks, appearanceTracks]) => {
@@ -529,7 +539,11 @@ export const getAllAlbums = () => {
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
       serviceTools[currentService]
-        .getAllAlbums({ accessToken, baseUrl: serverBaseUrl, libraryId })
+        .getAllAlbums({
+          accessToken,
+          libraryId,
+          serverBaseUrl,
+        })
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.setAppState({
@@ -567,8 +581,8 @@ export const getAlbumDetails = (libraryId, albumId, callback) => {
         .getAlbumDetails({
           accessToken,
           albumId,
-          baseUrl: serverBaseUrl,
           libraryId,
+          serverBaseUrl,
         })
         .then((response) => {
           // console.log(response);
@@ -609,8 +623,8 @@ export const getAlbumTracks = (libraryId, albumId) => {
           .getAlbumTracks({
             accessToken,
             albumId,
-            baseUrl: serverBaseUrl,
             libraryId,
+            serverBaseUrl,
             userId,
           })
           .then((response) => {
@@ -655,9 +669,9 @@ export const getFolderItems = (folderId) => {
         serviceTools[currentService]
           .getFolderItems({
             accessToken,
-            baseUrl: serverBaseUrl,
             folderId,
             libraryId,
+            serverBaseUrl,
           })
           .then((response) => {
             // console.log(response);
@@ -701,8 +715,8 @@ export const getAllPlaylists = () => {
       serviceTools[currentService]
         .getAllPlaylists({
           accessToken,
-          baseUrl: serverBaseUrl,
           libraryId,
+          serverBaseUrl,
           userId,
         })
         .then((response) => {
@@ -741,9 +755,9 @@ export const getPlaylistDetails = (libraryId, playlistId) => {
       serviceTools[currentService]
         .getPlaylistDetails({
           accessToken,
-          baseUrl: serverBaseUrl,
           libraryId,
           playlistId,
+          serverBaseUrl,
           userId,
         })
         .then((response) => {
@@ -780,9 +794,9 @@ export const getPlaylistTracks = (libraryId, playlistId) => {
         serviceTools[currentService]
           .getPlaylistTracks({
             accessToken,
-            baseUrl: serverBaseUrl,
             libraryId,
             playlistId,
+            serverBaseUrl,
           })
           .then((response) => {
             // console.log(response);
@@ -823,7 +837,11 @@ export const getAllCollections = () => {
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
       plexTools
-        .getAllCollections({ accessToken, baseUrl: serverBaseUrl, libraryId })
+        .getAllCollections({
+          accessToken,
+          libraryId,
+          serverBaseUrl,
+        })
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.setAppState(response);
@@ -860,9 +878,9 @@ export const getCollectionItems = (libraryId, collectionId, typeKey) => {
       plexTools
         .getCollectionItems({
           accessToken,
-          baseUrl: serverBaseUrl,
           collectionId,
           libraryId,
+          serverBaseUrl,
           typeKey,
         })
         .then((response) => {
@@ -909,8 +927,8 @@ export const getAllTags = (typeKey) => {
       plexTools
         .getAllTags({
           accessToken,
-          baseUrl: serverBaseUrl,
           libraryId,
+          serverBaseUrl,
           typeKey,
         })
         .then((response) => {
@@ -952,8 +970,8 @@ export const getTagItems = (libraryId, tagId, typeKey) => {
       plexTools
         .getTagItems({
           accessToken,
-          baseUrl: serverBaseUrl,
           libraryId,
+          serverBaseUrl,
           tagId,
           typeKey,
         })
@@ -990,9 +1008,9 @@ const searchLibrary2 = (query, searchCounter) => {
   plexTools
     .searchLibrary({
       accessToken,
-      baseUrl: serverBaseUrl,
       libraryId,
       query,
+      serverBaseUrl,
     })
     .then((response) => {
       // console.log(response);
@@ -1020,7 +1038,13 @@ export const setStarRating = (type, ratingKey, rating) => {
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
   const sessionId = store.getState().sessionModel.sessionId;
   plexTools
-    .setStarRating(serverBaseUrl, accessToken, sessionId, ratingKey, rating)
+    .setStarRating({
+      accessToken,
+      rating,
+      ratingKey,
+      serverBaseUrl,
+      sessionId,
+    })
     .then(() => {
       if (type === 'artist' || type === 'artists') {
         store.dispatch.appModel.setArtistRating({ ratingKey, rating });
@@ -1074,10 +1098,10 @@ export const logPlaybackStatus = (currentTrack, state, currentTime) => {
       plexTools
         .logPlaybackStatus({
           accessToken,
-          baseUrl: serverBaseUrl,
           currentTime,
           duration,
           ratingKey: trackId,
+          serverBaseUrl,
           sessionId,
           state,
           trackId: trackKey,
@@ -1102,10 +1126,10 @@ export const logPlaybackQuit = (currentTrack, currentTime) => {
       const { trackId, trackKey, duration } = currentTrack || {};
       plexTools.logPlaybackQuit({
         accessToken,
-        baseUrl: serverBaseUrl,
         currentTime,
         duration,
         ratingKey: trackId,
+        serverBaseUrl,
         sessionId,
         state: 'stopped',
         trackId: trackKey,

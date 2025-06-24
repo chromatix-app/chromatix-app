@@ -28,40 +28,40 @@ const storageTokenKey = config.storageTokenKey;
 
 const endpointConfig = {
   auth: {
-    login: (baseUrl) => `${baseUrl}/Users/AuthenticateByName`,
+    login: (serverBaseUrl) => `${serverBaseUrl}/Users/AuthenticateByName`,
   },
   user: {
-    getUserInfo: (baseUrl, userId) => `${baseUrl}/Users/${userId}`,
+    getUserInfo: (serverBaseUrl, userId) => `${serverBaseUrl}/Users/${userId}`,
   },
   server: {
-    getAllServers: (baseUrl) => `${baseUrl}/System/Info`,
+    getAllServers: (serverBaseUrl) => `${serverBaseUrl}/System/Info`,
   },
   library: {
-    getAllLibraries: (baseUrl, userId) => `${baseUrl}/Users/${userId}/Views`,
+    getAllLibraries: (serverBaseUrl, userId) => `${serverBaseUrl}/Users/${userId}/Views`,
   },
   search: {
     searchLibrary: null,
   },
   artist: {
-    getAllArtists: (baseUrl) => `${baseUrl}/Artists`,
-    getArtistDetails: (baseUrl, userId, artistId) => `${baseUrl}/Users/${userId}/Items/${artistId}`,
-    getAllArtistAlbums: (baseUrl, userId) => `${baseUrl}/Users/${userId}/Items`,
+    getAllArtists: (serverBaseUrl) => `${serverBaseUrl}/Artists`,
+    getArtistDetails: (serverBaseUrl, userId, artistId) => `${serverBaseUrl}/Users/${userId}/Items/${artistId}`,
+    getAllArtistAlbums: (serverBaseUrl, userId) => `${serverBaseUrl}/Users/${userId}/Items`,
     // getAllArtistRelatedAlbums: null,
-    getAllArtistAppearanceAlbums: (baseUrl, userId) => `${baseUrl}/Users/${userId}/Items`,
-    getAllArtistTracks: (baseUrl, userId) => `${baseUrl}/Users/${userId}/Items`,
+    getAllArtistAppearanceAlbums: (serverBaseUrl, userId) => `${serverBaseUrl}/Users/${userId}/Items`,
+    getAllArtistTracks: (serverBaseUrl, userId) => `${serverBaseUrl}/Users/${userId}/Items`,
   },
   album: {
-    getAllAlbums: (baseUrl) => `${baseUrl}/Items`,
-    getAlbumDetails: (baseUrl, albumId) => `${baseUrl}/Items/${albumId}`,
-    getAlbumTracks: (baseUrl, userId) => `${baseUrl}/Users/${userId}/Items`,
+    getAllAlbums: (serverBaseUrl) => `${serverBaseUrl}/Items`,
+    getAlbumDetails: (serverBaseUrl, albumId) => `${serverBaseUrl}/Items/${albumId}`,
+    getAlbumTracks: (serverBaseUrl, userId) => `${serverBaseUrl}/Users/${userId}/Items`,
   },
   folder: {
     getFolderItems: null,
   },
   playlist: {
-    getAllPlaylists: (baseUrl, userId) => `${baseUrl}/Users/${userId}/Items`,
-    getPlaylistDetails: (baseUrl, userId, playlistId) => `${baseUrl}/Users/${userId}/Items/${playlistId}`,
-    getPlaylistTracks: (baseUrl, playlistId) => `${baseUrl}/Playlists/${playlistId}/Items`,
+    getAllPlaylists: (serverBaseUrl, userId) => `${serverBaseUrl}/Users/${userId}/Items`,
+    getPlaylistDetails: (serverBaseUrl, userId, playlistId) => `${serverBaseUrl}/Users/${userId}/Items/${playlistId}`,
+    getPlaylistTracks: (serverBaseUrl, playlistId) => `${serverBaseUrl}/Playlists/${playlistId}/Items`,
   },
   collection: {
     getAllCollections: null,
@@ -195,15 +195,15 @@ export const getUserInfo = () => {
   return new Promise((resolve, reject) => {
     try {
       const accessToken = getLocalStorage(storageTokenKey);
-      const baseUrl = getLocalStorage(storageJellyServerKey);
+      const serverBaseUrl = getLocalStorage(storageJellyServerKey);
       const userId = getLocalStorage(storageJellyUserKey);
-      const endpoint = endpointConfig.user.getUserInfo(baseUrl, userId);
+      const endpoint = endpointConfig.user.getUserInfo(serverBaseUrl, userId);
       axios
         .get(endpoint, {
           headers: getRequestHeaders(accessToken),
         })
         .then((response) => {
-          resolve(jellyTranspose.transposeUserData(response, baseUrl, accessToken, userId));
+          resolve(jellyTranspose.transposeUserData(response, serverBaseUrl, accessToken, userId));
         })
         .catch((error) => {
           if (error?.code !== 'ERR_NETWORK') {
@@ -229,11 +229,11 @@ export const getUserInfo = () => {
 // GET ALL SERVERS
 // ======================================================================
 
-export const getAllServers = ({ baseUrl }) => {
+export const getAllServers = ({ serverBaseUrl }) => {
   return new Promise((resolve, reject) => {
     try {
       const accessToken = getLocalStorage(storageTokenKey);
-      const endpoint = endpointConfig.server.getAllServers(baseUrl);
+      const endpoint = endpointConfig.server.getAllServers(serverBaseUrl);
       axios
         .get(endpoint, {
           headers: getRequestHeaders(accessToken),
@@ -262,10 +262,10 @@ export const getAllServers = ({ baseUrl }) => {
 // GET ALL LIBRARIES
 // ======================================================================
 
-export const getAllLibraries = ({ accessToken, baseUrl, userId }) => {
+export const getAllLibraries = ({ accessToken, serverBaseUrl, userId }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.library.getAllLibraries(baseUrl, userId);
+      const endpoint = endpointConfig.library.getAllLibraries(serverBaseUrl, userId);
       axios
         .get(endpoint, {
           headers: getRequestHeaders(accessToken),
@@ -294,10 +294,10 @@ export const getAllLibraries = ({ accessToken, baseUrl, userId }) => {
 // GET ALL ARTISTS
 // ======================================================================
 
-export const getAllArtists = ({ accessToken, baseUrl, libraryId }) => {
+export const getAllArtists = ({ accessToken, libraryId, serverBaseUrl }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.artist.getAllArtists(baseUrl);
+      const endpoint = endpointConfig.artist.getAllArtists(serverBaseUrl);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -318,7 +318,7 @@ export const getAllArtists = ({ accessToken, baseUrl, libraryId }) => {
           },
         })
         .then((response) => {
-          resolve(jellyTranspose.transposeArtistArray(response, libraryId, baseUrl, accessToken));
+          resolve(jellyTranspose.transposeArtistArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -344,10 +344,10 @@ export const getAllArtists = ({ accessToken, baseUrl, libraryId }) => {
 // GET ARTIST DETAILS
 // ======================================================================
 
-export const getArtistDetails = ({ accessToken, artistId, baseUrl, libraryId, userId }) => {
+export const getArtistDetails = ({ accessToken, artistId, libraryId, serverBaseUrl, userId }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.artist.getArtistDetails(baseUrl, userId, artistId);
+      const endpoint = endpointConfig.artist.getArtistDetails(serverBaseUrl, userId, artistId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -357,7 +357,7 @@ export const getArtistDetails = ({ accessToken, artistId, baseUrl, libraryId, us
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(jellyTranspose.transposeArtistDetails(response, libraryId, baseUrl, accessToken));
+          resolve(jellyTranspose.transposeArtistDetails(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -383,10 +383,10 @@ export const getArtistDetails = ({ accessToken, artistId, baseUrl, libraryId, us
 // GET ALL ARTIST ALBUMS
 // ======================================================================
 
-export const getAllArtistAlbums = ({ accessToken, artistId, baseUrl, libraryId, userId }) => {
+export const getAllArtistAlbums = ({ accessToken, artistId, libraryId, serverBaseUrl, userId }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.artist.getAllArtistAlbums(baseUrl, userId);
+      const endpoint = endpointConfig.artist.getAllArtistAlbums(serverBaseUrl, userId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -406,7 +406,7 @@ export const getAllArtistAlbums = ({ accessToken, artistId, baseUrl, libraryId, 
           },
         })
         .then((response) => {
-          resolve(jellyTranspose.transposeAlbumArray(response, libraryId, baseUrl, accessToken));
+          resolve(jellyTranspose.transposeAlbumArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -450,14 +450,14 @@ export const getAllArtistAppearanceAlbums = ({
   accessToken,
   artistId,
   artistName,
-  baseUrl,
   libraryId,
+  serverBaseUrl,
   store,
   userId,
 }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.artist.getAllArtistAppearanceAlbums(baseUrl, userId);
+      const endpoint = endpointConfig.artist.getAllArtistAppearanceAlbums(serverBaseUrl, userId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -478,7 +478,7 @@ export const getAllArtistAppearanceAlbums = ({
           },
         })
         .then((response) => {
-          resolve(jellyTranspose.transposeAlbumArray(response, libraryId, baseUrl, accessToken));
+          resolve(jellyTranspose.transposeAlbumArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -504,10 +504,10 @@ export const getAllArtistAppearanceAlbums = ({
 // GET ARTIST TRACKS
 // ======================================================================
 
-export const getAllArtistTracks = ({ accessToken, artistId, artistName, baseUrl, libraryId, userId }) => {
+export const getAllArtistTracks = ({ accessToken, artistId, artistName, libraryId, serverBaseUrl, userId }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.artist.getAllArtistTracks(baseUrl, userId);
+      const endpoint = endpointConfig.artist.getAllArtistTracks(serverBaseUrl, userId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -529,7 +529,7 @@ export const getAllArtistTracks = ({ accessToken, artistId, artistName, baseUrl,
           },
         })
         .then((response) => {
-          resolve(jellyTranspose.transposeTrackArray(response, libraryId, baseUrl, accessToken));
+          resolve(jellyTranspose.transposeTrackArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -565,10 +565,10 @@ export const getAllArtistAppearanceTracks = () => {
 // GET ALL ALBUMS
 // ======================================================================
 
-export const getAllAlbums = ({ accessToken, baseUrl, libraryId }) => {
+export const getAllAlbums = ({ accessToken, libraryId, serverBaseUrl }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.album.getAllAlbums(baseUrl);
+      const endpoint = endpointConfig.album.getAllAlbums(serverBaseUrl);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -589,7 +589,7 @@ export const getAllAlbums = ({ accessToken, baseUrl, libraryId }) => {
           },
         })
         .then((response) => {
-          resolve(jellyTranspose.transposeAlbumArray(response, libraryId, baseUrl, accessToken));
+          resolve(jellyTranspose.transposeAlbumArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -615,10 +615,10 @@ export const getAllAlbums = ({ accessToken, baseUrl, libraryId }) => {
 // GET ALBUM DETAILS
 // ======================================================================
 
-export const getAlbumDetails = ({ accessToken, albumId, baseUrl, libraryId }) => {
+export const getAlbumDetails = ({ accessToken, albumId, libraryId, serverBaseUrl }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.album.getAlbumDetails(baseUrl, albumId);
+      const endpoint = endpointConfig.album.getAlbumDetails(serverBaseUrl, albumId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -628,7 +628,7 @@ export const getAlbumDetails = ({ accessToken, albumId, baseUrl, libraryId }) =>
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(jellyTranspose.transposeAlbumDetails(response, libraryId, baseUrl, accessToken));
+          resolve(jellyTranspose.transposeAlbumDetails(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -654,10 +654,10 @@ export const getAlbumDetails = ({ accessToken, albumId, baseUrl, libraryId }) =>
 // GET ALBUM TRACKS
 // ======================================================================
 
-export const getAlbumTracks = ({ accessToken, albumId, baseUrl, libraryId, userId }) => {
+export const getAlbumTracks = ({ accessToken, albumId, libraryId, serverBaseUrl, userId }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.album.getAlbumTracks(baseUrl, userId);
+      const endpoint = endpointConfig.album.getAlbumTracks(serverBaseUrl, userId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -675,7 +675,7 @@ export const getAlbumTracks = ({ accessToken, albumId, baseUrl, libraryId, userI
           },
         })
         .then((response) => {
-          resolve(jellyTranspose.transposeTrackArray(response, libraryId, baseUrl, accessToken));
+          resolve(jellyTranspose.transposeTrackArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -709,10 +709,10 @@ This is not required when using the Jellyfin API.
 // GET ALL PLAYLISTS
 // ======================================================================
 
-export const getAllPlaylists = ({ accessToken, baseUrl, libraryId, userId }) => {
+export const getAllPlaylists = ({ accessToken, libraryId, serverBaseUrl, userId }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.playlist.getAllPlaylists(baseUrl, userId);
+      const endpoint = endpointConfig.playlist.getAllPlaylists(serverBaseUrl, userId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -732,7 +732,7 @@ export const getAllPlaylists = ({ accessToken, baseUrl, libraryId, userId }) => 
           },
         })
         .then((response) => {
-          resolve(jellyTranspose.transposePlaylistArray(response, libraryId, baseUrl, accessToken));
+          resolve(jellyTranspose.transposePlaylistArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -758,10 +758,10 @@ export const getAllPlaylists = ({ accessToken, baseUrl, libraryId, userId }) => 
 // GET PLAYLIST DETAILS
 // ======================================================================
 
-export const getPlaylistDetails = ({ accessToken, baseUrl, libraryId, playlistId, userId }) => {
+export const getPlaylistDetails = ({ accessToken, libraryId, playlistId, serverBaseUrl, userId }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.playlist.getPlaylistDetails(baseUrl, userId, playlistId);
+      const endpoint = endpointConfig.playlist.getPlaylistDetails(serverBaseUrl, userId, playlistId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -771,7 +771,7 @@ export const getPlaylistDetails = ({ accessToken, baseUrl, libraryId, playlistId
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(jellyTranspose.transposePlaylistDetails(response, libraryId, baseUrl, accessToken));
+          resolve(jellyTranspose.transposePlaylistDetails(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
@@ -797,10 +797,10 @@ export const getPlaylistDetails = ({ accessToken, baseUrl, libraryId, playlistId
 // GET PLAYLIST TRACKS
 // ======================================================================
 
-export const getPlaylistTracks = ({ accessToken, baseUrl, libraryId, playlistId }) => {
+export const getPlaylistTracks = ({ accessToken, libraryId, playlistId, serverBaseUrl }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.playlist.getPlaylistTracks(baseUrl, playlistId);
+      const endpoint = endpointConfig.playlist.getPlaylistTracks(serverBaseUrl, playlistId);
       const controller = new AbortController();
       abortControllers.push(controller);
 
@@ -810,7 +810,7 @@ export const getPlaylistTracks = ({ accessToken, baseUrl, libraryId, playlistId 
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(jellyTranspose.transposeTrackArray(response, libraryId, baseUrl, accessToken));
+          resolve(jellyTranspose.transposeTrackArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({

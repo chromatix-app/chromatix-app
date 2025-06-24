@@ -14,33 +14,33 @@ const thumbSizeMedium = 600;
 // HELPERS
 // ======================================================================
 
-const getUserImage = (primaryImageTag, baseUrl, accessToken, userId) => {
+const getUserImage = (primaryImageTag, serverBaseUrl, accessToken, userId) => {
   if (!primaryImageTag) {
     return null;
   }
-  return `${baseUrl}/Users/${userId}/Images/Primary?api_key=${accessToken}&tag=${primaryImageTag}`;
+  return `${serverBaseUrl}/Users/${userId}/Images/Primary?api_key=${accessToken}&tag=${primaryImageTag}`;
 };
 
-const getThumb = (thumbImageTag, itemId, baseUrl, accessToken, size) => {
+const getThumb = (thumbImageTag, itemId, serverBaseUrl, accessToken, size) => {
   if (!thumbImageTag) {
     return null;
   }
-  return `${baseUrl}/Items/${itemId}/Images/Primary?api_key=${accessToken}&tag=${thumbImageTag}&width=${size}&height=${size}`;
+  return `${serverBaseUrl}/Items/${itemId}/Images/Primary?api_key=${accessToken}&tag=${thumbImageTag}&width=${size}&height=${size}`;
 };
 
 // ======================================================================
 // USER
 // ======================================================================
 
-export const transposeUserData = (data, baseUrl, accessToken, userId) => {
+export const transposeUserData = (data, serverBaseUrl, accessToken, userId) => {
   // console.log(user?.data);
   const user = data?.data;
   return {
     userId: user.Id,
     email: null,
-    thumb: getUserImage(user.PrimaryImageTag, baseUrl, accessToken, userId),
+    thumb: getUserImage(user.PrimaryImageTag, serverBaseUrl, accessToken, userId),
     username: user.Name,
-    serverBaseUrl: baseUrl,
+    serverBaseUrl,
   };
 };
 
@@ -83,41 +83,42 @@ export const transposeLibraryData = (library) => {
 // ARTISTS
 // ======================================================================
 
-export const transposeArtistArray = (array, libraryId, baseUrl, accessToken) => {
+export const transposeArtistArray = (array, libraryId, serverBaseUrl, accessToken) => {
   // console.log(array?.data?.Items);
-  const data = array?.data?.Items?.map((artist) => transposeArtistData(artist, libraryId, baseUrl, accessToken)) || [];
+  const data =
+    array?.data?.Items?.map((artist) => transposeArtistData(artist, libraryId, serverBaseUrl, accessToken)) || [];
   return data;
 };
 
-export const transposeArtistDetails = (array, libraryId, baseUrl, accessToken) => {
+export const transposeArtistDetails = (array, libraryId, serverBaseUrl, accessToken) => {
   // console.log(array?.data);
   const artist = array?.data;
-  const artistDetails = transposeArtistData(artist, libraryId, baseUrl, accessToken);
+  const artistDetails = transposeArtistData(artist, libraryId, serverBaseUrl, accessToken);
   return artistDetails;
 };
 
-// export const transposeArtistRelatedArray = (array, libraryId, baseUrl, accessToken) => {
+// export const transposeArtistRelatedArray = (array, libraryId, serverBaseUrl, accessToken) => {
 //   const data =
 //     // array?.data?.MediaContainer?.Hub?.filter(
 //     array?.data?.MediaContainer?.Metadata?.[0]?.Related?.Hub?.filter(
 //       (hub) => hub.type === 'album' && hub.Metadata && hub.context && hub.context.includes('hub.artist.albums')
 //     ).map((hub) => ({
 //       title: hub.title,
-//       related: hub.Metadata.map((album) => transposeAlbumData(album, libraryId, baseUrl, accessToken)),
+//       related: hub.Metadata.map((album) => transposeAlbumData(album, libraryId, serverBaseUrl, accessToken)),
 //     })) || [];
 //   return data;
 // };
 
-// export const transposeArtistAppearanceAlbumIdsArray = (array, libraryId, baseUrl, accessToken) => {
+// export const transposeArtistAppearanceAlbumIdsArray = (array, libraryId, serverBaseUrl, accessToken) => {
 //   const artistAppearanceTracks =
-//     array?.data?.MediaContainer?.Metadata?.map((track) => transposeTrackData(track, libraryId, baseUrl, accessToken)) ||
+//     array?.data?.MediaContainer?.Metadata?.map((track) => transposeTrackData(track, libraryId, serverBaseUrl, accessToken)) ||
 //     [];
 //   // get a unique list of album IDs using the albumId key of each track
 //   const artistAppearanceAlbums = [...new Set(artistAppearanceTracks.map((track) => track.albumId))];
 //   return artistAppearanceAlbums;
 // };
 
-export const transposeArtistData = (artist, libraryId, baseUrl, accessToken) => {
+export const transposeArtistData = (artist, libraryId, serverBaseUrl, accessToken) => {
   return {
     kind: 'artist',
     libraryId: libraryId,
@@ -130,8 +131,8 @@ export const transposeArtistData = (artist, libraryId, baseUrl, accessToken) => 
     userRating: null,
     isFavourite: artist.UserData?.IsFavorite || false,
     link: '/artists/' + libraryId + '/' + artist.Id,
-    thumb: getThumb(artist.ImageTags?.Primary, artist.Id, baseUrl, accessToken, thumbSizeSmall),
-    thumbMedium: getThumb(artist.ImageTags?.Primary, artist.Id, baseUrl, accessToken, thumbSizeMedium),
+    thumb: getThumb(artist.ImageTags?.Primary, artist.Id, serverBaseUrl, accessToken, thumbSizeSmall),
+    thumbMedium: getThumb(artist.ImageTags?.Primary, artist.Id, serverBaseUrl, accessToken, thumbSizeMedium),
   };
 };
 
@@ -139,20 +140,21 @@ export const transposeArtistData = (artist, libraryId, baseUrl, accessToken) => 
 // ALBUMS
 // ======================================================================
 
-export const transposeAlbumArray = (array, libraryId, baseUrl, accessToken) => {
+export const transposeAlbumArray = (array, libraryId, serverBaseUrl, accessToken) => {
   // console.log(array?.data?.Items);
-  const data = array?.data?.Items?.map((album) => transposeAlbumData(album, libraryId, baseUrl, accessToken)) || [];
+  const data =
+    array?.data?.Items?.map((album) => transposeAlbumData(album, libraryId, serverBaseUrl, accessToken)) || [];
   return data;
 };
 
-export const transposeAlbumDetails = (array, libraryId, baseUrl, accessToken) => {
+export const transposeAlbumDetails = (array, libraryId, serverBaseUrl, accessToken) => {
   // console.log(array?.data);
   const album = array?.data;
-  const albumDetails = transposeAlbumData(album, libraryId, baseUrl, accessToken);
+  const albumDetails = transposeAlbumData(album, libraryId, serverBaseUrl, accessToken);
   return albumDetails;
 };
 
-export const transposeAlbumData = (album, libraryId, baseUrl, accessToken) => {
+export const transposeAlbumData = (album, libraryId, serverBaseUrl, accessToken) => {
   const artistName = album.AlbumArtist;
   const artistId =
     album.AlbumArtists?.filter((artist) => artist.Name === artistName)[0]?.Id || album.AlbumArtists?.[0]?.Id || null;
@@ -172,8 +174,8 @@ export const transposeAlbumData = (album, libraryId, baseUrl, accessToken) => {
     isFavourite: album.UserData?.IsFavorite || false,
     releaseDate: album.PremiereDate,
     link: '/albums/' + libraryId + '/' + album.Id,
-    thumb: getThumb(album.ImageTags?.Primary, album.Id, baseUrl, accessToken, thumbSizeSmall),
-    thumbMedium: getThumb(album.ImageTags?.Primary, album.Id, baseUrl, accessToken, thumbSizeMedium),
+    thumb: getThumb(album.ImageTags?.Primary, album.Id, serverBaseUrl, accessToken, thumbSizeSmall),
+    thumbMedium: getThumb(album.ImageTags?.Primary, album.Id, serverBaseUrl, accessToken, thumbSizeMedium),
   };
 };
 
@@ -181,10 +183,10 @@ export const transposeAlbumData = (album, libraryId, baseUrl, accessToken) => {
 // FOLDERS
 // ======================================================================
 
-// export const transposeFolderArray = (array, libraryId, baseUrl, accessToken) => {
+// export const transposeFolderArray = (array, libraryId, serverBaseUrl, accessToken) => {
 //   const data =
 //     array?.data?.MediaContainer?.Metadata?.map((item) =>
-//       transposeFolderData(item, libraryId, baseUrl, accessToken)
+//       transposeFolderData(item, libraryId, serverBaseUrl, accessToken)
 //     ).filter((item) => item !== null) || [];
 
 //   // Sort folderItems
@@ -213,12 +215,12 @@ export const transposeAlbumData = (album, libraryId, baseUrl, accessToken) => {
 //   return data;
 // };
 
-// export const transposeFolderData = (folder, libraryId, baseUrl, accessToken) => {
+// export const transposeFolderData = (folder, libraryId, serverBaseUrl, accessToken) => {
 //   if (folder.ratingKey) {
 //     if (folder.type !== 'track') {
 //       return null;
 //     }
-//     return transposeTrackData(folder, libraryId, baseUrl, accessToken);
+//     return transposeTrackData(folder, libraryId, serverBaseUrl, accessToken);
 //   }
 
 //   const folderId = folder.key.split('?parent=')[1];
@@ -235,21 +237,21 @@ export const transposeAlbumData = (album, libraryId, baseUrl, accessToken) => {
 // PLAYLISTS
 // ======================================================================
 
-export const transposePlaylistArray = (array, libraryId, baseUrl, accessToken) => {
+export const transposePlaylistArray = (array, libraryId, serverBaseUrl, accessToken) => {
   // console.log(array?.data?.Items);
   const data =
-    array?.data?.Items?.map((playlist) => transposePlaylistData(playlist, libraryId, baseUrl, accessToken)) || [];
+    array?.data?.Items?.map((playlist) => transposePlaylistData(playlist, libraryId, serverBaseUrl, accessToken)) || [];
   return data;
 };
 
-export const transposePlaylistDetails = (array, libraryId, baseUrl, accessToken) => {
+export const transposePlaylistDetails = (array, libraryId, serverBaseUrl, accessToken) => {
   // console.log(array?.data);
   const playlist = array?.data;
-  const playlistDetails = transposePlaylistData(playlist, libraryId, baseUrl, accessToken);
+  const playlistDetails = transposePlaylistData(playlist, libraryId, serverBaseUrl, accessToken);
   return playlistDetails;
 };
 
-export const transposePlaylistData = (playlist, libraryId, baseUrl, accessToken) => {
+export const transposePlaylistData = (playlist, libraryId, serverBaseUrl, accessToken) => {
   return {
     kind: 'playlist',
     libraryId: libraryId,
@@ -262,8 +264,8 @@ export const transposePlaylistData = (playlist, libraryId, baseUrl, accessToken)
     link: '/playlists/' + libraryId + '/' + playlist.Id,
     totalTracks: playlist.ChildCount,
     duration: playlist.RunTimeTicks / 10000,
-    thumb: getThumb(playlist.ImageTags?.Primary, playlist.Id, baseUrl, accessToken, thumbSizeSmall),
-    thumbMedium: getThumb(playlist.ImageTags?.Primary, playlist.Id, baseUrl, accessToken, thumbSizeMedium),
+    thumb: getThumb(playlist.ImageTags?.Primary, playlist.Id, serverBaseUrl, accessToken, thumbSizeSmall),
+    thumbMedium: getThumb(playlist.ImageTags?.Primary, playlist.Id, serverBaseUrl, accessToken, thumbSizeMedium),
   };
 };
 
@@ -271,11 +273,11 @@ export const transposePlaylistData = (playlist, libraryId, baseUrl, accessToken)
 // COLLECTIONS
 // ======================================================================
 
-// export const transposeCollectionArray = (array, libraryId, baseUrl, accessToken) => {
+// export const transposeCollectionArray = (array, libraryId, serverBaseUrl, accessToken) => {
 //   const allCollections =
 //     array?.data?.MediaContainer?.Metadata?.filter(
 //       (collection) => collection.subtype === 'artist' || collection.subtype === 'album'
-//     ).map((collection) => transposeCollectionData(collection, libraryId, baseUrl, accessToken)) || [];
+//     ).map((collection) => transposeCollectionData(collection, libraryId, serverBaseUrl, accessToken)) || [];
 //   const allArtistCollections = allCollections.filter((collection) => collection.type === 'artist');
 //   const allAlbumCollections = allCollections.filter((collection) => collection.type === 'album');
 //   return {
@@ -284,15 +286,15 @@ export const transposePlaylistData = (playlist, libraryId, baseUrl, accessToken)
 //   };
 // };
 
-// export const transposeCollectionItemArray = (array, libraryId, baseUrl, accessToken, typeKey) => {
+// export const transposeCollectionItemArray = (array, libraryId, serverBaseUrl, accessToken, typeKey) => {
 //   const data =
 //     array?.data?.MediaContainer?.Metadata?.map((item) =>
-//       lookups[`transpose${typeKey}Data`](item, libraryId, baseUrl, accessToken)
+//       lookups[`transpose${typeKey}Data`](item, libraryId, serverBaseUrl, accessToken)
 //     ) || [];
 //   return data;
 // };
 
-// export const transposeCollectionData = (collection, libraryId, baseUrl, accessToken) => {
+// export const transposeCollectionData = (collection, libraryId, serverBaseUrl, accessToken) => {
 //   const collectionThumb = collection.thumb ? collection.thumb : collection.composite ? collection.composite : null;
 //   return {
 //     kind: 'collection',
@@ -307,8 +309,8 @@ export const transposePlaylistData = (playlist, libraryId, baseUrl, accessToken)
 //       libraryId +
 //       '/' +
 //       collection.ratingKey,
-//     thumb: getThumb(baseUrl, collectionThumb, thumbSizeSmall, accessToken),
-//     thumbMedium: getThumb(baseUrl, collectionThumb, thumbSizeMedium, accessToken),
+//     thumb: getThumb(serverBaseUrl, collectionThumb, thumbSizeSmall, accessToken),
+//     thumbMedium: getThumb(serverBaseUrl, collectionThumb, thumbSizeMedium, accessToken),
 //   };
 // };
 
@@ -343,11 +345,11 @@ export const transposePlaylistData = (playlist, libraryId, baseUrl, accessToken)
 //   return data;
 // };
 
-// export const transposeTagItemArray = (array, libraryId, baseUrl, accessToken, typeKey) => {
+// export const transposeTagItemArray = (array, libraryId, serverBaseUrl, accessToken, typeKey) => {
 //   const { primaryKey } = tagItemOptions[typeKey];
 //   const data =
 //     array?.data?.MediaContainer?.Metadata?.map((entry) =>
-//       lookups[`transpose${primaryKey}Data`](entry, libraryId, baseUrl, accessToken)
+//       lookups[`transpose${primaryKey}Data`](entry, libraryId, serverBaseUrl, accessToken)
 //     ) || [];
 //   return data;
 // };
@@ -386,13 +388,14 @@ export const transposePlaylistData = (playlist, libraryId, baseUrl, accessToken)
 // TRACKS
 // ======================================================================
 
-export const transposeTrackArray = (array, libraryId, baseUrl, accessToken) => {
+export const transposeTrackArray = (array, libraryId, serverBaseUrl, accessToken) => {
   // console.log(array?.data?.Items);
-  const data = array?.data?.Items?.map((track) => transposeTrackData(track, libraryId, baseUrl, accessToken)) || [];
+  const data =
+    array?.data?.Items?.map((track) => transposeTrackData(track, libraryId, serverBaseUrl, accessToken)) || [];
   return data;
 };
 
-export const transposeTrackData = (track, libraryId, baseUrl, accessToken) => {
+export const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
   const artistName = track.AlbumArtist;
   const artistId =
     track.AlbumArtists?.filter((artist) => artist.Name === artistName)[0]?.Id || track.AlbumArtists?.[0]?.Id || null;
@@ -417,13 +420,13 @@ export const transposeTrackData = (track, libraryId, baseUrl, accessToken) => {
     userRating: null,
     // isFavourite: playlist.UserData?.IsFavorite || false,
     releaseDate: track.PremiereDate || null,
-    thumb: getThumb(track.ImageTags?.Primary, track.Id, baseUrl, accessToken, thumbSizeSmall),
-    thumbMedium: getThumb(track.ImageTags?.Primary, track.Id, baseUrl, accessToken, thumbSizeMedium),
-    src: `${baseUrl}/Audio/${track.Id}/stream?static=true&api_key=${accessToken}`,
+    thumb: getThumb(track.ImageTags?.Primary, track.Id, serverBaseUrl, accessToken, thumbSizeSmall),
+    thumbMedium: getThumb(track.ImageTags?.Primary, track.Id, serverBaseUrl, accessToken, thumbSizeMedium),
+    src: `${serverBaseUrl}/Audio/${track.Id}/stream?static=true&api_key=${accessToken}`,
   };
 };
 
-// const streamUrl = `${baseUrl}/Audio/${trackId}/stream?static=true&api_key=${accessToken}`;
+// const streamUrl = `${serverBaseUrl}/Audio/${trackId}/stream?static=true&api_key=${accessToken}`;
 
 // http://192.168.1.201:8096/Audio/5bdcac4a524f7e26db698c28a08831d2/stream?static=true&api_key=d4ebbfe4fc4a4732a3a45a30ae399ede
 
@@ -440,10 +443,10 @@ export const transposeTrackData = (track, libraryId, baseUrl, accessToken) => {
 //   track: 6,
 // };
 
-// export const transposeSearchResultsArray = (array, libraryId, baseUrl, accessToken) => {
+// export const transposeSearchResultsArray = (array, libraryId, serverBaseUrl, accessToken) => {
 //   const data =
 //     array?.data?.MediaContainer?.Hub?.flatMap((result) => result.Metadata)
-//       ?.map((result) => transposeSearchResultData(result, libraryId, baseUrl, accessToken))
+//       ?.map((result) => transposeSearchResultData(result, libraryId, serverBaseUrl, accessToken))
 //       .filter((result) => result !== null)
 //       .sort((a, b) => {
 //         if (b.score === a.score) {
@@ -457,7 +460,7 @@ export const transposeTrackData = (track, libraryId, baseUrl, accessToken) => {
 //   return data;
 // };
 
-// export const transposeSearchResultData = (result, libraryId, baseUrl, accessToken) => {
+// export const transposeSearchResultData = (result, libraryId, serverBaseUrl, accessToken) => {
 //   if (result?.type) {
 //     if (result.type === 'artist') {
 //       return {
@@ -467,7 +470,7 @@ export const transposeTrackData = (track, libraryId, baseUrl, accessToken) => {
 //         icon: 'PeopleIcon',
 //         title: result.title,
 //         link: '/artists/' + libraryId + '/' + result.ratingKey,
-//         thumb: getThumb(baseUrl, result.thumb, thumbSizeSmall, accessToken),
+//         thumb: getThumb(serverBaseUrl, result.thumb, thumbSizeSmall, accessToken),
 //       };
 //     } else if (result.type === 'album') {
 //       return {
@@ -478,7 +481,7 @@ export const transposeTrackData = (track, libraryId, baseUrl, accessToken) => {
 //         title: result.title,
 //         link: '/albums/' + libraryId + '/' + result.ratingKey,
 
-//         thumb: getThumb(baseUrl, result.thumb, thumbSizeSmall, accessToken),
+//         thumb: getThumb(serverBaseUrl, result.thumb, thumbSizeSmall, accessToken),
 //       };
 //     } else if (result.type === 'playlist') {
 //       const playlistThumb = result.thumb ? result.thumb : result.composite ? result.composite : null;
@@ -489,7 +492,7 @@ export const transposeTrackData = (track, libraryId, baseUrl, accessToken) => {
 //         icon: 'PlaylistIcon',
 //         title: result.title,
 //         link: '/playlists/' + libraryId + '/' + result.ratingKey,
-//         thumb: getThumb(baseUrl, playlistThumb, thumbSizeSmall, accessToken),
+//         thumb: getThumb(serverBaseUrl, playlistThumb, thumbSizeSmall, accessToken),
 //       };
 //     } else if (result.type === 'collection') {
 //       const collectionThumb = result.thumb ? result.thumb : result.composite ? result.composite : null;
@@ -504,7 +507,7 @@ export const transposeTrackData = (track, libraryId, baseUrl, accessToken) => {
 //           libraryId +
 //           '/' +
 //           result.ratingKey,
-//         thumb: getThumb(baseUrl, collectionThumb, thumbSizeSmall, accessToken),
+//         thumb: getThumb(serverBaseUrl, collectionThumb, thumbSizeSmall, accessToken),
 //       };
 //     } else if (result.type === 'track') {
 //       return {
@@ -515,7 +518,7 @@ export const transposeTrackData = (track, libraryId, baseUrl, accessToken) => {
 //         title: result.title,
 //         link: '/albums/' + libraryId + '/' + result.parentRatingKey,
 
-//         thumb: getThumb(baseUrl, result.thumb, thumbSizeSmall, accessToken),
+//         thumb: getThumb(serverBaseUrl, result.thumb, thumbSizeSmall, accessToken),
 //       };
 //     }
 //   }
