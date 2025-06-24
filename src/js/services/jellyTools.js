@@ -229,7 +229,7 @@ export const getUserInfo = () => {
 // GET ALL SERVERS
 // ======================================================================
 
-export const getAllServers = (baseUrl) => {
+export const getAllServers = ({ baseUrl }) => {
   return new Promise((resolve, reject) => {
     try {
       const accessToken = getLocalStorage(storageTokenKey);
@@ -262,7 +262,7 @@ export const getAllServers = (baseUrl) => {
 // GET ALL LIBRARIES
 // ======================================================================
 
-export const getAllLibraries = (baseUrl, accessToken, userId) => {
+export const getAllLibraries = ({ accessToken, baseUrl, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.library.getAllLibraries(baseUrl, userId);
@@ -294,7 +294,7 @@ export const getAllLibraries = (baseUrl, accessToken, userId) => {
 // GET ALL ARTISTS
 // ======================================================================
 
-export const getAllArtists = (baseUrl, libraryId, accessToken) => {
+export const getAllArtists = ({ accessToken, baseUrl, libraryId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.artist.getAllArtists(baseUrl);
@@ -344,7 +344,7 @@ export const getAllArtists = (baseUrl, libraryId, accessToken) => {
 // GET ARTIST DETAILS
 // ======================================================================
 
-export const getArtistDetails = (baseUrl, libraryId, artistId, accessToken, userId) => {
+export const getArtistDetails = ({ accessToken, artistId, baseUrl, libraryId, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.artist.getArtistDetails(baseUrl, userId, artistId);
@@ -383,7 +383,7 @@ export const getArtistDetails = (baseUrl, libraryId, artistId, accessToken, user
 // GET ALL ARTIST ALBUMS
 // ======================================================================
 
-export const getAllArtistAlbums = (baseUrl, libraryId, artistId, accessToken, userId) => {
+export const getAllArtistAlbums = ({ accessToken, artistId, baseUrl, libraryId, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.artist.getAllArtistAlbums(baseUrl, userId);
@@ -433,7 +433,7 @@ export const getAllArtistAlbums = (baseUrl, libraryId, artistId, accessToken, us
 // ======================================================================
 
 /*
-This is not required when usingthe Jellyfin API, but is here for consistency with other services.
+This is not required when using the Jellyfin API, but is here for consistency with other services.
 */
 
 export const getAllArtistRelatedAlbums = () => {
@@ -446,7 +446,15 @@ export const getAllArtistRelatedAlbums = () => {
 // GET ALL ARTIST APPEARANCES
 // ======================================================================
 
-export const getAllArtistAppearanceAlbums = (baseUrl, libraryId, artistName, store, accessToken, artistId, userId) => {
+export const getAllArtistAppearanceAlbums = ({
+  accessToken,
+  artistId,
+  artistName,
+  baseUrl,
+  libraryId,
+  store,
+  userId,
+}) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.artist.getAllArtistAppearanceAlbums(baseUrl, userId);
@@ -496,7 +504,7 @@ export const getAllArtistAppearanceAlbums = (baseUrl, libraryId, artistName, sto
 // GET ARTIST TRACKS
 // ======================================================================
 
-export const getAllArtistTracks = (baseUrl, libraryId, artistId, artistName, accessToken, userId) => {
+export const getAllArtistTracks = ({ accessToken, artistId, artistName, baseUrl, libraryId, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.artist.getAllArtistTracks(baseUrl, userId);
@@ -544,10 +552,10 @@ export const getAllArtistTracks = (baseUrl, libraryId, artistId, artistName, acc
 };
 
 /*
-This is not required when usingthe Jellyfin API, but is here for consistency with other services.
+This is not required when using the Jellyfin API, but is here for consistency with other services.
 */
 
-export const getAllArtistAppearanceTracks = (baseUrl, libraryId, artistId, artistName, accessToken) => {
+export const getAllArtistAppearanceTracks = () => {
   return new Promise((resolve, reject) => {
     resolve([]);
   });
@@ -557,7 +565,7 @@ export const getAllArtistAppearanceTracks = (baseUrl, libraryId, artistId, artis
 // GET ALL ALBUMS
 // ======================================================================
 
-export const getAllAlbums = (baseUrl, libraryId, accessToken) => {
+export const getAllAlbums = ({ accessToken, baseUrl, libraryId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.album.getAllAlbums(baseUrl);
@@ -607,7 +615,7 @@ export const getAllAlbums = (baseUrl, libraryId, accessToken) => {
 // GET ALBUM DETAILS
 // ======================================================================
 
-export const getAlbumDetails = (baseUrl, libraryId, albumId, accessToken) => {
+export const getAlbumDetails = ({ accessToken, albumId, baseUrl, libraryId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.album.getAlbumDetails(baseUrl, albumId);
@@ -646,7 +654,7 @@ export const getAlbumDetails = (baseUrl, libraryId, albumId, accessToken) => {
 // GET ALBUM TRACKS
 // ======================================================================
 
-export const getAlbumTracks = (baseUrl, libraryId, albumId, accessToken, userId) => {
+export const getAlbumTracks = ({ accessToken, albumId, baseUrl, libraryId, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.album.getAlbumTracks(baseUrl, userId);
@@ -693,11 +701,15 @@ export const getAlbumTracks = (baseUrl, libraryId, albumId, accessToken, userId)
 // GET FOLDER ITEMS
 // ======================================================================
 
+/*
+This is not required when using the Jellyfin API.
+*/
+
 // ======================================================================
 // GET ALL PLAYLISTS
 // ======================================================================
 
-export const getAllPlaylists = (baseUrl, libraryId, accessToken, userId) => {
+export const getAllPlaylists = ({ accessToken, baseUrl, libraryId, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.playlist.getAllPlaylists(baseUrl, userId);
@@ -746,7 +758,7 @@ export const getAllPlaylists = (baseUrl, libraryId, accessToken, userId) => {
 // GET PLAYLIST DETAILS
 // ======================================================================
 
-export const getPlaylistDetails = (baseUrl, libraryId, playlistId, accessToken, userId) => {
+export const getPlaylistDetails = ({ accessToken, baseUrl, libraryId, playlistId, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.playlist.getPlaylistDetails(baseUrl, userId, playlistId);
@@ -785,7 +797,7 @@ export const getPlaylistDetails = (baseUrl, libraryId, playlistId, accessToken, 
 // GET PLAYLIST TRACKS
 // ======================================================================
 
-export const getPlaylistTracks = (baseUrl, libraryId, playlistId, accessToken) => {
+export const getPlaylistTracks = ({ accessToken, baseUrl, libraryId, playlistId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.playlist.getPlaylistTracks(baseUrl, playlistId);

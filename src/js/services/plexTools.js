@@ -365,7 +365,7 @@ export const getAllServers = () => {
 // GET FASTEST SERVER CONNECTION
 // ======================================================================
 
-export const getFastestConnection = (server) => {
+export const getFastestConnection = ({ server }) => {
   let { accessToken, connections } = server;
 
   // sort connections based on preference
@@ -415,7 +415,7 @@ export const getFastestConnection = (server) => {
 // GET ALL LIBRARIES
 // ======================================================================
 
-export const getAllLibraries = (baseUrl, accessToken) => {
+export const getAllLibraries = ({ accessToken, baseUrl, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.library.getAllLibraries(baseUrl);
@@ -447,7 +447,7 @@ export const getAllLibraries = (baseUrl, accessToken) => {
 // GET ALL ARTISTS
 // ======================================================================
 
-export const getAllArtists = (baseUrl, libraryId, accessToken) => {
+export const getAllArtists = ({ accessToken, baseUrl, libraryId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.artist.getAllArtists(baseUrl, libraryId);
@@ -491,7 +491,7 @@ export const getAllArtists = (baseUrl, libraryId, accessToken) => {
 // GET ARTIST DETAILS
 // ======================================================================
 
-export const getArtistDetails = (baseUrl, libraryId, artistId, accessToken) => {
+export const getArtistDetails = ({ accessToken, artistId, baseUrl, libraryId, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.artist.getArtistDetails(baseUrl, artistId);
@@ -530,7 +530,7 @@ export const getArtistDetails = (baseUrl, libraryId, artistId, accessToken) => {
 // GET ALL ARTIST ALBUMS
 // ======================================================================
 
-export const getAllArtistAlbums = (baseUrl, libraryId, artistId, accessToken) => {
+export const getAllArtistAlbums = ({ accessToken, artistId, baseUrl, libraryId, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.artist.getAllArtistAlbums(baseUrl, artistId);
@@ -574,7 +574,7 @@ export const getAllArtistAlbums = (baseUrl, libraryId, artistId, accessToken) =>
 // GET ALL ARTIST RELATED ALBUMS
 // ======================================================================
 
-export const getAllArtistRelatedAlbums = (baseUrl, libraryId, artistId, accessToken) => {
+export const getAllArtistRelatedAlbums = ({ accessToken, artistId, baseUrl, libraryId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.artist.getArtistDetails(baseUrl, artistId);
@@ -620,10 +620,23 @@ export const getAllArtistRelatedAlbums = (baseUrl, libraryId, artistId, accessTo
 // GET ALL ARTIST APPEARANCES
 // ======================================================================
 
-export const getAllArtistAppearanceAlbums = (baseUrl, libraryId, artistName, store, accessToken) => {
+export const getAllArtistAppearanceAlbums = ({
+  accessToken,
+  artistId,
+  artistName,
+  baseUrl,
+  libraryId,
+  store,
+  userId,
+}) => {
   return new Promise((resolve, reject) => {
     try {
-      getAllArtistAppearanceAlbumIds(baseUrl, libraryId, artistName, accessToken)
+      getAllArtistAppearanceAlbumIds({
+        accessToken,
+        artistName,
+        baseUrl,
+        libraryId,
+      })
         .then((response) => {
           if (response.length <= 0) {
             resolve([]);
@@ -681,7 +694,7 @@ export const getAllArtistAppearanceAlbums = (baseUrl, libraryId, artistName, sto
   });
 };
 
-export const getAllArtistAppearanceAlbumIds = (baseUrl, libraryId, artistName, accessToken) => {
+export const getAllArtistAppearanceAlbumIds = ({ accessToken, artistName, baseUrl, libraryId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.artist.getAllArtistAppearanceTracks(baseUrl, libraryId);
@@ -725,7 +738,7 @@ export const getAllArtistAppearanceAlbumIds = (baseUrl, libraryId, artistName, a
 // GET ARTIST TRACKS
 // ======================================================================
 
-export const getAllArtistTracks = (baseUrl, libraryId, artistId, artistName, accessToken) => {
+export const getAllArtistTracks = ({ accessToken, artistId, artistName, baseUrl, libraryId, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.artist.getAllArtistTracks(baseUrl, libraryId);
@@ -765,7 +778,7 @@ export const getAllArtistTracks = (baseUrl, libraryId, artistId, artistName, acc
   });
 };
 
-export const getAllArtistAppearanceTracks = (baseUrl, libraryId, artistId, artistName, accessToken) => {
+export const getAllArtistAppearanceTracks = ({ accessToken, artistName, baseUrl, libraryId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.artist.getAllArtistTracks(baseUrl, libraryId);
@@ -809,7 +822,7 @@ export const getAllArtistAppearanceTracks = (baseUrl, libraryId, artistId, artis
 // GET ALL ALBUMS
 // ======================================================================
 
-export const getAllAlbums = (baseUrl, libraryId, accessToken) => {
+export const getAllAlbums = ({ accessToken, baseUrl, libraryId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.album.getAllAlbums(baseUrl, libraryId);
@@ -853,7 +866,7 @@ export const getAllAlbums = (baseUrl, libraryId, accessToken) => {
 // GET ALBUM DETAILS
 // ======================================================================
 
-export const getAlbumDetails = (baseUrl, libraryId, albumId, accessToken) => {
+export const getAlbumDetails = ({ accessToken, albumId, baseUrl, libraryId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.album.getAlbumDetails(baseUrl, albumId);
@@ -892,7 +905,7 @@ export const getAlbumDetails = (baseUrl, libraryId, albumId, accessToken) => {
 // GET ALBUM TRACKS
 // ======================================================================
 
-export const getAlbumTracks = (baseUrl, libraryId, albumId, accessToken) => {
+export const getAlbumTracks = ({ accessToken, albumId, baseUrl, libraryId, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.album.getAlbumTracks(baseUrl, albumId);
@@ -935,7 +948,7 @@ export const getAlbumTracks = (baseUrl, libraryId, albumId, accessToken) => {
 // GET FOLDER ITEMS
 // ======================================================================
 
-export const getFolderItems = (baseUrl, libraryId, folderId, accessToken) => {
+export const getFolderItems = ({ accessToken, baseUrl, folderId, libraryId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.folder.getFolderItems(baseUrl, libraryId);
@@ -977,7 +990,7 @@ export const getFolderItems = (baseUrl, libraryId, folderId, accessToken) => {
 // GET ALL PLAYLISTS
 // ======================================================================
 
-export const getAllPlaylists = (baseUrl, libraryId, accessToken) => {
+export const getAllPlaylists = ({ accessToken, baseUrl, libraryId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.playlist.getAllPlaylists(baseUrl, libraryId);
@@ -1021,7 +1034,7 @@ export const getAllPlaylists = (baseUrl, libraryId, accessToken) => {
 // GET PLAYLIST DETAILS
 // ======================================================================
 
-export const getPlaylistDetails = (baseUrl, libraryId, playlistId, accessToken) => {
+export const getPlaylistDetails = ({ accessToken, baseUrl, libraryId, playlistId, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.playlist.getPlaylistDetails(baseUrl, playlistId);
@@ -1060,7 +1073,7 @@ export const getPlaylistDetails = (baseUrl, libraryId, playlistId, accessToken) 
 // GET PLAYLIST TRACKS
 // ======================================================================
 
-export const getPlaylistTracks = (baseUrl, libraryId, playlistId, accessToken) => {
+export const getPlaylistTracks = ({ accessToken, baseUrl, libraryId, playlistId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.playlist.getPlaylistTracks(baseUrl, playlistId);
@@ -1103,7 +1116,7 @@ export const getPlaylistTracks = (baseUrl, libraryId, playlistId, accessToken) =
 // GET ALL COLLECTIONS
 // ======================================================================
 
-export const getAllCollections = (baseUrl, libraryId, accessToken) => {
+export const getAllCollections = ({ accessToken, baseUrl, libraryId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.collection.getAllCollections(baseUrl, libraryId);
@@ -1142,7 +1155,7 @@ export const getAllCollections = (baseUrl, libraryId, accessToken) => {
 // GET COLLECTION ITEMS
 // ======================================================================
 
-export const getCollectionItems = (baseUrl, libraryId, collectionId, typeKey, accessToken) => {
+export const getCollectionItems = ({ accessToken, baseUrl, collectionId, libraryId, typeKey }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.collection.getCollectionItems(baseUrl, collectionId);
@@ -1185,7 +1198,7 @@ export const getCollectionItems = (baseUrl, libraryId, collectionId, typeKey, ac
 // GET ALL TAGS
 // ======================================================================
 
-export const getAllTags = (baseUrl, libraryId, typeKey, accessToken) => {
+export const getAllTags = ({ accessToken, baseUrl, libraryId, typeKey }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.tags[`getAll${typeKey}`](baseUrl, libraryId);
@@ -1227,7 +1240,7 @@ export const getAllTags = (baseUrl, libraryId, typeKey, accessToken) => {
 // GET TAG ITEMS
 // ======================================================================
 
-export const getTagItems = (baseUrl, libraryId, tagId, typeKey, accessToken) => {
+export const getTagItems = ({ accessToken, baseUrl, libraryId, tagId, typeKey }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.tags[`get${typeKey}`](baseUrl, libraryId);
@@ -1305,7 +1318,7 @@ export const getTagItems = (baseUrl, libraryId, tagId, typeKey, accessToken) => 
 // SEARCH
 // ======================================================================
 
-export const searchLibrary = (baseUrl, libraryId, accessToken, query, limit = 25, includeCollections = 1) => {
+export const searchLibrary = ({ accessToken, baseUrl, includeCollections = 1, libraryId, limit = 25, query }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.search.searchLibrary(baseUrl);
@@ -1351,7 +1364,7 @@ export const searchLibrary = (baseUrl, libraryId, accessToken, query, limit = 25
 // SET STAR RATING
 // ======================================================================
 
-export const setStarRating = (baseUrl, accessToken, sessionId, ratingKey, rating) => {
+export const setStarRating = ({ accessToken, baseUrl, rating, ratingKey, sessionId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.rating.setStarRating(baseUrl, ratingKey, rating);
@@ -1401,17 +1414,17 @@ export const setStarRating = (baseUrl, accessToken, sessionId, ratingKey, rating
 // LOG PLAYBACK STATUS
 // ======================================================================
 
-export const logPlaybackStatus = (
-  baseUrl,
+export const logPlaybackStatus = ({
   accessToken,
-  sessionId,
-  type,
-  ratingKey,
-  trackId,
-  state,
+  baseUrl,
   currentTime,
-  duration
-) => {
+  duration,
+  ratingKey,
+  sessionId,
+  state,
+  trackId,
+  type,
+}) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.status.logPlaybackStatus(baseUrl);
@@ -1465,17 +1478,17 @@ export const logPlaybackStatus = (
 // This is because axios does not support keepalive, and fetch with keepalive
 // will allow the request to complete even if the page is closed.
 
-export const logPlaybackQuit = (
-  baseUrl,
+export const logPlaybackQuit = ({
   accessToken,
-  sessionId,
-  type,
-  ratingKey,
-  trackId,
-  state,
+  baseUrl,
   currentTime,
-  duration
-) => {
+  duration,
+  ratingKey,
+  sessionId,
+  state,
+  trackId,
+  type,
+}) => {
   try {
     const endpoint = endpointConfig.status.logPlaybackStatus(baseUrl);
     const browserName = getBrowserName();
