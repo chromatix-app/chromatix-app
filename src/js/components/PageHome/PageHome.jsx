@@ -67,15 +67,15 @@ export const PageHome = () => {
             <Button onClick={scrollToDownloads} icon={<Icon icon="DownloadIcon" cover stroke strokeWidth={2} />}>
               Download the App
             </Button>
-            <div className={isLocal ? 'mt-20' : 'mt-10'}></div>
+            <div className={isLocal ? 'mt-20' : 'mt-20'}></div>
           </>
         )}
 
         <div className={style.buttons}>
           <Button
             onClick={dispatch.appModel.doPlexLogin}
-            color="tertiary"
-            size="medium"
+            color={isElectron ? 'primary' : 'tertiary'}
+            size={isElectron ? 'large' : 'medium'}
             wrap={false}
             icon={<Icon icon="PlexSiteIcon" cover />}
           >
@@ -85,8 +85,8 @@ export const PageHome = () => {
             <>
               <Button
                 to="/login-jellyfin"
-                color="tertiary"
-                size="medium"
+                color={isElectron ? 'primary' : 'tertiary'}
+                size={isElectron ? 'large' : 'medium'}
                 wrap={false}
                 icon={<Icon icon="JellyfinSiteIcon" cover />}
               >
@@ -121,8 +121,8 @@ export const PageHome = () => {
         <div className={style.buttons}>
           <Button
             onClick={dispatch.appModel.doPlexLogin}
-            color="tertiary"
-            size="medium"
+            color={isElectron ? 'primary' : 'tertiary'}
+            size={isElectron ? 'large' : 'medium'}
             wrap={false}
             icon={<Icon icon="PlexSiteIcon" cover />}
           >
@@ -132,8 +132,8 @@ export const PageHome = () => {
             <>
               <Button
                 to="/login-jellyfin"
-                color="tertiary"
-                size="medium"
+                color={isElectron ? 'primary' : 'tertiary'}
+                size={isElectron ? 'large' : 'medium'}
                 wrap={false}
                 icon={<Icon icon="JellyfinSiteIcon" cover />}
               >
