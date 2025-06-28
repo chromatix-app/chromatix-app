@@ -217,6 +217,10 @@ const ViewModeSettings = () => {
   const viewArtistStyleItems = useSelector(({ sessionModel }) => sessionModel.viewArtistStyleItems);
   const viewAlbumStyles = useSelector(({ sessionModel }) => sessionModel.viewAlbumStyles);
   const viewAlbumStyleItems = useSelector(({ sessionModel }) => sessionModel.viewAlbumStyleItems);
+  const viewArtistTags = useSelector(({ sessionModel }) => sessionModel.viewArtistTags);
+  const viewArtistTagItems = useSelector(({ sessionModel }) => sessionModel.viewArtistTagItems);
+  const viewAlbumTags = useSelector(({ sessionModel }) => sessionModel.viewAlbumTags);
+  const viewAlbumTagItems = useSelector(({ sessionModel }) => sessionModel.viewAlbumTagItems);
 
   const allValues = [
     viewArtists,
@@ -240,6 +244,10 @@ const ViewModeSettings = () => {
     viewArtistStyleItems,
     viewAlbumStyles,
     viewAlbumStyleItems,
+    viewArtistTags,
+    viewArtistTagItems,
+    viewAlbumTags,
+    viewAlbumTagItems,
   ];
 
   const firstValue = allValues[0];
@@ -268,6 +276,10 @@ const ViewModeSettings = () => {
       viewArtistStyleItems: 'grid',
       viewAlbumStyles: 'grid',
       viewAlbumStyleItems: 'grid',
+      viewArtistTags: 'grid',
+      viewArtistTagItems: 'grid',
+      viewAlbumTags: 'grid',
+      viewAlbumTagItems: 'grid',
     });
   };
 
@@ -294,6 +306,10 @@ const ViewModeSettings = () => {
       viewArtistStyleItems: 'list',
       viewAlbumStyles: 'list',
       viewAlbumStyleItems: 'list',
+      viewArtistTags: 'list',
+      viewArtistTagItems: 'list',
+      viewAlbumTags: 'list',
+      viewAlbumTagItems: 'list',
     });
   };
 
