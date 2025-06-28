@@ -53,6 +53,8 @@ const sessionState = {
   menuShowAlbumMoods: true,
   menuShowArtistStyles: true,
   menuShowAlbumStyles: true,
+  menuShowArtistTags: true,
+  menuShowAlbumTags: true,
 
   optionLogPlexPlayback: true,
   optionSortNumbersFirst: false,

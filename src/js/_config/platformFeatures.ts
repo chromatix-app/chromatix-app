@@ -1,8 +1,17 @@
 export const platformFeatures = {
-  jelly: {
+  jellyfin: {
     // menu
     menuFolders: false,
-    menuBrowse: false,
+    menuArtistCollections: true,
+    menuAlbumCollections: true,
+    menuArtistGenres: true,
+    menuAlbumGenres: true,
+    menuArtistStyles: false,
+    menuAlbumStyles: false,
+    menuArtistMoods: false,
+    menuAlbumMoods: false,
+    menuArtistTags: true,
+    menuAlbumTags: true,
 
     // // general
     // userRating: true,
@@ -12,7 +21,16 @@ export const platformFeatures = {
   plex: {
     // menu
     menuFolders: true,
-    menuBrowse: true,
+    menuArtistCollections: true,
+    menuAlbumCollections: true,
+    menuArtistGenres: true,
+    menuAlbumGenres: true,
+    menuArtistStyles: true,
+    menuAlbumStyles: true,
+    menuArtistMoods: true,
+    menuAlbumMoods: true,
+    menuArtistTags: false,
+    menuAlbumTags: false,
 
     // // general
     // userRating: false,

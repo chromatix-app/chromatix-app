@@ -20,11 +20,9 @@ export const SettingsMenu = () => {
 
   return (
     <>
-      {currentService === 'jellyfin' && (
-        <PageText fontSize="small">
-          <p>Some sections are available for Jellyfin libraries.</p>
-        </PageText>
-      )}
+      <PageText fontSize="small">
+        <p>Some sections may be unavailable, depending on whether you are logged in with Plex or Jellyfin.</p>
+      </PageText>
       <div className={style.wrap}>
         <div className={style.group}>
           <div className={style.title}>General</div>
@@ -139,62 +137,75 @@ const BrowseSettings = ({ platformOpts }) => {
   const menuShowAlbumMoods = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumMoods);
   const menuShowArtistStyles = useSelector(({ sessionModel }) => sessionModel.menuShowArtistStyles);
   const menuShowAlbumStyles = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumStyles);
+  const menuShowArtistTags = useSelector(({ sessionModel }) => sessionModel.menuShowArtistTags);
+  const menuShowAlbumTags = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumTags);
 
   const menuItems = [
     {
       key: 'menuShowSeparateBrowseSection',
       variant: 'spaceBelow',
       label: 'Show as separate "Browse" section',
-      state: menuShowSeparateBrowseSection && platformOpts.menuFolders,
-      disabled: !platformOpts.menuFolders,
+      state: menuShowSeparateBrowseSection,
     },
     {
       key: 'menuShowArtistCollections',
       label: 'Artist Collections',
-      state: menuShowArtistCollections && platformOpts.menuFolders,
-      disabled: !platformOpts.menuFolders,
+      state: menuShowArtistCollections && platformOpts.menuArtistCollections,
+      disabled: !platformOpts.menuArtistCollections,
     },
     {
       key: 'menuShowAlbumCollections',
       label: 'Album Collections',
-      state: menuShowAlbumCollections && platformOpts.menuFolders,
-      disabled: !platformOpts.menuFolders,
+      state: menuShowAlbumCollections && platformOpts.menuAlbumCollections,
+      disabled: !platformOpts.menuAlbumCollections,
     },
     {
       key: 'menuShowArtistGenres',
       label: 'Artist Genres',
-      state: menuShowArtistGenres && platformOpts.menuFolders,
-      disabled: !platformOpts.menuFolders,
+      state: menuShowArtistGenres && platformOpts.menuArtistGenres,
+      disabled: !platformOpts.menuArtistGenres,
     },
     {
       key: 'menuShowAlbumGenres',
       label: 'Album Genres',
-      state: menuShowAlbumGenres && platformOpts.menuFolders,
-      disabled: !platformOpts.menuFolders,
+      state: menuShowAlbumGenres && platformOpts.menuAlbumGenres,
+      disabled: !platformOpts.menuAlbumGenres,
     },
     {
       key: 'menuShowArtistMoods',
       label: 'Artist Moods',
-      state: menuShowArtistMoods && platformOpts.menuFolders,
-      disabled: !platformOpts.menuFolders,
+      state: menuShowArtistMoods && platformOpts.menuArtistStyles,
+      disabled: !platformOpts.menuArtistStyles,
     },
     {
       key: 'menuShowAlbumMoods',
       label: 'Album Moods',
-      state: menuShowAlbumMoods && platformOpts.menuFolders,
-      disabled: !platformOpts.menuFolders,
+      state: menuShowAlbumMoods && platformOpts.menuAlbumStyles,
+      disabled: !platformOpts.menuAlbumStyles,
     },
     {
       key: 'menuShowArtistStyles',
       label: 'Artist Styles',
-      state: menuShowArtistStyles && platformOpts.menuFolders,
-      disabled: !platformOpts.menuFolders,
+      state: menuShowArtistStyles && platformOpts.menuArtistStyles,
+      disabled: !platformOpts.menuArtistStyles,
     },
     {
       key: 'menuShowAlbumStyles',
       label: 'Album Styles',
-      state: menuShowAlbumStyles && platformOpts.menuFolders,
-      disabled: !platformOpts.menuFolders,
+      state: menuShowAlbumStyles && platformOpts.menuAlbumStyles,
+      disabled: !platformOpts.menuAlbumStyles,
+    },
+    {
+      key: 'menuShowArtistTags',
+      label: 'Artist Tags',
+      state: menuShowArtistTags && platformOpts.menuArtistTags,
+      disabled: !platformOpts.menuArtistTags,
+    },
+    {
+      key: 'menuShowAlbumTags',
+      label: 'Album Tags',
+      state: menuShowAlbumTags && platformOpts.menuAlbumTags,
+      disabled: !platformOpts.menuAlbumTags,
     },
   ];
 
