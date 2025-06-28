@@ -50,6 +50,7 @@ import { ReactComponent as FeaturebaseIcon } from './icons/general/feature-base.
 import { ReactComponent as FolderIcon } from './icons/general/folder.svg';
 import { ReactComponent as GithubIcon } from './icons/general/github.svg';
 import { ReactComponent as GridIcon } from './icons/general/grid-small.svg';
+import { ReactComponent as HeartIcon } from './icons/general/heart.svg';
 import { ReactComponent as InfoIcon } from './icons/general/info.svg';
 import { ReactComponent as LastFMIcon } from './icons/general/lastfm.svg';
 import { ReactComponent as ListIcon } from './icons/general/list-small.svg';
@@ -152,6 +153,7 @@ export const customIcons = {
   FolderIcon,
   GithubIcon,
   GridIcon,
+  HeartIcon,
   InfoIcon,
   LastFMIcon,
   ListIcon,
