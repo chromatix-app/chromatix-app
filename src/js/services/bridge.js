@@ -903,8 +903,17 @@ export const getCollectionItems = (libraryId, collectionId, typeKey) => {
 };
 
 // ======================================================================
-// GET ALL SETS
+// GET ALL TAGS
 // ======================================================================
+
+export const getAllTags = (typeKey) => {
+  const currentService = store.getState().appModel.currentService;
+  if (currentService === 'plex') {
+    getAllPlexTags(typeKey);
+  } else if (currentService === 'jellyfin') {
+    getAllJellyfinTags();
+  }
+};
 
 let getAllTagsRunning = {
   AlbumGenres: false,
@@ -915,7 +924,7 @@ let getAllTagsRunning = {
   ArtistStyles: false,
 };
 
-export const getAllTags = (typeKey) => {
+const getAllPlexTags = (typeKey) => {
   if (!getAllTagsRunning[typeKey]) {
     const prevAllTags = store.getState().appModel[`all${typeKey}`];
     if (!prevAllTags) {
@@ -933,7 +942,7 @@ export const getAllTags = (typeKey) => {
           typeKey,
         })
         .then((response) => {
-          // console.log(response);
+          console.log(response);
           store.dispatch.appModel.setAppState({ [`all${typeKey}`]: response });
         })
         .catch((error) => {
@@ -946,8 +955,44 @@ export const getAllTags = (typeKey) => {
   }
 };
 
+let getAllJellyfinTagsRunning;
+
+const getAllJellyfinTags = () => {
+  if (!getAllJellyfinTagsRunning) {
+    const prevAllArtistGenres = store.getState().appModel.allArtistGenres;
+    const prevAllAlbumGenres = store.getState().appModel.allAlbumGenres;
+    const prevAllArtistTags = store.getState().appModel.allArtistTags;
+    const prevAllAlbumTags = store.getState().appModel.allAlbumTags;
+    if (!prevAllArtistGenres || !prevAllAlbumGenres || !prevAllArtistTags || !prevAllAlbumTags) {
+      console.log('%c--- bridge - getAllJellyfinTags ---', 'color:#f9743b;');
+      getAllJellyfinTagsRunning = true;
+      const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+      const userId = store.getState().appModel.currentUser.userId;
+      const { libraryId } = store.getState().sessionModel.currentLibrary;
+
+      jellyTools
+        .getAllTags({
+          accessToken,
+          libraryId,
+          serverBaseUrl,
+          userId,
+        })
+        .then((response) => {
+          store.dispatch.appModel.setAppState(response);
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          getAllJellyfinTagsRunning = false;
+        });
+    }
+  }
+};
+
 // ======================================================================
-// GET SET ITEMS
+// GET TAG ITEMS
 // ======================================================================
 
 let getTagItemsRunning = {

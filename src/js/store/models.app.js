@@ -102,6 +102,11 @@ const libraryState = {
   allArtistStyleItems: {},
   allAlbumStyles: null,
   allAlbumStyleItems: {},
+  // tags
+  allArtistTags: null,
+  allArtistTagItems: {},
+  allAlbumTags: null,
+  allAlbumTagItems: {},
   // search results
   searchResultCounter: 0,
   searchResults: null,
@@ -462,6 +467,18 @@ const effects = (dispatch) => ({
       }
     });
 
+    // update artist tag items
+    const allArtistTagItems = { ...rootState.appModel.allArtistTagItems };
+    const tagKeys = Object.keys(allArtistTagItems);
+    tagKeys.forEach((key) => {
+      const artistTagItems = allArtistTagItems[key];
+      const artistIndex = artistTagItems.findIndex((artist) => artist.artistId === ratingKey);
+      if (artistIndex !== -1) {
+        artistTagItems[artistIndex].userRating = rating;
+        allArtistTagItems[key] = artistTagItems;
+      }
+    });
+
     // save
     dispatch.appModel.setAppState({
       allArtistCollectionItems,
@@ -611,6 +628,18 @@ const effects = (dispatch) => ({
       if (albumIndex !== -1) {
         albumStyleItems[albumIndex].userRating = rating;
         allAlbumStyleItems[key] = albumStyleItems;
+      }
+    });
+
+    // update album tag items
+    const allAlbumTagItems = { ...rootState.appModel.allAlbumTagItems };
+    const tagKeys = Object.keys(allAlbumTagItems);
+    tagKeys.forEach((key) => {
+      const albumTagItems = allAlbumTagItems[key];
+      const albumIndex = albumTagItems.findIndex((album) => album.albumId === ratingKey);
+      if (albumIndex !== -1) {
+        albumTagItems[albumIndex].userRating = rating;
+        allAlbumTagItems[key] = albumTagItems;
       }
     });
 
@@ -916,6 +945,42 @@ const effects = (dispatch) => ({
     allAlbumStyleItems[libraryId + '-' + tagId] = tagItems;
     dispatch.appModel.setAppState({
       allAlbumStyleItems,
+    });
+  },
+
+  //
+  // MUSIC - TAGS
+  //
+
+  storeArtistTagItems(payload, rootState) {
+    console.log('%c--- storeArtistTagItems ---', 'color:#07a098');
+    const { libraryId, tagId, tagItems } = payload;
+    const allArtistTagItems = { ...rootState.appModel.allArtistTagItems };
+    // limit recent entries
+    const keys = Object.keys(allArtistTagItems);
+    if (keys.length >= maxDataLength) {
+      delete allArtistTagItems[keys[0]];
+    }
+    // add the new entry and save
+    allArtistTagItems[libraryId + '-' + tagId] = tagItems;
+    dispatch.appModel.setAppState({
+      allArtistTagItems,
+    });
+  },
+
+  storeAlbumTagItems(payload, rootState) {
+    console.log('%c--- storeAlbumTagItems ---', 'color:#07a098');
+    const { libraryId, tagId, tagItems } = payload;
+    const allAlbumTagItems = { ...rootState.appModel.allAlbumTagItems };
+    // limit recent entries
+    const keys = Object.keys(allAlbumTagItems);
+    if (keys.length >= maxDataLength) {
+      delete allAlbumTagItems[keys[0]];
+    }
+    // add the new entry and save
+    allAlbumTagItems[libraryId + '-' + tagId] = tagItems;
+    dispatch.appModel.setAppState({
+      allAlbumTagItems,
     });
   },
 });

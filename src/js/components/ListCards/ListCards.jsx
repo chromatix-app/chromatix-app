@@ -630,6 +630,7 @@ const getEntryKey = (entry, fallback) => {
     entry.moodId ||
     entry.playlistId ||
     entry.styleId ||
+    entry.tagId ||
     // lastly, use album / artist (as these may be present in the above variants)
     entry.albumId ||
     entry.artistId ||
@@ -643,9 +644,11 @@ const lookupIcons = {
   artistGenres: 'ArtistGenresIcon',
   artistMoods: 'ArtistMoodsIcon',
   artistStyles: 'ArtistStylesIcon',
+  artistTags: 'ArtistTagsIcon',
   albumGenres: 'AlbumGenresIcon',
   albumMoods: 'AlbumMoodsIcon',
   albumStyles: 'AlbumStylesIcon',
+  albumTags: 'AlbumTagsIcon',
 };
 
 // ======================================================================

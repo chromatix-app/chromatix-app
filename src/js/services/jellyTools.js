@@ -68,13 +68,7 @@ const endpointConfig = {
     getCollectionItems: null,
   },
   tags: {
-    getAllArtistGenres: null,
-    getAllArtistMoods: null,
-    getAllArtistStyles: null,
-
-    getAllAlbumGenres: null,
-    getAllAlbumMoods: null,
-    getAllAlbumStyles: null,
+    getAllTags: (serverBaseUrl) => `${serverBaseUrl}/Items/Filters`,
 
     getArtistGenreItems: null,
     getArtistMoodItems: null,
@@ -294,7 +288,7 @@ export const getAllLibraries = ({ accessToken, serverBaseUrl, userId }) => {
 // GET ALL ARTISTS
 // ======================================================================
 
-export const getAllArtists = ({ accessToken, libraryId, serverBaseUrl }) => {
+export const getAllArtists = ({ accessToken, genre, libraryId, serverBaseUrl, tag }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.artist.getAllArtists(serverBaseUrl);
@@ -309,6 +303,8 @@ export const getAllArtists = ({ accessToken, libraryId, serverBaseUrl }) => {
             ParentId: libraryId,
             // IncludeItemTypes: 'MusicArtist',
             Recursive: true,
+            Genres: genre || null,
+            Tags: tag || null,
             SortBy: 'SortName',
             SortOrder: 'Ascending',
             Fields:
@@ -565,7 +561,7 @@ export const getAllArtistAppearanceTracks = () => {
 // GET ALL ALBUMS
 // ======================================================================
 
-export const getAllAlbums = ({ accessToken, libraryId, serverBaseUrl }) => {
+export const getAllAlbums = ({ accessToken, genre, libraryId, serverBaseUrl, tag }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.album.getAllAlbums(serverBaseUrl);
@@ -580,6 +576,8 @@ export const getAllAlbums = ({ accessToken, libraryId, serverBaseUrl }) => {
             ParentId: libraryId,
             IncludeItemTypes: 'MusicAlbum',
             Recursive: true,
+            Genres: genre || null,
+            Tags: tag || null,
             SortBy: 'SortName',
             SortOrder: 'Ascending',
             Fields:
@@ -843,6 +841,75 @@ export const getPlaylistTracks = ({ accessToken, libraryId, playlistId, serverBa
 // ======================================================================
 // GET ALL TAGS
 // ======================================================================
+
+export const getAllTags = ({ accessToken, libraryId, serverBaseUrl, userId }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.tags.getAllTags(serverBaseUrl);
+      const controller1 = new AbortController();
+      const controller2 = new AbortController();
+      abortControllers.push(controller1, controller2);
+
+      // Request 1: Get artist filters
+      const artistRequest = axios.get(endpoint, {
+        headers: getRequestHeaders(accessToken),
+        signal: controller1.signal,
+        params: {
+          UserId: userId,
+          ParentId: libraryId,
+          IncludeItemTypes: 'MusicArtist',
+          // Recursive: true,
+        },
+      });
+
+      // Request 2: Get album filters
+      const albumRequest = axios.get(endpoint, {
+        headers: getRequestHeaders(accessToken),
+        signal: controller2.signal,
+        params: {
+          UserId: userId,
+          ParentId: libraryId,
+          IncludeItemTypes: 'MusicAlbum',
+          // Recursive: true,
+        },
+      });
+
+      Promise.all([artistRequest, albumRequest])
+        .then(([artistResponse, albumResponse]) => {
+          console.log(artistResponse.data);
+          console.log(albumResponse.data);
+
+          resolve({
+            allArtistGenres: jellyTranspose.transposeTagArray(
+              artistResponse?.data?.Genres,
+              libraryId,
+              'artist',
+              'Genre'
+            ),
+            allAlbumGenres: jellyTranspose.transposeTagArray(albumResponse?.data?.Genres, libraryId, 'album', 'Genre'),
+            allArtistTags: jellyTranspose.transposeTagArray(artistResponse?.data?.Tags, libraryId, 'artist', 'Tag'),
+            allAlbumTags: jellyTranspose.transposeTagArray(albumResponse?.data?.Tags, libraryId, 'album', 'Tag'),
+          });
+        })
+        .catch((error) => {
+          reject({
+            code: 'jellyfin.searchLibrary.1',
+            message: 'Error searching library: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller1 && ctrl !== controller2);
+        });
+    } catch (error) {
+      reject({
+        code: 'jellyfin.searchLibrary.2',
+        message: 'Error searching library: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
 
 // ======================================================================
 // GET TAG ITEMS

@@ -54,7 +54,8 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
     variant === 'artistCollectionItems' ||
     variant === 'artistGenreItems' ||
     variant === 'artistMoodItems' ||
-    variant === 'artistStyleItems'
+    variant === 'artistStyleItems' ||
+    variant === 'artistTagItems'
   ) {
     tableVariant = 'artists';
     tableOptions = [
@@ -223,7 +224,8 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
     variant === 'albumCollectionItems' ||
     variant === 'albumGenreItems' ||
     variant === 'albumMoodItems' ||
-    variant === 'albumStyleItems'
+    variant === 'albumStyleItems' ||
+    variant === 'albumTagItems'
   ) {
     tableVariant = 'albums';
     tableOptions = [
@@ -612,7 +614,9 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
     variant === 'artistMoods' ||
     variant === 'albumMoods' ||
     variant === 'artistStyles' ||
-    variant === 'albumStyles'
+    variant === 'albumStyles' ||
+    variant === 'artistTags' ||
+    variant === 'albumTags'
   ) {
     tableVariant = 'tags';
     tableOptions = [

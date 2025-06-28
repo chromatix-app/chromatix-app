@@ -2,8 +2,8 @@ export const platformFeatures = {
   jellyfin: {
     // menu
     menuFolders: false,
-    menuArtistCollections: true,
-    menuAlbumCollections: true,
+    menuArtistCollections: false,
+    menuAlbumCollections: false,
     menuArtistGenres: true,
     menuAlbumGenres: true,
     menuArtistStyles: false,

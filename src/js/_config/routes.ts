@@ -161,6 +161,30 @@ export const authRoutes = [
     component: 'AlbumGenreItems',
   },
 
+  // artist moods
+  {
+    path: '/artist-moods',
+    exact: true,
+    component: 'ArtistMoodList',
+  },
+  {
+    path: '/artist-moods/:libraryId/:moodId',
+    exact: true,
+    component: 'ArtistMoodItems',
+  },
+
+  // album moods
+  {
+    path: '/album-moods',
+    exact: true,
+    component: 'AlbumMoodList',
+  },
+  {
+    path: '/album-moods/:libraryId/:moodId',
+    exact: true,
+    component: 'AlbumMoodItems',
+  },
+
   // artist styles
   {
     path: '/artist-styles',
@@ -185,28 +209,28 @@ export const authRoutes = [
     component: 'AlbumStyleItems',
   },
 
-  // artist moods
+  // artist tags
   {
-    path: '/artist-moods',
+    path: '/artist-tags',
     exact: true,
-    component: 'ArtistMoodList',
+    component: 'ArtistTagList',
   },
   {
-    path: '/artist-moods/:libraryId/:moodId',
+    path: '/artist-tags/:libraryId/:tagId',
     exact: true,
-    component: 'ArtistMoodItems',
+    component: 'ArtistTagItems',
   },
 
-  // album moods
+  // album tags
   {
-    path: '/album-moods',
+    path: '/album-tags',
     exact: true,
-    component: 'AlbumMoodList',
+    component: 'AlbumTagList',
   },
   {
-    path: '/album-moods/:libraryId/:moodId',
+    path: '/album-tags/:libraryId/:tagId',
     exact: true,
-    component: 'AlbumMoodItems',
+    component: 'AlbumTagItems',
   },
 
   // settings

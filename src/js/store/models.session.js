@@ -93,6 +93,10 @@ const sessionState = {
   viewArtistStyleItems: 'grid',
   viewAlbumStyles: 'grid',
   viewAlbumStyleItems: 'grid',
+  viewArtistTags: 'grid',
+  viewArtistTagItems: 'grid',
+  viewAlbumTags: 'grid',
+  viewAlbumTagItems: 'grid',
 
   // VIEW SORTING OPTIONS
 
@@ -120,6 +124,10 @@ const sessionState = {
   sortArtistStyleItems: 'title',
   sortAlbumStyles: 'title',
   sortAlbumStyleItems: 'title',
+  sortArtistTags: 'title',
+  sortArtistTagItems: 'title',
+  sortAlbumTags: 'title',
+  sortAlbumTagItems: 'title',
 
   // VIEW ORDERING OPTIONS
 
@@ -145,6 +153,10 @@ const sessionState = {
   orderArtistStyleItems: 'asc',
   orderAlbumStyles: 'asc',
   orderAlbumStyleItems: 'asc',
+  orderArtistTags: 'asc',
+  orderArtistTagItems: 'asc',
+  orderAlbumTags: 'asc',
+  orderAlbumTagItems: 'asc',
 
   // ARTIST DETAIL OPTIONS
 

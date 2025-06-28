@@ -318,15 +318,6 @@ export const transposePlaylistData = (playlist, libraryId, serverBaseUrl, access
 // TAGS
 // ======================================================================
 
-// const tagOptions = {
-//   AlbumGenres: { primaryKey: 'album', secondaryKey: 'Genre' },
-//   AlbumMoods: { primaryKey: 'album', secondaryKey: 'Mood' },
-//   AlbumStyles: { primaryKey: 'album', secondaryKey: 'Style' },
-//   ArtistGenres: { primaryKey: 'artist', secondaryKey: 'Genre' },
-//   ArtistMoods: { primaryKey: 'artist', secondaryKey: 'Mood' },
-//   ArtistStyles: { primaryKey: 'artist', secondaryKey: 'Style' },
-// };
-
 // const tagItemOptions = {
 //   AlbumGenreItems: { primaryKey: 'Album' },
 //   AlbumMoodItems: { primaryKey: 'Album' },
@@ -336,14 +327,10 @@ export const transposePlaylistData = (playlist, libraryId, serverBaseUrl, access
 //   ArtistStyleItems: { primaryKey: 'Artist' },
 // };
 
-// export const transposeTagArray = (array, libraryId, typeKey) => {
-//   const { primaryKey, secondaryKey } = tagOptions[typeKey];
-//   const data =
-//     array?.data?.MediaContainer?.Directory?.map((entry) =>
-//       lookups[`transpose${secondaryKey}Data`](primaryKey, entry, libraryId)
-//     ) || [];
-//   return data;
-// };
+export const transposeTagArray = (array, libraryId, primaryKey, secondaryKey) => {
+  const data = array?.map((entry) => lookups[`transpose${secondaryKey}Data`](primaryKey, entry, libraryId)) || [];
+  return data;
+};
 
 // export const transposeTagItemArray = (array, libraryId, serverBaseUrl, accessToken, typeKey) => {
 //   const { primaryKey } = tagItemOptions[typeKey];
@@ -354,35 +341,27 @@ export const transposePlaylistData = (playlist, libraryId, serverBaseUrl, access
 //   return data;
 // };
 
-// export const transposeGenreData = (type, genre, libraryId) => {
-//   return {
-//     kind: 'genre',
-//     libraryId: libraryId,
-//     genreId: genre.key,
-//     title: genre.title.replace(/\//g, ' & '),
-//     link: '/' + type + '-genres/' + libraryId + '/' + genre.key,
-//   };
-// };
+export const transposeGenreData = (primaryKey, genre, libraryId) => {
+  const genreId = encodeURIComponent(genre);
+  return {
+    kind: 'genre',
+    libraryId: libraryId,
+    genreId: genreId,
+    title: genre.replace(/\//g, ' & '),
+    link: '/' + primaryKey + '-genres/' + libraryId + '/' + genreId,
+  };
+};
 
-// export const transposeMoodData = (type, mood, libraryId) => {
-//   return {
-//     kind: 'mood',
-//     libraryId: libraryId,
-//     moodId: mood.key,
-//     title: mood.title.replace(/\//g, ' & '),
-//     link: '/' + type + '-moods/' + libraryId + '/' + mood.key,
-//   };
-// };
-
-// export const transposeStyleData = (type, style, libraryId) => {
-//   return {
-//     kind: 'style',
-//     libraryId: libraryId,
-//     styleId: style.key,
-//     title: style.title.replace(/\//g, ' & '),
-//     link: '/' + type + '-styles/' + libraryId + '/' + style.key,
-//   };
-// };
+export const transposeTagData = (primaryKey, tag, libraryId) => {
+  const tagId = encodeURIComponent(tag);
+  return {
+    kind: 'tag',
+    libraryId: libraryId,
+    tagId: tagId,
+    title: tag.replace(/\//g, ' & '),
+    link: '/' + primaryKey + '-tags/' + libraryId + '/' + tagId,
+  };
+};
 
 // ======================================================================
 // TRACKS
@@ -508,10 +487,11 @@ export const transposeSearchResultData = (result, libraryId, serverBaseUrl, acce
 // DYNAMIC LOOKUPS
 // ======================================================================
 
-// const lookups = {
-//   transposeArtistData,
-//   transposeAlbumData,
-//   transposeGenreData,
-//   transposeMoodData,
-//   transposeStyleData,
-// };
+const lookups = {
+  // transposeArtistData,
+  // transposeAlbumData,
+  transposeGenreData,
+  // transposeMoodData,
+  // transposeStyleData,
+  transposeTagData,
+};
