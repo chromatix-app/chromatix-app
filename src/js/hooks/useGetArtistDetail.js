@@ -201,7 +201,10 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
           ignoreLeadingArticles: optionSortIgnoreLeadingArticles,
         })
       : null;
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    allArtistTracks,
     artistTracks,
     actualSortArtistTracks,
     actualOrderArtistTracks,
