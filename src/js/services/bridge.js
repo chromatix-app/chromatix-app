@@ -999,9 +999,11 @@ let getTagItemsRunning = {
   AlbumGenreItems: false,
   AlbumMoodItems: false,
   AlbumStyleItems: false,
+  AlbumTagItems: false,
   ArtistGenreItems: false,
   ArtistMoodItems: false,
   ArtistStyleItems: false,
+  ArtistTagItems: false,
 };
 
 export const getTagItems = (libraryId, tagId, typeKey) => {
@@ -1011,9 +1013,10 @@ export const getTagItems = (libraryId, tagId, typeKey) => {
       console.log('%c--- bridge - getTagItems ---', 'color:#f9743b;');
       getTagItemsRunning[typeKey] = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
-      plexTools
+      serviceTools[currentService]
         .getTagItems({
           accessToken,
           libraryId,

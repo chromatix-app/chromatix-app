@@ -69,14 +69,6 @@ const endpointConfig = {
   },
   tags: {
     getAllTags: (serverBaseUrl) => `${serverBaseUrl}/Items/Filters`,
-
-    getArtistGenreItems: null,
-    getArtistMoodItems: null,
-    getArtistStyleItems: null,
-
-    getAlbumGenreItems: null,
-    getAlbumMoodItems: null,
-    getAlbumStyleItems: null,
   },
   rating: {
     setStarRating: null,
@@ -876,9 +868,6 @@ export const getAllTags = ({ accessToken, libraryId, serverBaseUrl, userId }) =>
 
       Promise.all([artistRequest, albumRequest])
         .then(([artistResponse, albumResponse]) => {
-          console.log(artistResponse.data);
-          console.log(albumResponse.data);
-
           resolve({
             allArtistGenres: jellyTranspose.transposeTagArray(
               artistResponse?.data?.Genres,
@@ -914,6 +903,39 @@ export const getAllTags = ({ accessToken, libraryId, serverBaseUrl, userId }) =>
 // ======================================================================
 // GET TAG ITEMS
 // ======================================================================
+
+export const getTagItems = ({ accessToken, libraryId, serverBaseUrl, tagId, typeKey }) => {
+  if (typeKey === 'ArtistGenreItems') {
+    return getAllArtists({
+      accessToken: accessToken,
+      libraryId: libraryId,
+      serverBaseUrl: serverBaseUrl,
+      genre: decodeURIComponent(tagId),
+    });
+  } else if (typeKey === 'AlbumGenreItems') {
+    return getAllAlbums({
+      accessToken: accessToken,
+      libraryId: libraryId,
+      serverBaseUrl: serverBaseUrl,
+      genre: decodeURIComponent(tagId),
+    });
+  } else if (typeKey === 'ArtistTagItems') {
+    return getAllArtists({
+      accessToken: accessToken,
+      libraryId: libraryId,
+      serverBaseUrl: serverBaseUrl,
+      tag: decodeURIComponent(tagId),
+    });
+  } else if (typeKey === 'AlbumTagItems') {
+    return getAllAlbums({
+      accessToken: accessToken,
+      libraryId: libraryId,
+      serverBaseUrl: serverBaseUrl,
+      tag: decodeURIComponent(tagId),
+    });
+  }
+  return null;
+};
 
 // ======================================================================
 // SEARCH

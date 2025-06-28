@@ -13,6 +13,8 @@ const useGetCollectionItems = ({
 }) => {
   const dispatch = useDispatch();
 
+  collectionId = encodeURIComponent(collectionId);
+
   const mediaType = collectionKey.includes('Artist') ? 'Artist' : 'Album';
   // const collectionType = collectionFilter.replace('Id', '');
 
