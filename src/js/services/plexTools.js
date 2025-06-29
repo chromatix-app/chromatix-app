@@ -656,12 +656,23 @@ export const getAllArtistAppearanceAlbums = ({
 
               // If not, get the album details
               return new Promise((resolve2) => {
-                getAlbumDetails(serverBaseUrl, libraryId, albumId, accessToken)
+                getAlbumDetails({
+                  accessToken,
+                  albumId,
+                  libraryId,
+                  serverBaseUrl,
+                })
                   .then((response) => {
                     artistAppearanceAlbums.push(response);
                     resolve2();
                   })
-                  .catch((_error) => {});
+                  .catch((error) => {
+                    reject({
+                      code: 'plex.getAllArtistAppearanceAlbums.1',
+                      message: 'Failed to get all artist appearance albums: ' + error?.message,
+                      error: error,
+                    });
+                  });
               });
             });
 
@@ -671,7 +682,7 @@ export const getAllArtistAppearanceAlbums = ({
               })
               .catch((error) => {
                 reject({
-                  code: 'plex.getAllArtistAppearanceAlbums.1',
+                  code: 'plex.getAllArtistAppearanceAlbums.2',
                   message: 'Failed to get all artist appearance albums: ' + error?.message,
                   error: error,
                 });
@@ -680,14 +691,14 @@ export const getAllArtistAppearanceAlbums = ({
         })
         .catch((error) => {
           reject({
-            code: 'plex.getAllArtistAppearanceAlbums.2',
+            code: 'plex.getAllArtistAppearanceAlbums.3',
             message: 'Failed to get all artist appearance albums: ' + error?.message,
             error: error,
           });
         });
     } catch (error) {
       reject({
-        code: 'plex.getAllArtistAppearanceAlbums.3',
+        code: 'plex.getAllArtistAppearanceAlbums.4',
         message: 'Failed to get all artist appearance albums: ' + error?.message,
         error: error,
       });
