@@ -756,21 +756,40 @@ export const getAllArtistTracks = ({ accessToken, artistId, artistName, libraryI
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.artist.getAllArtistTracks(serverBaseUrl, libraryId);
-      const controller = new AbortController();
-      abortControllers.push(controller);
+      const controller1 = new AbortController();
+      const controller2 = new AbortController();
+      abortControllers.push(controller1, controller2);
 
-      axios
-        .get(endpoint, {
-          headers: getRequestHeaders(accessToken),
-          params: {
-            type: 10,
-            'artist.id': artistId,
-            excludeFields: albumExcludeFields,
-          },
-          signal: controller.signal,
-        })
-        .then((response) => {
-          resolve(plexTranspose.transposeTrackArray(response, libraryId, serverBaseUrl, accessToken));
+      // Request 1: Get artist's own tracks
+      const artistTracksRequest = axios.get(endpoint, {
+        headers: getRequestHeaders(accessToken),
+        params: {
+          type: 10,
+          'artist.id': artistId,
+          excludeFields: albumExcludeFields,
+        },
+        signal: controller1.signal,
+      });
+
+      // Request 2: Get artist appearance tracks
+      const queryString = `?type=10&track.originalTitle=${encodeURIComponent(
+        artistName
+      )}&artist.title!=${encodeURIComponent(artistName)}&excludeFields=${albumExcludeFields}`;
+      const appearanceTracksRequest = axios.get(endpoint + queryString, {
+        headers: getRequestHeaders(accessToken),
+        signal: controller2.signal,
+      });
+
+      Promise.all([artistTracksRequest, appearanceTracksRequest])
+        .then(([artistResponse, appearanceResponse]) => {
+          const artistTracks = plexTranspose.transposeTrackArray(artistResponse, libraryId, serverBaseUrl, accessToken);
+          const appearanceTracks = plexTranspose.transposeTrackArray(
+            appearanceResponse,
+            libraryId,
+            serverBaseUrl,
+            accessToken
+          );
+          resolve([...artistTracks, ...appearanceTracks]);
         })
         .catch((error) => {
           reject({
@@ -780,52 +799,12 @@ export const getAllArtistTracks = ({ accessToken, artistId, artistName, libraryI
           });
         })
         .finally(() => {
-          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller1 && ctrl !== controller2);
         });
     } catch (error) {
       reject({
         code: 'plex.getAllArtistTracks.2',
         message: 'Failed to get all artist tracks: ' + error?.message,
-        error: error,
-      });
-    }
-  });
-};
-
-export const getAllArtistAppearanceTracks = ({ accessToken, artistName, libraryId, serverBaseUrl }) => {
-  return new Promise((resolve, reject) => {
-    try {
-      const endpoint = endpointConfig.artist.getAllArtistTracks(serverBaseUrl, libraryId);
-      const controller = new AbortController();
-      abortControllers.push(controller);
-
-      // We are using a query string because of the use of a != operator
-      const queryString = `?type=10&track.originalTitle=${encodeURIComponent(
-        artistName
-      )}&artist.title!=${encodeURIComponent(artistName)}&excludeFields=${albumExcludeFields}`;
-
-      axios
-        .get(endpoint + queryString, {
-          headers: getRequestHeaders(accessToken),
-          signal: controller.signal,
-        })
-        .then((response) => {
-          resolve(plexTranspose.transposeTrackArray(response, libraryId, serverBaseUrl, accessToken));
-        })
-        .catch((error) => {
-          reject({
-            code: 'plex.getAllArtistAppearanceTracks.1',
-            message: 'Failed to get all artist appearance tracks: ' + error?.message,
-            error: error,
-          });
-        })
-        .finally(() => {
-          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
-        });
-    } catch (error) {
-      reject({
-        code: 'plex.getAllArtistAppearanceTracks.2',
-        message: 'Failed to get all artist appearance tracks: ' + error?.message,
         error: error,
       });
     }

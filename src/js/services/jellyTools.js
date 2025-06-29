@@ -542,16 +542,6 @@ export const getAllArtistTracks = ({ accessToken, artistId, artistName, libraryI
   });
 };
 
-/*
-This is not required when using the Jellyfin API, but is here for consistency with other services.
-*/
-
-export const getAllArtistAppearanceTracks = () => {
-  return new Promise((resolve, reject) => {
-    resolve([]);
-  });
-};
-
 // ======================================================================
 // GET ALL ALBUMS
 // ======================================================================

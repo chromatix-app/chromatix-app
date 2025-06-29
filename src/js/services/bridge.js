@@ -485,31 +485,21 @@ export const getAllArtistTracks = (libraryId, artistId, artistName) => {
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
 
-      // TO DO: This promise.all should probably be in plexTools
-      Promise.all([
-        serviceTools[currentService].getAllArtistTracks({
+      serviceTools[currentService]
+        .getAllArtistTracks({
           accessToken,
           artistId,
           artistName,
           libraryId,
           serverBaseUrl,
           userId,
-        }),
-        serviceTools[currentService].getAllArtistAppearanceTracks({
-          accessToken,
-          artistName,
-          libraryId,
-          serverBaseUrl,
-        }),
-      ])
-        .then(([artistTracks, appearanceTracks]) => {
-          // Combine both track arrays (assume they need to be merged)
-          const combinedTracks = [...artistTracks, ...appearanceTracks];
-          // Store the combined tracks
+        })
+        .then((response) => {
+          // console.log(response);
           store.dispatch.appModel.storeArtistTracks({
             libraryId,
             artistId,
-            artistTracks: combinedTracks,
+            artistTracks: response,
           });
         })
         .catch((error) => {
