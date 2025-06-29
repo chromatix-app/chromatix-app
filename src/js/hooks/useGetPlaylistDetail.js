@@ -15,8 +15,9 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   const colPlaylistAlbum = useSelector(({ sessionModel }) => sessionModel.colPlaylistAlbum);
   const colPlaylistCodec = useSelector(({ sessionModel }) => sessionModel.colPlaylistCodec);
   const colPlaylistBitrate = useSelector(({ sessionModel }) => sessionModel.colPlaylistBitrate);
-  const colPlaylistUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistUserRating);
   const colPlaylistDuration = useSelector(({ sessionModel }) => sessionModel.colPlaylistDuration);
+  const colPlaylistUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistUserRating);
+  const colPlaylistIsFavourite = useSelector(({ sessionModel }) => sessionModel.colPlaylistIsFavourite);
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
   const optionSortIgnoreLeadingArticles = useSelector(
@@ -31,8 +32,9 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
     album: colPlaylistAlbum,
     codec: colPlaylistCodec,
     bitrate: colPlaylistBitrate,
-    userRating: colPlaylistUserRating,
     duration: colPlaylistDuration,
+    userRating: colPlaylistUserRating,
+    isFavourite: colPlaylistIsFavourite,
   };
   const actualPlaylistSortString = allowedSort[playlistSortString?.split('-')[0]] ? playlistSortString : null;
 
@@ -48,6 +50,7 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   const playlistDurationMillisecs = playlistTracks?.reduce((acc, track) => acc + track.duration, 0);
   const playlistDurationString = durationToStringLong(playlistDurationMillisecs);
   const playlistRating = playlistInfo?.userRating;
+  const playlistIsFavourite = playlistInfo?.isFavourite;
 
   const sortedPlaylistTracks = useMemo(() => {
     if (!playlistTracks) return null;
@@ -107,6 +110,7 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
     playlistTrackCount,
     playlistDurationString,
     playlistRating,
+    playlistIsFavourite,
 
     playlistTracks: sortedPlaylistTracks,
     playlistOrder,
@@ -118,8 +122,9 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
       album: colPlaylistAlbum,
       codec: colPlaylistCodec,
       bitrate: colPlaylistBitrate,
-      userRating: colPlaylistUserRating,
       duration: colPlaylistDuration,
+      userRating: colPlaylistUserRating,
+      isFavourite: colPlaylistIsFavourite,
     },
     setColumnVisibility,
   };

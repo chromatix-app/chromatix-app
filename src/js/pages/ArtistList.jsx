@@ -209,6 +209,11 @@ const Title = ({
                 attr: 'colArtistsUserRating',
                 checked: colOptions.userRating,
               },
+              {
+                label: 'Favourite',
+                attr: 'colArtistsIsFavourite',
+                checked: colOptions.isFavourite,
+              },
             ]}
           />
         )}

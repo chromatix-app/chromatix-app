@@ -5,7 +5,7 @@
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { FilterMenu, ListTable, Loading, StarRating, TitleHeading } from 'js/components';
+import { Favourite, FilterMenu, ListTable, Loading, StarRating, TitleHeading } from 'js/components';
 import { useGetPlaylistDetail } from 'js/hooks';
 
 // ======================================================================
@@ -24,6 +24,7 @@ const PlaylistDetail = () => {
     playlistTrackCount,
     playlistDurationString,
     playlistRating,
+    playlistIsFavourite,
     playlistTracks,
     playlistOrder,
     playlistSortString,
@@ -62,6 +63,7 @@ const PlaylistDetail = () => {
           playlistDurationString={playlistDurationString}
           playlistId={playlistId}
           playlistRating={playlistRating}
+          playlistIsFavourite={playlistIsFavourite}
           playlistThumb={playlistThumb}
           playlistTitle={playlistTitle}
           playlistTrackCount={playlistTrackCount}
@@ -87,6 +89,7 @@ const PlaylistDetail = () => {
             playlistDurationString={playlistDurationString}
             playlistId={playlistId}
             playlistRating={playlistRating}
+            playlistIsFavourite={playlistIsFavourite}
             playlistThumb={playlistThumb}
             playlistTitle={playlistTitle}
             playlistTrackCount={playlistTrackCount}
@@ -107,6 +110,7 @@ const Title = ({
   playlistDurationString,
   playlistId,
   playlistRating,
+  playlistIsFavourite,
   playlistThumb,
   playlistTitle,
   playlistTrackCount,
@@ -124,8 +128,9 @@ const Title = ({
           <>
             {playlistDurationString}
             {playlistDurationString && ' • '}
-
             <StarRating variant="title" type="playlist" ratingKey={playlistId} rating={playlistRating} editable />
+            {' • '}
+            <Favourite variant="title" type="playlist" itemId={playlistId} isFavourite={playlistIsFavourite} editable />
           </>
         ) : (
           <>&nbsp;</>
@@ -178,6 +183,11 @@ const Title = ({
               label: 'Rating',
               attr: 'colPlaylistUserRating',
               checked: colOptions.userRating,
+            },
+            {
+              label: 'Favourite',
+              attr: 'colPlaylistIsFavourite',
+              checked: colOptions.isFavourite,
             },
           ]}
         />

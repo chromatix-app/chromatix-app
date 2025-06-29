@@ -22,6 +22,7 @@ const useGetAllAlbums = () => {
   const colAlbumsAddedAt = useSelector(({ sessionModel }) => sessionModel.colAlbumsAddedAt);
   const colAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colAlbumsLastPlayed);
   const colAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumsUserRating);
+  const colAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colAlbumsIsFavourite);
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
   const optionSortIgnoreLeadingArticles = useSelector(
@@ -39,6 +40,7 @@ const useGetAllAlbums = () => {
     genre: viewAlbums === 'list' && colAlbumsGenre,
     releaseDate: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsReleaseDate),
     userRating: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsUserRating),
+    isFavourite: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsIsFavourite),
   };
   const actualSortAlbums = allowedSort[sortAlbums] ? sortAlbums : 'title';
   const actualOrderAlbums = allowedSort[sortAlbums] ? orderAlbums : 'asc';
@@ -103,6 +105,7 @@ const useGetAllAlbums = () => {
       addedAt: colAlbumsAddedAt,
       lastPlayed: colAlbumsLastPlayed,
       userRating: colAlbumsUserRating,
+      isFavourite: colAlbumsIsFavourite,
     },
 
     setViewAlbums,

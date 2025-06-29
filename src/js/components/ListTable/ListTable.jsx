@@ -9,7 +9,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import clsx from 'clsx';
 import moment from 'moment';
 
-import { Icon, StarRating } from 'js/components';
+import { Favourite, Icon, StarRating } from 'js/components';
 import { useScrollToTrack, useScrollToVirtualTrack, useTableOptions, useWindowSize } from 'js/hooks';
 import { durationToStringMed, durationToStringShort, formatRecentDate } from 'js/utils';
 
@@ -687,6 +687,7 @@ const DiscRow = ({ virtualEntry, entry }) => {
 // ======================================================================
 
 const StandardRow = ({ virtualEntry, entry, tableVariant, tableOptions, gridTemplateColumns }) => {
+  const { ratingType, ratingKey } = lookupVariantFields[tableVariant] || {};
   const rowKey = entry.albumId || entry.artistId || entry.playlistId || entry.collectionId;
 
   return (
@@ -708,8 +709,6 @@ const StandardRow = ({ virtualEntry, entry, tableVariant, tableOptions, gridTemp
       {tableOptions
         .filter((columnOptions) => columnOptions.visible !== false)
         .map((columnOptions, index) => {
-          const { ratingType, ratingKey } = lookupVariantFields[tableVariant] || {};
-
           switch (columnOptions.colKey) {
             case 'sortOrder':
               return (
@@ -820,6 +819,13 @@ const StandardRow = ({ virtualEntry, entry, tableVariant, tableOptions, gridTemp
                 </div>
               );
 
+            case 'isFavourite':
+              return (
+                <div key={rowKey + '-' + index} className={style.isFavourite}>
+                  <Favourite type={ratingType} itemId={rowKey} isFavourite={entry.isFavourite} editable />
+                </div>
+              );
+
             default:
               return null;
           }
@@ -847,6 +853,7 @@ const TrackRow = ({
   pauseTrack,
   isTrackLoaded,
 }) => {
+  const { ratingType, ratingKey } = lookupVariantFields[tableVariant] || {};
   const rowKey = entry.albumId || entry.artistId || entry.playlistId || entry.collectionId;
 
   let trackNumber = entry.sortedTrackNumber ? entry.sortedTrackNumber : virtualEntry ? virtualEntry.index : index + 1;
@@ -893,8 +900,6 @@ const TrackRow = ({
       {tableOptions
         .filter((columnOptions) => columnOptions.visible !== false)
         .map((columnOptions, index) => {
-          const { ratingType, ratingKey } = lookupVariantFields[tableVariant] || {};
-
           switch (columnOptions.colKey) {
             case 'sortOrder':
               return (
@@ -1050,6 +1055,13 @@ const TrackRow = ({
                     editable
                     onlyShowOnHover
                   />
+                </div>
+              );
+
+            case 'isFavourite':
+              return (
+                <div key={rowKey + '-' + index} className={style.isFavourite}>
+                  <Favourite type={ratingType} itemId={entry[ratingKey]} isFavourite={entry.isFavourite} editable />
                 </div>
               );
 

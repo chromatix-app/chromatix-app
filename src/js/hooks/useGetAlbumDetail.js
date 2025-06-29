@@ -14,8 +14,9 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const colAlbumArtist = useSelector(({ sessionModel }) => sessionModel.colAlbumArtist);
   const colAlbumCodec = useSelector(({ sessionModel }) => sessionModel.colAlbumCodec);
   const colAlbumBitrate = useSelector(({ sessionModel }) => sessionModel.colAlbumBitrate);
-  const colAlbumUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumUserRating);
   const colAlbumDuration = useSelector(({ sessionModel }) => sessionModel.colAlbumDuration);
+  const colAlbumUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumUserRating);
+  const colAlbumIsFavourite = useSelector(({ sessionModel }) => sessionModel.colAlbumIsFavourite);
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
   const optionSortIgnoreLeadingArticles = useSelector(
@@ -29,8 +30,9 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
     artist: colAlbumArtist,
     codec: colAlbumCodec,
     bitrate: colAlbumBitrate,
-    userRating: colAlbumUserRating,
     duration: colAlbumDuration,
+    userRating: colAlbumUserRating,
+    isFavourite: colAlbumIsFavourite,
   };
   const actualAlbumSortString = allowedSort[albumSortString?.split('-')[0]] ? albumSortString : null;
 
@@ -55,6 +57,7 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const albumDurationMillisecs = albumTracks?.reduce((acc, track) => acc + track.duration, 0);
   const albumDurationString = durationToStringLong(albumDurationMillisecs);
   const albumRating = albumInfo?.userRating;
+  const albumIsFavourite = albumInfo?.isFavourite;
   const albumArtistLink = albumInfo?.artistLink;
 
   const sortedAlbumTracks = useMemo(() => {
@@ -126,6 +129,7 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
     albumTrackCount,
     albumDurationString,
     albumRating,
+    albumIsFavourite,
     albumArtistLink,
 
     albumTracks: sortedAlbumTracks,
@@ -136,8 +140,9 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
       artist: colAlbumArtist,
       codec: colAlbumCodec,
       bitrate: colAlbumBitrate,
-      userRating: colAlbumUserRating,
       duration: colAlbumDuration,
+      userRating: colAlbumUserRating,
+      isFavourite: colAlbumIsFavourite,
     },
     setColumnVisibility,
   };

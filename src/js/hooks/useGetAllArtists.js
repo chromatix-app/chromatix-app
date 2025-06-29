@@ -21,6 +21,7 @@ const useGetAllArtists = () => {
   const colArtistsAddedAt = useSelector(({ sessionModel }) => sessionModel.colArtistsAddedAt);
   const colArtistsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colArtistsLastPlayed);
   const colArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistsUserRating);
+  const colArtistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colArtistsIsFavourite);
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
   const optionSortIgnoreLeadingArticles = useSelector(
@@ -35,6 +36,7 @@ const useGetAllArtists = () => {
     lastPlayed: viewArtists === 'grid' || (viewArtists === 'list' && colArtistsLastPlayed),
     genre: viewArtists === 'list' && colArtistsGenre,
     userRating: viewArtists === 'grid' || (viewArtists === 'list' && colArtistsUserRating),
+    isFavourite: viewArtists === 'grid' || (viewArtists === 'list' && colArtistsIsFavourite),
   };
   const actualSortArtists = allowedSort[sortArtists] ? sortArtists : 'title';
   const actualOrderArtists = allowedSort[sortArtists] ? orderArtists : 'asc';
@@ -98,6 +100,7 @@ const useGetAllArtists = () => {
       addedAt: colArtistsAddedAt,
       lastPlayed: colArtistsLastPlayed,
       userRating: colArtistsUserRating,
+      isFavourite: colArtistsIsFavourite,
     },
 
     setViewArtists,

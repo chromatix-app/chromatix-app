@@ -300,6 +300,7 @@
 //   text-transform: capitalize;
 // }
 
+.isFavourite,
 .userRating {
   .entry & {
     font-size: 0;
@@ -314,7 +315,8 @@
 .codec,
 .bitrate,
 .duration,
-.userRating {
+.userRating,
+.isFavourite {
   &:last-child {
     text-align: right;
   }

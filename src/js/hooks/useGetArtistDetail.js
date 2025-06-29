@@ -15,6 +15,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const artistCountry = artistInfo?.country;
   const artistGenre = artistInfo?.genre;
   const artistRating = artistInfo?.userRating;
+  const artistIsFavourite = artistInfo?.isFavourite;
 
   const gridArtistAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.gridArtistAlbumsUserRating);
   const artistAlbumsGroupByType = useSelector(({ sessionModel }) => sessionModel.artistAlbumsGroupByType);
@@ -24,6 +25,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const colArtistAlbumsAddedAt = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsAddedAt);
   const colArtistAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsLastPlayed);
   const colArtistAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsUserRating);
+  const colArtistAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsIsFavourite);
 
   const colArtistTracksArtwork = useSelector(({ sessionModel }) => sessionModel.colArtistTracksArtwork);
   const colArtistTracksArtist = useSelector(({ sessionModel }) => sessionModel.colArtistTracksArtist);
@@ -33,6 +35,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const colArtistTracksBitrate = useSelector(({ sessionModel }) => sessionModel.colArtistTracksBitrate);
   const colArtistTracksDuration = useSelector(({ sessionModel }) => sessionModel.colArtistTracksDuration);
   const colArtistTracksUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistTracksUserRating);
+  const colArtistTracksIsFavourite = useSelector(({ sessionModel }) => sessionModel.colArtistTracksIsFavourite);
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
   const optionSortIgnoreLeadingArticles = useSelector(
@@ -72,6 +75,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     genre: viewArtistAlbums === 'list' && colArtistAlbumsGenre,
     releaseDate: viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsReleaseDate),
     userRating: viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsUserRating),
+    isFavourite: viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsIsFavourite),
   };
   const actualSortArtistAlbums = allowedSort[sortArtistAlbums] ? sortArtistAlbums : 'title';
   const actualOrderArtistAlbums = allowedSort[sortArtistAlbums] ? orderArtistAlbums : 'asc';
@@ -84,6 +88,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     codec: colArtistTracksCodec,
     bitrate: colArtistTracksBitrate,
     userRating: colArtistTracksUserRating,
+    isFavourite: colArtistTracksIsFavourite,
     duration: colArtistTracksDuration,
   };
   const actualSortArtistTracks = allowedTrackSort[sortArtistTracks] ? sortArtistTracks : 'title';
@@ -282,6 +287,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     artistCountry,
     artistGenre,
     artistRating,
+    artistIsFavourite,
 
     sortedArtistAlbums,
     sortedArtistRelated,
@@ -303,6 +309,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
       addedAt: colArtistAlbumsAddedAt,
       lastPlayed: colArtistAlbumsLastPlayed,
       userRating: colArtistAlbumsUserRating,
+      isFavourite: colArtistAlbumsIsFavourite,
     },
 
     colTrackOptions: {
@@ -314,6 +321,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
       bitrate: colArtistTracksBitrate,
       duration: colArtistTracksDuration,
       userRating: colArtistTracksUserRating,
+      isFavourite: colArtistTracksIsFavourite,
     },
 
     artistAlbumTotal,

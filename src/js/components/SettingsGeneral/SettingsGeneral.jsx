@@ -369,6 +369,7 @@ const StarRatingSettings = () => {
 
   const colArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistsUserRating);
   const colArtistAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsUserRating);
+  const colArtistTracksUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistTracksUserRating);
   const colAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumsUserRating);
   const colAlbumUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumUserRating);
   const colPlaylistsUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistsUserRating);
@@ -388,6 +389,7 @@ const StarRatingSettings = () => {
 
     colArtistsUserRating,
     colArtistAlbumsUserRating,
+    colArtistTracksUserRating,
     colAlbumsUserRating,
     colAlbumUserRating,
     colPlaylistsUserRating,
@@ -412,6 +414,7 @@ const StarRatingSettings = () => {
 
       colArtistsUserRating: true,
       colArtistAlbumsUserRating: true,
+      colArtistTracksUserRating: true,
       colAlbumsUserRating: true,
       colAlbumUserRating: true,
       colPlaylistsUserRating: true,
@@ -434,6 +437,7 @@ const StarRatingSettings = () => {
 
       colArtistsUserRating: false,
       colArtistAlbumsUserRating: false,
+      colArtistTracksUserRating: false,
       colAlbumsUserRating: false,
       colAlbumUserRating: false,
       colPlaylistsUserRating: false,

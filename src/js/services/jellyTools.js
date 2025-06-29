@@ -70,6 +70,9 @@ const endpointConfig = {
   tags: {
     getAllTags: (serverBaseUrl) => `${serverBaseUrl}/Items/Filters`,
   },
+  favourite: {
+    toggleFavourite: (serverBaseUrl, userId, itemId) => `${serverBaseUrl}/Users/${userId}/FavoriteItems/${itemId}`,
+  },
   rating: {
     setStarRating: null,
   },
@@ -882,8 +885,8 @@ export const getAllTags = ({ accessToken, libraryId, serverBaseUrl, userId }) =>
         })
         .catch((error) => {
           reject({
-            code: 'jellyfin.searchLibrary.1',
-            message: 'Error searching library: ' + error?.message,
+            code: 'jellyfin.getAllTags.1',
+            message: 'Error getting tags: ' + error?.message,
             error: error,
           });
         })
@@ -892,8 +895,8 @@ export const getAllTags = ({ accessToken, libraryId, serverBaseUrl, userId }) =>
         });
     } catch (error) {
       reject({
-        code: 'jellyfin.searchLibrary.2',
-        message: 'Error searching library: ' + error?.message,
+        code: 'jellyfin.getAllTags.2',
+        message: 'Error getting tags: ' + error?.message,
         error: error,
       });
     }
@@ -1021,8 +1024,68 @@ export const searchLibrary = ({
 };
 
 // ======================================================================
-// SET STAR RATING
+// TOGGLE FAVOURITE
 // ======================================================================
+
+export const toggleFavourite = ({ accessToken, isFavourite, itemId, serverBaseUrl, userId }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.favourite.toggleFavourite(serverBaseUrl, userId, itemId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      if (isFavourite) {
+        axios
+          .post(
+            endpoint,
+            {},
+            {
+              headers: getRequestHeaders(accessToken),
+              signal: controller.signal,
+            }
+          )
+          .then((response) => {
+            resolve();
+          })
+          .catch((error) => {
+            reject({
+              code: 'jellyfin.toggleFavourite.1',
+              message: 'Failed to toggle favourite: ' + error?.message,
+              error: error,
+            });
+          })
+          .finally(() => {
+            abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+          });
+      } else {
+        axios
+          .delete(endpoint, {
+            headers: getRequestHeaders(accessToken),
+            signal: controller.signal,
+          })
+          .then((response) => {
+            resolve();
+          })
+          .catch((error) => {
+            reject({
+              code: 'jellyfin.toggleFavourite.2',
+              message: 'Failed to toggle favourite: ' + error?.message,
+              error: error,
+            });
+          })
+          .finally(() => {
+            abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+          });
+      }
+    } catch (error) {
+      reject({
+        code: 'jellyfin.toggleFavourite.3',
+        message: 'Failed to toggle favourite: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
 
 // ======================================================================
 // LOG PLAYBACK STATUS

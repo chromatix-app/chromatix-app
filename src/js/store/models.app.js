@@ -406,13 +406,14 @@ const effects = (dispatch) => ({
 
   setArtistRating(payload, rootState) {
     console.log('%c--- setArtistRating ---', 'color:#07a098');
-    const { ratingKey, rating } = payload;
+    const { isFavourite, ratingKey, rating } = payload;
 
     // update artist
     const prevArtists = rootState.appModel.allArtists;
     const allArtists = prevArtists ? [...prevArtists] : [];
     const artistIndex = allArtists.findIndex((artist) => artist.artistId === ratingKey);
     if (artistIndex !== -1) {
+      allArtists[artistIndex].isFavourite = isFavourite;
       allArtists[artistIndex].userRating = rating;
       dispatch.appModel.setAppState({
         allArtists,
@@ -426,6 +427,7 @@ const effects = (dispatch) => ({
       const artistCollectionItems = allArtistCollectionItems[key];
       const artistIndex = artistCollectionItems.findIndex((artist) => artist.artistId === ratingKey);
       if (artistIndex !== -1) {
+        artistCollectionItems[artistIndex].isFavourite = isFavourite;
         artistCollectionItems[artistIndex].userRating = rating;
         allArtistCollectionItems[key] = artistCollectionItems;
       }
@@ -438,6 +440,7 @@ const effects = (dispatch) => ({
       const artistGenreItems = allArtistGenreItems[key];
       const artistIndex = artistGenreItems.findIndex((artist) => artist.artistId === ratingKey);
       if (artistIndex !== -1) {
+        artistGenreItems[artistIndex].isFavourite = isFavourite;
         artistGenreItems[artistIndex].userRating = rating;
         allArtistGenreItems[key] = artistGenreItems;
       }
@@ -450,6 +453,7 @@ const effects = (dispatch) => ({
       const artistMoodItems = allArtistMoodItems[key];
       const artistIndex = artistMoodItems.findIndex((artist) => artist.artistId === ratingKey);
       if (artistIndex !== -1) {
+        artistMoodItems[artistIndex].isFavourite = isFavourite;
         artistMoodItems[artistIndex].userRating = rating;
         allArtistMoodItems[key] = artistMoodItems;
       }
@@ -462,6 +466,7 @@ const effects = (dispatch) => ({
       const artistStyleItems = allArtistStyleItems[key];
       const artistIndex = artistStyleItems.findIndex((artist) => artist.artistId === ratingKey);
       if (artistIndex !== -1) {
+        artistStyleItems[artistIndex].isFavourite = isFavourite;
         artistStyleItems[artistIndex].userRating = rating;
         allArtistStyleItems[key] = artistStyleItems;
       }
@@ -474,6 +479,7 @@ const effects = (dispatch) => ({
       const artistTagItems = allArtistTagItems[key];
       const artistIndex = artistTagItems.findIndex((artist) => artist.artistId === ratingKey);
       if (artistIndex !== -1) {
+        artistTagItems[artistIndex].isFavourite = isFavourite;
         artistTagItems[artistIndex].userRating = rating;
         allArtistTagItems[key] = artistTagItems;
       }
@@ -529,13 +535,14 @@ const effects = (dispatch) => ({
 
   setAlbumRating(payload, rootState) {
     console.log('%c--- setAlbumRating ---', 'color:#07a098');
-    const { ratingKey, rating } = payload;
+    const { isFavourite, ratingKey, rating } = payload;
 
     // update albums
     const prevAlbums = rootState.appModel.allAlbums;
     const allAlbums = prevAlbums ? [...prevAlbums] : [];
     const albumIndex = allAlbums.findIndex((album) => album.albumId === ratingKey);
     if (albumIndex !== -1) {
+      allAlbums[albumIndex].isFavourite = isFavourite;
       allAlbums[albumIndex].userRating = rating;
       dispatch.appModel.setAppState({
         allAlbums,
@@ -549,6 +556,7 @@ const effects = (dispatch) => ({
       const artistAlbums = allArtistAlbums[key];
       const albumIndex = artistAlbums.findIndex((album) => album.albumId === ratingKey);
       if (albumIndex !== -1) {
+        artistAlbums[albumIndex].isFavourite = isFavourite;
         artistAlbums[albumIndex].userRating = rating;
         allArtistAlbums[key] = artistAlbums;
       }
@@ -563,6 +571,7 @@ const effects = (dispatch) => ({
         const relatedAlbums = group.related;
         relatedAlbums.forEach((album, index) => {
           if (album.albumId === ratingKey) {
+            group.related[index].isFavourite = isFavourite;
             group.related[index].userRating = rating;
           }
         });
@@ -577,6 +586,7 @@ const effects = (dispatch) => ({
       const artistAppearanceAlbums = allArtistAppearanceAlbums[key];
       const albumIndex = artistAppearanceAlbums.findIndex((album) => album.albumId === ratingKey);
       if (albumIndex !== -1) {
+        artistAppearanceAlbums[albumIndex].isFavourite = isFavourite;
         artistAppearanceAlbums[albumIndex].userRating = rating;
         allArtistAppearanceAlbums[key] = artistAppearanceAlbums;
       }
@@ -590,6 +600,7 @@ const effects = (dispatch) => ({
       console.log(albumCollectionItems);
       const albumIndex = albumCollectionItems.findIndex((album) => album.albumId === ratingKey);
       if (albumIndex !== -1) {
+        albumCollectionItems[albumIndex].isFavourite = isFavourite;
         albumCollectionItems[albumIndex].userRating = rating;
         allAlbumCollectionItems[key] = albumCollectionItems;
       }
@@ -602,6 +613,7 @@ const effects = (dispatch) => ({
       const albumGenreItems = allAlbumGenreItems[key];
       const albumIndex = albumGenreItems.findIndex((album) => album.albumId === ratingKey);
       if (albumIndex !== -1) {
+        albumGenreItems[albumIndex].isFavourite = isFavourite;
         albumGenreItems[albumIndex].userRating = rating;
         allAlbumGenreItems[key] = albumGenreItems;
       }
@@ -614,6 +626,7 @@ const effects = (dispatch) => ({
       const albumMoodItems = allAlbumMoodItems[key];
       const albumIndex = albumMoodItems.findIndex((album) => album.albumId === ratingKey);
       if (albumIndex !== -1) {
+        albumMoodItems[albumIndex].isFavourite = isFavourite;
         albumMoodItems[albumIndex].userRating = rating;
         allAlbumMoodItems[key] = albumMoodItems;
       }
@@ -626,6 +639,7 @@ const effects = (dispatch) => ({
       const albumStyleItems = allAlbumStyleItems[key];
       const albumIndex = albumStyleItems.findIndex((album) => album.albumId === ratingKey);
       if (albumIndex !== -1) {
+        albumStyleItems[albumIndex].isFavourite = isFavourite;
         albumStyleItems[albumIndex].userRating = rating;
         allAlbumStyleItems[key] = albumStyleItems;
       }
@@ -638,6 +652,7 @@ const effects = (dispatch) => ({
       const albumTagItems = allAlbumTagItems[key];
       const albumIndex = albumTagItems.findIndex((album) => album.albumId === ratingKey);
       if (albumIndex !== -1) {
+        albumTagItems[albumIndex].isFavourite = isFavourite;
         albumTagItems[albumIndex].userRating = rating;
         allAlbumTagItems[key] = albumTagItems;
       }
@@ -715,11 +730,12 @@ const effects = (dispatch) => ({
 
   setPlaylistRating(payload, rootState) {
     console.log('%c--- setPlaylistRating ---', 'color:#07a098');
-    const { ratingKey, rating } = payload;
+    const { isFavourite, ratingKey, rating } = payload;
     const prevPlaylists = rootState.appModel.allPlaylists;
     const allPlaylists = prevPlaylists ? [...prevPlaylists] : [];
     const playlistIndex = allPlaylists.findIndex((playlist) => playlist.playlistId === ratingKey);
     if (playlistIndex !== -1) {
+      allPlaylists[playlistIndex].isFavourite = isFavourite;
       allPlaylists[playlistIndex].userRating = rating;
       dispatch.appModel.setAppState({
         allPlaylists,
@@ -733,7 +749,7 @@ const effects = (dispatch) => ({
 
   setTrackRating(payload, rootState) {
     console.log('%c--- setTrackRating ---', 'color:#07a098');
-    const { ratingKey, rating } = payload;
+    const { isFavourite, ratingKey, rating } = payload;
 
     // update artist tracks
     const allArtistTracks = { ...rootState.appModel.allArtistTracks };
@@ -742,6 +758,7 @@ const effects = (dispatch) => ({
       const artistTracks = allArtistTracks[key];
       const trackIndex = artistTracks.findIndex((track) => track.trackId === ratingKey);
       if (trackIndex !== -1) {
+        artistTracks[trackIndex].isFavourite = isFavourite;
         artistTracks[trackIndex].userRating = rating;
         allArtistTracks[key] = artistTracks;
       }
@@ -754,6 +771,7 @@ const effects = (dispatch) => ({
       const albumTracks = allAlbumTracks[key];
       const trackIndex = albumTracks.findIndex((track) => track.trackId === ratingKey);
       if (trackIndex !== -1) {
+        albumTracks[trackIndex].isFavourite = isFavourite;
         albumTracks[trackIndex].userRating = rating;
         allAlbumTracks[key] = albumTracks;
       }
@@ -766,6 +784,7 @@ const effects = (dispatch) => ({
       const playlistTracks = allPlaylistTracks[key];
       const trackIndex = playlistTracks.findIndex((track) => track.trackId === ratingKey);
       if (trackIndex !== -1) {
+        playlistTracks[trackIndex].isFavourite = isFavourite;
         playlistTracks[trackIndex].userRating = rating;
         allPlaylistTracks[key] = playlistTracks;
       }
@@ -815,13 +834,14 @@ const effects = (dispatch) => ({
 
   setCollectionRating(payload, rootState) {
     console.log('%c--- setCollectionRating ---', 'color:#07a098');
-    const { ratingKey, rating } = payload;
+    const { isFavourite, ratingKey, rating } = payload;
 
     // update artist collections
     const prevArtistCollections = rootState.appModel.allArtistCollections;
     const allArtistCollections = prevArtistCollections ? [...prevArtistCollections] : [];
     const artistCollectionIndex = allArtistCollections.findIndex((collection) => collection.collectionId === ratingKey);
     if (artistCollectionIndex !== -1) {
+      allArtistCollections[artistCollectionIndex].isFavourite = isFavourite;
       allArtistCollections[artistCollectionIndex].userRating = rating;
       dispatch.appModel.setAppState({
         allArtistCollections,
@@ -833,6 +853,7 @@ const effects = (dispatch) => ({
     const allAlbumCollections = prevAlbumCollections ? [...prevAlbumCollections] : [];
     const albumCollectionIndex = allAlbumCollections.findIndex((collection) => collection.collectionId === ratingKey);
     if (albumCollectionIndex !== -1) {
+      allAlbumCollections[albumCollectionIndex].isFavourite = isFavourite;
       allAlbumCollections[albumCollectionIndex].userRating = rating;
       dispatch.appModel.setAppState({
         allAlbumCollections,

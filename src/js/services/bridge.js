@@ -1082,6 +1082,42 @@ const searchLibrary2 = (query, searchCounter) => {
 };
 
 // ======================================================================
+// TOGGLE FAVOURITE
+// ======================================================================
+
+export const toggleFavourite = (type, itemId, isFavourite) => {
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  const userId = store.getState().appModel.currentUser.userId;
+
+  jellyTools
+    .toggleFavourite({
+      accessToken,
+      isFavourite,
+      itemId,
+      serverBaseUrl,
+      userId,
+    })
+    .then(() => {
+      if (type === 'artist' || type === 'artists') {
+        store.dispatch.appModel.setArtistRating({ ratingKey: itemId, isFavourite });
+      } else if (type === 'album' || type === 'albums') {
+        store.dispatch.appModel.setAlbumRating({ ratingKey: itemId, isFavourite });
+      } else if (type === 'track' || type === 'tracks') {
+        store.dispatch.appModel.setTrackRating({ ratingKey: itemId, isFavourite });
+      } else if (type === 'playlist' || type === 'playlists') {
+        store.dispatch.appModel.setPlaylistRating({ ratingKey: itemId, isFavourite });
+      } else if (type === 'collection' || type === 'collections') {
+        store.dispatch.appModel.setCollectionRating({ ratingKey: itemId, isFavourite });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      analyticsEvent('Error: Bridge - Set Favourite');
+    });
+};
+
+// ======================================================================
 // SET STAR RATING
 // ======================================================================
 

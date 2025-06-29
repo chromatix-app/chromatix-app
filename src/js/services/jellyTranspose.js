@@ -397,7 +397,7 @@ export const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken)
     bitrate: null,
     duration: track.RunTimeTicks / 10000,
     userRating: null,
-    // isFavourite: playlist.UserData?.IsFavorite || false,
+    isFavourite: track.UserData?.IsFavorite || false,
     releaseDate: track.PremiereDate || null,
     thumb: getThumb(track.ImageTags?.Primary, track.Id, serverBaseUrl, accessToken, thumbSizeSmall),
     thumbMedium: getThumb(track.ImageTags?.Primary, track.Id, serverBaseUrl, accessToken, thumbSizeMedium),

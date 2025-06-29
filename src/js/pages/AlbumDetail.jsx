@@ -5,7 +5,7 @@
 import { useDispatch } from 'react-redux';
 import { NavLink, useParams } from 'react-router-dom';
 
-import { FilterMenu, ListTable, Loading, StarRating, TitleHeading } from 'js/components';
+import { Favourite, FilterMenu, ListTable, Loading, StarRating, TitleHeading } from 'js/components';
 import { useGetAlbumDetail } from 'js/hooks';
 
 // ======================================================================
@@ -27,6 +27,7 @@ const AlbumDetail = () => {
     albumTrackCount,
     albumDurationString,
     albumRating,
+    albumIsFavourite,
     albumArtistLink,
     albumTracks,
     albumOrder,
@@ -64,6 +65,7 @@ const AlbumDetail = () => {
           albumDurationString={albumDurationString}
           albumId={albumId}
           albumRating={albumRating}
+          albumIsFavourite={albumIsFavourite}
           albumReleaseDate={albumReleaseDate}
           albumThumb={albumThumb}
           albumTitle={albumTitle}
@@ -93,6 +95,7 @@ const AlbumDetail = () => {
             albumDurationString={albumDurationString}
             albumId={albumId}
             albumRating={albumRating}
+            albumIsFavourite={albumIsFavourite}
             albumReleaseDate={albumReleaseDate}
             albumThumb={albumThumb}
             albumTitle={albumTitle}
@@ -116,6 +119,7 @@ const Title = ({
   albumDurationString,
   albumId,
   albumRating,
+  albumIsFavourite,
   albumReleaseDate,
   albumThumb,
   albumTitle,
@@ -149,6 +153,8 @@ const Title = ({
             {albumDurationString}
             {(albumReleaseDate || albumTrackCount || albumDurationString) && ' • '}
             <StarRating variant="title" type="album" ratingKey={albumId} rating={albumRating} editable />
+            {' • '}
+            <Favourite variant="title" type="album" itemId={albumId} isFavourite={albumIsFavourite} editable />
           </>
         ) : (
           <>&nbsp;</>
@@ -191,6 +197,11 @@ const Title = ({
               label: 'Rating',
               attr: 'colAlbumUserRating',
               checked: colOptions.userRating,
+            },
+            {
+              label: 'Favourite',
+              attr: 'colAlbumIsFavourite',
+              checked: colOptions.isFavourite,
             },
           ]}
         />

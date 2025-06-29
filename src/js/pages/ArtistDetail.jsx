@@ -5,6 +5,7 @@
 import { useParams } from 'react-router-dom';
 
 import {
+  Favourite,
   FilterMenu,
   FilterSelect,
   FilterToggle,
@@ -30,6 +31,8 @@ const ArtistDetail = () => {
     artistCountry,
     artistGenre,
     artistRating,
+    artistIsFavourite,
+
     gridOptions,
     colOptions,
     colTrackOptions,
@@ -97,6 +100,7 @@ const ArtistDetail = () => {
           artistId={artistId}
           artistName={artistName}
           artistRating={artistRating}
+          artistIsFavourite={artistIsFavourite}
           artistReleasesTotal={artistReleasesTotal}
           artistThumb={artistThumb}
           artistTracksTotal={artistTracksTotal}
@@ -132,6 +136,7 @@ const ArtistDetail = () => {
             artistId={artistId}
             artistName={artistName}
             artistRating={artistRating}
+            artistIsFavourite={artistIsFavourite}
             artistReleasesTotal={artistReleasesTotal}
             artistThumb={artistThumb}
             artistTracksTotal={artistTracksTotal}
@@ -169,6 +174,7 @@ const ArtistDetail = () => {
             artistId={artistId}
             artistName={artistName}
             artistRating={artistRating}
+            artistIsFavourite={artistIsFavourite}
             artistReleasesTotal={artistReleasesTotal}
             artistThumb={artistThumb}
             artistTracksTotal={artistTracksTotal}
@@ -209,6 +215,7 @@ const ArtistDetail = () => {
             artistId={artistId}
             artistName={artistName}
             artistRating={artistRating}
+            artistIsFavourite={artistIsFavourite}
             artistReleasesTotal={artistReleasesTotal}
             artistThumb={artistThumb}
             artistTracksTotal={artistTracksTotal}
@@ -240,6 +247,7 @@ const Title = ({
   artistId,
   artistName,
   artistRating,
+  artistIsFavourite,
   artistReleasesTotal,
   artistThumb,
   artistTracksTotal,
@@ -281,6 +289,8 @@ const Title = ({
           {artistGenre}
           {(artistCountry || artistGenre) && ' • '}
           <StarRating variant="title" type="artist" ratingKey={artistId} rating={artistRating} editable />
+          {' • '}
+          <Favourite variant="title" type="artist" itemId={artistId} isFavourite={artistIsFavourite} editable />
         </>
       }
       padding={!isGridView && !isListView && !isTrackView}
@@ -396,6 +406,11 @@ const Title = ({
                   checked: colOptions.userRating,
                 },
                 {
+                  label: 'Favourite',
+                  attr: 'colArtistAlbumsIsFavourite',
+                  checked: colOptions.isFavourite,
+                },
+                {
                   variant: 'divider',
                 },
                 // {
@@ -464,6 +479,11 @@ const Title = ({
                   label: 'Rating',
                   attr: 'colArtistTracksUserRating',
                   checked: colOptions.userRating,
+                },
+                {
+                  label: 'Favourite',
+                  attr: 'colArtistTracksIsFavourite',
+                  checked: colOptions.isFavourite,
                 },
               ]}
             />

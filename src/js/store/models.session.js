@@ -179,12 +179,14 @@ const sessionState = {
   colArtistsAddedAt: false,
   colArtistsLastPlayed: false,
   colArtistsUserRating: true,
+  colArtistsIsFavourite: true,
 
   colArtistAlbumsGenre: false,
   colArtistAlbumsReleaseDate: true,
   colArtistAlbumsAddedAt: false,
   colArtistAlbumsLastPlayed: false,
   colArtistAlbumsUserRating: true,
+  colArtistAlbumsIsFavourite: true,
 
   colArtistTracksArtwork: true,
   colArtistTracksArtist: false,
@@ -194,6 +196,7 @@ const sessionState = {
   colArtistTracksBitrate: false,
   colArtistTracksDuration: true,
   colArtistTracksUserRating: true,
+  colArtistTracksIsFavourite: true,
 
   colAlbumsArtist: true,
   colAlbumsGenre: false,
@@ -201,12 +204,14 @@ const sessionState = {
   colAlbumsAddedAt: false,
   colAlbumsLastPlayed: false,
   colAlbumsUserRating: true,
+  colAlbumsIsFavourite: true,
 
   colAlbumArtist: true,
   colAlbumCodec: false,
   colAlbumBitrate: false,
   colAlbumDuration: true,
   colAlbumUserRating: true,
+  colAlbumIsFavourite: true,
 
   colFoldersKind: true,
 
@@ -215,6 +220,7 @@ const sessionState = {
   colPlaylistsAddedAt: false,
   colPlaylistsLastPlayed: false,
   colPlaylistsUserRating: true,
+  colPlaylistsIsFavourite: true,
 
   colPlaylistArtwork: true,
   colPlaylistArtist: true,
@@ -223,6 +229,7 @@ const sessionState = {
   colPlaylistBitrate: false,
   colPlaylistDuration: true,
   colPlaylistUserRating: true,
+  colPlaylistIsFavourite: true,
 
   colCollectionAddedAt: true,
   colCollectionUserRating: true,

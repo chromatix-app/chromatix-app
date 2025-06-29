@@ -21,6 +21,7 @@ const useGetAllPlaylists = () => {
   const colPlaylistsAddedAt = useSelector(({ sessionModel }) => sessionModel.colPlaylistsAddedAt);
   const colPlaylistsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colPlaylistsLastPlayed);
   const colPlaylistsUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistsUserRating);
+  const colPlaylistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colPlaylistsIsFavourite);
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
   const optionSortIgnoreLeadingArticles = useSelector(
@@ -35,6 +36,7 @@ const useGetAllPlaylists = () => {
     addedAt: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsAddedAt),
     lastPlayed: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsLastPlayed),
     userRating: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsUserRating),
+    isFavourite: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsIsFavourite),
   };
   const actualSortPlaylists = allowedSort[sortPlaylists] ? sortPlaylists : 'title';
   const actualOrderPlaylists = allowedSort[sortPlaylists] ? orderPlaylists : 'asc';
@@ -96,6 +98,7 @@ const useGetAllPlaylists = () => {
       addedAt: colPlaylistsAddedAt,
       lastPlayed: colPlaylistsLastPlayed,
       userRating: colPlaylistsUserRating,
+      isFavourite: colPlaylistsIsFavourite,
     },
 
     setViewPlaylists,
