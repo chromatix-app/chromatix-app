@@ -13,9 +13,9 @@ export const platformFeatures = {
     menuArtistTags: true,
     menuAlbumTags: true,
 
-    // // general
-    // userRating: true,
-    // isFavourite: false,
+    // features
+    userRating: false,
+    isFavourite: true,
   },
 
   plex: {
@@ -32,9 +32,9 @@ export const platformFeatures = {
     menuArtistTags: false,
     menuAlbumTags: false,
 
-    // // general
-    // userRating: false,
-    // isFavourite: true,
+    // features
+    userRating: true,
+    isFavourite: false,
   },
 };
 

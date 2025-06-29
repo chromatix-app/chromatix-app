@@ -8,8 +8,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import clsx from 'clsx';
 
-import { Icon, StarRating } from 'js/components';
+import { Favourite, Icon, StarRating } from 'js/components';
 import { useScrollToTrack, useScrollToVirtualTrack, useWindowSize } from 'js/hooks';
+import platformFeatures from 'js/_config/platformFeatures';
 
 import style from './ListCards.module.scss';
 
@@ -25,7 +26,26 @@ const virtualThreshold = !isLocal ? 200 : 1;
 // COMPONENT
 // ======================================================================
 
-const ListCards = ({ children, variant, groupBy, folderId, entries, playingOrder, sortKey, showRatings = false }) => {
+const ListCards = ({
+  children,
+  variant,
+  groupBy,
+  folderId,
+  entries,
+  playingOrder,
+  sortKey,
+  showFavs = false,
+  showRatings = false,
+}) => {
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
+  if (!platformOpts.isFavourite && showFavs) {
+    showFavs = false;
+  }
+  if (!platformOpts.userRating && showRatings) {
+    showRatings = false;
+  }
+
   const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
 
   const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
@@ -78,6 +98,7 @@ const ListCards = ({ children, variant, groupBy, folderId, entries, playingOrder
           playerPlaying={playerPlaying}
           playingOrder={playingOrder}
           sortKey={sortKey}
+          showFavs={showFavs}
           showRatings={showRatings}
           titleBlock={children}
           variant={variant}
@@ -100,6 +121,7 @@ const ListBodyStatic = ({
   playerPlaying,
   playingOrder,
   sortKey,
+  showFavs,
   showRatings,
   titleBlock,
   variant,
@@ -136,6 +158,7 @@ const ListBodyStatic = ({
                 folderId={folderId}
                 playingOrder={playingOrder}
                 sortKey={sortKey}
+                showFavs={showFavs}
                 showRatings={showRatings}
                 isCurrentlyLoaded={isCurrentlyLoaded(variant, entryKey)}
                 isCurrentlyPlaying={playerPlaying}
@@ -169,6 +192,7 @@ const ListBodyVirtual = ({
   isCurrentlyLoaded,
   playerPlaying,
   playingOrder,
+  showFavs,
   showRatings,
   sortKey,
   titleBlock,
@@ -332,6 +356,7 @@ const ListBodyVirtual = ({
                   folderId={folderId}
                   playingOrder={playingOrder}
                   sortKey={sortKey}
+                  showFavs={showFavs}
                   showRatings={showRatings}
                   isCurrentlyLoaded={isCurrentlyLoaded(variant, entryKey)}
                   isCurrentlyPlaying={playerPlaying}
@@ -446,11 +471,13 @@ const ListEntry = React.memo(
     iconImage,
     playlistId,
     trackId,
+    isFavourite,
     userRating,
     link,
 
     playingOrder,
     sortKey,
+    showFavs,
     showRatings,
 
     isCurrentlyLoaded,
@@ -588,7 +615,22 @@ const ListEntry = React.memo(
 
         {/* Body */}
         <div className={style.body}>
-          {title && <div className={clsx(style.title, 'text-trim')}>{title}</div>}
+          {title && (
+            <div className={clsx(style.title, 'text-trim')}>
+              {showFavs && isFavourite && (
+                <span className={style.favourite}>
+                  <Favourite
+                    variant="grid"
+                    // type={}
+                    itemId={ratingKey}
+                    isFavourite={true}
+                    editable={false}
+                  />
+                </span>
+              )}
+              {title}
+            </div>
+          )}
 
           {artist && !artistLink && <div className={clsx(style.subtitle, 'text-trim')}>{artist}</div>}
 

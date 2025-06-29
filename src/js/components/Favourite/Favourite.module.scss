@@ -8,6 +8,14 @@
     cursor: pointer;
   }
 
+  // &Grid {
+  //   width: 13px;
+  //   height: 13px;
+  // }
+
+  // &Table {
+  // }
+
   &Title {
     // display: inline-block;
     margin-bottom: -3px;
@@ -20,7 +28,7 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: rgba(255, 0, 0, 0.1);
+  // background: rgba(255, 0, 0, 0.1);
 }
 
 .inner {

@@ -822,7 +822,13 @@ const StandardRow = ({ virtualEntry, entry, tableVariant, tableOptions, gridTemp
             case 'isFavourite':
               return (
                 <div key={rowKey + '-' + index} className={style.isFavourite}>
-                  <Favourite type={ratingType} itemId={rowKey} isFavourite={entry.isFavourite} editable />
+                  <Favourite
+                    variant="table"
+                    type={ratingType}
+                    itemId={rowKey}
+                    isFavourite={entry.isFavourite}
+                    editable
+                  />
                 </div>
               );
 
@@ -1061,7 +1067,13 @@ const TrackRow = ({
             case 'isFavourite':
               return (
                 <div key={rowKey + '-' + index} className={style.isFavourite}>
-                  <Favourite type={ratingType} itemId={entry[ratingKey]} isFavourite={entry.isFavourite} editable />
+                  <Favourite
+                    variant="table"
+                    type={ratingType}
+                    itemId={entry[ratingKey]}
+                    isFavourite={entry.isFavourite}
+                    editable
+                  />
                 </div>
               );
 
