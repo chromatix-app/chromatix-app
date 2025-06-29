@@ -396,3 +396,141 @@ describe('Testing "ignoreLeadingArticles" option', () => {
     expect(sorted[3].title).toBe('Beatles');
   });
 });
+
+describe('Testing boolean field sorting (isFavourite)', () => {
+  // BASIC BOOLEAN SORTING
+
+  test('Test sorting by isFavourite ascending', () => {
+    const entriesWithFavourites = [
+      { title: 'Song A', isFavourite: true },
+      { title: 'Song B', isFavourite: false },
+      { title: 'Song C', isFavourite: true },
+      { title: 'Song D', isFavourite: false },
+    ];
+    const sorted = sortList({ entries: entriesWithFavourites, options: 'isFavourite-asc' });
+    expect(sorted[0].isFavourite).toBe(false);
+    expect(sorted[1].isFavourite).toBe(false);
+    expect(sorted[2].isFavourite).toBe(true);
+    expect(sorted[3].isFavourite).toBe(true);
+  });
+
+  test('Test sorting by isFavourite descending', () => {
+    const entriesWithFavourites = [
+      { title: 'Song A', isFavourite: true },
+      { title: 'Song B', isFavourite: false },
+      { title: 'Song C', isFavourite: true },
+      { title: 'Song D', isFavourite: false },
+    ];
+    const sorted = sortList({ entries: entriesWithFavourites, options: 'isFavourite-desc' });
+    expect(sorted[0].isFavourite).toBe(true);
+    expect(sorted[1].isFavourite).toBe(true);
+    expect(sorted[2].isFavourite).toBe(false);
+    expect(sorted[3].isFavourite).toBe(false);
+  });
+
+  // MISSING BOOLEAN VALUES
+
+  test('Test sorting by isFavourite with missing values', () => {
+    const entriesWithMissingFavourites = [
+      { title: 'Song A', isFavourite: true },
+      { title: 'Song B' }, // undefined isFavourite
+      { title: 'Song C', isFavourite: false },
+      { title: 'Song D' }, // undefined isFavourite
+    ];
+    const sorted = sortList({ entries: entriesWithMissingFavourites, options: 'isFavourite-asc' });
+    // undefined should be treated as false (0)
+    expect(sorted[0].title).toBe('Song B');
+    expect(sorted[1].title).toBe('Song C');
+    expect(sorted[2].title).toBe('Song D');
+    expect(sorted[3].title).toBe('Song A');
+  });
+
+  // MULTI-FIELD SORTING WITH BOOLEAN
+
+  test('Test multi-field sorting with isFavourite as primary key', () => {
+    const entriesWithFavouritesAndTitles = [
+      { title: 'Song Z', isFavourite: false },
+      { title: 'Song A', isFavourite: true },
+      { title: 'Song Y', isFavourite: false },
+      { title: 'Song B', isFavourite: true },
+    ];
+    const sorted = sortList({ entries: entriesWithFavouritesAndTitles, options: 'isFavourite-asc-title-asc' });
+    // First sort by isFavourite (false first), then by title
+    expect(sorted[0].title).toBe('Song Y');
+    expect(sorted[0].isFavourite).toBe(false);
+    expect(sorted[1].title).toBe('Song Z');
+    expect(sorted[1].isFavourite).toBe(false);
+    expect(sorted[2].title).toBe('Song A');
+    expect(sorted[2].isFavourite).toBe(true);
+    expect(sorted[3].title).toBe('Song B');
+    expect(sorted[3].isFavourite).toBe(true);
+  });
+
+  test('Test multi-field sorting with isFavourite as secondary key', () => {
+    const entriesWithSameTitles = [
+      { title: 'Song A', isFavourite: true },
+      { title: 'Song A', isFavourite: false },
+      { title: 'Song B', isFavourite: false },
+      { title: 'Song B', isFavourite: true },
+    ];
+    const sorted = sortList({ entries: entriesWithSameTitles, options: 'title-asc-isFavourite-asc' });
+    // First sort by title, then by isFavourite (false first)
+    expect(sorted[0].title).toBe('Song A');
+    expect(sorted[0].isFavourite).toBe(false);
+    expect(sorted[1].title).toBe('Song A');
+    expect(sorted[1].isFavourite).toBe(true);
+    expect(sorted[2].title).toBe('Song B');
+    expect(sorted[2].isFavourite).toBe(false);
+    expect(sorted[3].title).toBe('Song B');
+    expect(sorted[3].isFavourite).toBe(true);
+  });
+
+  // BOOLEAN WITH DIRECTION PARAMETER
+
+  test('Test isFavourite sorting with global direction parameter', () => {
+    const entriesWithFavourites = [
+      { title: 'Song A', isFavourite: true },
+      { title: 'Song B', isFavourite: false },
+      { title: 'Song C', isFavourite: true },
+    ];
+    const sorted = sortList({
+      entries: entriesWithFavourites,
+      options: 'isFavourite-asc',
+      direction: 'desc',
+    });
+    // Global desc should reverse the isFavourite sort
+    expect(sorted[0].isFavourite).toBe(true);
+    expect(sorted[1].isFavourite).toBe(true);
+    expect(sorted[2].isFavourite).toBe(false);
+  });
+
+  // ALL FALSE VALUES
+
+  test('Test sorting by isFavourite when all values are false', () => {
+    const entriesAllFalse = [
+      { title: 'Song C', isFavourite: false },
+      { title: 'Song A', isFavourite: false },
+      { title: 'Song B', isFavourite: false },
+    ];
+    const sorted = sortList({ entries: entriesAllFalse, options: 'isFavourite-asc-title-asc' });
+    // Should fall back to secondary sort by title
+    expect(sorted[0].title).toBe('Song A');
+    expect(sorted[1].title).toBe('Song B');
+    expect(sorted[2].title).toBe('Song C');
+  });
+
+  // ALL TRUE VALUES
+
+  test('Test sorting by isFavourite when all values are true', () => {
+    const entriesAllTrue = [
+      { title: 'Song C', isFavourite: true },
+      { title: 'Song A', isFavourite: true },
+      { title: 'Song B', isFavourite: true },
+    ];
+    const sorted = sortList({ entries: entriesAllTrue, options: 'isFavourite-asc-title-asc' });
+    // Should fall back to secondary sort by title
+    expect(sorted[0].title).toBe('Song A');
+    expect(sorted[1].title).toBe('Song B');
+    expect(sorted[2].title).toBe('Song C');
+  });
+});

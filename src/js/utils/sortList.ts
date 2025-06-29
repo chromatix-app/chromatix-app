@@ -8,6 +8,7 @@ type Entry = {
   discNumber?: number;
   duration?: number;
   genre?: string;
+  isFavourite?: boolean;
   kind?: string;
   lastPlayed?: string;
   releaseDate?: string;
@@ -137,6 +138,13 @@ const getSortFunctions = (sortNumbersFirst: boolean, ignoreLeadingArticles: bool
     codec: createStringFieldComparer('codec', false),
     country: createStringFieldComparer('country', false),
     kind: createStringFieldComparer('kind', false),
+
+    // Boolean fields
+    isFavourite: (a, b) => {
+      const aFav = a.isFavourite ? 1 : 0;
+      const bFav = b.isFavourite ? 1 : 0;
+      return aFav - bFav;
+    },
 
     // Number fields
     bitrate: (a, b) => (a.bitrate ?? 0) - (b.bitrate ?? 0),
