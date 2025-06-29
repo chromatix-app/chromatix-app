@@ -96,6 +96,12 @@ const useGetCollectionItems = ({
   const gridAlbumCollectionItemsUserRating = useSelector(
     ({ sessionModel }) => sessionModel.gridAlbumCollectionItemsUserRating
   );
+  const gridArtistCollectionItemsIsFavourite = useSelector(
+    ({ sessionModel }) => sessionModel.gridArtistCollectionItemsIsFavourite
+  );
+  const gridAlbumCollectionItemsIsFavourite = useSelector(
+    ({ sessionModel }) => sessionModel.gridAlbumCollectionItemsIsFavourite
+  );
 
   const setViewCollectionItems = (viewCollectionItems) => {
     dispatch.sessionModel.setSessionState({
@@ -145,9 +151,11 @@ const useGetCollectionItems = ({
       mediaType === 'Artist'
         ? {
             userRating: gridArtistCollectionItemsUserRating,
+            isFavourite: gridArtistCollectionItemsIsFavourite,
           }
         : {
             userRating: gridAlbumCollectionItemsUserRating,
+            isFavourite: gridAlbumCollectionItemsIsFavourite,
           },
 
     colOptions:

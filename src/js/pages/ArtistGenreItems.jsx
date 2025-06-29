@@ -72,7 +72,12 @@ const ArtistGenreItems = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ListCards variant={'artists'} entries={sortedCollectionItems} showRatings={gridOptions.userRating}>
+        <ListCards
+          variant="artists"
+          entries={sortedCollectionItems}
+          showFavs={gridOptions.isFavourite}
+          showRatings={gridOptions.userRating}
+        >
           <Title
             collectionThumb={collectionThumb}
             collectionTitle={collectionTitle}
@@ -198,6 +203,11 @@ const Title = ({
                     label: 'Show star ratings',
                     attr: 'gridArtistCollectionItemsUserRating',
                     checked: gridOptions.userRating,
+                  },
+                  {
+                    label: 'Show favourites',
+                    attr: 'gridArtistCollectionItemsIsFavourite',
+                    checked: gridOptions.isFavourite,
                   },
                 ]}
               />

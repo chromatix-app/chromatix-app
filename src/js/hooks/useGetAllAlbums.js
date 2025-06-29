@@ -15,6 +15,7 @@ const useGetAllAlbums = () => {
   const orderAlbums = useSelector(({ sessionModel }) => sessionModel.orderAlbums);
 
   const gridAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.gridAlbumsUserRating);
+  const gridAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridAlbumsIsFavourite);
 
   const colAlbumsArtist = useSelector(({ sessionModel }) => sessionModel.colAlbumsArtist);
   const colAlbumsGenre = useSelector(({ sessionModel }) => sessionModel.colAlbumsGenre);
@@ -96,6 +97,7 @@ const useGetAllAlbums = () => {
 
     gridOptions: {
       userRating: gridAlbumsUserRating,
+      isFavourite: gridAlbumsIsFavourite,
     },
 
     colOptions: {

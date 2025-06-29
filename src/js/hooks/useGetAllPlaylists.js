@@ -15,6 +15,7 @@ const useGetAllPlaylists = () => {
   const orderPlaylists = useSelector(({ sessionModel }) => sessionModel.orderPlaylists);
 
   const gridPlaylistsUserRating = useSelector(({ sessionModel }) => sessionModel.gridPlaylistsUserRating);
+  const gridPlaylistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridPlaylistsIsFavourite);
 
   const colPlaylistsTotalTracks = useSelector(({ sessionModel }) => sessionModel.colPlaylistsTotalTracks);
   const colPlaylistsDuration = useSelector(({ sessionModel }) => sessionModel.colPlaylistsDuration);
@@ -90,6 +91,7 @@ const useGetAllPlaylists = () => {
 
     gridOptions: {
       userRating: gridPlaylistsUserRating,
+      isFavourite: gridPlaylistsIsFavourite,
     },
 
     colOptions: {

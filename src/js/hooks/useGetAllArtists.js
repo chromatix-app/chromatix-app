@@ -15,6 +15,7 @@ const useGetAllArtists = () => {
   const orderArtists = useSelector(({ sessionModel }) => sessionModel.orderArtists);
 
   const gridArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.gridArtistsUserRating);
+  const gridArtistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridArtistsIsFavourite);
 
   const colArtistsCountry = useSelector(({ sessionModel }) => sessionModel.colArtistsCountry);
   const colArtistsGenre = useSelector(({ sessionModel }) => sessionModel.colArtistsGenre);
@@ -92,6 +93,7 @@ const useGetAllArtists = () => {
 
     gridOptions: {
       userRating: gridArtistsUserRating,
+      isFavourite: gridArtistsIsFavourite,
     },
 
     colOptions: {

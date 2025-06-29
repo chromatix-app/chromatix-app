@@ -18,6 +18,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   const artistIsFavourite = artistInfo?.isFavourite;
 
   const gridArtistAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.gridArtistAlbumsUserRating);
+  const gridArtistAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridArtistAlbumsIsFavourite);
   const artistAlbumsGroupByType = useSelector(({ sessionModel }) => sessionModel.artistAlbumsGroupByType);
 
   const colArtistAlbumsGenre = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsGenre);
@@ -301,6 +302,7 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
 
     gridOptions: {
       userRating: gridArtistAlbumsUserRating,
+      isFavourite: gridArtistAlbumsIsFavourite,
     },
 
     colOptions: {

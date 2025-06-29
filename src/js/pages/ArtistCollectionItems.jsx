@@ -82,7 +82,7 @@ const ArtistCollectionItems = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ListCards variant={'artists'} entries={sortedCollectionItems} showRatings={gridOptions.userRating}>
+        <ListCards variant="artists" entries={sortedCollectionItems} showRatings={gridOptions.userRating}>
           <Title
             collectionId={collectionId}
             collectionRating={collectionRating}

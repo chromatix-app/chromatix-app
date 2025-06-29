@@ -88,7 +88,7 @@ const FolderList = () => {
       )}
       {isListView && (
         <ListTable
-          variant={'folders'}
+          variant="folders"
           folderId={folderId}
           entries={sortedFolders}
           playingOrder={folderOrder}

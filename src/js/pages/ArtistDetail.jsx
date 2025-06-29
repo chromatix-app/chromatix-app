@@ -127,6 +127,7 @@ const ArtistDetail = () => {
           variant="artistAlbums"
           {...(artistAlbumsGroupByType ? { groupBy: 'albumGroup' } : { groupBy: 'releaseGroup' })}
           entries={sortedAllReleasesAndAppearances}
+          showFavs={gridOptions.isFavourite}
           showRatings={gridOptions.userRating}
         >
           <Title
@@ -360,6 +361,11 @@ const Title = ({
                     label: 'Show star ratings',
                     attr: 'gridArtistAlbumsUserRating',
                     checked: gridOptions.userRating,
+                  },
+                  {
+                    label: 'Show favourites',
+                    attr: 'gridArtistAlbumsIsFavourite',
+                    checked: gridOptions.isFavourite,
                   },
                 ]}
               />

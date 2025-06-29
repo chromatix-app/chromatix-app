@@ -59,7 +59,12 @@ const AlbumList = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ListCards variant="albums" entries={sortedAlbums} showRatings={gridOptions.userRating}>
+        <ListCards
+          variant="albums"
+          entries={sortedAlbums}
+          showFavs={gridOptions.isFavourite}
+          showRatings={gridOptions.userRating}
+        >
           <Title
             colOptions={colOptions}
             gridOptions={gridOptions}
@@ -172,6 +177,11 @@ const Title = ({
                   label: 'Show star ratings',
                   attr: 'gridAlbumsUserRating',
                   checked: gridOptions.userRating,
+                },
+                {
+                  label: 'Show favourites',
+                  attr: 'gridAlbumsIsFavourite',
+                  checked: gridOptions.isFavourite,
                 },
               ]}
             />

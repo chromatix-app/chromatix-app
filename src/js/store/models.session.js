@@ -172,6 +172,13 @@ const sessionState = {
   gridPlaylistsUserRating: true,
   gridCollectionsUserRating: true,
 
+  gridArtistsIsFavourite: true,
+  gridArtistAlbumsIsFavourite: true,
+  gridArtistCollectionItemsIsFavourite: true,
+  gridAlbumCollectionItemsIsFavourite: true,
+  gridAlbumsIsFavourite: true,
+  gridPlaylistsIsFavourite: true,
+
   // LIST VIEW COLUMN VISIBILITY OPTIONS
 
   colArtistsCountry: true,
