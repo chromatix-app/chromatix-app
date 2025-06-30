@@ -1039,7 +1039,7 @@ export const getTagItems = (libraryId, tagId, typeKey) => {
         })
         .catch((error) => {
           console.error(error);
-          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Tag Items - ' + typeKey);
+          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Tag Items');
         })
         .finally(() => {
           getTagItemsRunning[typeKey] = false;
