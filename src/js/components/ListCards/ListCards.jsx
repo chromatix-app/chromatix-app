@@ -63,11 +63,14 @@ const ListCards = ({
 
   const isCurrentlyLoaded = useCallback(
     (entryVariant, entryId) => {
+      if (entryVariant === 'artistAlbums') {
+        entryVariant = 'albums';
+      }
       return (
         playingVariant === entryVariant &&
-        ((playingVariant === 'albums' && playingAlbumId === entryId) ||
-          (playingVariant === 'playlists' && playingPlaylistId === entryId) ||
-          (playingVariant === 'folders' && playingFolderId === folderId && trackDetail.trackId === entryId))
+        ((entryVariant === 'albums' && playingAlbumId === entryId) ||
+          (entryVariant === 'playlists' && playingPlaylistId === entryId) ||
+          (entryVariant === 'folders' && playingFolderId === folderId && trackDetail.trackId === entryId))
       );
     },
     [folderId, playingAlbumId, playingFolderId, playingPlaylistId, playingVariant, trackDetail]
