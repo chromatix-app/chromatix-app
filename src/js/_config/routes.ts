@@ -2,22 +2,27 @@
 // DEFAULT (LOGGED OUT) ROUTES
 // ======================================================================
 
+const isLocal = process.env.REACT_APP_ENV === 'local';
 // const isProduction = process.env.REACT_APP_ENV === 'production';
 
 export const defaultRoutes = [
-  // index
+  // main
   {
     path: '/',
     exact: true,
     component: 'Home',
   },
-  {
-    path: '/login-jellyfin',
-    exact: true,
-    component: 'LoginJelly',
-  },
+  ...(isLocal
+    ? [
+        {
+          path: '/login-jellyfin',
+          exact: true,
+          component: 'LoginJelly',
+        },
+      ]
+    : []),
 
-  // other
+  // error
   {
     component: 'Error404Default',
   },
@@ -28,7 +33,7 @@ export const defaultRoutes = [
 // ======================================================================
 
 export const authRoutes = [
-  // index
+  // main
   {
     path: '/',
     exact: true,
@@ -280,14 +285,18 @@ export const authRoutes = [
     component: 'SettingsMenu',
   },
 
-  // dev
-  {
-    path: '/icons',
-    exact: true,
-    component: 'DevIcons',
-  },
+  // dev tools
+  ...(isLocal
+    ? [
+        {
+          path: '/icons',
+          exact: true,
+          component: 'DevIcons',
+        },
+      ]
+    : []),
 
-  // other
+  // error
   {
     component: 'Error404Auth',
   },
