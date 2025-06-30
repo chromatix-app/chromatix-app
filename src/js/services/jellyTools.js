@@ -305,7 +305,7 @@ export const getAllArtists = ({ accessToken, genre, libraryId, serverBaseUrl, ta
             SortBy: 'SortName',
             SortOrder: 'Ascending',
             Fields:
-              'CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,ProductionLocations,Tags,UserData',
+              'BackdropImageTags,CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,ProductionLocations,Tags,UserData',
             // StartIndex: 0,
             // Limit: 100
           },
@@ -568,7 +568,7 @@ export const getAllAlbums = ({ accessToken, genre, libraryId, serverBaseUrl, tag
             SortBy: 'SortName',
             SortOrder: 'Ascending',
             Fields:
-              'CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,ProductionLocations,Tags,UserData',
+              'BackdropImageTags,CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,ProductionLocations,Tags,UserData',
             // StartIndex: 0,
             // Limit: 100
           },
@@ -711,7 +711,7 @@ export const getAllPlaylists = ({ accessToken, libraryId, serverBaseUrl, userId 
             SortBy: 'SortName',
             SortOrder: 'Ascending',
             Fields:
-              'CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,ProductionLocations,Tags,UserData',
+              'BackdropImageTags,CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,ProductionLocations,Tags,UserData',
             // StartIndex: 0,
             // Limit: 100
           },
