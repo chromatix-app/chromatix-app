@@ -334,6 +334,7 @@ const Title = ({
                   { value: 'addedAt', label: 'Date added' },
                   { value: 'lastPlayed', label: 'Date played' },
                   { value: 'releaseDate', label: 'Date released' },
+                  { value: 'isFavourite', label: 'Favourites' },
                   { value: 'userRating', label: 'Rating' },
                 ]}
                 setter={setSortArtistAlbums}

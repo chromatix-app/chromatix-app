@@ -151,6 +151,7 @@ const Title = ({
                 { value: 'title', label: 'Alphabetical' },
                 { value: 'addedAt', label: 'Date added' },
                 { value: 'lastPlayed', label: 'Date played' },
+                { value: 'isFavourite', label: 'Favourites' },
                 { value: 'userRating', label: 'Rating' },
               ]}
               setter={setSortArtists}

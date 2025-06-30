@@ -156,6 +156,7 @@ const Title = ({
                 { value: 'addedAt', label: 'Date added' },
                 { value: 'lastPlayed', label: 'Date played' },
                 { value: 'duration', label: 'Duration' },
+                { value: 'isFavourite', label: 'Favourites' },
                 { value: 'userRating', label: 'Rating' },
                 { value: 'totalTracks', label: 'Track count' },
               ]}
