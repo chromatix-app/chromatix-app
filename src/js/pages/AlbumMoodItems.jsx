@@ -258,6 +258,11 @@ const Title = ({
                   attr: 'colCollectionAlbumsUserRating',
                   checked: colOptions.userRating,
                 },
+                {
+                  label: 'Favourite',
+                  attr: 'colCollectionAlbumsIsFavourite',
+                  checked: colOptions.isFavourite,
+                },
               ]}
             />
           )}

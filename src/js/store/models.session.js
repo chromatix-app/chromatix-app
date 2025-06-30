@@ -246,6 +246,7 @@ const sessionState = {
   colCollectionArtistsAddedAt: false,
   colCollectionArtistsLastPlayed: false,
   colCollectionArtistsUserRating: true,
+  colCollectionArtistsIsFavourite: true,
 
   colCollectionAlbumsArtist: true,
   colCollectionAlbumsGenre: false,
@@ -253,6 +254,7 @@ const sessionState = {
   colCollectionAlbumsAddedAt: false,
   colCollectionAlbumsLastPlayed: false,
   colCollectionAlbumsUserRating: true,
+  colCollectionAlbumsIsFavourite: true,
 };
 
 const playingState = {

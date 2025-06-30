@@ -27,6 +27,9 @@ const useGetCollectionItems = ({
   const colCollectionArtistsAddedAt = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsAddedAt);
   const colCollectionArtistsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsLastPlayed);
   const colCollectionArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsUserRating);
+  const colCollectionArtistsIsFavourite = useSelector(
+    ({ sessionModel }) => sessionModel.colCollectionArtistsIsFavourite
+  );
 
   const colCollectionAlbumsArtist = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsArtist);
   const colCollectionAlbumsGenre = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsGenre);
@@ -34,6 +37,7 @@ const useGetCollectionItems = ({
   const colCollectionAlbumsAddedAt = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsAddedAt);
   const colCollectionAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsLastPlayed);
   const colCollectionAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsUserRating);
+  const colCollectionAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsIsFavourite);
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
   const optionSortIgnoreLeadingArticles = useSelector(
@@ -52,6 +56,8 @@ const useGetCollectionItems = ({
           genre: viewCollectionItems === 'list' && colCollectionArtistsGenre,
           userRating:
             viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsUserRating),
+          isFavourite:
+            viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsIsFavourite),
         }
       : {
           title: true,
@@ -66,6 +72,8 @@ const useGetCollectionItems = ({
             viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsReleaseDate),
           userRating:
             viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsUserRating),
+          isFavourite:
+            viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsIsFavourite),
         };
   const actualSortCollectionItems = allowedSort[sortCollectionItems] ? sortCollectionItems : 'title';
   const actualOrderCollectionItems = allowedSort[sortCollectionItems] ? orderCollectionItems : 'asc';
@@ -166,6 +174,7 @@ const useGetCollectionItems = ({
             addedAt: colCollectionArtistsAddedAt,
             lastPlayed: colCollectionArtistsLastPlayed,
             userRating: colCollectionArtistsUserRating,
+            isFavourite: colCollectionArtistsIsFavourite,
           }
         : {
             artist: colCollectionAlbumsArtist,
@@ -174,6 +183,7 @@ const useGetCollectionItems = ({
             addedAt: colCollectionAlbumsAddedAt,
             lastPlayed: colCollectionAlbumsLastPlayed,
             userRating: colCollectionAlbumsUserRating,
+            isFavourite: colCollectionAlbumsIsFavourite,
           },
 
     setViewCollectionItems,
