@@ -14,15 +14,19 @@ import style from './SettingsMenu.module.scss';
 // COMPONENT
 // ======================================================================
 
+const isLocal = process.env.REACT_APP_ENV === 'local';
+
 export const SettingsMenu = () => {
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
 
   return (
     <>
-      <PageText fontSize="small">
-        <p>Some sections may be unavailable, depending on whether you are logged in with Plex or Jellyfin.</p>
-      </PageText>
+      {isLocal && (
+        <PageText fontSize="small">
+          <p>Some sections may be unavailable, depending on whether you are logged in with Plex or Jellyfin.</p>
+        </PageText>
+      )}
       <div className={style.wrap}>
         <div className={style.group}>
           <div className={style.title}>General</div>
