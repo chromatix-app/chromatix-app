@@ -45,6 +45,7 @@ export const init = () => {
           analyticsEvent('Error: Init - ' + error.code);
         }
       } else {
+        console.error(error);
         analyticsEvent('Error: Init - Unknown Error');
       }
     });
@@ -86,12 +87,12 @@ export const jellyLogin = (values) => {
     jellyTools
       .login(values)
       .then((_response) => {
-        analyticsEvent('Bridge: Jellyfin Login Success');
+        analyticsEvent('Jellyfin: Login Success');
         getUserInfo('jellyfin');
       })
       .catch((error) => {
         console.error(error);
-        analyticsEvent('Bridge: Login Error');
+        analyticsEvent('Error: Jellyfin Login');
         reject(error);
       });
   });
@@ -112,12 +113,12 @@ export const plexLogin = () => {
   plexTools
     .login()
     .then((_response) => {
-      analyticsEvent('Bridge: Plex Login Success');
+      analyticsEvent('Plex: Login Success');
     })
     .catch((error) => {
       console.error(error);
       store.dispatch.appModel.setAppState({ errorPlexLogin: true });
-      analyticsEvent('Bridge: Login Error');
+      analyticsEvent('Error: Plex Login');
     });
 };
 
@@ -127,10 +128,11 @@ export const plexLogin = () => {
 
 export const logout = () => {
   console.log('%c--- bridge - logout ---', 'color:#f9743b;');
+  const currentService = store.getState().appModel.currentService;
   jellyTools.logout();
   plexTools.logout();
   store.dispatch.appModel.setLoggedOut();
-  analyticsEvent('Bridge: Logout');
+  analyticsEvent(toUpperFirst(currentService) + ': Logout');
 };
 
 // ======================================================================
@@ -181,7 +183,7 @@ export const getAllServers = () => {
         .catch((error) => {
           console.error(error);
           store.dispatch.appModel.setAppState({ errorPlexServers: true });
-          analyticsEvent('Error: Bridge - Get All Servers');
+          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get All Servers');
         })
         .finally(() => {
           getUserServersRunning = false;
@@ -194,7 +196,7 @@ export const getAllServers = () => {
 // GET FASTEST SERVER CONNECTION
 // ======================================================================
 
-const getFastestConnection = async (currentServer, currentUser) => {
+const getFastestConnection = async (currentServer, currentService, currentUser) => {
   let serverBaseUrl;
   try {
     if (currentUser?.serverBaseUrl) {
@@ -209,7 +211,7 @@ const getFastestConnection = async (currentServer, currentUser) => {
   } catch (error) {
     console.error(error);
     store.dispatch.appModel.setAppState({ errorPlexFastestConnection: true });
-    analyticsEvent('Error: Bridge - Get Fastest Server Connection');
+    analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Fastest Server Connection');
     throw error;
   }
   return serverBaseUrl;
@@ -236,7 +238,7 @@ export const getAllLibraries = async () => {
         // before getting libraries, get the fastest server connection
         let serverBaseUrl;
         try {
-          serverBaseUrl = await getFastestConnection(currentServer, currentUser);
+          serverBaseUrl = await getFastestConnection(currentServer, currentService, currentUser);
         } catch (error) {
           getUserLibrariesRunning = false;
           return;
@@ -300,6 +302,7 @@ export const getAllArtists = () => {
         })
         .catch((error) => {
           console.error(error);
+          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get All Artists');
         })
         .finally(() => {
           getAllArtistsRunning = false;
@@ -339,6 +342,7 @@ export const getArtistDetails = (libraryId, artistId) => {
         })
         .catch((error) => {
           console.error(error);
+          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Artist Details');
         })
         .finally(() => {
           getArtistDetailsRunning = false;
@@ -378,6 +382,7 @@ export const getAllArtistAlbums = (libraryId, artistId) => {
         })
         .catch((error) => {
           console.error(error);
+          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Artist Albums');
         })
         .finally(() => {
           getAllArtistAlbumsRunning = false;
@@ -415,6 +420,7 @@ export const getAllArtistRelatedAlbums = (libraryId, artistId) => {
         })
         .catch((error) => {
           console.error(error);
+          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Artist Related Albums');
         })
         .finally(() => {
           getAllArtistRelatedAlbumsRunning = false;
@@ -460,6 +466,7 @@ export const getAllArtistAppearanceAlbums = (libraryId, artistId, artistName) =>
         })
         .catch((error) => {
           console.error(error);
+          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Artist Appearance Albums');
         })
         .finally(() => {
           getAllArtistAppearanceAlbumsRunning = false;
@@ -504,6 +511,7 @@ export const getAllArtistTracks = (libraryId, artistId, artistName) => {
         })
         .catch((error) => {
           console.error(error);
+          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Artist Tracks');
         })
         .finally(() => {
           getAllArtistTracksRunning = false;
@@ -544,6 +552,7 @@ export const getAllAlbums = () => {
         })
         .catch((error) => {
           console.error(error);
+          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get All Albums');
         })
         .finally(() => {
           getAllAlbumsRunning = false;
@@ -584,6 +593,7 @@ export const getAlbumDetails = (libraryId, albumId, callback) => {
         })
         .catch((error) => {
           console.error(error);
+          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Album Details');
         })
         .finally(() => {
           getAlbumDetailsRunning = false;
@@ -625,6 +635,7 @@ export const getAlbumTracks = (libraryId, albumId) => {
           })
           .catch((error) => {
             console.error(error);
+            analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Album Tracks');
             reject(error);
           })
           .finally(() => {
@@ -671,6 +682,7 @@ export const getFolderItems = (folderId) => {
           })
           .catch((error) => {
             console.error(error);
+            analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Folder Items');
             reject(error);
           })
           .finally(() => {
@@ -716,6 +728,7 @@ export const getAllPlaylists = () => {
         })
         .catch((error) => {
           console.error(error);
+          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get All Playlists');
         })
         .finally(() => {
           getAllPlaylistsRunning = false;
@@ -757,6 +770,7 @@ export const getPlaylistDetails = (libraryId, playlistId) => {
         })
         .catch((error) => {
           console.error(error);
+          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Playlist Details');
         })
         .finally(() => {
           getPlaylistDetailsRunning = false;
@@ -796,6 +810,7 @@ export const getPlaylistTracks = (libraryId, playlistId) => {
           })
           .catch((error) => {
             console.error(error);
+            analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Playlist Tracks');
             reject(error);
           })
           .finally(() => {
@@ -839,6 +854,7 @@ export const getAllCollections = () => {
         })
         .catch((error) => {
           console.error(error);
+          analyticsEvent('Error: Plex - Get All Collections');
         })
         .finally(() => {
           getAllCollectionsRunning = false;
@@ -884,6 +900,7 @@ export const getCollectionItems = (libraryId, collectionId, typeKey) => {
         })
         .catch((error) => {
           console.error(error);
+          analyticsEvent('Error: Plex - Get Collection Items');
         })
         .finally(() => {
           getCollectionItemsRunning[typeKey] = false;
@@ -937,6 +954,7 @@ const getAllPlexTags = (typeKey) => {
         })
         .catch((error) => {
           console.error(error);
+          analyticsEvent('Error: Plex - Get All Tags');
         })
         .finally(() => {
           getAllTagsRunning[typeKey] = false;
@@ -973,6 +991,7 @@ const getAllJellyfinTags = () => {
         })
         .catch((error) => {
           console.error(error);
+          analyticsEvent('Error: Jellyfin - Get All Tags');
         })
         .finally(() => {
           getAllJellyfinTagsRunning = false;
@@ -1020,6 +1039,7 @@ export const getTagItems = (libraryId, tagId, typeKey) => {
         })
         .catch((error) => {
           console.error(error);
+          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Tag Items - ' + typeKey);
         })
         .finally(() => {
           getTagItemsRunning[typeKey] = false;
@@ -1063,11 +1083,11 @@ const searchLibrary2 = (query, searchCounter) => {
           searchResultCounter: searchCounter,
         });
       }
-      analyticsEvent('Bridge: Search');
+      analyticsEvent(toUpperFirst(currentService) + ': Search');
     })
     .catch((error) => {
       console.error(error);
-      analyticsEvent('Error: Bridge - Search');
+      analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Search Library');
     });
 };
 
@@ -1100,10 +1120,11 @@ export const toggleFavourite = (type, itemId, isFavourite) => {
       } else if (type === 'collection' || type === 'collections') {
         store.dispatch.appModel.setCollectionRating({ ratingKey: itemId, isFavourite });
       }
+      analyticsEvent('Jellyfin: Toggle Favourite');
     })
     .catch((error) => {
       console.error(error);
-      analyticsEvent('Error: Bridge - Set Favourite');
+      analyticsEvent('Error: Jellyfin - Toggle Favourite');
     });
 };
 
@@ -1135,11 +1156,11 @@ export const setStarRating = (type, ratingKey, rating) => {
       } else if (type === 'collection' || type === 'collections') {
         store.dispatch.appModel.setCollectionRating({ ratingKey, rating });
       }
-      analyticsEvent('Bridge: Set Star Rating');
+      analyticsEvent('Plex: Set Star Rating');
     })
     .catch((error) => {
       console.error(error);
-      analyticsEvent('Error: Bridge - Set Star Rating');
+      analyticsEvent('Error: Plex - Set Star Rating');
     });
 };
 
@@ -1148,7 +1169,9 @@ export const setStarRating = (type, ratingKey, rating) => {
 // ======================================================================
 
 export const logPlaybackPlay = (currentTrack, currentTime = 0) => {
-  logPlaybackStatus(currentTrack, 'playing', currentTime);
+  const currentService = store.getState().appModel.currentService;
+  const state = currentService === 'jellyfin' ? 'start' : 'playing';
+  logPlaybackStatus(currentTrack, state, currentTime);
 };
 
 export const logPlaybackProgress = (currentTrack, currentTime) => {
@@ -1165,55 +1188,61 @@ export const logPlaybackStop = (currentTrack) => {
 };
 
 export const logPlaybackStatus = (currentTrack, state, currentTime) => {
-  const currentService = store.getState().appModel.currentService;
-  if (currentService === 'plex') {
-    const optionLogPlexPlayback = store.getState().sessionModel.optionLogPlexPlayback;
-    if (optionLogPlexPlayback) {
-      const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
-      const sessionId = store.getState().sessionModel.sessionId;
-      const { trackId, trackKey, duration } = currentTrack || {};
-      plexTools
-        .logPlaybackStatus({
-          accessToken,
-          currentTime,
-          duration,
-          ratingKey: trackId,
-          serverBaseUrl,
-          sessionId,
-          state,
-          trackId: trackKey,
-          type: 'music',
-        })
-        .catch((error) => {
-          console.error(error);
-          analyticsEvent('Error: Bridge - Update Playback Status');
-        });
-    }
+  const optionLogPlexPlayback = store.getState().sessionModel.optionLogPlexPlayback;
+  if (optionLogPlexPlayback) {
+    const accessToken = store.getState().sessionModel.currentServer.accessToken;
+    const currentService = store.getState().appModel.currentService;
+    const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+    const sessionId = store.getState().sessionModel.sessionId;
+    const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
+    const { trackId, trackKey, duration } = currentTrack || {};
+
+    serviceTools[currentService]
+      .logPlaybackStatus({
+        accessToken,
+        currentTime,
+        duration,
+        itemId: trackId,
+        serverBaseUrl,
+        sessionId,
+        state,
+        trackId: trackKey,
+        type: 'music',
+        userId,
+      })
+      .catch((error) => {
+        // console.error(error);
+        const errorStatus = error?.error?.response?.status || 'Unknown';
+        const errorMessage = error?.error?.response?.statusText || 'Unknown Error';
+        analyticsEvent(
+          'Error: ' + toUpperFirst(currentService) + ' - Log Playback Status - ' + errorStatus + ' - ' + errorMessage
+        );
+      });
   }
 };
 
 export const logPlaybackQuit = (currentTrack, currentTime) => {
-  const currentService = store.getState().appModel.currentService;
-  if (currentService === 'plex') {
-    const optionLogPlexPlayback = store.getState().sessionModel.optionLogPlexPlayback;
-    if (optionLogPlexPlayback) {
-      const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
-      const sessionId = store.getState().sessionModel.sessionId;
-      const { trackId, trackKey, duration } = currentTrack || {};
-      plexTools.logPlaybackQuit({
-        accessToken,
-        currentTime,
-        duration,
-        ratingKey: trackId,
-        serverBaseUrl,
-        sessionId,
-        state: 'stopped',
-        trackId: trackKey,
-        type: 'music',
-      });
-    }
+  const optionLogPlexPlayback = store.getState().sessionModel.optionLogPlexPlayback;
+  if (optionLogPlexPlayback) {
+    const accessToken = store.getState().sessionModel.currentServer.accessToken;
+    const currentService = store.getState().appModel.currentService;
+    const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+    const sessionId = store.getState().sessionModel.sessionId;
+    const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
+    const { trackId, trackKey, duration } = currentTrack || {};
+
+    serviceTools[currentService].logPlaybackQuit({
+      accessToken,
+      currentTime,
+      duration,
+      itemId: trackId,
+      serverBaseUrl,
+      sessionId,
+      state: 'stopped',
+      trackId: trackKey,
+      type: 'music',
+      userId,
+    });
   }
 };
 

@@ -77,7 +77,9 @@ const endpointConfig = {
     setStarRating: null,
   },
   status: {
-    logPlaybackStatus: null,
+    logPlaybackStart: (serverBaseUrl) => `${serverBaseUrl}/Sessions/Playing`,
+    logPlaybackProgress: (serverBaseUrl) => `${serverBaseUrl}/Sessions/Playing/Progress`,
+    logPlaybackStopped: (serverBaseUrl) => `${serverBaseUrl}/Sessions/Playing/Stopped`,
   },
 };
 
@@ -1080,3 +1082,175 @@ export const toggleFavourite = ({ accessToken, isFavourite, itemId, serverBaseUr
 // ======================================================================
 // LOG PLAYBACK STATUS
 // ======================================================================
+
+export const logPlaybackStatus = ({
+  accessToken,
+  currentTime,
+  duration,
+  itemId,
+  serverBaseUrl,
+  sessionId,
+  state,
+  trackId,
+  type,
+  userId,
+}) => {
+  if (state === 'start') {
+    return logPlaybackStart({ accessToken, currentTime, itemId, serverBaseUrl, sessionId, userId });
+  } else if (state === 'playing') {
+    return logPlaybackProgress({ accessToken, currentTime, isPaused: false, itemId, serverBaseUrl, sessionId, userId });
+  } else if (state === 'paused') {
+    return logPlaybackProgress({ accessToken, currentTime, isPaused: true, itemId, serverBaseUrl, sessionId, userId });
+  } else if (state === 'stopped') {
+    return logPlaybackStopped({ accessToken, currentTime, itemId, serverBaseUrl, userId });
+  }
+};
+
+const logPlaybackStart = ({ accessToken, currentTime, itemId, serverBaseUrl, sessionId, userId }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.status.logPlaybackStart(serverBaseUrl);
+
+      axios
+        .post(
+          endpoint,
+          {
+            CanSeek: true,
+            ItemId: itemId,
+            MediaSourceId: itemId,
+            PlayMethod: 'DirectPlay',
+            PlaySessionId: sessionId,
+            PositionTicks: currentTime * 10000,
+            UserId: userId,
+          },
+          {
+            headers: getRequestHeaders(accessToken),
+          }
+        )
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject({
+            code: 'jellyfin.logPlaybackStart.1',
+            message: 'Failed to log playback start',
+            error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'jellyfin.logPlaybackStart.2',
+        message: 'Failed to log playback start',
+        error,
+      });
+    }
+  });
+};
+
+const logPlaybackProgress = ({ accessToken, currentTime, isPaused, itemId, serverBaseUrl, sessionId, userId }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.status.logPlaybackProgress(serverBaseUrl);
+
+      axios
+        .post(
+          endpoint,
+          {
+            IsPaused: isPaused,
+            ItemId: itemId,
+            PlayMethod: 'DirectPlay',
+            PlaySessionId: sessionId,
+            PositionTicks: currentTime * 10000,
+            UserId: userId,
+          },
+          {
+            headers: getRequestHeaders(accessToken),
+          }
+        )
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject({
+            code: 'jellyfin.logPlaybackProgress.1',
+            message: 'Failed to log playback progress',
+            error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'jellyfin.logPlaybackProgress.2',
+        message: 'Failed to log playback progress',
+        error,
+      });
+    }
+  });
+};
+
+const logPlaybackStopped = ({ accessToken, currentTime, itemId, serverBaseUrl, sessionId, userId }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.status.logPlaybackStopped(serverBaseUrl);
+
+      axios
+        .post(
+          endpoint,
+          {
+            ItemId: itemId,
+            PlayMethod: 'DirectPlay',
+            PlaySessionId: sessionId,
+            PositionTicks: currentTime * 10000,
+            UserId: userId,
+          },
+          {
+            headers: getRequestHeaders(accessToken),
+          }
+        )
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject({
+            code: 'jellyfin.logPlaybackStopped.1',
+            message: 'Failed to log playback stopped',
+            error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'jellyfin.logPlaybackStopped.2',
+        message: 'Failed to log playback stopped',
+        error,
+      });
+    }
+  });
+};
+
+// The below variation is used on window unload in order to log playback as stopped.
+// The fetch method is used instead of axios, with keepalive set to true.
+// This is because axios does not support keepalive, and fetch with keepalive
+// will allow the request to complete even if the page is closed.
+
+export const logPlaybackQuit = ({ accessToken, currentTime, itemId, serverBaseUrl, sessionId, userId }) => {
+  try {
+    const endpoint = endpointConfig.status.logPlaybackStopped(serverBaseUrl);
+
+    fetch(endpoint, {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+        ...getRequestHeaders(accessToken),
+      },
+      body: JSON.stringify({
+        ItemId: itemId,
+        PlayMethod: 'DirectPlay',
+        PlaySessionId: sessionId,
+        PositionTicks: currentTime * 10000,
+        UserId: userId,
+      }),
+    });
+  } catch (error) {
+    // do nothing
+  }
+};

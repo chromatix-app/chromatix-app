@@ -1419,12 +1419,13 @@ export const logPlaybackStatus = ({
   accessToken,
   currentTime,
   duration,
-  ratingKey,
+  itemId,
   serverBaseUrl,
   sessionId,
   state,
   trackId,
   type,
+  userId,
 }) => {
   return new Promise((resolve, reject) => {
     try {
@@ -1433,12 +1434,47 @@ export const logPlaybackStatus = ({
       const params = {
         type: type,
         key: trackId,
-        ratingKey: ratingKey,
+        ratingKey: itemId,
         state: state, // playing, paused, stopped
-        time: currentTime, // time in milliseconds
-        playbackTime: currentTime, // time in milliseconds
-        duration: duration, // duration of the media in milliseconds
-        // Add any other necessary data here
+        time: Math.floor(currentTime) || 0, // time in milliseconds
+        playbackTime: Math.floor(currentTime) || 0, // time in milliseconds
+        duration: Math.floor(duration) || 0, // duration of the media in milliseconds
+        context: 'source:content.library',
+        hasMDE: 1,
+
+        // key: /library/metadata/163447
+        // ratingKey: 163447
+        // state: paused
+        // time: 12000
+        // playbackTime: 13028
+        // duration: 312000
+
+        // playQueueItemID: 72308
+        // hasMDE: 1
+        // context: source:content.library
+        // row: 0
+        // col: 3
+
+        // X-Plex-Token: AgZbxPCWXyXf9W_ZYsxS
+        // X-Plex-Client-Identifier: 255eyov5|k265zbpmyp7ivrp
+        // X-Plex-Session-Identifier: anmOezmv3vaq3roxwgz3h67f
+        // X-Plex-Product: Plex Web
+        // X-Plex-Version: 4.146.0
+        // X-Plex-Device-Name: Microsoft Edge
+        // X-Plex-Platform: Microsoft Edge
+        // X-Plex-Platform-Version: 138.0
+
+        // X-Plex-Features: external-media, indirect-media, hub-style-list
+        // X-Plex-Model: bundled
+        // X-Plex-Device: OSX
+        // X-Plex-Device-Screen-Resolution: 2433x1240,2560×1440
+        // X-Plex-Language: en-GB
+        // X-Plex-Session-Id: def04ee4-856-48de-81ab-0b027587b985
+        // X-Plex-Playback-Session-Id: a682497b-6201-4152-8df4-a988097e5757
+        // X-Plex-Playback-Id: 132f2f13-6d95-45b8-808c-d562779e0dcO
+        // X-Plex-Drm: none
+        // X-Plex-Text-Format: plain
+        // X-Plex-Provider-Version: 7.2
       };
       axios
         .get(endpoint, {
@@ -1483,12 +1519,13 @@ export const logPlaybackQuit = ({
   accessToken,
   currentTime,
   duration,
-  ratingKey,
+  itemId,
   serverBaseUrl,
   sessionId,
   state,
   trackId,
   type,
+  userId,
 }) => {
   try {
     const endpoint = endpointConfig.status.logPlaybackStatus(serverBaseUrl);
@@ -1496,14 +1533,15 @@ export const logPlaybackQuit = ({
     const params = new URLSearchParams({
       type: type,
       key: trackId,
-      ratingKey: ratingKey,
+      ratingKey: itemId,
       state: state, // playing, paused, stopped
-      time: currentTime, // time in milliseconds
-      playbackTime: currentTime, // time in milliseconds
-      duration: duration, // duration of the media in milliseconds
-      // Add any other necessary data here
+      time: Math.floor(currentTime) || 0, // time in milliseconds
+      playbackTime: Math.floor(currentTime) || 0, // time in milliseconds
+      duration: Math.floor(duration) || 0, // duration of the media in milliseconds
     }).toString();
+
     const fetchUrl = `${endpoint}?${params}`;
+
     fetch(fetchUrl, {
       method: 'GET',
       keepalive: true,
