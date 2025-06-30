@@ -39,10 +39,10 @@ const ListCards = ({
 }) => {
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
-  if (!platformOpts.isFavourite && showFavs) {
+  if (!platformOpts.enableIsFavourite && showFavs) {
     showFavs = false;
   }
-  if (!platformOpts.userRating && showRatings) {
+  if (!platformOpts.enableUserRating && showRatings) {
     showRatings = false;
   }
 

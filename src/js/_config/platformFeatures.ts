@@ -14,8 +14,8 @@ export const platformFeatures = {
     menuAlbumTags: true,
 
     // features
-    userRating: false,
-    isFavourite: true,
+    enableUserRating: false,
+    enableIsFavourite: true,
   },
 
   plex: {
@@ -33,8 +33,8 @@ export const platformFeatures = {
     menuAlbumTags: false,
 
     // features
-    userRating: true,
-    isFavourite: false,
+    enableUserRating: true,
+    enableIsFavourite: false,
   },
 };
 
