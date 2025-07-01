@@ -5,7 +5,7 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { ListServers, Loading, TitleBasic } from 'js/components';
+import { ViewServers, Loading, TitleBasic } from 'js/components';
 import * as bridge from 'js/services/bridge';
 
 // ======================================================================
@@ -26,7 +26,7 @@ const ServerList = () => {
         {allServers && (
           <>
             <TitleBasic title={allServers.length > 0 ? 'Servers' : 'No Servers Available'} />
-            <ListServers variant="servers" entries={allServers} />
+            <ViewServers variant="servers" entries={allServers} />
           </>
         )}
       </div>

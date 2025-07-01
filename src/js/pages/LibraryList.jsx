@@ -5,7 +5,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Button, ListServers, Loading, TitleBasic } from 'js/components';
+import { Button, ViewServers, Loading, TitleBasic } from 'js/components';
 import * as bridge from 'js/services/bridge';
 
 // ======================================================================
@@ -28,7 +28,7 @@ const LibraryList = () => {
         {allLibraries && (
           <>
             <TitleBasic title={allLibraries.length > 0 ? 'Libraries' : 'No Libraries Available'} />
-            <ListServers variant="libraries" entries={allLibraries} />
+            <ViewServers variant="libraries" entries={allLibraries} />
             <Button onClick={dispatch.sessionModel.unsetCurrentServer}>Back to Servers</Button>
           </>
         )}

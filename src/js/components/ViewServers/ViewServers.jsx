@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 
 import { Icon } from 'js/components';
 
-import style from './ListServers.module.scss';
+import style from './ViewServers.module.scss';
 
 // ======================================================================
 // COMPONENT
@@ -15,7 +15,7 @@ import style from './ListServers.module.scss';
 // const isProduction = process.env.REACT_APP_ENV === 'production';
 // const serverProtocol = isProduction ? 'https://' : 'http://';
 
-const ListServers = ({ entries, variant }) => {
+const ViewServers = ({ entries, variant }) => {
   const dispatch = useDispatch();
 
   if (entries) {
@@ -77,4 +77,4 @@ const ListServers = ({ entries, variant }) => {
 // EXPORT
 // ======================================================================
 
-export default ListServers;
+export default ViewServers;
