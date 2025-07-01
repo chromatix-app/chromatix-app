@@ -9,7 +9,7 @@ import { useGetCollectionArray } from 'js/hooks';
 // COMPONENT
 // ======================================================================
 
-const AlbumStyleList = () => {
+const AlbumGenreArray = () => {
   const {
     viewCollections,
     sortCollections,
@@ -17,7 +17,7 @@ const AlbumStyleList = () => {
     setViewCollections,
     setOrderCollections,
     sortedCollections,
-  } = useGetCollectionArray('AlbumStyles');
+  } = useGetCollectionArray('AlbumGenres');
 
   const isLoading = !sortedCollections;
   const isEmptyList = !isLoading && sortedCollections?.length === 0;
@@ -39,7 +39,7 @@ const AlbumStyleList = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ViewGrid variant="albumStyles" entries={sortedCollections}>
+        <ViewGrid variant="albumGenres" entries={sortedCollections}>
           <Title
             isGridView={isGridView}
             isListView={isListView}
@@ -53,7 +53,7 @@ const AlbumStyleList = () => {
       )}
       {isListView && (
         <ViewList
-          variant="albumStyles"
+          variant="albumGenres"
           entries={sortedCollections}
           sortKey={sortCollections}
           orderKey={orderCollections}
@@ -85,11 +85,11 @@ const Title = ({
   return (
     <>
       <TitleHeading
-        key="AlbumStyleList"
-        title="Album Styles"
+        key="AlbumGenreArray"
+        title="Album Genres"
         subtitle={
           sortedCollections ? (
-            sortedCollections?.length + ' Album Style' + (sortedCollections?.length !== 1 ? 's' : '')
+            sortedCollections?.length + ' Album Genre' + (sortedCollections?.length !== 1 ? 's' : '')
           ) : (
             <>&nbsp;</>
           )
@@ -128,4 +128,4 @@ const Title = ({
 // EXPORT
 // ======================================================================
 
-export default AlbumStyleList;
+export default AlbumGenreArray;

@@ -9,7 +9,7 @@ import { useGetCollectionArray } from 'js/hooks';
 // COMPONENT
 // ======================================================================
 
-const AlbumMoodList = () => {
+const AlbumMoodArray = () => {
   const {
     viewCollections,
     sortCollections,
@@ -85,7 +85,7 @@ const Title = ({
   return (
     <>
       <TitleHeading
-        key="AlbumMoodList"
+        key="AlbumMoodArray"
         title="Album Moods"
         subtitle={
           sortedCollections ? (
@@ -128,4 +128,4 @@ const Title = ({
 // EXPORT
 // ======================================================================
 
-export default AlbumMoodList;
+export default AlbumMoodArray;

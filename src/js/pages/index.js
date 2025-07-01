@@ -17,17 +17,17 @@ export { default as ArtistStyleItems } from './ArtistStyleItems';
 export { default as ArtistTagList } from './ArtistTagList';
 export { default as ArtistTagItems } from './ArtistTagItems';
 
-export { default as AlbumList } from './AlbumList';
+export { default as AlbumArray } from './AlbumArray';
 export { default as AlbumDetail } from './AlbumDetail';
-export { default as AlbumCollectionList } from './AlbumCollectionList';
+export { default as AlbumCollectionArray } from './AlbumCollectionArray';
 export { default as AlbumCollectionItems } from './AlbumCollectionItems';
-export { default as AlbumGenreList } from './AlbumGenreList';
+export { default as AlbumGenreArray } from './AlbumGenreArray';
 export { default as AlbumGenreItems } from './AlbumGenreItems';
-export { default as AlbumMoodList } from './AlbumMoodList';
+export { default as AlbumMoodArray } from './AlbumMoodArray';
 export { default as AlbumMoodItems } from './AlbumMoodItems';
-export { default as AlbumStyleList } from './AlbumStyleList';
+export { default as AlbumStyleArray } from './AlbumStyleArray';
 export { default as AlbumStyleItems } from './AlbumStyleItems';
-export { default as AlbumTagList } from './AlbumTagList';
+export { default as AlbumTagArray } from './AlbumTagArray';
 export { default as AlbumTagItems } from './AlbumTagItems';
 
 export { default as PlaylistList } from './PlaylistList';

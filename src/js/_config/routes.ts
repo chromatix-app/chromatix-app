@@ -76,7 +76,7 @@ export const authRoutes = [
   {
     path: '/albums',
     exact: true,
-    component: 'AlbumList',
+    component: 'AlbumArray',
   },
   {
     path: '/albums/:libraryId',
@@ -134,7 +134,7 @@ export const authRoutes = [
   {
     path: '/album-collections',
     exact: true,
-    component: 'AlbumCollectionList',
+    component: 'AlbumCollectionArray',
   },
   {
     path: '/album-collections/:libraryId/:collectionId',
@@ -158,7 +158,7 @@ export const authRoutes = [
   {
     path: '/album-genres',
     exact: true,
-    component: 'AlbumGenreList',
+    component: 'AlbumGenreArray',
   },
   {
     path: '/album-genres/:libraryId/:genreId',
@@ -182,7 +182,7 @@ export const authRoutes = [
   {
     path: '/album-moods',
     exact: true,
-    component: 'AlbumMoodList',
+    component: 'AlbumMoodArray',
   },
   {
     path: '/album-moods/:libraryId/:moodId',
@@ -206,7 +206,7 @@ export const authRoutes = [
   {
     path: '/album-styles',
     exact: true,
-    component: 'AlbumStyleList',
+    component: 'AlbumStyleArray',
   },
   {
     path: '/album-styles/:libraryId/:styleId',
@@ -230,7 +230,7 @@ export const authRoutes = [
   {
     path: '/album-tags',
     exact: true,
-    component: 'AlbumTagList',
+    component: 'AlbumTagArray',
   },
   {
     path: '/album-tags/:libraryId/:tagId',

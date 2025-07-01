@@ -18,7 +18,7 @@ import { useGetAlbumArray } from 'js/hooks';
 // COMPONENT
 // ======================================================================
 
-const AlbumList = () => {
+const AlbumArray = () => {
   const {
     viewAlbums,
     sortAlbums,
@@ -126,7 +126,7 @@ const Title = ({
   return (
     <>
       <TitleHeading
-        key="AlbumList"
+        key="AlbumArray"
         title="Albums"
         subtitle={
           sortedAlbums ? sortedAlbums?.length + ' Album' + (sortedAlbums?.length !== 1 ? 's' : '') : <>&nbsp;</>
@@ -246,4 +246,4 @@ const Title = ({
 // EXPORT
 // ======================================================================
 
-export default AlbumList;
+export default AlbumArray;
