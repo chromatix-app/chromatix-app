@@ -91,9 +91,7 @@ export const Settings = () => {
 
       <div className={style.group}>
         <div className={style.title}>Connect</div>
-        <div className={style.body}>
-          Where possible, we recommend using our Featurebase link for bug reports and feature requests.
-        </div>
+        <div className={style.body}>If possible, please use Featurebase for bug reports and feature requests.</div>
 
         <a
           className={style.entry}
