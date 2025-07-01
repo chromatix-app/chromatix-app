@@ -710,6 +710,75 @@ const StandardRow = ({ virtualEntry, entry, tableVariant, tableOptions, gridTemp
         .filter((columnOptions) => columnOptions.visible !== false)
         .map((columnOptions, index) => {
           switch (columnOptions.colKey) {
+            case 'addedAt':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.addedAt, 'text-trim')}>
+                  {formatRecentDate(entry.addedAt)}
+                </div>
+              );
+
+            case 'artist':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.artist, 'text-trim')}>
+                  {entry.artist}
+                </div>
+              );
+
+            case 'country':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.country, 'text-trim')}>
+                  {entry.country}
+                </div>
+              );
+
+            case 'duration':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.duration, 'text-trim')}>
+                  {durationToStringMed(entry.duration)}
+                </div>
+              );
+
+            case 'genre':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.genre, 'text-trim')}>
+                  {entry.genre}
+                </div>
+              );
+
+            case 'isFavourite':
+              return (
+                <div key={rowKey + '-' + index} className={style.isFavourite}>
+                  <Favourite
+                    variant="table"
+                    type={ratingType}
+                    itemId={rowKey}
+                    isFavourite={entry.isFavourite}
+                    editable
+                  />
+                </div>
+              );
+
+            case 'kind':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.kind, 'text-trim')}>
+                  {entry.kind?.replace('aaa', '')}
+                </div>
+              );
+
+            case 'lastPlayed':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.lastPlayed, 'text-trim')}>
+                  {formatRecentDate(entry.lastPlayed)}
+                </div>
+              );
+
+            case 'releaseDate':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.releaseDate, 'text-trim')}>
+                  {entry.releaseDate ? moment(entry.releaseDate).format('YYYY') : null}
+                </div>
+              );
+
             case 'sortOrder':
               return (
                 <div key={rowKey + '-' + index} className={clsx(style.trackNumberPermanent, style.colCenter)}>
@@ -741,67 +810,11 @@ const StandardRow = ({ virtualEntry, entry, tableVariant, tableOptions, gridTemp
                 </div>
               );
 
-            case 'artist':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.artist, 'text-trim')}>
-                  {entry.artist}
-                </div>
-              );
-
-            case 'kind':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.kind, 'text-trim')}>
-                  {entry.kind?.replace('aaa', '')}
-                </div>
-              );
-
-            case 'country':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.country, 'text-trim')}>
-                  {entry.country}
-                </div>
-              );
-
-            case 'genre':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.genre, 'text-trim')}>
-                  {entry.genre}
-                </div>
-              );
-
             case 'totalTracks':
               return (
                 <div key={rowKey + '-' + index} className={clsx(style.totalTracks, 'text-trim')}>
                   {entry.totalTracks}
                   {(entry.totalTracks || entry.totalTracks === 0) && <> track{entry.totalTracks !== 1 ? 's' : ''}</>}
-                </div>
-              );
-
-            case 'duration':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.duration, 'text-trim')}>
-                  {durationToStringMed(entry.duration)}
-                </div>
-              );
-
-            case 'releaseDate':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.releaseDate, 'text-trim')}>
-                  {entry.releaseDate ? moment(entry.releaseDate).format('YYYY') : null}
-                </div>
-              );
-
-            case 'addedAt':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.addedAt, 'text-trim')}>
-                  {formatRecentDate(entry.addedAt)}
-                </div>
-              );
-
-            case 'lastPlayed':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.lastPlayed, 'text-trim')}>
-                  {formatRecentDate(entry.lastPlayed)}
                 </div>
               );
 
@@ -815,19 +828,6 @@ const StandardRow = ({ virtualEntry, entry, tableVariant, tableOptions, gridTemp
                     rating={entry.userRating}
                     editable
                     onlyShowOnHover
-                  />
-                </div>
-              );
-
-            case 'isFavourite':
-              return (
-                <div key={rowKey + '-' + index} className={style.isFavourite}>
-                  <Favourite
-                    variant="table"
-                    type={ratingType}
-                    itemId={rowKey}
-                    isFavourite={entry.isFavourite}
-                    editable
                   />
                 </div>
               );
@@ -907,6 +907,86 @@ const TrackRow = ({
         .filter((columnOptions) => columnOptions.visible !== false)
         .map((columnOptions, index) => {
           switch (columnOptions.colKey) {
+            case 'album':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.album, 'text-trim')}>
+                  {entry.albumLink && (
+                    <NavLink to={entry.albumLink} tabIndex={-1} draggable="false">
+                      {entry.album}{' '}
+                    </NavLink>
+                  )}
+                  {!entry.albumLink && entry.album}
+                </div>
+              );
+
+            case 'artist':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.artist, 'text-trim')}>
+                  {entry.artistLink && (
+                    <NavLink to={entry.artistLink} tabIndex={-1} draggable="false">
+                      {entry.artist}
+                    </NavLink>
+                  )}
+                  {!entry.artistLink && entry.artist}
+                </div>
+              );
+
+            // // Debugging
+            // case 'artist':
+            //   return (
+            //     <div key={rowKey + '-' + index} className={clsx(style.artist, 'text-trim')}>
+            //       {discIndex} - {virtualEntry.index} - {trackIndex}
+            //     </div>
+            //   );
+
+            case 'bitrate':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.bitrate, 'text-trim')}>
+                  {entry.bitrate}
+                </div>
+              );
+
+            case 'codec':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.codec, 'text-trim')}>
+                  {entry.codec?.toUpperCase()}
+                </div>
+              );
+
+            case 'duration':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.duration, 'text-trim')}>
+                  {durationToStringShort(entry.duration)}
+                </div>
+              );
+
+            case 'isFavourite':
+              return (
+                <div key={rowKey + '-' + index} className={style.isFavourite}>
+                  <Favourite
+                    variant="table"
+                    type={ratingType}
+                    itemId={entry[ratingKey]}
+                    isFavourite={entry.isFavourite}
+                    editable
+                  />
+                </div>
+              );
+
+            case 'kind':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.kind, 'text-trim')}>
+                  {entry.kind?.replace('aaa', '')}
+                </div>
+              );
+
+            case 'releaseDate':
+              return (
+                <div key={rowKey + '-' + index} className={clsx(style.releaseDate, 'text-trim')}>
+                  {entry.releaseDate ? moment(entry.releaseDate).format('YYYY') : null}
+                </div>
+              );
+
             case 'sortOrder':
               return (
                 <React.Fragment key={rowKey + '-' + index}>
@@ -983,73 +1063,6 @@ const TrackRow = ({
                 );
               }
 
-            // // Debugging
-            // case 'artist':
-            //   return (
-            //     <div key={rowKey + '-' + index} className={clsx(style.artist, 'text-trim')}>
-            //       {discIndex} - {virtualEntry.index} - {trackIndex}
-            //     </div>
-            //   );
-
-            case 'artist':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.artist, 'text-trim')}>
-                  {entry.artistLink && (
-                    <NavLink to={entry.artistLink} tabIndex={-1} draggable="false">
-                      {entry.artist}
-                    </NavLink>
-                  )}
-                  {!entry.artistLink && entry.artist}
-                </div>
-              );
-
-            case 'album':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.album, 'text-trim')}>
-                  {entry.albumLink && (
-                    <NavLink to={entry.albumLink} tabIndex={-1} draggable="false">
-                      {entry.album}{' '}
-                    </NavLink>
-                  )}
-                  {!entry.albumLink && entry.album}
-                </div>
-              );
-
-            case 'releaseDate':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.releaseDate, 'text-trim')}>
-                  {entry.releaseDate ? moment(entry.releaseDate).format('YYYY') : null}
-                </div>
-              );
-
-            case 'kind':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.kind, 'text-trim')}>
-                  {entry.kind?.replace('aaa', '')}
-                </div>
-              );
-
-            case 'codec':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.codec, 'text-trim')}>
-                  {entry.codec?.toUpperCase()}
-                </div>
-              );
-
-            case 'bitrate':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.bitrate, 'text-trim')}>
-                  {entry.bitrate}
-                </div>
-              );
-
-            case 'duration':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.duration, 'text-trim')}>
-                  {durationToStringShort(entry.duration)}
-                </div>
-              );
-
             case 'userRating':
               return (
                 <div key={rowKey + '-' + index} className={style.userRating}>
@@ -1060,19 +1073,6 @@ const TrackRow = ({
                     rating={entry.userRating}
                     editable
                     onlyShowOnHover
-                  />
-                </div>
-              );
-
-            case 'isFavourite':
-              return (
-                <div key={rowKey + '-' + index} className={style.isFavourite}>
-                  <Favourite
-                    variant="table"
-                    type={ratingType}
-                    itemId={entry[ratingKey]}
-                    isFavourite={entry.isFavourite}
-                    editable
                   />
                 </div>
               );
