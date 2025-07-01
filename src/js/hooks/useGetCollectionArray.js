@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { sortList } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 
-const useGetAllCollections = (collectionKey) => {
+const useGetCollectionArray = (collectionKey) => {
   const dispatch = useDispatch();
 
   // const mediaType = collectionKey.includes('Artist') ? 'Artist' : 'Album';
@@ -99,4 +99,4 @@ const useGetAllCollections = (collectionKey) => {
   };
 };
 
-export default useGetAllCollections;
+export default useGetCollectionArray;

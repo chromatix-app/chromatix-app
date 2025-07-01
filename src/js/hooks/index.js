@@ -1,10 +1,10 @@
 export { default as useColorTheme } from './useColorTheme';
 export { default as useElectronStatus } from './useElectronStatus';
 export { default as useGetAlbumDetail } from './useGetAlbumDetail';
-export { default as useGetAllAlbums } from './useGetAllAlbums';
-export { default as useGetAllArtists } from './useGetAllArtists';
-export { default as useGetAllCollections } from './useGetAllCollections';
-export { default as useGetAllPlaylists } from './useGetAllPlaylists';
+export { default as useGetAlbumArray } from './useGetAlbumArray';
+export { default as useGetArtistArray } from './useGetArtistArray';
+export { default as useGetCollectionArray } from './useGetCollectionArray';
+export { default as useGetPlaylistArray } from './useGetPlaylistArray';
 export { default as useGetArtistDetail } from './useGetArtistDetail';
 export { default as useGetCollectionItems } from './useGetCollectionItems';
 export { default as useGetDownloadLinks } from './useGetDownloadLinks';

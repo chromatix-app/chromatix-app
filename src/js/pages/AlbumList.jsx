@@ -12,7 +12,7 @@ import {
   Loading,
   TitleHeading,
 } from 'js/components';
-import { useGetAllAlbums } from 'js/hooks';
+import { useGetAlbumArray } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
@@ -32,7 +32,7 @@ const AlbumList = () => {
     setColumnVisibility,
 
     sortedAlbums,
-  } = useGetAllAlbums();
+  } = useGetAlbumArray();
 
   const isLoading = !sortedAlbums;
   const isEmptyList = !isLoading && sortedAlbums?.length === 0;

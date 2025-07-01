@@ -3,7 +3,7 @@
 // ======================================================================
 
 import { FilterToggle, FilterWrap, ViewGrid, ViewList, Loading, TitleHeading } from 'js/components';
-import { useGetAllCollections } from 'js/hooks';
+import { useGetCollectionArray } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
@@ -17,7 +17,7 @@ const ArtistStyleList = () => {
     setViewCollections,
     setOrderCollections,
     sortedCollections,
-  } = useGetAllCollections('ArtistStyles');
+  } = useGetCollectionArray('ArtistStyles');
 
   const isLoading = !sortedCollections;
   const isEmptyList = !isLoading && sortedCollections?.length === 0;

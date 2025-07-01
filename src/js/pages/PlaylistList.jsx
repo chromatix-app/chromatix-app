@@ -12,7 +12,7 @@ import {
   Loading,
   TitleHeading,
 } from 'js/components';
-import { useGetAllPlaylists } from 'js/hooks';
+import { useGetPlaylistArray } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
@@ -32,7 +32,7 @@ const PlaylistList = () => {
     setColumnVisibility,
 
     sortedPlaylists,
-  } = useGetAllPlaylists();
+  } = useGetPlaylistArray();
 
   const isLoading = !sortedPlaylists;
   const isEmptyList = !isLoading && sortedPlaylists?.length === 0;

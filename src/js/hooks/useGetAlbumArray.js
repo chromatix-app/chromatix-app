@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { sortList } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 
-const useGetAllAlbums = () => {
+const useGetAlbumArray = () => {
   const dispatch = useDispatch();
 
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
@@ -119,4 +119,4 @@ const useGetAllAlbums = () => {
   };
 };
 
-export default useGetAllAlbums;
+export default useGetAlbumArray;

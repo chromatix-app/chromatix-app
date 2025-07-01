@@ -12,7 +12,7 @@ import {
   Loading,
   TitleHeading,
 } from 'js/components';
-import { useGetAllCollections } from 'js/hooks';
+import { useGetCollectionArray } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
@@ -32,7 +32,7 @@ const AlbumCollectionList = () => {
     setColumnVisibility,
 
     sortedCollections,
-  } = useGetAllCollections('AlbumCollections');
+  } = useGetCollectionArray('AlbumCollections');
 
   const isLoading = !sortedCollections;
   const isEmptyList = !isLoading && sortedCollections?.length === 0;

@@ -12,7 +12,7 @@ import {
   Loading,
   TitleHeading,
 } from 'js/components';
-import { useGetAllArtists } from 'js/hooks';
+import { useGetArtistArray } from 'js/hooks';
 
 // ======================================================================
 // COMPONENT
@@ -32,7 +32,7 @@ const ArtistList = () => {
     setColumnVisibility,
 
     sortedArtists,
-  } = useGetAllArtists();
+  } = useGetArtistArray();
 
   const isLoading = !sortedArtists;
   const isEmptyList = !isLoading && sortedArtists?.length === 0;
