@@ -3,6 +3,8 @@ We are transposing the API data to a format that is easier to work with in the a
 consistent between music services, and also doing some additional processing and validation.
 */
 
+import { safeEncodeURIComponent } from 'js/utils/';
+
 // ======================================================================
 // OPTIONS
 // ======================================================================
@@ -395,7 +397,7 @@ export const transposeTagArray = (array, libraryId, primaryKey, secondaryKey) =>
 // };
 
 export const transposeGenreData = (primaryKey, genre, libraryId) => {
-  const genreId = encodeURIComponent(genre);
+  const genreId = safeEncodeURIComponent(genre);
   return {
     kind: 'genre',
     libraryId: libraryId,
@@ -406,7 +408,7 @@ export const transposeGenreData = (primaryKey, genre, libraryId) => {
 };
 
 export const transposeTagData = (primaryKey, tag, libraryId) => {
-  const tagId = encodeURIComponent(tag);
+  const tagId = safeEncodeURIComponent(tag);
   return {
     kind: 'tag',
     libraryId: libraryId,

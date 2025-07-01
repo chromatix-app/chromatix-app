@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { sortList } from 'js/utils';
+import { safeDecodeURIComponent, safeEncodeURIComponent, sortList } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 
 const useGetCollectionItems = ({
@@ -13,7 +13,7 @@ const useGetCollectionItems = ({
 }) => {
   const dispatch = useDispatch();
 
-  collectionId = encodeURIComponent(decodeURIComponent(collectionId));
+  collectionId = safeEncodeURIComponent(safeDecodeURIComponent(collectionId));
 
   const mediaType = collectionKey.includes('Artist') ? 'Artist' : 'Album';
   // const collectionType = collectionFilter.replace('Id', '');

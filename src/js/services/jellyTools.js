@@ -5,7 +5,7 @@
 import axios from 'axios';
 
 import config from 'js/_config/config';
-import { getLocalStorage, setLocalStorage } from 'js/utils';
+import { getLocalStorage, safeDecodeURIComponent, setLocalStorage } from 'js/utils';
 import * as jellyTranspose from 'js/services/jellyTranspose';
 
 // ======================================================================
@@ -905,28 +905,28 @@ export const getTagItems = ({ accessToken, libraryId, serverBaseUrl, tagId, type
       accessToken: accessToken,
       libraryId: libraryId,
       serverBaseUrl: serverBaseUrl,
-      genre: decodeURIComponent(tagId),
+      genre: safeDecodeURIComponent(tagId),
     });
   } else if (typeKey === 'AlbumGenreItems') {
     return getAllAlbums({
       accessToken: accessToken,
       libraryId: libraryId,
       serverBaseUrl: serverBaseUrl,
-      genre: decodeURIComponent(tagId),
+      genre: safeDecodeURIComponent(tagId),
     });
   } else if (typeKey === 'ArtistTagItems') {
     return getAllArtists({
       accessToken: accessToken,
       libraryId: libraryId,
       serverBaseUrl: serverBaseUrl,
-      tag: decodeURIComponent(tagId),
+      tag: safeDecodeURIComponent(tagId),
     });
   } else if (typeKey === 'AlbumTagItems') {
     return getAllAlbums({
       accessToken: accessToken,
       libraryId: libraryId,
       serverBaseUrl: serverBaseUrl,
-      tag: decodeURIComponent(tagId),
+      tag: safeDecodeURIComponent(tagId),
     });
   }
   return null;

@@ -713,7 +713,7 @@ export const getAllArtistAppearanceAlbumIds = ({ accessToken, artistName, librar
       const controller = new AbortController();
       abortControllers.push(controller);
 
-      // We are using a query string because of the use of a != operator
+      // NOTE: we are using a query string because of the use of a != operator
       const queryString = `?type=10&track.originalTitle=${encodeURIComponent(
         artistName
       )}&artist.title!=${encodeURIComponent(artistName)}&excludeFields=${albumExcludeFields}`;
@@ -772,6 +772,7 @@ export const getAllArtistTracks = ({ accessToken, artistId, artistName, libraryI
       });
 
       // Request 2: Get artist appearance tracks
+      // NOTE: we are using a query string because of the use of a != operator
       const queryString = `?type=10&track.originalTitle=${encodeURIComponent(
         artistName
       )}&artist.title!=${encodeURIComponent(artistName)}&excludeFields=${albumExcludeFields}`;
