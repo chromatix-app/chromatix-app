@@ -3,30 +3,33 @@
 // ======================================================================
 
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { ViewServers, Loading, TitleBasic } from 'js/components';
+import { Button, ViewServers, Loading, TitleBasic } from 'js/components';
 import * as bridge from 'js/services/bridge';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const ServerList = () => {
-  const allServers = useSelector(({ appModel }) => appModel.allServers);
+const LibraryArray = () => {
+  const dispatch = useDispatch();
+
+  const allLibraries = useSelector(({ appModel }) => appModel.allLibraries);
 
   useEffect(() => {
-    bridge.getAllServers();
+    bridge.getAllLibraries();
   }, []);
 
   return (
     <main className="wrap-inner">
       <div className="wrap-middle text-center">
-        {!allServers && <Loading forceVisible inline />}
-        {allServers && (
+        {!allLibraries && <Loading forceVisible inline />}
+        {allLibraries && (
           <>
-            <TitleBasic title={allServers.length > 0 ? 'Servers' : 'No Servers Available'} />
-            <ViewServers variant="servers" entries={allServers} />
+            <TitleBasic title={allLibraries.length > 0 ? 'Libraries' : 'No Libraries Available'} />
+            <ViewServers variant="libraries" entries={allLibraries} />
+            <Button onClick={dispatch.sessionModel.unsetCurrentServer}>Back to Servers</Button>
           </>
         )}
       </div>
@@ -38,4 +41,4 @@ const ServerList = () => {
 // EXPORT
 // ======================================================================
 
-export default ServerList;
+export default LibraryArray;

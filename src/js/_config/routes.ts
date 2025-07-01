@@ -47,12 +47,12 @@ export const authRoutes = [
   {
     path: '/servers',
     exact: true,
-    component: 'ServerList',
+    component: 'ServerArray',
   },
   {
     path: '/libraries',
     exact: true,
-    component: 'LibraryList',
+    component: 'LibraryArray',
   },
 
   // artists
@@ -93,7 +93,7 @@ export const authRoutes = [
   {
     path: '/playlists',
     exact: true,
-    component: 'PlaylistList',
+    component: 'PlaylistArray',
   },
   {
     path: '/playlists/:libraryId',
@@ -110,12 +110,12 @@ export const authRoutes = [
   {
     path: '/folders',
     exact: true,
-    component: 'FolderList',
+    component: 'FolderItems',
   },
   {
     path: '/folders/:libraryId/:folderId',
     exact: true,
-    component: 'FolderList',
+    component: 'FolderItems',
   },
 
   // artist collections

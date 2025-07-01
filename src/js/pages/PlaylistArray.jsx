@@ -18,7 +18,7 @@ import { useGetPlaylistArray } from 'js/hooks';
 // COMPONENT
 // ======================================================================
 
-const PlaylistList = () => {
+const PlaylistArray = () => {
   const {
     viewPlaylists,
     sortPlaylists,
@@ -126,7 +126,7 @@ const Title = ({
   return (
     <>
       <TitleHeading
-        key="PlaylistList"
+        key="PlaylistArray"
         title="Playlists"
         subtitle={
           sortedPlaylists ? (
@@ -243,4 +243,4 @@ const Title = ({
 // EXPORT
 // ======================================================================
 
-export default PlaylistList;
+export default PlaylistArray;

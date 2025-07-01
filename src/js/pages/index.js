@@ -1,8 +1,8 @@
 export { default as Home } from './Home';
 export { default as LoginJelly } from './LoginJelly';
 
-export { default as ServerList } from './ServerList';
-export { default as LibraryList } from './LibraryList';
+export { default as ServerArray } from './ServerArray';
+export { default as LibraryArray } from './LibraryArray';
 
 export { default as ArtistArray } from './ArtistArray';
 export { default as ArtistDetail } from './ArtistDetail';
@@ -30,10 +30,10 @@ export { default as AlbumStyleItems } from './AlbumStyleItems';
 export { default as AlbumTagArray } from './AlbumTagArray';
 export { default as AlbumTagItems } from './AlbumTagItems';
 
-export { default as PlaylistList } from './PlaylistList';
+export { default as PlaylistArray } from './PlaylistArray';
 export { default as PlaylistDetail } from './PlaylistDetail';
 
-export { default as FolderList } from './FolderList';
+export { default as FolderItems } from './FolderItems';
 
 export { default as Settings } from './Settings';
 export { default as SettingsAbout } from './SettingsAbout';

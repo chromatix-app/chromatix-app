@@ -20,7 +20,7 @@ import { useGetFolderItems } from 'js/hooks';
 // COMPONENT
 // ======================================================================
 
-const FolderList = () => {
+const FolderItems = () => {
   const { folderId = 'root' } = useParams();
 
   const {
@@ -200,4 +200,4 @@ const Title = ({
 // EXPORT
 // ======================================================================
 
-export default FolderList;
+export default FolderItems;
