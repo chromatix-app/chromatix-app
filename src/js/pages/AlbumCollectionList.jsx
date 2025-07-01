@@ -8,7 +8,7 @@ import {
   FilterToggle,
   FilterWrap,
   ViewGrid,
-  ListTable,
+  ViewList,
   Loading,
   TitleHeading,
 } from 'js/components';
@@ -77,7 +77,7 @@ const AlbumCollectionList = () => {
         </ViewGrid>
       )}
       {isListView && (
-        <ListTable
+        <ViewList
           variant="albumCollections"
           entries={sortedCollections}
           sortKey={sortCollections}
@@ -98,7 +98,7 @@ const AlbumCollectionList = () => {
             sortedCollections={sortedCollections}
             viewCollections={viewCollections}
           />
-        </ListTable>
+        </ViewList>
       )}
     </>
   );

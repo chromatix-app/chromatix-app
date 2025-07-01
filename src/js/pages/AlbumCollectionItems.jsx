@@ -9,7 +9,7 @@ import {
   FilterSelect,
   FilterToggle,
   ViewGrid,
-  ListTable,
+  ViewList,
   Loading,
   StarRating,
   TitleHeading,
@@ -105,7 +105,7 @@ const AlbumCollectionItems = () => {
         </ViewGrid>
       )}
       {isListView && (
-        <ListTable
+        <ViewList
           variant="albumCollectionItems"
           entries={sortedCollectionItems}
           sortKey={sortCollectionItems}
@@ -131,7 +131,7 @@ const AlbumCollectionItems = () => {
             sortedCollectionItems={sortedCollectionItems}
             viewCollectionItems={viewCollectionItems}
           />
-        </ListTable>
+        </ViewList>
       )}
     </>
   );

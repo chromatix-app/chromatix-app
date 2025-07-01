@@ -4,7 +4,7 @@
 
 import { useParams } from 'react-router-dom';
 
-import { FilterMenu, FilterSelect, FilterToggle, ViewGrid, ListTable, Loading, TitleHeading } from 'js/components';
+import { FilterMenu, FilterSelect, FilterToggle, ViewGrid, ViewList, Loading, TitleHeading } from 'js/components';
 import { useGetCollectionItems } from 'js/hooks';
 
 // ======================================================================
@@ -99,7 +99,7 @@ const AlbumMoodItems = () => {
         </ViewGrid>
       )}
       {isListView && (
-        <ListTable
+        <ViewList
           variant="albumMoodItems"
           entries={sortedCollectionItems}
           sortKey={sortCollectionItems}
@@ -124,7 +124,7 @@ const AlbumMoodItems = () => {
             sortedCollectionItems={sortedCollectionItems}
             viewCollectionItems={viewCollectionItems}
           />
-        </ListTable>
+        </ViewList>
       )}
     </>
   );

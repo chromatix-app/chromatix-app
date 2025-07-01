@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { FilterToggle, FilterWrap, ViewGrid, ListTable, Loading, TitleHeading } from 'js/components';
+import { FilterToggle, FilterWrap, ViewGrid, ViewList, Loading, TitleHeading } from 'js/components';
 import { useGetAllCollections } from 'js/hooks';
 
 // ======================================================================
@@ -52,12 +52,7 @@ const AlbumTagList = () => {
         </ViewGrid>
       )}
       {isListView && (
-        <ListTable
-          variant="albumTags"
-          entries={sortedCollections}
-          sortKey={sortCollections}
-          orderKey={orderCollections}
-        >
+        <ViewList variant="albumTags" entries={sortedCollections} sortKey={sortCollections} orderKey={orderCollections}>
           <Title
             isGridView={isGridView}
             isListView={isListView}
@@ -67,7 +62,7 @@ const AlbumTagList = () => {
             sortedCollections={sortedCollections}
             viewCollections={viewCollections}
           />
-        </ListTable>
+        </ViewList>
       )}
     </>
   );

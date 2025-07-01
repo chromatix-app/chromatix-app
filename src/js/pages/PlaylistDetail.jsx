@@ -5,7 +5,7 @@
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { Favourite, FilterMenu, ListTable, Loading, StarRating, TitleHeading } from 'js/components';
+import { Favourite, FilterMenu, ViewList, Loading, StarRating, TitleHeading } from 'js/components';
 import { useGetPlaylistDetail } from 'js/hooks';
 
 // ======================================================================
@@ -73,7 +73,7 @@ const PlaylistDetail = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isListView && (
-        <ListTable
+        <ViewList
           variant="playlistTracks"
           playlistId={playlistId}
           entries={playlistTracks}
@@ -96,7 +96,7 @@ const PlaylistDetail = () => {
             playlistTracks={playlistTracks}
             setColumnVisibility={setColumnVisibility}
           />
-        </ListTable>
+        </ViewList>
       )}
     </>
   );

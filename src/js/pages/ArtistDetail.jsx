@@ -10,7 +10,7 @@ import {
   FilterSelect,
   FilterToggle,
   ViewGrid,
-  ListTable,
+  ViewList,
   Loading,
   StarRating,
   TitleHeading,
@@ -160,7 +160,7 @@ const ArtistDetail = () => {
       )}
 
       {isListView && (
-        <ListTable
+        <ViewList
           variant="artistAlbums"
           {...(artistAlbumsGroupByType ? { groupBy: 'albumGroup' } : { groupBy: 'releaseGroup' })}
           entries={sortedAllReleasesAndAppearances}
@@ -194,11 +194,11 @@ const ArtistDetail = () => {
             sortArtistAlbums={sortArtistAlbums}
             viewArtistAlbums={viewArtistAlbums}
           />
-        </ListTable>
+        </ViewList>
       )}
 
       {isTrackView && (
-        <ListTable
+        <ViewList
           variant="artistTracks"
           // groupBy="albumGroup"
           artistId={artistId}
@@ -235,7 +235,7 @@ const ArtistDetail = () => {
             sortArtistAlbums={sortArtistAlbums}
             viewArtistAlbums={viewArtistAlbums}
           />
-        </ListTable>
+        </ViewList>
       )}
     </>
   );

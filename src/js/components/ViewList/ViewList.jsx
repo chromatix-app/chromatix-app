@@ -13,7 +13,7 @@ import { Favourite, Icon, StarRating } from 'js/components';
 import { useScrollToTrack, useScrollToVirtualTrack, useTableOptions, useWindowSize } from 'js/hooks';
 import { durationToStringMed, durationToStringShort, formatRecentDate } from 'js/utils';
 
-import style from './ListTable.module.scss';
+import style from './ViewList.module.scss';
 
 // ======================================================================
 // OPTIONS
@@ -27,20 +27,20 @@ const virtualThreshold = !isLocal ? 200 : 1;
 // COMPONENT
 // ======================================================================
 
-const ListTable = ({ variant, ...props }) => {
+const ViewList = ({ variant, ...props }) => {
   if (
     variant === 'artistTracks' ||
     variant === 'albumTracks' ||
     variant === 'playlistTracks' ||
     variant === 'folders'
   ) {
-    return <ListTableTracks variant={variant} {...props} />;
+    return <ViewListTracks variant={variant} {...props} />;
   } else {
-    return <ListTableBasic variant={variant} {...props} />;
+    return <ViewListBasic variant={variant} {...props} />;
   }
 };
 
-const ListTableBasic = ({
+const ViewListBasic = ({
   children,
   variant,
   groupBy,
@@ -105,7 +105,7 @@ const ListTableBasic = ({
   }
 };
 
-const ListTableTracks = ({
+const ViewListTracks = ({
   children,
   variant,
   artistId,
@@ -1131,4 +1131,4 @@ const lookupVariantFields = {
 // EXPORT
 // ======================================================================
 
-export default ListTable;
+export default ViewList;

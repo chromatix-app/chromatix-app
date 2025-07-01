@@ -4,7 +4,7 @@
 
 import { useParams } from 'react-router-dom';
 
-import { FilterMenu, FilterSelect, FilterToggle, ViewGrid, ListTable, Loading, TitleHeading } from 'js/components';
+import { FilterMenu, FilterSelect, FilterToggle, ViewGrid, ViewList, Loading, TitleHeading } from 'js/components';
 import { useGetCollectionItems } from 'js/hooks';
 
 // ======================================================================
@@ -99,7 +99,7 @@ const AlbumTagItems = () => {
         </ViewGrid>
       )}
       {isListView && (
-        <ListTable
+        <ViewList
           variant="albumTagItems"
           entries={sortedCollectionItems}
           sortKey={sortCollectionItems}
@@ -124,7 +124,7 @@ const AlbumTagItems = () => {
             tagId={tagId}
             viewCollectionItems={viewCollectionItems}
           />
-        </ListTable>
+        </ViewList>
       )}
     </>
   );

@@ -10,7 +10,7 @@ import {
   FilterToggle,
   FilterWrap,
   ViewGrid,
-  ListTable,
+  ViewList,
   Loading,
   TitleHeading,
 } from 'js/components';
@@ -87,7 +87,7 @@ const FolderList = () => {
         </ViewGrid>
       )}
       {isListView && (
-        <ListTable
+        <ViewList
           variant="folders"
           folderId={folderId}
           entries={sortedFolders}
@@ -110,7 +110,7 @@ const FolderList = () => {
             sortFolders={sortFolders}
             viewFolders={viewFolders}
           />
-        </ListTable>
+        </ViewList>
       )}
     </>
   );
