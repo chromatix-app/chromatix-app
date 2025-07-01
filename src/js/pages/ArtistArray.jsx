@@ -18,7 +18,7 @@ import { useGetArtistArray } from 'js/hooks';
 // COMPONENT
 // ======================================================================
 
-const ArtistList = () => {
+const ArtistArray = () => {
   const {
     viewArtists,
     sortArtists,
@@ -126,7 +126,7 @@ const Title = ({
   return (
     <>
       <TitleHeading
-        key="ArtistList"
+        key="ArtistArray"
         title="Artists"
         subtitle={
           sortedArtists ? sortedArtists?.length + ' Artist' + (sortedArtists?.length !== 1 ? 's' : '') : <>&nbsp;</>
@@ -237,4 +237,4 @@ const Title = ({
 // EXPORT
 // ======================================================================
 
-export default ArtistList;
+export default ArtistArray;

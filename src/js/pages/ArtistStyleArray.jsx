@@ -9,7 +9,7 @@ import { useGetCollectionArray } from 'js/hooks';
 // COMPONENT
 // ======================================================================
 
-const ArtistMoodList = () => {
+const ArtistStyleArray = () => {
   const {
     viewCollections,
     sortCollections,
@@ -17,7 +17,7 @@ const ArtistMoodList = () => {
     setViewCollections,
     setOrderCollections,
     sortedCollections,
-  } = useGetCollectionArray('ArtistMoods');
+  } = useGetCollectionArray('ArtistStyles');
 
   const isLoading = !sortedCollections;
   const isEmptyList = !isLoading && sortedCollections?.length === 0;
@@ -39,7 +39,7 @@ const ArtistMoodList = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ViewGrid variant="artistMoods" entries={sortedCollections}>
+        <ViewGrid variant="artistStyles" entries={sortedCollections}>
           <Title
             isGridView={isGridView}
             isListView={isListView}
@@ -53,7 +53,7 @@ const ArtistMoodList = () => {
       )}
       {isListView && (
         <ViewList
-          variant="artistMoods"
+          variant="artistStyles"
           entries={sortedCollections}
           sortKey={sortCollections}
           orderKey={orderCollections}
@@ -85,11 +85,11 @@ const Title = ({
   return (
     <>
       <TitleHeading
-        key="ArtistMoodList"
-        title="Artist Moods"
+        key="ArtistStyleArray"
+        title="Artist Styles"
         subtitle={
           sortedCollections ? (
-            sortedCollections?.length + ' Artist Mood' + (sortedCollections?.length !== 1 ? 's' : '')
+            sortedCollections?.length + ' Artist Style' + (sortedCollections?.length !== 1 ? 's' : '')
           ) : (
             <>&nbsp;</>
           )
@@ -128,4 +128,4 @@ const Title = ({
 // EXPORT
 // ======================================================================
 
-export default ArtistMoodList;
+export default ArtistStyleArray;

@@ -59,7 +59,7 @@ export const authRoutes = [
   {
     path: '/artists',
     exact: true,
-    component: 'ArtistList',
+    component: 'ArtistArray',
   },
   {
     path: '/artists/:libraryId',
@@ -122,7 +122,7 @@ export const authRoutes = [
   {
     path: '/artist-collections',
     exact: true,
-    component: 'ArtistCollectionList',
+    component: 'ArtistCollectionArray',
   },
   {
     path: '/artist-collections/:libraryId/:collectionId',
@@ -146,7 +146,7 @@ export const authRoutes = [
   {
     path: '/artist-genres',
     exact: true,
-    component: 'ArtistGenreList',
+    component: 'ArtistGenreArray',
   },
   {
     path: '/artist-genres/:libraryId/:genreId',
@@ -170,7 +170,7 @@ export const authRoutes = [
   {
     path: '/artist-moods',
     exact: true,
-    component: 'ArtistMoodList',
+    component: 'ArtistMoodArray',
   },
   {
     path: '/artist-moods/:libraryId/:moodId',
@@ -194,7 +194,7 @@ export const authRoutes = [
   {
     path: '/artist-styles',
     exact: true,
-    component: 'ArtistStyleList',
+    component: 'ArtistStyleArray',
   },
   {
     path: '/artist-styles/:libraryId/:styleId',
@@ -218,7 +218,7 @@ export const authRoutes = [
   {
     path: '/artist-tags',
     exact: true,
-    component: 'ArtistTagList',
+    component: 'ArtistTagArray',
   },
   {
     path: '/artist-tags/:libraryId/:tagId',

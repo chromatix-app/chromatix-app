@@ -4,17 +4,17 @@ export { default as LoginJelly } from './LoginJelly';
 export { default as ServerList } from './ServerList';
 export { default as LibraryList } from './LibraryList';
 
-export { default as ArtistList } from './ArtistList';
+export { default as ArtistArray } from './ArtistArray';
 export { default as ArtistDetail } from './ArtistDetail';
-export { default as ArtistCollectionList } from './ArtistCollectionList';
+export { default as ArtistCollectionArray } from './ArtistCollectionArray';
 export { default as ArtistCollectionItems } from './ArtistCollectionItems';
-export { default as ArtistGenreList } from './ArtistGenreList';
+export { default as ArtistGenreArray } from './ArtistGenreArray';
 export { default as ArtistGenreItems } from './ArtistGenreItems';
-export { default as ArtistMoodList } from './ArtistMoodList';
+export { default as ArtistMoodArray } from './ArtistMoodArray';
 export { default as ArtistMoodItems } from './ArtistMoodItems';
-export { default as ArtistStyleList } from './ArtistStyleList';
+export { default as ArtistStyleArray } from './ArtistStyleArray';
 export { default as ArtistStyleItems } from './ArtistStyleItems';
-export { default as ArtistTagList } from './ArtistTagList';
+export { default as ArtistTagArray } from './ArtistTagArray';
 export { default as ArtistTagItems } from './ArtistTagItems';
 
 export { default as AlbumArray } from './AlbumArray';

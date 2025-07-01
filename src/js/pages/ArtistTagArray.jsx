@@ -9,7 +9,7 @@ import { useGetCollectionArray } from 'js/hooks';
 // COMPONENT
 // ======================================================================
 
-const ArtistTagList = () => {
+const ArtistTagArray = () => {
   const {
     viewCollections,
     sortCollections,
@@ -85,7 +85,7 @@ const Title = ({
   return (
     <>
       <TitleHeading
-        key="ArtistTagList"
+        key="ArtistTagArray"
         title="Artist Tags"
         subtitle={
           sortedCollections ? (
@@ -128,4 +128,4 @@ const Title = ({
 // EXPORT
 // ======================================================================
 
-export default ArtistTagList;
+export default ArtistTagArray;
