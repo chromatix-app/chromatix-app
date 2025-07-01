@@ -57,7 +57,7 @@ const checkIfLoggedIn = () => {
     const accessToken = getLocalStorage(storageTokenKey);
     if (accessToken) {
       let service = getLocalStorage(storageServiceKey);
-      // NOTE this is here for backwards compatibility
+      // NOTE: this is here for backwards compatibility
       if (!service) {
         service = 'plex';
       }
@@ -1188,8 +1188,8 @@ export const logPlaybackStop = (currentTrack) => {
 };
 
 export const logPlaybackStatus = (currentTrack, state, currentTime) => {
-  const optionLogPlexPlayback = store.getState().sessionModel.optionLogPlexPlayback;
-  if (optionLogPlexPlayback) {
+  const optionLogPlaybackToServer = store.getState().sessionModel.optionLogPlaybackToServer;
+  if (optionLogPlaybackToServer) {
     const accessToken = store.getState().sessionModel.currentServer.accessToken;
     const currentService = store.getState().appModel.currentService;
     const serverBaseUrl = store.getState().appModel.serverBaseUrl;
@@ -1222,8 +1222,8 @@ export const logPlaybackStatus = (currentTrack, state, currentTime) => {
 };
 
 export const logPlaybackQuit = (currentTrack, currentTime) => {
-  const optionLogPlexPlayback = store.getState().sessionModel.optionLogPlexPlayback;
-  if (optionLogPlexPlayback) {
+  const optionLogPlaybackToServer = store.getState().sessionModel.optionLogPlaybackToServer;
+  if (optionLogPlaybackToServer) {
     const accessToken = store.getState().sessionModel.currentServer.accessToken;
     const currentService = store.getState().appModel.currentService;
     const serverBaseUrl = store.getState().appModel.serverBaseUrl;

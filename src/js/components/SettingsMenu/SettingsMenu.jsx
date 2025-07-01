@@ -199,18 +199,22 @@ const BrowseSettings = ({ platformOpts }) => {
       state: menuShowAlbumStyles && platformOpts.menuAlbumStyles,
       disabled: !platformOpts.menuAlbumStyles,
     },
-    {
-      key: 'menuShowArtistTags',
-      label: 'Artist Tags',
-      state: menuShowArtistTags && platformOpts.menuArtistTags,
-      disabled: !platformOpts.menuArtistTags,
-    },
-    {
-      key: 'menuShowAlbumTags',
-      label: 'Album Tags',
-      state: menuShowAlbumTags && platformOpts.menuAlbumTags,
-      disabled: !platformOpts.menuAlbumTags,
-    },
+    ...(isLocal
+      ? [
+          {
+            key: 'menuShowArtistTags',
+            label: 'Artist Tags',
+            state: menuShowArtistTags && platformOpts.menuArtistTags,
+            disabled: !platformOpts.menuArtistTags,
+          },
+          {
+            key: 'menuShowAlbumTags',
+            label: 'Album Tags',
+            state: menuShowAlbumTags && platformOpts.menuAlbumTags,
+            disabled: !platformOpts.menuAlbumTags,
+          },
+        ]
+      : []),
   ];
 
   return (

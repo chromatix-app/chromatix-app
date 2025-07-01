@@ -56,7 +56,7 @@ const sessionState = {
   menuShowArtistTags: true,
   menuShowAlbumTags: true,
 
-  optionLogPlexPlayback: true,
+  optionLogPlaybackToServer: true,
   optionSortNumbersFirst: false,
   optionSortIgnoreLeadingArticles: true,
   optionShowFullTitles_Deprecated: false,
@@ -175,8 +175,8 @@ const sessionState = {
   gridArtistsIsFavourite: true,
   gridArtistAlbumsIsFavourite: true,
   gridArtistCollectionItemsIsFavourite: true,
-  gridAlbumCollectionItemsIsFavourite: true,
   gridAlbumsIsFavourite: true,
+  gridAlbumCollectionItemsIsFavourite: true,
   gridPlaylistsIsFavourite: true,
 
   // LIST VIEW COLUMN VISIBILITY OPTIONS
@@ -515,8 +515,17 @@ const effects = (dispatch) => ({
       const sessionKey = config.storageSessionKey + '-' + userHash;
       try {
         localStorageState = localStorage.getItem(sessionKey) ? JSON.parse(localStorage.getItem(sessionKey)) : {};
-        // NOTE: bug fix - cleaning up some data that should never have been saved here
+
+        // NOTE: this is here for backwards compatibility
+        if (typeof localStorageState.optionLogPlexPlayback !== 'undefined') {
+          console.log('%c--- migrating optionLogPlexPlayback to optionLogPlaybackToServer ---', 'color:#0f60b7');
+          localStorageState.optionLogPlaybackToServer = localStorageState.optionLogPlexPlayback;
+          delete localStorageState.optionLogPlexPlayback;
+        }
+
+        // NOTE: this is here to clean up some old data that should never have been saved here
         if (localStorageState.appModel) {
+          console.log('%c--- removing appModel from localStorageState ---', 'color:#0f60b7');
           delete localStorageState.appModel;
 
           if (localStorageState.persistentModel) {
@@ -562,7 +571,7 @@ const effects = (dispatch) => ({
     const currentServerId = currentServer ? currentServer.serverId : null;
     if (currentServerId !== payload) {
       plexTools.abortAllRequests();
-      // TODO
+      // TODO: update this
       const newServer = rootState.appModel.allServers.find((server) => server.serverId === payload);
       // TODO: what if currentServer is null?
       dispatch.sessionModel.setSessionState({

@@ -13,12 +13,14 @@ import style from './SettingsGeneral.module.scss';
 // COMPONENT
 // ======================================================================
 
+const isLocal = process.env.REACT_APP_ENV === 'local';
+
 export const SettingsGeneral = () => {
   return (
     <div className={style.wrap}>
       <div className={style.group}>
-        <div className={style.title}>Plex</div>
-        <PlexSettings />
+        <div className={style.title}>Server</div>
+        <ServerSettings />
       </div>
       <div className={style.group}>
         <div className={style.title}>Sorting</div>
@@ -32,6 +34,12 @@ export const SettingsGeneral = () => {
         <div className={style.title}>View Modes</div>
         <ViewModeSettings />
       </div>
+      {isLocal && (
+        <div className={style.group}>
+          <div className={style.title}>Favourites (Jellyfin only)</div>
+          <FavouriteSettings />
+        </div>
+      )}
       <div className={style.group}>
         <div className={style.title}>Star Ratings</div>
         <StarRatingSettings />
@@ -45,20 +53,21 @@ export const SettingsGeneral = () => {
 };
 
 //
-// PLEX
+// SERVER
 //
 
-const PlexSettings = () => {
+const ServerSettings = () => {
   const dispatch = useDispatch();
 
-  const optionLogPlexPlayback = useSelector(({ sessionModel }) => sessionModel.optionLogPlexPlayback);
+  const optionLogPlaybackToServer = useSelector(({ sessionModel }) => sessionModel.optionLogPlaybackToServer);
 
   const menuItems = [
     {
-      key: 'optionLogPlexPlayback',
-      label: 'Log playback events to Plex.',
-      description: 'This is used to tell the Plex server what is currently playing, and to update the play count.',
-      state: optionLogPlexPlayback,
+      key: 'optionLogPlaybackToServer',
+      label: 'Log playback events to server.',
+      description:
+        'This is used to tell your media server what is currently playing. Your server may use this information for things like updating play counts and tracking usage.',
+      state: optionLogPlaybackToServer,
     },
   ];
 
@@ -340,6 +349,136 @@ const ViewModeSettings = () => {
               disabled={allSame && firstValue === 'list'}
             >
               Use list view everywhere
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+//
+// FAVOURITES
+//
+
+const FavouriteSettings = () => {
+  const dispatch = useDispatch();
+
+  const gridArtistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridArtistsIsFavourite);
+  const gridArtistAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridArtistAlbumsIsFavourite);
+  const gridArtistCollectionItemsIsFavourite = useSelector(
+    ({ sessionModel }) => sessionModel.gridArtistCollectionItemsIsFavourite
+  );
+  const gridAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridAlbumsIsFavourite);
+  const gridAlbumCollectionItemsIsFavourite = useSelector(
+    ({ sessionModel }) => sessionModel.gridAlbumCollectionItemsIsFavourite
+  );
+  const gridPlaylistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridPlaylistsIsFavourite);
+
+  const colArtistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colArtistsIsFavourite);
+  const colArtistAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsIsFavourite);
+  const colArtistTracksIsFavourite = useSelector(({ sessionModel }) => sessionModel.colArtistTracksIsFavourite);
+  const colAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colAlbumsIsFavourite);
+  const colAlbumIsFavourite = useSelector(({ sessionModel }) => sessionModel.colAlbumIsFavourite);
+  const colPlaylistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colPlaylistsIsFavourite);
+  const colPlaylistIsFavourite = useSelector(({ sessionModel }) => sessionModel.colPlaylistIsFavourite);
+  const colCollectionArtistsIsFavourite = useSelector(
+    ({ sessionModel }) => sessionModel.colCollectionArtistsIsFavourite
+  );
+  const colCollectionAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsIsFavourite);
+
+  const allValues = [
+    gridArtistsIsFavourite,
+    gridArtistAlbumsIsFavourite,
+    gridArtistCollectionItemsIsFavourite,
+    gridAlbumsIsFavourite,
+    gridAlbumCollectionItemsIsFavourite,
+    gridPlaylistsIsFavourite,
+
+    colArtistsIsFavourite,
+    colArtistAlbumsIsFavourite,
+    colArtistTracksIsFavourite,
+    colAlbumsIsFavourite,
+    colAlbumIsFavourite,
+    colPlaylistsIsFavourite,
+    colPlaylistIsFavourite,
+    colCollectionArtistsIsFavourite,
+    colCollectionAlbumsIsFavourite,
+  ];
+
+  const firstValue = allValues[0];
+  const allSame = allValues.every((value) => value === firstValue);
+
+  const toggleShowFavourites = () => {
+    dispatch.sessionModel.setSessionState({
+      gridArtistsIsFavourite: true,
+      gridArtistAlbumsIsFavourite: true,
+      gridArtistCollectionItemsIsFavourite: true,
+      gridAlbumsIsFavourite: true,
+      gridAlbumCollectionItemsIsFavourite: true,
+      gridPlaylistsIsFavourite: true,
+
+      colArtistsIsFavourite: true,
+      colArtistAlbumsIsFavourite: true,
+      colArtistTracksIsFavourite: true,
+      colAlbumsIsFavourite: true,
+      colAlbumIsFavourite: true,
+      colPlaylistsIsFavourite: true,
+      colPlaylistIsFavourite: true,
+      colCollectionArtistsIsFavourite: true,
+      colCollectionAlbumsIsFavourite: true,
+    });
+  };
+
+  const toggleHideFavourites = () => {
+    dispatch.sessionModel.setSessionState({
+      gridArtistsIsFavourite: false,
+      gridArtistAlbumsIsFavourite: false,
+      gridArtistCollectionItemsIsFavourite: false,
+      gridAlbumsIsFavourite: false,
+      gridAlbumCollectionItemsIsFavourite: false,
+      gridPlaylistsIsFavourite: false,
+
+      colArtistsIsFavourite: false,
+      colArtistAlbumsIsFavourite: false,
+      colArtistTracksIsFavourite: false,
+      colAlbumsIsFavourite: false,
+      colAlbumIsFavourite: false,
+      colPlaylistsIsFavourite: false,
+      colPlaylistIsFavourite: false,
+      colCollectionArtistsIsFavourite: false,
+      colCollectionAlbumsIsFavourite: false,
+    });
+  };
+
+  return (
+    <div className={style.menu}>
+      <div className={style.menuEntry}>
+        <div>
+          <div className={style.label}>
+            Quickly toggle the visibility of favourites for all sections of your library.
+            <br />
+            Note that you can independently toggle the visibility of favourites within each individual section of your
+            library.
+          </div>
+          <div className={style.buttons}>
+            <Button
+              size="small"
+              inline
+              wrap={false}
+              onClick={toggleShowFavourites}
+              disabled={allSame && firstValue === true}
+            >
+              Show favourites everywhere
+            </Button>
+            <Button
+              size="small"
+              inline
+              wrap={false}
+              onClick={toggleHideFavourites}
+              disabled={allSame && firstValue === false}
+            >
+              Hide favourites everywhere
             </Button>
           </div>
         </div>
