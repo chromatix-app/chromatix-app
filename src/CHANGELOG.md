@@ -1,3 +1,18 @@
+# 0.44.0 (2025-07-)
+
+Features:
+
+- Home page redesigned for a more consistent look and feel.
+- Improved tracking of errors so that they can be investigated and fixed.
+- Various minor fixes, tweaks and improvements throughout.
+
+Refactor:
+
+- The codebase has been udpated to handle multiple services in the future (i.e. not just Plex).
+- In an imminent release, Jellyfin support will be added to the app.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.43.0 (2025-06-17)
 
 Features:
