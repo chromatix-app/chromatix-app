@@ -9,7 +9,7 @@ import {
   FilterMenu,
   FilterSelect,
   FilterToggle,
-  ListCards,
+  ViewGrid,
   ListTable,
   Loading,
   StarRating,
@@ -123,7 +123,7 @@ const ArtistDetail = () => {
       {isLoading2 && <Loading forceVisible inline showOffline />}
 
       {isGridView && (
-        <ListCards
+        <ViewGrid
           variant="artistAlbums"
           {...(artistAlbumsGroupByType ? { groupBy: 'albumGroup' } : { groupBy: 'releaseGroup' })}
           entries={sortedAllReleasesAndAppearances}
@@ -156,7 +156,7 @@ const ArtistDetail = () => {
             sortArtistAlbums={sortArtistAlbums}
             viewArtistAlbums={viewArtistAlbums}
           />
-        </ListCards>
+        </ViewGrid>
       )}
 
       {isListView && (

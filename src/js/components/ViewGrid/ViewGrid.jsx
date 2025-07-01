@@ -12,7 +12,7 @@ import { Favourite, Icon, StarRating } from 'js/components';
 import { useScrollToTrack, useScrollToVirtualTrack, useWindowSize } from 'js/hooks';
 import platformFeatures from 'js/_config/platformFeatures';
 
-import style from './ListCards.module.scss';
+import style from './ViewGrid.module.scss';
 
 // ======================================================================
 // OPTIONS
@@ -26,7 +26,7 @@ const virtualThreshold = !isLocal ? 200 : 1;
 // COMPONENT
 // ======================================================================
 
-const ListCards = ({
+const ViewGrid = ({
   children,
   variant,
   groupBy,
@@ -702,4 +702,4 @@ const lookupIcons = {
 // EXPORT
 // ======================================================================
 
-export default ListCards;
+export default ViewGrid;

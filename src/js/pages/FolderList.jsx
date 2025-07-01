@@ -9,7 +9,7 @@ import {
   FilterSelect,
   FilterToggle,
   FilterWrap,
-  ListCards,
+  ViewGrid,
   ListTable,
   Loading,
   TitleHeading,
@@ -63,7 +63,7 @@ const FolderList = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ListCards
+        <ViewGrid
           variant="folders"
           folderId={folderId}
           entries={sortedFolders}
@@ -84,7 +84,7 @@ const FolderList = () => {
             sortFolders={sortFolders}
             viewFolders={viewFolders}
           />
-        </ListCards>
+        </ViewGrid>
       )}
       {isListView && (
         <ListTable
