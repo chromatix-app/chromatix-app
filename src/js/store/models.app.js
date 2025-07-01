@@ -23,11 +23,11 @@ const appState = {
   contentBreakpoint: 0,
   contentWidth: 0,
 
-  errorPlexFastestConnection: false,
-  errorPlexLibraries: false,
-  errorPlexLogin: false,
-  errorPlexServers: false,
-  errorPlexUser: false,
+  errorFastestConnection: false,
+  errorLibraries: false,
+  errorLogin: false,
+  errorServers: false,
+  errorUser: false,
 
   scrollToPlaying: false,
   scrollToTrack: false,
@@ -235,45 +235,45 @@ const effects = (dispatch) => ({
   // ERROR HANDLING
   //
 
-  dismissErrorPlexFastestConnection(payload, rootState) {
-    // console.log('%c--- dismissErrorPlexFastestConnection ---', 'color:#07a098');
+  dismissErrorFastestConnection(payload, rootState) {
+    // console.log('%c--- dismissErrorFastestConnection ---', 'color:#07a098');
     dispatch.appModel.setAppState({
-      errorPlexFastestConnection: false,
+      errorFastestConnection: false,
     });
     dispatch.sessionModel.unsetCurrentServer();
   },
 
-  dismissErrorPlexLibraries(payload, rootState) {
-    // console.log('%c--- dismissErrorPlexLibraries ---', 'color:#07a098');
+  dismissErrorLibraries(payload, rootState) {
+    // console.log('%c--- dismissErrorLibraries ---', 'color:#07a098');
     dispatch.appModel.setAppState({
-      errorPlexLibraries: false,
+      errorLibraries: false,
     });
     dispatch.sessionModel.unsetCurrentServer();
   },
 
-  dismissErrorPlexLogin(payload, rootState) {
-    // console.log('%c--- dismissErrorPlexLogin ---', 'color:#07a098');
+  dismissErrorLogin(payload, rootState) {
+    // console.log('%c--- dismissErrorLogin ---', 'color:#07a098');
     if (rootState.appModel.isInited) {
       dispatch.appModel.setAppState({
-        errorPlexLogin: false,
+        errorLogin: false,
       });
     } else {
       window.location.reload();
     }
   },
 
-  dismissErrorPlexServers(payload, rootState) {
-    // console.log('%c--- dismissErrorPlexServers ---', 'color:#07a098');
+  dismissErrorServers(payload, rootState) {
+    // console.log('%c--- dismissErrorServers ---', 'color:#07a098');
     dispatch.appModel.setAppState({
-      errorPlexServers: false,
+      errorServers: false,
     });
     bridge.getAllServers();
   },
 
-  dismissErrorPlexUser(payload, rootState) {
-    // console.log('%c--- dismissErrorPlexUser ---', 'color:#07a098');
+  dismissErrorUser(payload, rootState) {
+    // console.log('%c--- dismissErrorUser ---', 'color:#07a098');
     dispatch.appModel.setAppState({
-      errorPlexUser: false,
+      errorUser: false,
     });
     bridge.getUserInfo();
   },

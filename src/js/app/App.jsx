@@ -31,11 +31,11 @@ const App = () => {
   const inited = useSelector(({ appModel }) => appModel.inited);
   const loggedIn = useSelector(({ appModel }) => appModel.loggedIn);
 
-  const errorPlexFastestConnection = useSelector(({ appModel }) => appModel.errorPlexFastestConnection);
-  const errorPlexLibraries = useSelector(({ appModel }) => appModel.errorPlexLibraries);
-  const errorPlexLogin = useSelector(({ appModel }) => appModel.errorPlexLogin);
-  const errorPlexServers = useSelector(({ appModel }) => appModel.errorPlexServers);
-  const errorPlexUser = useSelector(({ appModel }) => appModel.errorPlexUser);
+  const errorFastestConnection = useSelector(({ appModel }) => appModel.errorFastestConnection);
+  const errorLibraries = useSelector(({ appModel }) => appModel.errorLibraries);
+  const errorLogin = useSelector(({ appModel }) => appModel.errorLogin);
+  const errorServers = useSelector(({ appModel }) => appModel.errorServers);
+  const errorUser = useSelector(({ appModel }) => appModel.errorUser);
 
   const accessibilityFocus = useSelector(({ sessionModel }) => sessionModel.accessibilityFocus);
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
@@ -101,7 +101,7 @@ const App = () => {
   }, [loggedIn]);
 
   // error pages
-  if (errorPlexFastestConnection) {
+  if (errorFastestConnection) {
     return (
       <div className="wrap">
         <div className="electron-drag"></div>
@@ -116,12 +116,12 @@ const App = () => {
             </>
           }
           buttonText="Ok"
-          buttonClick={dispatch.appModel.dismissErrorPlexFastestConnection}
+          buttonClick={dispatch.appModel.dismissErrorFastestConnection}
         />
         {loggedIn && <UserMenu withoutLibrary />}
       </div>
     );
-  } else if (errorPlexLibraries) {
+  } else if (errorLibraries) {
     return (
       <div className="wrap">
         <div className="electron-drag"></div>
@@ -136,12 +136,12 @@ const App = () => {
             </>
           }
           buttonText="Ok"
-          buttonClick={dispatch.appModel.dismissErrorPlexLibraries}
+          buttonClick={dispatch.appModel.dismissErrorLibraries}
         />
         {loggedIn && <UserMenu withoutLibrary />}
       </div>
     );
-  } else if (errorPlexLogin) {
+  } else if (errorLogin) {
     return (
       <div className="wrap">
         <div className="electron-drag"></div>
@@ -156,12 +156,12 @@ const App = () => {
             </>
           }
           buttonText="Ok"
-          buttonClick={dispatch.appModel.dismissErrorPlexLogin}
+          buttonClick={dispatch.appModel.dismissErrorLogin}
         />
         {loggedIn && <UserMenu withoutLibrary />}
       </div>
     );
-  } else if (errorPlexServers) {
+  } else if (errorServers) {
     return (
       <div className="wrap">
         <div className="electron-drag"></div>
@@ -176,12 +176,12 @@ const App = () => {
             </>
           }
           buttonText="Ok"
-          buttonClick={dispatch.appModel.dismissErrorPlexServers}
+          buttonClick={dispatch.appModel.dismissErrorServers}
         />
         {loggedIn && <UserMenu withoutLibrary />}
       </div>
     );
-  } else if (errorPlexUser) {
+  } else if (errorUser) {
     return (
       <div className="wrap">
         <div className="electron-drag"></div>
@@ -196,7 +196,7 @@ const App = () => {
             </>
           }
           buttonText="Ok"
-          buttonClick={dispatch.appModel.dismissErrorPlexUser}
+          buttonClick={dispatch.appModel.dismissErrorUser}
         />
         {loggedIn && <UserMenu withoutLibrary />}
       </div>

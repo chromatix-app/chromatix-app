@@ -92,7 +92,7 @@ export const jellyLogin = (values) => {
       })
       .catch((error) => {
         console.error(error);
-        analyticsEvent('Error: Jellyfin Login');
+        analyticsEvent('Error: Jellyfin - Login');
         reject(error);
       });
   });
@@ -117,8 +117,8 @@ export const plexLogin = () => {
     })
     .catch((error) => {
       console.error(error);
-      store.dispatch.appModel.setAppState({ errorPlexLogin: true });
-      analyticsEvent('Error: Plex Login');
+      store.dispatch.appModel.setAppState({ errorLogin: true });
+      analyticsEvent('Error: Plex - Login');
     });
 };
 
@@ -151,7 +151,7 @@ export const getUserInfo = (service) => {
     })
     .catch((error) => {
       console.error(error);
-      store.dispatch.appModel.setAppState({ errorPlexUser: true });
+      store.dispatch.appModel.setAppState({ errorUser: true });
       analyticsEvent('Error: ' + toUpperFirst(service) + ' - Get User Info');
     });
 };
@@ -182,7 +182,7 @@ export const getAllServers = () => {
         })
         .catch((error) => {
           console.error(error);
-          store.dispatch.appModel.setAppState({ errorPlexServers: true });
+          store.dispatch.appModel.setAppState({ errorServers: true });
           analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get All Servers');
         })
         .finally(() => {
@@ -210,7 +210,7 @@ const getFastestConnection = async (currentServer, currentService, currentUser) 
     }
   } catch (error) {
     console.error(error);
-    store.dispatch.appModel.setAppState({ errorPlexFastestConnection: true });
+    store.dispatch.appModel.setAppState({ errorFastestConnection: true });
     analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Fastest Server Connection');
     throw error;
   }
@@ -259,7 +259,7 @@ export const getAllLibraries = async () => {
           })
           .catch((error) => {
             console.error(error);
-            store.dispatch.appModel.setAppState({ errorPlexLibraries: true });
+            store.dispatch.appModel.setAppState({ errorLibraries: true });
             analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get All Libraries');
           })
           .finally(() => {
