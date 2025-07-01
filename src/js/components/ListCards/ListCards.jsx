@@ -63,9 +63,7 @@ const ListCards = ({
 
   const isCurrentlyLoaded = useCallback(
     (entryVariant, entryId) => {
-      if (entryVariant === 'artistAlbums') {
-        entryVariant = 'albums';
-      }
+      entryVariant = lookupType[entryVariant] || entryVariant;
       return (
         playingVariant === entryVariant &&
         ((entryVariant === 'albums' && playingAlbumId === entryId) ||
@@ -624,7 +622,7 @@ const ListEntry = React.memo(
                 <span className={style.favourite}>
                   <Favourite
                     variant="grid"
-                    // type={}
+                    type={lookupType[variant] || variant}
                     itemId={ratingKey}
                     isFavourite={true}
                     editable={false}
@@ -682,6 +680,10 @@ const getEntryKey = (entry, fallback) => {
     // fallback
     fallback;
   return entryKey;
+};
+
+const lookupType = {
+  artistAlbums: 'albums',
 };
 
 const lookupIcons = {
