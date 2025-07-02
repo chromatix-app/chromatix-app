@@ -2,6 +2,7 @@
 // IMPORTS
 // ======================================================================
 
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -15,6 +16,7 @@ import {
   TitleHeading,
 } from 'js/components';
 import { useGetCollectionItems } from 'js/hooks';
+import platformFeatures from 'js/_config/platformFeatures';
 
 // ======================================================================
 // COMPONENT
@@ -22,6 +24,9 @@ import { useGetCollectionItems } from 'js/hooks';
 
 const ArtistCollectionItems = () => {
   const { libraryId, collectionId } = useParams();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
 
   const {
     collectionInfo,
@@ -71,6 +76,7 @@ const ArtistCollectionItems = () => {
           isListView={isListView}
           libraryId={libraryId}
           orderCollectionItems={orderCollectionItems}
+          platformOpts={platformOpts}
           setColumnVisibility={setColumnVisibility}
           setOrderCollectionItems={setOrderCollectionItems}
           setSortCollectionItems={setSortCollectionItems}
@@ -101,6 +107,7 @@ const ArtistCollectionItems = () => {
             sortCollectionItems={sortCollectionItems}
             sortedCollectionItems={sortedCollectionItems}
             viewCollectionItems={viewCollectionItems}
+            platformOpts={platformOpts}
           />
         </ViewGrid>
       )}
@@ -130,6 +137,7 @@ const ArtistCollectionItems = () => {
             sortCollectionItems={sortCollectionItems}
             sortedCollectionItems={sortedCollectionItems}
             viewCollectionItems={viewCollectionItems}
+            platformOpts={platformOpts}
           />
         </ViewList>
       )}
@@ -148,6 +156,7 @@ const Title = ({
   isListView,
   libraryId,
   orderCollectionItems,
+  platformOpts,
   setColumnVisibility,
   setOrderCollectionItems,
   setSortCollectionItems,
@@ -162,7 +171,11 @@ const Title = ({
       thumb={collectionThumb}
       title={collectionTitle}
       detail={
-        <StarRating variant="title" type="collection" ratingKey={collectionId} rating={collectionRating} editable />
+        <>
+          {platformOpts.enableUserRating && (
+            <StarRating variant="title" type="collection" ratingKey={collectionId} rating={collectionRating} editable />
+          )}
+        </>
       }
       subtitle={
         sortedCollectionItems ? (

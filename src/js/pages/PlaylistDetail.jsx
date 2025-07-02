@@ -2,11 +2,12 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { Favourite, FilterMenu, ViewList, Loading, StarRating, TitleHeading } from 'js/components';
 import { useGetPlaylistDetail } from 'js/hooks';
+import platformFeatures from 'js/_config/platformFeatures';
 
 // ======================================================================
 // COMPONENT
@@ -16,6 +17,9 @@ const PlaylistDetail = () => {
   const { libraryId, playlistId } = useParams();
 
   const dispatch = useDispatch();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
 
   const {
     playlistInfo,
@@ -60,10 +64,11 @@ const PlaylistDetail = () => {
           doPlay={doPlay}
           isListView={isListView}
           libraryId={libraryId}
+          platformOpts={platformOpts}
           playlistDurationString={playlistDurationString}
           playlistId={playlistId}
-          playlistRating={playlistRating}
           playlistIsFavourite={playlistIsFavourite}
+          playlistRating={playlistRating}
           playlistThumb={playlistThumb}
           playlistTitle={playlistTitle}
           playlistTrackCount={playlistTrackCount}
@@ -86,10 +91,11 @@ const PlaylistDetail = () => {
             doPlay={doPlay}
             isListView={isListView}
             libraryId={libraryId}
+            platformOpts={platformOpts}
             playlistDurationString={playlistDurationString}
             playlistId={playlistId}
-            playlistRating={playlistRating}
             playlistIsFavourite={playlistIsFavourite}
+            playlistRating={playlistRating}
             playlistThumb={playlistThumb}
             playlistTitle={playlistTitle}
             playlistTrackCount={playlistTrackCount}
@@ -107,10 +113,11 @@ const Title = ({
   doPlay,
   isListView,
   libraryId,
+  platformOpts,
   playlistDurationString,
   playlistId,
-  playlistRating,
   playlistIsFavourite,
+  playlistRating,
   playlistThumb,
   playlistTitle,
   playlistTrackCount,
@@ -128,9 +135,18 @@ const Title = ({
           <>
             {playlistDurationString}
             {playlistDurationString && ' • '}
-            <StarRating variant="title" type="playlist" ratingKey={playlistId} rating={playlistRating} editable />
-            {' • '}
-            <Favourite variant="title" type="playlist" itemId={playlistId} isFavourite={playlistIsFavourite} editable />
+            {platformOpts.enableUserRating && (
+              <StarRating variant="title" type="playlist" ratingKey={playlistId} rating={playlistRating} editable />
+            )}
+            {platformOpts.enableIsFavourite && (
+              <Favourite
+                variant="title"
+                type="playlist"
+                itemId={playlistId}
+                isFavourite={playlistIsFavourite}
+                editable
+              />
+            )}
           </>
         ) : (
           <>&nbsp;</>

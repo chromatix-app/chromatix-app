@@ -2,11 +2,12 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useParams } from 'react-router-dom';
 
 import { Favourite, FilterMenu, ViewList, Loading, StarRating, TitleHeading } from 'js/components';
 import { useGetAlbumDetail } from 'js/hooks';
+import platformFeatures from 'js/_config/platformFeatures';
 
 // ======================================================================
 // COMPONENT
@@ -16,6 +17,9 @@ const AlbumDetail = () => {
   const { libraryId, albumId } = useParams();
 
   const dispatch = useDispatch();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
 
   const {
     albumInfo,
@@ -64,18 +68,19 @@ const AlbumDetail = () => {
           albumArtistLink={albumArtistLink}
           albumDurationString={albumDurationString}
           albumId={albumId}
-          albumRating={albumRating}
           albumIsFavourite={albumIsFavourite}
+          albumRating={albumRating}
           albumReleaseDate={albumReleaseDate}
           albumThumb={albumThumb}
           albumTitle={albumTitle}
           albumTrackCount={albumTrackCount}
           albumTracks={albumTracks}
           colOptions={colOptions}
-          setColumnVisibility={setColumnVisibility}
           doPlay={doPlay}
           isListView={isListView}
           libraryId={libraryId}
+          platformOpts={platformOpts}
+          setColumnVisibility={setColumnVisibility}
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
@@ -94,18 +99,19 @@ const AlbumDetail = () => {
             albumArtistLink={albumArtistLink}
             albumDurationString={albumDurationString}
             albumId={albumId}
-            albumRating={albumRating}
             albumIsFavourite={albumIsFavourite}
+            albumRating={albumRating}
             albumReleaseDate={albumReleaseDate}
             albumThumb={albumThumb}
             albumTitle={albumTitle}
             albumTrackCount={albumTrackCount}
             albumTracks={albumTracks}
             colOptions={colOptions}
-            setColumnVisibility={setColumnVisibility}
             doPlay={doPlay}
             isListView={isListView}
             libraryId={libraryId}
+            setColumnVisibility={setColumnVisibility}
+            platformOpts={platformOpts}
           />
         </ViewList>
       )}
@@ -118,18 +124,19 @@ const Title = ({
   albumArtistLink,
   albumDurationString,
   albumId,
-  albumRating,
   albumIsFavourite,
+  albumRating,
   albumReleaseDate,
   albumThumb,
   albumTitle,
   albumTrackCount,
   albumTracks,
   colOptions,
-  setColumnVisibility,
   doPlay,
   isListView,
   libraryId,
+  platformOpts,
+  setColumnVisibility,
 }) => {
   return (
     <TitleHeading
@@ -152,9 +159,12 @@ const Title = ({
             {(albumReleaseDate || albumTrackCount) && albumDurationString && ' • '}
             {albumDurationString}
             {(albumReleaseDate || albumTrackCount || albumDurationString) && ' • '}
-            <StarRating variant="title" type="album" ratingKey={albumId} rating={albumRating} editable />
-            {' • '}
-            <Favourite variant="title" type="album" itemId={albumId} isFavourite={albumIsFavourite} editable />
+            {platformOpts.enableUserRating && (
+              <StarRating variant="title" type="album" ratingKey={albumId} rating={albumRating} editable />
+            )}
+            {platformOpts.enableIsFavourite && (
+              <Favourite variant="title" type="album" itemId={albumId} isFavourite={albumIsFavourite} editable />
+            )}
           </>
         ) : (
           <>&nbsp;</>

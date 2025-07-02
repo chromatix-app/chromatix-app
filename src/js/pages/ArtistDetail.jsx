@@ -2,6 +2,7 @@
 // IMPORTS
 // ======================================================================
 
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -16,6 +17,7 @@ import {
   TitleHeading,
 } from 'js/components';
 import { useGetArtistDetail } from 'js/hooks';
+import platformFeatures from 'js/_config/platformFeatures';
 
 // ======================================================================
 // COMPONENT
@@ -23,6 +25,9 @@ import { useGetArtistDetail } from 'js/hooks';
 
 const ArtistDetail = () => {
   const { libraryId, artistId } = useParams();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
 
   const {
     artistInfo,
@@ -98,9 +103,9 @@ const ArtistDetail = () => {
           artistCountry={artistCountry}
           artistGenre={artistGenre}
           artistId={artistId}
+          artistIsFavourite={artistIsFavourite}
           artistName={artistName}
           artistRating={artistRating}
-          artistIsFavourite={artistIsFavourite}
           artistReleasesTotal={artistReleasesTotal}
           artistThumb={artistThumb}
           artistTracksTotal={artistTracksTotal}
@@ -112,6 +117,7 @@ const ArtistDetail = () => {
           isTrackView={isTrackView}
           libraryId={libraryId}
           orderArtistAlbums={orderArtistAlbums}
+          platformOpts={platformOpts}
           setColumnVisibility={setColumnVisibility}
           setOrderArtistAlbums={setOrderArtistAlbums}
           setSortArtistAlbums={setSortArtistAlbums}
@@ -135,9 +141,9 @@ const ArtistDetail = () => {
             artistCountry={artistCountry}
             artistGenre={artistGenre}
             artistId={artistId}
+            artistIsFavourite={artistIsFavourite}
             artistName={artistName}
             artistRating={artistRating}
-            artistIsFavourite={artistIsFavourite}
             artistReleasesTotal={artistReleasesTotal}
             artistThumb={artistThumb}
             artistTracksTotal={artistTracksTotal}
@@ -155,6 +161,7 @@ const ArtistDetail = () => {
             setViewArtistAlbums={setViewArtistAlbums}
             sortArtistAlbums={sortArtistAlbums}
             viewArtistAlbums={viewArtistAlbums}
+            platformOpts={platformOpts}
           />
         </ViewGrid>
       )}
@@ -173,9 +180,9 @@ const ArtistDetail = () => {
             artistCountry={artistCountry}
             artistGenre={artistGenre}
             artistId={artistId}
+            artistIsFavourite={artistIsFavourite}
             artistName={artistName}
             artistRating={artistRating}
-            artistIsFavourite={artistIsFavourite}
             artistReleasesTotal={artistReleasesTotal}
             artistThumb={artistThumb}
             artistTracksTotal={artistTracksTotal}
@@ -193,6 +200,7 @@ const ArtistDetail = () => {
             setViewArtistAlbums={setViewArtistAlbums}
             sortArtistAlbums={sortArtistAlbums}
             viewArtistAlbums={viewArtistAlbums}
+            platformOpts={platformOpts}
           />
         </ViewList>
       )}
@@ -246,9 +254,9 @@ const Title = ({
   artistCountry,
   artistGenre,
   artistId,
+  artistIsFavourite,
   artistName,
   artistRating,
-  artistIsFavourite,
   artistReleasesTotal,
   artistThumb,
   artistTracksTotal,
@@ -260,6 +268,7 @@ const Title = ({
   isTrackView,
   libraryId,
   orderArtistAlbums,
+  platformOpts,
   setColumnVisibility,
   setOrderArtistAlbums,
   setSortArtistAlbums,
@@ -289,9 +298,12 @@ const Title = ({
           {artistCountry && artistGenre && ' • '}
           {artistGenre}
           {(artistCountry || artistGenre) && ' • '}
-          <StarRating variant="title" type="artist" ratingKey={artistId} rating={artistRating} editable />
-          {' • '}
-          <Favourite variant="title" type="artist" itemId={artistId} isFavourite={artistIsFavourite} editable />
+          {platformOpts.enableUserRating && (
+            <StarRating variant="title" type="artist" ratingKey={artistId} rating={artistRating} editable />
+          )}
+          {platformOpts.enableIsFavourite && (
+            <Favourite variant="title" type="artist" itemId={artistId} isFavourite={artistIsFavourite} editable />
+          )}
         </>
       }
       padding={!isGridView && !isListView && !isTrackView}
