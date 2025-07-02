@@ -1,11 +1,15 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import platformFeatures from 'js/_config/platformFeatures';
 import { sortList } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 
 const useGetPlaylistArray = () => {
   const dispatch = useDispatch();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
 
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const currentLibraryId = currentLibrary?.libraryId;
@@ -36,8 +40,12 @@ const useGetPlaylistArray = () => {
     duration: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsDuration),
     addedAt: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsAddedAt),
     lastPlayed: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsLastPlayed),
-    userRating: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsUserRating),
-    isFavourite: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsIsFavourite),
+    userRating:
+      platformOpts.enableUserRating &&
+      (viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsUserRating)),
+    isFavourite:
+      platformOpts.enableIsFavourite &&
+      (viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsIsFavourite)),
   };
   const actualSortPlaylists = allowedSort[sortPlaylists] ? sortPlaylists : 'title';
   const actualOrderPlaylists = allowedSort[sortPlaylists] ? orderPlaylists : 'asc';
@@ -90,8 +98,8 @@ const useGetPlaylistArray = () => {
     orderPlaylists: actualOrderPlaylists,
 
     gridOptions: {
-      userRating: gridPlaylistsUserRating,
-      isFavourite: gridPlaylistsIsFavourite,
+      userRating: platformOpts.enableUserRating && gridPlaylistsUserRating,
+      isFavourite: platformOpts.enableIsFavourite && gridPlaylistsIsFavourite,
     },
 
     colOptions: {
@@ -99,8 +107,8 @@ const useGetPlaylistArray = () => {
       duration: colPlaylistsDuration,
       addedAt: colPlaylistsAddedAt,
       lastPlayed: colPlaylistsLastPlayed,
-      userRating: colPlaylistsUserRating,
-      isFavourite: colPlaylistsIsFavourite,
+      userRating: platformOpts.enableUserRating && colPlaylistsUserRating,
+      isFavourite: platformOpts.enableIsFavourite && colPlaylistsIsFavourite,
     },
 
     setViewPlaylists,

@@ -1,11 +1,15 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import platformFeatures from 'js/_config/platformFeatures';
 import { sortList } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 
 const useGetArtistDetail = ({ libraryId, artistId }) => {
   const dispatch = useDispatch();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
 
   const allArtists = useSelector(({ appModel }) => appModel.allArtists);
   const artistInfo = allArtists?.find((artist) => artist.artistId === artistId);
@@ -75,8 +79,12 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     lastPlayed: viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsLastPlayed),
     genre: viewArtistAlbums === 'list' && colArtistAlbumsGenre,
     releaseDate: viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsReleaseDate),
-    userRating: viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsUserRating),
-    isFavourite: viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsIsFavourite),
+    userRating:
+      platformOpts.enableUserRating &&
+      (viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsUserRating)),
+    isFavourite:
+      platformOpts.enableIsFavourite &&
+      (viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsIsFavourite)),
   };
   const actualSortArtistAlbums = allowedSort[sortArtistAlbums] ? sortArtistAlbums : 'title';
   const actualOrderArtistAlbums = allowedSort[sortArtistAlbums] ? orderArtistAlbums : 'asc';
@@ -88,8 +96,8 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     releaseDate: colArtistTracksReleaseDate,
     codec: colArtistTracksCodec,
     bitrate: colArtistTracksBitrate,
-    userRating: colArtistTracksUserRating,
-    isFavourite: colArtistTracksIsFavourite,
+    userRating: platformOpts.enableUserRating && colArtistTracksUserRating,
+    isFavourite: platformOpts.enableIsFavourite && colArtistTracksIsFavourite,
     duration: colArtistTracksDuration,
   };
   const actualSortArtistTracks = allowedTrackSort[sortArtistTracks] ? sortArtistTracks : 'title';
@@ -301,8 +309,8 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
     artistAlbumsGroupByType,
 
     gridOptions: {
-      userRating: gridArtistAlbumsUserRating,
-      isFavourite: gridArtistAlbumsIsFavourite,
+      userRating: platformOpts.enableUserRating && gridArtistAlbumsUserRating,
+      isFavourite: platformOpts.enableIsFavourite && gridArtistAlbumsIsFavourite,
     },
 
     colOptions: {
@@ -310,8 +318,8 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
       releaseDate: colArtistAlbumsReleaseDate,
       addedAt: colArtistAlbumsAddedAt,
       lastPlayed: colArtistAlbumsLastPlayed,
-      userRating: colArtistAlbumsUserRating,
-      isFavourite: colArtistAlbumsIsFavourite,
+      userRating: platformOpts.enableUserRating && colArtistAlbumsUserRating,
+      isFavourite: platformOpts.enableIsFavourite && colArtistAlbumsIsFavourite,
     },
 
     colTrackOptions: {
@@ -322,8 +330,8 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
       codec: colArtistTracksCodec,
       bitrate: colArtistTracksBitrate,
       duration: colArtistTracksDuration,
-      userRating: colArtistTracksUserRating,
-      isFavourite: colArtistTracksIsFavourite,
+      userRating: platformOpts.enableUserRating && colArtistTracksUserRating,
+      isFavourite: platformOpts.enableIsFavourite && colArtistTracksIsFavourite,
     },
 
     artistAlbumTotal,

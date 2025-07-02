@@ -1,11 +1,15 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import platformFeatures from 'js/_config/platformFeatures';
 import { durationToStringLong, sortList } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 
 const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   const dispatch = useDispatch();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
 
   const sortPlaylistTracks = useSelector(({ sessionModel }) => sessionModel.sortPlaylistTracks);
   const playlistSortString = sortPlaylistTracks[playlistId] || null;
@@ -33,8 +37,8 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
     codec: colPlaylistCodec,
     bitrate: colPlaylistBitrate,
     duration: colPlaylistDuration,
-    userRating: colPlaylistUserRating,
-    isFavourite: colPlaylistIsFavourite,
+    userRating: platformOpts.enableUserRating && colPlaylistUserRating,
+    isFavourite: platformOpts.enableIsFavourite && colPlaylistIsFavourite,
   };
   const actualPlaylistSortString = allowedSort[playlistSortString?.split('-')[0]] ? playlistSortString : null;
 
@@ -123,8 +127,8 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
       codec: colPlaylistCodec,
       bitrate: colPlaylistBitrate,
       duration: colPlaylistDuration,
-      userRating: colPlaylistUserRating,
-      isFavourite: colPlaylistIsFavourite,
+      userRating: platformOpts.enableUserRating && colPlaylistUserRating,
+      isFavourite: platformOpts.enableIsFavourite && colPlaylistIsFavourite,
     },
     setColumnVisibility,
   };

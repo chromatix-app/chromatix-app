@@ -1,11 +1,15 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import platformFeatures from 'js/_config/platformFeatures';
 import { sortList } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 
 const useGetAlbumArray = () => {
   const dispatch = useDispatch();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
 
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const currentLibraryId = currentLibrary?.libraryId;
@@ -40,8 +44,10 @@ const useGetAlbumArray = () => {
     lastPlayed: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsLastPlayed),
     genre: viewAlbums === 'list' && colAlbumsGenre,
     releaseDate: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsReleaseDate),
-    userRating: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsUserRating),
-    isFavourite: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsIsFavourite),
+    userRating:
+      platformOpts.enableUserRating && (viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsUserRating)),
+    isFavourite:
+      platformOpts.enableIsFavourite && (viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsIsFavourite)),
   };
   const actualSortAlbums = allowedSort[sortAlbums] ? sortAlbums : 'title';
   const actualOrderAlbums = allowedSort[sortAlbums] ? orderAlbums : 'asc';
@@ -96,8 +102,8 @@ const useGetAlbumArray = () => {
     orderAlbums: actualOrderAlbums,
 
     gridOptions: {
-      userRating: gridAlbumsUserRating,
-      isFavourite: gridAlbumsIsFavourite,
+      userRating: platformOpts.enableUserRating && gridAlbumsUserRating,
+      isFavourite: platformOpts.enableIsFavourite && gridAlbumsIsFavourite,
     },
 
     colOptions: {
@@ -106,8 +112,8 @@ const useGetAlbumArray = () => {
       releaseDate: colAlbumsReleaseDate,
       addedAt: colAlbumsAddedAt,
       lastPlayed: colAlbumsLastPlayed,
-      userRating: colAlbumsUserRating,
-      isFavourite: colAlbumsIsFavourite,
+      userRating: platformOpts.enableUserRating && colAlbumsUserRating,
+      isFavourite: platformOpts.enableIsFavourite && colAlbumsIsFavourite,
     },
 
     setViewAlbums,

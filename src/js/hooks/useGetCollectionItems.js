@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import platformFeatures from 'js/_config/platformFeatures';
 import { safeDecodeURIComponent, safeEncodeURIComponent, sortList } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 
@@ -12,6 +13,9 @@ const useGetCollectionItems = ({
   itemsKey,
 }) => {
   const dispatch = useDispatch();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
 
   collectionId = safeEncodeURIComponent(safeDecodeURIComponent(collectionId));
 
@@ -55,9 +59,11 @@ const useGetCollectionItems = ({
             viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsLastPlayed),
           genre: viewCollectionItems === 'list' && colCollectionArtistsGenre,
           userRating:
-            viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsUserRating),
+            platformOpts.enableUserRating &&
+            (viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsUserRating)),
           isFavourite:
-            viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsIsFavourite),
+            platformOpts.enableIsFavourite &&
+            (viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsIsFavourite)),
         }
       : {
           title: true,
@@ -71,9 +77,11 @@ const useGetCollectionItems = ({
           releaseDate:
             viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsReleaseDate),
           userRating:
-            viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsUserRating),
+            platformOpts.enableUserRating &&
+            (viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsUserRating)),
           isFavourite:
-            viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsIsFavourite),
+            platformOpts.enableIsFavourite &&
+            (viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsIsFavourite)),
         };
   const actualSortCollectionItems = allowedSort[sortCollectionItems] ? sortCollectionItems : 'title';
   const actualOrderCollectionItems = allowedSort[sortCollectionItems] ? orderCollectionItems : 'asc';
@@ -158,12 +166,12 @@ const useGetCollectionItems = ({
     gridOptions:
       mediaType === 'Artist'
         ? {
-            userRating: gridArtistCollectionItemsUserRating,
-            isFavourite: gridArtistCollectionItemsIsFavourite,
+            userRating: platformOpts.enableUserRating && gridArtistCollectionItemsUserRating,
+            isFavourite: platformOpts.enableIsFavourite && gridArtistCollectionItemsIsFavourite,
           }
         : {
-            userRating: gridAlbumCollectionItemsUserRating,
-            isFavourite: gridAlbumCollectionItemsIsFavourite,
+            userRating: platformOpts.enableUserRating && gridAlbumCollectionItemsUserRating,
+            isFavourite: platformOpts.enableIsFavourite && gridAlbumCollectionItemsIsFavourite,
           },
 
     colOptions:
@@ -173,8 +181,8 @@ const useGetCollectionItems = ({
             genre: colCollectionArtistsGenre,
             addedAt: colCollectionArtistsAddedAt,
             lastPlayed: colCollectionArtistsLastPlayed,
-            userRating: colCollectionArtistsUserRating,
-            isFavourite: colCollectionArtistsIsFavourite,
+            userRating: platformOpts.enableUserRating && colCollectionArtistsUserRating,
+            isFavourite: platformOpts.enableIsFavourite && colCollectionArtistsIsFavourite,
           }
         : {
             artist: colCollectionAlbumsArtist,
@@ -182,8 +190,8 @@ const useGetCollectionItems = ({
             releaseDate: colCollectionAlbumsReleaseDate,
             addedAt: colCollectionAlbumsAddedAt,
             lastPlayed: colCollectionAlbumsLastPlayed,
-            userRating: colCollectionAlbumsUserRating,
-            isFavourite: colCollectionAlbumsIsFavourite,
+            userRating: platformOpts.enableUserRating && colCollectionAlbumsUserRating,
+            isFavourite: platformOpts.enableIsFavourite && colCollectionAlbumsIsFavourite,
           },
 
     setViewCollectionItems,

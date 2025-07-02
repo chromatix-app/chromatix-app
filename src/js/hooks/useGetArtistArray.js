@@ -1,11 +1,15 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import platformFeatures from 'js/_config/platformFeatures';
 import { sortList } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 
 const useGetArtistArray = () => {
   const dispatch = useDispatch();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
 
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const currentLibraryId = currentLibrary?.libraryId;
@@ -36,8 +40,10 @@ const useGetArtistArray = () => {
     country: viewArtists === 'list' && colArtistsCountry,
     lastPlayed: viewArtists === 'grid' || (viewArtists === 'list' && colArtistsLastPlayed),
     genre: viewArtists === 'list' && colArtistsGenre,
-    userRating: viewArtists === 'grid' || (viewArtists === 'list' && colArtistsUserRating),
-    isFavourite: viewArtists === 'grid' || (viewArtists === 'list' && colArtistsIsFavourite),
+    userRating:
+      platformOpts.enableUserRating && (viewArtists === 'grid' || (viewArtists === 'list' && colArtistsUserRating)),
+    isFavourite:
+      platformOpts.enableIsFavourite && (viewArtists === 'grid' || (viewArtists === 'list' && colArtistsIsFavourite)),
   };
   const actualSortArtists = allowedSort[sortArtists] ? sortArtists : 'title';
   const actualOrderArtists = allowedSort[sortArtists] ? orderArtists : 'asc';
@@ -92,8 +98,8 @@ const useGetArtistArray = () => {
     orderArtists: actualOrderArtists,
 
     gridOptions: {
-      userRating: gridArtistsUserRating,
-      isFavourite: gridArtistsIsFavourite,
+      userRating: platformOpts.enableUserRating && gridArtistsUserRating,
+      isFavourite: platformOpts.enableIsFavourite && gridArtistsIsFavourite,
     },
 
     colOptions: {
@@ -101,8 +107,8 @@ const useGetArtistArray = () => {
       genre: colArtistsGenre,
       addedAt: colArtistsAddedAt,
       lastPlayed: colArtistsLastPlayed,
-      userRating: colArtistsUserRating,
-      isFavourite: colArtistsIsFavourite,
+      userRating: platformOpts.enableUserRating && colArtistsUserRating,
+      isFavourite: platformOpts.enableIsFavourite && colArtistsIsFavourite,
     },
 
     setViewArtists,

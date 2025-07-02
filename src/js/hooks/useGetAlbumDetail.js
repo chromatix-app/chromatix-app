@@ -2,11 +2,15 @@ import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 
+import platformFeatures from 'js/_config/platformFeatures';
 import { durationToStringLong, sortList } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 
 const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const dispatch = useDispatch();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
 
   const sortAlbumTracks = useSelector(({ sessionModel }) => sessionModel.sortAlbumTracks);
   const albumSortString = sortAlbumTracks[albumId] || null;
@@ -31,8 +35,8 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
     codec: colAlbumCodec,
     bitrate: colAlbumBitrate,
     duration: colAlbumDuration,
-    userRating: colAlbumUserRating,
-    isFavourite: colAlbumIsFavourite,
+    userRating: platformOpts.enableUserRating && colAlbumUserRating,
+    isFavourite: platformOpts.enableIsFavourite && colAlbumIsFavourite,
   };
   const actualAlbumSortString = allowedSort[albumSortString?.split('-')[0]] ? albumSortString : null;
 
@@ -141,8 +145,8 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
       codec: colAlbumCodec,
       bitrate: colAlbumBitrate,
       duration: colAlbumDuration,
-      userRating: colAlbumUserRating,
-      isFavourite: colAlbumIsFavourite,
+      userRating: platformOpts.enableUserRating && colAlbumUserRating,
+      isFavourite: platformOpts.enableIsFavourite && colAlbumIsFavourite,
     },
     setColumnVisibility,
   };
