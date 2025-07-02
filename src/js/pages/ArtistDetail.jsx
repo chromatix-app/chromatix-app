@@ -294,16 +294,46 @@ const Title = ({
       subtitle={subtitle}
       detail={
         <>
-          {artistCountry}
-          {artistCountry && artistGenre && ' • '}
-          {artistGenre}
-          {(artistCountry || artistGenre) && ' • '}
-          {platformOpts.enableUserRating && (
-            <StarRating variant="title" type="artist" ratingKey={artistId} rating={artistRating} editable />
-          )}
-          {platformOpts.enableIsFavourite && (
-            <Favourite variant="title" type="artist" itemId={artistId} isFavourite={artistIsFavourite} editable />
-          )}
+          {[
+            platformOpts.enableIsFavourite && (
+              <Favourite
+                key="favourite"
+                variant="title"
+                type="artist"
+                itemId={artistId}
+                isFavourite={artistIsFavourite}
+                editable
+              />
+            ),
+            artistCountry,
+            artistGenre,
+            platformOpts.enableUserRating && (
+              <StarRating
+                key="rating"
+                variant="title"
+                type="artist"
+                ratingKey={artistId}
+                rating={artistRating}
+                editable
+              />
+            ),
+          ]
+            .filter(Boolean)
+            .reduce((acc, item, index) => {
+              if (index === 0) return [item];
+
+              // Check if the first item is a Favourite component
+              const firstItem = acc[0];
+              const isFirstItemFavourite = firstItem?.key === 'favourite';
+              const separator =
+                index === 1 && isFirstItemFavourite ? (
+                  <span key={`sep-${index}`}>&nbsp; </span>
+                ) : (
+                  <span key={`sep-${index}`}> • </span>
+                );
+
+              return [...acc, separator, item];
+            }, [])}
         </>
       }
       padding={!isGridView && !isListView && !isTrackView}

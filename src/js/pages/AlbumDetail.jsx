@@ -153,18 +153,47 @@ const Title = ({
       detail={
         albumTracks ? (
           <>
-            {albumReleaseDate}
-            {albumReleaseDate && albumTrackCount && ' • '}
-            {albumTrackCount} track{albumTrackCount !== 1 && 's'}
-            {(albumReleaseDate || albumTrackCount) && albumDurationString && ' • '}
-            {albumDurationString}
-            {(albumReleaseDate || albumTrackCount || albumDurationString) && ' • '}
-            {platformOpts.enableUserRating && (
-              <StarRating variant="title" type="album" ratingKey={albumId} rating={albumRating} editable />
-            )}
-            {platformOpts.enableIsFavourite && (
-              <Favourite variant="title" type="album" itemId={albumId} isFavourite={albumIsFavourite} editable />
-            )}
+            {[
+              platformOpts.enableIsFavourite && (
+                <Favourite
+                  key="favourite"
+                  variant="title"
+                  type="album"
+                  itemId={albumId}
+                  isFavourite={albumIsFavourite}
+                  editable
+                />
+              ),
+              albumReleaseDate,
+              albumTrackCount && `${albumTrackCount} track${albumTrackCount !== 1 ? 's' : ''}`,
+              albumDurationString,
+              platformOpts.enableUserRating && (
+                <StarRating
+                  key="rating"
+                  variant="title"
+                  type="album"
+                  ratingKey={albumId}
+                  rating={albumRating}
+                  editable
+                />
+              ),
+            ]
+              .filter(Boolean)
+              .reduce((acc, item, index) => {
+                if (index === 0) return [item];
+
+                // Check if the first item is a Favourite component
+                const firstItem = acc[0];
+                const isFirstItemFavourite = firstItem?.key === 'favourite';
+                const separator =
+                  index === 1 && isFirstItemFavourite ? (
+                    <span key={`sep-${index}`}>&nbsp; </span>
+                  ) : (
+                    <span key={`sep-${index}`}> • </span>
+                  );
+
+                return [...acc, separator, item];
+              }, [])}
           </>
         ) : (
           <>&nbsp;</>

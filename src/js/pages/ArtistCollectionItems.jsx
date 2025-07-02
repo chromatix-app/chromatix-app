@@ -171,6 +171,7 @@ const Title = ({
       thumb={collectionThumb}
       title={collectionTitle}
       detail={
+        // Note: if adding fields here in future, use array structure as per AlbumDetail etc
         <>
           {platformOpts.enableUserRating && (
             <StarRating variant="title" type="collection" ratingKey={collectionId} rating={collectionRating} editable />
