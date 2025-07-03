@@ -8,8 +8,8 @@ Features:
 
 Refactor:
 
-- The codebase has been udpated to handle multiple services in the future (i.e. not just Plex).
-- In an imminent release, Jellyfin support will be added to the app.
+- The codebase has been refactored to handle multiple services in the future (i.e. not just Plex).
+- In a future release, Jellyfin support will be added to the app. This is currently in development.
 
 <!-- CHANGELOG SPLIT MARKER -->
 
