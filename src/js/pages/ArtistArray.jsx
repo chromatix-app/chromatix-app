@@ -2,6 +2,8 @@
 // IMPORTS
 // ======================================================================
 
+import { useSelector } from 'react-redux';
+
 import {
   FilterMenu,
   FilterSelect,
@@ -13,12 +15,16 @@ import {
   TitleHeading,
 } from 'js/components';
 import { useGetArtistArray } from 'js/hooks';
+import platformFeatures from 'js/_config/platformFeatures';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
 const ArtistArray = () => {
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
+
   const {
     viewArtists,
     sortArtists,
@@ -48,6 +54,7 @@ const ArtistArray = () => {
           isGridView={isGridView}
           isListView={isListView}
           orderArtists={orderArtists}
+          platformOpts={platformOpts}
           setColumnVisibility={setColumnVisibility}
           setOrderArtists={setOrderArtists}
           setSortArtists={setSortArtists}
@@ -71,6 +78,7 @@ const ArtistArray = () => {
             isGridView={isGridView}
             isListView={isListView}
             orderArtists={orderArtists}
+            platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderArtists={setOrderArtists}
             setSortArtists={setSortArtists}
@@ -95,6 +103,7 @@ const ArtistArray = () => {
             isGridView={isGridView}
             isListView={isListView}
             orderArtists={orderArtists}
+            platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderArtists={setOrderArtists}
             setSortArtists={setSortArtists}
@@ -115,6 +124,7 @@ const Title = ({
   isGridView,
   isListView,
   orderArtists,
+  platformOpts,
   setColumnVisibility,
   setOrderArtists,
   setSortArtists,
@@ -151,8 +161,8 @@ const Title = ({
                 { value: 'title', label: 'Alphabetical' },
                 { value: 'addedAt', label: 'Date added' },
                 { value: 'lastPlayed', label: 'Date played' },
-                { value: 'isFavourite', label: 'Favourites' },
-                { value: 'userRating', label: 'Rating' },
+                ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
+                ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
               ]}
               setter={setSortArtists}
             />
@@ -170,16 +180,24 @@ const Title = ({
               icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
-                {
-                  label: 'Show star ratings',
-                  attr: 'gridArtistsUserRating',
-                  checked: gridOptions.userRating,
-                },
-                {
-                  label: 'Show favourites',
-                  attr: 'gridArtistsIsFavourite',
-                  checked: gridOptions.isFavourite,
-                },
+                ...(platformOpts?.enableIsFavourite
+                  ? [
+                      {
+                        label: 'Show favourites',
+                        attr: 'gridArtistsIsFavourite',
+                        checked: gridOptions.isFavourite,
+                      },
+                    ]
+                  : []),
+                ...(platformOpts?.enableUserRating
+                  ? [
+                      {
+                        label: 'Show star ratings',
+                        attr: 'gridArtistsUserRating',
+                        checked: gridOptions.userRating,
+                      },
+                    ]
+                  : []),
               ]}
             />
           </>
@@ -215,16 +233,24 @@ const Title = ({
                 attr: 'colArtistsLastPlayed',
                 checked: colOptions.lastPlayed,
               },
-              {
-                label: 'Rating',
-                attr: 'colArtistsUserRating',
-                checked: colOptions.userRating,
-              },
-              {
-                label: 'Favourite',
-                attr: 'colArtistsIsFavourite',
-                checked: colOptions.isFavourite,
-              },
+              ...(platformOpts?.enableIsFavourite
+                ? [
+                    {
+                      label: 'Favourite',
+                      attr: 'colArtistsIsFavourite',
+                      checked: colOptions.isFavourite,
+                    },
+                  ]
+                : []),
+              ...(platformOpts?.enableUserRating
+                ? [
+                    {
+                      label: 'Rating',
+                      attr: 'colArtistsUserRating',
+                      checked: colOptions.userRating,
+                    },
+                  ]
+                : []),
             ]}
           />
         )}

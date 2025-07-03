@@ -2,6 +2,8 @@
 // IMPORTS
 // ======================================================================
 
+import { useSelector } from 'react-redux';
+
 import {
   FilterMenu,
   FilterSelect,
@@ -13,12 +15,16 @@ import {
   TitleHeading,
 } from 'js/components';
 import { useGetAlbumArray } from 'js/hooks';
+import platformFeatures from 'js/_config/platformFeatures';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
 const AlbumArray = () => {
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
+
   const {
     viewAlbums,
     sortAlbums,
@@ -48,6 +54,7 @@ const AlbumArray = () => {
           isGridView={isGridView}
           isListView={isListView}
           orderAlbums={orderAlbums}
+          platformOpts={platformOpts}
           setColumnVisibility={setColumnVisibility}
           setOrderAlbums={setOrderAlbums}
           setSortAlbums={setSortAlbums}
@@ -71,6 +78,7 @@ const AlbumArray = () => {
             isGridView={isGridView}
             isListView={isListView}
             orderAlbums={orderAlbums}
+            platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderAlbums={setOrderAlbums}
             setSortAlbums={setSortAlbums}
@@ -95,6 +103,7 @@ const AlbumArray = () => {
             isGridView={isGridView}
             isListView={isListView}
             orderAlbums={orderAlbums}
+            platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderAlbums={setOrderAlbums}
             setSortAlbums={setSortAlbums}
@@ -115,6 +124,7 @@ const Title = ({
   isGridView,
   isListView,
   orderAlbums,
+  platformOpts,
   setColumnVisibility,
   setOrderAlbums,
   setSortAlbums,
@@ -155,8 +165,8 @@ const Title = ({
                 { value: 'addedAt', label: 'Date added' },
                 { value: 'lastPlayed', label: 'Date played' },
                 { value: 'releaseDate', label: 'Date released' },
-                { value: 'isFavourite', label: 'Favourites' },
-                { value: 'userRating', label: 'Rating' },
+                ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
+                ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
               ]}
               setter={setSortAlbums}
             />
@@ -174,16 +184,24 @@ const Title = ({
               icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
-                {
-                  label: 'Show star ratings',
-                  attr: 'gridAlbumsUserRating',
-                  checked: gridOptions.userRating,
-                },
-                {
-                  label: 'Show favourites',
-                  attr: 'gridAlbumsIsFavourite',
-                  checked: gridOptions.isFavourite,
-                },
+                ...(platformOpts?.enableIsFavourite
+                  ? [
+                      {
+                        label: 'Show favourites',
+                        attr: 'gridAlbumsIsFavourite',
+                        checked: gridOptions.isFavourite,
+                      },
+                    ]
+                  : []),
+                ...(platformOpts?.enableUserRating
+                  ? [
+                      {
+                        label: 'Show star ratings',
+                        attr: 'gridAlbumsUserRating',
+                        checked: gridOptions.userRating,
+                      },
+                    ]
+                  : []),
               ]}
             />
           </>
@@ -224,16 +242,24 @@ const Title = ({
                 attr: 'colAlbumsLastPlayed',
                 checked: colOptions.lastPlayed,
               },
-              {
-                label: 'Rating',
-                attr: 'colAlbumsUserRating',
-                checked: colOptions.userRating,
-              },
-              {
-                label: 'Favourite',
-                attr: 'colAlbumsIsFavourite',
-                checked: colOptions.isFavourite,
-              },
+              ...(platformOpts?.enableIsFavourite
+                ? [
+                    {
+                      label: 'Favourite',
+                      attr: 'colAlbumsIsFavourite',
+                      checked: colOptions.isFavourite,
+                    },
+                  ]
+                : []),
+              ...(platformOpts?.enableUserRating
+                ? [
+                    {
+                      label: 'Rating',
+                      attr: 'colAlbumsUserRating',
+                      checked: colOptions.userRating,
+                    },
+                  ]
+                : []),
             ]}
           />
         )}

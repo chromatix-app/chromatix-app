@@ -376,8 +376,8 @@ const Title = ({
                   { value: 'addedAt', label: 'Date added' },
                   { value: 'lastPlayed', label: 'Date played' },
                   { value: 'releaseDate', label: 'Date released' },
-                  { value: 'isFavourite', label: 'Favourites' },
-                  { value: 'userRating', label: 'Rating' },
+                  ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
+                  ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
                 ]}
                 setter={setSortArtistAlbums}
               />
@@ -400,16 +400,24 @@ const Title = ({
                     attr: 'artistAlbumsGroupByType',
                     checked: artistAlbumsGroupByType,
                   },
-                  {
-                    label: 'Show star ratings',
-                    attr: 'gridArtistAlbumsUserRating',
-                    checked: gridOptions.userRating,
-                  },
-                  {
-                    label: 'Show favourites',
-                    attr: 'gridArtistAlbumsIsFavourite',
-                    checked: gridOptions.isFavourite,
-                  },
+                  ...(platformOpts?.enableIsFavourite
+                    ? [
+                        {
+                          label: 'Show favourites',
+                          attr: 'gridArtistAlbumsIsFavourite',
+                          checked: gridOptions.isFavourite,
+                        },
+                      ]
+                    : []),
+                  ...(platformOpts?.enableUserRating
+                    ? [
+                        {
+                          label: 'Show star ratings',
+                          attr: 'gridArtistAlbumsUserRating',
+                          checked: gridOptions.userRating,
+                        },
+                      ]
+                    : []),
                 ]}
               />
             </>
@@ -449,16 +457,24 @@ const Title = ({
                   attr: 'colArtistAlbumsLastPlayed',
                   checked: colOptions.lastPlayed,
                 },
-                {
-                  label: 'Rating',
-                  attr: 'colArtistAlbumsUserRating',
-                  checked: colOptions.userRating,
-                },
-                {
-                  label: 'Favourite',
-                  attr: 'colArtistAlbumsIsFavourite',
-                  checked: colOptions.isFavourite,
-                },
+                ...(platformOpts?.enableIsFavourite
+                  ? [
+                      {
+                        label: 'Favourite',
+                        attr: 'colArtistAlbumsIsFavourite',
+                        checked: colOptions.isFavourite,
+                      },
+                    ]
+                  : []),
+                ...(platformOpts?.enableUserRating
+                  ? [
+                      {
+                        label: 'Rating',
+                        attr: 'colArtistAlbumsUserRating',
+                        checked: colOptions.userRating,
+                      },
+                    ]
+                  : []),
                 {
                   variant: 'divider',
                 },
@@ -524,16 +540,24 @@ const Title = ({
                   attr: 'colArtistTracksDuration',
                   checked: colOptions.duration,
                 },
-                {
-                  label: 'Rating',
-                  attr: 'colArtistTracksUserRating',
-                  checked: colOptions.userRating,
-                },
-                {
-                  label: 'Favourite',
-                  attr: 'colArtistTracksIsFavourite',
-                  checked: colOptions.isFavourite,
-                },
+                ...(platformOpts?.enableIsFavourite
+                  ? [
+                      {
+                        label: 'Favourite',
+                        attr: 'colArtistTracksIsFavourite',
+                        checked: colOptions.isFavourite,
+                      },
+                    ]
+                  : []),
+                ...(platformOpts?.enableUserRating
+                  ? [
+                      {
+                        label: 'Rating',
+                        attr: 'colArtistTracksUserRating',
+                        checked: colOptions.userRating,
+                      },
+                    ]
+                  : []),
               ]}
             />
           )}

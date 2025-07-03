@@ -232,16 +232,24 @@ const Title = ({
               attr: 'colAlbumDuration',
               checked: colOptions.duration,
             },
-            {
-              label: 'Rating',
-              attr: 'colAlbumUserRating',
-              checked: colOptions.userRating,
-            },
-            {
-              label: 'Favourite',
-              attr: 'colAlbumIsFavourite',
-              checked: colOptions.isFavourite,
-            },
+            ...(platformOpts?.enableIsFavourite
+              ? [
+                  {
+                    label: 'Favourite',
+                    attr: 'colAlbumIsFavourite',
+                    checked: colOptions.isFavourite,
+                  },
+                ]
+              : []),
+            ...(platformOpts?.enableUserRating
+              ? [
+                  {
+                    label: 'Rating',
+                    attr: 'colAlbumUserRating',
+                    checked: colOptions.userRating,
+                  },
+                ]
+              : []),
           ]}
         />
       }

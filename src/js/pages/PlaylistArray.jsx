@@ -2,6 +2,8 @@
 // IMPORTS
 // ======================================================================
 
+import { useSelector } from 'react-redux';
+
 import {
   FilterMenu,
   FilterSelect,
@@ -13,12 +15,16 @@ import {
   TitleHeading,
 } from 'js/components';
 import { useGetPlaylistArray } from 'js/hooks';
+import platformFeatures from 'js/_config/platformFeatures';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
 const PlaylistArray = () => {
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
+
   const {
     viewPlaylists,
     sortPlaylists,
@@ -48,6 +54,7 @@ const PlaylistArray = () => {
           isGridView={isGridView}
           isListView={isListView}
           orderPlaylists={orderPlaylists}
+          platformOpts={platformOpts}
           setColumnVisibility={setColumnVisibility}
           setOrderPlaylists={setOrderPlaylists}
           setSortPlaylists={setSortPlaylists}
@@ -71,6 +78,7 @@ const PlaylistArray = () => {
             isGridView={isGridView}
             isListView={isListView}
             orderPlaylists={orderPlaylists}
+            platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderPlaylists={setOrderPlaylists}
             setSortPlaylists={setSortPlaylists}
@@ -95,6 +103,7 @@ const PlaylistArray = () => {
             isGridView={isGridView}
             isListView={isListView}
             orderPlaylists={orderPlaylists}
+            platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderPlaylists={setOrderPlaylists}
             setSortPlaylists={setSortPlaylists}
@@ -115,6 +124,7 @@ const Title = ({
   isGridView,
   isListView,
   orderPlaylists,
+  platformOpts,
   setColumnVisibility,
   setOrderPlaylists,
   setSortPlaylists,
@@ -156,8 +166,8 @@ const Title = ({
                 { value: 'addedAt', label: 'Date added' },
                 { value: 'lastPlayed', label: 'Date played' },
                 { value: 'duration', label: 'Duration' },
-                { value: 'isFavourite', label: 'Favourites' },
-                { value: 'userRating', label: 'Rating' },
+                ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
+                ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
                 { value: 'totalTracks', label: 'Track count' },
               ]}
               setter={setSortPlaylists}
@@ -176,16 +186,24 @@ const Title = ({
               icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
-                {
-                  label: 'Show star ratings',
-                  attr: 'gridPlaylistsUserRating',
-                  checked: gridOptions.userRating,
-                },
-                {
-                  label: 'Show favourites',
-                  attr: 'gridPlaylistsIsFavourite',
-                  checked: gridOptions.isFavourite,
-                },
+                ...(platformOpts?.enableIsFavourite
+                  ? [
+                      {
+                        label: 'Show favourites',
+                        attr: 'gridPlaylistsIsFavourite',
+                        checked: gridOptions.isFavourite,
+                      },
+                    ]
+                  : []),
+                ...(platformOpts?.enableUserRating
+                  ? [
+                      {
+                        label: 'Show star ratings',
+                        attr: 'gridPlaylistsUserRating',
+                        checked: gridOptions.userRating,
+                      },
+                    ]
+                  : []),
               ]}
             />
           </>
@@ -221,16 +239,24 @@ const Title = ({
                 attr: 'colPlaylistsLastPlayed',
                 checked: colOptions.lastPlayed,
               },
-              {
-                label: 'Rating',
-                attr: 'colPlaylistsUserRating',
-                checked: colOptions.userRating,
-              },
-              {
-                label: 'Favourite',
-                attr: 'colPlaylistsIsFavourite',
-                checked: colOptions.isFavourite,
-              },
+              ...(platformOpts?.enableIsFavourite
+                ? [
+                    {
+                      label: 'Favourite',
+                      attr: 'colPlaylistsIsFavourite',
+                      checked: colOptions.isFavourite,
+                    },
+                  ]
+                : []),
+              ...(platformOpts?.enableUserRating
+                ? [
+                    {
+                      label: 'Rating',
+                      attr: 'colPlaylistsUserRating',
+                      checked: colOptions.userRating,
+                    },
+                  ]
+                : []),
             ]}
           />
         )}

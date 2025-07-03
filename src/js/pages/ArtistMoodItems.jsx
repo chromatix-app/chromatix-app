@@ -2,10 +2,12 @@
 // IMPORTS
 // ======================================================================
 
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { FilterMenu, FilterSelect, FilterToggle, ViewGrid, ViewList, Loading, TitleHeading } from 'js/components';
 import { useGetCollectionItems } from 'js/hooks';
+import platformFeatures from 'js/_config/platformFeatures';
 
 // ======================================================================
 // COMPONENT
@@ -13,6 +15,9 @@ import { useGetCollectionItems } from 'js/hooks';
 
 const ArtistMoodItems = () => {
   const { libraryId, moodId } = useParams();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
 
   const {
     collectionInfo,
@@ -61,6 +66,7 @@ const ArtistMoodItems = () => {
           libraryId={libraryId}
           moodId={moodId}
           orderCollectionItems={orderCollectionItems}
+          platformOpts={platformOpts}
           setColumnVisibility={setColumnVisibility}
           setOrderCollectionItems={setOrderCollectionItems}
           setSortCollectionItems={setSortCollectionItems}
@@ -88,6 +94,7 @@ const ArtistMoodItems = () => {
             libraryId={libraryId}
             moodId={moodId}
             orderCollectionItems={orderCollectionItems}
+            platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderCollectionItems={setOrderCollectionItems}
             setSortCollectionItems={setSortCollectionItems}
@@ -116,6 +123,7 @@ const ArtistMoodItems = () => {
             libraryId={libraryId}
             moodId={moodId}
             orderCollectionItems={orderCollectionItems}
+            platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderCollectionItems={setOrderCollectionItems}
             setSortCollectionItems={setSortCollectionItems}
@@ -140,6 +148,7 @@ const Title = ({
   libraryId,
   moodId,
   orderCollectionItems,
+  platformOpts,
   setColumnVisibility,
   setOrderCollectionItems,
   setSortCollectionItems,
@@ -181,8 +190,8 @@ const Title = ({
                   { value: 'title', label: 'Alphabetical' },
                   { value: 'addedAt', label: 'Date added' },
                   { value: 'lastPlayed', label: 'Date played' },
-                  { value: 'isFavourite', label: 'Favourites' },
-                  { value: 'userRating', label: 'Rating' },
+                  ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
+                  ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
                 ]}
                 setter={setSortCollectionItems}
               />
@@ -200,16 +209,24 @@ const Title = ({
                 icon="CogIcon"
                 setter={setColumnVisibility}
                 entries={[
-                  {
-                    label: 'Show star ratings',
-                    attr: 'gridArtistCollectionItemsUserRating',
-                    checked: gridOptions.userRating,
-                  },
-                  {
-                    label: 'Show favourites',
-                    attr: 'gridArtistCollectionItemsIsFavourite',
-                    checked: gridOptions.isFavourite,
-                  },
+                  ...(platformOpts?.enableIsFavourite
+                    ? [
+                        {
+                          label: 'Show favourites',
+                          attr: 'gridArtistCollectionItemsIsFavourite',
+                          checked: gridOptions.isFavourite,
+                        },
+                      ]
+                    : []),
+                  ...(platformOpts?.enableUserRating
+                    ? [
+                        {
+                          label: 'Show star ratings',
+                          attr: 'gridArtistCollectionItemsUserRating',
+                          checked: gridOptions.userRating,
+                        },
+                      ]
+                    : []),
                 ]}
               />
             </>
@@ -240,16 +257,24 @@ const Title = ({
                   attr: 'colCollectionArtistsLastPlayed',
                   checked: colOptions.lastPlayed,
                 },
-                {
-                  label: 'Rating',
-                  attr: 'colCollectionArtistsUserRating',
-                  checked: colOptions.userRating,
-                },
-                {
-                  label: 'Favourite',
-                  attr: 'colCollectionArtistsIsFavourite',
-                  checked: colOptions.isFavourite,
-                },
+                ...(platformOpts?.enableIsFavourite
+                  ? [
+                      {
+                        label: 'Favourite',
+                        attr: 'colCollectionArtistsIsFavourite',
+                        checked: colOptions.isFavourite,
+                      },
+                    ]
+                  : []),
+                ...(platformOpts?.enableUserRating
+                  ? [
+                      {
+                        label: 'Rating',
+                        attr: 'colCollectionArtistsUserRating',
+                        checked: colOptions.userRating,
+                      },
+                    ]
+                  : []),
               ]}
             />
           )}

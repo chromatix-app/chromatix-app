@@ -220,16 +220,24 @@ const Title = ({
               attr: 'colPlaylistDuration',
               checked: colOptions.duration,
             },
-            {
-              label: 'Rating',
-              attr: 'colPlaylistUserRating',
-              checked: colOptions.userRating,
-            },
-            {
-              label: 'Favourite',
-              attr: 'colPlaylistIsFavourite',
-              checked: colOptions.isFavourite,
-            },
+            ...(platformOpts?.enableIsFavourite
+              ? [
+                  {
+                    label: 'Favourite',
+                    attr: 'colPlaylistIsFavourite',
+                    checked: colOptions.isFavourite,
+                  },
+                ]
+              : []),
+            ...(platformOpts?.enableUserRating
+              ? [
+                  {
+                    label: 'Rating',
+                    attr: 'colPlaylistUserRating',
+                    checked: colOptions.userRating,
+                  },
+                ]
+              : []),
           ]}
         />
       }

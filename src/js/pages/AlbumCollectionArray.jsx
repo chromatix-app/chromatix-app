@@ -2,6 +2,8 @@
 // IMPORTS
 // ======================================================================
 
+import { useSelector } from 'react-redux';
+
 import {
   FilterMenu,
   FilterSelect,
@@ -13,12 +15,16 @@ import {
   TitleHeading,
 } from 'js/components';
 import { useGetCollectionArray } from 'js/hooks';
+import platformFeatures from 'js/_config/platformFeatures';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
 const AlbumCollectionArray = () => {
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
+
   const {
     viewCollections,
     sortCollections,
@@ -48,6 +54,7 @@ const AlbumCollectionArray = () => {
           isGridView={isGridView}
           isListView={isListView}
           orderCollections={orderCollections}
+          platformOpts={platformOpts}
           setColumnVisibility={setColumnVisibility}
           setOrderCollections={setOrderCollections}
           setSortCollections={setSortCollections}
@@ -66,6 +73,7 @@ const AlbumCollectionArray = () => {
             isGridView={isGridView}
             isListView={isListView}
             orderCollections={orderCollections}
+            platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderCollections={setOrderCollections}
             setSortCollections={setSortCollections}
@@ -90,6 +98,7 @@ const AlbumCollectionArray = () => {
             isGridView={isGridView}
             isListView={isListView}
             orderCollections={orderCollections}
+            platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderCollections={setOrderCollections}
             setSortCollections={setSortCollections}
@@ -110,6 +119,7 @@ const Title = ({
   isGridView,
   isListView,
   orderCollections,
+  platformOpts,
   setColumnVisibility,
   setOrderCollections,
   setSortCollections,
@@ -149,7 +159,7 @@ const Title = ({
               options={[
                 { value: 'title', label: 'Alphabetical' },
                 { value: 'addedAt', label: 'Date added' },
-                { value: 'userRating', label: 'Rating' },
+                ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
               ]}
               setter={setSortCollections}
             />
@@ -167,11 +177,15 @@ const Title = ({
               icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
-                {
-                  label: 'Show star ratings',
-                  attr: 'gridCollectionsUserRating',
-                  checked: gridOptions.userRating,
-                },
+                ...(platformOpts?.enableUserRating
+                  ? [
+                      {
+                        label: 'Show star ratings',
+                        attr: 'gridCollectionsUserRating',
+                        checked: gridOptions.userRating,
+                      },
+                    ]
+                  : []),
               ]}
             />
           </>
@@ -192,11 +206,15 @@ const Title = ({
                 attr: 'colCollectionAddedAt',
                 checked: colOptions.addedAt,
               },
-              {
-                label: 'Rating',
-                attr: 'colCollectionUserRating',
-                checked: colOptions.userRating,
-              },
+              ...(platformOpts?.enableUserRating
+                ? [
+                    {
+                      label: 'Rating',
+                      attr: 'colCollectionUserRating',
+                      checked: colOptions.userRating,
+                    },
+                  ]
+                : []),
             ]}
           />
         )}

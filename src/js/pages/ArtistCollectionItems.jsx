@@ -205,7 +205,7 @@ const Title = ({
                   { value: 'title', label: 'Alphabetical' },
                   { value: 'addedAt', label: 'Date added' },
                   { value: 'lastPlayed', label: 'Date played' },
-                  { value: 'userRating', label: 'Rating' },
+                  ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
                 ]}
                 setter={setSortCollectionItems}
               />
@@ -223,11 +223,15 @@ const Title = ({
                 icon="CogIcon"
                 setter={setColumnVisibility}
                 entries={[
-                  {
-                    label: 'Show star ratings',
-                    attr: 'gridArtistCollectionItemsUserRating',
-                    checked: gridOptions.userRating,
-                  },
+                  ...(platformOpts?.enableUserRating
+                    ? [
+                        {
+                          label: 'Show star ratings',
+                          attr: 'gridArtistCollectionItemsUserRating',
+                          checked: gridOptions.userRating,
+                        },
+                      ]
+                    : []),
                 ]}
               />
             </>
@@ -263,11 +267,15 @@ const Title = ({
                   attr: 'colCollectionArtistsLastPlayed',
                   checked: colOptions.lastPlayed,
                 },
-                {
-                  label: 'Rating',
-                  attr: 'colCollectionArtistsUserRating',
-                  checked: colOptions.userRating,
-                },
+                ...(platformOpts?.enableUserRating
+                  ? [
+                      {
+                        label: 'Rating',
+                        attr: 'colCollectionArtistsUserRating',
+                        checked: colOptions.userRating,
+                      },
+                    ]
+                  : []),
               ]}
             />
           )}
