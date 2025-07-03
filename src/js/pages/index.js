@@ -35,6 +35,8 @@ export { default as PlaylistDetail } from './PlaylistDetail';
 
 export { default as FolderItems } from './FolderItems';
 
+export { default as GenericTagArray } from './GenericTagArray';
+
 export { default as Settings } from './Settings';
 export { default as SettingsAbout } from './SettingsAbout';
 export { default as SettingsAccessibility } from './SettingsAccessibility';
