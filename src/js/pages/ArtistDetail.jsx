@@ -155,13 +155,13 @@ const ArtistDetail = () => {
             isTrackView={isTrackView}
             libraryId={libraryId}
             orderArtistAlbums={orderArtistAlbums}
+            platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderArtistAlbums={setOrderArtistAlbums}
             setSortArtistAlbums={setSortArtistAlbums}
             setViewArtistAlbums={setViewArtistAlbums}
             sortArtistAlbums={sortArtistAlbums}
             viewArtistAlbums={viewArtistAlbums}
-            platformOpts={platformOpts}
           />
         </ViewGrid>
       )}
@@ -194,13 +194,13 @@ const ArtistDetail = () => {
             isTrackView={isTrackView}
             libraryId={libraryId}
             orderArtistAlbums={orderArtistAlbums}
+            platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderArtistAlbums={setOrderArtistAlbums}
             setSortArtistAlbums={setSortArtistAlbums}
             setViewArtistAlbums={setViewArtistAlbums}
             sortArtistAlbums={sortArtistAlbums}
             viewArtistAlbums={viewArtistAlbums}
-            platformOpts={platformOpts}
           />
         </ViewList>
       )}
@@ -222,9 +222,9 @@ const ArtistDetail = () => {
             artistCountry={artistCountry}
             artistGenre={artistGenre}
             artistId={artistId}
+            artistIsFavourite={artistIsFavourite}
             artistName={artistName}
             artistRating={artistRating}
-            artistIsFavourite={artistIsFavourite}
             artistReleasesTotal={artistReleasesTotal}
             artistThumb={artistThumb}
             artistTracksTotal={artistTracksTotal}
@@ -236,6 +236,7 @@ const ArtistDetail = () => {
             isTrackView={isTrackView}
             libraryId={libraryId}
             orderArtistAlbums={orderArtistAlbums}
+            platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderArtistAlbums={setOrderArtistAlbums}
             setSortArtistAlbums={setSortArtistAlbums}
