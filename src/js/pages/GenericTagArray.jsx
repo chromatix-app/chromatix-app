@@ -10,10 +10,10 @@ import { useGetCollectionArray } from 'js/hooks';
 // ======================================================================
 
 const GenericTagArray = ({
-  collectionKey, // e.g. AlbumGenres
-  pageTitle, // e.g. Album Genres
-  singularName, // e.g. Album Genre
-  variant, // e.g. albumGenres
+  collectionKey, // e.g. 'AlbumGenres'
+  pageTitle, // e.g. 'Album Genres'
+  singularName, // e.g. 'Album Genre'
+  variant, // e.g. 'albumGenres'
 }) => {
   const {
     viewCollections,

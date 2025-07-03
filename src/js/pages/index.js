@@ -30,12 +30,13 @@ export { default as AlbumStyleItems } from './AlbumStyleItems';
 export { default as AlbumTagArray } from './AlbumTagArray';
 export { default as AlbumTagItems } from './AlbumTagItems';
 
+export { default as FolderItems } from './FolderItems';
+
 export { default as PlaylistArray } from './PlaylistArray';
 export { default as PlaylistDetail } from './PlaylistDetail';
 
-export { default as FolderItems } from './FolderItems';
-
 export { default as GenericTagArray } from './GenericTagArray';
+export { default as GenericTagItems } from './GenericTagItems';
 
 export { default as Settings } from './Settings';
 export { default as SettingsAbout } from './SettingsAbout';
