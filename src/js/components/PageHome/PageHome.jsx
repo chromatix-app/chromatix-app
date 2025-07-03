@@ -155,6 +155,7 @@ export const PageHome = () => {
               <div className={style.downloadsFlex}>
                 <div>
                   <a
+                    className={style.downloadsLink}
                     href={macSiliconDownloadUrl}
                     target="_blank"
                     rel="noreferrer nofollow"
@@ -170,6 +171,7 @@ export const PageHome = () => {
                   <br />
 
                   <a
+                    className={style.downloadsLink}
                     href={macUniversalDownloadUrl}
                     target="_blank"
                     rel="noreferrer nofollow"
@@ -185,6 +187,7 @@ export const PageHome = () => {
                   <br />
 
                   <a
+                    className={style.downloadsLink}
                     href={windowsDownloadUrl}
                     target="_blank"
                     rel="noreferrer nofollow"
@@ -199,7 +202,7 @@ export const PageHome = () => {
 
                   <br />
 
-                  <div className={style.note}>
+                  <div className={style.downloadsLink}>
                     <span className={style.downloadsIcon}>
                       <Icon icon="LinuxSiteIcon" cover />
                     </span>

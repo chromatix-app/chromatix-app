@@ -43,7 +43,7 @@
   font-weight: bold;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #767676;
+  color: rgba(255, 255, 255, 0.5);
 
   @media (min-width: 1024px) {
     min-width: 180px;
@@ -82,8 +82,7 @@
   width: 150px;
   height: 2px;
   margin: 0 auto;
-  background: #fff;
-  opacity: 0.2;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .body {
@@ -163,19 +162,23 @@
   > div {
     text-align: left;
   }
+}
 
-  a {
-    display: inline-block;
-    padding: 5px;
-    border-radius: 4px;
-    color: vars.$color-core;
+.downloadsLink {
+  display: inline-block;
+  padding: 5px;
+  border-radius: 4px;
+  color: var(--color-opacity-05);
+}
 
-    &:hover {
-      text-decoration: underline;
-    }
+a.downloadsLink {
+  color: vars.$color-core;
 
-    @include mixins.focus-self-outline;
+  &:hover {
+    text-decoration: underline;
   }
+
+  @include mixins.focus-self-outline;
 }
 
 .downloadsIcon {
@@ -184,12 +187,6 @@
   width: 20px;
   height: 20px;
   margin-right: 5px;
-}
-
-.note {
-  display: inline-block;
-  padding: 5px;
-  color: var(--color-opacity-05);
 }
 
 //
@@ -279,5 +276,5 @@
 
 .legal {
   font-size: 12px;
-  color: #555;
+  color: rgba(255, 255, 255, 0.35);
 }
