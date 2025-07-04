@@ -1,14 +1,26 @@
 import { useEffect } from 'react';
 
-const useKeyMediaControls = (handlers) => {
+interface KeyMediaControlHandlers {
+  playPause: () => void;
+  prev: () => void;
+  next: () => void;
+}
+
+/**
+ * Custom hook that sets up keyboard shortcuts for media controls.
+ * Handles both media keys and standard keyboard shortcuts while avoiding conflicts with active inputs.
+ * @param handlers - Object containing media control handler functions
+ */
+
+const useKeyMediaControls = (handlers: KeyMediaControlHandlers): null => {
   useEffect(() => {
-    function handleKeyDown(event) {
+    function handleKeyDown(event: KeyboardEvent): void {
       const activeElement = document.activeElement;
       const isActiveInput =
         activeElement &&
-        ((activeElement.tagName === 'INPUT' && activeElement.type !== 'range') ||
+        ((activeElement.tagName === 'INPUT' && (activeElement as HTMLInputElement).type !== 'range') ||
           activeElement.tagName === 'TEXTAREA' ||
-          activeElement.isContentEditable);
+          (activeElement as HTMLElement).isContentEditable);
 
       switch (event.key) {
         case 'MediaPlayPause':

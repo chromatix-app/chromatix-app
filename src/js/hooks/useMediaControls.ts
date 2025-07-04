@@ -1,6 +1,19 @@
 import { useEffect } from 'react';
 
-const useMediaControls = (handlers) => {
+interface MediaControlHandlers {
+  play: () => void;
+  pause: () => void;
+  prev: () => void;
+  next: () => void;
+}
+
+/**
+ * Custom hook that sets up media control handlers for the browser's Media Session API.
+ * Enables media controls in notifications, lock screens, and media control centers.
+ * @param handlers - Object containing media control handler functions
+ */
+
+const useMediaControls = (handlers: MediaControlHandlers): null => {
   useEffect(() => {
     if ('mediaSession' in navigator) {
       navigator.mediaSession.setActionHandler('play', handlers.play);

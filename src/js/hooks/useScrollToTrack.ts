@@ -1,22 +1,27 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-const useScrollToTrack = () => {
+/**
+ * Custom hook that handles automatic scrolling to specific tracks in the DOM.
+ * Scrolls to currently playing track or a specified track using native scrollIntoView.
+ */
+
+const useScrollToTrack = (): void => {
   const dispatch = useDispatch();
 
-  const scrollToPlaying = useSelector(({ appModel }) => appModel.scrollToPlaying);
-  const scrollToTrack = useSelector(({ appModel }) => appModel.scrollToTrack);
+  const scrollToPlaying = useSelector(({ appModel }: any) => appModel.scrollToPlaying);
+  const scrollToTrack = useSelector(({ appModel }: any) => appModel.scrollToTrack);
 
-  const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
-  const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
-  const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
-  const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
+  const playingVariant = useSelector(({ sessionModel }: any) => sessionModel.playingVariant);
+  const playingTrackList = useSelector(({ sessionModel }: any) => sessionModel.playingTrackList);
+  const playingTrackIndex = useSelector(({ sessionModel }: any) => sessionModel.playingTrackIndex);
+  const playingTrackKeys = useSelector(({ sessionModel }: any) => sessionModel.playingTrackKeys);
 
-  const viewArtistAlbums = useSelector(({ sessionModel }) => sessionModel.viewArtistAlbums);
+  const viewArtistAlbums = useSelector(({ sessionModel }: any) => sessionModel.viewArtistAlbums);
 
   // scroll to a specific track on page load, if required
   useEffect(() => {
-    let trackId;
+    let trackId: string | undefined;
 
     // scroll to the currently playing track
     if (scrollToPlaying) {
@@ -40,6 +45,7 @@ const useScrollToTrack = () => {
       const playingElement = document.getElementById(trackId);
       if (playingElement) {
         playingElement.scrollIntoView({
+          // @ts-ignore
           behavior: 'instant',
           block: 'center',
         });

@@ -4,25 +4,38 @@ import { useHistory } from 'react-router-dom';
 
 import { analyticsEvent } from 'js/utils';
 
-const useNavigationHistory = () => {
+interface NavigationHistory {
+  canGoBack: boolean;
+  canGoForward: boolean;
+  goBack: () => void;
+  goForward: () => void;
+}
+
+/**
+ * Custom hook that manages navigation history state and provides navigation controls.
+ * Tracks forward/backward navigation and maintains history/future stacks for custom navigation.
+ * @returns Object with navigation state and control functions
+ */
+
+const useNavigationHistory = (): NavigationHistory => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const historyLength = useSelector(({ persistentModel }) => persistentModel.historyLength);
-  const historyStack = useSelector(({ persistentModel }) => persistentModel.historyStack);
-  const futureStack = useSelector(({ persistentModel }) => persistentModel.futureStack);
+  const historyLength = useSelector(({ persistentModel }: any) => persistentModel.historyLength);
+  const historyStack = useSelector(({ persistentModel }: any) => persistentModel.historyStack);
+  const futureStack = useSelector(({ persistentModel }: any) => persistentModel.futureStack);
 
   const canGoBack = historyStack.length > 0;
   const canGoForward = futureStack.length > 0;
 
-  const goBack = () => {
+  const goBack = (): void => {
     if (canGoBack) {
       history.goBack();
       analyticsEvent('Navigate Backwards');
     }
   };
 
-  const goForward = () => {
+  const goForward = (): void => {
     if (canGoForward) {
       history.goForward();
       analyticsEvent('Navigate Forwards');

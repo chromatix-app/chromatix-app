@@ -3,23 +3,31 @@ import { useDispatch, useSelector } from 'react-redux';
 
 const enablePolling = false;
 
-const useNetworkStatus = (pollingUrl = 'https://chromatix.app', pollingInterval = 5000) => {
+/**
+ * Custom hook that monitors network connectivity using multiple detection methods.
+ * Combines navigator.onLine status with optional URL polling for reliable online/offline detection.
+ * @param pollingUrl - URL to poll for internet connectivity (default: 'https://chromatix.app')
+ * @param pollingInterval - Polling interval in milliseconds (default: 5000)
+ * @returns Boolean indicating current online status
+ */
+
+const useNetworkStatus = (pollingUrl: string = 'https://chromatix.app', pollingInterval: number = 5000): boolean => {
   const dispatch = useDispatch();
 
-  const isCurrentlyOnline = useSelector(({ appModel }) => appModel.isOnline);
+  const isCurrentlyOnline = useSelector(({ appModel }: any) => appModel.isOnline);
 
-  const [navigatorIsOnline, setNavigatorIsOnline] = useState(navigator?.onLine);
-  const [pollingIsOnline, setPollingIsOnline] = useState(true);
-  const [navigatorHasBeenOnline, setNavigatorHasBeenOnline] = useState(navigator?.onLine);
-  const [isOnline, setIsOnline] = useState(true);
+  const [navigatorIsOnline, setNavigatorIsOnline] = useState<boolean>(navigator?.onLine ?? true);
+  const [pollingIsOnline, setPollingIsOnline] = useState<boolean>(true);
+  const [navigatorHasBeenOnline, setNavigatorHasBeenOnline] = useState<boolean>(navigator?.onLine ?? true);
+  const [isOnline, setIsOnline] = useState<boolean>(true);
 
   // Handle navigator network status
-  const updateNetworkStatus = () => {
-    setNavigatorIsOnline(navigator?.onLine);
+  const updateNetworkStatus = (): void => {
+    setNavigatorIsOnline(navigator?.onLine ?? true);
   };
 
   // Handle polling network status
-  const pollNetworkStatus = async () => {
+  const pollNetworkStatus = async (): Promise<void> => {
     try {
       const response = await fetch(pollingUrl, { method: 'HEAD', cache: 'no-cache' });
       // console.log(response);
@@ -88,7 +96,7 @@ const useNetworkStatus = (pollingUrl = 'https://chromatix.app', pollingInterval 
     // Update status on online/offline events
     window.addEventListener('online', updateNetworkStatus);
     window.addEventListener('offline', updateNetworkStatus);
-    let intervalId;
+    let intervalId: ReturnType<typeof setInterval> | undefined;
 
     // Polling for internet access
     if (enablePolling) {
@@ -100,7 +108,7 @@ const useNetworkStatus = (pollingUrl = 'https://chromatix.app', pollingInterval 
     return () => {
       window.removeEventListener('online', updateNetworkStatus);
       window.removeEventListener('offline', updateNetworkStatus);
-      if (enablePolling) {
+      if (enablePolling && intervalId) {
         clearInterval(intervalId);
       }
     };

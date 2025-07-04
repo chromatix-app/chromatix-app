@@ -5,14 +5,23 @@ import config from 'js/_config/config';
 
 const { contentPosKey, windowPosKey } = config;
 
-const useScrollRestoration = () => {
+interface ScrollPositions {
+  [pathname: string]: number;
+}
+
+/**
+ * Custom hook that manages scroll position restoration across route navigation.
+ * Saves and restores scroll positions for both window and content elements during browser history navigation.
+ */
+
+const useScrollRestoration = (): null => {
   const history = useHistory();
 
-  const windowScrollPositions = useRef({});
-  const contentScrollPositions = useRef({});
-  const previousPathname = useRef(history.location.pathname);
+  const windowScrollPositions = useRef<ScrollPositions>({});
+  const contentScrollPositions = useRef<ScrollPositions>({});
+  const previousPathname = useRef<string>(history.location.pathname);
 
-  const historyListener = useCallback((location, action) => {
+  const historyListener = useCallback((location: any, action: string) => {
     const contentElement = document.getElementById('content');
     const scrollableElement = document.getElementById('scrollable');
     const actualElement = scrollableElement || contentElement;
@@ -64,7 +73,7 @@ const useScrollRestoration = () => {
       window.performance?.navigation?.type === 1 ||
       window.performance
         .getEntriesByType('navigation')
-        .map((nav) => nav.type)
+        .map((nav) => (nav as PerformanceNavigationTiming).type)
         .includes('reload');
 
     if (pageAccessedByReload) {
