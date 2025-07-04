@@ -403,13 +403,13 @@ export const getFastestConnection = ({ server }) => {
   });
 
   // return the first connection that responds
-  return raceToSuccess(requests, {
-    code: 'plex.getFastestConnection.2',
-    message: 'No active connection found',
-    error: null,
-  }).then((activeConnection) => {
-    return activeConnection;
-  });
+  return raceToSuccess(requests)
+    .then((activeConnection) => {
+      return activeConnection;
+    })
+    .catch((error) => {
+      throw new Error('No active connection found');
+    });
 };
 
 // ======================================================================

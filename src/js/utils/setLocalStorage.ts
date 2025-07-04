@@ -11,7 +11,7 @@ const encryptionKey = config.encryptionKey;
  */
 
 const setLocalStorage = (key: string, value: string | number | boolean | object): void => {
-  const stringValue: string = String(value);
+  const stringValue: string = typeof value === 'object' ? JSON.stringify(value) : String(value);
   const encryptedValue: string = CryptoJS.AES.encrypt(stringValue, encryptionKey).toString();
   window.localStorage.setItem(key, encryptedValue);
 };
