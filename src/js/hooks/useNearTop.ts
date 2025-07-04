@@ -12,7 +12,7 @@ const useNearTop = (ref: RefObject<HTMLElement>, offset: number): boolean => {
   const [isNearTop, setIsNearTop] = useState(false);
 
   useEffect(() => {
-    const checkIfNearTop = () => {
+    const checkIfNearTop = (): void => {
       const rect = ref.current?.getBoundingClientRect();
       setIsNearTop(!rect || rect.top <= offset);
     };

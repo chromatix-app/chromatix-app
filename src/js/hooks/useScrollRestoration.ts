@@ -21,7 +21,7 @@ const useScrollRestoration = (): null => {
   const contentScrollPositions = useRef<ScrollPositions>({});
   const previousPathname = useRef<string>(history.location.pathname);
 
-  const historyListener = useCallback((location: any, action: string) => {
+  const historyListener = useCallback((location: { pathname: string }, action: string) => {
     const contentElement = document.getElementById('content');
     const scrollableElement = document.getElementById('scrollable');
     const actualElement = scrollableElement || contentElement;
