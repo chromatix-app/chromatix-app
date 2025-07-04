@@ -1,5 +1,12 @@
 import moment from 'moment';
 
+/**
+ * Converts a timestamp to a human-readable relative time string.
+ * Shows relative time for recent dates, absolute date for older entries.
+ * @param addedAtSecs - Unix timestamp in seconds
+ * @returns Formatted time string (e.g., "5 minutes ago", "2 days ago", "15 Jan 2024")
+ */
+
 const addedAtToString = (addedAtSecs: number): string => {
   const addedAtMoment = moment(addedAtSecs * 1000);
   const now = moment();

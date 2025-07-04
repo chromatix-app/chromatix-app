@@ -1,3 +1,13 @@
+/**
+ * Applies a power curve transformation to a decimal value between 0 and 1.
+ * Higher multipliers create more dramatic curves, useful for opacity and color calculations.
+ * @param multiplier - Power curve multiplier (1 = linear, >1 = more dramatic curve)
+ * @param value - Input value between 0 and 1
+ * @param decimalPlaces - Number of decimal places to round to (default: 5)
+ * @returns Transformed value between 0 and 1
+ * @throws Error if value is not between 0 and 1
+ */
+
 const decimalMultiplier = (multiplier: number, value: number, decimalPlaces: number = 5): number => {
   if (value < 0 || value > 1) {
     throw new Error('Value must be between 0 and 1');

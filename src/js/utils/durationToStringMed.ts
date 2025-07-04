@@ -1,6 +1,13 @@
 import moment from 'moment';
 
-const durationToStringLong = (durationMillisecs: number): string => {
+/**
+ * Converts a duration in milliseconds to a medium-length abbreviated format.
+ * Rounds to appropriate precision (seconds when < 1h, minutes when < 1d, hours when >= 1d).
+ * @param durationMillisecs - Duration in milliseconds
+ * @returns Formatted duration string (e.g., "45s", "3m 45s", "2h 30m", "1d 5h") or empty string for invalid input
+ */
+
+const durationToStringMed = (durationMillisecs: number): string => {
   // Handle negative durations and special cases by returning a default value
   if (durationMillisecs < 0 || isNaN(durationMillisecs) || !isFinite(durationMillisecs)) {
     return '';
@@ -45,4 +52,4 @@ const durationToStringLong = (durationMillisecs: number): string => {
   return components.join(' ').trim();
 };
 
-export default durationToStringLong;
+export default durationToStringMed;

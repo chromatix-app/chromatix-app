@@ -43,6 +43,17 @@ const FORCED_SORT_KEYS: { [key: string]: { key: string; direction: SortDirection
   },
 };
 
+/**
+ * Sorts an array of entries with configurable multi-level sorting and advanced string handling.
+ * Supports up to 4 levels of sorting with article-aware comparison and numeric sorting preferences.
+ * @param entries - Array of entries to sort
+ * @param options - Sort configuration string (e.g., "title-asc-artist-desc")
+ * @param direction - Overall sort direction, reverses all levels except forced keys
+ * @param sortNumbersFirst - Whether to sort numeric prefixes before alphabetic ones
+ * @param ignoreLeadingArticles - Whether to ignore leading articles (A, An, The) in comparisons
+ * @returns New sorted array of entries
+ */
+
 const sortList = ({
   entries,
   options,
@@ -121,7 +132,13 @@ const sortList = ({
   });
 };
 
-// Get all sort functions based on settings
+/**
+ * Creates sort functions for different field types with configurable options.
+ * @param sortNumbersFirst - Whether to sort numeric prefixes before alphabetic ones
+ * @param ignoreLeadingArticles - Whether to ignore leading articles in comparisons
+ * @returns Object containing sort functions for each field type
+ */
+
 const getSortFunctions = (sortNumbersFirst: boolean, ignoreLeadingArticles: boolean): Record<string, SortFunction> => {
   // Create string field comparer
   const createStringFieldComparer = (field: keyof Entry, isArticleAware: boolean): SortFunction => {
@@ -243,7 +260,12 @@ const getSortFunctions = (sortNumbersFirst: boolean, ignoreLeadingArticles: bool
   return baseFunctions;
 };
 
-// Helper to remove leading articles
+/**
+ * Removes leading articles (A, An, The) from a string.
+ * @param str - String to process
+ * @returns String with leading article removed, or original string if no article found
+ */
+
 const removeLeadingArticle = (str: string): string => {
   const normalizedStr = str.toUpperCase();
   for (const article of LEADING_ARTICLES) {
@@ -254,7 +276,15 @@ const removeLeadingArticle = (str: string): string => {
   return str;
 };
 
-// Helper to compare strings with article handling
+/**
+ * Compares two strings with optional article handling and numeric sorting preferences.
+ * @param strA - First string to compare
+ * @param strB - Second string to compare
+ * @param ignoreLeadingArticles - Whether to ignore leading articles in comparison
+ * @param sortNumbersFirst - Whether to sort numeric prefixes before alphabetic ones
+ * @returns Negative, zero, or positive number indicating sort order
+ */
+
 const compareStringsWithArticles = (
   strA: string,
   strB: string,

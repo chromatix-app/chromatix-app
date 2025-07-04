@@ -9,6 +9,7 @@ const encryptionKey = config.encryptionKey;
  * @param key - The storage key to retrieve
  * @returns The decrypted value as a string, or null if not found
  */
+
 const getLocalStorage = (key: string): string | null => {
   const encryptedValue: string | null = window.localStorage.getItem(key);
   if (encryptedValue) {
