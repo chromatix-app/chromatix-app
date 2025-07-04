@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-interface Entry {
+interface TrackEntry {
   trackId: string;
 }
 
@@ -12,7 +12,7 @@ interface Entry {
  * @param callback - Function to call with the track index to scroll to
  */
 
-const useScrollToVirtualTrack = (entries: Entry[], callback: (index: number) => void): void => {
+const useScrollToVirtualTrack = (entries: TrackEntry[], callback: (index: number) => void): void => {
   const dispatch = useDispatch();
 
   const scrollToPlaying = useSelector(({ appModel }: any) => appModel.scrollToPlaying);
