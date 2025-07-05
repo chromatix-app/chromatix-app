@@ -1,5 +1,11 @@
 import moment from 'moment';
 
+/**
+ * Converts a duration in milliseconds to a short time string format.
+ * @param durationMillisecs - Duration in milliseconds
+ * @returns Formatted time string (e.g., "3:45", "1:23:45") or "0:00" for invalid input
+ */
+
 const durationToStringShort = (durationMillisecs: number): string => {
   // Handle negative durations and special cases by returning a default value
   if (durationMillisecs < 0 || isNaN(durationMillisecs) || !isFinite(durationMillisecs)) {

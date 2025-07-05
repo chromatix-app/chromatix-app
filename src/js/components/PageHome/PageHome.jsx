@@ -16,6 +16,8 @@ import style from './PageHome.module.scss';
 // COMPONENT
 // ======================================================================
 
+const isLocal = process.env.REACT_APP_ENV === 'local';
+
 export const PageHome = () => {
   const dispatch = useDispatch();
   const downloadsRef = useRef(null);
@@ -60,25 +62,47 @@ export const PageHome = () => {
 
         <div className="mt-45 mt-lg-50"></div>
 
-        <Button onClick={dispatch.appModel.doLogin}>Login with Plex</Button>
-
         {!isElectron && (
           <>
-            <div className="mt-10"></div>
-
-            <Button variant={'download'} onClick={scrollToDownloads}>
-              Download
+            <Button onClick={scrollToDownloads} icon={<Icon icon="DownloadIcon" cover stroke strokeWidth={2} />}>
+              Download the App
             </Button>
+            <div className={isLocal ? 'mt-20' : 'mt-20'}></div>
           </>
         )}
+
+        <div className={style.buttons}>
+          <Button
+            onClick={dispatch.appModel.doPlexLogin}
+            color={isElectron ? 'primary' : 'tertiary'}
+            size={isElectron ? 'large' : 'medium'}
+            wrap={false}
+            icon={<Icon icon="PlexSiteIcon" cover />}
+          >
+            Login with Plex
+          </Button>
+          {isLocal && (
+            <>
+              <Button
+                to="/login-jellyfin"
+                color={isElectron ? 'primary' : 'tertiary'}
+                size={isElectron ? 'large' : 'medium'}
+                wrap={false}
+                icon={<Icon icon="JellyfinSiteIcon" cover />}
+              >
+                Login with Jellyfin
+              </Button>
+            </>
+          )}
+        </div>
       </div>
 
       <div className={clsx(style.image, style.margin)}>
         <img
-          src="/images/chromatix004.jpg"
+          src="/images/chromatix005.jpg"
           alt="Chromatix music player for Plex"
-          width="2000"
-          height="1484"
+          width="1920"
+          height="1425"
           draggable="false"
         />
       </div>
@@ -94,7 +118,30 @@ export const PageHome = () => {
 
         <div className="mt-50"></div>
 
-        <Button onClick={dispatch.appModel.doLogin}>Login with Plex</Button>
+        <div className={style.buttons}>
+          <Button
+            onClick={dispatch.appModel.doPlexLogin}
+            color={isElectron ? 'primary' : 'tertiary'}
+            size={isElectron ? 'large' : 'medium'}
+            wrap={false}
+            icon={<Icon icon="PlexSiteIcon" cover />}
+          >
+            Login with Plex
+          </Button>
+          {isLocal && (
+            <>
+              <Button
+                to="/login-jellyfin"
+                color={isElectron ? 'primary' : 'tertiary'}
+                size={isElectron ? 'large' : 'medium'}
+                wrap={false}
+                icon={<Icon icon="JellyfinSiteIcon" cover />}
+              >
+                Login with Jellyfin
+              </Button>
+            </>
+          )}
+        </div>
 
         {!isElectron && (
           <>
@@ -108,6 +155,7 @@ export const PageHome = () => {
               <div className={style.downloadsFlex}>
                 <div>
                   <a
+                    className={style.downloadsLink}
                     href={macSiliconDownloadUrl}
                     target="_blank"
                     rel="noreferrer nofollow"
@@ -123,6 +171,7 @@ export const PageHome = () => {
                   <br />
 
                   <a
+                    className={style.downloadsLink}
                     href={macUniversalDownloadUrl}
                     target="_blank"
                     rel="noreferrer nofollow"
@@ -138,6 +187,7 @@ export const PageHome = () => {
                   <br />
 
                   <a
+                    className={style.downloadsLink}
                     href={windowsDownloadUrl}
                     target="_blank"
                     rel="noreferrer nofollow"
@@ -152,7 +202,7 @@ export const PageHome = () => {
 
                   <br />
 
-                  <div className={style.note}>
+                  <div className={style.downloadsLink}>
                     <span className={style.downloadsIcon}>
                       <Icon icon="LinuxSiteIcon" cover />
                     </span>

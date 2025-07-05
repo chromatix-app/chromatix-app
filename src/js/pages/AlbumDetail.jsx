@@ -2,11 +2,12 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useParams } from 'react-router-dom';
 
-import { FilterMenu, ListTable, Loading, StarRating, TitleHeading } from 'js/components';
+import { Favourite, FilterMenu, ViewList, Loading, StarRating, TitleHeading } from 'js/components';
 import { useGetAlbumDetail } from 'js/hooks';
+import platformFeatures from 'js/_config/platformFeatures';
 
 // ======================================================================
 // COMPONENT
@@ -16,6 +17,9 @@ const AlbumDetail = () => {
   const { libraryId, albumId } = useParams();
 
   const dispatch = useDispatch();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
 
   const {
     albumInfo,
@@ -27,6 +31,7 @@ const AlbumDetail = () => {
     albumTrackCount,
     albumDurationString,
     albumRating,
+    albumIsFavourite,
     albumArtistLink,
     albumTracks,
     albumOrder,
@@ -63,6 +68,7 @@ const AlbumDetail = () => {
           albumArtistLink={albumArtistLink}
           albumDurationString={albumDurationString}
           albumId={albumId}
+          albumIsFavourite={albumIsFavourite}
           albumRating={albumRating}
           albumReleaseDate={albumReleaseDate}
           albumThumb={albumThumb}
@@ -70,15 +76,16 @@ const AlbumDetail = () => {
           albumTrackCount={albumTrackCount}
           albumTracks={albumTracks}
           colOptions={colOptions}
-          setColumnVisibility={setColumnVisibility}
           doPlay={doPlay}
           isListView={isListView}
           libraryId={libraryId}
+          platformOpts={platformOpts}
+          setColumnVisibility={setColumnVisibility}
         />
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isListView && (
-        <ListTable
+        <ViewList
           variant="albumTracks"
           albumId={albumId}
           discCount={albumDiscCount}
@@ -92,6 +99,7 @@ const AlbumDetail = () => {
             albumArtistLink={albumArtistLink}
             albumDurationString={albumDurationString}
             albumId={albumId}
+            albumIsFavourite={albumIsFavourite}
             albumRating={albumRating}
             albumReleaseDate={albumReleaseDate}
             albumThumb={albumThumb}
@@ -99,12 +107,13 @@ const AlbumDetail = () => {
             albumTrackCount={albumTrackCount}
             albumTracks={albumTracks}
             colOptions={colOptions}
-            setColumnVisibility={setColumnVisibility}
             doPlay={doPlay}
             isListView={isListView}
             libraryId={libraryId}
+            setColumnVisibility={setColumnVisibility}
+            platformOpts={platformOpts}
           />
-        </ListTable>
+        </ViewList>
       )}
     </>
   );
@@ -115,6 +124,7 @@ const Title = ({
   albumArtistLink,
   albumDurationString,
   albumId,
+  albumIsFavourite,
   albumRating,
   albumReleaseDate,
   albumThumb,
@@ -122,10 +132,11 @@ const Title = ({
   albumTrackCount,
   albumTracks,
   colOptions,
-  setColumnVisibility,
   doPlay,
   isListView,
   libraryId,
+  platformOpts,
+  setColumnVisibility,
 }) => {
   return (
     <TitleHeading
@@ -142,13 +153,47 @@ const Title = ({
       detail={
         albumTracks ? (
           <>
-            {albumReleaseDate}
-            {albumReleaseDate && albumTrackCount && ' • '}
-            {albumTrackCount} track{albumTrackCount !== 1 && 's'}
-            {(albumReleaseDate || albumTrackCount) && albumDurationString && ' • '}
-            {albumDurationString}
-            {(albumReleaseDate || albumTrackCount || albumDurationString) && ' • '}
-            <StarRating variant="title" type="album" ratingKey={albumId} rating={albumRating} editable />
+            {[
+              platformOpts.enableIsFavourite && (
+                <Favourite
+                  key="favourite"
+                  variant="title"
+                  type="album"
+                  itemId={albumId}
+                  isFavourite={albumIsFavourite}
+                  editable
+                />
+              ),
+              albumReleaseDate,
+              albumTrackCount && `${albumTrackCount} track${albumTrackCount !== 1 ? 's' : ''}`,
+              albumDurationString,
+              platformOpts.enableUserRating && (
+                <StarRating
+                  key="rating"
+                  variant="title"
+                  type="album"
+                  ratingKey={albumId}
+                  rating={albumRating}
+                  editable
+                />
+              ),
+            ]
+              .filter(Boolean)
+              .reduce((acc, item, index) => {
+                if (index === 0) return [item];
+
+                // Check if the first item is a Favourite component
+                const firstItem = acc[0];
+                const isFirstItemFavourite = firstItem?.key === 'favourite';
+                const separator =
+                  index === 1 && isFirstItemFavourite ? (
+                    <span key={`sep-${index}`}>&nbsp; </span>
+                  ) : (
+                    <span key={`sep-${index}`}> • </span>
+                  );
+
+                return [...acc, separator, item];
+              }, [])}
           </>
         ) : (
           <>&nbsp;</>
@@ -187,11 +232,24 @@ const Title = ({
               attr: 'colAlbumDuration',
               checked: colOptions.duration,
             },
-            {
-              label: 'Rating',
-              attr: 'colAlbumUserRating',
-              checked: colOptions.userRating,
-            },
+            ...(platformOpts?.enableIsFavourite
+              ? [
+                  {
+                    label: 'Favourite',
+                    attr: 'colAlbumIsFavourite',
+                    checked: colOptions.isFavourite,
+                  },
+                ]
+              : []),
+            ...(platformOpts?.enableUserRating
+              ? [
+                  {
+                    label: 'Rating',
+                    attr: 'colAlbumUserRating',
+                    checked: colOptions.userRating,
+                  },
+                ]
+              : []),
           ]}
         />
       }

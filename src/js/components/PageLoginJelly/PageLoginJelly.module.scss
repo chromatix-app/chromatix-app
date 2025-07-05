@@ -1,0 +1,132 @@
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
+
+.wrap {
+  padding: 80px 15px 50px;
+  z-index: 2;
+  text-align: center;
+
+  @media (min-width: 768px) {
+    padding: 100px 15px 50px;
+  }
+  @media (min-width: 1024px) {
+    padding: 150px 20px 90px;
+
+    @media (max-height: 900px) {
+      padding-top: 120px;
+    }
+    @media (max-height: 800px) {
+      padding-top: 100px;
+    }
+  }
+}
+
+.main {
+}
+
+.title {
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.form {
+  max-width: 400px;
+  margin: 40px auto 0;
+}
+
+.formRow {
+  margin: 20px auto 0;
+  text-align: left;
+
+  label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  input {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    margin: 8px 0 0;
+    background: vars.$color-primary-background;
+    border: 1px solid vars.$color-secondary-border;
+    border-radius: 10px;
+    font-size: 16px;
+    line-height: 26px;
+    color: vars.$color-text;
+  }
+}
+
+.errorField,
+.errorGeneral {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: vars.$color-core;
+}
+.errorGeneral {
+  margin: 16px 0 0;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.buttonRow {
+  margin: 40px auto 0;
+}
+
+.links {
+  margin: 60px auto 0;
+  font-size: 14px;
+
+  a {
+    opacity: 0.6;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+//
+// FOOTER
+//
+
+.border {
+  // max-width: 1280px;
+  max-width: 800px;
+  height: 1px;
+  margin: 80px auto 50px;
+  background: rgba(255, 255, 255, 0.15);
+
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.15) 20%,
+    rgba(255, 255, 255, 0.15) 80%,
+    rgba(255, 255, 255, 0) 100%
+  );
+
+  @media (min-width: 768px) {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.15) 40%,
+      rgba(255, 255, 255, 0.15) 60%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+
+  // @media (min-width: 1024px) {
+  //   margin: 120px auto 90px;
+  // }
+}
+
+.legal {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.35);
+}

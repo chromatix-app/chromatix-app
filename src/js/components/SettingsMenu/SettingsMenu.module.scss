@@ -50,6 +50,10 @@
 }
 
 .label {
+  &.disabled {
+    // text-decoration: line-through;
+    color: var(--color-opacity-04);
+  }
 }
 
 .description {

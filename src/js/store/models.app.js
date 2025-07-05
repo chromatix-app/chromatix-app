@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import * as plex from 'js/services/plex';
+import * as bridge from 'js/services/bridge';
 
 // ======================================================================
 // OPTIONS
@@ -23,11 +23,11 @@ const appState = {
   contentBreakpoint: 0,
   contentWidth: 0,
 
-  errorPlexFastestConnection: false,
-  errorPlexLibraries: false,
-  errorPlexLogin: false,
-  errorPlexServers: false,
-  errorPlexUser: false,
+  errorFastestConnection: false,
+  errorLibraries: false,
+  errorLogin: false,
+  errorServers: false,
+  errorUser: false,
 
   scrollToPlaying: false,
   scrollToTrack: false,
@@ -35,23 +35,42 @@ const appState = {
   notifications: [],
 };
 
-const plexUserState = {
+const userState = {
   loggedIn: false,
+
+  // TBC remove these...
+  currentService: null,
   currentUser: null,
   allServers: null,
+
+  // TBC add this...
+  // allAccounts: [{
+  //   service: 'plex',
+  //   userId: null,
+  //   userName: null,
+  //   userThumb: null,
+  //   userEmail: null,
+  // }],
 };
 
-const plexServerState = {
-  plexBaseUrl: null,
+// TBC add this...
+// const accountState = {
+//   currentService: 'plex',
+//   currentAccount: null,
+//   allServers: null,
+// };
+
+const serverState = {
+  serverBaseUrl: null,
   allLibraries: null,
 };
 
-const plexLibraryState = {
+const libraryState = {
   // artists
   allArtists: null,
   allArtistAlbums: {},
-  allArtistRelated: {},
-  allArtistCompilationAlbums: {},
+  allArtistRelatedAlbums: {},
+  allArtistAppearanceAlbums: {},
   allArtistTracks: {},
   haveGotAllArtists: false,
   // albums
@@ -83,12 +102,17 @@ const plexLibraryState = {
   allArtistStyleItems: {},
   allAlbumStyles: null,
   allAlbumStyleItems: {},
+  // tags
+  allArtistTags: null,
+  allArtistTagItems: {},
+  allAlbumTags: null,
+  allAlbumTagItems: {},
   // search results
   searchResultCounter: 0,
   searchResults: null,
 };
 
-const state = Object.assign({}, appState, plexUserState, plexServerState, plexLibraryState);
+const state = Object.assign({}, appState, userState, serverState, libraryState);
 
 // ======================================================================
 // REDUCERS
@@ -130,45 +154,47 @@ const effects = (dispatch) => ({
     dispatch.playerModel.playerInit();
     // initialise persistent state
     dispatch.persistentModel.init();
-    // initialise plex
-    plex.init();
+    // initialise bridge
+    bridge.init();
   },
 
   //
   // AUTH
   //
 
-  doLogin(payload, rootState) {
-    console.log('%c--- login ---', 'color:#07a098');
-    plex.login();
+  doPlexLogin(payload, rootState) {
+    console.log('%c--- login - plex ---', 'color:#07a098');
+    bridge.plexLogin();
   },
 
   doLogout(payload, rootState) {
     console.log('%c--- logout ---', 'color:#07a098');
     dispatch.playerModel.playerLogQuit();
-    plex.logout();
+    bridge.logout();
     rootState.appModel.history.replace('/');
   },
 
   setLoggedIn(payload, rootState) {
     console.log('%c--- setLoggedIn ---', 'color:#07a098');
+    const { currentService, currentUser } = payload;
     dispatch.appModel.setAppState({
       inited: true,
       loggedIn: true,
-      currentUser: payload,
+      currentService,
+      currentUser,
     });
     dispatch.sessionModel.loadLocalStorage();
     dispatch.playerModel.playerRefresh();
-    plex.getAllServers();
+    bridge.getAllServers();
   },
 
   setLoggedOut(payload, rootState) {
     console.log('%c--- setLoggedOut ---', 'color:#07a098');
     dispatch.appModel.setAppState({
       inited: true,
-      ...Object.assign({}, plexUserState),
-      ...Object.assign({}, plexServerState),
-      ...Object.assign({}, plexLibraryState),
+      ...Object.assign({}, userState),
+      ...Object.assign({}, serverState),
+      ...Object.assign({}, libraryState),
     });
     dispatch.playerModel.playerUnload();
     dispatch.sessionModel.setLoggedOut();
@@ -206,72 +232,72 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX ERROR HANDLING
+  // ERROR HANDLING
   //
 
-  dismissErrorPlexFastestConnection(payload, rootState) {
-    // console.log('%c--- dismissErrorPlexFastestConnection ---', 'color:#07a098');
+  dismissErrorFastestConnection(payload, rootState) {
+    // console.log('%c--- dismissErrorFastestConnection ---', 'color:#07a098');
     dispatch.appModel.setAppState({
-      errorPlexFastestConnection: false,
+      errorFastestConnection: false,
     });
     dispatch.sessionModel.unsetCurrentServer();
   },
 
-  dismissErrorPlexLibraries(payload, rootState) {
-    // console.log('%c--- dismissErrorPlexLibraries ---', 'color:#07a098');
+  dismissErrorLibraries(payload, rootState) {
+    // console.log('%c--- dismissErrorLibraries ---', 'color:#07a098');
     dispatch.appModel.setAppState({
-      errorPlexLibraries: false,
+      errorLibraries: false,
     });
     dispatch.sessionModel.unsetCurrentServer();
   },
 
-  dismissErrorPlexLogin(payload, rootState) {
-    // console.log('%c--- dismissErrorPlexLogin ---', 'color:#07a098');
+  dismissErrorLogin(payload, rootState) {
+    // console.log('%c--- dismissErrorLogin ---', 'color:#07a098');
     if (rootState.appModel.isInited) {
       dispatch.appModel.setAppState({
-        errorPlexLogin: false,
+        errorLogin: false,
       });
     } else {
       window.location.reload();
     }
   },
 
-  dismissErrorPlexServers(payload, rootState) {
-    // console.log('%c--- dismissErrorPlexServers ---', 'color:#07a098');
+  dismissErrorServers(payload, rootState) {
+    // console.log('%c--- dismissErrorServers ---', 'color:#07a098');
     dispatch.appModel.setAppState({
-      errorPlexServers: false,
+      errorServers: false,
     });
-    plex.getAllServers();
+    bridge.getAllServers();
   },
 
-  dismissErrorPlexUser(payload, rootState) {
-    // console.log('%c--- dismissErrorPlexUser ---', 'color:#07a098');
+  dismissErrorUser(payload, rootState) {
+    // console.log('%c--- dismissErrorUser ---', 'color:#07a098');
     dispatch.appModel.setAppState({
-      errorPlexUser: false,
+      errorUser: false,
     });
-    plex.getUserInfo();
+    bridge.getUserInfo();
   },
 
   //
-  // PLEX SERVERS & LIBRARIES
+  // SERVER & LIBRARY HANDLING
   //
 
-  clearPlexServerState(payload, rootState) {
-    console.log('%c--- clearPlexServerState ---', 'color:#07a098');
+  clearServerState(payload, rootState) {
+    console.log('%c--- clearServerState ---', 'color:#07a098');
     dispatch.appModel.setAppState({
-      ...Object.assign({}, plexServerState),
-      ...Object.assign({}, plexLibraryState),
+      ...Object.assign({}, serverState),
+      ...Object.assign({}, libraryState),
     });
     dispatch.playerModel.playerUnload();
   },
 
-  clearPlexLibraryState(payload, rootState) {
-    console.log('%c--- clearPlexLibraryState ---', 'color:#07a098');
+  clearLibraryState(payload, rootState) {
+    console.log('%c--- clearLibraryState ---', 'color:#07a098');
     dispatch.appModel.setAppState({
-      ...Object.assign({}, plexLibraryState),
+      ...Object.assign({}, libraryState),
     });
     rootState.appModel.history.push('/');
-    plex.getAllPlaylists();
+    bridge.getAllPlaylists();
   },
 
   storeAllServers(payload, rootState) {
@@ -280,7 +306,7 @@ const effects = (dispatch) => ({
       allServers: payload,
     });
     dispatch.sessionModel.refreshCurrentServer(payload);
-    plex.getAllLibraries();
+    bridge.getAllLibraries();
   },
 
   storeAllLibraries(payload, rootState) {
@@ -292,7 +318,7 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX - ARTISTS
+  // MUSIC - ARTISTS
   //
 
   storeArtistDetails(payload, rootState) {
@@ -333,32 +359,32 @@ const effects = (dispatch) => ({
   storeArtistRelated(payload, rootState) {
     console.log('%c--- storeArtistRelated ---', 'color:#07a098');
     const { libraryId, artistId, artistRelated } = payload;
-    const allArtistRelated = { ...rootState.appModel.allArtistRelated };
+    const allArtistRelatedAlbums = { ...rootState.appModel.allArtistRelatedAlbums };
     // limit recent entries
-    const keys = Object.keys(allArtistRelated);
+    const keys = Object.keys(allArtistRelatedAlbums);
     if (keys.length >= maxDataLength) {
-      delete allArtistRelated[keys[0]];
+      delete allArtistRelatedAlbums[keys[0]];
     }
     // add the new entry and save
-    allArtistRelated[libraryId + '-' + artistId] = artistRelated;
+    allArtistRelatedAlbums[libraryId + '-' + artistId] = artistRelated;
     dispatch.appModel.setAppState({
-      allArtistRelated,
+      allArtistRelatedAlbums,
     });
   },
 
-  storeArtistCompilationAlbums(payload, rootState) {
-    console.log('%c--- storeArtistCompilationAlbums ---', 'color:#07a098');
-    const { libraryId, artistId, artistCompilationAlbums } = payload;
-    const allArtistCompilationAlbums = { ...rootState.appModel.allArtistCompilationAlbums };
+  storeArtistAppearanceAlbums(payload, rootState) {
+    console.log('%c--- storeArtistAppearanceAlbums ---', 'color:#07a098');
+    const { libraryId, artistId, artistAppearanceAlbums } = payload;
+    const allArtistAppearanceAlbums = { ...rootState.appModel.allArtistAppearanceAlbums };
     // limit recent entries
-    const keys = Object.keys(allArtistCompilationAlbums);
+    const keys = Object.keys(allArtistAppearanceAlbums);
     if (keys.length >= maxDataLength) {
-      delete allArtistCompilationAlbums[keys[0]];
+      delete allArtistAppearanceAlbums[keys[0]];
     }
     // add the new entry and save
-    allArtistCompilationAlbums[libraryId + '-' + artistId] = artistCompilationAlbums;
+    allArtistAppearanceAlbums[libraryId + '-' + artistId] = artistAppearanceAlbums;
     dispatch.appModel.setAppState({
-      allArtistCompilationAlbums,
+      allArtistAppearanceAlbums,
     });
   },
 
@@ -380,13 +406,14 @@ const effects = (dispatch) => ({
 
   setArtistRating(payload, rootState) {
     console.log('%c--- setArtistRating ---', 'color:#07a098');
-    const { ratingKey, rating } = payload;
+    const { isFavourite, ratingKey, rating } = payload;
 
     // update artist
     const prevArtists = rootState.appModel.allArtists;
     const allArtists = prevArtists ? [...prevArtists] : [];
     const artistIndex = allArtists.findIndex((artist) => artist.artistId === ratingKey);
     if (artistIndex !== -1) {
+      allArtists[artistIndex].isFavourite = isFavourite;
       allArtists[artistIndex].userRating = rating;
       dispatch.appModel.setAppState({
         allArtists,
@@ -400,6 +427,7 @@ const effects = (dispatch) => ({
       const artistCollectionItems = allArtistCollectionItems[key];
       const artistIndex = artistCollectionItems.findIndex((artist) => artist.artistId === ratingKey);
       if (artistIndex !== -1) {
+        artistCollectionItems[artistIndex].isFavourite = isFavourite;
         artistCollectionItems[artistIndex].userRating = rating;
         allArtistCollectionItems[key] = artistCollectionItems;
       }
@@ -412,6 +440,7 @@ const effects = (dispatch) => ({
       const artistGenreItems = allArtistGenreItems[key];
       const artistIndex = artistGenreItems.findIndex((artist) => artist.artistId === ratingKey);
       if (artistIndex !== -1) {
+        artistGenreItems[artistIndex].isFavourite = isFavourite;
         artistGenreItems[artistIndex].userRating = rating;
         allArtistGenreItems[key] = artistGenreItems;
       }
@@ -424,6 +453,7 @@ const effects = (dispatch) => ({
       const artistMoodItems = allArtistMoodItems[key];
       const artistIndex = artistMoodItems.findIndex((artist) => artist.artistId === ratingKey);
       if (artistIndex !== -1) {
+        artistMoodItems[artistIndex].isFavourite = isFavourite;
         artistMoodItems[artistIndex].userRating = rating;
         allArtistMoodItems[key] = artistMoodItems;
       }
@@ -436,8 +466,22 @@ const effects = (dispatch) => ({
       const artistStyleItems = allArtistStyleItems[key];
       const artistIndex = artistStyleItems.findIndex((artist) => artist.artistId === ratingKey);
       if (artistIndex !== -1) {
+        artistStyleItems[artistIndex].isFavourite = isFavourite;
         artistStyleItems[artistIndex].userRating = rating;
         allArtistStyleItems[key] = artistStyleItems;
+      }
+    });
+
+    // update artist tag items
+    const allArtistTagItems = { ...rootState.appModel.allArtistTagItems };
+    const tagKeys = Object.keys(allArtistTagItems);
+    tagKeys.forEach((key) => {
+      const artistTagItems = allArtistTagItems[key];
+      const artistIndex = artistTagItems.findIndex((artist) => artist.artistId === ratingKey);
+      if (artistIndex !== -1) {
+        artistTagItems[artistIndex].isFavourite = isFavourite;
+        artistTagItems[artistIndex].userRating = rating;
+        allArtistTagItems[key] = artistTagItems;
       }
     });
 
@@ -451,7 +495,7 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX - ALBUMS
+  // MUSIC - ALBUMS
   //
 
   storeAlbumDetails(payload, rootState) {
@@ -491,13 +535,14 @@ const effects = (dispatch) => ({
 
   setAlbumRating(payload, rootState) {
     console.log('%c--- setAlbumRating ---', 'color:#07a098');
-    const { ratingKey, rating } = payload;
+    const { isFavourite, ratingKey, rating } = payload;
 
     // update albums
     const prevAlbums = rootState.appModel.allAlbums;
     const allAlbums = prevAlbums ? [...prevAlbums] : [];
     const albumIndex = allAlbums.findIndex((album) => album.albumId === ratingKey);
     if (albumIndex !== -1) {
+      allAlbums[albumIndex].isFavourite = isFavourite;
       allAlbums[albumIndex].userRating = rating;
       dispatch.appModel.setAppState({
         allAlbums,
@@ -511,36 +556,39 @@ const effects = (dispatch) => ({
       const artistAlbums = allArtistAlbums[key];
       const albumIndex = artistAlbums.findIndex((album) => album.albumId === ratingKey);
       if (albumIndex !== -1) {
+        artistAlbums[albumIndex].isFavourite = isFavourite;
         artistAlbums[albumIndex].userRating = rating;
         allArtistAlbums[key] = artistAlbums;
       }
     });
 
     // update artist related albums
-    const allArtistRelated = { ...rootState.appModel.allArtistRelated };
-    const artistKeys = Object.keys(allArtistRelated);
+    const allArtistRelatedAlbums = { ...rootState.appModel.allArtistRelatedAlbums };
+    const artistKeys = Object.keys(allArtistRelatedAlbums);
     artistKeys.forEach((artistKey) => {
-      const artistGroups = allArtistRelated[artistKey];
+      const artistGroups = allArtistRelatedAlbums[artistKey];
       artistGroups.forEach((group) => {
         const relatedAlbums = group.related;
         relatedAlbums.forEach((album, index) => {
           if (album.albumId === ratingKey) {
+            group.related[index].isFavourite = isFavourite;
             group.related[index].userRating = rating;
           }
         });
       });
-      allArtistRelated[artistKey] = artistGroups;
+      allArtistRelatedAlbums[artistKey] = artistGroups;
     });
 
-    // update artist compilation albums
-    const allArtistCompilationAlbums = { ...rootState.appModel.allArtistCompilationAlbums };
-    const compilationKeys = Object.keys(allArtistCompilationAlbums);
-    compilationKeys.forEach((key) => {
-      const artistCompilationAlbums = allArtistCompilationAlbums[key];
-      const albumIndex = artistCompilationAlbums.findIndex((album) => album.albumId === ratingKey);
+    // update artist appearance albums
+    const allArtistAppearanceAlbums = { ...rootState.appModel.allArtistAppearanceAlbums };
+    const appearanceKeys = Object.keys(allArtistAppearanceAlbums);
+    appearanceKeys.forEach((key) => {
+      const artistAppearanceAlbums = allArtistAppearanceAlbums[key];
+      const albumIndex = artistAppearanceAlbums.findIndex((album) => album.albumId === ratingKey);
       if (albumIndex !== -1) {
-        artistCompilationAlbums[albumIndex].userRating = rating;
-        allArtistCompilationAlbums[key] = artistCompilationAlbums;
+        artistAppearanceAlbums[albumIndex].isFavourite = isFavourite;
+        artistAppearanceAlbums[albumIndex].userRating = rating;
+        allArtistAppearanceAlbums[key] = artistAppearanceAlbums;
       }
     });
 
@@ -552,6 +600,7 @@ const effects = (dispatch) => ({
       console.log(albumCollectionItems);
       const albumIndex = albumCollectionItems.findIndex((album) => album.albumId === ratingKey);
       if (albumIndex !== -1) {
+        albumCollectionItems[albumIndex].isFavourite = isFavourite;
         albumCollectionItems[albumIndex].userRating = rating;
         allAlbumCollectionItems[key] = albumCollectionItems;
       }
@@ -564,6 +613,7 @@ const effects = (dispatch) => ({
       const albumGenreItems = allAlbumGenreItems[key];
       const albumIndex = albumGenreItems.findIndex((album) => album.albumId === ratingKey);
       if (albumIndex !== -1) {
+        albumGenreItems[albumIndex].isFavourite = isFavourite;
         albumGenreItems[albumIndex].userRating = rating;
         allAlbumGenreItems[key] = albumGenreItems;
       }
@@ -576,6 +626,7 @@ const effects = (dispatch) => ({
       const albumMoodItems = allAlbumMoodItems[key];
       const albumIndex = albumMoodItems.findIndex((album) => album.albumId === ratingKey);
       if (albumIndex !== -1) {
+        albumMoodItems[albumIndex].isFavourite = isFavourite;
         albumMoodItems[albumIndex].userRating = rating;
         allAlbumMoodItems[key] = albumMoodItems;
       }
@@ -588,15 +639,29 @@ const effects = (dispatch) => ({
       const albumStyleItems = allAlbumStyleItems[key];
       const albumIndex = albumStyleItems.findIndex((album) => album.albumId === ratingKey);
       if (albumIndex !== -1) {
+        albumStyleItems[albumIndex].isFavourite = isFavourite;
         albumStyleItems[albumIndex].userRating = rating;
         allAlbumStyleItems[key] = albumStyleItems;
+      }
+    });
+
+    // update album tag items
+    const allAlbumTagItems = { ...rootState.appModel.allAlbumTagItems };
+    const tagKeys = Object.keys(allAlbumTagItems);
+    tagKeys.forEach((key) => {
+      const albumTagItems = allAlbumTagItems[key];
+      const albumIndex = albumTagItems.findIndex((album) => album.albumId === ratingKey);
+      if (albumIndex !== -1) {
+        albumTagItems[albumIndex].isFavourite = isFavourite;
+        albumTagItems[albumIndex].userRating = rating;
+        allAlbumTagItems[key] = albumTagItems;
       }
     });
 
     // save
     dispatch.appModel.setAppState({
       allArtistAlbums,
-      allArtistRelated,
+      allArtistRelatedAlbums,
       allAlbumCollectionItems,
       allAlbumGenreItems,
       allAlbumStyleItems,
@@ -605,7 +670,7 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX - FOLDERS
+  // MUSIC - FOLDERS
   //
 
   storeFolderItems(payload, rootState) {
@@ -625,7 +690,7 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX - PLAYLISTS
+  // MUSIC - PLAYLISTS
   //
 
   storePlaylistDetails(payload, rootState) {
@@ -665,11 +730,12 @@ const effects = (dispatch) => ({
 
   setPlaylistRating(payload, rootState) {
     console.log('%c--- setPlaylistRating ---', 'color:#07a098');
-    const { ratingKey, rating } = payload;
+    const { isFavourite, ratingKey, rating } = payload;
     const prevPlaylists = rootState.appModel.allPlaylists;
     const allPlaylists = prevPlaylists ? [...prevPlaylists] : [];
     const playlistIndex = allPlaylists.findIndex((playlist) => playlist.playlistId === ratingKey);
     if (playlistIndex !== -1) {
+      allPlaylists[playlistIndex].isFavourite = isFavourite;
       allPlaylists[playlistIndex].userRating = rating;
       dispatch.appModel.setAppState({
         allPlaylists,
@@ -678,12 +744,12 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX - TRACKS
+  // MUSIC - TRACKS
   //
 
   setTrackRating(payload, rootState) {
     console.log('%c--- setTrackRating ---', 'color:#07a098');
-    const { ratingKey, rating } = payload;
+    const { isFavourite, ratingKey, rating } = payload;
 
     // update artist tracks
     const allArtistTracks = { ...rootState.appModel.allArtistTracks };
@@ -692,6 +758,7 @@ const effects = (dispatch) => ({
       const artistTracks = allArtistTracks[key];
       const trackIndex = artistTracks.findIndex((track) => track.trackId === ratingKey);
       if (trackIndex !== -1) {
+        artistTracks[trackIndex].isFavourite = isFavourite;
         artistTracks[trackIndex].userRating = rating;
         allArtistTracks[key] = artistTracks;
       }
@@ -704,6 +771,7 @@ const effects = (dispatch) => ({
       const albumTracks = allAlbumTracks[key];
       const trackIndex = albumTracks.findIndex((track) => track.trackId === ratingKey);
       if (trackIndex !== -1) {
+        albumTracks[trackIndex].isFavourite = isFavourite;
         albumTracks[trackIndex].userRating = rating;
         allAlbumTracks[key] = albumTracks;
       }
@@ -716,6 +784,7 @@ const effects = (dispatch) => ({
       const playlistTracks = allPlaylistTracks[key];
       const trackIndex = playlistTracks.findIndex((track) => track.trackId === ratingKey);
       if (trackIndex !== -1) {
+        playlistTracks[trackIndex].isFavourite = isFavourite;
         playlistTracks[trackIndex].userRating = rating;
         allPlaylistTracks[key] = playlistTracks;
       }
@@ -728,7 +797,7 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX - COLLECTIONS
+  // MUSIC - COLLECTIONS
   //
 
   storeArtistCollectionItems(payload, rootState) {
@@ -765,13 +834,14 @@ const effects = (dispatch) => ({
 
   setCollectionRating(payload, rootState) {
     console.log('%c--- setCollectionRating ---', 'color:#07a098');
-    const { ratingKey, rating } = payload;
+    const { isFavourite, ratingKey, rating } = payload;
 
     // update artist collections
     const prevArtistCollections = rootState.appModel.allArtistCollections;
     const allArtistCollections = prevArtistCollections ? [...prevArtistCollections] : [];
     const artistCollectionIndex = allArtistCollections.findIndex((collection) => collection.collectionId === ratingKey);
     if (artistCollectionIndex !== -1) {
+      allArtistCollections[artistCollectionIndex].isFavourite = isFavourite;
       allArtistCollections[artistCollectionIndex].userRating = rating;
       dispatch.appModel.setAppState({
         allArtistCollections,
@@ -783,6 +853,7 @@ const effects = (dispatch) => ({
     const allAlbumCollections = prevAlbumCollections ? [...prevAlbumCollections] : [];
     const albumCollectionIndex = allAlbumCollections.findIndex((collection) => collection.collectionId === ratingKey);
     if (albumCollectionIndex !== -1) {
+      allAlbumCollections[albumCollectionIndex].isFavourite = isFavourite;
       allAlbumCollections[albumCollectionIndex].userRating = rating;
       dispatch.appModel.setAppState({
         allAlbumCollections,
@@ -791,7 +862,7 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX - GENRES
+  // MUSIC - GENRES
   //
 
   storeArtistGenreItems(payload, rootState) {
@@ -827,7 +898,7 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX - MOODS
+  // MUSIC - MOODS
   //
 
   storeArtistMoodItems(payload, rootState) {
@@ -863,7 +934,7 @@ const effects = (dispatch) => ({
   },
 
   //
-  // PLEX - STYLES
+  // MUSIC - STYLES
   //
 
   storeArtistStyleItems(payload, rootState) {
@@ -895,6 +966,42 @@ const effects = (dispatch) => ({
     allAlbumStyleItems[libraryId + '-' + tagId] = tagItems;
     dispatch.appModel.setAppState({
       allAlbumStyleItems,
+    });
+  },
+
+  //
+  // MUSIC - TAGS
+  //
+
+  storeArtistTagItems(payload, rootState) {
+    console.log('%c--- storeArtistTagItems ---', 'color:#07a098');
+    const { libraryId, tagId, tagItems } = payload;
+    const allArtistTagItems = { ...rootState.appModel.allArtistTagItems };
+    // limit recent entries
+    const keys = Object.keys(allArtistTagItems);
+    if (keys.length >= maxDataLength) {
+      delete allArtistTagItems[keys[0]];
+    }
+    // add the new entry and save
+    allArtistTagItems[libraryId + '-' + tagId] = tagItems;
+    dispatch.appModel.setAppState({
+      allArtistTagItems,
+    });
+  },
+
+  storeAlbumTagItems(payload, rootState) {
+    console.log('%c--- storeAlbumTagItems ---', 'color:#07a098');
+    const { libraryId, tagId, tagItems } = payload;
+    const allAlbumTagItems = { ...rootState.appModel.allAlbumTagItems };
+    // limit recent entries
+    const keys = Object.keys(allAlbumTagItems);
+    if (keys.length >= maxDataLength) {
+      delete allAlbumTagItems[keys[0]];
+    }
+    // add the new entry and save
+    allAlbumTagItems[libraryId + '-' + tagId] = tagItems;
+    dispatch.appModel.setAppState({
+      allAlbumTagItems,
     });
   },
 });

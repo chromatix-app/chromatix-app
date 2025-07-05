@@ -1,5 +1,12 @@
 import moment from 'moment';
 
+/**
+ * Converts a duration in milliseconds to a long descriptive format with full words.
+ * Rounds to appropriate precision (seconds when < 1h, minutes when < 1d, hours when >= 1d).
+ * @param durationMillisecs - Duration in milliseconds
+ * @returns Formatted duration string (e.g., "45 secs", "3 mins, 45 secs", "2 hours, 30 mins", "1 day, 5 hours") or empty string for invalid input
+ */
+
 const durationToStringLong = (durationMillisecs: number): string => {
   // Handle negative durations and special cases by returning a default value
   if (durationMillisecs < 0 || isNaN(durationMillisecs) || !isFinite(durationMillisecs)) {

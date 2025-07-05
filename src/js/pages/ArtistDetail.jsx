@@ -2,19 +2,22 @@
 // IMPORTS
 // ======================================================================
 
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import {
+  Favourite,
   FilterMenu,
   FilterSelect,
   FilterToggle,
-  ListCards,
-  ListTable,
+  ViewGrid,
+  ViewList,
   Loading,
   StarRating,
   TitleHeading,
 } from 'js/components';
 import { useGetArtistDetail } from 'js/hooks';
+import platformFeatures from 'js/_config/platformFeatures';
 
 // ======================================================================
 // COMPONENT
@@ -23,6 +26,9 @@ import { useGetArtistDetail } from 'js/hooks';
 const ArtistDetail = () => {
   const { libraryId, artistId } = useParams();
 
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
+
   const {
     artistInfo,
     artistThumb,
@@ -30,6 +36,8 @@ const ArtistDetail = () => {
     artistCountry,
     artistGenre,
     artistRating,
+    artistIsFavourite,
+
     gridOptions,
     colOptions,
     colTrackOptions,
@@ -95,6 +103,7 @@ const ArtistDetail = () => {
           artistCountry={artistCountry}
           artistGenre={artistGenre}
           artistId={artistId}
+          artistIsFavourite={artistIsFavourite}
           artistName={artistName}
           artistRating={artistRating}
           artistReleasesTotal={artistReleasesTotal}
@@ -108,6 +117,7 @@ const ArtistDetail = () => {
           isTrackView={isTrackView}
           libraryId={libraryId}
           orderArtistAlbums={orderArtistAlbums}
+          platformOpts={platformOpts}
           setColumnVisibility={setColumnVisibility}
           setOrderArtistAlbums={setOrderArtistAlbums}
           setSortArtistAlbums={setSortArtistAlbums}
@@ -119,10 +129,11 @@ const ArtistDetail = () => {
       {isLoading2 && <Loading forceVisible inline showOffline />}
 
       {isGridView && (
-        <ListCards
+        <ViewGrid
           variant="artistAlbums"
           {...(artistAlbumsGroupByType ? { groupBy: 'albumGroup' } : { groupBy: 'releaseGroup' })}
           entries={sortedAllReleasesAndAppearances}
+          showFavs={gridOptions.isFavourite}
           showRatings={gridOptions.userRating}
         >
           <Title
@@ -130,6 +141,7 @@ const ArtistDetail = () => {
             artistCountry={artistCountry}
             artistGenre={artistGenre}
             artistId={artistId}
+            artistIsFavourite={artistIsFavourite}
             artistName={artistName}
             artistRating={artistRating}
             artistReleasesTotal={artistReleasesTotal}
@@ -143,6 +155,7 @@ const ArtistDetail = () => {
             isTrackView={isTrackView}
             libraryId={libraryId}
             orderArtistAlbums={orderArtistAlbums}
+            platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderArtistAlbums={setOrderArtistAlbums}
             setSortArtistAlbums={setSortArtistAlbums}
@@ -150,11 +163,11 @@ const ArtistDetail = () => {
             sortArtistAlbums={sortArtistAlbums}
             viewArtistAlbums={viewArtistAlbums}
           />
-        </ListCards>
+        </ViewGrid>
       )}
 
       {isListView && (
-        <ListTable
+        <ViewList
           variant="artistAlbums"
           {...(artistAlbumsGroupByType ? { groupBy: 'albumGroup' } : { groupBy: 'releaseGroup' })}
           entries={sortedAllReleasesAndAppearances}
@@ -167,6 +180,7 @@ const ArtistDetail = () => {
             artistCountry={artistCountry}
             artistGenre={artistGenre}
             artistId={artistId}
+            artistIsFavourite={artistIsFavourite}
             artistName={artistName}
             artistRating={artistRating}
             artistReleasesTotal={artistReleasesTotal}
@@ -180,6 +194,7 @@ const ArtistDetail = () => {
             isTrackView={isTrackView}
             libraryId={libraryId}
             orderArtistAlbums={orderArtistAlbums}
+            platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderArtistAlbums={setOrderArtistAlbums}
             setSortArtistAlbums={setSortArtistAlbums}
@@ -187,11 +202,11 @@ const ArtistDetail = () => {
             sortArtistAlbums={sortArtistAlbums}
             viewArtistAlbums={viewArtistAlbums}
           />
-        </ListTable>
+        </ViewList>
       )}
 
       {isTrackView && (
-        <ListTable
+        <ViewList
           variant="artistTracks"
           // groupBy="albumGroup"
           artistId={artistId}
@@ -207,6 +222,7 @@ const ArtistDetail = () => {
             artistCountry={artistCountry}
             artistGenre={artistGenre}
             artistId={artistId}
+            artistIsFavourite={artistIsFavourite}
             artistName={artistName}
             artistRating={artistRating}
             artistReleasesTotal={artistReleasesTotal}
@@ -220,6 +236,7 @@ const ArtistDetail = () => {
             isTrackView={isTrackView}
             libraryId={libraryId}
             orderArtistAlbums={orderArtistAlbums}
+            platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderArtistAlbums={setOrderArtistAlbums}
             setSortArtistAlbums={setSortArtistAlbums}
@@ -227,7 +244,7 @@ const ArtistDetail = () => {
             sortArtistAlbums={sortArtistAlbums}
             viewArtistAlbums={viewArtistAlbums}
           />
-        </ListTable>
+        </ViewList>
       )}
     </>
   );
@@ -238,6 +255,7 @@ const Title = ({
   artistCountry,
   artistGenre,
   artistId,
+  artistIsFavourite,
   artistName,
   artistRating,
   artistReleasesTotal,
@@ -251,6 +269,7 @@ const Title = ({
   isTrackView,
   libraryId,
   orderArtistAlbums,
+  platformOpts,
   setColumnVisibility,
   setOrderArtistAlbums,
   setSortArtistAlbums,
@@ -276,11 +295,46 @@ const Title = ({
       subtitle={subtitle}
       detail={
         <>
-          {artistCountry}
-          {artistCountry && artistGenre && ' • '}
-          {artistGenre}
-          {(artistCountry || artistGenre) && ' • '}
-          <StarRating variant="title" type="artist" ratingKey={artistId} rating={artistRating} editable />
+          {[
+            platformOpts.enableIsFavourite && (
+              <Favourite
+                key="favourite"
+                variant="title"
+                type="artist"
+                itemId={artistId}
+                isFavourite={artistIsFavourite}
+                editable
+              />
+            ),
+            artistCountry,
+            artistGenre,
+            platformOpts.enableUserRating && (
+              <StarRating
+                key="rating"
+                variant="title"
+                type="artist"
+                ratingKey={artistId}
+                rating={artistRating}
+                editable
+              />
+            ),
+          ]
+            .filter(Boolean)
+            .reduce((acc, item, index) => {
+              if (index === 0) return [item];
+
+              // Check if the first item is a Favourite component
+              const firstItem = acc[0];
+              const isFirstItemFavourite = firstItem?.key === 'favourite';
+              const separator =
+                index === 1 && isFirstItemFavourite ? (
+                  <span key={`sep-${index}`}>&nbsp; </span>
+                ) : (
+                  <span key={`sep-${index}`}> • </span>
+                );
+
+              return [...acc, separator, item];
+            }, [])}
         </>
       }
       padding={!isGridView && !isListView && !isTrackView}
@@ -323,7 +377,8 @@ const Title = ({
                   { value: 'addedAt', label: 'Date added' },
                   { value: 'lastPlayed', label: 'Date played' },
                   { value: 'releaseDate', label: 'Date released' },
-                  { value: 'userRating', label: 'Rating' },
+                  ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
+                  ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
                 ]}
                 setter={setSortArtistAlbums}
               />
@@ -341,15 +396,31 @@ const Title = ({
                 icon="CogIcon"
                 setter={setColumnVisibility}
                 entries={[
+                  ...(platformOpts?.enableIsFavourite
+                    ? [
+                        {
+                          label: 'Show favourites',
+                          attr: 'gridArtistAlbumsIsFavourite',
+                          checked: gridOptions.isFavourite,
+                        },
+                      ]
+                    : []),
+                  ...(platformOpts?.enableUserRating
+                    ? [
+                        {
+                          label: 'Show star ratings',
+                          attr: 'gridArtistAlbumsUserRating',
+                          checked: gridOptions.userRating,
+                        },
+                      ]
+                    : []),
+                  {
+                    variant: 'divider',
+                  },
                   {
                     label: 'Group by type',
                     attr: 'artistAlbumsGroupByType',
                     checked: artistAlbumsGroupByType,
-                  },
-                  {
-                    label: 'Show star ratings',
-                    attr: 'gridArtistAlbumsUserRating',
-                    checked: gridOptions.userRating,
                   },
                 ]}
               />
@@ -390,11 +461,24 @@ const Title = ({
                   attr: 'colArtistAlbumsLastPlayed',
                   checked: colOptions.lastPlayed,
                 },
-                {
-                  label: 'Rating',
-                  attr: 'colArtistAlbumsUserRating',
-                  checked: colOptions.userRating,
-                },
+                ...(platformOpts?.enableIsFavourite
+                  ? [
+                      {
+                        label: 'Favourite',
+                        attr: 'colArtistAlbumsIsFavourite',
+                        checked: colOptions.isFavourite,
+                      },
+                    ]
+                  : []),
+                ...(platformOpts?.enableUserRating
+                  ? [
+                      {
+                        label: 'Rating',
+                        attr: 'colArtistAlbumsUserRating',
+                        checked: colOptions.userRating,
+                      },
+                    ]
+                  : []),
                 {
                   variant: 'divider',
                 },
@@ -460,11 +544,24 @@ const Title = ({
                   attr: 'colArtistTracksDuration',
                   checked: colOptions.duration,
                 },
-                {
-                  label: 'Rating',
-                  attr: 'colArtistTracksUserRating',
-                  checked: colOptions.userRating,
-                },
+                ...(platformOpts?.enableIsFavourite
+                  ? [
+                      {
+                        label: 'Favourite',
+                        attr: 'colArtistTracksIsFavourite',
+                        checked: colOptions.isFavourite,
+                      },
+                    ]
+                  : []),
+                ...(platformOpts?.enableUserRating
+                  ? [
+                      {
+                        label: 'Rating',
+                        attr: 'colArtistTracksUserRating',
+                        checked: colOptions.userRating,
+                      },
+                    ]
+                  : []),
               ]}
             />
           )}

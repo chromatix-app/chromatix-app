@@ -1,11 +1,15 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import platformFeatures from 'js/_config/platformFeatures';
 import { durationToStringLong, sortList } from 'js/utils';
-import * as plex from 'js/services/plex';
+import * as bridge from 'js/services/bridge';
 
 const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   const dispatch = useDispatch();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
 
   const sortPlaylistTracks = useSelector(({ sessionModel }) => sessionModel.sortPlaylistTracks);
   const playlistSortString = sortPlaylistTracks[playlistId] || null;
@@ -15,8 +19,9 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   const colPlaylistAlbum = useSelector(({ sessionModel }) => sessionModel.colPlaylistAlbum);
   const colPlaylistCodec = useSelector(({ sessionModel }) => sessionModel.colPlaylistCodec);
   const colPlaylistBitrate = useSelector(({ sessionModel }) => sessionModel.colPlaylistBitrate);
-  const colPlaylistUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistUserRating);
   const colPlaylistDuration = useSelector(({ sessionModel }) => sessionModel.colPlaylistDuration);
+  const colPlaylistUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistUserRating);
+  const colPlaylistIsFavourite = useSelector(({ sessionModel }) => sessionModel.colPlaylistIsFavourite);
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
   const optionSortIgnoreLeadingArticles = useSelector(
@@ -31,8 +36,9 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
     album: colPlaylistAlbum,
     codec: colPlaylistCodec,
     bitrate: colPlaylistBitrate,
-    userRating: colPlaylistUserRating,
     duration: colPlaylistDuration,
+    userRating: platformOpts.enableUserRating && colPlaylistUserRating,
+    isFavourite: platformOpts.enableIsFavourite && colPlaylistIsFavourite,
   };
   const actualPlaylistSortString = allowedSort[playlistSortString?.split('-')[0]] ? playlistSortString : null;
 
@@ -48,6 +54,7 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   const playlistDurationMillisecs = playlistTracks?.reduce((acc, track) => acc + track.duration, 0);
   const playlistDurationString = durationToStringLong(playlistDurationMillisecs);
   const playlistRating = playlistInfo?.userRating;
+  const playlistIsFavourite = playlistInfo?.isFavourite;
 
   const sortedPlaylistTracks = useMemo(() => {
     if (!playlistTracks) return null;
@@ -88,13 +95,13 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   };
 
   useEffect(() => {
-    plex.getAllPlaylists();
-    plex.getPlaylistTracks(libraryId, playlistId).catch(() => {});
+    bridge.getAllPlaylists();
+    bridge.getPlaylistTracks(libraryId, playlistId).catch(() => {});
   }, [libraryId, playlistId]);
 
   useEffect(() => {
     if (allPlaylists && !playlistInfo) {
-      plex.getPlaylistDetails(libraryId, playlistId);
+      bridge.getPlaylistDetails(libraryId, playlistId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allPlaylists, playlistInfo]);
@@ -107,6 +114,7 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
     playlistTrackCount,
     playlistDurationString,
     playlistRating,
+    playlistIsFavourite,
 
     playlistTracks: sortedPlaylistTracks,
     playlistOrder,
@@ -118,8 +126,9 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
       album: colPlaylistAlbum,
       codec: colPlaylistCodec,
       bitrate: colPlaylistBitrate,
-      userRating: colPlaylistUserRating,
       duration: colPlaylistDuration,
+      userRating: platformOpts.enableUserRating && colPlaylistUserRating,
+      isFavourite: platformOpts.enableIsFavourite && colPlaylistIsFavourite,
     },
     setColumnVisibility,
   };

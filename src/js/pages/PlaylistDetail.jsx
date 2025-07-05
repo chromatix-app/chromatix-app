@@ -2,11 +2,12 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { FilterMenu, ListTable, Loading, StarRating, TitleHeading } from 'js/components';
+import { Favourite, FilterMenu, ViewList, Loading, StarRating, TitleHeading } from 'js/components';
 import { useGetPlaylistDetail } from 'js/hooks';
+import platformFeatures from 'js/_config/platformFeatures';
 
 // ======================================================================
 // COMPONENT
@@ -17,6 +18,9 @@ const PlaylistDetail = () => {
 
   const dispatch = useDispatch();
 
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
+
   const {
     playlistInfo,
     playlistThumb,
@@ -24,6 +28,7 @@ const PlaylistDetail = () => {
     playlistTrackCount,
     playlistDurationString,
     playlistRating,
+    playlistIsFavourite,
     playlistTracks,
     playlistOrder,
     playlistSortString,
@@ -59,8 +64,10 @@ const PlaylistDetail = () => {
           doPlay={doPlay}
           isListView={isListView}
           libraryId={libraryId}
+          platformOpts={platformOpts}
           playlistDurationString={playlistDurationString}
           playlistId={playlistId}
+          playlistIsFavourite={playlistIsFavourite}
           playlistRating={playlistRating}
           playlistThumb={playlistThumb}
           playlistTitle={playlistTitle}
@@ -71,7 +78,7 @@ const PlaylistDetail = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isListView && (
-        <ListTable
+        <ViewList
           variant="playlistTracks"
           playlistId={playlistId}
           entries={playlistTracks}
@@ -84,8 +91,10 @@ const PlaylistDetail = () => {
             doPlay={doPlay}
             isListView={isListView}
             libraryId={libraryId}
+            platformOpts={platformOpts}
             playlistDurationString={playlistDurationString}
             playlistId={playlistId}
+            playlistIsFavourite={playlistIsFavourite}
             playlistRating={playlistRating}
             playlistThumb={playlistThumb}
             playlistTitle={playlistTitle}
@@ -93,7 +102,7 @@ const PlaylistDetail = () => {
             playlistTracks={playlistTracks}
             setColumnVisibility={setColumnVisibility}
           />
-        </ListTable>
+        </ViewList>
       )}
     </>
   );
@@ -104,8 +113,10 @@ const Title = ({
   doPlay,
   isListView,
   libraryId,
+  platformOpts,
   playlistDurationString,
   playlistId,
+  playlistIsFavourite,
   playlistRating,
   playlistThumb,
   playlistTitle,
@@ -122,10 +133,45 @@ const Title = ({
       detail={
         playlistTracks ? (
           <>
-            {playlistDurationString}
-            {playlistDurationString && ' • '}
+            {[
+              platformOpts.enableIsFavourite && (
+                <Favourite
+                  key="favourite"
+                  variant="title"
+                  type="playlist"
+                  itemId={playlistId}
+                  isFavourite={playlistIsFavourite}
+                  editable
+                />
+              ),
+              playlistDurationString,
+              platformOpts.enableUserRating && (
+                <StarRating
+                  key="rating"
+                  variant="title"
+                  type="playlist"
+                  ratingKey={playlistId}
+                  rating={playlistRating}
+                  editable
+                />
+              ),
+            ]
+              .filter(Boolean)
+              .reduce((acc, item, index) => {
+                if (index === 0) return [item];
 
-            <StarRating variant="title" type="playlist" ratingKey={playlistId} rating={playlistRating} editable />
+                // Check if the first item is a Favourite component
+                const firstItem = acc[0];
+                const isFirstItemFavourite = firstItem?.key === 'favourite';
+                const separator =
+                  index === 1 && isFirstItemFavourite ? (
+                    <span key={`sep-${index}`}>&nbsp; </span>
+                  ) : (
+                    <span key={`sep-${index}`}> • </span>
+                  );
+
+                return [...acc, separator, item];
+              }, [])}
           </>
         ) : (
           <>&nbsp;</>
@@ -174,11 +220,24 @@ const Title = ({
               attr: 'colPlaylistDuration',
               checked: colOptions.duration,
             },
-            {
-              label: 'Rating',
-              attr: 'colPlaylistUserRating',
-              checked: colOptions.userRating,
-            },
+            ...(platformOpts?.enableIsFavourite
+              ? [
+                  {
+                    label: 'Favourite',
+                    attr: 'colPlaylistIsFavourite',
+                    checked: colOptions.isFavourite,
+                  },
+                ]
+              : []),
+            ...(platformOpts?.enableUserRating
+              ? [
+                  {
+                    label: 'Rating',
+                    attr: 'colPlaylistUserRating',
+                    checked: colOptions.userRating,
+                  },
+                ]
+              : []),
           ]}
         />
       }

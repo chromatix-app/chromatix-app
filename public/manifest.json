@@ -1,9 +1,10 @@
 {
-  "name": "Music",
-  "short_name": "Music",
+  "name": "Chromatix",
+  "short_name": "Chromatix",
+  "description": "Chromatix is a desktop music player for Plex, that transforms your listening experience and makes interacting with your music libraries a joy.",
   "lang": "en-GB",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "landscape",
   "start_url": "/",
   "scope": "/",
   "icons": [

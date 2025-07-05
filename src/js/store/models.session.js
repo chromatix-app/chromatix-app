@@ -53,8 +53,10 @@ const sessionState = {
   menuShowAlbumMoods: true,
   menuShowArtistStyles: true,
   menuShowAlbumStyles: true,
+  menuShowArtistTags: true,
+  menuShowAlbumTags: true,
 
-  optionLogPlexPlayback: true,
+  optionLogPlaybackToServer: true,
   optionSortNumbersFirst: false,
   optionSortIgnoreLeadingArticles: true,
   optionShowFullTitles_Deprecated: false,
@@ -91,6 +93,10 @@ const sessionState = {
   viewArtistStyleItems: 'grid',
   viewAlbumStyles: 'grid',
   viewAlbumStyleItems: 'grid',
+  viewArtistTags: 'grid',
+  viewArtistTagItems: 'grid',
+  viewAlbumTags: 'grid',
+  viewAlbumTagItems: 'grid',
 
   // VIEW SORTING OPTIONS
 
@@ -118,6 +124,10 @@ const sessionState = {
   sortArtistStyleItems: 'title',
   sortAlbumStyles: 'title',
   sortAlbumStyleItems: 'title',
+  sortArtistTags: 'title',
+  sortArtistTagItems: 'title',
+  sortAlbumTags: 'title',
+  sortAlbumTagItems: 'title',
 
   // VIEW ORDERING OPTIONS
 
@@ -143,6 +153,10 @@ const sessionState = {
   orderArtistStyleItems: 'asc',
   orderAlbumStyles: 'asc',
   orderAlbumStyleItems: 'asc',
+  orderArtistTags: 'asc',
+  orderArtistTagItems: 'asc',
+  orderAlbumTags: 'asc',
+  orderAlbumTagItems: 'asc',
 
   // ARTIST DETAIL OPTIONS
 
@@ -158,6 +172,13 @@ const sessionState = {
   gridPlaylistsUserRating: true,
   gridCollectionsUserRating: true,
 
+  gridArtistsIsFavourite: true,
+  gridArtistAlbumsIsFavourite: true,
+  gridArtistCollectionItemsIsFavourite: true,
+  gridAlbumsIsFavourite: true,
+  gridAlbumCollectionItemsIsFavourite: true,
+  gridPlaylistsIsFavourite: true,
+
   // LIST VIEW COLUMN VISIBILITY OPTIONS
 
   colArtistsCountry: true,
@@ -165,12 +186,14 @@ const sessionState = {
   colArtistsAddedAt: false,
   colArtistsLastPlayed: false,
   colArtistsUserRating: true,
+  colArtistsIsFavourite: true,
 
   colArtistAlbumsGenre: false,
   colArtistAlbumsReleaseDate: true,
   colArtistAlbumsAddedAt: false,
   colArtistAlbumsLastPlayed: false,
   colArtistAlbumsUserRating: true,
+  colArtistAlbumsIsFavourite: true,
 
   colArtistTracksArtwork: true,
   colArtistTracksArtist: false,
@@ -180,6 +203,7 @@ const sessionState = {
   colArtistTracksBitrate: false,
   colArtistTracksDuration: true,
   colArtistTracksUserRating: true,
+  colArtistTracksIsFavourite: true,
 
   colAlbumsArtist: true,
   colAlbumsGenre: false,
@@ -187,12 +211,14 @@ const sessionState = {
   colAlbumsAddedAt: false,
   colAlbumsLastPlayed: false,
   colAlbumsUserRating: true,
+  colAlbumsIsFavourite: true,
 
   colAlbumArtist: true,
   colAlbumCodec: false,
   colAlbumBitrate: false,
   colAlbumDuration: true,
   colAlbumUserRating: true,
+  colAlbumIsFavourite: true,
 
   colFoldersKind: true,
 
@@ -201,6 +227,7 @@ const sessionState = {
   colPlaylistsAddedAt: false,
   colPlaylistsLastPlayed: false,
   colPlaylistsUserRating: true,
+  colPlaylistsIsFavourite: true,
 
   colPlaylistArtwork: true,
   colPlaylistArtist: true,
@@ -209,6 +236,7 @@ const sessionState = {
   colPlaylistBitrate: false,
   colPlaylistDuration: true,
   colPlaylistUserRating: true,
+  colPlaylistIsFavourite: true,
 
   colCollectionAddedAt: true,
   colCollectionUserRating: true,
@@ -218,6 +246,7 @@ const sessionState = {
   colCollectionArtistsAddedAt: false,
   colCollectionArtistsLastPlayed: false,
   colCollectionArtistsUserRating: true,
+  colCollectionArtistsIsFavourite: true,
 
   colCollectionAlbumsArtist: true,
   colCollectionAlbumsGenre: false,
@@ -225,6 +254,7 @@ const sessionState = {
   colCollectionAlbumsAddedAt: false,
   colCollectionAlbumsLastPlayed: false,
   colCollectionAlbumsUserRating: true,
+  colCollectionAlbumsIsFavourite: true,
 };
 
 const playingState = {
@@ -485,8 +515,17 @@ const effects = (dispatch) => ({
       const sessionKey = config.storageSessionKey + '-' + userHash;
       try {
         localStorageState = localStorage.getItem(sessionKey) ? JSON.parse(localStorage.getItem(sessionKey)) : {};
-        // NOTE: bug fix - cleaning up some data that should never have been saved here
+
+        // NOTE: this is here for backwards compatibility
+        if (typeof localStorageState.optionLogPlexPlayback !== 'undefined') {
+          console.log('%c--- migrating optionLogPlexPlayback to optionLogPlaybackToServer ---', 'color:#0f60b7');
+          localStorageState.optionLogPlaybackToServer = localStorageState.optionLogPlexPlayback;
+          delete localStorageState.optionLogPlexPlayback;
+        }
+
+        // NOTE: this is here to clean up some old data that should never have been saved here
         if (localStorageState.appModel) {
+          console.log('%c--- removing appModel from localStorageState ---', 'color:#0f60b7');
           delete localStorageState.appModel;
 
           if (localStorageState.persistentModel) {
@@ -523,7 +562,7 @@ const effects = (dispatch) => ({
       currentLibrary: null,
       ...Object.assign({}, playingState),
     });
-    dispatch.appModel.clearPlexServerState();
+    dispatch.appModel.clearServerState();
   },
 
   switchCurrentServer(payload, rootState) {
@@ -532,7 +571,7 @@ const effects = (dispatch) => ({
     const currentServerId = currentServer ? currentServer.serverId : null;
     if (currentServerId !== payload) {
       plexTools.abortAllRequests();
-      // TODO
+      // TODO: update this
       const newServer = rootState.appModel.allServers.find((server) => server.serverId === payload);
       // TODO: what if currentServer is null?
       dispatch.sessionModel.setSessionState({
@@ -542,7 +581,7 @@ const effects = (dispatch) => ({
         currentLibrary: null,
         ...Object.assign({}, playingState),
       });
-      dispatch.appModel.clearPlexServerState();
+      dispatch.appModel.clearServerState();
       dispatch.persistentModel.clearHistoryState();
     }
   },
@@ -558,7 +597,7 @@ const effects = (dispatch) => ({
       dispatch.sessionModel.setSessionState({
         currentLibrary: newLibrary,
       });
-      dispatch.appModel.clearPlexLibraryState();
+      dispatch.appModel.clearLibraryState();
       dispatch.persistentModel.clearHistoryState();
     }
   },

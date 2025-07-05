@@ -10,7 +10,8 @@ import * as RadixPopover from '@radix-ui/react-popover';
 import { Icon, UserMenu } from 'js/components';
 import { useKeyControl, useNavigationHistory } from 'js/hooks';
 import { electronPlatform } from 'js/utils';
-import * as plex from 'js/services/plex';
+import * as bridge from 'js/services/bridge';
+import platformFeatures from 'js/_config/platformFeatures';
 
 import style from './SideBar.module.scss';
 
@@ -22,6 +23,8 @@ const SideBar = () => {
   const dispatch = useDispatch();
 
   const { canGoBack, canGoForward, goBack, goForward } = useNavigationHistory();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
 
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
 
@@ -46,6 +49,8 @@ const SideBar = () => {
   const menuShowAlbumStyles = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumStyles);
   const menuShowArtistMoods = useSelector(({ sessionModel }) => sessionModel.menuShowArtistMoods);
   const menuShowAlbumMoods = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumMoods);
+  const menuShowArtistTags = useSelector(({ sessionModel }) => sessionModel.menuShowArtistTags);
+  const menuShowAlbumTags = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumTags);
 
   const currentLibraryId = currentLibrary?.libraryId;
 
@@ -53,23 +58,27 @@ const SideBar = () => {
     (playlist) => playlist.libraryId === currentLibraryId
   );
 
-  const libraryIsVisible = menuShowArtists || menuShowAlbums || menuShowPlaylists;
-  const browseIsVisible =
-    menuShowArtistCollections ||
-    menuShowAlbumCollections ||
-    menuShowArtistGenres ||
-    menuShowAlbumGenres ||
-    menuShowArtistMoods ||
-    menuShowAlbumMoods ||
-    menuShowArtistStyles ||
-    menuShowAlbumStyles;
-  const playlistsIsVisible = menuShowAllPlaylists && allPlaylists && allPlaylists.length > 0;
-
   const browseIsOpen = menuShowSeparateBrowseSection ? menuOpenBrowse : menuOpenLibrary;
+
+  const platformOpts = platformFeatures[currentService] || {};
+
+  const browseIsVisible =
+    (menuShowArtistCollections && platformOpts.menuArtistCollections) ||
+    (menuShowAlbumCollections && platformOpts.menuAlbumCollections) ||
+    (menuShowArtistGenres && platformOpts.menuArtistGenres) ||
+    (menuShowAlbumGenres && platformOpts.menuAlbumGenres) ||
+    (menuShowArtistMoods && platformOpts.menuArtistMoods) ||
+    (menuShowAlbumMoods && platformOpts.menuAlbumMoods) ||
+    (menuShowArtistStyles && platformOpts.menuArtistStyles) ||
+    (menuShowAlbumStyles && platformOpts.menuAlbumStyles) ||
+    (menuShowArtistTags && platformOpts.menuArtistTags) ||
+    (menuShowAlbumTags && platformOpts.menuAlbumTags);
+  const libraryIsVisible = menuShowArtists || menuShowAlbums || menuShowPlaylists;
+  const playlistsIsVisible = menuShowAllPlaylists && allPlaylists && allPlaylists.length > 0;
 
   // Get playlists on load
   useEffect(() => {
-    plex.getAllPlaylists();
+    bridge.getAllPlaylists();
   }, []);
 
   return (
@@ -130,7 +139,7 @@ const SideBar = () => {
                     Albums
                   </NavLink>
                 )}
-                {menuShowFolders && (
+                {menuShowFolders && platformOpts.menuFolders && (
                   <NavLink className={style.link} activeClassName={style.linkActive} to="/folders" draggable="false">
                     {menuShowIcons && (
                       <span className={style.icon}>
@@ -182,7 +191,7 @@ const SideBar = () => {
             )}
             {browseIsOpen && (
               <>
-                {menuShowArtistCollections && (
+                {menuShowArtistCollections && platformOpts.menuArtistCollections && (
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
@@ -197,7 +206,7 @@ const SideBar = () => {
                     Artist Collections
                   </NavLink>
                 )}
-                {menuShowAlbumCollections && (
+                {menuShowAlbumCollections && platformOpts.menuAlbumCollections && (
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
@@ -212,7 +221,7 @@ const SideBar = () => {
                     Album Collections
                   </NavLink>
                 )}
-                {menuShowArtistGenres && (
+                {menuShowArtistGenres && platformOpts.menuArtistGenres && (
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
@@ -227,7 +236,7 @@ const SideBar = () => {
                     Artist Genres
                   </NavLink>
                 )}
-                {menuShowAlbumGenres && (
+                {menuShowAlbumGenres && platformOpts.menuAlbumGenres && (
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
@@ -242,7 +251,7 @@ const SideBar = () => {
                     Album Genres
                   </NavLink>
                 )}
-                {menuShowArtistMoods && (
+                {menuShowArtistMoods && platformOpts.menuArtistStyles && (
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
@@ -257,7 +266,7 @@ const SideBar = () => {
                     Artist Moods
                   </NavLink>
                 )}
-                {menuShowAlbumMoods && (
+                {menuShowAlbumMoods && platformOpts.menuAlbumStyles && (
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
@@ -272,7 +281,7 @@ const SideBar = () => {
                     Album Moods
                   </NavLink>
                 )}
-                {menuShowArtistStyles && (
+                {menuShowArtistStyles && platformOpts.menuArtistMoods && (
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
@@ -287,7 +296,7 @@ const SideBar = () => {
                     Artist Styles
                   </NavLink>
                 )}
-                {menuShowAlbumStyles && (
+                {menuShowAlbumStyles && platformOpts.menuAlbumMoods && (
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
@@ -300,6 +309,31 @@ const SideBar = () => {
                       </span>
                     )}
                     Album Styles
+                  </NavLink>
+                )}
+                {menuShowArtistTags && platformOpts.menuArtistTags && (
+                  <NavLink
+                    className={style.link}
+                    activeClassName={style.linkActive}
+                    to="/artist-tags"
+                    draggable="false"
+                  >
+                    {menuShowIcons && (
+                      <span className={style.icon}>
+                        <Icon icon="ArtistTagsIcon" cover stroke />
+                      </span>
+                    )}
+                    Artist Tags
+                  </NavLink>
+                )}
+                {menuShowAlbumTags && platformOpts.menuAlbumTags && (
+                  <NavLink className={style.link} activeClassName={style.linkActive} to="/album-tags" draggable="false">
+                    {menuShowIcons && (
+                      <span className={style.icon}>
+                        <Icon icon="AlbumTagsIcon" cover stroke />
+                      </span>
+                    )}
+                    Album Tags
                   </NavLink>
                 )}
               </>
@@ -414,7 +448,7 @@ const SearchField = () => {
   // Submit search value when the debounced value changes
   useEffect(() => {
     if (debouncedSearchValue && debouncedSearchValue.length > 1) {
-      plex.searchLibrary(debouncedSearchValue);
+      bridge.searchLibrary(debouncedSearchValue);
       if (!searchResultsVisible) {
         setSearchResultsVisible(true);
       }

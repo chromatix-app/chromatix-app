@@ -2,19 +2,21 @@
 // IMPORTS
 // ======================================================================
 
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import {
   FilterMenu,
   FilterSelect,
   FilterToggle,
-  ListCards,
-  ListTable,
+  ViewGrid,
+  ViewList,
   Loading,
   StarRating,
   TitleHeading,
 } from 'js/components';
 import { useGetCollectionItems } from 'js/hooks';
+import platformFeatures from 'js/_config/platformFeatures';
 
 // ======================================================================
 // COMPONENT
@@ -22,6 +24,9 @@ import { useGetCollectionItems } from 'js/hooks';
 
 const AlbumCollectionItems = () => {
   const { libraryId, collectionId } = useParams();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
 
   const {
     collectionInfo,
@@ -71,6 +76,7 @@ const AlbumCollectionItems = () => {
           isListView={isListView}
           libraryId={libraryId}
           orderCollectionItems={orderCollectionItems}
+          platformOpts={platformOpts}
           setColumnVisibility={setColumnVisibility}
           setOrderCollectionItems={setOrderCollectionItems}
           setSortCollectionItems={setSortCollectionItems}
@@ -82,7 +88,7 @@ const AlbumCollectionItems = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ListCards variant={'albums'} entries={sortedCollectionItems} showRatings={gridOptions.userRating}>
+        <ViewGrid variant="albums" entries={sortedCollectionItems} showRatings={gridOptions.userRating}>
           <Title
             collectionId={collectionId}
             collectionRating={collectionRating}
@@ -94,6 +100,7 @@ const AlbumCollectionItems = () => {
             isListView={isListView}
             libraryId={libraryId}
             orderCollectionItems={orderCollectionItems}
+            platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderCollectionItems={setOrderCollectionItems}
             setSortCollectionItems={setSortCollectionItems}
@@ -102,10 +109,10 @@ const AlbumCollectionItems = () => {
             sortedCollectionItems={sortedCollectionItems}
             viewCollectionItems={viewCollectionItems}
           />
-        </ListCards>
+        </ViewGrid>
       )}
       {isListView && (
-        <ListTable
+        <ViewList
           variant="albumCollectionItems"
           entries={sortedCollectionItems}
           sortKey={sortCollectionItems}
@@ -123,6 +130,7 @@ const AlbumCollectionItems = () => {
             isListView={isListView}
             libraryId={libraryId}
             orderCollectionItems={orderCollectionItems}
+            platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderCollectionItems={setOrderCollectionItems}
             setSortCollectionItems={setSortCollectionItems}
@@ -131,7 +139,7 @@ const AlbumCollectionItems = () => {
             sortedCollectionItems={sortedCollectionItems}
             viewCollectionItems={viewCollectionItems}
           />
-        </ListTable>
+        </ViewList>
       )}
     </>
   );
@@ -148,6 +156,7 @@ const Title = ({
   isListView,
   libraryId,
   orderCollectionItems,
+  platformOpts,
   setColumnVisibility,
   setOrderCollectionItems,
   setSortCollectionItems,
@@ -162,7 +171,12 @@ const Title = ({
       thumb={collectionThumb}
       title={collectionTitle}
       detail={
-        <StarRating variant="title" type="collection" ratingKey={collectionId} rating={collectionRating} editable />
+        // Note: if adding fields here in future, use array structure as per AlbumDetail etc
+        <>
+          {platformOpts.enableUserRating && (
+            <StarRating variant="title" type="collection" ratingKey={collectionId} rating={collectionRating} editable />
+          )}
+        </>
       }
       subtitle={
         sortedCollectionItems ? (
@@ -195,7 +209,7 @@ const Title = ({
                   { value: 'addedAt', label: 'Date added' },
                   { value: 'lastPlayed', label: 'Date played' },
                   { value: 'releaseDate', label: 'Date released' },
-                  { value: 'userRating', label: 'Rating' },
+                  ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
                 ]}
                 setter={setSortCollectionItems}
               />
@@ -213,11 +227,15 @@ const Title = ({
                 icon="CogIcon"
                 setter={setColumnVisibility}
                 entries={[
-                  {
-                    label: 'Show star ratings',
-                    attr: 'gridAlbumCollectionItemsUserRating',
-                    checked: gridOptions.userRating,
-                  },
+                  ...(platformOpts?.enableUserRating
+                    ? [
+                        {
+                          label: 'Show star ratings',
+                          attr: 'gridAlbumCollectionItemsUserRating',
+                          checked: gridOptions.userRating,
+                        },
+                      ]
+                    : []),
                 ]}
               />
             </>
@@ -258,11 +276,15 @@ const Title = ({
                   attr: 'colCollectionAlbumsLastPlayed',
                   checked: colOptions.lastPlayed,
                 },
-                {
-                  label: 'Rating',
-                  attr: 'colCollectionAlbumsUserRating',
-                  checked: colOptions.userRating,
-                },
+                ...(platformOpts?.enableUserRating
+                  ? [
+                      {
+                        label: 'Rating',
+                        attr: 'colCollectionAlbumsUserRating',
+                        checked: colOptions.userRating,
+                      },
+                    ]
+                  : []),
               ]}
             />
           )}

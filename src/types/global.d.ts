@@ -6,12 +6,17 @@ declare global {
       appVersion?: string | null;
       buildDate?: string | null;
     };
-    ipcRenderer: {
+    ipcRenderer?: {
       send: (key: string, data: any) => void;
+      on: (channel: string, callback: (event: any, ...args: any[]) => void) => void;
     };
     // umami: {
     //   track: (event: string, props: object) => void;
     // };
+  }
+
+  interface Navigator {
+    standalone?: boolean;
   }
 }
 
