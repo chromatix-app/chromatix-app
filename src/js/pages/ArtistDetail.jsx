@@ -396,11 +396,6 @@ const Title = ({
                 icon="CogIcon"
                 setter={setColumnVisibility}
                 entries={[
-                  {
-                    label: 'Group by type',
-                    attr: 'artistAlbumsGroupByType',
-                    checked: artistAlbumsGroupByType,
-                  },
                   ...(platformOpts?.enableIsFavourite
                     ? [
                         {
@@ -419,6 +414,14 @@ const Title = ({
                         },
                       ]
                     : []),
+                  {
+                    variant: 'divider',
+                  },
+                  {
+                    label: 'Group by type',
+                    attr: 'artistAlbumsGroupByType',
+                    checked: artistAlbumsGroupByType,
+                  },
                 ]}
               />
             </>
