@@ -17,7 +17,7 @@ import 'css/styles.scss';
 // INIT
 // ======================================================================
 
-const buildDate = moment(process.env.REACT_APP_DATE * 1000).format('DD/MM/YYYY HH:mm:ss');
+const buildDate: string = moment(Number(process.env.REACT_APP_DATE) * 1000).format('DD/MM/YYYY HH:mm:ss');
 
 console.log(
   '%c*************** INIT - ' +
@@ -35,6 +35,10 @@ console.log(
 // ======================================================================
 
 const container = document.getElementById('root');
+if (!container) {
+  throw new Error('Root container not found');
+}
+
 const root = createRoot(container);
 
 root.render(

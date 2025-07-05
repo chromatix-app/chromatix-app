@@ -1,6 +1,5 @@
 export * from './environment';
 
-export { default as addedAtToString } from './addedAtToString';
 export { default as analyticsEvent } from './analyticsEvent';
 export { default as decimalMultiplier } from './decimalMultiplier';
 export { default as decimalToHex } from './decimalToHex';

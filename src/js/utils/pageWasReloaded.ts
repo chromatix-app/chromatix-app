@@ -1,3 +1,9 @@
+/**
+ * Determines if the current page was loaded via a browser reload.
+ * Uses modern PerformanceNavigationTiming API with fallback to deprecated navigation API.
+ * @returns True if page was reloaded, false otherwise
+ */
+
 const pageWasReloaded = (): boolean => {
   // Check if the page was reloaded using the modern PerformanceNavigationTiming API
   if (performance && performance.getEntriesByType) {

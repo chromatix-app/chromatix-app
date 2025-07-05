@@ -1,5 +1,11 @@
 import moment from 'moment';
 
+/**
+ * Formats a timestamp as a relative time string (e.g., "2 hours ago", "3 days ago").
+ * @param timeStamp - Unix timestamp in seconds
+ * @returns Formatted relative time string, or null if timestamp is invalid
+ */
+
 const formatRecentDate = (timeStamp: number): string | null => {
   // Convert timestamp to milliseconds and create a moment object
   const timeMoment = moment(timeStamp * 1000);

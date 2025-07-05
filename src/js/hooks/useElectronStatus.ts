@@ -3,15 +3,20 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { electronPlatform, isElectron, sendToElectron } from 'js/utils';
 
-const useElectronStatus = () => {
+/**
+ * Custom hook that manages Electron integration for media controls and status updates.
+ * Sends player status to Electron and listens for media control messages from the main process.
+ */
+
+const useElectronStatus = (): void => {
   const dispatch = useDispatch();
 
   const inited = useRef(false);
 
-  const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
-  const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
-  const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
-  const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
+  const playerPlaying = useSelector(({ playerModel }: any) => playerModel.playerPlaying);
+  const playingTrackList = useSelector(({ sessionModel }: any) => sessionModel.playingTrackList);
+  const playingTrackIndex = useSelector(({ sessionModel }: any) => sessionModel.playingTrackIndex);
+  const playingTrackKeys = useSelector(({ sessionModel }: any) => sessionModel.playingTrackKeys);
 
   const trackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
   const isDisabled = !trackCurrent ? true : false;
@@ -47,7 +52,7 @@ const useElectronStatus = () => {
   useEffect(() => {
     try {
       if (!inited.current && window.ipcRenderer) {
-        window.ipcRenderer.on('message', function (_event, message) {
+        window.ipcRenderer.on('message', function (_event: any, message: string) {
           if (enableStatus) {
             console.log('%c--- from electron - ' + message + ' ---', 'font-weight:bold;');
             try {

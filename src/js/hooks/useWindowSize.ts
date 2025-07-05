@@ -1,6 +1,22 @@
 import { useEffect, useState, useRef } from 'react';
 
-const getScreenSize = () => {
+interface WindowSize {
+  windowWidth: number;
+  windowHeight: number;
+  screenWidth: number;
+  screenHeight: number;
+}
+
+interface ScreenSize {
+  screenWidth: number;
+  screenHeight: number;
+}
+
+/**
+ * Gets the current screen dimensions, handling standalone app orientation changes.
+ * @returns Screen width and height dimensions
+ */
+const getScreenSize = (): ScreenSize => {
   let screenWidth = window.innerWidth;
   let screenHeight = window.innerHeight;
   if (window.navigator && !!window.navigator.standalone) {
@@ -18,17 +34,27 @@ const getScreenSize = () => {
   };
 };
 
-const useWindowSize = (debounce = 100) => {
-  const [windowSize, setWindowSize] = useState({
+/**
+ * Hook that tracks window and screen dimensions with debounced updates.
+ * @param debounce - Milliseconds to debounce resize events (default: 100)
+ * @returns Object containing windowWidth, windowHeight, screenWidth, and screenHeight
+ * @example
+ * ```tsx
+ * const { windowWidth, windowHeight } = useWindowSize();
+ * const { screenWidth, screenHeight } = useWindowSize(200);
+ * ```
+ */
+const useWindowSize = (debounce: number = 100): WindowSize => {
+  const [windowSize, setWindowSize] = useState<WindowSize>({
     windowWidth: window.innerWidth,
     windowHeight: window.innerHeight,
     ...getScreenSize(),
   });
 
-  const timerIdRef = useRef(null);
+  const timerIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    function handleResize() {
+    function handleResize(): void {
       if (timerIdRef.current) {
         clearTimeout(timerIdRef.current);
       }

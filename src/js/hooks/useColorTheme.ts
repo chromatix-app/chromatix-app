@@ -1,48 +1,56 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+// @ts-ignore - No type definitions available for chroma-js
 import chroma from 'chroma-js';
 
 import { themes } from 'js/_config/themes';
 import { decimalMultiplier, decimalToHex, sendToElectron } from 'js/utils';
 
-function useColorTheme() {
+/**
+ * Custom hook that manages dynamic color theming for the application.
+ * Calculates and applies CSS custom properties based on theme selection and accessibility settings.
+ */
+
+function useColorTheme(): void {
   const defaultTheme = 'chromatix';
 
-  const accessibilityContrast = useSelector(({ sessionModel }) => sessionModel.accessibilityContrast);
+  const accessibilityContrast = useSelector(({ sessionModel }: any) => sessionModel.accessibilityContrast);
 
-  const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
-  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
-  const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
+  const currentServer = useSelector(({ sessionModel }: any) => sessionModel.currentServer);
+  const currentLibrary = useSelector(({ sessionModel }: any) => sessionModel.currentLibrary);
+  const queueIsVisible = useSelector(({ sessionModel }: any) => sessionModel.queueIsVisible);
 
   const hasSelectedLibrary = currentServer && currentLibrary;
   const hasQueueVisible = queueIsVisible && hasSelectedLibrary;
 
-  const currentTheme = useSelector(({ sessionModel }) => sessionModel.currentTheme);
+  const currentTheme = useSelector(({ sessionModel }: any) => sessionModel.currentTheme);
 
-  const currentColorBackground = useSelector(({ sessionModel }) => sessionModel.currentColorBackground);
-  const currentColorPrimary = useSelector(({ sessionModel }) => sessionModel.currentColorPrimary);
-  const currentColorText = useSelector(({ sessionModel }) => sessionModel.currentColorText);
+  const currentColorBackground = useSelector(({ sessionModel }: any) => sessionModel.currentColorBackground);
+  const currentColorPrimary = useSelector(({ sessionModel }: any) => sessionModel.currentColorPrimary);
+  const currentColorText = useSelector(({ sessionModel }: any) => sessionModel.currentColorText);
 
   useEffect(() => {
-    const actualTheme = themes[currentTheme] ? currentTheme : defaultTheme;
+    const actualTheme = themes[currentTheme as keyof typeof themes] ? currentTheme : defaultTheme;
 
-    const colorCore = currentTheme === 'custom' ? currentColorPrimary : themes[actualTheme].primary;
-    const colorText = currentTheme === 'custom' ? currentColorText : themes[actualTheme].text;
-    const colorPrimaryBackground = currentTheme === 'custom' ? currentColorBackground : themes[actualTheme].background;
+    const colorCore =
+      currentTheme === 'custom' ? currentColorPrimary : themes[actualTheme as keyof typeof themes].primary;
+    const colorText = currentTheme === 'custom' ? currentColorText : themes[actualTheme as keyof typeof themes].text;
+    const colorPrimaryBackground =
+      currentTheme === 'custom' ? currentColorBackground : themes[actualTheme as keyof typeof themes].background;
 
     const chromaMultiplier = accessibilityContrast ? 1.4 : 1.1;
     const opacityMultiplier = accessibilityContrast ? 1.6 : 1;
 
     const isLightTheme = chroma(colorPrimaryBackground).luminance() > 0.5;
 
-    let colorSecondaryBackground;
-    let colorSecondaryBorder;
-    let colorSecondaryCard;
-    let colorSecondaryHover;
-    let colorSecondaryActive;
+    let colorSecondaryBackground: string;
+    let colorSecondaryBorder: string;
+    let colorSecondaryCard: string;
+    let colorSecondaryHover: string;
+    let colorSecondaryActive: string;
 
-    let colorTertiaryBackground;
-    let colorTertiaryBorder;
+    let colorTertiaryBackground: string;
+    let colorTertiaryBorder: string;
 
     // Light theme handling
     if (isLightTheme) {
@@ -119,7 +127,7 @@ function useColorTheme() {
     const opacity07 = decimalMultiplier(opacityMultiplier, 0.7);
     const opacity08 = decimalMultiplier(opacityMultiplier, 0.8);
 
-    const colors = {
+    const colors: Record<string, string | number> = {
       '--color-core': colorCore,
       '--color-text': colorText,
       '--color-primary-background': colorPrimaryBackground,
@@ -160,7 +168,7 @@ function useColorTheme() {
     };
 
     for (const color in colors) {
-      document.documentElement.style.setProperty(color, colors[color]);
+      document.documentElement.style.setProperty(color, colors[color].toString());
     }
 
     sendToElectron('win', 'color-theme', {

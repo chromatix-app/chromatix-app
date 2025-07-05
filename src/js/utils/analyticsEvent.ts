@@ -4,6 +4,13 @@ import { isElectron, electronVersion, appPlatform } from './environment';
 
 const isLocal = process.env.REACT_APP_ENV === 'local';
 
+/**
+ * Tracks analytics events with automatic platform and environment metadata.
+ * Events are only sent in non-local environments.
+ * @param event - Event name to track
+ * @param props - Additional properties to include with the event
+ */
+
 const analyticsEvent = (event: string, props: object = {}) => {
   const finalProps = {
     ...props,

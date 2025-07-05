@@ -1,13 +1,21 @@
 import { useEffect } from 'react';
 
-const useKeyControl = (keyCombination, callback, preventDefault) => {
+/**
+ * Custom hook that sets up keyboard shortcut listeners for specific key combinations.
+ * Supports modifier keys (command/ctrl, alt, shift) and handles key combination matching.
+ * @param keyCombination - String representing the key combination (e.g., "command+k", "alt+shift+f")
+ * @param callback - Function to execute when the key combination is pressed
+ * @param preventDefault - Whether to prevent the default browser behavior for the key combination
+ */
+
+const useKeyControl = (keyCombination: string, callback: () => void, preventDefault?: boolean): void => {
   useEffect(() => {
     // console.log('Esc Bind 111');
     const keys = keyCombination.split('+').map((key) => key.trim().toLowerCase());
 
-    const handleKeyDown = (event) => {
+    const handleKeyDown = (event: KeyboardEvent): void => {
       if (event.key) {
-        const pressedKeys = [];
+        const pressedKeys: string[] = [];
         if (event.ctrlKey || event.metaKey) pressedKeys.push('command');
         if (event.altKey) pressedKeys.push('alt');
         if (event.shiftKey) pressedKeys.push('shift');
