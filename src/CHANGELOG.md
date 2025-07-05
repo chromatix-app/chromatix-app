@@ -1,4 +1,4 @@
-# 0.44.0 (2025-07-)
+# 0.44.0 (2025-07-05)
 
 Features:
 
@@ -9,7 +9,7 @@ Features:
 Refactor:
 
 - The codebase has been refactored to handle multiple services in the future (i.e. not just Plex).
-- In a future release, Jellyfin support will be added to the app. This is currently in development.
+- Files have also been reorganised and renamed for better clarity and consistency going forward.
 
 <!-- CHANGELOG SPLIT MARKER -->
 
