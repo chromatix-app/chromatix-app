@@ -7,8 +7,10 @@ const isLocal = process.env.REACT_APP_ENV === 'local';
 const analyticsEvent = (event: string, props: object = {}) => {
   const finalProps = {
     ...props,
-    isElectron: isElectron,
     appPlatform: appPlatform,
+    appVersion: process.env.REACT_APP_VERSION || 'Unknown',
+    environment: process.env.REACT_APP_ENV || 'Unknown',
+    isElectron: isElectron,
     electronVersion: electronVersion,
   };
 

@@ -2,17 +2,27 @@
 // DEFAULT (LOGGED OUT) ROUTES
 // ======================================================================
 
+const isLocal = process.env.REACT_APP_ENV === 'local';
 // const isProduction = process.env.REACT_APP_ENV === 'production';
 
 export const defaultRoutes = [
-  // index
+  // main
   {
     path: '/',
     exact: true,
-    component: 'Login',
+    component: 'Home',
   },
+  ...(isLocal
+    ? [
+        {
+          path: '/login-jellyfin',
+          exact: true,
+          component: 'LoginJelly',
+        },
+      ]
+    : []),
 
-  // other
+  // error
   {
     component: 'Error404Default',
   },
@@ -23,28 +33,33 @@ export const defaultRoutes = [
 // ======================================================================
 
 export const authRoutes = [
-  // index
+  // main
   {
     path: '/',
     exact: true,
     redirect: '/artists',
   },
   {
+    path: '/login-jellyfin',
+    exact: true,
+    redirect: '/artists',
+  },
+  {
     path: '/servers',
     exact: true,
-    component: 'ServerList',
+    component: 'ServerArray',
   },
   {
     path: '/libraries',
     exact: true,
-    component: 'LibraryList',
+    component: 'LibraryArray',
   },
 
   // artists
   {
     path: '/artists',
     exact: true,
-    component: 'ArtistList',
+    component: 'ArtistArray',
   },
   {
     path: '/artists/:libraryId',
@@ -61,7 +76,7 @@ export const authRoutes = [
   {
     path: '/albums',
     exact: true,
-    component: 'AlbumList',
+    component: 'AlbumArray',
   },
   {
     path: '/albums/:libraryId',
@@ -78,7 +93,7 @@ export const authRoutes = [
   {
     path: '/playlists',
     exact: true,
-    component: 'PlaylistList',
+    component: 'PlaylistArray',
   },
   {
     path: '/playlists/:libraryId',
@@ -95,19 +110,19 @@ export const authRoutes = [
   {
     path: '/folders',
     exact: true,
-    component: 'FolderList',
+    component: 'FolderItems',
   },
   {
     path: '/folders/:libraryId/:folderId',
     exact: true,
-    component: 'FolderList',
+    component: 'FolderItems',
   },
 
   // artist collections
   {
     path: '/artist-collections',
     exact: true,
-    component: 'ArtistCollectionList',
+    component: 'ArtistCollectionArray',
   },
   {
     path: '/artist-collections/:libraryId/:collectionId',
@@ -119,7 +134,7 @@ export const authRoutes = [
   {
     path: '/album-collections',
     exact: true,
-    component: 'AlbumCollectionList',
+    component: 'AlbumCollectionArray',
   },
   {
     path: '/album-collections/:libraryId/:collectionId',
@@ -131,7 +146,7 @@ export const authRoutes = [
   {
     path: '/artist-genres',
     exact: true,
-    component: 'ArtistGenreList',
+    component: 'ArtistGenreArray',
   },
   {
     path: '/artist-genres/:libraryId/:genreId',
@@ -143,7 +158,7 @@ export const authRoutes = [
   {
     path: '/album-genres',
     exact: true,
-    component: 'AlbumGenreList',
+    component: 'AlbumGenreArray',
   },
   {
     path: '/album-genres/:libraryId/:genreId',
@@ -151,35 +166,11 @@ export const authRoutes = [
     component: 'AlbumGenreItems',
   },
 
-  // artist styles
-  {
-    path: '/artist-styles',
-    exact: true,
-    component: 'ArtistStyleList',
-  },
-  {
-    path: '/artist-styles/:libraryId/:styleId',
-    exact: true,
-    component: 'ArtistStyleItems',
-  },
-
-  // album styles
-  {
-    path: '/album-styles',
-    exact: true,
-    component: 'AlbumStyleList',
-  },
-  {
-    path: '/album-styles/:libraryId/:styleId',
-    exact: true,
-    component: 'AlbumStyleItems',
-  },
-
   // artist moods
   {
     path: '/artist-moods',
     exact: true,
-    component: 'ArtistMoodList',
+    component: 'ArtistMoodArray',
   },
   {
     path: '/artist-moods/:libraryId/:moodId',
@@ -191,12 +182,60 @@ export const authRoutes = [
   {
     path: '/album-moods',
     exact: true,
-    component: 'AlbumMoodList',
+    component: 'AlbumMoodArray',
   },
   {
     path: '/album-moods/:libraryId/:moodId',
     exact: true,
     component: 'AlbumMoodItems',
+  },
+
+  // artist styles
+  {
+    path: '/artist-styles',
+    exact: true,
+    component: 'ArtistStyleArray',
+  },
+  {
+    path: '/artist-styles/:libraryId/:styleId',
+    exact: true,
+    component: 'ArtistStyleItems',
+  },
+
+  // album styles
+  {
+    path: '/album-styles',
+    exact: true,
+    component: 'AlbumStyleArray',
+  },
+  {
+    path: '/album-styles/:libraryId/:styleId',
+    exact: true,
+    component: 'AlbumStyleItems',
+  },
+
+  // artist tags
+  {
+    path: '/artist-tags',
+    exact: true,
+    component: 'ArtistTagArray',
+  },
+  {
+    path: '/artist-tags/:libraryId/:tagId',
+    exact: true,
+    component: 'ArtistTagItems',
+  },
+
+  // album tags
+  {
+    path: '/album-tags',
+    exact: true,
+    component: 'AlbumTagArray',
+  },
+  {
+    path: '/album-tags/:libraryId/:tagId',
+    exact: true,
+    component: 'AlbumTagItems',
   },
 
   // settings
@@ -246,14 +285,18 @@ export const authRoutes = [
     component: 'SettingsMenu',
   },
 
-  // dev
-  {
-    path: '/icons',
-    exact: true,
-    component: 'DevIcons',
-  },
+  // dev tools
+  ...(isLocal
+    ? [
+        {
+          path: '/icons',
+          exact: true,
+          component: 'DevIcons',
+        },
+      ]
+    : []),
 
-  // other
+  // error
   {
     component: 'Error404Auth',
   },

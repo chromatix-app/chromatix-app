@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import clsx from 'clsx';
 
 import { Icon } from 'js/components';
-import * as plex from 'js/services/plex';
+import * as bridge from 'js/services/bridge';
 
 import style from './StarRating.module.scss';
 
@@ -31,7 +31,7 @@ const StarRating = ({
     (e) => {
       e.preventDefault();
       e.stopPropagation();
-      plex.setStarRating(type, ratingKey, parseInt(e.target.dataset.value));
+      bridge.setStarRating(type, ratingKey, parseInt(e.target.dataset.value));
     },
     [type, ratingKey]
   );

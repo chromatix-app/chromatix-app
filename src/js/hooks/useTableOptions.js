@@ -54,7 +54,8 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
     variant === 'artistCollectionItems' ||
     variant === 'artistGenreItems' ||
     variant === 'artistMoodItems' ||
-    variant === 'artistStyleItems'
+    variant === 'artistStyleItems' ||
+    variant === 'artistTagItems'
   ) {
     tableVariant = 'artists';
     tableOptions = [
@@ -112,10 +113,18 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
       {
         colKey: 'userRating',
         label: 'Rating',
-        colWidth: '0.5fr',
+        colWidth: 'minmax(84px, auto)',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
         visible: colOptions?.userRating !== false,
+      },
+      {
+        colKey: 'isFavourite',
+        label: 'Favourite',
+        colWidth: 'minmax(72px, auto)',
+        isAsc: sortKey === 'isFavourite' && orderKey === 'asc',
+        isDesc: sortKey === 'isFavourite' && orderKey === 'desc',
+        visible: colOptions?.isFavourite !== false,
       },
     ];
   }
@@ -208,10 +217,18 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
       {
         colKey: 'userRating',
         label: 'Rating',
-        colWidth: '0.5fr',
+        colWidth: 'minmax(84px, auto)',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
         visible: colOptions?.userRating !== false,
+      },
+      {
+        colKey: 'isFavourite',
+        label: 'Favourite',
+        colWidth: 'minmax(72px, auto)',
+        isAsc: sortKey === 'isFavourite' && orderKey === 'asc',
+        isDesc: sortKey === 'isFavourite' && orderKey === 'desc',
+        visible: colOptions?.isFavourite !== false,
       },
     ];
   }
@@ -223,7 +240,8 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
     variant === 'albumCollectionItems' ||
     variant === 'albumGenreItems' ||
     variant === 'albumMoodItems' ||
-    variant === 'albumStyleItems'
+    variant === 'albumStyleItems' ||
+    variant === 'albumTagItems'
   ) {
     tableVariant = 'albums';
     tableOptions = [
@@ -290,10 +308,18 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
       {
         colKey: 'userRating',
         label: 'Rating',
-        colWidth: '0.5fr',
+        colWidth: 'minmax(84px, auto)',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
         visible: colOptions?.userRating !== false,
+      },
+      {
+        colKey: 'isFavourite',
+        label: 'Favourite',
+        colWidth: 'minmax(72px, auto)',
+        isAsc: sortKey === 'isFavourite' && orderKey === 'asc',
+        isDesc: sortKey === 'isFavourite' && orderKey === 'desc',
+        visible: colOptions?.isFavourite !== false,
       },
     ];
   }
@@ -356,10 +382,18 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
       {
         colKey: 'userRating',
         label: 'Rating',
-        colWidth: '0.6fr',
+        colWidth: 'minmax(84px, auto)',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
         visible: colOptions?.userRating !== false,
+      },
+      {
+        colKey: 'isFavourite',
+        label: 'Favourite',
+        colWidth: 'minmax(72px, auto)',
+        isAsc: sortKey === 'isFavourite' && orderKey === 'asc',
+        isDesc: sortKey === 'isFavourite' && orderKey === 'desc',
+        visible: colOptions?.isFavourite !== false,
       },
     ];
   }
@@ -467,10 +501,18 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
       {
         colKey: 'userRating',
         label: 'Rating',
-        colWidth: '0.5fr',
+        colWidth: 'minmax(84px, auto)',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
         visible: colOptions?.userRating !== false,
+      },
+      {
+        colKey: 'isFavourite',
+        label: 'Favourite',
+        colWidth: 'minmax(72px, auto)',
+        isAsc: sortKey === 'isFavourite' && orderKey === 'asc',
+        isDesc: sortKey === 'isFavourite' && orderKey === 'desc',
+        visible: colOptions?.isFavourite !== false,
       },
     ];
   }
@@ -555,10 +597,18 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
       {
         colKey: 'userRating',
         label: 'Rating',
-        colWidth: '0.5fr',
+        colWidth: 'minmax(84px, auto)',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
         visible: colOptions?.userRating !== false,
+      },
+      {
+        colKey: 'isFavourite',
+        label: 'Favourite',
+        colWidth: 'minmax(72px, auto)',
+        isAsc: sortKey === 'isFavourite' && orderKey === 'asc',
+        isDesc: sortKey === 'isFavourite' && orderKey === 'desc',
+        visible: colOptions?.isFavourite !== false,
       },
     ];
   }
@@ -597,10 +647,18 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
       {
         colKey: 'userRating',
         label: 'Rating',
-        colWidth: '0.5fr',
+        colWidth: 'minmax(84px, auto)',
         isAsc: sortKey === 'userRating' && orderKey === 'asc',
         isDesc: sortKey === 'userRating' && orderKey === 'desc',
         visible: colOptions?.userRating !== false,
+      },
+      {
+        colKey: 'isFavourite',
+        label: 'Favourite',
+        colWidth: 'minmax(72px, auto)',
+        isAsc: sortKey === 'isFavourite' && orderKey === 'asc',
+        isDesc: sortKey === 'isFavourite' && orderKey === 'desc',
+        visible: colOptions?.isFavourite !== false,
       },
     ];
   }
@@ -612,7 +670,9 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
     variant === 'artistMoods' ||
     variant === 'albumMoods' ||
     variant === 'artistStyles' ||
-    variant === 'albumStyles'
+    variant === 'albumStyles' ||
+    variant === 'artistTags' ||
+    variant === 'albumTags'
   ) {
     tableVariant = 'tags';
     tableOptions = [

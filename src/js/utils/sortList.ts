@@ -8,6 +8,7 @@ type Entry = {
   discNumber?: number;
   duration?: number;
   genre?: string;
+  isFavourite?: boolean;
   kind?: string;
   lastPlayed?: string;
   releaseDate?: string;
@@ -24,11 +25,20 @@ type SortDirection = 'asc' | 'desc';
 const LEADING_ARTICLES = ['A', 'An', 'The'];
 const ARTICLE_AWARE_FIELDS = ['album', 'artist', 'title', 'genre'];
 
-// We forcibly add "sortOrder" as a secondary sort key after "kind" to ensure
-// order is maintained when sorting with folders on top.
+// For some primary sort keys, we want to enforce a specific secondary sort key and direction.
+// For example, when sorting by userRating in any direction, we always want them to then be
+// sorted by title in ascending order.
 const FORCED_SORT_KEYS: { [key: string]: { key: string; direction: SortDirection } } = {
+  isFavourite: {
+    key: 'title',
+    direction: 'asc',
+  },
   kind: {
     key: 'sortOrder',
+    direction: 'asc',
+  },
+  userRating: {
+    key: 'title',
     direction: 'asc',
   },
 };
@@ -60,7 +70,8 @@ const sortList = ({
   const quaternarySortKey = optionsArray[6] || FORCED_SORT_KEYS[primarySortKey]?.key || 'title';
   let quaternaryDirection: SortDirection = (optionsArray[7] as SortDirection) || 'asc';
 
-  // If the overall sort is reversed, reverse the sort keys
+  // If the overall sort is reversed, reverse each of the individual sort keys
+  // (Unless they match a forced sort key, which we keep as is)
   if (direction === 'desc') {
     primaryDirection = primaryDirection === 'asc' ? 'desc' : 'asc';
     secondaryDirection = FORCED_SORT_KEYS[primarySortKey]?.direction
@@ -137,6 +148,14 @@ const getSortFunctions = (sortNumbersFirst: boolean, ignoreLeadingArticles: bool
     codec: createStringFieldComparer('codec', false),
     country: createStringFieldComparer('country', false),
     kind: createStringFieldComparer('kind', false),
+
+    // Boolean fields
+    isFavourite: (a, b) => {
+      const aFav = a.isFavourite ? 1 : 0;
+      const bFav = b.isFavourite ? 1 : 0;
+      // return aFav - bFav;
+      return bFav - aFav;
+    },
 
     // Number fields
     bitrate: (a, b) => (a.bitrate ?? 0) - (b.bitrate ?? 0),

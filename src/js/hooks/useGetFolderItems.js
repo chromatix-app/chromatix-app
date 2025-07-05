@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { sortList } from 'js/utils';
-import * as plex from 'js/services/plex';
+import * as bridge from 'js/services/bridge';
 
 const useGetFolderItems = (folderId) => {
   const dispatch = useDispatch();
@@ -88,7 +88,7 @@ const useGetFolderItems = (folderId) => {
   };
 
   useEffect(() => {
-    plex.getFolderItems(folderId).catch(() => {});
+    bridge.getFolderItems(folderId).catch(() => {});
   }, [folderId]);
 
   return {

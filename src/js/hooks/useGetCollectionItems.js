@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { sortList } from 'js/utils';
-import * as plex from 'js/services/plex';
+import platformFeatures from 'js/_config/platformFeatures';
+import { safeDecodeURIComponent, safeEncodeURIComponent, sortList } from 'js/utils';
+import * as bridge from 'js/services/bridge';
 
 const useGetCollectionItems = ({
   libraryId,
@@ -12,6 +13,11 @@ const useGetCollectionItems = ({
   itemsKey,
 }) => {
   const dispatch = useDispatch();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
+
+  collectionId = safeEncodeURIComponent(safeDecodeURIComponent(collectionId));
 
   const mediaType = collectionKey.includes('Artist') ? 'Artist' : 'Album';
   // const collectionType = collectionFilter.replace('Id', '');
@@ -25,6 +31,9 @@ const useGetCollectionItems = ({
   const colCollectionArtistsAddedAt = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsAddedAt);
   const colCollectionArtistsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsLastPlayed);
   const colCollectionArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsUserRating);
+  const colCollectionArtistsIsFavourite = useSelector(
+    ({ sessionModel }) => sessionModel.colCollectionArtistsIsFavourite
+  );
 
   const colCollectionAlbumsArtist = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsArtist);
   const colCollectionAlbumsGenre = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsGenre);
@@ -32,6 +41,7 @@ const useGetCollectionItems = ({
   const colCollectionAlbumsAddedAt = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsAddedAt);
   const colCollectionAlbumsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsLastPlayed);
   const colCollectionAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsUserRating);
+  const colCollectionAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsIsFavourite);
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
   const optionSortIgnoreLeadingArticles = useSelector(
@@ -49,7 +59,11 @@ const useGetCollectionItems = ({
             viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsLastPlayed),
           genre: viewCollectionItems === 'list' && colCollectionArtistsGenre,
           userRating:
-            viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsUserRating),
+            platformOpts.enableUserRating &&
+            (viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsUserRating)),
+          isFavourite:
+            platformOpts.enableIsFavourite &&
+            (viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsIsFavourite)),
         }
       : {
           title: true,
@@ -63,7 +77,11 @@ const useGetCollectionItems = ({
           releaseDate:
             viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsReleaseDate),
           userRating:
-            viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsUserRating),
+            platformOpts.enableUserRating &&
+            (viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsUserRating)),
+          isFavourite:
+            platformOpts.enableIsFavourite &&
+            (viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsIsFavourite)),
         };
   const actualSortCollectionItems = allowedSort[sortCollectionItems] ? sortCollectionItems : 'title';
   const actualOrderCollectionItems = allowedSort[sortCollectionItems] ? orderCollectionItems : 'asc';
@@ -94,6 +112,12 @@ const useGetCollectionItems = ({
   const gridAlbumCollectionItemsUserRating = useSelector(
     ({ sessionModel }) => sessionModel.gridAlbumCollectionItemsUserRating
   );
+  const gridArtistCollectionItemsIsFavourite = useSelector(
+    ({ sessionModel }) => sessionModel.gridArtistCollectionItemsIsFavourite
+  );
+  const gridAlbumCollectionItemsIsFavourite = useSelector(
+    ({ sessionModel }) => sessionModel.gridAlbumCollectionItemsIsFavourite
+  );
 
   const setViewCollectionItems = (viewCollectionItems) => {
     dispatch.sessionModel.setSessionState({
@@ -122,12 +146,12 @@ const useGetCollectionItems = ({
 
   useEffect(() => {
     if (collectionKey.includes('Collections')) {
-      plex.getAllCollections();
-      plex.getCollectionItems(libraryId, collectionId, mediaType);
+      bridge.getAllCollections();
+      bridge.getCollectionItems(libraryId, collectionId, mediaType);
     } else {
-      plex.getAllTags(collectionKey);
-      plex.getTagItems(libraryId, collectionId, itemsKey);
-      // plex[`get${itemsKey}`](libraryId, collectionId);
+      bridge.getAllTags(collectionKey);
+      bridge.getTagItems(libraryId, collectionId, itemsKey);
+      // bridge[`get${itemsKey}`](libraryId, collectionId);
     }
   }, [itemsKey, collectionId, collectionKey, libraryId, mediaType]);
 
@@ -142,10 +166,12 @@ const useGetCollectionItems = ({
     gridOptions:
       mediaType === 'Artist'
         ? {
-            userRating: gridArtistCollectionItemsUserRating,
+            userRating: platformOpts.enableUserRating && gridArtistCollectionItemsUserRating,
+            isFavourite: platformOpts.enableIsFavourite && gridArtistCollectionItemsIsFavourite,
           }
         : {
-            userRating: gridAlbumCollectionItemsUserRating,
+            userRating: platformOpts.enableUserRating && gridAlbumCollectionItemsUserRating,
+            isFavourite: platformOpts.enableIsFavourite && gridAlbumCollectionItemsIsFavourite,
           },
 
     colOptions:
@@ -155,7 +181,8 @@ const useGetCollectionItems = ({
             genre: colCollectionArtistsGenre,
             addedAt: colCollectionArtistsAddedAt,
             lastPlayed: colCollectionArtistsLastPlayed,
-            userRating: colCollectionArtistsUserRating,
+            userRating: platformOpts.enableUserRating && colCollectionArtistsUserRating,
+            isFavourite: platformOpts.enableIsFavourite && colCollectionArtistsIsFavourite,
           }
         : {
             artist: colCollectionAlbumsArtist,
@@ -163,7 +190,8 @@ const useGetCollectionItems = ({
             releaseDate: colCollectionAlbumsReleaseDate,
             addedAt: colCollectionAlbumsAddedAt,
             lastPlayed: colCollectionAlbumsLastPlayed,
-            userRating: colCollectionAlbumsUserRating,
+            userRating: platformOpts.enableUserRating && colCollectionAlbumsUserRating,
+            isFavourite: platformOpts.enableIsFavourite && colCollectionAlbumsIsFavourite,
           },
 
     setViewCollectionItems,

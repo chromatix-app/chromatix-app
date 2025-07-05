@@ -88,7 +88,10 @@ $grid-breakpoints: (xxs, xs, sm, md, lg, xl);
 // $gradient-home: linear-gradient(180deg, #08131f 0%, #142941 50%, #08131f 100%);
 // $gradient-home: radial-gradient(100% 50% at 50% 50%, #142941 0%, #08131f 100%);
 
-$color-background: #111;
+$color-core: #f7277a;
 $color-text: #fff;
-$color-primary: #f7277a;
+$color-primary-background: #021c27;
+$color-secondary-background: #142c38;
+$color-secondary-border: #263e4a;
 $color-opacity-02: rgba(255, 255, 255, 0.2);
+$color-opacity-01: rgba(255, 255, 255, 0.1);
