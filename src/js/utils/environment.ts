@@ -10,10 +10,12 @@ const expectedPlatforms = ['mac', 'win'];
 
 if (isElectron && window?.electronProcess?.platform) {
   electronPlatform = window.electronProcess.platform;
-  // backwards compatibility
+
+  // NOTE: this is here for backwards compatibility
   if (!expectedPlatforms.includes(electronPlatform)) {
     electronPlatform = electronPlatform === 'darwin' ? 'mac' : 'win';
   }
+
   appPlatform = electronPlatform;
 }
 

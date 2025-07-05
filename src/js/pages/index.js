@@ -1,33 +1,42 @@
-export { default as Login } from './Login';
-export { default as ServerList } from './ServerList';
-export { default as LibraryList } from './LibraryList';
+export { default as Home } from './Home';
+export { default as LoginJelly } from './LoginJelly';
 
-export { default as ArtistList } from './ArtistList';
+export { default as ServerArray } from './ServerArray';
+export { default as LibraryArray } from './LibraryArray';
+
+export { default as ArtistArray } from './ArtistArray';
 export { default as ArtistDetail } from './ArtistDetail';
-export { default as ArtistCollectionList } from './ArtistCollectionList';
+export { default as ArtistCollectionArray } from './ArtistCollectionArray';
 export { default as ArtistCollectionItems } from './ArtistCollectionItems';
-export { default as ArtistGenreList } from './ArtistGenreList';
+export { default as ArtistGenreArray } from './ArtistGenreArray';
 export { default as ArtistGenreItems } from './ArtistGenreItems';
-export { default as ArtistStyleList } from './ArtistStyleList';
-export { default as ArtistStyleItems } from './ArtistStyleItems';
-export { default as ArtistMoodList } from './ArtistMoodList';
+export { default as ArtistMoodArray } from './ArtistMoodArray';
 export { default as ArtistMoodItems } from './ArtistMoodItems';
+export { default as ArtistStyleArray } from './ArtistStyleArray';
+export { default as ArtistStyleItems } from './ArtistStyleItems';
+export { default as ArtistTagArray } from './ArtistTagArray';
+export { default as ArtistTagItems } from './ArtistTagItems';
 
-export { default as AlbumList } from './AlbumList';
+export { default as AlbumArray } from './AlbumArray';
 export { default as AlbumDetail } from './AlbumDetail';
-export { default as AlbumCollectionList } from './AlbumCollectionList';
+export { default as AlbumCollectionArray } from './AlbumCollectionArray';
 export { default as AlbumCollectionItems } from './AlbumCollectionItems';
-export { default as AlbumGenreList } from './AlbumGenreList';
+export { default as AlbumGenreArray } from './AlbumGenreArray';
 export { default as AlbumGenreItems } from './AlbumGenreItems';
-export { default as AlbumStyleList } from './AlbumStyleList';
-export { default as AlbumStyleItems } from './AlbumStyleItems';
-export { default as AlbumMoodList } from './AlbumMoodList';
+export { default as AlbumMoodArray } from './AlbumMoodArray';
 export { default as AlbumMoodItems } from './AlbumMoodItems';
+export { default as AlbumStyleArray } from './AlbumStyleArray';
+export { default as AlbumStyleItems } from './AlbumStyleItems';
+export { default as AlbumTagArray } from './AlbumTagArray';
+export { default as AlbumTagItems } from './AlbumTagItems';
 
-export { default as PlaylistList } from './PlaylistList';
+export { default as FolderItems } from './FolderItems';
+
+export { default as PlaylistArray } from './PlaylistArray';
 export { default as PlaylistDetail } from './PlaylistDetail';
 
-export { default as FolderList } from './FolderList';
+export { default as GenericTagArray } from './GenericTagArray';
+export { default as GenericTagItems } from './GenericTagItems';
 
 export { default as Settings } from './Settings';
 export { default as SettingsAbout } from './SettingsAbout';

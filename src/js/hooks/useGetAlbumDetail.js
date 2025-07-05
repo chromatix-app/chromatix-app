@@ -2,11 +2,15 @@ import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 
+import platformFeatures from 'js/_config/platformFeatures';
 import { durationToStringLong, sortList } from 'js/utils';
-import * as plex from 'js/services/plex';
+import * as bridge from 'js/services/bridge';
 
 const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const dispatch = useDispatch();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
 
   const sortAlbumTracks = useSelector(({ sessionModel }) => sessionModel.sortAlbumTracks);
   const albumSortString = sortAlbumTracks[albumId] || null;
@@ -14,8 +18,9 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const colAlbumArtist = useSelector(({ sessionModel }) => sessionModel.colAlbumArtist);
   const colAlbumCodec = useSelector(({ sessionModel }) => sessionModel.colAlbumCodec);
   const colAlbumBitrate = useSelector(({ sessionModel }) => sessionModel.colAlbumBitrate);
-  const colAlbumUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumUserRating);
   const colAlbumDuration = useSelector(({ sessionModel }) => sessionModel.colAlbumDuration);
+  const colAlbumUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumUserRating);
+  const colAlbumIsFavourite = useSelector(({ sessionModel }) => sessionModel.colAlbumIsFavourite);
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
   const optionSortIgnoreLeadingArticles = useSelector(
@@ -29,8 +34,9 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
     artist: colAlbumArtist,
     codec: colAlbumCodec,
     bitrate: colAlbumBitrate,
-    userRating: colAlbumUserRating,
     duration: colAlbumDuration,
+    userRating: platformOpts.enableUserRating && colAlbumUserRating,
+    isFavourite: platformOpts.enableIsFavourite && colAlbumIsFavourite,
   };
   const actualAlbumSortString = allowedSort[albumSortString?.split('-')[0]] ? albumSortString : null;
 
@@ -55,6 +61,7 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const albumDurationMillisecs = albumTracks?.reduce((acc, track) => acc + track.duration, 0);
   const albumDurationString = durationToStringLong(albumDurationMillisecs);
   const albumRating = albumInfo?.userRating;
+  const albumIsFavourite = albumInfo?.isFavourite;
   const albumArtistLink = albumInfo?.artistLink;
 
   const sortedAlbumTracks = useMemo(() => {
@@ -97,11 +104,11 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
 
   // Get the required album data
   useEffect(() => {
-    // plex.getAllAlbums();
+    // bridge.getAllAlbums();
     if (!albumInfo) {
-      plex.getAlbumDetails(libraryId, albumId);
+      bridge.getAlbumDetails(libraryId, albumId);
     }
-    plex.getAlbumTracks(libraryId, albumId).catch(() => {});
+    bridge.getAlbumTracks(libraryId, albumId).catch(() => {});
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [albumId, libraryId]);
@@ -110,7 +117,7 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   // useEffect(() => {
   //   console.log(allAlbums);
   //   if (allAlbums && !albumInfo) {
-  //     plex.getAlbumDetails(libraryId, albumId);
+  //     bridge.getAlbumDetails(libraryId, albumId);
   //   }
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [allAlbums, albumInfo]);
@@ -126,6 +133,7 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
     albumTrackCount,
     albumDurationString,
     albumRating,
+    albumIsFavourite,
     albumArtistLink,
 
     albumTracks: sortedAlbumTracks,
@@ -136,8 +144,9 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
       artist: colAlbumArtist,
       codec: colAlbumCodec,
       bitrate: colAlbumBitrate,
-      userRating: colAlbumUserRating,
       duration: colAlbumDuration,
+      userRating: platformOpts.enableUserRating && colAlbumUserRating,
+      isFavourite: platformOpts.enableIsFavourite && colAlbumIsFavourite,
     },
     setColumnVisibility,
   };

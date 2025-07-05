@@ -6,8 +6,6 @@ import { forwardRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 
-import { Icon } from 'js/components';
-
 import style from './Button.module.scss';
 
 // ======================================================================
@@ -25,26 +23,26 @@ const getComponentType = (props) => {
 };
 
 export const Button = forwardRef(
-  ({ children, className, loading = false, variant, inline = false, type = 'button', wrap = true, ...props }, ref) => {
+  (
+    { children, className, color, icon, inline = false, loading = false, type = 'button', size, wrap = true, ...props },
+    ref
+  ) => {
     const Component = getComponentType(props);
+
+    const colorClass = color ? 'color' + color.charAt(0).toUpperCase() + color.slice(1) : '';
+    const sizeClass = size ? 'size' + size.charAt(0).toUpperCase() + size.slice(1) : '';
 
     const ToReturn = (
       <Component
         ref={ref}
-        className={clsx(style.btn, style[variant], className, { [style.loading]: loading, [style.inline]: inline })}
+        className={clsx(className, style.btn, style[colorClass], style[sizeClass], {
+          [style.loading]: loading,
+          [style.inline]: inline,
+        })}
         type={type}
         {...props}
       >
-        {variant === 'download' && (
-          <span className={style.icon}>
-            <Icon icon="DownloadIcon" cover stroke strokeWidth={1.4} />
-          </span>
-        )}
-        {variant === 'downloadMac' && (
-          <span className={style.icon}>
-            <Icon icon="AppleSiteIcon" cover />
-          </span>
-        )}
+        {icon && <span className={style.icon}>{icon}</span>}
         {children}
       </Component>
     );

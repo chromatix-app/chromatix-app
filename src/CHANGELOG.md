@@ -1,3 +1,18 @@
+# 0.44.0 (2025-07-05)
+
+Features:
+
+- Home page redesigned for a more consistent look and feel.
+- Improved tracking of errors so that they can be investigated and fixed.
+- Various minor fixes, tweaks and improvements throughout.
+
+Refactor:
+
+- The codebase has been refactored to handle multiple services in the future (i.e. not just Plex).
+- Files have also been reorganised and renamed for better clarity and consistency going forward.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.43.0 (2025-06-17)
 
 Features:
@@ -277,7 +292,7 @@ Features:
 - Added list view for albums, artists, playlists, and collections.
 - Tweaked sorting options and styling for compatability with list views.
 - Better handling of various artists.
-- Display "appears on" compilation albums in artist view, where possible.
+- Display "appears on" albums in artist view, where possible.
 
 <!-- CHANGELOG SPLIT MARKER -->
 
@@ -396,8 +411,8 @@ Refactor:
 
 Refactor:
 
-- Lots of plex API tidying up.
-- Setup plexTools.js to handle all plex API calls.
+- Lots of Plex API tidying up.
+- Setup plexTools.js to handle all Plex API calls.
 - Improved token encryption.
 
 <!-- CHANGELOG SPLIT MARKER -->

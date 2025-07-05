@@ -1,32 +1,33 @@
 {
   "env": {
     "browser": true,
-    "es2020": true
+    "es2020": true,
   },
   "extends": [
     "react-app",
     "eslint:recommended",
     "plugin:react/recommended",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
     // 'plugin:@typescript-eslint/recommended',
     // 'prettier/@typescript-eslint',
   ],
   "plugins": ["react", "prettier"],
   "rules": {
+    "jsx-a11y/img-redundant-alt": 0,
     "no-unused-vars": "warn",
     // "no-unused-vars": ["warn", { "args": "all", "argsIgnorePattern": "^_" }],
     "react/display-name": 0,
     "react/no-unescaped-entities": 0,
     "react/no-unused-prop-types": 1,
     "react/prop-types": 0,
-    "react/react-in-jsx-scope": 0
+    "react/react-in-jsx-scope": 0,
   },
   "parserOptions": {
-    "sourceType": "module"
+    "sourceType": "module",
   },
   "settings": {
     "react": {
-      "version": "detect"
-    }
-  }
+      "version": "detect",
+    },
+  },
 }
