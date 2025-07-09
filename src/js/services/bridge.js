@@ -40,7 +40,12 @@ export const init = () => {
     .catch((error) => {
       store.dispatch.appModel.setLoggedOut();
       if (error?.code) {
-        if (error.code !== 'plex.checkPinStatus.1') {
+        if (
+          ![
+            'bridge.checkIfLoggedIn.1',
+            // 'plex.checkPinStatus.1'
+          ].includes(error.code)
+        ) {
           console.error(error);
           analyticsEvent('Error: Init - ' + error.code);
         }
@@ -1212,11 +1217,25 @@ export const logPlaybackStatus = (currentTrack, state, currentTime) => {
       })
       .catch((error) => {
         // console.error(error);
+        const errorCode = error?.code || 'Unknown';
         const errorStatus = error?.error?.response?.status || 'Unknown';
         const errorMessage = error?.error?.response?.statusText || 'Unknown Error';
-        analyticsEvent(
-          'Error: ' + toUpperFirst(currentService) + ' - Log Playback Status - ' + errorStatus + ' - ' + errorMessage
-        );
+        if (errorStatus || errorMessage) {
+          analyticsEvent(
+            'Error: ' +
+              toUpperFirst(currentService) +
+              ' - Log Playback - ' +
+              errorCode +
+              ' - ' +
+              errorStatus +
+              ' - ' +
+              errorMessage
+          );
+        } else {
+          analyticsEvent(
+            'Error: ' + toUpperFirst(currentService) + ' - Log Playback - ' + errorCode + ' - ' + JSON.stringify(error)
+          );
+        }
       });
   }
 };
