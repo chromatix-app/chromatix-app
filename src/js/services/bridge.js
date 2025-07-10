@@ -1259,21 +1259,20 @@ export const logPlaybackStatus = (currentTrack, state, currentTime) => {
         const errorCode = error?.code || 'Unknown';
         const errorStatus = error?.error?.response?.status || 'Unknown';
         const errorMessage = error?.error?.response?.statusText || 'Unknown Error';
-        if (errorStatus || errorMessage) {
-          analyticsEvent(
-            'Error: ' +
-              toUpperFirst(currentService) +
-              ' - Log Playback - ' +
-              errorCode +
-              ' - ' +
-              errorStatus +
-              ' - ' +
-              errorMessage
-          );
-        } else {
-          analyticsEvent(
-            'Error: ' + toUpperFirst(currentService) + ' - Log Playback - ' + errorCode + ' - ' + JSON.stringify(error)
-          );
+        analyticsEvent(
+          'Error: ' +
+            toUpperFirst(currentService) +
+            ' - Log Playback - ' +
+            errorCode +
+            ' - ' +
+            errorStatus +
+            ' - ' +
+            errorMessage
+        );
+        try {
+          analyticsEvent('Log Error: ' + JSON.stringify(error));
+        } catch (_event) {
+          //
         }
       });
   }
