@@ -41,11 +41,13 @@ Develop with `npm start`
 
 # 4. Deployment
 
-Deploy a new version to the staging environment with `npm run release`
+Deploy a new version to the staging environment with `npm run release:stage`
 
-(Essentially just tags a new version and pushes to the `staging` branch)
+(Essentially just tags a new beta version and pushes to the `staging` branch)
 
-Deploy to production by merging the `staging` branch into the `production` branch.
+Deploy to production by running `npm run release:prod`
+
+(Essentially just tags a new version and pushes to the `production` branch)
 
 # 5. Tech stack
 
