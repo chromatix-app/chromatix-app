@@ -5,4 +5,4 @@
 npx lint-staged
 
 # Run tests non-interactively
-CI=true npm test -- --watchAll=false
+CI=true npm run test:all

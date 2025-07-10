@@ -11,11 +11,12 @@
     "build": "REACT_APP_VERSION=$npm_package_version REACT_APP_ENV=$REACT_APP_ENV REACT_APP_DATE=$(date +%s) react-scripts build",
     "release": "release-it --preReleaseId=beta --config .release-it.json",
     "lint": "eslint .",
-    "prepare": "husky",
+    "lint:fix": "eslint . --fix",
     "prettier": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
-    "prettier-fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+    "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "test": "react-scripts test",
-    "test-all": "react-scripts test --watchAll=false"
+    "test:all": "react-scripts test --watchAll=false",
+    "prepare": "husky"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [
@@ -25,6 +26,9 @@
     "**/*.{json,css,scss,md}": [
       "prettier --check"
     ]
+  },
+  "engines": {
+    "node": ">=20.0.0"
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.1.7",
