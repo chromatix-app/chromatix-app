@@ -1,4 +1,6 @@
 {
+  "preRelease": "beta",
+  "increment": "prerelease",
   "git": {
     "requireCleanWorkingDir": true,
     "tag": true,
