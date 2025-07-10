@@ -52,6 +52,10 @@ const PlaylistDetail = () => {
     return <Loading forceVisible inline showOffline />;
   }
 
+  if (playlistInfo?.error404) {
+    return <TitleHeading title="Playlist not found" />;
+  }
+
   const isLoading = !playlistTracks;
   const isEmptyList = !isLoading && playlistTracks?.length === 0;
   const isListView = !isLoading && !isEmptyList;

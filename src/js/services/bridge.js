@@ -21,6 +21,18 @@ const storageServiceKey = config.storageServiceKey;
 const storageTokenKey = config.storageTokenKey;
 
 // ======================================================================
+// ABORT HANDLING
+// ======================================================================
+
+export const abortAllRequests = () => {
+  jellyTools.abortAllRequests();
+  plexTools.abortAllRequests();
+  for (const i in collectionItemsTimeouts) {
+    clearTimeout(collectionItemsTimeouts[i]);
+  }
+};
+
+// ======================================================================
 // INIT - CHECKS IF AN AUTH TOKEN EXISTS
 // ======================================================================
 
@@ -347,6 +359,9 @@ export const getArtistDetails = (libraryId, artistId) => {
         })
         .catch((error) => {
           console.error(error);
+          if (error?.error?.status === 404) {
+            store.dispatch.appModel.storeArtist404({ artistId });
+          }
           analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Artist Details');
         })
         .finally(() => {
@@ -598,6 +613,9 @@ export const getAlbumDetails = (libraryId, albumId, callback) => {
         })
         .catch((error) => {
           console.error(error);
+          if (error?.error?.status === 404) {
+            store.dispatch.appModel.storeAlbum404({ albumId });
+          }
           analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Album Details');
         })
         .finally(() => {
@@ -687,6 +705,9 @@ export const getFolderItems = (folderId) => {
           })
           .catch((error) => {
             console.error(error);
+            if (error?.error?.status === 404) {
+              store.dispatch.appModel.storeFolder404({ libraryId, folderId });
+            }
             analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Folder Items');
             reject(error);
           })
@@ -775,6 +796,9 @@ export const getPlaylistDetails = (libraryId, playlistId) => {
         })
         .catch((error) => {
           console.error(error);
+          if (error?.error?.status === 404) {
+            store.dispatch.appModel.storePlaylist404({ playlistId });
+          }
           analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Playlist Details');
         })
         .finally(() => {
@@ -855,6 +879,8 @@ export const getAllCollections = () => {
         })
         .then((response) => {
           // console.log(response);
+          // allArtistCollections
+          // allAlbumCollections
           store.dispatch.appModel.setAppState(response);
         })
         .catch((error) => {
@@ -877,7 +903,17 @@ let getCollectionItemsRunning = {
   Album: false,
 };
 
+let collectionItemsTimeouts = [];
+
 export const getCollectionItems = (libraryId, collectionId, typeKey) => {
+  if (getAllCollectionsRunning) {
+    collectionItemsTimeouts.push(
+      setTimeout(() => {
+        getCollectionItems(libraryId, collectionId, typeKey);
+      }, 100)
+    );
+    return;
+  }
   if (!getCollectionItemsRunning[typeKey]) {
     const prevCollectionItems =
       store.getState().appModel[`all${typeKey}CollectionItems`][libraryId + '-' + collectionId];
@@ -905,6 +941,9 @@ export const getCollectionItems = (libraryId, collectionId, typeKey) => {
         })
         .catch((error) => {
           console.error(error);
+          if (error?.error?.status === 404) {
+            store.dispatch.appModel[`store${typeKey}Collection404`]({ collectionId });
+          }
           analyticsEvent('Error: Plex - Get Collection Items');
         })
         .finally(() => {
@@ -954,7 +993,7 @@ const getAllPlexTags = (typeKey) => {
           typeKey,
         })
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           store.dispatch.appModel.setAppState({ [`all${typeKey}`]: response });
         })
         .catch((error) => {

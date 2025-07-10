@@ -9,6 +9,9 @@ const useGetCollectionArray = (collectionKey) => {
 
   // const mediaType = collectionKey.includes('Artist') ? 'Artist' : 'Album';
 
+  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
+  const currentLibraryId = currentLibrary?.libraryId;
+
   const viewCollections = useSelector(({ sessionModel }) => sessionModel[`view${collectionKey}`]);
   const sortCollections = useSelector(({ sessionModel }) => sessionModel[`sort${collectionKey}`]);
   const orderCollections = useSelector(({ sessionModel }) => sessionModel[`order${collectionKey}`]);
@@ -32,7 +35,9 @@ const useGetCollectionArray = (collectionKey) => {
   const actualSortCollections = allowedSort[sortCollections] ? sortCollections : 'title';
   const actualOrderCollections = allowedSort[sortCollections] ? orderCollections : 'asc';
 
-  const allCollections = useSelector(({ appModel }) => appModel[`all${collectionKey}`]);
+  const allCollections = useSelector(({ appModel }) => appModel[`all${collectionKey}`])?.filter(
+    (collection) => collection.libraryId === currentLibraryId
+  );
   const sortedCollections = allCollections
     ? sortList({
         entries: allCollections,

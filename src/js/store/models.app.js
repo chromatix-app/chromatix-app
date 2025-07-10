@@ -340,6 +340,26 @@ const effects = (dispatch) => ({
     });
   },
 
+  storeArtist404(payload, rootState) {
+    console.log('%c--- storeArtist404 ---', 'color:#07a098');
+    const allArtists = [...(rootState.appModel.allArtists || [])];
+    const artistIndex = allArtists.findIndex((artist) => artist.artistId === payload.artistId);
+    if (artistIndex === -1) {
+      allArtists.push({
+        artistId: payload.artistId,
+        error404: true,
+      });
+    } else {
+      allArtists[artistIndex] = {
+        artistId: payload.artistId,
+        error404: true,
+      };
+    }
+    dispatch.appModel.setAppState({
+      allArtists,
+    });
+  },
+
   storeArtistAlbums(payload, rootState) {
     console.log('%c--- storeArtistAlbums ---', 'color:#07a098');
     const { libraryId, artistId, artistAlbums } = payload;
@@ -511,6 +531,26 @@ const effects = (dispatch) => ({
       allAlbums.push(payload);
     } else {
       allAlbums[albumIndex] = payload;
+    }
+    dispatch.appModel.setAppState({
+      allAlbums,
+    });
+  },
+
+  storeAlbum404(payload, rootState) {
+    console.log('%c--- storeAlbum404 ---', 'color:#07a098');
+    const allAlbums = [...(rootState.appModel.allAlbums || [])];
+    const albumIndex = allAlbums.findIndex((album) => album.albumId === payload.albumId);
+    if (albumIndex === -1) {
+      allAlbums.push({
+        albumId: payload.albumId,
+        error404: true,
+      });
+    } else {
+      allAlbums[albumIndex] = {
+        albumId: payload.albumId,
+        error404: true,
+      };
     }
     dispatch.appModel.setAppState({
       allAlbums,
@@ -689,9 +729,39 @@ const effects = (dispatch) => ({
     });
   },
 
+  storeFolder404(payload, rootState) {
+    console.log('%c--- storeFolder404 ---', 'color:#07a098');
+    const { libraryId, folderId } = payload;
+    const allFolderItems = { ...rootState.appModel.allFolderItems };
+    allFolderItems[libraryId + '-' + folderId] = [];
+    dispatch.appModel.setAppState({
+      allFolderItems,
+    });
+  },
+
   //
   // MUSIC - PLAYLISTS
   //
+
+  storePlaylist404(payload, rootState) {
+    console.log('%c--- storePlaylist404 ---', 'color:#07a098');
+    const allPlaylists = [...(rootState.appModel.allPlaylists || [])];
+    const playlistIndex = allPlaylists.findIndex((playlist) => playlist.playlistId === payload.playlistId);
+    if (playlistIndex === -1) {
+      allPlaylists.push({
+        playlistId: payload.playlistId,
+        error404: true,
+      });
+    } else {
+      allPlaylists[playlistIndex] = {
+        playlistId: payload.playlistId,
+        error404: true,
+      };
+    }
+    dispatch.appModel.setAppState({
+      allPlaylists,
+    });
+  },
 
   storePlaylistDetails(payload, rootState) {
     console.log('%c--- storePlaylistDetails ---', 'color:#07a098');
@@ -816,6 +886,28 @@ const effects = (dispatch) => ({
     });
   },
 
+  storeArtistCollection404(payload, rootState) {
+    console.log('%c--- storeArtistCollection404 ---', 'color:#07a098');
+    const allArtistCollections = [...(rootState.appModel.allArtistCollections || [])];
+    const collectionIndex = allArtistCollections.findIndex(
+      (collection) => collection.collectionId === payload.collectionId
+    );
+    if (collectionIndex === -1) {
+      allArtistCollections.push({
+        collectionId: payload.collectionId,
+        error404: true,
+      });
+    } else {
+      allArtistCollections[collectionIndex] = {
+        collectionId: payload.collectionId,
+        error404: true,
+      };
+    }
+    dispatch.appModel.setAppState({
+      allArtistCollections,
+    });
+  },
+
   storeAlbumCollectionItems(payload, rootState) {
     console.log('%c--- storeAlbumCollectionItems ---', 'color:#07a098');
     const { libraryId, collectionId, collectionItems } = payload;
@@ -829,6 +921,28 @@ const effects = (dispatch) => ({
     allAlbumCollectionItems[libraryId + '-' + collectionId] = collectionItems;
     dispatch.appModel.setAppState({
       allAlbumCollectionItems,
+    });
+  },
+
+  storeAlbumCollection404(payload, rootState) {
+    console.log('%c--- storeAlbumCollection404 ---', 'color:#07a098');
+    const allAlbumCollections = [...(rootState.appModel.allAlbumCollections || [])];
+    const collectionIndex = allAlbumCollections.findIndex(
+      (collection) => collection.collectionId === payload.collectionId
+    );
+    if (collectionIndex === -1) {
+      allAlbumCollections.push({
+        collectionId: payload.collectionId,
+        error404: true,
+      });
+    } else {
+      allAlbumCollections[collectionIndex] = {
+        collectionId: payload.collectionId,
+        error404: true,
+      };
+    }
+    dispatch.appModel.setAppState({
+      allAlbumCollections,
     });
   },
 
