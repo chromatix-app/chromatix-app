@@ -75,6 +75,10 @@ const ArtistDetail = () => {
     return <Loading forceVisible inline showOffline />;
   }
 
+  if (artistInfo?.error404) {
+    return <TitleHeading title="Artist not found" />;
+  }
+
   // Check everything is loaded for album views
   const isLoading1 = !artistInfo || !sortedArtistAlbums || !sortedArtistRelated || !sortedArtistAppearances;
 

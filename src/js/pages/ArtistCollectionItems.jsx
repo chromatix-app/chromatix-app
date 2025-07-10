@@ -57,6 +57,10 @@ const ArtistCollectionItems = () => {
     return <Loading forceVisible inline showOffline />;
   }
 
+  if (collectionInfo?.error404) {
+    return <TitleHeading title="Collection not found" />;
+  }
+
   const isLoading = !sortedCollectionItems;
   const isEmptyList = !isLoading && sortedCollectionItems?.length === 0;
   const isGridView = !isLoading && !isEmptyList && viewCollectionItems === 'grid';

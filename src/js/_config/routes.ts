@@ -89,6 +89,23 @@ export const authRoutes = [
     component: 'AlbumDetail',
   },
 
+  // folders
+  {
+    path: '/folders',
+    exact: true,
+    component: 'FolderItems',
+  },
+  {
+    path: '/folders/:libraryId',
+    exact: true,
+    redirect: '/folders',
+  },
+  {
+    path: '/folders/:libraryId/:folderId',
+    exact: true,
+    component: 'FolderItems',
+  },
+
   // playlists
   {
     path: '/playlists',
@@ -104,18 +121,6 @@ export const authRoutes = [
     path: '/playlists/:libraryId/:playlistId',
     exact: true,
     component: 'PlaylistDetail',
-  },
-
-  // folders
-  {
-    path: '/folders',
-    exact: true,
-    component: 'FolderItems',
-  },
-  {
-    path: '/folders/:libraryId/:folderId',
-    exact: true,
-    component: 'FolderItems',
   },
 
   // artist collections

@@ -99,6 +99,7 @@
 
 .buttons {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 15px;
@@ -107,6 +108,10 @@
     flex: 1 1 auto;
     margin-left: 0 !important;
     margin-right: 0 !important;
+  }
+
+  @media (min-width: 600px) {
+    flex-direction: row;
   }
 }
 
