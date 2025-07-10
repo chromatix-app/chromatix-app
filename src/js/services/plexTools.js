@@ -949,6 +949,17 @@ export const getFolderItems = ({ accessToken, folderId, libraryId, serverBaseUrl
       const controller = new AbortController();
       abortControllers.push(controller);
 
+      if (folderId !== 'root' && (isNaN(folderId) || folderId === null || folderId === undefined)) {
+        const error = new Error('Invalid folder ID');
+        error.status = 404;
+        reject({
+          code: 'plex.getFolderItems.1',
+          message: 'Invalid folder ID provided',
+          error: error,
+        });
+        return;
+      }
+
       axios
         .get(endpoint, {
           headers: getRequestHeaders(accessToken),
@@ -962,7 +973,7 @@ export const getFolderItems = ({ accessToken, folderId, libraryId, serverBaseUrl
         })
         .catch((error) => {
           reject({
-            code: 'plex.getFolderItems.1',
+            code: 'plex.getFolderItems.2',
             message: 'Failed to get folder items: ' + error?.message,
             error: error,
           });
@@ -972,7 +983,7 @@ export const getFolderItems = ({ accessToken, folderId, libraryId, serverBaseUrl
         });
     } catch (error) {
       reject({
-        code: 'plex.getFolderItems.2',
+        code: 'plex.getFolderItems.3',
         message: 'Failed to get folder items: ' + error?.message,
         error: error,
       });

@@ -6,7 +6,7 @@ import CryptoJS from 'crypto-js';
 import sha3 from 'crypto-js/sha3';
 
 import config from 'js/_config/config';
-import * as plexTools from 'js/services/plexTools';
+import * as bridge from 'js/services/bridge';
 
 // ======================================================================
 // STATE
@@ -570,7 +570,7 @@ const effects = (dispatch) => ({
     const currentServer = rootState.sessionModel.currentServer;
     const currentServerId = currentServer ? currentServer.serverId : null;
     if (currentServerId !== payload) {
-      plexTools.abortAllRequests();
+      bridge.abortAllRequests();
       // TODO: update this
       const newServer = rootState.appModel.allServers.find((server) => server.serverId === payload);
       // TODO: what if currentServer is null?
@@ -591,7 +591,7 @@ const effects = (dispatch) => ({
     const currentLibrary = rootState.sessionModel.currentLibrary;
     const currentLibraryId = currentLibrary ? currentLibrary.libraryId : null;
     if (currentLibraryId !== payload) {
-      plexTools.abortAllRequests();
+      bridge.abortAllRequests();
       const newLibrary = rootState.appModel.allLibraries.find((library) => library.libraryId === payload);
       // TODO: what if currentLibrary is null?
       dispatch.sessionModel.setSessionState({

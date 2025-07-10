@@ -4,23 +4,26 @@ Chromatix is a desktop music player for Plex, that transforms your listening exp
 
 Get started at [https://chromatix.app/](https://chromatix.app/)
 
-# Table of Contents<!-- omit in toc -->
+# Table of contents<!-- omit in toc -->
 
 - [1. Introduction](#1-introduction)
 - [2. License](#2-license)
-- [3. Getting Started](#3-getting-started)
-- [4. Tech Stack](#4-tech-stack)
-- [5. Code Structure](#5-code-structure)
-- [6. Things I need to improve](#6-things-i-need-to-improve)
-- [7. Things I hope to add](#7-things-i-hope-to-add)
-- [8. Contributing](#8-contributing)
-  - [8.1. Want to help?](#81-want-to-help)
-  - [8.2. Please let me know what you’re working on](#82-please-let-me-know-what-youre-working-on)
+- [3. Getting started](#3-getting-started)
+- [4. Deployment](#4-deployment)
+- [5. Tech stack](#5-tech-stack)
+- [6. Code structure](#6-code-structure)
+- [7. Husky + Git Commit Hooks](#7-husky--git-commit-hooks)
+- [8. Roadmap, feature requests and bug reports](#8-roadmap-feature-requests-and-bug-reports)
+- [9. Contributing](#9-contributing)
+  - [9.1. Want to help?](#91-want-to-help)
+  - [9.2. Please let me know what you’re working on](#92-please-let-me-know-what-youre-working-on)
 
 # 1. Introduction
 
 > [!IMPORTANT]
-> This codebase is probably a bit of a mess, probably lacks a lot of best practices, and uses some outdated technologies (e.g. create-react-app) that I should probably change, but I still like them or haven’t had time to learn new things (it’s a side project after all).
+> Chromatix is a solo side project of mine, so I don't have the time or resources to maintain it as a full-time project. I do my best to keep it running, but please be patient with any issues or delays in updates.
+>
+> This codebase is probably a bit of a mess, probably lacks a lot of best practices, and uses some outdated technologies (e.g. create-react-app) that I should probably change, but I either still like them or haven’t had time to migrate to newer things yet.
 >
 > I also started migrating a few utilities to TypeScript, but it’s a slow process, not complete yet, and not a high priority for me.
 
@@ -30,11 +33,13 @@ At the moment the code is open source for transparency, but not for re-distribut
 
 That said, if this repo goes more than 12 months without any commits, take this as advance permission that the code is free to use and distribute without limitation from 12 months after the last commit onwards.
 
-# 3. Getting Started
+# 3. Getting started
 
 Install with `npm install`
 
 Develop with `npm start`
+
+# 4. Deployment
 
 Deploy a new version to the staging environment with `npm run release`
 
@@ -42,56 +47,65 @@ Deploy a new version to the staging environment with `npm run release`
 
 Deploy to production by merging the `staging` branch into the `production` branch.
 
-# 4. Tech Stack
+# 5. Tech stack
 
-This project is built with Create React App, which is deprecated, I know.
+This project is built with Create React App (which is deprecated, I know).
 
 It uses Rematch (Redux) for global state management.
 
 It is hosted on Vercel.
 
-Vercel Analytics is used for some basic usage data.
+Vercel Analytics is used for some basic usage data and error logging.
 
 Radix UI is used for some components.
 
-Tanstack Virtual is used for virtualisation of long lists of artists, albums and tracks etc.
+Tanstack Virtual is used for virtualisation of long lists of artists, albums and tracks.
 
 The Plex API is entirely undocumented, as far as I can tell, so all Plex API requests are reverse engineered from official Plex clients. They may not be optimised as well as they could be if I had access to official documentation, and include lots of unnecessary data, but they do the job.
 
 All data from the Plex API is transposed into a slightly different format - partly to exclude some data we don’t need, partly to make it a bit easier to understand, and partly because I hope to add other services in future and want to make it easier to switch between them with a consistent data structure.
 
-# 5. Code Structure
+# 6. Code structure
 
 Folder structure is hopefully fairly self-explanatory, but a few pointers:
 
-Global state can be found in `/src/js/store`. Some state is saved to localStorage.
+Global state can be found in `/src/js/store`. Some state is saved to localStorage so that user preferences are remembered.
 
 Connections to the Plex API can be found in `/src/js/services`.
 
 The audio player is at `/src/js/services/player.js` but playback management is handled in the store, in the `models.player.js` file.
 
-# 6. Things I need to improve
+# 7. Husky + Git Commit Hooks
 
-- Queue handling.
-- Playback - gapless playback, transcoding etc.
+This repo uses [Husky](https://typicode.github.io/husky/) to ensure that certain tasks are run before committing code.
 
-# 7. Things I hope to add
+This includes:
 
-- Linux app(s)
-- Jellyfin support
-- Column options
-- Artist track view
-- Alphabet quick jump down the side
-- Lyrics
-- Queue management
-- Playlist management
-- Apple AirPlay / Google Cast / Sonos support etc
+1. Running eslint to check for code quality issues.
+2. Running prettier to format code.
+3. Running tests to ensure code correctness.
 
-# 8. Contributing
+If any of these fail, the commit will be aborted, and you will need to fix the issues.
+
+You can also run these tasks manually using the following commands:
+
+```bash
+npm run lint
+npm run prettier
+npm run test
+```
+
+# 8. Roadmap, feature requests and bug reports
+
+You can find the roadmap at [Featurebase](https://chromatix.featurebase.app/roadmap).
+
+This is also the best place for feature requests and bug reports, as it allows you to vote on features and see what others are requesting.
+
+# 9. Contributing
 
 I’m not particularly looking for contributors, and hadn’t really planned to open the code base as I’m happy keeping this as a personal side project, but I keep getting requests to open source it for the sake of transparency, so here it is.
 
-## 8.1. Want to help?
+## 9.1. Want to help?
 
 I don’t expect help, but if any keen devs with good knowledge of the tech do want to help, there’s a few key things that would be useful!
 
@@ -101,7 +115,7 @@ I don’t expect help, but if any keen devs with good knowledge of the tech do w
    - API calls to Plex may be able to be optimised.
 3. Automated testing. (I DEFINITELY don’t expect people to take on the grunt work, but hey, if that's something that floats anyone's boat then go for it.)
 
-## 8.2. Please let me know what you’re working on
+## 9.2. Please let me know what you’re working on
 
 If you do see something you want to help with, feel free get in touch here on Github, on [Reddit](https://www.reddit.com/r/chromatix/), or on [Bluesky](https://bsky.app/profile/chromaticnova.com) with any questions, or to ensure we aren’t working on the same things at once.
 

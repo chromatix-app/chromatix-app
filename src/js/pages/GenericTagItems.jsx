@@ -51,8 +51,6 @@ const GenericTagItems = ({
     itemsKey,
   });
 
-  console.log(colOptions);
-
   if (!collectionInfo) {
     return <Loading forceVisible inline showOffline />;
   }

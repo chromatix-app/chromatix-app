@@ -56,6 +56,10 @@ const AlbumDetail = () => {
     return <Loading forceVisible inline showOffline />;
   }
 
+  if (albumInfo?.error404) {
+    return <TitleHeading title="Album not found" />;
+  }
+
   const isLoading = !albumTracks;
   const isEmptyList = !isLoading && albumTracks?.length === 0;
   const isListView = !isLoading && !isEmptyList;
