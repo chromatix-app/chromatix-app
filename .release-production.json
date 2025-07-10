@@ -1,8 +1,6 @@
 {
   "git": {
-    "requireCleanWorkingDir": true,
-    "tag": true,
-    "tagName": "${version}"
+    "requireCleanWorkingDir": true
   },
   "npm": {
     "publish": false

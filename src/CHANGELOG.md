@@ -1,3 +1,17 @@
+# 0.45.0 (2025-07-10)
+
+Features:
+
+- Home page amends for mobile.
+- Added error messaging when visiting URLs for items that do not exist.
+
+Updated:
+
+- Updated error logging.
+- Updated release-it configuration for automated deployments.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.44.0 (2025-07-05)
 
 Features:
@@ -83,7 +97,9 @@ Features:
 - Grid view ratings can now be toggled on and off, using a new "options" menu.
 - Globally toggling star rating visibility has been deprecated now that individual toggles are available.
   - However, new buttons to toggle star ratings on and off for all sections have been added to the settings page.
-    Updated:
+
+Updated:
+
 - Minor Plex API performance improvements by omitting unnecessary fields.
 - Larger artwork in header sections, if the viewport is large enough.
 - Tweaked some icon sizes for filter buttons.
@@ -111,7 +127,9 @@ Features:
 - Added list view for artist albums.
   - (Note that this completes the adding of list views to all sections.)
 - Added buttons to globally toggle between grid and list view within the general settings section.
-  Updated:
+
+Updated:
+
 - Moved accessibility settings into the general settings section for simplicity.
 
 <!-- CHANGELOG SPLIT MARKER -->
@@ -121,7 +139,9 @@ Features:
 Refactor:
 
 - Plex API code tidying and consistency improvements.
-  Other:
+
+Other:
+
 - Various small tweaks and fixes.
 
 <!-- CHANGELOG SPLIT MARKER -->
@@ -136,7 +156,9 @@ Features:
   - This should prevent the UI from slowing down when browsing large libraries.
   - This will also allow more flexibility in future for customising column visibility.
 - Updated and consistent placeholder icon for missing artwork.
-  Deprecations:
+
+Deprecations:
+
 - Sadly, the "always show full titles" option is incompatible with the new virtualised list view.
   - This option has been disabled and marked as deprecated in the settings page.
   - This may be revisited in future if a solution can be found.
@@ -158,7 +180,9 @@ Features:
 
 - Added better error handling and messaging.
 - Added network detection and messaging.
-  Refactor:
+
+Refactor:
+
 - Tidied up a bunch of Plex API code.
 
 <!-- CHANGELOG SPLIT MARKER -->
@@ -215,7 +239,9 @@ Features:
 Features:
 
 - Added styling and functionality specific to Windows app.
-  Fixed:
+
+Fixed:
+
 - Ensure electron-drag element is always available.
 
 <!-- CHANGELOG SPLIT MARKER -->
@@ -229,9 +255,13 @@ Features:
 - Added list view and sorting for all other remaining sections.
 - Updated home page screenshot to reflect recent changes.
 - Added Bluesky link to settings page.
-  Fixed:
+
+Fixed:
+
 - Some edge case sorting issues have been resolved.
-  Refactor:
+
+Refactor:
+
 - Used consistent hooks for fetching and managing most list view states.
 
 <!-- CHANGELOG SPLIT MARKER -->
@@ -241,7 +271,9 @@ Features:
 Features:
 
 - Icon artwork added when viewing a specific genre, mood or style.
-  Updated:
+
+Updated:
+
 - Improved keyboard handling when an input is focused.
 
 <!-- CHANGELOG SPLIT MARKER -->
@@ -278,9 +310,13 @@ Features:
 - Added collapsible sections to sidebar.
 - Updated settings pages.
 - Added keyboard focus highlighting for accessibility.
-  Fixed:
+
+Fixed:
+
 - Handle space key when no track is currently selected.
-  Refactor:
+
+Refactor:
+
 - Converted some utility functions to typescript.
 
 <!-- CHANGELOG SPLIT MARKER -->
@@ -311,7 +347,9 @@ Features:
 
 - Added order (asc/desc) to key library sections.
 - Added sorting of playlist tracks, by clicking table headings.
-  Fixed:
+
+Fixed:
+
 - Fixed some text trimming in the queue.
 - Fixed handling of items with no artwork.
 
@@ -339,7 +377,9 @@ Features:
 
 - Add ability to edit star ratings.
 - Add icons to sidebar menu.
-  Refactor:
+
+Refactor:
+
 - Separated artist and album collection code.
 
 <!-- CHANGELOG SPLIT MARKER -->
