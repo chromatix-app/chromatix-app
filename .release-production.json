@@ -1,7 +1,8 @@
 {
-  "preRelease": "beta",
   "git": {
-    "requireCleanWorkingDir": true
+    "requireCleanWorkingDir": true,
+    "tag": true,
+    "tagName": "${version}"
   },
   "npm": {
     "publish": false
@@ -9,9 +10,9 @@
   "hooks": {
     "before:init": [
       "echo !!! Have you updated the changelog? !!!",
-      "git checkout staging",
+      "git checkout production",
       "git pull",
-      "git merge develop"
+      "git merge staging"
     ],
     "after:release": ["git checkout develop"]
   }
