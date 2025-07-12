@@ -7,13 +7,13 @@
   // grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   grid-template-columns: minmax(0, 1fr) auto 1fr;
   height: 100px;
-  padding: 9px 20px 10px;
+  padding: 9px 22px 10px;
   background: var(--color-secondary-background);
   border-top: 1px solid var(--color-secondary-border);
   text-align: center;
 
   @media (min-width: 1024px) {
-    padding: 9px 26px 10px;
+    padding: 9px 24px 10px;
   }
 
   a {
