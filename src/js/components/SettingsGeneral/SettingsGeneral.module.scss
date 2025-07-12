@@ -48,7 +48,6 @@
 
 .label {
   &.disabled {
-    // text-decoration: line-through;
     color: var(--color-opacity-04);
   }
 }
@@ -57,6 +56,10 @@
   display: block;
   font-size: 12px;
   color: var(--color-opacity-07);
+
+  &.disabled {
+    color: var(--color-opacity-04);
+  }
 }
 
 .buttons {

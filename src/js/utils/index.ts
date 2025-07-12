@@ -9,6 +9,7 @@ export { default as durationToStringShort } from './durationToStringShort';
 export { default as formatRecentDate } from './formatRecentDate';
 export { default as getBrowserName } from './getBrowserName';
 export { default as getLocalStorage } from './getLocalStorage';
+export { default as getOperatingSystemName } from './getOperatingSystemName';
 export { default as getTrackKeys } from './getTrackKeys';
 export { default as pageWasReloaded } from './pageWasReloaded';
 export { default as raceToSuccess } from './raceToSuccess';
