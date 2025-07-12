@@ -1,3 +1,11 @@
+# 0.46.0 (2025-07-12)
+
+Features:
+
+- Added scrollbar styling options (Windows only).
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.45.0 (2025-07-10)
 
 Features:
