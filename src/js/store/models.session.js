@@ -64,6 +64,10 @@ const sessionState = {
   queueIsVisible: false,
   queueExpandArtwork: true,
 
+  winCustomScrollbars: true,
+  winAutoHideScrollbars: false,
+  winScrollbarWidth: 12,
+
   // PLAYBACK OPTIONS
 
   disableRepeatOnceOnTrackChange: true,

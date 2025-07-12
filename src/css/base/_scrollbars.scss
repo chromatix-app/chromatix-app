@@ -1,42 +1,54 @@
-$scrollbar-width: 6px;
+// Custom scrollbars (Windows only)
 
-html.electron.electron-platform-win {
+html[data-scrollbars='true'][data-os='Windows'],
+html[data-scrollbars='true'].electron.electron-platform-win2 {
   ::-webkit-scrollbar {
-    width: $scrollbar-width; // For vertical scrollbar
-    height: $scrollbar-width; // For horizontal scrollbar
+    width: var(--scrollbar-width); // For vertical scrollbar
+    height: var(--scrollbar-width); // For horizontal scrollbar
     background: var(--color-opacity-01);
-    visibility: hidden;
   }
 
   ::-webkit-scrollbar-track {
     background: transparent;
-    visibility: hidden;
   }
 
   ::-webkit-scrollbar-thumb {
-    width: $scrollbar-width;
+    width: var(--scrollbar-width);
     background: var(--color-opacity-015);
     border-radius: 0;
-    visibility: hidden;
   }
 
-  .layout-sidebar,
-  .layout-content,
-  .layout-controls,
-  .layout-rightbar,
-  .u-scrollbars,
-  #scrollable {
-    &:hover {
-      &::-webkit-scrollbar {
-        visibility: visible;
-      }
+  // Optionally only show scrollbars on hover
 
-      &::-webkit-scrollbar-track {
-        visibility: visible;
-      }
+  &[data-scrollbars-hide='true'] {
+    ::-webkit-scrollbar {
+      visibility: hidden;
+    }
+    ::-webkit-scrollbar-track {
+      visibility: hidden;
+    }
+    ::-webkit-scrollbar-thumb {
+      visibility: hidden;
+    }
 
-      &::-webkit-scrollbar-thumb {
-        visibility: visible;
+    .layout-sidebar,
+    .layout-content,
+    .layout-controls,
+    .layout-rightbar,
+    .u-scrollbars,
+    #scrollable {
+      &:hover {
+        &::-webkit-scrollbar {
+          visibility: visible;
+        }
+
+        &::-webkit-scrollbar-track {
+          visibility: visible;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          visibility: visible;
+        }
       }
     }
   }

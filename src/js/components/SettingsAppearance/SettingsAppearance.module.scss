@@ -11,7 +11,10 @@
 
 .group {
   + .group {
-    margin-top: 16px;
+    margin-top: 40px;
+  }
+  + .group.groupThemes {
+    margin-top: 20px;
   }
 }
 
@@ -135,10 +138,22 @@
 }
 
 .label {
+  &.disabled {
+    color: var(--color-opacity-04);
+  }
 }
 
 .description {
   display: block;
   font-size: 12px;
   color: var(--color-opacity-07);
+
+  &.disabled {
+    color: var(--color-opacity-04);
+  }
+}
+
+.range {
+  display: block;
+  width: 160px;
 }

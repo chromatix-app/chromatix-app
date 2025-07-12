@@ -14,10 +14,11 @@ import {
   useGotRequiredData,
   useNetworkStatus,
   useScrollRestoration,
+  useStyleOptions,
   useWindowSize,
 } from 'js/hooks';
 import { ErrorPage } from 'js/pages';
-import { isElectron, electronPlatform } from 'js/utils';
+import { getBrowserName, getOperatingSystemName, isElectron, electronPlatform } from 'js/utils';
 import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 
 // ======================================================================
@@ -40,6 +41,8 @@ const App = () => {
   const accessibilityFocus = useSelector(({ sessionModel }) => sessionModel.accessibilityFocus);
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
+  const winCustomScrollbars = useSelector(({ sessionModel }) => sessionModel.winCustomScrollbars);
+  const winAutoHideScrollbars = useSelector(({ sessionModel }) => sessionModel.winAutoHideScrollbars);
 
   const gotRequiredData = useGotRequiredData();
 
@@ -50,6 +53,7 @@ const App = () => {
   useElectronStatus();
   useNetworkStatus();
   useScrollRestoration();
+  useStyleOptions();
 
   // disable console logs in production
   useEffect(() => {
@@ -63,6 +67,10 @@ const App = () => {
 
   // initialise on load
   useEffect(() => {
+    // add browser and OS information to html
+    document.documentElement.setAttribute('data-browser', getBrowserName());
+    document.documentElement.setAttribute('data-os', getOperatingSystemName());
+
     // add local class to html
     if (isLocal) {
       document.documentElement.classList.add('env-local');
@@ -81,6 +89,13 @@ const App = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // initialise on load
+  useEffect(() => {
+    // add scrollbars preferences to html
+    document.documentElement.setAttribute('data-scrollbars', winCustomScrollbars);
+    document.documentElement.setAttribute('data-scrollbars-hide', winAutoHideScrollbars);
+  }, [winCustomScrollbars, winAutoHideScrollbars]);
 
   // toggle class on html if accessibility focus is enabled
   useEffect(() => {

@@ -6,7 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import clsx from 'clsx';
 
 import { themes } from 'js/_config/themes';
-import { Icon } from 'js/components';
+import { Icon, RangeSlider } from 'js/components';
+import { getOperatingSystemName, isElectron, electronPlatform } from 'js/utils';
 
 import style from './SettingsAppearance.module.scss';
 
@@ -21,6 +22,9 @@ export const SettingsAppearance = () => {
   const currentColorBackground = useSelector(({ sessionModel }) => sessionModel.currentColorBackground);
   const currentColorText = useSelector(({ sessionModel }) => sessionModel.currentColorText);
   const currentColorPrimary = useSelector(({ sessionModel }) => sessionModel.currentColorPrimary);
+
+  const osName = getOperatingSystemName();
+  const isWin = osName === 'Windows' || (isElectron && electronPlatform === 'win');
 
   const groupedThemes = Object.entries(themes).reduce((groups, [themeName, themeDetails]) => {
     const group = themeDetails.group;
@@ -40,7 +44,7 @@ export const SettingsAppearance = () => {
   return (
     <div className={style.wrap}>
       {Object.entries(groupedThemes).map(([groupName, groupThemes], groupIndex) => (
-        <div key={groupIndex} className={style.group}>
+        <div key={groupIndex} className={clsx(style.group, style.groupThemes)}>
           <div className={style.title}>{groupName}</div>
           <div className={style.themes}>
             {groupThemes.map(([themeName, themeDetails], themeIndex) => (
@@ -65,8 +69,8 @@ export const SettingsAppearance = () => {
         </div>
       ))}
 
-      <div className={style.group}>
-        <div className={style.title}>Custom</div>
+      <div className={clsx(style.group, style.groupThemes)}>
+        <div className={style.title}>Custom theme</div>
         <div className={style.themes}>
           <button
             className={clsx(style.theme, {
@@ -132,8 +136,15 @@ export const SettingsAppearance = () => {
         </div>
       </div>
 
+      {isWin && (
+        <div className={style.group}>
+          <div className={style.title}>Scrollbars (Windows only)</div>
+          <ScrollbarSettings />
+        </div>
+      )}
+
       <div className={style.group}>
-        <div className={style.title}>Additional Options</div>
+        <div className={style.title}>Display Options</div>
         <InterfaceSettings />
       </div>
     </div>
@@ -141,7 +152,77 @@ export const SettingsAppearance = () => {
 };
 
 //
-// INTERFACE
+// SCROLLBAR SETTINGS
+//
+
+const ScrollbarSettings = () => {
+  const dispatch = useDispatch();
+
+  const winCustomScrollbars = useSelector(({ sessionModel }) => sessionModel.winCustomScrollbars);
+  const winAutoHideScrollbars = useSelector(({ sessionModel }) => sessionModel.winAutoHideScrollbars);
+  const winScrollbarWidth = useSelector(({ sessionModel }) => sessionModel.winScrollbarWidth);
+
+  const menuItems = [
+    {
+      key: 'winCustomScrollbars',
+      label: 'Custom scrollbars',
+      description: 'When enabled, the app will use custom scrollbars instead of the default ones.',
+      state: winCustomScrollbars,
+    },
+    {
+      key: 'winAutoHideScrollbars',
+      label: 'Only show scrollbars on hover',
+      description: 'When enabled, scrollbars will only be visible when hovering over the scrollable area.',
+      state: winAutoHideScrollbars,
+      disabled: !winCustomScrollbars,
+    },
+  ];
+
+  const handleScrollbarChange = (value) => {
+    dispatch.sessionModel.setSessionState({ winScrollbarWidth: value });
+  };
+
+  return (
+    <div className={style.menu}>
+      {menuItems.map(({ key, label, description, state, disabled }) => (
+        <div key={key} className={style.menuEntry}>
+          <label>
+            <input
+              type="checkbox"
+              checked={state}
+              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
+              disabled={disabled}
+            />
+            <div>
+              {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
+              {description && <div className={clsx(style.description, disabled && style.disabled)}>{description}</div>}
+            </div>
+          </label>
+        </div>
+      ))}
+      <div className={clsx(style.menuEntry, style.menuEntryIndented)}>
+        <label>
+          <div>
+            <div className={clsx(style.label, !winCustomScrollbars && style.disabled)}>Scrollbar width</div>
+            <div className={style.range}>
+              <RangeSlider
+                max={20}
+                min={8}
+                step={4}
+                value={winScrollbarWidth}
+                handleChange={handleScrollbarChange}
+                isDisabled={!winCustomScrollbars}
+              />
+            </div>
+          </div>
+        </label>
+      </div>
+    </div>
+  );
+};
+
+//
+// DISPLAY SETTINGS
 //
 
 const InterfaceSettings = () => {

@@ -189,7 +189,7 @@ const PlaybackSettings = () => {
             />
             <div>
               {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
-              {description && <div className={style.description}>{description}</div>}
+              {description && <div className={clsx(style.description, disabled && style.disabled)}>{description}</div>}
             </div>
           </label>
         </div>
