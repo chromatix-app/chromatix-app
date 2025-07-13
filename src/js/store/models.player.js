@@ -17,8 +17,6 @@ const playerState = {
   playerTrackLoaded: false,
   playerTrackError: false,
   playerInteractionCount: 0,
-  nextTrackPreloaded: false,
-  preloadingTrackIndex: null,
 };
 
 const state = Object.assign({}, playerState);
@@ -448,8 +446,6 @@ const effects = (dispatch) => ({
       playerPlaying: true,
       playerTrackLoaded: true,
       playerTrackError: false,
-      nextTrackPreloaded: false,
-      preloadingTrackIndex: null,
     });
     dispatch.sessionModel.setSessionState({
       ...payload,
@@ -457,6 +453,16 @@ const effects = (dispatch) => ({
     // start playing
     const currentTrack = payload.playingTrackList[payload.playingTrackKeys[payload.playingTrackIndex]];
     playerX.loadTrack(currentTrack.src);
+
+    // Set next track for preloading
+    const nextIndex = payload.playingTrackIndex + 1;
+    if (nextIndex < payload.playingTrackCount) {
+      const nextTrack = payload.playingTrackList[payload.playingTrackKeys[nextIndex]];
+      playerX.setNextTrack(nextTrack.src);
+    } else {
+      playerX.clearNextTrack();
+    }
+
     dispatch.playerModel.setPlayerState({
       playerInteractionCount: rootState.playerModel.playerInteractionCount + 1,
     });
@@ -483,13 +489,21 @@ const effects = (dispatch) => ({
           playerPlaying: play,
           playerTrackLoaded: true,
           playerTrackError: false,
-          nextTrackPreloaded: false,
-          preloadingTrackIndex: null,
         });
         dispatch.sessionModel.setSessionState({
           playingTrackIndex: index,
         });
         playerX.loadTrack(currentTrack.src, progress, play);
+
+        // Set next track for preloading
+        const nextIndex = index + 1;
+        if (nextIndex < playingTrackKeys.length) {
+          const nextTrack = playingTrackList[playingTrackKeys[nextIndex]];
+          playerX.setNextTrack(nextTrack.src);
+        } else {
+          playerX.clearNextTrack();
+        }
+
         // log playback state to server
         if (play) {
           bridge.logPlaybackPlay(currentTrack, progress);
@@ -541,8 +555,8 @@ const effects = (dispatch) => ({
     if (playerPlaying) {
       dispatch.sessionModel.setPlayingTrackProgress(payload);
 
-      // Preload next track when we're near the end of the current track
-      dispatch.playerModel.checkAndPreloadNextTrack(payload);
+      // Update player with current progress (handles auto-preloading internally)
+      playerX.updateProgress(payload);
 
       // log playback state to server
       const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
@@ -610,8 +624,6 @@ const effects = (dispatch) => ({
     const playingRepeatAll = rootState.sessionModel.playingRepeatAll;
     const playingRepeatOnce = rootState.sessionModel.playingRepeatOnce;
     const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
-    const nextTrackPreloaded = rootState.playerModel.nextTrackPreloaded;
-    const preloadingTrackIndex = rootState.playerModel.preloadingTrackIndex;
 
     // repeat current track, if on repeat once
     if (playingRepeatOnce && payload === true) {
@@ -620,50 +632,11 @@ const effects = (dispatch) => ({
     } else {
       // play next track, if available
       if (playingTrackIndex < playingTrackCount - 1) {
-        const nextIndex = playingTrackIndex + 1;
-
-        // Try to use preloaded track if available
-        if (nextTrackPreloaded && preloadingTrackIndex === nextIndex) {
-          const success = playerX.switchToPreloadedTrack(0, true);
-          if (success) {
-            dispatch.playerModel.setPlayerState({
-              playerPlaying: true,
-              playerTrackLoaded: true,
-              playerTrackError: false,
-              nextTrackPreloaded: false,
-              preloadingTrackIndex: null,
-            });
-            dispatch.sessionModel.setSessionState({
-              playingTrackIndex: nextIndex,
-              playingTrackProgress: 0,
-            });
-
-            // Log playback state to server
-            const nextTrack = playingTrackList[playingTrackKeys[nextIndex]];
-            bridge.logPlaybackPlay(nextTrack, 0);
-
-            if (payload === true) {
-              analyticsEvent('Music: Next Track (Auto) (Preloaded)');
-            } else {
-              analyticsEvent('Music: Next Track (Preloaded)');
-            }
-          } else {
-            // Fallback to regular loading
-            dispatch.playerModel.playerLoadIndex({ index: nextIndex, play: true });
-            if (payload === true) {
-              analyticsEvent('Music: Next Track (Auto)');
-            } else {
-              analyticsEvent('Music: Next Track');
-            }
-          }
+        dispatch.playerModel.playerLoadIndex({ index: playingTrackIndex + 1, play: true });
+        if (payload === true) {
+          analyticsEvent('Music: Next Track (Auto)');
         } else {
-          // Regular loading
-          dispatch.playerModel.playerLoadIndex({ index: nextIndex, play: true });
-          if (payload === true) {
-            analyticsEvent('Music: Next Track (Auto)');
-          } else {
-            analyticsEvent('Music: Next Track');
-          }
+          analyticsEvent('Music: Next Track');
         }
       }
       // else play first track, if on repeat all
@@ -804,43 +777,6 @@ const effects = (dispatch) => ({
     const actualVolume = newVolumeMuted ? 0 : newVolumeLevel;
     playerX.setVolume(actualVolume);
     analyticsEvent('Music: Mute ' + (newVolumeMuted ? 'On' : 'Off'));
-  },
-
-  //
-  // PRELOADING
-  //
-
-  checkAndPreloadNextTrack(payload, rootState) {
-    const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
-    const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
-    const playingTrackList = rootState.sessionModel.playingTrackList;
-    const playingTrackCount = rootState.sessionModel.playingTrackCount;
-    const nextTrackPreloaded = rootState.playerModel.nextTrackPreloaded;
-
-    // Get current track duration
-    const currentTrackDuration = playerX.getCurrentDuration() * 1000; // Convert to milliseconds
-    const currentProgress = payload; // Progress in milliseconds
-
-    // Only preload if we have a next track and haven't preloaded yet
-    if (playingTrackIndex < playingTrackCount - 1 && !nextTrackPreloaded && currentTrackDuration > 0) {
-      const nextTrackIndex = playingTrackIndex + 1;
-
-      // Preload when we're within 45 seconds of the end, or at 60% progress, whichever comes first
-      const timeRemaining = currentTrackDuration - currentProgress;
-      const progressPercentage = currentProgress / currentTrackDuration;
-
-      if (timeRemaining <= 45000 || progressPercentage >= 0.6) {
-        const nextTrack = playingTrackList[playingTrackKeys[nextTrackIndex]];
-        if (nextTrack && nextTrack.src) {
-          console.log('%c--- preloading next track ---', 'color:#5c16b1', nextTrack.title);
-          playerX.preloadNextTrack(nextTrack.src);
-          dispatch.playerModel.setPlayerState({
-            nextTrackPreloaded: true,
-            preloadingTrackIndex: nextTrackIndex,
-          });
-        }
-      }
-    }
   },
 });
 
