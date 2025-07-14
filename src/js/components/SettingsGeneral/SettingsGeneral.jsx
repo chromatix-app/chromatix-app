@@ -493,6 +493,7 @@ const FavouriteSettings = () => {
 
 const StarRatingSettings = () => {
   const dispatch = useDispatch();
+  const optionUseHalfStars = useSelector((state) => state.sessionModel.optionUseHalfStars);
 
   const gridArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.gridArtistsUserRating);
   const gridArtistAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.gridArtistAlbumsUserRating);
@@ -587,6 +588,14 @@ const StarRatingSettings = () => {
     });
   };
 
+  const toggleHalfStars = () => {
+    dispatch.sessionModel.setSessionState({ optionUseHalfStars: true });
+  };
+
+  const toggleWholeStars = () => {
+    dispatch.sessionModel.setSessionState({ optionUseHalfStars: false });
+  };
+
   return (
     <div className={style.menu}>
       <div className={style.menuEntry}>
@@ -615,6 +624,25 @@ const StarRatingSettings = () => {
               disabled={allSame && firstValue === false}
             >
               Hide star ratings everywhere
+            </Button>
+          </div>
+        </div>
+      </div>
+      <br></br>
+      <div className={style.menuEntry}>
+        <div>
+          <div className={style.label}>
+            Toggle between half-star and whole-star rating increments for a more precise or broader rating experience.
+            <br />
+            Note that in whole-star mode, if the server rating includes a half-star, it will still display it, but you
+            can only select whole-star ratings.
+          </div>
+          <div className={style.buttons}>
+            <Button size="small" inline wrap={false} onClick={toggleHalfStars} disabled={optionUseHalfStars === true}>
+              Use half-star ratings
+            </Button>
+            <Button size="small" inline wrap={false} onClick={toggleWholeStars} disabled={optionUseHalfStars === false}>
+              Use whole-star ratings
             </Button>
           </div>
         </div>

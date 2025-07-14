@@ -60,6 +60,7 @@ const sessionState = {
   optionSortNumbersFirst: false,
   optionSortIgnoreLeadingArticles: true,
   optionShowFullTitles_Deprecated: false,
+  optionUseHalfStars: true,
 
   queueIsVisible: false,
   queueExpandArtwork: true,

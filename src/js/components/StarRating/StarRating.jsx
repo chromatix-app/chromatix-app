@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 
 import { Icon } from 'js/components';
@@ -18,6 +19,7 @@ const StarRating = ({
   onlyShowOnHover = false,
 }) => {
   const [displayRating, setDisplayRating] = useState(null);
+  const useHalfStars = useSelector((state) => state.sessionModel.optionUseHalfStars);
 
   const handleMouseEnter = useCallback((e) => {
     setDisplayRating(e.target.dataset.value);
@@ -42,13 +44,13 @@ const StarRating = ({
 
   const variantClassName = 'wrap' + variant.charAt(0).toUpperCase() + variant.slice(1);
   const actualRating = displayRating ? displayRating : rating;
-  const halfRating = actualRating / 2;
+  const starValue = actualRating / 2;
 
   const stars = Array.from({ length: 5 }, (_, i) => {
     let icon;
-    if (halfRating >= i + 1) {
+    if (starValue >= i + 1) {
       icon = 'StarFullIcon';
-    } else if (halfRating > i && halfRating < i + 1) {
+    } else if (starValue > i) {
       icon = 'StarHalfIcon';
     } else {
       icon = 'StarEmptyIcon';
@@ -82,16 +84,19 @@ const StarRating = ({
       <div className={style.stars}>{stars}</div>
       {editable && (
         <div className={style.editor} onMouseLeave={handleMouseLeave}>
-          {Array.from({ length: 11 }, (_, i) => (
-            <button
-              key={i}
-              className={style.edit}
-              onClick={handleEdit}
-              onMouseEnter={handleMouseEnter}
-              data-value={i}
-              tabIndex={-1}
-            />
-          ))}
+          {(() => {
+            const editorValues = useHalfStars ? Array.from({ length: 11 }, (_, i) => i) : [0, 2, 4, 6, 8, 10];
+            return editorValues.map((value) => (
+              <button
+                key={value}
+                className={style.edit}
+                onClick={handleEdit}
+                onMouseEnter={handleMouseEnter}
+                data-value={value}
+                tabIndex={-1}
+              />
+            ));
+          })()}
         </div>
       )}
     </div>
