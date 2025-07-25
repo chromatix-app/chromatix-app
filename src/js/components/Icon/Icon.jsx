@@ -45,6 +45,7 @@ import { ReactComponent as DownloadIcon } from './icons/general/download.svg';
 import { ReactComponent as EllipsisCircleIcon } from './icons/general/ellipsis-circle.svg';
 import { ReactComponent as ExpandIcon } from './icons/general/expand.svg';
 import { ReactComponent as ExternalLinkIcon } from './icons/general/external-link.svg';
+import { ReactComponent as EyeIcon } from './icons/general/eye.svg';
 import { ReactComponent as FastForwardIcon } from './icons/general/fast-forward.svg';
 import { ReactComponent as FeaturebaseIcon } from './icons/general/feature-base.svg';
 import { ReactComponent as FolderIcon } from './icons/general/folder.svg';
@@ -148,6 +149,7 @@ export const customIcons = {
   EllipsisCircleIcon,
   ExpandIcon,
   ExternalLinkIcon,
+  EyeIcon,
   FastForwardIcon,
   FeaturebaseIcon,
   FolderIcon,

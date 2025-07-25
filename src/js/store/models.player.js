@@ -2,6 +2,7 @@
 // IMPORTS
 // ======================================================================
 
+import { PlaybackErrorMessage } from 'js/components';
 import { analyticsEvent, getTrackKeys } from 'js/utils';
 import * as playerX from 'js/services/player';
 import * as bridge from 'js/services/bridge';
@@ -186,11 +187,7 @@ const effects = (dispatch) => ({
     // Display notification
     dispatch.appModel.addNotification({
       title: 'Playback error',
-      description: (
-        <>
-          <em>"{trackCurrent.title}"</em> by <em>{trackCurrent.artist}</em> could not be played.
-        </>
-      ),
+      description: PlaybackErrorMessage({ trackTitle: trackCurrent.title, trackArtist: trackCurrent.artist }),
     });
 
     // Try to play the next track (after a short delay)
@@ -453,6 +450,16 @@ const effects = (dispatch) => ({
     // start playing
     const currentTrack = payload.playingTrackList[payload.playingTrackKeys[payload.playingTrackIndex]];
     playerX.loadTrack(currentTrack.src);
+
+    // Set next track for preloading
+    const nextIndex = payload.playingTrackIndex + 1;
+    if (nextIndex < payload.playingTrackCount) {
+      const nextTrack = payload.playingTrackList[payload.playingTrackKeys[nextIndex]];
+      playerX.setNextTrack(nextTrack.src);
+    } else {
+      playerX.clearNextTrack();
+    }
+
     dispatch.playerModel.setPlayerState({
       playerInteractionCount: rootState.playerModel.playerInteractionCount + 1,
     });
@@ -484,6 +491,16 @@ const effects = (dispatch) => ({
           playingTrackIndex: index,
         });
         playerX.loadTrack(currentTrack.src, progress, play);
+
+        // Set next track for preloading
+        const nextIndex = index + 1;
+        if (nextIndex < playingTrackKeys.length) {
+          const nextTrack = playingTrackList[playingTrackKeys[nextIndex]];
+          playerX.setNextTrack(nextTrack.src);
+        } else {
+          playerX.clearNextTrack();
+        }
+
         // log playback state to server
         if (play) {
           bridge.logPlaybackPlay(currentTrack, progress);
@@ -534,6 +551,10 @@ const effects = (dispatch) => ({
     const playerPlaying = rootState.playerModel.playerPlaying;
     if (playerPlaying) {
       dispatch.sessionModel.setPlayingTrackProgress(payload);
+
+      // Update player with current progress (handles auto-preloading internally)
+      playerX.updateProgress(payload);
+
       // log playback state to server
       const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
       const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
@@ -659,6 +680,9 @@ const effects = (dispatch) => ({
       });
       analyticsEvent('Music: Repeat All');
     }
+
+    // Update the next track based on new repeat settings
+    dispatch.playerModel.updateNextTrack();
   },
 
   playerRepeatOff(payload, rootState) {
@@ -671,6 +695,9 @@ const effects = (dispatch) => ({
         playingRepeatOnce: false,
       });
       analyticsEvent('Music: Repeat All');
+
+      // Update the next track based on new repeat settings
+      dispatch.playerModel.updateNextTrack();
     }
   },
 
@@ -691,7 +718,26 @@ const effects = (dispatch) => ({
       playingTrackIndex: newIndex,
       playingTrackKeys: trackKeys,
     });
+
+    // Update the next track based on new order
+    dispatch.playerModel.updateNextTrack();
+
     analyticsEvent('Music: Shuffle ' + (isShuffle ? 'On' : 'Off'));
+  },
+
+  updateNextTrack(payload, rootState) {
+    // Helper function to update the next track for preloading
+    const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+    const playingTrackList = rootState.sessionModel.playingTrackList;
+    const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
+
+    const nextIndex = playingTrackIndex + 1;
+    if (nextIndex < playingTrackKeys.length) {
+      const nextTrack = playingTrackList[playingTrackKeys[nextIndex]];
+      playerX.setNextTrack(nextTrack.src);
+    } else {
+      playerX.clearNextTrack();
+    }
   },
 
   //

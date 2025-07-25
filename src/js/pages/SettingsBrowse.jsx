@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { SettingsAccessibility, TitleHeading } from 'js/components';
+import { SettingsBrowse, TitleHeading } from 'js/components';
 
 // ======================================================================
 // COMPONENT
@@ -11,8 +11,8 @@ import { SettingsAccessibility, TitleHeading } from 'js/components';
 const Component = () => {
   return (
     <>
-      <TitleHeading title="Accessibility Settings" />
-      <SettingsAccessibility />
+      <TitleHeading title="Browse Settings" />
+      <SettingsBrowse />
     </>
   );
 };

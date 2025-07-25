@@ -12,6 +12,6 @@
       "git pull",
       "git merge staging"
     ],
-    "after:release": ["git checkout staging", "git merge production", "git checkout develop"]
+    "after:release": ["git checkout staging", "git merge production", "git push", "git checkout develop"]
   }
 }

@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import clsx from 'clsx';
 
 import { themes } from 'js/_config/themes';
-import { Icon, RangeSlider } from 'js/components';
+import { Icon, SettingsList } from 'js/components';
 import { getOperatingSystemName, isElectron, electronPlatform } from 'js/utils';
 
 import style from './SettingsAppearance.module.scss';
@@ -16,15 +16,27 @@ import style from './SettingsAppearance.module.scss';
 // ======================================================================
 
 export const SettingsAppearance = () => {
+  const osName = getOperatingSystemName();
+  const isWin = osName === 'Windows' || (isElectron && electronPlatform === 'win');
+
+  return (
+    <div className={style.wrap}>
+      <PresetThemeSettings />
+      <CustomThemeSettings />
+      <DisplaySettings />
+      {isWin && <ScrollbarSettings />}
+    </div>
+  );
+};
+
+//
+// PRESET THEMES
+//
+
+const PresetThemeSettings = () => {
   const dispatch = useDispatch();
 
   const currentTheme = useSelector(({ sessionModel }) => sessionModel.currentTheme);
-  const currentColorBackground = useSelector(({ sessionModel }) => sessionModel.currentColorBackground);
-  const currentColorText = useSelector(({ sessionModel }) => sessionModel.currentColorText);
-  const currentColorPrimary = useSelector(({ sessionModel }) => sessionModel.currentColorPrimary);
-
-  const osName = getOperatingSystemName();
-  const isWin = osName === 'Windows' || (isElectron && electronPlatform === 'win');
 
   const groupedThemes = Object.entries(themes).reduce((groups, [themeName, themeDetails]) => {
     const group = themeDetails.group;
@@ -35,6 +47,45 @@ export const SettingsAppearance = () => {
     return groups;
   }, {});
 
+  return Object.entries(groupedThemes).map(([groupName, groupThemes], groupIndex) => (
+    <div key={groupIndex} className={style.group}>
+      <div className={style.title}>{groupName}</div>
+      <div className={style.themes}>
+        {groupThemes.map(([themeName, themeDetails], themeIndex) => (
+          <button
+            key={themeIndex}
+            className={clsx(style.theme, {
+              [style.themeCurrent]: currentTheme === themeName,
+            })}
+            onClick={() => {
+              dispatch.sessionModel.setTheme(themeName);
+            }}
+          >
+            <div className={style.themeBackground} style={{ background: themeDetails.background }}>
+              <div
+                className={style.themeText}
+                style={{ borderColor: `transparent transparent ${themeDetails.primary} transparent` }}
+              ></div>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  ));
+};
+
+//
+// CUSTOM THEME
+//
+
+const CustomThemeSettings = () => {
+  const dispatch = useDispatch();
+
+  const currentTheme = useSelector(({ sessionModel }) => sessionModel.currentTheme);
+  const currentColorBackground = useSelector(({ sessionModel }) => sessionModel.currentColorBackground);
+  const currentColorText = useSelector(({ sessionModel }) => sessionModel.currentColorText);
+  const currentColorPrimary = useSelector(({ sessionModel }) => sessionModel.currentColorPrimary);
+
   const resetCustomTheme = () => {
     dispatch.sessionModel.setColorBackground(themes.chromatix.background);
     dispatch.sessionModel.setColorText(themes.chromatix.text);
@@ -42,110 +93,70 @@ export const SettingsAppearance = () => {
   };
 
   return (
-    <div className={style.wrap}>
-      {Object.entries(groupedThemes).map(([groupName, groupThemes], groupIndex) => (
-        <div key={groupIndex} className={clsx(style.group, style.groupThemes)}>
-          <div className={style.title}>{groupName}</div>
-          <div className={style.themes}>
-            {groupThemes.map(([themeName, themeDetails], themeIndex) => (
-              <button
-                key={themeIndex}
-                className={clsx(style.theme, {
-                  [style.themeCurrent]: currentTheme === themeName,
-                })}
-                onClick={() => {
-                  dispatch.sessionModel.setTheme(themeName);
-                }}
-              >
-                <div className={style.themeBackground} style={{ background: themeDetails.background }}>
-                  <div
-                    className={style.themeText}
-                    style={{ borderColor: `transparent transparent ${themeDetails.primary} transparent` }}
-                  ></div>
-                </div>
-              </button>
-            ))}
+    <div className={style.group}>
+      <div className={style.title}>Custom theme</div>
+      <div className={style.themes}>
+        <button
+          className={clsx(style.theme, {
+            [style.themeCurrent]: currentTheme === 'custom',
+          })}
+          onClick={() => {
+            dispatch.sessionModel.setTheme('custom');
+          }}
+        >
+          <div className={style.themeBackground}>
+            <div className={style.icon}>
+              <Icon icon="PencilIcon" cover stroke />
+            </div>
           </div>
-        </div>
-      ))}
+        </button>
 
-      <div className={clsx(style.group, style.groupThemes)}>
-        <div className={style.title}>Custom theme</div>
-        <div className={style.themes}>
-          <button
-            className={clsx(style.theme, {
-              [style.themeCurrent]: currentTheme === 'custom',
-            })}
-            onClick={() => {
-              dispatch.sessionModel.setTheme('custom');
-            }}
-          >
-            <div className={style.themeBackground}>
-              <div className={style.icon}>
-                <Icon icon="PencilIcon" cover stroke />
-              </div>
+        {currentTheme === 'custom' && (
+          <div className={style.custom}>
+            <div className={style.customField}>
+              <div className={style.customLabel}>Background:</div>
+              <input
+                type="color"
+                className={style.customInput}
+                value={currentColorBackground}
+                onChange={(event) => {
+                  dispatch.sessionModel.setColorBackground(event.target.value);
+                }}
+              />
             </div>
-          </button>
-
-          {currentTheme === 'custom' && (
-            <div className={style.custom}>
-              <div className={style.customField}>
-                <div className={style.customLabel}>Background:</div>
-                <input
-                  type="color"
-                  className={style.customInput}
-                  value={currentColorBackground}
-                  onChange={(event) => {
-                    dispatch.sessionModel.setColorBackground(event.target.value);
-                  }}
-                />
-              </div>
-              <div className={style.customField}>
-                <div className={style.customLabel}>Text:</div>
-                <input
-                  type="color"
-                  className={style.customInput}
-                  value={currentColorText}
-                  onChange={(event) => {
-                    dispatch.sessionModel.setColorText(event.target.value);
-                  }}
-                />
-              </div>
-              <div className={style.customField}>
-                <div className={style.customLabel}>Highlight:</div>
-                <input
-                  type="color"
-                  className={style.customInput}
-                  value={currentColorPrimary}
-                  onChange={(event) => {
-                    dispatch.sessionModel.setColorPrimary(event.target.value);
-                  }}
-                />
-              </div>
-              {(currentColorBackground !== themes.chromatix.background ||
-                currentColorText !== themes.chromatix.text ||
-                currentColorPrimary !== themes.chromatix.primary) && (
-                <div className={style.customField}>
-                  <button className={style.button} onClick={resetCustomTheme}>
-                    Reset
-                  </button>
-                </div>
-              )}
+            <div className={style.customField}>
+              <div className={style.customLabel}>Text:</div>
+              <input
+                type="color"
+                className={style.customInput}
+                value={currentColorText}
+                onChange={(event) => {
+                  dispatch.sessionModel.setColorText(event.target.value);
+                }}
+              />
             </div>
-          )}
-        </div>
-      </div>
-
-      {isWin && (
-        <div className={style.group}>
-          <div className={style.title}>Scrollbars (Windows only)</div>
-          <ScrollbarSettings />
-        </div>
-      )}
-
-      <div className={style.group}>
-        <div className={style.title}>Display Options</div>
-        <InterfaceSettings />
+            <div className={style.customField}>
+              <div className={style.customLabel}>Highlight:</div>
+              <input
+                type="color"
+                className={style.customInput}
+                value={currentColorPrimary}
+                onChange={(event) => {
+                  dispatch.sessionModel.setColorPrimary(event.target.value);
+                }}
+              />
+            </div>
+            {(currentColorBackground !== themes.chromatix.background ||
+              currentColorText !== themes.chromatix.text ||
+              currentColorPrimary !== themes.chromatix.primary) && (
+              <div className={style.customField}>
+                <button className={style.button} onClick={resetCustomTheme}>
+                  Reset
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -162,6 +173,10 @@ const ScrollbarSettings = () => {
   const winAutoHideScrollbars = useSelector(({ sessionModel }) => sessionModel.winAutoHideScrollbars);
   const winScrollbarWidth = useSelector(({ sessionModel }) => sessionModel.winScrollbarWidth);
 
+  const handleScrollbarChange = (value) => {
+    dispatch.sessionModel.setSessionState({ winScrollbarWidth: value });
+  };
+
   const menuItems = [
     {
       key: 'winCustomScrollbars',
@@ -176,58 +191,30 @@ const ScrollbarSettings = () => {
       state: winAutoHideScrollbars,
       disabled: !winCustomScrollbars,
     },
+    {
+      type: 'range',
+      key: 'winScrollbarWidth',
+      label: 'Scrollbar width',
+      description: '',
+      state: winScrollbarWidth,
+      disabled: !winCustomScrollbars,
+      props: {
+        max: 20,
+        min: 8,
+        step: 4,
+        handleChange: handleScrollbarChange,
+      },
+    },
   ];
 
-  const handleScrollbarChange = (value) => {
-    dispatch.sessionModel.setSessionState({ winScrollbarWidth: value });
-  };
-
-  return (
-    <div className={style.menu}>
-      {menuItems.map(({ key, label, description, state, disabled }) => (
-        <div key={key} className={style.menuEntry}>
-          <label>
-            <input
-              type="checkbox"
-              checked={state}
-              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
-              disabled={disabled}
-            />
-            <div>
-              {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
-              {description && <div className={clsx(style.description, disabled && style.disabled)}>{description}</div>}
-            </div>
-          </label>
-        </div>
-      ))}
-      <div className={clsx(style.menuEntry, style.menuEntryIndented)}>
-        <label>
-          <div>
-            <div className={clsx(style.label, !winCustomScrollbars && style.disabled)}>Scrollbar width</div>
-            <div className={style.range}>
-              <RangeSlider
-                max={20}
-                min={8}
-                step={4}
-                value={winScrollbarWidth}
-                handleChange={handleScrollbarChange}
-                isDisabled={!winCustomScrollbars}
-              />
-            </div>
-          </div>
-        </label>
-      </div>
-    </div>
-  );
+  return <SettingsList title="Scrollbars (Windows only)" menuItems={menuItems} />;
 };
 
 //
 // DISPLAY SETTINGS
 //
 
-const InterfaceSettings = () => {
-  const dispatch = useDispatch();
-
+const DisplaySettings = () => {
   const accessibilityContrast = useSelector(({ sessionModel }) => sessionModel.accessibilityContrast);
   const accessibilityFocus = useSelector(({ sessionModel }) => sessionModel.accessibilityFocus);
 
@@ -248,25 +235,7 @@ const InterfaceSettings = () => {
     },
   ];
 
-  return (
-    <div className={style.menu}>
-      {menuItems.map(({ key, label, description, state }) => (
-        <div key={key} className={style.menuEntry}>
-          <label>
-            <input
-              type="checkbox"
-              checked={state}
-              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
-            />
-            <div>
-              {label && <div className={style.label}>{label}</div>}
-              {description && <div className={style.description}>{description}</div>}
-            </div>
-          </label>
-        </div>
-      ))}
-    </div>
-  );
+  return <SettingsList title="Display Options" menuItems={menuItems} />;
 };
 
 // ======================================================================

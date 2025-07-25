@@ -40,8 +40,8 @@ export { default as GenericTagItems } from './GenericTagItems';
 
 export { default as Settings } from './Settings';
 export { default as SettingsAbout } from './SettingsAbout';
-export { default as SettingsAccessibility } from './SettingsAccessibility';
 export { default as SettingsAppearance } from './SettingsAppearance';
+export { default as SettingsBrowse } from './SettingsBrowse';
 export { default as SettingsChangelog } from './SettingsChangelog';
 export { default as SettingsDownloads } from './SettingsDownloads';
 export { default as SettingsGeneral } from './SettingsGeneral';

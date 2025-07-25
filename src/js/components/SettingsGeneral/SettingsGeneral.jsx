@@ -2,10 +2,9 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch, useSelector } from 'react-redux';
-import clsx from 'clsx';
+import { useSelector } from 'react-redux';
 
-import { Button } from 'js/components';
+import { SettingsList } from 'js/components';
 
 import style from './SettingsGeneral.module.scss';
 
@@ -13,41 +12,13 @@ import style from './SettingsGeneral.module.scss';
 // COMPONENT
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
-
 export const SettingsGeneral = () => {
   return (
     <div className={style.wrap}>
-      <div className={style.group}>
-        <div className={style.title}>Server</div>
-        <ServerSettings />
-      </div>
-      <div className={style.group}>
-        <div className={style.title}>Sorting</div>
-        <SortSettings />
-      </div>
-      <div className={style.group}>
-        <div className={style.title}>Playback</div>
-        <PlaybackSettings />
-      </div>
-      <div className={style.group}>
-        <div className={style.title}>View Modes</div>
-        <ViewModeSettings />
-      </div>
-      {isLocal && (
-        <div className={style.group}>
-          <div className={style.title}>Favourites (Jellyfin only)</div>
-          <FavouriteSettings />
-        </div>
-      )}
-      <div className={style.group}>
-        <div className={style.title}>Star Ratings</div>
-        <StarRatingSettings />
-      </div>
-      {/* <div className={style.group}>
-        <div className={style.title}>User Interface</div>
-        <UserInterfaceSettings />
-      </div> */}
+      <ServerSettings />
+      <SortSettings />
+      <RatingSettings />
+      <PlaybackSettings />
     </div>
   );
 };
@@ -57,8 +28,6 @@ export const SettingsGeneral = () => {
 //
 
 const ServerSettings = () => {
-  const dispatch = useDispatch();
-
   const optionLogPlaybackToServer = useSelector(({ sessionModel }) => sessionModel.optionLogPlaybackToServer);
 
   const menuItems = [
@@ -71,25 +40,7 @@ const ServerSettings = () => {
     },
   ];
 
-  return (
-    <div className={style.menu}>
-      {menuItems.map(({ key, label, description, state }) => (
-        <div key={key} className={style.menuEntry}>
-          <label>
-            <input
-              type="checkbox"
-              checked={state}
-              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
-            />
-            <div>
-              {label && <div className={style.label}>{label}</div>}
-              {description && <div className={style.description}>{description}</div>}
-            </div>
-          </label>
-        </div>
-      ))}
-    </div>
-  );
+  return <SettingsList title="Server" menuItems={menuItems} />;
 };
 
 //
@@ -97,8 +48,6 @@ const ServerSettings = () => {
 //
 
 const SortSettings = () => {
-  const dispatch = useDispatch();
-
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
   const optionSortIgnoreLeadingArticles = useSelector(
     ({ sessionModel }) => sessionModel.optionSortIgnoreLeadingArticles
@@ -120,25 +69,26 @@ const SortSettings = () => {
     },
   ];
 
-  return (
-    <div className={style.menu}>
-      {menuItems.map(({ key, label, description, state }) => (
-        <div key={key} className={style.menuEntry}>
-          <label>
-            <input
-              type="checkbox"
-              checked={state}
-              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
-            />
-            <div>
-              {label && <div className={style.label}>{label}</div>}
-              {description && <div className={style.description}>{description}</div>}
-            </div>
-          </label>
-        </div>
-      ))}
-    </div>
-  );
+  return <SettingsList title="Sorting" menuItems={menuItems} />;
+};
+
+//
+// RATINGS
+//
+
+const RatingSettings = () => {
+  const optionUseHalfStars = useSelector(({ sessionModel }) => sessionModel.optionUseHalfStars);
+
+  const menuItems = [
+    {
+      key: 'optionUseHalfStars',
+      label: 'Use half stars in ratings.',
+      description: 'Enable to allow setting half-star ratings. Disable to set whole stars only.',
+      state: optionUseHalfStars,
+    },
+  ];
+
+  return <SettingsList title="Star Ratings" menuItems={menuItems} />;
 };
 
 //
@@ -146,8 +96,6 @@ const SortSettings = () => {
 //
 
 const PlaybackSettings = () => {
-  const dispatch = useDispatch();
-
   const disableRepeatOnceOnTrackChange = useSelector(({ sessionModel }) => sessionModel.disableRepeatOnceOnTrackChange);
   const disableRepeatOnceOnSourceChange = useSelector(
     ({ sessionModel }) => sessionModel.disableRepeatOnceOnSourceChange
@@ -176,502 +124,8 @@ const PlaybackSettings = () => {
     },
   ];
 
-  return (
-    <div className={style.menu}>
-      {menuItems.map(({ key, label, description, state, disabled }) => (
-        <div key={key} className={style.menuEntry}>
-          <label>
-            <input
-              type="checkbox"
-              checked={state}
-              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
-              disabled={disabled}
-            />
-            <div>
-              {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
-              {description && <div className={clsx(style.description, disabled && style.disabled)}>{description}</div>}
-            </div>
-          </label>
-        </div>
-      ))}
-    </div>
-  );
+  return <SettingsList title="Playback" menuItems={menuItems} />;
 };
-
-//
-// VIEW MODES
-//
-
-const ViewModeSettings = () => {
-  const dispatch = useDispatch();
-
-  const viewArtists = useSelector(({ sessionModel }) => sessionModel.viewArtists);
-  const viewArtistAlbums = useSelector(({ sessionModel }) => sessionModel.viewArtistAlbums);
-  const viewAlbums = useSelector(({ sessionModel }) => sessionModel.viewAlbums);
-  const viewFolders = useSelector(({ sessionModel }) => sessionModel.viewFolders);
-  const viewPlaylists = useSelector(({ sessionModel }) => sessionModel.viewPlaylists);
-  const viewArtistCollections = useSelector(({ sessionModel }) => sessionModel.viewArtistCollections);
-  const viewArtistCollectionItems = useSelector(({ sessionModel }) => sessionModel.viewArtistCollectionItems);
-  const viewAlbumCollections = useSelector(({ sessionModel }) => sessionModel.viewAlbumCollections);
-  const viewAlbumCollectionItems = useSelector(({ sessionModel }) => sessionModel.viewAlbumCollectionItems);
-  const viewArtistGenres = useSelector(({ sessionModel }) => sessionModel.viewArtistGenres);
-  const viewArtistGenreItems = useSelector(({ sessionModel }) => sessionModel.viewArtistGenreItems);
-  const viewAlbumGenres = useSelector(({ sessionModel }) => sessionModel.viewAlbumGenres);
-  const viewAlbumGenreItems = useSelector(({ sessionModel }) => sessionModel.viewAlbumGenreItems);
-  const viewArtistMoods = useSelector(({ sessionModel }) => sessionModel.viewArtistMoods);
-  const viewArtistMoodItems = useSelector(({ sessionModel }) => sessionModel.viewArtistMoodItems);
-  const viewAlbumMoods = useSelector(({ sessionModel }) => sessionModel.viewAlbumMoods);
-  const viewAlbumMoodItems = useSelector(({ sessionModel }) => sessionModel.viewAlbumMoodItems);
-  const viewArtistStyles = useSelector(({ sessionModel }) => sessionModel.viewArtistStyles);
-  const viewArtistStyleItems = useSelector(({ sessionModel }) => sessionModel.viewArtistStyleItems);
-  const viewAlbumStyles = useSelector(({ sessionModel }) => sessionModel.viewAlbumStyles);
-  const viewAlbumStyleItems = useSelector(({ sessionModel }) => sessionModel.viewAlbumStyleItems);
-  const viewArtistTags = useSelector(({ sessionModel }) => sessionModel.viewArtistTags);
-  const viewArtistTagItems = useSelector(({ sessionModel }) => sessionModel.viewArtistTagItems);
-  const viewAlbumTags = useSelector(({ sessionModel }) => sessionModel.viewAlbumTags);
-  const viewAlbumTagItems = useSelector(({ sessionModel }) => sessionModel.viewAlbumTagItems);
-
-  const allValues = [
-    viewArtists,
-    viewArtistAlbums,
-    viewAlbums,
-    viewFolders,
-    viewPlaylists,
-    viewArtistCollections,
-    viewArtistCollectionItems,
-    viewAlbumCollections,
-    viewAlbumCollectionItems,
-    viewArtistGenres,
-    viewArtistGenreItems,
-    viewAlbumGenres,
-    viewAlbumGenreItems,
-    viewArtistMoods,
-    viewArtistMoodItems,
-    viewAlbumMoods,
-    viewAlbumMoodItems,
-    viewArtistStyles,
-    viewArtistStyleItems,
-    viewAlbumStyles,
-    viewAlbumStyleItems,
-    viewArtistTags,
-    viewArtistTagItems,
-    viewAlbumTags,
-    viewAlbumTagItems,
-  ];
-
-  const firstValue = allValues[0];
-  const allSame = allValues.every((value) => value === firstValue);
-
-  const toggleGridView = () => {
-    dispatch.sessionModel.setSessionState({
-      viewArtists: 'grid',
-      viewArtistAlbums: 'grid',
-      viewAlbums: 'grid',
-      viewFolders: 'grid',
-      viewPlaylists: 'grid',
-      viewArtistCollections: 'grid',
-      viewArtistCollectionItems: 'grid',
-      viewAlbumCollections: 'grid',
-      viewAlbumCollectionItems: 'grid',
-      viewArtistGenres: 'grid',
-      viewArtistGenreItems: 'grid',
-      viewAlbumGenres: 'grid',
-      viewAlbumGenreItems: 'grid',
-      viewArtistMoods: 'grid',
-      viewArtistMoodItems: 'grid',
-      viewAlbumMoods: 'grid',
-      viewAlbumMoodItems: 'grid',
-      viewArtistStyles: 'grid',
-      viewArtistStyleItems: 'grid',
-      viewAlbumStyles: 'grid',
-      viewAlbumStyleItems: 'grid',
-      viewArtistTags: 'grid',
-      viewArtistTagItems: 'grid',
-      viewAlbumTags: 'grid',
-      viewAlbumTagItems: 'grid',
-    });
-  };
-
-  const toggleListView = () => {
-    dispatch.sessionModel.setSessionState({
-      viewArtists: 'list',
-      viewArtistAlbums: 'list',
-      viewAlbums: 'list',
-      viewFolders: 'list',
-      viewPlaylists: 'list',
-      viewArtistCollections: 'list',
-      viewArtistCollectionItems: 'list',
-      viewAlbumCollections: 'list',
-      viewAlbumCollectionItems: 'list',
-      viewArtistGenres: 'list',
-      viewArtistGenreItems: 'list',
-      viewAlbumGenres: 'list',
-      viewAlbumGenreItems: 'list',
-      viewArtistMoods: 'list',
-      viewArtistMoodItems: 'list',
-      viewAlbumMoods: 'list',
-      viewAlbumMoodItems: 'list',
-      viewArtistStyles: 'list',
-      viewArtistStyleItems: 'list',
-      viewAlbumStyles: 'list',
-      viewAlbumStyleItems: 'list',
-      viewArtistTags: 'list',
-      viewArtistTagItems: 'list',
-      viewAlbumTags: 'list',
-      viewAlbumTagItems: 'list',
-    });
-  };
-
-  return (
-    <div className={style.menu}>
-      <div className={style.menuEntry}>
-        <div>
-          <div className={style.label}>
-            Quickly toggle between grid view and list view for all sections of your library.
-            <br />
-            Note that you can independently toggle the view mode within each individual section of your library.
-          </div>
-          <div className={style.buttons}>
-            <Button
-              size="small"
-              inline
-              wrap={false}
-              onClick={toggleGridView}
-              disabled={allSame && firstValue === 'grid'}
-            >
-              Use grid view everywhere
-            </Button>
-            <Button
-              size="small"
-              inline
-              wrap={false}
-              onClick={toggleListView}
-              disabled={allSame && firstValue === 'list'}
-            >
-              Use list view everywhere
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-//
-// FAVOURITES
-//
-
-const FavouriteSettings = () => {
-  const dispatch = useDispatch();
-
-  const gridArtistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridArtistsIsFavourite);
-  const gridArtistAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridArtistAlbumsIsFavourite);
-  const gridArtistCollectionItemsIsFavourite = useSelector(
-    ({ sessionModel }) => sessionModel.gridArtistCollectionItemsIsFavourite
-  );
-  const gridAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridAlbumsIsFavourite);
-  const gridAlbumCollectionItemsIsFavourite = useSelector(
-    ({ sessionModel }) => sessionModel.gridAlbumCollectionItemsIsFavourite
-  );
-  const gridPlaylistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridPlaylistsIsFavourite);
-
-  const colArtistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colArtistsIsFavourite);
-  const colArtistAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsIsFavourite);
-  const colArtistTracksIsFavourite = useSelector(({ sessionModel }) => sessionModel.colArtistTracksIsFavourite);
-  const colAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colAlbumsIsFavourite);
-  const colAlbumIsFavourite = useSelector(({ sessionModel }) => sessionModel.colAlbumIsFavourite);
-  const colPlaylistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colPlaylistsIsFavourite);
-  const colPlaylistIsFavourite = useSelector(({ sessionModel }) => sessionModel.colPlaylistIsFavourite);
-  const colCollectionArtistsIsFavourite = useSelector(
-    ({ sessionModel }) => sessionModel.colCollectionArtistsIsFavourite
-  );
-  const colCollectionAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsIsFavourite);
-
-  const allValues = [
-    gridArtistsIsFavourite,
-    gridArtistAlbumsIsFavourite,
-    gridArtistCollectionItemsIsFavourite,
-    gridAlbumsIsFavourite,
-    gridAlbumCollectionItemsIsFavourite,
-    gridPlaylistsIsFavourite,
-
-    colArtistsIsFavourite,
-    colArtistAlbumsIsFavourite,
-    colArtistTracksIsFavourite,
-    colAlbumsIsFavourite,
-    colAlbumIsFavourite,
-    colPlaylistsIsFavourite,
-    colPlaylistIsFavourite,
-    colCollectionArtistsIsFavourite,
-    colCollectionAlbumsIsFavourite,
-  ];
-
-  const firstValue = allValues[0];
-  const allSame = allValues.every((value) => value === firstValue);
-
-  const toggleShowFavourites = () => {
-    dispatch.sessionModel.setSessionState({
-      gridArtistsIsFavourite: true,
-      gridArtistAlbumsIsFavourite: true,
-      gridArtistCollectionItemsIsFavourite: true,
-      gridAlbumsIsFavourite: true,
-      gridAlbumCollectionItemsIsFavourite: true,
-      gridPlaylistsIsFavourite: true,
-
-      colArtistsIsFavourite: true,
-      colArtistAlbumsIsFavourite: true,
-      colArtistTracksIsFavourite: true,
-      colAlbumsIsFavourite: true,
-      colAlbumIsFavourite: true,
-      colPlaylistsIsFavourite: true,
-      colPlaylistIsFavourite: true,
-      colCollectionArtistsIsFavourite: true,
-      colCollectionAlbumsIsFavourite: true,
-    });
-  };
-
-  const toggleHideFavourites = () => {
-    dispatch.sessionModel.setSessionState({
-      gridArtistsIsFavourite: false,
-      gridArtistAlbumsIsFavourite: false,
-      gridArtistCollectionItemsIsFavourite: false,
-      gridAlbumsIsFavourite: false,
-      gridAlbumCollectionItemsIsFavourite: false,
-      gridPlaylistsIsFavourite: false,
-
-      colArtistsIsFavourite: false,
-      colArtistAlbumsIsFavourite: false,
-      colArtistTracksIsFavourite: false,
-      colAlbumsIsFavourite: false,
-      colAlbumIsFavourite: false,
-      colPlaylistsIsFavourite: false,
-      colPlaylistIsFavourite: false,
-      colCollectionArtistsIsFavourite: false,
-      colCollectionAlbumsIsFavourite: false,
-    });
-  };
-
-  return (
-    <div className={style.menu}>
-      <div className={style.menuEntry}>
-        <div>
-          <div className={style.label}>
-            Quickly toggle the visibility of favourites for all sections of your library.
-            <br />
-            Note that you can independently toggle the visibility of favourites within each individual section of your
-            library.
-          </div>
-          <div className={style.buttons}>
-            <Button
-              size="small"
-              inline
-              wrap={false}
-              onClick={toggleShowFavourites}
-              disabled={allSame && firstValue === true}
-            >
-              Show favourites everywhere
-            </Button>
-            <Button
-              size="small"
-              inline
-              wrap={false}
-              onClick={toggleHideFavourites}
-              disabled={allSame && firstValue === false}
-            >
-              Hide favourites everywhere
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-//
-// STAR RATINGS
-//
-
-const StarRatingSettings = () => {
-  const dispatch = useDispatch();
-
-  const gridArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.gridArtistsUserRating);
-  const gridArtistAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.gridArtistAlbumsUserRating);
-  const gridArtistCollectionItemsUserRating = useSelector(
-    ({ sessionModel }) => sessionModel.gridArtistCollectionItemsUserRating
-  );
-  const gridAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.gridAlbumsUserRating);
-  const gridAlbumCollectionItemsUserRating = useSelector(
-    ({ sessionModel }) => sessionModel.gridAlbumCollectionItemsUserRating
-  );
-  const gridPlaylistsUserRating = useSelector(({ sessionModel }) => sessionModel.gridPlaylistsUserRating);
-  const gridCollectionsUserRating = useSelector(({ sessionModel }) => sessionModel.gridCollectionsUserRating);
-
-  const colArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistsUserRating);
-  const colArtistAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsUserRating);
-  const colArtistTracksUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistTracksUserRating);
-  const colAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumsUserRating);
-  const colAlbumUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumUserRating);
-  const colPlaylistsUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistsUserRating);
-  const colPlaylistUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistUserRating);
-  const colCollectionUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionUserRating);
-  const colCollectionArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsUserRating);
-  const colCollectionAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsUserRating);
-
-  const allValues = [
-    gridArtistsUserRating,
-    gridArtistAlbumsUserRating,
-    gridArtistCollectionItemsUserRating,
-    gridAlbumsUserRating,
-    gridAlbumCollectionItemsUserRating,
-    gridPlaylistsUserRating,
-    gridCollectionsUserRating,
-
-    colArtistsUserRating,
-    colArtistAlbumsUserRating,
-    colArtistTracksUserRating,
-    colAlbumsUserRating,
-    colAlbumUserRating,
-    colPlaylistsUserRating,
-    colPlaylistUserRating,
-    colCollectionUserRating,
-    colCollectionArtistsUserRating,
-    colCollectionAlbumsUserRating,
-  ];
-
-  const firstValue = allValues[0];
-  const allSame = allValues.every((value) => value === firstValue);
-
-  const toggleShowUserRating = () => {
-    dispatch.sessionModel.setSessionState({
-      gridArtistsUserRating: true,
-      gridArtistAlbumsUserRating: true,
-      gridArtistCollectionItemsUserRating: true,
-      gridAlbumsUserRating: true,
-      gridAlbumCollectionItemsUserRating: true,
-      gridPlaylistsUserRating: true,
-      gridCollectionsUserRating: true,
-
-      colArtistsUserRating: true,
-      colArtistAlbumsUserRating: true,
-      colArtistTracksUserRating: true,
-      colAlbumsUserRating: true,
-      colAlbumUserRating: true,
-      colPlaylistsUserRating: true,
-      colPlaylistUserRating: true,
-      colCollectionUserRating: true,
-      colCollectionArtistsUserRating: true,
-      colCollectionAlbumsUserRating: true,
-    });
-  };
-
-  const toggleHideUserRating = () => {
-    dispatch.sessionModel.setSessionState({
-      gridArtistsUserRating: false,
-      gridArtistAlbumsUserRating: false,
-      gridArtistCollectionItemsUserRating: false,
-      gridAlbumsUserRating: false,
-      gridAlbumCollectionItemsUserRating: false,
-      gridPlaylistsUserRating: false,
-      gridCollectionsUserRating: false,
-
-      colArtistsUserRating: false,
-      colArtistAlbumsUserRating: false,
-      colArtistTracksUserRating: false,
-      colAlbumsUserRating: false,
-      colAlbumUserRating: false,
-      colPlaylistsUserRating: false,
-      colPlaylistUserRating: false,
-      colCollectionUserRating: false,
-      colCollectionArtistsUserRating: false,
-      colCollectionAlbumsUserRating: false,
-    });
-  };
-
-  return (
-    <div className={style.menu}>
-      <div className={style.menuEntry}>
-        <div>
-          <div className={style.label}>
-            Quickly toggle the visibility of star ratings for all sections of your library.
-            <br />
-            Note that you can independently toggle the visibility of star ratings within each individual section of your
-            library.
-          </div>
-          <div className={style.buttons}>
-            <Button
-              size="small"
-              inline
-              wrap={false}
-              onClick={toggleShowUserRating}
-              disabled={allSame && firstValue === true}
-            >
-              Show star ratings everywhere
-            </Button>
-            <Button
-              size="small"
-              inline
-              wrap={false}
-              onClick={toggleHideUserRating}
-              disabled={allSame && firstValue === false}
-            >
-              Hide star ratings everywhere
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-//
-// USER INTERFACE
-//
-
-// const UserInterfaceSettings = () => {
-//   const dispatch = useDispatch();
-
-//   // const optionShowFullTitles_Deprecated = useSelector(({ sessionModel }) => sessionModel.optionShowFullTitles_Deprecated);
-//   // const optionShowStarRatings_Deprecated = useSelector(({ sessionModel }) => sessionModel.optionShowStarRatings_Deprecated);
-
-//   const menuItems = [
-//     {
-//       key: 'optionShowStarRatings_Deprecated',
-//       label: 'Show star ratings.',
-//       description:
-//         'This option has now been moved into each individual section of your library for more granular control.',
-//       state: false,
-//       disabled: true,
-//     },
-//     {
-//       key: 'optionShowFullTitles_Deprecated',
-//       label: 'Always show full track, artist and album titles.',
-//       description: 'Sorry, this option has now been removed for performance reasons.',
-//       state: false,
-//       disabled: true,
-//     },
-//   ];
-
-//   return (
-//     <div className={style.menu}>
-//       {menuItems.map(({ key, label, description, state, disabled }) => (
-//         <div key={key} className={style.menuEntry}>
-//           <label>
-//             <input
-//               type="checkbox"
-//               checked={state}
-//               onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
-//               disabled={disabled}
-//             />
-//             <div>
-//               {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
-//               {description && <div className={style.description}>{description}</div>}
-//             </div>
-//           </label>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// };
 
 // ======================================================================
 // EXPORT

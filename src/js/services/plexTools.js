@@ -1297,11 +1297,28 @@ export const getTagItems = ({ accessToken, libraryId, serverBaseUrl, tagId, type
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposeTagItemArray(response, libraryId, serverBaseUrl, accessToken, typeKey));
+          const tagItems = plexTranspose.transposeTagItemArray(
+            response,
+            libraryId,
+            serverBaseUrl,
+            accessToken,
+            typeKey
+          );
+          if (tagItems.length > 0) {
+            resolve(tagItems);
+          } else {
+            const error = new Error('Invalid tag ID');
+            error.status = 404;
+            reject({
+              code: 'plex.getTagItems.1',
+              message: 'Failed to get all tag items: ' + error?.message,
+              error: error,
+            });
+          }
         })
         .catch((error) => {
           reject({
-            code: 'plex.getTagItems.1',
+            code: 'plex.getTagItems.2',
             message: 'Failed to get all tag items: ' + error?.message,
             error: error,
           });
@@ -1311,7 +1328,7 @@ export const getTagItems = ({ accessToken, libraryId, serverBaseUrl, tagId, type
         });
     } catch (error) {
       reject({
-        code: 'plex.getTagItems.2',
+        code: 'plex.getTagItems.3',
         message: 'Failed to get all tag items: ' + error?.message,
         error: error,
       });

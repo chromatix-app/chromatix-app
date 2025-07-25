@@ -255,14 +255,14 @@ export const authRoutes = [
     component: 'SettingsAbout',
   },
   {
-    path: '/settings/accessibility',
-    exact: true,
-    component: 'SettingsAccessibility',
-  },
-  {
     path: '/settings/appearance',
     exact: true,
     component: 'SettingsAppearance',
+  },
+  {
+    path: '/settings/browse',
+    exact: true,
+    component: 'SettingsBrowse',
   },
   {
     path: '/settings/changelog',

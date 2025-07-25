@@ -2,10 +2,9 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch, useSelector } from 'react-redux';
-import clsx from 'clsx';
+import { useSelector } from 'react-redux';
 
-import { PageText } from 'js/components';
+import { PageText, SettingsList } from 'js/components';
 import platformFeatures from 'js/_config/platformFeatures';
 
 import style from './SettingsMenu.module.scss';
@@ -28,22 +27,10 @@ export const SettingsMenu = () => {
         </PageText>
       )}
       <div className={style.wrap}>
-        <div className={style.group}>
-          <div className={style.title}>General</div>
-          <GeneralSettings platformOpts={platformOpts} />
-        </div>
-        <div className={style.group}>
-          <div className={style.title}>Library</div>
-          <LibrarySettings platformOpts={platformOpts} />
-        </div>
-        <div className={style.group}>
-          <div className={style.title}>Browse</div>
-          <BrowseSettings platformOpts={platformOpts} />
-        </div>
-        <div className={style.group}>
-          <div className={style.title}>Playlists</div>
-          <PlaylistSettings platformOpts={platformOpts} />
-        </div>
+        <GeneralSettings platformOpts={platformOpts} />
+        <LibrarySettings platformOpts={platformOpts} />
+        <BrowseSettings platformOpts={platformOpts} />
+        <PlaylistSettings platformOpts={platformOpts} />
       </div>
     </>
   );
@@ -54,8 +41,6 @@ export const SettingsMenu = () => {
 //
 
 const GeneralSettings = ({ platformOpts }) => {
-  const dispatch = useDispatch();
-
   const menuShowIcons = useSelector(({ sessionModel }) => sessionModel.menuShowIcons);
   const menuShowSearch = useSelector(({ sessionModel }) => sessionModel.menuShowSearch);
 
@@ -64,22 +49,7 @@ const GeneralSettings = ({ platformOpts }) => {
     { key: 'menuShowSearch', label: 'Show search', state: menuShowSearch },
   ];
 
-  return (
-    <div className={style.menu}>
-      {menuItems.map(({ key, label, state }) => (
-        <div key={key} className={style.menuEntry}>
-          <label>
-            <input
-              type="checkbox"
-              checked={state}
-              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
-            />
-            <div>{label}</div>
-          </label>
-        </div>
-      ))}
-    </div>
-  );
+  return <SettingsList title="General" menuItems={menuItems} />;
 };
 
 //
@@ -87,8 +57,6 @@ const GeneralSettings = ({ platformOpts }) => {
 //
 
 const LibrarySettings = ({ platformOpts }) => {
-  const dispatch = useDispatch();
-
   const menuShowArtists = useSelector(({ sessionModel }) => sessionModel.menuShowArtists);
   const menuShowAlbums = useSelector(({ sessionModel }) => sessionModel.menuShowAlbums);
   const menuShowFolders = useSelector(({ sessionModel }) => sessionModel.menuShowFolders);
@@ -106,23 +74,7 @@ const LibrarySettings = ({ platformOpts }) => {
     { key: 'menuShowPlaylists', label: 'Playlists', state: menuShowPlaylists },
   ];
 
-  return (
-    <div className={style.menu}>
-      {menuItems.map(({ key, label, state, disabled }) => (
-        <div key={key} className={style.menuEntry}>
-          <label>
-            <input
-              type="checkbox"
-              checked={state}
-              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
-              disabled={disabled}
-            />
-            {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
-          </label>
-        </div>
-      ))}
-    </div>
-  );
+  return <SettingsList title="Library" menuItems={menuItems} />;
 };
 
 //
@@ -130,8 +82,6 @@ const LibrarySettings = ({ platformOpts }) => {
 //
 
 const BrowseSettings = ({ platformOpts }) => {
-  const dispatch = useDispatch();
-
   const menuShowSeparateBrowseSection = useSelector(({ sessionModel }) => sessionModel.menuShowSeparateBrowseSection);
   const menuShowArtistCollections = useSelector(({ sessionModel }) => sessionModel.menuShowArtistCollections);
   const menuShowAlbumCollections = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumCollections);
@@ -150,6 +100,9 @@ const BrowseSettings = ({ platformOpts }) => {
       variant: 'spaceBelow',
       label: 'Show as separate "Browse" section',
       state: menuShowSeparateBrowseSection,
+    },
+    {
+      type: 'spacer',
     },
     {
       key: 'menuShowArtistCollections',
@@ -217,23 +170,7 @@ const BrowseSettings = ({ platformOpts }) => {
       : []),
   ];
 
-  return (
-    <div className={style.menu}>
-      {menuItems.map(({ key, variant, label, state, disabled }) => (
-        <div key={key} className={clsx(style.menuEntry, variant && style[variant])}>
-          <label>
-            <input
-              type="checkbox"
-              checked={state}
-              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
-              disabled={disabled}
-            />
-            {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
-          </label>
-        </div>
-      ))}
-    </div>
-  );
+  return <SettingsList title="Browse" menuItems={menuItems} />;
 };
 
 //
@@ -241,29 +178,17 @@ const BrowseSettings = ({ platformOpts }) => {
 //
 
 const PlaylistSettings = ({ platformOpts }) => {
-  const dispatch = useDispatch();
-
   const menuShowAllPlaylists = useSelector(({ sessionModel }) => sessionModel.menuShowAllPlaylists);
 
-  const menuItems = [{ key: 'menuShowAllPlaylists', label: 'Show playlists', state: menuShowAllPlaylists }];
+  const menuItems = [
+    {
+      key: 'menuShowAllPlaylists',
+      label: 'Show playlists',
+      state: menuShowAllPlaylists,
+    },
+  ];
 
-  return (
-    <div className={style.menu}>
-      {menuItems.map(({ key, label, state, disabled }) => (
-        <div key={key} className={style.menuEntry}>
-          <label>
-            <input
-              type="checkbox"
-              checked={state}
-              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
-              disabled={disabled}
-            />
-            {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
-          </label>
-        </div>
-      ))}
-    </div>
-  );
+  return <SettingsList title="Playlists" menuItems={menuItems} />;
 };
 
 // ======================================================================
