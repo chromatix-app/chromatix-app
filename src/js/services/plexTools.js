@@ -489,6 +489,20 @@ export const getAllArtists = ({ accessToken, libraryId, serverBaseUrl }) => {
 };
 
 // ======================================================================
+// GET ALL ALBUM ARTISTS
+// ======================================================================
+
+/*
+This is not required when using the Plex API, but is here for compatibility with other services.
+*/
+
+export const getAllAlbumArtists = ({ accessToken, libraryId, serverBaseUrl }) => {
+  return new Promise((resolve, reject) => {
+    resolve([]);
+  });
+};
+
+// ======================================================================
 // GET ARTIST DETAILS
 // ======================================================================
 
@@ -1206,6 +1220,12 @@ export const getCollectionItems = ({ accessToken, collectionId, libraryId, serve
 export const getAllTags = ({ accessToken, libraryId, serverBaseUrl, typeKey }) => {
   return new Promise((resolve, reject) => {
     try {
+      // Validate typeKey is one of the expected values for Plex
+      if (['Genre', 'Mood', 'Style'].indexOf(typeKey) === -1) {
+        resolve([]);
+        return;
+      }
+
       const endpoint = endpointConfig.tags[`getAll${typeKey}`](serverBaseUrl, libraryId);
       const controller = new AbortController();
       abortControllers.push(controller);
@@ -1248,6 +1268,18 @@ export const getAllTags = ({ accessToken, libraryId, serverBaseUrl, typeKey }) =
 export const getTagItems = ({ accessToken, libraryId, serverBaseUrl, tagId, typeKey }) => {
   return new Promise((resolve, reject) => {
     try {
+      // Validate typeKey is one of the expected values for Plex
+      if (['Genre', 'Mood', 'Style'].indexOf(typeKey) === -1) {
+        const error = new Error('Invalid tag ID');
+        error.status = 404;
+        reject({
+          code: 'plex.getTagItems.1',
+          message: 'Failed to get all tag items: ' + error?.message,
+          error: error,
+        });
+        return;
+      }
+
       const endpoint = endpointConfig.tags[`get${typeKey}`](serverBaseUrl, libraryId);
       const controller = new AbortController();
       abortControllers.push(controller);
@@ -1310,7 +1342,7 @@ export const getTagItems = ({ accessToken, libraryId, serverBaseUrl, tagId, type
             const error = new Error('Invalid tag ID');
             error.status = 404;
             reject({
-              code: 'plex.getTagItems.1',
+              code: 'plex.getTagItems.2',
               message: 'Failed to get all tag items: ' + error?.message,
               error: error,
             });
@@ -1318,7 +1350,7 @@ export const getTagItems = ({ accessToken, libraryId, serverBaseUrl, tagId, type
         })
         .catch((error) => {
           reject({
-            code: 'plex.getTagItems.2',
+            code: 'plex.getTagItems.3',
             message: 'Failed to get all tag items: ' + error?.message,
             error: error,
           });
@@ -1328,7 +1360,7 @@ export const getTagItems = ({ accessToken, libraryId, serverBaseUrl, tagId, type
         });
     } catch (error) {
       reject({
-        code: 'plex.getTagItems.3',
+        code: 'plex.getTagItems.4',
         message: 'Failed to get all tag items: ' + error?.message,
         error: error,
       });

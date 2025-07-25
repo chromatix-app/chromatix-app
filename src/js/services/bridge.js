@@ -957,10 +957,11 @@ export const getAllCollections = () => {
       console.log('%c--- bridge - getAllCollections ---', 'color:#f9743b;');
       getAllCollectionsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
-      plexTools
+      serviceTools[currentService]
         .getAllCollections({
           accessToken,
           libraryId,
@@ -1012,9 +1013,10 @@ export const getCollectionItems = (libraryId, collectionId, typeKey) => {
       console.log('%c--- bridge - getCollectionItems - ' + typeKey + ' ---', 'color:#f9743b;');
       getCollectionItemsRunning[typeKey] = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
-      plexTools
+      serviceTools[currentService]
         .getCollectionItems({
           accessToken,
           collectionId,

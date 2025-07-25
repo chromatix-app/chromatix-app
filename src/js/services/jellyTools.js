@@ -479,7 +479,7 @@ export const getAllArtistAlbums = ({ accessToken, artistId, libraryId, serverBas
 // ======================================================================
 
 /*
-This is not required when using the Jellyfin API, but is here for consistency with other services.
+This is not required when using the Jellyfin API, but is here for compatibility with other services.
 */
 
 export const getAllArtistRelatedAlbums = () => {
@@ -740,8 +740,14 @@ export const getAlbumTracks = ({ accessToken, albumId, libraryId, serverBaseUrl,
 // ======================================================================
 
 /*
-This is not required when using the Jellyfin API.
+This is not required when using the Jellyfin API, but is here for compatibility with other services.
 */
+
+export const getFolderItems = () => {
+  return new Promise((resolve, reject) => {
+    resolve([]);
+  });
+};
 
 // ======================================================================
 // GET ALL PLAYLISTS
@@ -874,9 +880,38 @@ export const getPlaylistTracks = ({ accessToken, libraryId, playlistId, serverBa
 // GET ALL COLLECTIONS
 // ======================================================================
 
+/*
+This is not required when using the Jellyfin API, but is here for compatibility with other services.
+*/
+
+export const getAllCollections = () => {
+  return new Promise((resolve, reject) => {
+    resolve({
+      allArtistCollections: [],
+      allAlbumCollections: [],
+    });
+  });
+};
+
 // ======================================================================
 // GET COLLECTION ITEMS
 // ======================================================================
+
+/*
+This is not required when using the Jellyfin API, but is here for compatibility with other services.
+*/
+
+export const getCollectionItems = () => {
+  return new Promise((resolve, reject) => {
+    const error = new Error('Not found');
+    error.status = 404;
+    reject({
+      code: 'jelly.getCollectionItems.1',
+      message: 'Failed to get all collection items: ' + error?.message,
+      error: error,
+    });
+  });
+};
 
 // ======================================================================
 // GET ALL TAGS
