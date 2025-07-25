@@ -188,9 +188,6 @@ const switchToPreloadedTrack = (progress: number = 0, play: boolean = true): boo
     const currentPlayerElement = getCurrentPlayerElement();
     if (currentPlayerElement) {
       currentPlayerElement.pause();
-      // Clean up the old player
-      currentPlayerElement.src = '';
-      currentPlayerElement.load();
     }
 
     // Switch to next player
