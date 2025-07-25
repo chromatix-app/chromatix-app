@@ -1197,8 +1197,11 @@ export const getTagItems = (libraryId, tagId, typeKey) => {
           typeKey,
         })
         .then((response) => {
-          // console.log(response);
-          store.dispatch.appModel[`store${typeKey}`]({ libraryId, tagId, tagItems: response });
+          if (response?.length > 0) {
+            store.dispatch.appModel[`store${typeKey}`]({ libraryId, tagId, tagItems: response });
+          } else {
+            store.dispatch.appModel[`store${typeKey}404`]({ tagId });
+          }
         })
         .catch((error) => {
           console.error(error);

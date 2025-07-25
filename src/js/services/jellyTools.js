@@ -961,6 +961,10 @@ export const getAllTags = ({ accessToken, libraryId, serverBaseUrl, userId }) =>
             allAlbumGenres: jellyTranspose.transposeTagArray(albumResponse?.data?.Genres, libraryId, 'album', 'Genre'),
             allArtistTags: jellyTranspose.transposeTagArray(artistResponse?.data?.Tags, libraryId, 'artist', 'Tag'),
             allAlbumTags: jellyTranspose.transposeTagArray(albumResponse?.data?.Tags, libraryId, 'album', 'Tag'),
+            allArtistStyles: [],
+            allAlbumStyles: [],
+            allArtistMoods: [],
+            allAlbumMoods: [],
           });
         })
         .catch((error) => {
@@ -1016,8 +1020,17 @@ export const getTagItems = ({ accessToken, libraryId, serverBaseUrl, tagId, type
       serverBaseUrl: serverBaseUrl,
       tag: safeDecodeURIComponent(tagId),
     });
+  } else {
+    return new Promise((resolve, reject) => {
+      const error = new Error('Not found');
+      error.status = 404;
+      reject({
+        code: 'jelly.getTagItems.1',
+        message: 'Failed to get all tag items: ' + error?.message,
+        error: error,
+      });
+    });
   }
-  return null;
 };
 
 // ======================================================================
