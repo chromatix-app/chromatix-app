@@ -26,6 +26,7 @@ import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 // ======================================================================
 
 const isLocal = process.env.REACT_APP_ENV === 'local';
+const isPreview = process.env.REACT_APP_ENV === 'preview';
 const isProduction = process.env.REACT_APP_ENV === 'production';
 
 const App = () => {
@@ -62,6 +63,19 @@ const App = () => {
       console.debug = () => {};
       console.error = () => {};
       console.log = () => {};
+    }
+  }, []);
+
+  // set document title based on environment
+  useEffect(() => {
+    if (isLocal) {
+      if (document.title.indexOf('(Local)') === -1) {
+        document.title = document.title + ' (Local)';
+      }
+    } else if (isPreview) {
+      if (document.title.indexOf('(Preview)') === -1) {
+        document.title = document.title + ' (Preview)';
+      }
     }
   }, []);
 
