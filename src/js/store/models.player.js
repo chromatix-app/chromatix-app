@@ -453,6 +453,16 @@ const effects = (dispatch) => ({
     // start playing
     const currentTrack = payload.playingTrackList[payload.playingTrackKeys[payload.playingTrackIndex]];
     playerX.loadTrack(currentTrack.src);
+
+    // Set next track for preloading
+    const nextIndex = payload.playingTrackIndex + 1;
+    if (nextIndex < payload.playingTrackCount) {
+      const nextTrack = payload.playingTrackList[payload.playingTrackKeys[nextIndex]];
+      playerX.setNextTrack(nextTrack.src);
+    } else {
+      playerX.clearNextTrack();
+    }
+
     dispatch.playerModel.setPlayerState({
       playerInteractionCount: rootState.playerModel.playerInteractionCount + 1,
     });
@@ -484,6 +494,16 @@ const effects = (dispatch) => ({
           playingTrackIndex: index,
         });
         playerX.loadTrack(currentTrack.src, progress, play);
+
+        // Set next track for preloading
+        const nextIndex = index + 1;
+        if (nextIndex < playingTrackKeys.length) {
+          const nextTrack = playingTrackList[playingTrackKeys[nextIndex]];
+          playerX.setNextTrack(nextTrack.src);
+        } else {
+          playerX.clearNextTrack();
+        }
+
         // log playback state to server
         if (play) {
           bridge.logPlaybackPlay(currentTrack, progress);
@@ -534,6 +554,10 @@ const effects = (dispatch) => ({
     const playerPlaying = rootState.playerModel.playerPlaying;
     if (playerPlaying) {
       dispatch.sessionModel.setPlayingTrackProgress(payload);
+
+      // Update player with current progress (handles auto-preloading internally)
+      playerX.updateProgress(payload);
+
       // log playback state to server
       const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
       const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
