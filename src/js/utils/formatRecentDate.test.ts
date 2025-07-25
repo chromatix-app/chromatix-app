@@ -1,3 +1,5 @@
+// Generated using GitHub Copilot
+
 import moment from 'moment';
 
 import formatRecentDate from './formatRecentDate';

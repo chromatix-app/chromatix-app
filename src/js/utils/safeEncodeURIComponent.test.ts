@@ -1,3 +1,5 @@
+// Generated using GitHub Copilot
+
 import safeEncodeURIComponent from './safeEncodeURIComponent';
 
 describe('Testing "safeEncodeURIComponent" function', () => {

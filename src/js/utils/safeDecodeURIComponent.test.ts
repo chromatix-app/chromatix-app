@@ -1,3 +1,5 @@
+// Generated using GitHub Copilot
+
 import safeDecodeURIComponent from './safeDecodeURIComponent';
 import safeEncodeURIComponent from './safeEncodeURIComponent';
 

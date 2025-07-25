@@ -1,3 +1,5 @@
+// Generated using GitHub Copilot
+
 import getTrackKeys from './getTrackKeys';
 
 describe('Testing "getTrackKeys" function', () => {
