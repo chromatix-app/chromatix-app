@@ -1221,7 +1221,7 @@ export const getAllTags = ({ accessToken, libraryId, serverBaseUrl, typeKey }) =
   return new Promise((resolve, reject) => {
     try {
       // Validate typeKey is one of the expected values for Plex
-      if (['Genre', 'Mood', 'Style'].indexOf(typeKey) === -1) {
+      if (!['Genre', 'Mood', 'Style'].some((value) => typeKey.includes(value))) {
         resolve([]);
         return;
       }
@@ -1269,7 +1269,7 @@ export const getTagItems = ({ accessToken, libraryId, serverBaseUrl, tagId, type
   return new Promise((resolve, reject) => {
     try {
       // Validate typeKey is one of the expected values for Plex
-      if (['Genre', 'Mood', 'Style'].indexOf(typeKey) === -1) {
+      if (!['Genre', 'Mood', 'Style'].some((value) => typeKey.includes(value))) {
         const error = new Error('Invalid tag ID');
         error.status = 404;
         reject({
