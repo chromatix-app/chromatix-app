@@ -364,7 +364,7 @@ export const getAllAlbumArtists = ({ accessToken, genre, libraryId, serverBaseUr
           },
         })
         .then((response) => {
-          resolve(jellyTranspose.transposeArtistArray(response, libraryId, serverBaseUrl, accessToken));
+          resolve(jellyTranspose.transposeAlbumArtistArray(response, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
           reject({
