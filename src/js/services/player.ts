@@ -198,10 +198,7 @@ export const switchToPreloadedTrack = (progress: number = 0, play: boolean = tru
     }
 
     if (play) {
-      // Use requestAnimationFrame for smoother timing
-      requestAnimationFrame(() => {
-        nextPlayerElement.play().catch((_error: any) => null);
-      });
+      nextPlayerElement.play().catch((_error: any) => null);
     }
 
     // Reset preloading state
