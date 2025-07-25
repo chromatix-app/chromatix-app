@@ -73,6 +73,9 @@ const libraryState = {
   allArtistAppearanceAlbums: {},
   allArtistTracks: {},
   haveGotAllArtists: false,
+  // album artists
+  allAlbumArtists: null,
+  haveGotAllAlbumArtists: false,
   // albums
   allAlbums: null,
   allAlbumTracks: {},

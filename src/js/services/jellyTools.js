@@ -44,6 +44,7 @@ const endpointConfig = {
   },
   artist: {
     getAllArtists: (serverBaseUrl) => `${serverBaseUrl}/Artists`,
+    getAllAlbumArtists: (serverBaseUrl) => `${serverBaseUrl}/Artists/AlbumArtists`,
     getArtistDetails: (serverBaseUrl, userId, artistId) => `${serverBaseUrl}/Users/${userId}/Items/${artistId}`,
     getAllArtistAlbums: (serverBaseUrl, userId) => `${serverBaseUrl}/Users/${userId}/Items`,
     // getAllArtistRelatedAlbums: null,
@@ -289,6 +290,58 @@ export const getAllArtists = ({ accessToken, genre, libraryId, serverBaseUrl, ta
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.artist.getAllArtists(serverBaseUrl);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+          params: {
+            ParentId: libraryId,
+            // IncludeItemTypes: 'MusicArtist',
+            Recursive: true,
+            Genres: genre || null,
+            Tags: tag || null,
+            SortBy: 'SortName',
+            SortOrder: 'Ascending',
+            Fields:
+              'BackdropImageTags,CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,ProductionLocations,Tags,UserData',
+            // StartIndex: 0,
+            // Limit: 100
+          },
+        })
+        .then((response) => {
+          resolve(jellyTranspose.transposeArtistArray(response, libraryId, serverBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'jellyfin.getAllArtists.1',
+            message: 'Failed to get all artists: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'jellyfin.getAllArtists.2',
+        message: 'Failed to get all artists: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALL ALBUM ARTISTS
+// ======================================================================
+
+export const getAllAlbumArtists = ({ accessToken, genre, libraryId, serverBaseUrl, tag }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.artist.getAllAlbumArtists(serverBaseUrl);
       const controller = new AbortController();
       abortControllers.push(controller);
 

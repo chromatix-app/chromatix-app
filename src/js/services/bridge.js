@@ -332,6 +332,47 @@ export const getAllArtists = () => {
 };
 
 // ======================================================================
+// GET ALL ALBUM ARTISTS
+// ======================================================================
+
+let getAllAlbumArtistsRunning;
+
+export const getAllAlbumArtists = () => {
+  if (!getAllAlbumArtistsRunning) {
+    const haveGotAllAlbumArtists = store.getState().appModel.haveGotAllAlbumArtists;
+    if (!haveGotAllAlbumArtists) {
+      console.log('%c--- bridge - getAllAlbumArtists ---', 'color:#f9743b;');
+      getAllAlbumArtistsRunning = true;
+      const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const currentService = store.getState().appModel.currentService;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+      const { libraryId } = store.getState().sessionModel.currentLibrary;
+
+      serviceTools[currentService]
+        .getAllAlbumArtists({
+          accessToken,
+          libraryId,
+          serverBaseUrl,
+        })
+        .then((response) => {
+          // console.log(response);
+          store.dispatch.appModel.setAppState({
+            haveGotAllAlbumArtists: true,
+            allAlbumArtists: response,
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get All Album Artists');
+        })
+        .finally(() => {
+          getAllAlbumArtistsRunning = false;
+        });
+    }
+  }
+};
+
+// ======================================================================
 // GET ARTIST DETAILS
 // ======================================================================
 
