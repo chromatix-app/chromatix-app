@@ -28,7 +28,6 @@ export const SettingsDownloads = () => {
   return (
     <div className={style.wrap}>
       <div className={style.group}>
-        {/* <div className={style.title}>Interface</div> */}
         <div>Get the Chromatix app for desktop platforms here:</div>
 
         <div className={style.downloads}>

@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import clsx from 'clsx';
 
 import { themes } from 'js/_config/themes';
-import { Icon, RangeSlider } from 'js/components';
+import { Icon, SettingsList } from 'js/components';
 import { getOperatingSystemName, isElectron, electronPlatform } from 'js/utils';
 
 import style from './SettingsAppearance.module.scss';
@@ -44,7 +44,7 @@ export const SettingsAppearance = () => {
   return (
     <div className={style.wrap}>
       {Object.entries(groupedThemes).map(([groupName, groupThemes], groupIndex) => (
-        <div key={groupIndex} className={clsx(style.group, style.groupThemes)}>
+        <div key={groupIndex} className={style.group}>
           <div className={style.title}>{groupName}</div>
           <div className={style.themes}>
             {groupThemes.map(([themeName, themeDetails], themeIndex) => (
@@ -69,7 +69,7 @@ export const SettingsAppearance = () => {
         </div>
       ))}
 
-      <div className={clsx(style.group, style.groupThemes)}>
+      <div className={style.group}>
         <div className={style.title}>Custom theme</div>
         <div className={style.themes}>
           <button
@@ -136,17 +136,8 @@ export const SettingsAppearance = () => {
         </div>
       </div>
 
-      {isWin && (
-        <div className={style.group}>
-          <div className={style.title}>Scrollbars (Windows only)</div>
-          <ScrollbarSettings />
-        </div>
-      )}
-
-      <div className={style.group}>
-        <div className={style.title}>Display Options</div>
-        <InterfaceSettings />
-      </div>
+      {!isWin && <ScrollbarSettings />}
+      <DisplaySettings />
     </div>
   );
 };
@@ -162,6 +153,10 @@ const ScrollbarSettings = () => {
   const winAutoHideScrollbars = useSelector(({ sessionModel }) => sessionModel.winAutoHideScrollbars);
   const winScrollbarWidth = useSelector(({ sessionModel }) => sessionModel.winScrollbarWidth);
 
+  const handleScrollbarChange = (value) => {
+    dispatch.sessionModel.setSessionState({ winScrollbarWidth: value });
+  };
+
   const menuItems = [
     {
       key: 'winCustomScrollbars',
@@ -176,58 +171,30 @@ const ScrollbarSettings = () => {
       state: winAutoHideScrollbars,
       disabled: !winCustomScrollbars,
     },
+    {
+      type: 'range',
+      key: 'winScrollbarWidth',
+      label: 'Scrollbar width',
+      description: '',
+      state: winScrollbarWidth,
+      disabled: !winCustomScrollbars,
+      props: {
+        max: 20,
+        min: 8,
+        step: 4,
+        handleChange: handleScrollbarChange,
+      },
+    },
   ];
 
-  const handleScrollbarChange = (value) => {
-    dispatch.sessionModel.setSessionState({ winScrollbarWidth: value });
-  };
-
-  return (
-    <div className={style.menu}>
-      {menuItems.map(({ key, label, description, state, disabled }) => (
-        <div key={key} className={style.menuEntry}>
-          <label>
-            <input
-              type="checkbox"
-              checked={state}
-              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
-              disabled={disabled}
-            />
-            <div>
-              {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
-              {description && <div className={clsx(style.description, disabled && style.disabled)}>{description}</div>}
-            </div>
-          </label>
-        </div>
-      ))}
-      <div className={clsx(style.menuEntry, style.menuEntryIndented)}>
-        <label>
-          <div>
-            <div className={clsx(style.label, !winCustomScrollbars && style.disabled)}>Scrollbar width</div>
-            <div className={style.range}>
-              <RangeSlider
-                max={20}
-                min={8}
-                step={4}
-                value={winScrollbarWidth}
-                handleChange={handleScrollbarChange}
-                isDisabled={!winCustomScrollbars}
-              />
-            </div>
-          </div>
-        </label>
-      </div>
-    </div>
-  );
+  return <SettingsList title="Scrollbars (Windows only)" menuItems={menuItems} />;
 };
 
 //
 // DISPLAY SETTINGS
 //
 
-const InterfaceSettings = () => {
-  const dispatch = useDispatch();
-
+const DisplaySettings = () => {
   const accessibilityContrast = useSelector(({ sessionModel }) => sessionModel.accessibilityContrast);
   const accessibilityFocus = useSelector(({ sessionModel }) => sessionModel.accessibilityFocus);
 
@@ -248,25 +215,7 @@ const InterfaceSettings = () => {
     },
   ];
 
-  return (
-    <div className={style.menu}>
-      {menuItems.map(({ key, label, description, state }) => (
-        <div key={key} className={style.menuEntry}>
-          <label>
-            <input
-              type="checkbox"
-              checked={state}
-              onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
-            />
-            <div>
-              {label && <div className={style.label}>{label}</div>}
-              {description && <div className={style.description}>{description}</div>}
-            </div>
-          </label>
-        </div>
-      ))}
-    </div>
-  );
+  return <SettingsList title="Display Options" menuItems={menuItems} />;
 };
 
 // ======================================================================
