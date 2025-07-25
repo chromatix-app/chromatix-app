@@ -377,10 +377,10 @@ const effects = (dispatch) => {
       const allArtists = [...(rootState.appModel.allArtists || [])];
       const artistIndex = allArtists.findIndex((artist) => artist.artistId === payload.artistId);
       if (artistIndex === -1) {
-        // limit recent entries
-        if (allArtists.length >= maxDataLength) {
-          allArtists.shift();
-        }
+        // // limit recent entries
+        // if (allArtists.length >= maxDataLength) {
+        //   allArtists.shift();
+        // }
         // add the new entry and save
         allArtists.push(payload);
       } else {
@@ -574,10 +574,10 @@ const effects = (dispatch) => {
       const allAlbums = [...(rootState.appModel.allAlbums || [])];
       const albumIndex = allAlbums.findIndex((album) => album.albumId === payload.albumId);
       if (albumIndex === -1) {
-        // limit recent entries
-        if (allAlbums.length >= maxDataLength) {
-          allAlbums.shift();
-        }
+        // // limit recent entries
+        // if (allAlbums.length >= maxDataLength) {
+        //   allAlbums.shift();
+        // }
         // add the new entry and save
         allAlbums.push(payload);
       } else {
@@ -819,10 +819,10 @@ const effects = (dispatch) => {
       const allPlaylists = [...(rootState.appModel.allPlaylists || [])];
       const playlistIndex = allPlaylists.findIndex((playlist) => playlist.playlistId === payload.playlistId);
       if (playlistIndex === -1) {
-        // limit recent entries
-        if (allPlaylists.length >= maxDataLength) {
-          allPlaylists.shift();
-        }
+        // // limit recent entries
+        // if (allPlaylists.length >= maxDataLength) {
+        //   allPlaylists.shift();
+        // }
         // add the new entry and save
         allPlaylists.push(payload);
       } else {
