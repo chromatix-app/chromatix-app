@@ -25,11 +25,14 @@ const storageTokenKey = config.storageTokenKey;
 // ======================================================================
 
 export const abortAllRequests = () => {
-  jellyTools.abortAllRequests();
-  plexTools.abortAllRequests();
   for (const i in collectionItemsTimeouts) {
     clearTimeout(collectionItemsTimeouts[i]);
   }
+  for (const i in tagItemsTimeouts) {
+    clearTimeout(tagItemsTimeouts[i]);
+  }
+  jellyTools.abortAllRequests();
+  plexTools.abortAllRequests();
 };
 
 // ======================================================================
@@ -906,14 +909,16 @@ let getCollectionItemsRunning = {
 let collectionItemsTimeouts = [];
 
 export const getCollectionItems = (libraryId, collectionId, typeKey) => {
+  // Ensure that collection items are not fetched before parent collection arrays are fetched
   if (getAllCollectionsRunning) {
     collectionItemsTimeouts.push(
       setTimeout(() => {
         getCollectionItems(libraryId, collectionId, typeKey);
-      }, 100)
+      }, 25)
     );
     return;
   }
+
   if (!getCollectionItemsRunning[typeKey]) {
     const prevCollectionItems =
       store.getState().appModel[`all${typeKey}CollectionItems`][libraryId + '-' + collectionId];
@@ -970,9 +975,11 @@ let getAllTagsRunning = {
   AlbumGenres: false,
   AlbumMoods: false,
   AlbumStyles: false,
+  AlbumTags: false,
   ArtistGenres: false,
   ArtistMoods: false,
   ArtistStyles: false,
+  ArtistTags: false,
 };
 
 const getAllPlexTags = (typeKey) => {
@@ -1059,7 +1066,20 @@ let getTagItemsRunning = {
   ArtistTagItems: false,
 };
 
+let tagItemsTimeouts = [];
+
 export const getTagItems = (libraryId, tagId, typeKey) => {
+  // Ensure that tag items are not fetched before parent tag arrays are fetched
+  const parentId = typeKey.replace('Item', '');
+  if (getAllTagsRunning[parentId]) {
+    collectionItemsTimeouts.push(
+      setTimeout(() => {
+        getTagItems(libraryId, tagId, typeKey);
+      }, 25)
+    );
+    return;
+  }
+
   if (!getTagItemsRunning[typeKey]) {
     const prevTagItems = store.getState().appModel[`all${typeKey}`][libraryId + '-' + tagId];
     if (!prevTagItems) {
@@ -1083,6 +1103,10 @@ export const getTagItems = (libraryId, tagId, typeKey) => {
         })
         .catch((error) => {
           console.error(error);
+          if (error?.error?.status === 404) {
+            console.log(`store${typeKey}404`);
+            store.dispatch.appModel[`store${typeKey}404`]({ tagId });
+          }
           analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Tag Items');
         })
         .finally(() => {
