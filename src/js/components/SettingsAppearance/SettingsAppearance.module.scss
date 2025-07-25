@@ -10,8 +10,11 @@
 }
 
 .group {
-  + .group {
-    margin-top: 32px;
+  margin-top: 32px;
+  margin-bottom: -10px;
+
+  &:first-child {
+    margin-top: 0;
   }
 }
 
