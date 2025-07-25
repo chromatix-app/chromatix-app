@@ -2,7 +2,9 @@
 // OPTIONS
 // ======================================================================
 
-const enablePreloading = false;
+const isLocal = process.env.REACT_APP_ENV === 'local';
+
+const enablePreloading = isLocal;
 const preloadAtTimeRemaining = 45000;
 const preloadAtPercentage = 0.6;
 
