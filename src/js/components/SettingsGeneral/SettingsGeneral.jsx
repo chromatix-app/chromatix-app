@@ -73,7 +73,7 @@ const SortSettings = () => {
 };
 
 //
-// RATING
+// RATINGS
 //
 
 const RatingSettings = () => {
@@ -83,12 +83,12 @@ const RatingSettings = () => {
     {
       key: 'optionUseHalfStars',
       label: 'Use half stars in ratings.',
-      description: 'Enable to allow setting half-star ratings. Disable to use whole stars only.',
+      description: 'Enable to allow setting half-star ratings. Disable to set whole stars only.',
       state: optionUseHalfStars,
     },
   ];
 
-  return <SettingsList title="Rating" menuItems={menuItems} />;
+  return <SettingsList title="Star Ratings" menuItems={menuItems} />;
 };
 
 //
