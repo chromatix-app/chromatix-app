@@ -23,7 +23,7 @@ import platformFeatures from 'js/_config/platformFeatures';
 // COMPONENT
 // ======================================================================
 
-const ArtistDetail = () => {
+const ArtistDetail = ({ pageVariant = 'Artists' }) => {
   const { libraryId, artistId } = useParams();
 
   const currentService = useSelector(({ appModel }) => appModel.currentService);
@@ -67,6 +67,7 @@ const ArtistDetail = () => {
     setOrderArtistAlbums,
     setColumnVisibility,
   } = useGetArtistDetail({
+    variant: pageVariant,
     libraryId,
     artistId,
   });

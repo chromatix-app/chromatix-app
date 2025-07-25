@@ -382,12 +382,39 @@ const effects = (dispatch) => {
         //   allArtists.shift();
         // }
         // add the new entry and save
+        payload.isExtra = true;
         allArtists.push(payload);
       } else {
+        if (allArtists[artistIndex].isExtra) {
+          payload.isExtra = true;
+        }
         allArtists[artistIndex] = payload;
       }
       dispatch.appModel.setAppState({
         allArtists,
+      });
+    },
+
+    storeAlbumArtistDetails(payload, rootState) {
+      console.log('%c--- storeAlbumArtistDetails ---', 'color:#07a098');
+      const allAlbumArtists = [...(rootState.appModel.allAlbumArtists || [])];
+      const artistIndex = allAlbumArtists.findIndex((artist) => artist.artistId === payload.artistId);
+      if (artistIndex === -1) {
+        // // limit recent entries
+        // if (allAlbumArtists.length >= maxDataLength) {
+        //   allAlbumArtists.shift();
+        // }
+        // add the new entry and save
+        payload.isExtra = true;
+        allAlbumArtists.push(payload);
+      } else {
+        if (allAlbumArtists[artistIndex].isExtra) {
+          payload.isExtra = true;
+        }
+        allAlbumArtists[artistIndex] = payload;
+      }
+      dispatch.appModel.setAppState({
+        allAlbumArtists,
       });
     },
 
@@ -408,6 +435,26 @@ const effects = (dispatch) => {
       }
       dispatch.appModel.setAppState({
         allArtists,
+      });
+    },
+
+    storeAlbumArtist404(payload, rootState) {
+      console.log('%c--- storeAlbumArtist404 ---', 'color:#07a098');
+      const allAlbumArtists = [...(rootState.appModel.allAlbumArtists || [])];
+      const artistIndex = allAlbumArtists.findIndex((artist) => artist.artistId === payload.artistId);
+      if (artistIndex === -1) {
+        allAlbumArtists.push({
+          artistId: payload.artistId,
+          error404: true,
+        });
+      } else {
+        allAlbumArtists[artistIndex] = {
+          artistId: payload.artistId,
+          error404: true,
+        };
+      }
+      dispatch.appModel.setAppState({
+        allAlbumArtists,
       });
     },
 
@@ -488,6 +535,18 @@ const effects = (dispatch) => {
         allArtists[artistIndex].userRating = rating;
         dispatch.appModel.setAppState({
           allArtists,
+        });
+      }
+
+      // update album artist
+      const prevAlbumArtists = rootState.appModel.allAlbumArtists;
+      const allAlbumArtists = prevAlbumArtists ? [...prevAlbumArtists] : [];
+      const albumArtistIndex = allAlbumArtists.findIndex((artist) => artist.artistId === ratingKey);
+      if (albumArtistIndex !== -1) {
+        allAlbumArtists[albumArtistIndex].isFavourite = isFavourite;
+        allAlbumArtists[albumArtistIndex].userRating = rating;
+        dispatch.appModel.setAppState({
+          allAlbumArtists,
         });
       }
 
@@ -579,8 +638,12 @@ const effects = (dispatch) => {
         //   allAlbums.shift();
         // }
         // add the new entry and save
+        payload.isExtra = true;
         allAlbums.push(payload);
       } else {
+        if (allAlbums[albumIndex].isExtra) {
+          payload.isExtra = true;
+        }
         allAlbums[albumIndex] = payload;
       }
       dispatch.appModel.setAppState({
@@ -824,8 +887,12 @@ const effects = (dispatch) => {
         //   allPlaylists.shift();
         // }
         // add the new entry and save
+        payload.isExtra = true;
         allPlaylists.push(payload);
       } else {
+        if (allPlaylists[playlistIndex].isExtra) {
+          payload.isExtra = true;
+        }
         allPlaylists[playlistIndex] = payload;
       }
       dispatch.appModel.setAppState({

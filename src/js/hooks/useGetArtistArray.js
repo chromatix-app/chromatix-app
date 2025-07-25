@@ -50,7 +50,7 @@ const useGetArtistArray = ({ variant }) => {
 
   const haveGotAllArtists = useSelector(({ appModel }) => appModel[`haveGotAll${variant}`]);
   const allArtists = useSelector(({ appModel }) => appModel[`all${variant}`])?.filter(
-    (artist) => artist.libraryId === currentLibraryId
+    (artist) => artist.libraryId === currentLibraryId && !artist.error404 && !artist.isExtra
   );
   const sortedArtists =
     haveGotAllArtists && allArtists

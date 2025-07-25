@@ -416,6 +416,51 @@ export const getArtistDetails = (libraryId, artistId) => {
 };
 
 // ======================================================================
+// GET ALBUM ARTIST DETAILS
+// ======================================================================
+
+let getAlbumArtistDetailsRunning;
+
+export const getAlbumArtistDetails = (libraryId, artistId) => {
+  if (!getAlbumArtistDetailsRunning) {
+    const prevAlbumArtistDetails = store
+      .getState()
+      .appModel.allAlbumArtists?.find((artist) => artist.artistId === artistId);
+    if (!prevAlbumArtistDetails) {
+      console.log('%c--- bridge - getAlbumArtistDetails ---', 'color:#f9743b;');
+      getAlbumArtistDetailsRunning = true;
+      const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const currentService = store.getState().appModel.currentService;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
+
+      serviceTools[currentService]
+        .getArtistDetails({
+          accessToken,
+          artistId,
+          libraryId,
+          serverBaseUrl,
+          userId,
+        })
+        .then((response) => {
+          // console.log(response);
+          store.dispatch.appModel.storeAlbumArtistDetails(response);
+        })
+        .catch((error) => {
+          console.error(error);
+          if (error?.error?.status === 400 || error?.error?.status === 404) {
+            store.dispatch.appModel.storeAlbumArtist404({ artistId });
+          }
+          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Album Artist Details');
+        })
+        .finally(() => {
+          getAlbumArtistDetailsRunning = false;
+        });
+    }
+  }
+};
+
+// ======================================================================
 // GET ARTIST ALBUMS
 // ======================================================================
 

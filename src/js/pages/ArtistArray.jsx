@@ -38,7 +38,9 @@ const ArtistArray = ({ pageTitle = 'Artists', pageVariant = 'Artists', singularN
     setColumnVisibility,
 
     sortedArtists,
-  } = useGetArtistArray({ variant: pageVariant });
+  } = useGetArtistArray({
+    variant: pageVariant,
+  });
 
   const isLoading = !sortedArtists;
   const isEmptyList = !isLoading && sortedArtists?.length === 0;
