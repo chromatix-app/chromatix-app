@@ -888,18 +888,17 @@ const effects = (dispatch) => ({
 
   storeArtistCollection404(payload, rootState) {
     console.log('%c--- storeArtistCollection404 ---', 'color:#07a098');
+    const { collectionId } = payload;
     const allArtistCollections = [...(rootState.appModel.allArtistCollections || [])];
-    const collectionIndex = allArtistCollections.findIndex(
-      (collection) => collection.collectionId === payload.collectionId
-    );
+    const collectionIndex = allArtistCollections.findIndex((collection) => collection.collectionId === collectionId);
     if (collectionIndex === -1) {
       allArtistCollections.push({
-        collectionId: payload.collectionId,
+        collectionId: collectionId,
         error404: true,
       });
     } else {
       allArtistCollections[collectionIndex] = {
-        collectionId: payload.collectionId,
+        collectionId: collectionId,
         error404: true,
       };
     }
@@ -995,6 +994,27 @@ const effects = (dispatch) => ({
     });
   },
 
+  storeArtistGenreItems404(payload, rootState) {
+    console.log('%c--- storeArtistGenreItems404 ---', 'color:#07a098');
+    const { tagId } = payload;
+    const allArtistGenres = [...(rootState.appModel.allArtistGenres || [])];
+    const genreIndex = allArtistGenres.findIndex((genre) => genre.tagId === tagId);
+    if (genreIndex === -1) {
+      allArtistGenres.push({
+        genreId: tagId,
+        error404: true,
+      });
+    } else {
+      allArtistGenres[genreIndex] = {
+        genreId: tagId,
+        error404: true,
+      };
+    }
+    dispatch.appModel.setAppState({
+      allArtistGenres,
+    });
+  },
+
   storeAlbumGenreItems(payload, rootState) {
     console.log('%c--- storeAlbumGenreItems ---', 'color:#07a098');
     const { libraryId, tagId, tagItems } = payload;
@@ -1008,6 +1028,27 @@ const effects = (dispatch) => ({
     allAlbumGenreItems[libraryId + '-' + tagId] = tagItems;
     dispatch.appModel.setAppState({
       allAlbumGenreItems,
+    });
+  },
+
+  storeAlbumGenreItems404(payload, rootState) {
+    console.log('%c--- storeAlbumGenreItems404 ---', 'color:#07a098');
+    const { tagId } = payload;
+    const allAlbumGenres = [...(rootState.appModel.allAlbumGenres || [])];
+    const genreIndex = allAlbumGenres.findIndex((genre) => genre.tagId === tagId);
+    if (genreIndex === -1) {
+      allAlbumGenres.push({
+        genreId: tagId,
+        error404: true,
+      });
+    } else {
+      allAlbumGenres[genreIndex] = {
+        genreId: tagId,
+        error404: true,
+      };
+    }
+    dispatch.appModel.setAppState({
+      allAlbumGenres,
     });
   },
 
@@ -1031,6 +1072,27 @@ const effects = (dispatch) => ({
     });
   },
 
+  storeArtistMoodItems404(payload, rootState) {
+    console.log('%c--- storeArtistMoodItems404 ---', 'color:#07a098');
+    const { tagId } = payload;
+    const allArtistMoods = [...(rootState.appModel.allArtistMoods || [])];
+    const moodIndex = allArtistMoods.findIndex((mood) => mood.tagId === tagId);
+    if (moodIndex === -1) {
+      allArtistMoods.push({
+        moodId: tagId,
+        error404: true,
+      });
+    } else {
+      allArtistMoods[moodIndex] = {
+        moodId: tagId,
+        error404: true,
+      };
+    }
+    dispatch.appModel.setAppState({
+      allArtistMoods,
+    });
+  },
+
   storeAlbumMoodItems(payload, rootState) {
     console.log('%c--- storeAlbumMoodItems ---', 'color:#07a098');
     const { libraryId, tagId, tagItems } = payload;
@@ -1044,6 +1106,27 @@ const effects = (dispatch) => ({
     allAlbumMoodItems[libraryId + '-' + tagId] = tagItems;
     dispatch.appModel.setAppState({
       allAlbumMoodItems,
+    });
+  },
+
+  storeAlbumMoodItems404(payload, rootState) {
+    console.log('%c--- storeAlbumMoodItems404 ---', 'color:#07a098');
+    const { tagId } = payload;
+    const allAlbumMoods = [...(rootState.appModel.allAlbumMoods || [])];
+    const moodIndex = allAlbumMoods.findIndex((mood) => mood.tagId === tagId);
+    if (moodIndex === -1) {
+      allAlbumMoods.push({
+        moodId: tagId,
+        error404: true,
+      });
+    } else {
+      allAlbumMoods[moodIndex] = {
+        moodId: tagId,
+        error404: true,
+      };
+    }
+    dispatch.appModel.setAppState({
+      allAlbumMoods,
     });
   },
 
@@ -1067,6 +1150,27 @@ const effects = (dispatch) => ({
     });
   },
 
+  storeArtistStyleItems404(payload, rootState) {
+    console.log('%c--- storeArtistStyleItems404 ---', 'color:#07a098');
+    const { tagId } = payload;
+    const allArtistStyles = [...(rootState.appModel.allArtistStyles || [])];
+    const styleIndex = allArtistStyles.findIndex((style) => style.tagId === tagId);
+    if (styleIndex === -1) {
+      allArtistStyles.push({
+        styleId: tagId,
+        error404: true,
+      });
+    } else {
+      allArtistStyles[styleIndex] = {
+        styleId: tagId,
+        error404: true,
+      };
+    }
+    dispatch.appModel.setAppState({
+      allArtistStyles,
+    });
+  },
+
   storeAlbumStyleItems(payload, rootState) {
     console.log('%c--- storeAlbumStyleItems ---', 'color:#07a098');
     const { libraryId, tagId, tagItems } = payload;
@@ -1080,6 +1184,27 @@ const effects = (dispatch) => ({
     allAlbumStyleItems[libraryId + '-' + tagId] = tagItems;
     dispatch.appModel.setAppState({
       allAlbumStyleItems,
+    });
+  },
+
+  storeAlbumStyleItems404(payload, rootState) {
+    console.log('%c--- storeAlbumStyleItems404 ---', 'color:#07a098');
+    const { tagId } = payload;
+    const allAlbumStyles = [...(rootState.appModel.allAlbumStyles || [])];
+    const styleIndex = allAlbumStyles.findIndex((style) => style.tagId === tagId);
+    if (styleIndex === -1) {
+      allAlbumStyles.push({
+        styleId: tagId,
+        error404: true,
+      });
+    } else {
+      allAlbumStyles[styleIndex] = {
+        styleId: tagId,
+        error404: true,
+      };
+    }
+    dispatch.appModel.setAppState({
+      allAlbumStyles,
     });
   },
 
@@ -1103,6 +1228,27 @@ const effects = (dispatch) => ({
     });
   },
 
+  storeArtistTagItems404(payload, rootState) {
+    console.log('%c--- storeArtistTagItems404 ---', 'color:#07a098');
+    const { tagId } = payload;
+    const allArtistTags = [...(rootState.appModel.allArtistTags || [])];
+    const tagIndex = allArtistTags.findIndex((tag) => tag.tagId === tagId);
+    if (tagIndex === -1) {
+      allArtistTags.push({
+        tagId: tagId,
+        error404: true,
+      });
+    } else {
+      allArtistTags[tagIndex] = {
+        tagId: tagId,
+        error404: true,
+      };
+    }
+    dispatch.appModel.setAppState({
+      allArtistTags,
+    });
+  },
+
   storeAlbumTagItems(payload, rootState) {
     console.log('%c--- storeAlbumTagItems ---', 'color:#07a098');
     const { libraryId, tagId, tagItems } = payload;
@@ -1116,6 +1262,27 @@ const effects = (dispatch) => ({
     allAlbumTagItems[libraryId + '-' + tagId] = tagItems;
     dispatch.appModel.setAppState({
       allAlbumTagItems,
+    });
+  },
+
+  storeAlbumTagItems404(payload, rootState) {
+    console.log('%c--- storeAlbumTagItems404 ---', 'color:#07a098');
+    const { tagId } = payload;
+    const allAlbumTags = [...(rootState.appModel.allAlbumTags || [])];
+    const tagIndex = allAlbumTags.findIndex((tag) => tag.tagId === tagId);
+    if (tagIndex === -1) {
+      allAlbumTags.push({
+        tagId: tagId,
+        error404: true,
+      });
+    } else {
+      allAlbumTags[tagIndex] = {
+        tagId: tagId,
+        error404: true,
+      };
+    }
+    dispatch.appModel.setAppState({
+      allAlbumTags,
     });
   },
 });

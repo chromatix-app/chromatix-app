@@ -55,6 +55,10 @@ const GenericTagItems = ({
     return <Loading forceVisible inline showOffline />;
   }
 
+  if (collectionInfo?.error404) {
+    return <TitleHeading title="Items not found" />;
+  }
+
   const isLoading = !sortedCollectionItems;
   const isEmptyList = !isLoading && sortedCollectionItems?.length === 0;
   const isGridView = !isLoading && !isEmptyList && viewCollectionItems === 'grid';
