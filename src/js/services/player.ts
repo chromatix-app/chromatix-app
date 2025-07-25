@@ -178,7 +178,7 @@ export const preloadNextTrack = (trackSrc: string): void => {
   }
 };
 
-export const switchToPreloadedTrack = (progress: number = 0, play: boolean = true): boolean => {
+const switchToPreloadedTrack = (progress: number = 0, play: boolean = true): boolean => {
   console.log('%c--- player - switchToPreloadedTrack ---', 'color:#a18507');
   const nextPlayerElement = getNextPlayerElement();
   if (nextPlayerElement && isNextTrackPreloaded && nextPlayerElement.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
