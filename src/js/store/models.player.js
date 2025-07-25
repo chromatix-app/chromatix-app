@@ -2,6 +2,7 @@
 // IMPORTS
 // ======================================================================
 
+import { PlaybackErrorMessage } from 'js/components';
 import { analyticsEvent, getTrackKeys } from 'js/utils';
 import * as playerX from 'js/services/player';
 import * as bridge from 'js/services/bridge';
@@ -186,11 +187,7 @@ const effects = (dispatch) => ({
     // Display notification
     dispatch.appModel.addNotification({
       title: 'Playback error',
-      description: (
-        <>
-          <em>"{trackCurrent.title}"</em> by <em>{trackCurrent.artist}</em> could not be played.
-        </>
-      ),
+      description: PlaybackErrorMessage({ trackTitle: trackCurrent.title, trackArtist: trackCurrent.artist }),
     });
 
     // Try to play the next track (after a short delay)
