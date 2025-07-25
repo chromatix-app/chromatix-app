@@ -42,6 +42,7 @@ const sessionState = {
   menuOpenPlaylists: true,
 
   menuShowArtists: true,
+  menuShowAlbumArtists: true,
   menuShowAlbums: true,
   menuShowFolders: true,
   menuShowPlaylists: true,

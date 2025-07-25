@@ -72,6 +72,23 @@ export const authRoutes = [
     component: 'ArtistDetail',
   },
 
+  // album
+  {
+    path: '/album-artists',
+    exact: true,
+    component: 'AlbumArtistArray',
+  },
+  {
+    path: '/album-artists/:libraryId',
+    exact: true,
+    redirect: '/album-artists',
+  },
+  {
+    path: '/album-artists/:libraryId/:artistId',
+    exact: true,
+    component: 'AlbumArtistDetail',
+  },
+
   // albums
   {
     path: '/albums',

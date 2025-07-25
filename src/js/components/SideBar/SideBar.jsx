@@ -38,6 +38,7 @@ const SideBar = () => {
   const menuOpenPlaylists = useSelector(({ sessionModel }) => sessionModel.menuOpenPlaylists);
 
   const menuShowArtists = useSelector(({ sessionModel }) => sessionModel.menuShowArtists);
+  const menuShowAlbumArtists = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumArtists);
   const menuShowAlbums = useSelector(({ sessionModel }) => sessionModel.menuShowAlbums);
   const menuShowFolders = useSelector(({ sessionModel }) => sessionModel.menuShowFolders);
   const menuShowPlaylists = useSelector(({ sessionModel }) => sessionModel.menuShowPlaylists);
@@ -62,6 +63,13 @@ const SideBar = () => {
 
   const platformOpts = platformFeatures[currentService] || {};
 
+  const libraryIsVisible =
+    (menuShowArtists && platformOpts.menuArtists) ||
+    (menuShowAlbumArtists && platformOpts.menuAlbumArtists) ||
+    (menuShowAlbums && platformOpts.menuAlbums) ||
+    (menuShowFolders && platformOpts.menuFolders) ||
+    (menuShowPlaylists && platformOpts.menuPlaylists);
+
   const browseIsVisible =
     (menuShowArtistCollections && platformOpts.menuArtistCollections) ||
     (menuShowAlbumCollections && platformOpts.menuAlbumCollections) ||
@@ -73,7 +81,7 @@ const SideBar = () => {
     (menuShowAlbumStyles && platformOpts.menuAlbumStyles) ||
     (menuShowArtistTags && platformOpts.menuArtistTags) ||
     (menuShowAlbumTags && platformOpts.menuAlbumTags);
-  const libraryIsVisible = menuShowArtists || menuShowAlbums || menuShowPlaylists;
+
   const playlistsIsVisible = menuShowAllPlaylists && allPlaylists && allPlaylists.length > 0;
 
   // Get playlists on load
@@ -119,7 +127,7 @@ const SideBar = () => {
             </button>
             {libraryIsVisible && menuOpenLibrary && (
               <>
-                {menuShowArtists && (
+                {menuShowArtists && platformOpts.menuArtists && (
                   <NavLink className={style.link} activeClassName={style.linkActive} to="/artists" draggable="false">
                     {menuShowIcons && (
                       <span className={style.icon}>
@@ -129,7 +137,22 @@ const SideBar = () => {
                     Artists
                   </NavLink>
                 )}
-                {menuShowAlbums && (
+                {menuShowAlbumArtists && platformOpts.menuAlbumArtists && (
+                  <NavLink
+                    className={style.link}
+                    activeClassName={style.linkActive}
+                    to="/album-artists"
+                    draggable="false"
+                  >
+                    {menuShowIcons && (
+                      <span className={style.icon}>
+                        <Icon icon="PersonSquareIcon" cover stroke />
+                      </span>
+                    )}
+                    Album Artists
+                  </NavLink>
+                )}
+                {menuShowAlbums && platformOpts.menuAlbums && (
                   <NavLink className={style.link} activeClassName={style.linkActive} to="/albums" draggable="false">
                     {menuShowIcons && (
                       <span className={style.icon}>
@@ -149,7 +172,7 @@ const SideBar = () => {
                     Folders
                   </NavLink>
                 )}
-                {menuShowPlaylists && (
+                {menuShowPlaylists && platformOpts.menuPlaylists && (
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
