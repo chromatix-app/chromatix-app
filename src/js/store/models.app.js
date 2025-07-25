@@ -162,7 +162,7 @@ const effects = (dispatch) => {
   // Helper function for storing tag item 404 errors
   function createStoreTagItems404Effect(listStateKey, itemIdKey) {
     return function (payload, rootState) {
-      console.log(`%c--- store${listStateKey}404 ---`, 'color:#07a098');
+      console.log(`%c--- store${listStateKey.charAt(0).toUpperCase() + listStateKey.slice(1)}404 ---`, 'color:#07a098');
       const { tagId } = payload;
       const allItems = [...(rootState.appModel[listStateKey] || [])];
       const itemIndex = allItems.findIndex((item) => item[itemIdKey] === tagId);

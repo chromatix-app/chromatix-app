@@ -362,7 +362,7 @@ export const getArtistDetails = (libraryId, artistId) => {
         })
         .catch((error) => {
           console.error(error);
-          if (error?.error?.status === 404) {
+          if (error?.error?.status === 400 || error?.error?.status === 404) {
             store.dispatch.appModel.storeArtist404({ artistId });
           }
           analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Artist Details');
@@ -616,7 +616,7 @@ export const getAlbumDetails = (libraryId, albumId, callback) => {
         })
         .catch((error) => {
           console.error(error);
-          if (error?.error?.status === 404) {
+          if (error?.error?.status === 400 || error?.error?.status === 404) {
             store.dispatch.appModel.storeAlbum404({ albumId });
           }
           analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Album Details');
@@ -708,7 +708,7 @@ export const getFolderItems = (folderId) => {
           })
           .catch((error) => {
             console.error(error);
-            if (error?.error?.status === 404) {
+            if (error?.error?.status === 400 || error?.error?.status === 404) {
               store.dispatch.appModel.storeFolder404({ libraryId, folderId });
             }
             analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Folder Items');
@@ -799,7 +799,7 @@ export const getPlaylistDetails = (libraryId, playlistId) => {
         })
         .catch((error) => {
           console.error(error);
-          if (error?.error?.status === 404) {
+          if (error?.error?.status === 400 || error?.error?.status === 404) {
             store.dispatch.appModel.storePlaylist404({ playlistId });
           }
           analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Playlist Details');
@@ -946,7 +946,7 @@ export const getCollectionItems = (libraryId, collectionId, typeKey) => {
         })
         .catch((error) => {
           console.error(error);
-          if (error?.error?.status === 404) {
+          if (error?.error?.status === 400 || error?.error?.status === 404) {
             store.dispatch.appModel[`store${typeKey}Collection404`]({ collectionId });
           }
           analyticsEvent('Error: Plex - Get Collection Items');
@@ -1070,14 +1070,26 @@ let tagItemsTimeouts = [];
 
 export const getTagItems = (libraryId, tagId, typeKey) => {
   // Ensure that tag items are not fetched before parent tag arrays are fetched
-  const parentId = typeKey.replace('Item', '');
-  if (getAllTagsRunning[parentId]) {
-    collectionItemsTimeouts.push(
-      setTimeout(() => {
-        getTagItems(libraryId, tagId, typeKey);
-      }, 25)
-    );
-    return;
+  const currentService = store.getState().appModel.currentService;
+  if (currentService === 'plex') {
+    const parentId = typeKey.replace('Item', '');
+    if (getAllTagsRunning[parentId]) {
+      tagItemsTimeouts.push(
+        setTimeout(() => {
+          getTagItems(libraryId, tagId, typeKey);
+        }, 25)
+      );
+      return;
+    }
+  } else if (currentService === 'jellyfin') {
+    if (getAllJellyfinTagsRunning) {
+      tagItemsTimeouts.push(
+        setTimeout(() => {
+          getTagItems(libraryId, tagId, typeKey);
+        }, 25)
+      );
+      return;
+    }
   }
 
   if (!getTagItemsRunning[typeKey]) {
@@ -1086,7 +1098,6 @@ export const getTagItems = (libraryId, tagId, typeKey) => {
       console.log('%c--- bridge - getTagItems ---', 'color:#f9743b;');
       getTagItemsRunning[typeKey] = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
       serviceTools[currentService]
@@ -1103,8 +1114,7 @@ export const getTagItems = (libraryId, tagId, typeKey) => {
         })
         .catch((error) => {
           console.error(error);
-          if (error?.error?.status === 404) {
-            console.log(`store${typeKey}404`);
+          if (error?.error?.status === 400 || error?.error?.status === 404) {
             store.dispatch.appModel[`store${typeKey}404`]({ tagId });
           }
           analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Tag Items');
