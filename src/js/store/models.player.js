@@ -680,6 +680,9 @@ const effects = (dispatch) => ({
       });
       analyticsEvent('Music: Repeat All');
     }
+
+    // Update the next track based on new repeat settings
+    dispatch.playerModel.updateNextTrack();
   },
 
   playerRepeatOff(payload, rootState) {
@@ -692,6 +695,9 @@ const effects = (dispatch) => ({
         playingRepeatOnce: false,
       });
       analyticsEvent('Music: Repeat All');
+
+      // Update the next track based on new repeat settings
+      dispatch.playerModel.updateNextTrack();
     }
   },
 
@@ -712,7 +718,26 @@ const effects = (dispatch) => ({
       playingTrackIndex: newIndex,
       playingTrackKeys: trackKeys,
     });
+
+    // Update the next track based on new order
+    dispatch.playerModel.updateNextTrack();
+
     analyticsEvent('Music: Shuffle ' + (isShuffle ? 'On' : 'Off'));
+  },
+
+  updateNextTrack(payload, rootState) {
+    // Helper function to update the next track for preloading
+    const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+    const playingTrackList = rootState.sessionModel.playingTrackList;
+    const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
+
+    const nextIndex = playingTrackIndex + 1;
+    if (nextIndex < playingTrackKeys.length) {
+      const nextTrack = playingTrackList[playingTrackKeys[nextIndex]];
+      playerX.setNextTrack(nextTrack.src);
+    } else {
+      playerX.clearNextTrack();
+    }
   },
 
   //

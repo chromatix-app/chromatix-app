@@ -142,6 +142,7 @@ export const preloadNextTrack = (trackSrc: string): void => {
   if (!enablePreloading) return;
 
   console.log('%c--- player - preloadNextTrack ---', 'color:#a18507');
+  console.log(trackSrc);
 
   const nextPlayerElement = getNextPlayerElement();
   if (nextPlayerElement && !isPreloading) {
@@ -179,7 +180,7 @@ export const preloadNextTrack = (trackSrc: string): void => {
 };
 
 const switchToPreloadedTrack = (progress: number = 0, play: boolean = true): boolean => {
-  console.log('%c--- player - switchToPreloadedTrack ---', 'color:#a18507');
+  console.log('%c--- player - switchToPreloadedTrack ---', 'color:#dac97f');
   const nextPlayerElement = getNextPlayerElement();
   if (nextPlayerElement && isNextTrackPreloaded && nextPlayerElement.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
     // HAVE_FUTURE_DATA (3) - enough data to start playing
@@ -205,11 +206,11 @@ const switchToPreloadedTrack = (progress: number = 0, play: boolean = true): boo
     isNextTrackPreloaded = false;
     nextTrackSrc = null;
 
-    console.log('%c--- player - switched to preloaded track ---', 'color:#a18507');
+    console.log('%c--- player - switched to preloaded track ---', 'color:#dac97f');
     return true;
   }
 
-  console.log('%c--- player - preloaded track not ready, falling back ---', 'color:#a18507');
+  console.log('%c--- player - preloaded track not ready, falling back ---', 'color:#dac97f');
   return false;
 };
 
@@ -286,11 +287,13 @@ export const updateProgress = (currentProgress: number): void => {
 };
 
 export const setNextTrack = (trackSrc: string | null): void => {
+  console.log('%c--- player - setNextTrack ---', 'color:#dac97f');
   nextTrackSrc = trackSrc;
   isNextTrackPreloaded = false;
 };
 
 export const clearNextTrack = (): void => {
+  console.log('%c--- player - clearNextTrack ---', 'color:#dac97f');
   nextTrackSrc = null;
   isNextTrackPreloaded = false;
 };
