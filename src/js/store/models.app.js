@@ -138,6 +138,53 @@ const reducers = {
 // ======================================================================
 
 const effects = (dispatch) => {
+  // Helper function for storing tag items
+  function createStoreTagItemsEffect(stateKey) {
+    return function (payload, rootState) {
+      console.log(`%c--- store${stateKey} ---`, 'color:#07a098');
+      const { libraryId, tagId, tagItems } = payload;
+      const allItems = { ...rootState.appModel[stateKey] };
+
+      // limit recent entries
+      const keys = Object.keys(allItems);
+      if (keys.length >= maxDataLength) {
+        delete allItems[keys[0]];
+      }
+
+      // add the new entry and save
+      allItems[libraryId + '-' + tagId] = tagItems;
+      dispatch.appModel.setAppState({
+        [stateKey]: allItems,
+      });
+    };
+  }
+
+  // Helper function for storing tag item 404 errors
+  function createStoreTagItems404Effect(listStateKey, itemIdKey) {
+    return function (payload, rootState) {
+      console.log(`%c--- store${listStateKey}404 ---`, 'color:#07a098');
+      const { tagId } = payload;
+      const allItems = [...(rootState.appModel[listStateKey] || [])];
+      const itemIndex = allItems.findIndex((item) => item[itemIdKey] === tagId);
+
+      if (itemIndex === -1) {
+        allItems.push({
+          [itemIdKey]: tagId,
+          error404: true,
+        });
+      } else {
+        allItems[itemIndex] = {
+          [itemIdKey]: tagId,
+          error404: true,
+        };
+      }
+
+      dispatch.appModel.setAppState({
+        [listStateKey]: allItems,
+      });
+    };
+  }
+
   return {
     init(payload, rootState) {
       console.log('%c--- init ---', 'color:#07a098');
@@ -981,313 +1028,37 @@ const effects = (dispatch) => {
     // MUSIC - GENRES
     //
 
-    storeArtistGenreItems(payload, rootState) {
-      console.log('%c--- storeArtistGenreItems ---', 'color:#07a098');
-      const { libraryId, tagId, tagItems } = payload;
-      const allArtistGenreItems = { ...rootState.appModel.allArtistGenreItems };
-      // limit recent entries
-      const keys = Object.keys(allArtistGenreItems);
-      if (keys.length >= maxDataLength) {
-        delete allArtistGenreItems[keys[0]];
-      }
-      // add the new entry and save
-      allArtistGenreItems[libraryId + '-' + tagId] = tagItems;
-      dispatch.appModel.setAppState({
-        allArtistGenreItems,
-      });
-    },
-
-    storeArtistGenreItems404(payload, rootState) {
-      console.log('%c--- storeArtistGenreItems404 ---', 'color:#07a098');
-      const { tagId } = payload;
-      const allArtistGenres = [...(rootState.appModel.allArtistGenres || [])];
-      const genreIndex = allArtistGenres.findIndex((genre) => genre.tagId === tagId);
-      if (genreIndex === -1) {
-        allArtistGenres.push({
-          genreId: tagId,
-          error404: true,
-        });
-      } else {
-        allArtistGenres[genreIndex] = {
-          genreId: tagId,
-          error404: true,
-        };
-      }
-      dispatch.appModel.setAppState({
-        allArtistGenres,
-      });
-    },
-
-    storeAlbumGenreItems(payload, rootState) {
-      console.log('%c--- storeAlbumGenreItems ---', 'color:#07a098');
-      const { libraryId, tagId, tagItems } = payload;
-      const allAlbumGenreItems = { ...rootState.appModel.allAlbumGenreItems };
-      // limit recent entries
-      const keys = Object.keys(allAlbumGenreItems);
-      if (keys.length >= maxDataLength) {
-        delete allAlbumGenreItems[keys[0]];
-      }
-      // add the new entry and save
-      allAlbumGenreItems[libraryId + '-' + tagId] = tagItems;
-      dispatch.appModel.setAppState({
-        allAlbumGenreItems,
-      });
-    },
-
-    storeAlbumGenreItems404(payload, rootState) {
-      console.log('%c--- storeAlbumGenreItems404 ---', 'color:#07a098');
-      const { tagId } = payload;
-      const allAlbumGenres = [...(rootState.appModel.allAlbumGenres || [])];
-      const genreIndex = allAlbumGenres.findIndex((genre) => genre.tagId === tagId);
-      if (genreIndex === -1) {
-        allAlbumGenres.push({
-          genreId: tagId,
-          error404: true,
-        });
-      } else {
-        allAlbumGenres[genreIndex] = {
-          genreId: tagId,
-          error404: true,
-        };
-      }
-      dispatch.appModel.setAppState({
-        allAlbumGenres,
-      });
-    },
+    storeArtistGenreItems: createStoreTagItemsEffect('allArtistGenreItems'),
+    storeArtistGenreItems404: createStoreTagItems404Effect('allArtistGenres', 'genreId'),
+    storeAlbumGenreItems: createStoreTagItemsEffect('allAlbumGenreItems'),
+    storeAlbumGenreItems404: createStoreTagItems404Effect('allAlbumGenres', 'genreId'),
 
     //
     // MUSIC - MOODS
     //
 
-    storeArtistMoodItems(payload, rootState) {
-      console.log('%c--- storeArtistMoodItems ---', 'color:#07a098');
-      const { libraryId, tagId, tagItems } = payload;
-      const allArtistMoodItems = { ...rootState.appModel.allArtistMoodItems };
-      // limit recent entries
-      const keys = Object.keys(allArtistMoodItems);
-      if (keys.length >= maxDataLength) {
-        delete allArtistMoodItems[keys[0]];
-      }
-      // add the new entry and save
-      allArtistMoodItems[libraryId + '-' + tagId] = tagItems;
-      dispatch.appModel.setAppState({
-        allArtistMoodItems,
-      });
-    },
-
-    storeArtistMoodItems404(payload, rootState) {
-      console.log('%c--- storeArtistMoodItems404 ---', 'color:#07a098');
-      const { tagId } = payload;
-      const allArtistMoods = [...(rootState.appModel.allArtistMoods || [])];
-      const moodIndex = allArtistMoods.findIndex((mood) => mood.tagId === tagId);
-      if (moodIndex === -1) {
-        allArtistMoods.push({
-          moodId: tagId,
-          error404: true,
-        });
-      } else {
-        allArtistMoods[moodIndex] = {
-          moodId: tagId,
-          error404: true,
-        };
-      }
-      dispatch.appModel.setAppState({
-        allArtistMoods,
-      });
-    },
-
-    storeAlbumMoodItems(payload, rootState) {
-      console.log('%c--- storeAlbumMoodItems ---', 'color:#07a098');
-      const { libraryId, tagId, tagItems } = payload;
-      const allAlbumMoodItems = { ...rootState.appModel.allAlbumMoodItems };
-      // limit recent entries
-      const keys = Object.keys(allAlbumMoodItems);
-      if (keys.length >= maxDataLength) {
-        delete allAlbumMoodItems[keys[0]];
-      }
-      // add the new entry and save
-      allAlbumMoodItems[libraryId + '-' + tagId] = tagItems;
-      dispatch.appModel.setAppState({
-        allAlbumMoodItems,
-      });
-    },
-
-    storeAlbumMoodItems404(payload, rootState) {
-      console.log('%c--- storeAlbumMoodItems404 ---', 'color:#07a098');
-      const { tagId } = payload;
-      const allAlbumMoods = [...(rootState.appModel.allAlbumMoods || [])];
-      const moodIndex = allAlbumMoods.findIndex((mood) => mood.tagId === tagId);
-      if (moodIndex === -1) {
-        allAlbumMoods.push({
-          moodId: tagId,
-          error404: true,
-        });
-      } else {
-        allAlbumMoods[moodIndex] = {
-          moodId: tagId,
-          error404: true,
-        };
-      }
-      dispatch.appModel.setAppState({
-        allAlbumMoods,
-      });
-    },
+    storeArtistMoodItems: createStoreTagItemsEffect('allArtistMoodItems'),
+    storeArtistMoodItems404: createStoreTagItems404Effect('allArtistMoods', 'moodId'),
+    storeAlbumMoodItems: createStoreTagItemsEffect('allAlbumMoodItems'),
+    storeAlbumMoodItems404: createStoreTagItems404Effect('allAlbumMoods', 'moodId'),
 
     //
     // MUSIC - STYLES
     //
 
-    storeArtistStyleItems(payload, rootState) {
-      console.log('%c--- storeArtistStyleItems ---', 'color:#07a098');
-      const { libraryId, tagId, tagItems } = payload;
-      const allArtistStyleItems = { ...rootState.appModel.allArtistStyleItems };
-      // limit recent entries
-      const keys = Object.keys(allArtistStyleItems);
-      if (keys.length >= maxDataLength) {
-        delete allArtistStyleItems[keys[0]];
-      }
-      // add the new entry and save
-      allArtistStyleItems[libraryId + '-' + tagId] = tagItems;
-      dispatch.appModel.setAppState({
-        allArtistStyleItems,
-      });
-    },
-
-    storeArtistStyleItems404(payload, rootState) {
-      console.log('%c--- storeArtistStyleItems404 ---', 'color:#07a098');
-      const { tagId } = payload;
-      const allArtistStyles = [...(rootState.appModel.allArtistStyles || [])];
-      const styleIndex = allArtistStyles.findIndex((style) => style.tagId === tagId);
-      if (styleIndex === -1) {
-        allArtistStyles.push({
-          styleId: tagId,
-          error404: true,
-        });
-      } else {
-        allArtistStyles[styleIndex] = {
-          styleId: tagId,
-          error404: true,
-        };
-      }
-      dispatch.appModel.setAppState({
-        allArtistStyles,
-      });
-    },
-
-    storeAlbumStyleItems(payload, rootState) {
-      console.log('%c--- storeAlbumStyleItems ---', 'color:#07a098');
-      const { libraryId, tagId, tagItems } = payload;
-      const allAlbumStyleItems = { ...rootState.appModel.allAlbumStyleItems };
-      // limit recent entries
-      const keys = Object.keys(allAlbumStyleItems);
-      if (keys.length >= maxDataLength) {
-        delete allAlbumStyleItems[keys[0]];
-      }
-      // add the new entry and save
-      allAlbumStyleItems[libraryId + '-' + tagId] = tagItems;
-      dispatch.appModel.setAppState({
-        allAlbumStyleItems,
-      });
-    },
-
-    storeAlbumStyleItems404(payload, rootState) {
-      console.log('%c--- storeAlbumStyleItems404 ---', 'color:#07a098');
-      const { tagId } = payload;
-      const allAlbumStyles = [...(rootState.appModel.allAlbumStyles || [])];
-      const styleIndex = allAlbumStyles.findIndex((style) => style.tagId === tagId);
-      if (styleIndex === -1) {
-        allAlbumStyles.push({
-          styleId: tagId,
-          error404: true,
-        });
-      } else {
-        allAlbumStyles[styleIndex] = {
-          styleId: tagId,
-          error404: true,
-        };
-      }
-      dispatch.appModel.setAppState({
-        allAlbumStyles,
-      });
-    },
+    storeArtistStyleItems: createStoreTagItemsEffect('allArtistStyleItems'),
+    storeArtistStyleItems404: createStoreTagItems404Effect('allArtistStyles', 'styleId'),
+    storeAlbumStyleItems: createStoreTagItemsEffect('allAlbumStyleItems'),
+    storeAlbumStyleItems404: createStoreTagItems404Effect('allAlbumStyles', 'styleId'),
 
     //
     // MUSIC - TAGS
     //
 
-    storeArtistTagItems(payload, rootState) {
-      console.log('%c--- storeArtistTagItems ---', 'color:#07a098');
-      const { libraryId, tagId, tagItems } = payload;
-      const allArtistTagItems = { ...rootState.appModel.allArtistTagItems };
-      // limit recent entries
-      const keys = Object.keys(allArtistTagItems);
-      if (keys.length >= maxDataLength) {
-        delete allArtistTagItems[keys[0]];
-      }
-      // add the new entry and save
-      allArtistTagItems[libraryId + '-' + tagId] = tagItems;
-      dispatch.appModel.setAppState({
-        allArtistTagItems,
-      });
-    },
-
-    storeArtistTagItems404(payload, rootState) {
-      console.log('%c--- storeArtistTagItems404 ---', 'color:#07a098');
-      const { tagId } = payload;
-      const allArtistTags = [...(rootState.appModel.allArtistTags || [])];
-      const tagIndex = allArtistTags.findIndex((tag) => tag.tagId === tagId);
-      if (tagIndex === -1) {
-        allArtistTags.push({
-          tagId: tagId,
-          error404: true,
-        });
-      } else {
-        allArtistTags[tagIndex] = {
-          tagId: tagId,
-          error404: true,
-        };
-      }
-      dispatch.appModel.setAppState({
-        allArtistTags,
-      });
-    },
-
-    storeAlbumTagItems(payload, rootState) {
-      console.log('%c--- storeAlbumTagItems ---', 'color:#07a098');
-      const { libraryId, tagId, tagItems } = payload;
-      const allAlbumTagItems = { ...rootState.appModel.allAlbumTagItems };
-      // limit recent entries
-      const keys = Object.keys(allAlbumTagItems);
-      if (keys.length >= maxDataLength) {
-        delete allAlbumTagItems[keys[0]];
-      }
-      // add the new entry and save
-      allAlbumTagItems[libraryId + '-' + tagId] = tagItems;
-      dispatch.appModel.setAppState({
-        allAlbumTagItems,
-      });
-    },
-
-    storeAlbumTagItems404(payload, rootState) {
-      console.log('%c--- storeAlbumTagItems404 ---', 'color:#07a098');
-      const { tagId } = payload;
-      const allAlbumTags = [...(rootState.appModel.allAlbumTags || [])];
-      const tagIndex = allAlbumTags.findIndex((tag) => tag.tagId === tagId);
-      if (tagIndex === -1) {
-        allAlbumTags.push({
-          tagId: tagId,
-          error404: true,
-        });
-      } else {
-        allAlbumTags[tagIndex] = {
-          tagId: tagId,
-          error404: true,
-        };
-      }
-      dispatch.appModel.setAppState({
-        allAlbumTags,
-      });
-    },
+    storeArtistTagItems: createStoreTagItemsEffect('allArtistTagItems'),
+    storeArtistTagItems404: createStoreTagItems404Effect('allArtistTags', 'tagId'),
+    storeAlbumTagItems: createStoreTagItemsEffect('allAlbumTagItems'),
+    storeAlbumTagItems404: createStoreTagItems404Effect('allAlbumTags', 'tagId'),
   };
 };
 
