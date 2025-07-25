@@ -1,3 +1,14 @@
+# 0.47.0 (2025-07-25)
+
+Features:
+
+- Added option to only allow setting whole star ratings.
+- Improved playback performance by preloading the next track in the queue.
+- Tweaked some of the settings pages for consistency and clarity.
+- Improved handling when browsing non-existent items via the URL.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.46.0 (2025-07-12)
 
 Features:
