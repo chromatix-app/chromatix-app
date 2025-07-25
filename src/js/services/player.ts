@@ -2,7 +2,7 @@
 // OPTIONS
 // ======================================================================
 
-const enablePreloading = true;
+const enablePreloading = false;
 const preloadAtTimeRemaining = 45000;
 const preloadAtPercentage = 0.6;
 

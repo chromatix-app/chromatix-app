@@ -3,7 +3,6 @@
 Features:
 
 - Added option to only allow setting whole star ratings.
-- Improved playback performance by preloading the next track in the queue.
 - Tweaked some of the settings pages for consistency and clarity.
 - Improved handling when browsing non-existent items via the URL.
 
