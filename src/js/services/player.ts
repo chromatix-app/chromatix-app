@@ -188,6 +188,9 @@ const switchToPreloadedTrack = (progress: number = 0, play: boolean = true): boo
     const currentPlayerElement = getCurrentPlayerElement();
     if (currentPlayerElement) {
       currentPlayerElement.pause();
+      // Clean up the old player
+      currentPlayerElement.src = '';
+      currentPlayerElement.load();
     }
 
     // Switch to next player
@@ -272,7 +275,7 @@ export const getCurrentDuration = (): number => {
 // Listen to track progress and preload the next track when we're within 45 seconds
 // of the end, or at 60% progress, whichever comes first
 export const updateProgress = (currentProgress: number): void => {
-  if (!enablePreloading || !nextTrackSrc || isNextTrackPreloaded) return;
+  if (!enablePreloading || !nextTrackSrc || isNextTrackPreloaded || isPreloading) return;
 
   const currentDuration = getCurrentDuration() * 1000; // Convert to milliseconds
   if (currentDuration <= 0) return;
