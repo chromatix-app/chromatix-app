@@ -17,6 +17,7 @@ export const SettingsGeneral = () => {
     <div className={style.wrap}>
       <ServerSettings />
       <SortSettings />
+      <RatingSettings />
       <PlaybackSettings />
     </div>
   );
@@ -69,6 +70,25 @@ const SortSettings = () => {
   ];
 
   return <SettingsList title="Sorting" menuItems={menuItems} />;
+};
+
+//
+// RATING
+//
+
+const RatingSettings = () => {
+  const optionUseHalfStars = useSelector(({ sessionModel }) => sessionModel.optionUseHalfStars);
+
+  const menuItems = [
+    {
+      key: 'optionUseHalfStars',
+      label: 'Use half stars in ratings.',
+      description: 'Enable to allow setting half-star ratings. Disable to use whole stars only.',
+      state: optionUseHalfStars,
+    },
+  ];
+
+  return <SettingsList title="Rating" menuItems={menuItems} />;
 };
 
 //
