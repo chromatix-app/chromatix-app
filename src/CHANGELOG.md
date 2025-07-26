@@ -1,3 +1,15 @@
+# 0.48.0 (2025-07-26)
+
+Features:
+
+- All data is now continuously re-fetched in the background (as required) to ensure content is always up to date.
+  - This means that the app will no longer need to be refreshed to see changes made in Plex.
+- Improved handling when browsing non-existent items via the URL.
+- Star ratings are now always shown when hovering on a row in list view.
+- Better sorting of playlists in the sidebar (consistent with other sections and user preferences).
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.47.0 (2025-07-25)
 
 Features:
