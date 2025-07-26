@@ -1,3 +1,5 @@
+// Generated using GitHub Copilot
+
 import durationToStringLong from './durationToStringLong';
 
 describe('Testing "durationToStringLong" function', () => {

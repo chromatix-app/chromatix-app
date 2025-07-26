@@ -145,6 +145,15 @@ export const transposeArtistArray = (array, libraryId, serverBaseUrl, accessToke
   return data;
 };
 
+export const transposeAlbumArtistArray = (array, libraryId, serverBaseUrl, accessToken) => {
+  // console.log(array?.data?.Items);
+  const data =
+    array?.data?.Items?.map((artist) =>
+      transposeArtistData(artist, libraryId, serverBaseUrl, accessToken, '/album-artists/')
+    ) || [];
+  return data;
+};
+
 export const transposeArtistDetails = (array, libraryId, serverBaseUrl, accessToken) => {
   // console.log(array?.data);
   const artist = array?.data;
@@ -173,7 +182,7 @@ export const transposeArtistDetails = (array, libraryId, serverBaseUrl, accessTo
 //   return artistAppearanceAlbums;
 // };
 
-export const transposeArtistData = (artist, libraryId, serverBaseUrl, accessToken) => {
+export const transposeArtistData = (artist, libraryId, serverBaseUrl, accessToken, baseUrl = '/artists/') => {
   return {
     kind: 'artist',
     libraryId: libraryId,
@@ -185,7 +194,7 @@ export const transposeArtistData = (artist, libraryId, serverBaseUrl, accessToke
     lastPlayed: null,
     userRating: null,
     isFavourite: artist.UserData?.IsFavorite || false,
-    link: '/artists/' + libraryId + '/' + artist.Id,
+    link: baseUrl + libraryId + '/' + artist.Id,
     thumb: getThumb(artist, serverBaseUrl, accessToken, thumbSizeSmall),
     thumbMedium: getThumb(artist, serverBaseUrl, accessToken, thumbSizeMedium),
   };

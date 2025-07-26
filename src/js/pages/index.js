@@ -17,6 +17,9 @@ export { default as ArtistStyleItems } from './ArtistStyleItems';
 export { default as ArtistTagArray } from './ArtistTagArray';
 export { default as ArtistTagItems } from './ArtistTagItems';
 
+export { default as AlbumArtistArray } from './AlbumArtistArray';
+export { default as AlbumArtistDetail } from './AlbumArtistDetail';
+
 export { default as AlbumArray } from './AlbumArray';
 export { default as AlbumDetail } from './AlbumDetail';
 export { default as AlbumCollectionArray } from './AlbumCollectionArray';

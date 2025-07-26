@@ -1,7 +1,13 @@
 export const platformFeatures = {
   jellyfin: {
-    // menu
+    // menu - library
+    menuArtists: true,
+    menuAlbumArtists: true,
+    menuAlbums: true,
     menuFolders: false,
+    menuPlaylists: true,
+
+    // menu - browse
     menuArtistCollections: false,
     menuAlbumCollections: false,
     menuArtistGenres: true,
@@ -19,8 +25,14 @@ export const platformFeatures = {
   },
 
   plex: {
-    // menu
+    // menu - library
+    menuArtists: true,
+    menuAlbumArtists: false,
+    menuAlbums: true,
     menuFolders: true,
+    menuPlaylists: true,
+
+    // menu - browse
     menuArtistCollections: true,
     menuAlbumCollections: true,
     menuArtistGenres: true,

@@ -5,7 +5,7 @@ import platformFeatures from 'js/_config/platformFeatures';
 import { sortList } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 
-const useGetArtistArray = () => {
+const useGetArtistArray = ({ variant }) => {
   const dispatch = useDispatch();
 
   const currentService = useSelector(({ appModel }) => appModel.currentService);
@@ -48,9 +48,9 @@ const useGetArtistArray = () => {
   const actualSortArtists = allowedSort[sortArtists] ? sortArtists : 'title';
   const actualOrderArtists = allowedSort[sortArtists] ? orderArtists : 'asc';
 
-  const haveGotAllArtists = useSelector(({ appModel }) => appModel.haveGotAllArtists);
-  const allArtists = useSelector(({ appModel }) => appModel.allArtists)?.filter(
-    (artist) => artist.libraryId === currentLibraryId
+  const haveGotAllArtists = useSelector(({ appModel }) => appModel[`haveGotAll${variant}`]);
+  const allArtists = useSelector(({ appModel }) => appModel[`all${variant}`])?.filter(
+    (artist) => artist.libraryId === currentLibraryId && !artist.error404 && !artist.isExtra
   );
   const sortedArtists =
     haveGotAllArtists && allArtists
@@ -89,8 +89,12 @@ const useGetArtistArray = () => {
   };
 
   useEffect(() => {
-    bridge.getAllArtists();
-  }, []);
+    if (variant === 'Artists') {
+      bridge.getAllArtists();
+    } else if (variant === 'AlbumArtists') {
+      bridge.getAllAlbumArtists();
+    }
+  }, [variant]);
 
   return {
     viewArtists,

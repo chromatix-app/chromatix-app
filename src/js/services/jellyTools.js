@@ -44,6 +44,7 @@ const endpointConfig = {
   },
   artist: {
     getAllArtists: (serverBaseUrl) => `${serverBaseUrl}/Artists`,
+    getAllAlbumArtists: (serverBaseUrl) => `${serverBaseUrl}/Artists/AlbumArtists`,
     getArtistDetails: (serverBaseUrl, userId, artistId) => `${serverBaseUrl}/Users/${userId}/Items/${artistId}`,
     getAllArtistAlbums: (serverBaseUrl, userId) => `${serverBaseUrl}/Users/${userId}/Items`,
     // getAllArtistRelatedAlbums: null,
@@ -334,6 +335,58 @@ export const getAllArtists = ({ accessToken, genre, libraryId, serverBaseUrl, ta
 };
 
 // ======================================================================
+// GET ALL ALBUM ARTISTS
+// ======================================================================
+
+export const getAllAlbumArtists = ({ accessToken, genre, libraryId, serverBaseUrl, tag }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.artist.getAllAlbumArtists(serverBaseUrl);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+          params: {
+            ParentId: libraryId,
+            // IncludeItemTypes: 'MusicArtist',
+            Recursive: true,
+            Genres: genre || null,
+            Tags: tag || null,
+            SortBy: 'SortName',
+            SortOrder: 'Ascending',
+            Fields:
+              'BackdropImageTags,CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,ProductionLocations,Tags,UserData',
+            // StartIndex: 0,
+            // Limit: 100
+          },
+        })
+        .then((response) => {
+          resolve(jellyTranspose.transposeAlbumArtistArray(response, libraryId, serverBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'jellyfin.getAllAlbumArtists.1',
+            message: 'Failed to get all album artists: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'jellyfin.getAllAlbumArtists.2',
+        message: 'Failed to get all album artists: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
 // GET ARTIST DETAILS
 // ======================================================================
 
@@ -426,7 +479,7 @@ export const getAllArtistAlbums = ({ accessToken, artistId, libraryId, serverBas
 // ======================================================================
 
 /*
-This is not required when using the Jellyfin API, but is here for consistency with other services.
+This is not required when using the Jellyfin API, but is here for compatibility with other services.
 */
 
 export const getAllArtistRelatedAlbums = () => {
@@ -687,8 +740,14 @@ export const getAlbumTracks = ({ accessToken, albumId, libraryId, serverBaseUrl,
 // ======================================================================
 
 /*
-This is not required when using the Jellyfin API.
+This is not required when using the Jellyfin API, but is here for compatibility with other services.
 */
+
+export const getFolderItems = () => {
+  return new Promise((resolve, reject) => {
+    resolve([]);
+  });
+};
 
 // ======================================================================
 // GET ALL PLAYLISTS
@@ -821,9 +880,38 @@ export const getPlaylistTracks = ({ accessToken, libraryId, playlistId, serverBa
 // GET ALL COLLECTIONS
 // ======================================================================
 
+/*
+This is not required when using the Jellyfin API, but is here for compatibility with other services.
+*/
+
+export const getAllCollections = () => {
+  return new Promise((resolve, reject) => {
+    resolve({
+      allArtistCollections: [],
+      allAlbumCollections: [],
+    });
+  });
+};
+
 // ======================================================================
 // GET COLLECTION ITEMS
 // ======================================================================
+
+/*
+This is not required when using the Jellyfin API, but is here for compatibility with other services.
+*/
+
+export const getCollectionItems = () => {
+  return new Promise((resolve, reject) => {
+    const error = new Error('Not found');
+    error.status = 404;
+    reject({
+      code: 'jelly.getCollectionItems.1',
+      message: 'Failed to get all collection items: ' + error?.message,
+      error: error,
+    });
+  });
+};
 
 // ======================================================================
 // GET ALL TAGS
@@ -873,6 +961,10 @@ export const getAllTags = ({ accessToken, libraryId, serverBaseUrl, userId }) =>
             allAlbumGenres: jellyTranspose.transposeTagArray(albumResponse?.data?.Genres, libraryId, 'album', 'Genre'),
             allArtistTags: jellyTranspose.transposeTagArray(artistResponse?.data?.Tags, libraryId, 'artist', 'Tag'),
             allAlbumTags: jellyTranspose.transposeTagArray(albumResponse?.data?.Tags, libraryId, 'album', 'Tag'),
+            allArtistStyles: [],
+            allAlbumStyles: [],
+            allArtistMoods: [],
+            allAlbumMoods: [],
           });
         })
         .catch((error) => {
@@ -928,8 +1020,17 @@ export const getTagItems = ({ accessToken, libraryId, serverBaseUrl, tagId, type
       serverBaseUrl: serverBaseUrl,
       tag: safeDecodeURIComponent(tagId),
     });
+  } else {
+    return new Promise((resolve, reject) => {
+      const error = new Error('Not found');
+      error.status = 404;
+      reject({
+        code: 'jelly.getTagItems.1',
+        message: 'Failed to get all tag items: ' + error?.message,
+        error: error,
+      });
+    });
   }
-  return null;
 };
 
 // ======================================================================

@@ -72,6 +72,23 @@ export const authRoutes = [
     component: 'ArtistDetail',
   },
 
+  // album
+  {
+    path: '/album-artists',
+    exact: true,
+    component: 'AlbumArtistArray',
+  },
+  {
+    path: '/album-artists/:libraryId',
+    exact: true,
+    redirect: '/album-artists',
+  },
+  {
+    path: '/album-artists/:libraryId/:artistId',
+    exact: true,
+    component: 'AlbumArtistDetail',
+  },
+
   // albums
   {
     path: '/albums',
@@ -130,6 +147,11 @@ export const authRoutes = [
     component: 'ArtistCollectionArray',
   },
   {
+    path: '/artist-collections/:libraryId',
+    exact: true,
+    redirect: '/artist-collections',
+  },
+  {
     path: '/artist-collections/:libraryId/:collectionId',
     exact: true,
     component: 'ArtistCollectionItems',
@@ -140,6 +162,11 @@ export const authRoutes = [
     path: '/album-collections',
     exact: true,
     component: 'AlbumCollectionArray',
+  },
+  {
+    path: '/album-collections/:libraryId',
+    exact: true,
+    redirect: '/album-collections',
   },
   {
     path: '/album-collections/:libraryId/:collectionId',
@@ -154,6 +181,11 @@ export const authRoutes = [
     component: 'ArtistGenreArray',
   },
   {
+    path: '/artist-genres/:libraryId',
+    exact: true,
+    redirect: '/artist-genres',
+  },
+  {
     path: '/artist-genres/:libraryId/:genreId',
     exact: true,
     component: 'ArtistGenreItems',
@@ -164,6 +196,11 @@ export const authRoutes = [
     path: '/album-genres',
     exact: true,
     component: 'AlbumGenreArray',
+  },
+  {
+    path: '/album-genres/:libraryId',
+    exact: true,
+    redirect: '/album-genres',
   },
   {
     path: '/album-genres/:libraryId/:genreId',
@@ -178,6 +215,11 @@ export const authRoutes = [
     component: 'ArtistMoodArray',
   },
   {
+    path: '/artist-moods/:libraryId',
+    exact: true,
+    redirect: '/artist-moods',
+  },
+  {
     path: '/artist-moods/:libraryId/:moodId',
     exact: true,
     component: 'ArtistMoodItems',
@@ -188,6 +230,11 @@ export const authRoutes = [
     path: '/album-moods',
     exact: true,
     component: 'AlbumMoodArray',
+  },
+  {
+    path: '/album-moods/:libraryId',
+    exact: true,
+    redirect: '/album-moods',
   },
   {
     path: '/album-moods/:libraryId/:moodId',
@@ -202,6 +249,11 @@ export const authRoutes = [
     component: 'ArtistStyleArray',
   },
   {
+    path: '/artist-styles/:libraryId',
+    exact: true,
+    redirect: '/artist-styles',
+  },
+  {
     path: '/artist-styles/:libraryId/:styleId',
     exact: true,
     component: 'ArtistStyleItems',
@@ -212,6 +264,11 @@ export const authRoutes = [
     path: '/album-styles',
     exact: true,
     component: 'AlbumStyleArray',
+  },
+  {
+    path: '/album-styles/:libraryId',
+    exact: true,
+    redirect: '/album-styles',
   },
   {
     path: '/album-styles/:libraryId/:styleId',
@@ -226,6 +283,11 @@ export const authRoutes = [
     component: 'ArtistTagArray',
   },
   {
+    path: '/artist-tags/:libraryId',
+    exact: true,
+    redirect: '/artist-tags',
+  },
+  {
     path: '/artist-tags/:libraryId/:tagId',
     exact: true,
     component: 'ArtistTagItems',
@@ -236,6 +298,11 @@ export const authRoutes = [
     path: '/album-tags',
     exact: true,
     component: 'AlbumTagArray',
+  },
+  {
+    path: '/album-tags/:libraryId',
+    exact: true,
+    redirect: '/album-tags',
   },
   {
     path: '/album-tags/:libraryId/:tagId',

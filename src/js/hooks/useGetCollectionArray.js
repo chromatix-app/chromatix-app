@@ -36,7 +36,7 @@ const useGetCollectionArray = (collectionKey) => {
   const actualOrderCollections = allowedSort[sortCollections] ? orderCollections : 'asc';
 
   const allCollections = useSelector(({ appModel }) => appModel[`all${collectionKey}`])?.filter(
-    (collection) => collection.libraryId === currentLibraryId
+    (collection) => collection.libraryId === currentLibraryId && !collection.error404 && !collection.isExtra
   );
   const sortedCollections = allCollections
     ? sortList({

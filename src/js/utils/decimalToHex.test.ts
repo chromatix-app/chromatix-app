@@ -1,3 +1,5 @@
+// Generated using GitHub Copilot
+
 import decimalToHex from './decimalToHex';
 
 describe('Testing "decimalToHex" function', () => {

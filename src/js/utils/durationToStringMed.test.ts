@@ -1,3 +1,5 @@
+// Generated using GitHub Copilot
+
 import durationToStringMed from './durationToStringMed';
 
 describe('Testing "durationToStringMed" function', () => {

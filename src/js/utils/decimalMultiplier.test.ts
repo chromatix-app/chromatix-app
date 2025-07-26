@@ -1,3 +1,5 @@
+// Generated using GitHub Copilot
+
 import decimalMultiplier from './decimalMultiplier';
 
 describe('Testing "decimalMultiplier" function', () => {

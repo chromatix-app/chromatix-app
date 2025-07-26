@@ -65,7 +65,8 @@ const StarRating = ({
           height: size,
         }}
       >
-        {(!onlyShowOnHover || displayRating || rating > 0) && <Icon icon={icon} cover />}
+        {/* {(!onlyShowOnHover || displayRating || rating > 0) && <Icon icon={icon} cover />} */}
+        <Icon icon={icon} cover />
       </div>
     );
   });
@@ -74,7 +75,8 @@ const StarRating = ({
     <div
       className={clsx(style.wrap, style[variantClassName], {
         [style.wrapInline]: inline,
-        [style.wrapZero]: rating <= 0 && !displayRating,
+        [style.wrapZero]: !displayRating && rating <= 0,
+        [style.wrapShowOnHover]: onlyShowOnHover && !displayRating && rating <= 0,
       })}
       style={{
         width: size * 5 + 8,

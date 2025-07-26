@@ -51,7 +51,7 @@ const useGetPlaylistArray = () => {
   const actualOrderPlaylists = allowedSort[sortPlaylists] ? orderPlaylists : 'asc';
 
   const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists)?.filter(
-    (playlist) => playlist.libraryId === currentLibraryId
+    (playlist) => playlist.libraryId === currentLibraryId && !playlist.error404 && !playlist.isExtra
   );
   const sortedPlaylists = allPlaylists
     ? sortList({
