@@ -365,6 +365,21 @@ export const authRoutes = [
           exact: true,
           component: 'DevIcons',
         },
+        {
+          path: '/dev-icons',
+          exact: true,
+          redirect: '/icons',
+        },
+        {
+          path: '/modals',
+          exact: true,
+          component: 'DevModals',
+        },
+        {
+          path: '/dev-modals',
+          exact: true,
+          redirect: '/modals',
+        },
       ]
     : []),
 

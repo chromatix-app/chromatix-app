@@ -8,6 +8,7 @@ import sha3 from 'crypto-js/sha3';
 import { appModel } from 'js/store/models.app';
 import { persistentModel } from 'js/store/models.persistent';
 import { playerModel } from 'js/store/models.player';
+import { popupsModel } from 'js/store/models.popups';
 import { sessionModel } from 'js/store/models.session';
 import config from 'js/_config/config';
 
@@ -28,6 +29,7 @@ const store: Store = init({
     appModel,
     persistentModel,
     playerModel,
+    popupsModel,
     sessionModel,
   },
 });

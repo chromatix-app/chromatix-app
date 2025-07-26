@@ -7,6 +7,8 @@ export { default as FilterToggle } from './FilterToggle/FilterToggle';
 export { default as FilterWrap } from './FilterWrap/FilterWrap';
 export { default as Icon } from './Icon/Icon';
 export { default as Loading } from './Loading/Loading';
+export { default as ModalWindow } from './ModalWindow/ModalWindow';
+export { default as ModalWrap } from './ModalWrap/ModalWrap';
 export { default as PageHome } from './PageHome/PageHome';
 export { default as PageLoginJelly } from './PageLoginJelly/PageLoginJelly';
 export { default as PageText } from './PageText/PageText';
