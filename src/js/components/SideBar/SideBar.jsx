@@ -8,7 +8,7 @@ import { NavLink } from 'react-router-dom';
 import * as RadixPopover from '@radix-ui/react-popover';
 
 import { Icon, UserMenu } from 'js/components';
-import { useKeyControl, useNavigationHistory } from 'js/hooks';
+import { useGetPlaylistSidebar, useKeyControl, useNavigationHistory } from 'js/hooks';
 import { electronPlatform } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 import platformFeatures from 'js/_config/platformFeatures';
@@ -23,10 +23,9 @@ const SideBar = () => {
   const dispatch = useDispatch();
 
   const { canGoBack, canGoForward, goBack, goForward } = useNavigationHistory();
+  const { hasPlaylists, sortedPlaylists } = useGetPlaylistSidebar();
 
   const currentService = useSelector(({ appModel }) => appModel.currentService);
-
-  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
 
   const menuShowIcons = useSelector(({ sessionModel }) => sessionModel.menuShowIcons);
   const menuShowSearch = useSelector(({ sessionModel }) => sessionModel.menuShowSearch);
@@ -53,12 +52,6 @@ const SideBar = () => {
   const menuShowArtistTags = useSelector(({ sessionModel }) => sessionModel.menuShowArtistTags);
   const menuShowAlbumTags = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumTags);
 
-  const currentLibraryId = currentLibrary?.libraryId;
-
-  const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists)?.filter(
-    (playlist) => playlist.libraryId === currentLibraryId
-  );
-
   const browseIsOpen = menuShowSeparateBrowseSection ? menuOpenBrowse : menuOpenLibrary;
 
   const platformOpts = platformFeatures[currentService] || {};
@@ -82,12 +75,7 @@ const SideBar = () => {
     (menuShowArtistTags && platformOpts.menuArtistTags) ||
     (menuShowAlbumTags && platformOpts.menuAlbumTags);
 
-  const playlistsIsVisible = menuShowAllPlaylists && allPlaylists && allPlaylists.length > 0;
-
-  // Get playlists on load
-  useEffect(() => {
-    bridge.getAllPlaylists();
-  }, []);
+  const playlistsIsVisible = menuShowAllPlaylists && hasPlaylists;
 
   return (
     <>
@@ -383,7 +371,7 @@ const SideBar = () => {
             </button>
             {menuOpenPlaylists && (
               <>
-                {allPlaylists.map((playlist) => (
+                {sortedPlaylists.map((playlist) => (
                   <NavLink
                     key={playlist.playlistId}
                     className={style.link}

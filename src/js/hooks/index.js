@@ -10,6 +10,7 @@ export { default as useGetCollectionItems } from './useGetCollectionItems';
 export { default as useGetDownloadLinks } from './useGetDownloadLinks';
 export { default as useGetFolderItems } from './useGetFolderItems';
 export { default as useGetPlaylistDetail } from './useGetPlaylistDetail';
+export { default as useGetPlaylistSidebar } from './useGetPlaylistSidebar';
 export { default as useGetQueuedTracks } from './useGetQueuedTracks';
 export { default as useGotRequiredData } from './useGotRequiredData';
 export { default as useKeyControl } from './useKeyControl';
