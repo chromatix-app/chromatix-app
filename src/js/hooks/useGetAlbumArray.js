@@ -54,7 +54,7 @@ const useGetAlbumArray = () => {
 
   const haveGotAllAlbums = useSelector(({ appModel }) => appModel.haveGotAllAlbums);
   const allAlbums = useSelector(({ appModel }) => appModel.allAlbums)?.filter(
-    (album) => album.libraryId === currentLibraryId
+    (album) => album.libraryId === currentLibraryId && !album.error404 && !album.isExtra
   );
   const sortedAlbums =
     haveGotAllAlbums && allAlbums

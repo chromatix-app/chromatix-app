@@ -58,20 +58,46 @@ const GeneralSettings = ({ platformOpts }) => {
 
 const LibrarySettings = ({ platformOpts }) => {
   const menuShowArtists = useSelector(({ sessionModel }) => sessionModel.menuShowArtists);
+  const menuShowAlbumArtists = useSelector(({ sessionModel }) => sessionModel.menuShowAlbumArtists);
   const menuShowAlbums = useSelector(({ sessionModel }) => sessionModel.menuShowAlbums);
   const menuShowFolders = useSelector(({ sessionModel }) => sessionModel.menuShowFolders);
   const menuShowPlaylists = useSelector(({ sessionModel }) => sessionModel.menuShowPlaylists);
 
   const menuItems = [
-    { key: 'menuShowArtists', label: 'Artists', state: menuShowArtists },
-    { key: 'menuShowAlbums', label: 'Albums', state: menuShowAlbums },
+    {
+      key: 'menuShowArtists',
+      label: 'Artists',
+      state: menuShowArtists && platformOpts.menuArtists,
+      disabled: !platformOpts.menuArtists,
+    },
+    ...(isLocal
+      ? [
+          {
+            key: 'menuShowAlbumArtists',
+            label: 'Album Artists',
+            state: menuShowAlbumArtists && platformOpts.menuAlbumArtists,
+            disabled: !platformOpts.menuAlbumArtists,
+          },
+        ]
+      : []),
+    {
+      key: 'menuShowAlbums',
+      label: 'Albums',
+      state: menuShowAlbums && platformOpts.menuAlbums,
+      disabled: !platformOpts.menuAlbums,
+    },
     {
       key: 'menuShowFolders',
       label: 'Folders',
       state: menuShowFolders && platformOpts.menuFolders,
       disabled: !platformOpts.menuFolders,
     },
-    { key: 'menuShowPlaylists', label: 'Playlists', state: menuShowPlaylists },
+    {
+      key: 'menuShowPlaylists',
+      label: 'Playlists',
+      state: menuShowPlaylists && platformOpts.menuPlaylists,
+      disabled: !platformOpts.menuPlaylists,
+    },
   ];
 
   return <SettingsList title="Library" menuItems={menuItems} />;

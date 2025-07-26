@@ -68,6 +68,7 @@ import { ReactComponent as PauseFilledIcon } from './icons/general/pause-filled.
 import { ReactComponent as PauseIcon } from './icons/general/pause.svg';
 import { ReactComponent as PencilIcon } from './icons/general/pencil.svg';
 import { ReactComponent as PeopleIcon } from './icons/general/people.svg';
+import { ReactComponent as PersonSquareIcon } from './icons/general/person-square.svg';
 import { ReactComponent as PlayCircleIcon } from './icons/general/play-circle.svg';
 import { ReactComponent as PlayFilledIcon } from './icons/general/play-filled.svg';
 import { ReactComponent as PlayIcon } from './icons/general/play.svg';
@@ -172,6 +173,7 @@ export const customIcons = {
   PauseIcon,
   PencilIcon,
   PeopleIcon,
+  PersonSquareIcon,
   PlayCircleIcon,
   PlayFilledIcon,
   PlayIcon,

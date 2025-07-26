@@ -889,6 +889,7 @@ const TrackRow = ({
       className={clsx(style.entry, {
         [style.entryPlaying]: trackIsLoaded,
       })}
+      data-row
       onDoubleClick={handleDoubleClick}
       onKeyDown={handleKeyDown}
       tabIndex={0}

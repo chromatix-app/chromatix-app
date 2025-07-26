@@ -5,13 +5,13 @@ import platformFeatures from 'js/_config/platformFeatures';
 import { sortList } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 
-const useGetArtistDetail = ({ libraryId, artistId }) => {
+const useGetArtistDetail = ({ variant, libraryId, artistId }) => {
   const dispatch = useDispatch();
 
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
 
-  const allArtists = useSelector(({ appModel }) => appModel.allArtists);
+  const allArtists = useSelector(({ appModel }) => appModel[`all${variant}`]);
   const artistInfo = allArtists?.find((artist) => artist.artistId === artistId);
 
   const artistThumb = artistInfo?.thumb;
@@ -258,22 +258,30 @@ const useGetArtistDetail = ({ libraryId, artistId }) => {
   // Get the required artist data
   useEffect(() => {
     // bridge.getAllArtists();
-    if (!artistInfo) {
+    // if (!artistInfo) {
+    if (variant === 'Artists') {
       bridge.getArtistDetails(libraryId, artistId);
+    } else if (variant === 'AlbumArtists') {
+      bridge.getAlbumArtistDetails(libraryId, artistId);
     }
+    // }
     bridge.getAllArtistAlbums(libraryId, artistId);
     bridge.getAllArtistRelatedAlbums(libraryId, artistId);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [libraryId, artistId]);
+  }, [variant, libraryId, artistId]);
 
-  // Fallback in case artist data is not included in the allArtists array
-  useEffect(() => {
-    if (allArtists && !artistInfo) {
-      bridge.getArtistDetails(libraryId, artistId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allArtists, artistInfo]);
+  // // Fallback in case artist data is not included in the allArtists array
+  // useEffect(() => {
+  //   if (allArtists && !artistInfo) {
+  //     if (variant === 'Artists') {
+  //       bridge.getArtistDetails(libraryId, artistId);
+  //     } else if (variant === 'AlbumArtists') {
+  //       bridge.getAlbumArtistDetails(libraryId, artistId);
+  //     }
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [variant, allArtists, artistInfo]);
 
   // Get the artist appearance albums
   useEffect(() => {

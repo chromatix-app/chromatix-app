@@ -21,7 +21,7 @@ import platformFeatures from 'js/_config/platformFeatures';
 // COMPONENT
 // ======================================================================
 
-const ArtistArray = () => {
+const ArtistArray = ({ pageTitle = 'Artists', pageVariant = 'Artists', singularName = 'Artist' }) => {
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
 
@@ -38,7 +38,9 @@ const ArtistArray = () => {
     setColumnVisibility,
 
     sortedArtists,
-  } = useGetArtistArray();
+  } = useGetArtistArray({
+    variant: pageVariant,
+  });
 
   const isLoading = !sortedArtists;
   const isEmptyList = !isLoading && sortedArtists?.length === 0;
@@ -54,11 +56,13 @@ const ArtistArray = () => {
           isGridView={isGridView}
           isListView={isListView}
           orderArtists={orderArtists}
+          pageTitle={pageTitle}
           platformOpts={platformOpts}
           setColumnVisibility={setColumnVisibility}
           setOrderArtists={setOrderArtists}
           setSortArtists={setSortArtists}
           setViewArtists={setViewArtists}
+          singularName={singularName}
           sortArtists={sortArtists}
           sortedArtists={sortedArtists}
           viewArtists={viewArtists}
@@ -78,11 +82,13 @@ const ArtistArray = () => {
             isGridView={isGridView}
             isListView={isListView}
             orderArtists={orderArtists}
+            pageTitle={pageTitle}
             platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderArtists={setOrderArtists}
             setSortArtists={setSortArtists}
             setViewArtists={setViewArtists}
+            singularName={singularName}
             sortArtists={sortArtists}
             sortedArtists={sortedArtists}
             viewArtists={viewArtists}
@@ -103,11 +109,13 @@ const ArtistArray = () => {
             isGridView={isGridView}
             isListView={isListView}
             orderArtists={orderArtists}
+            pageTitle={pageTitle}
             platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderArtists={setOrderArtists}
             setSortArtists={setSortArtists}
             setViewArtists={setViewArtists}
+            singularName={singularName}
             sortArtists={sortArtists}
             sortedArtists={sortedArtists}
             viewArtists={viewArtists}
@@ -124,11 +132,13 @@ const Title = ({
   isGridView,
   isListView,
   orderArtists,
+  pageTitle,
   platformOpts,
   setColumnVisibility,
   setOrderArtists,
   setSortArtists,
   setViewArtists,
+  singularName,
   sortArtists,
   sortedArtists,
   viewArtists,
@@ -137,9 +147,13 @@ const Title = ({
     <>
       <TitleHeading
         key="ArtistArray"
-        title="Artists"
+        title={pageTitle}
         subtitle={
-          sortedArtists ? sortedArtists?.length + ' Artist' + (sortedArtists?.length !== 1 ? 's' : '') : <>&nbsp;</>
+          sortedArtists ? (
+            sortedArtists?.length + ' ' + singularName + (sortedArtists?.length !== 1 ? 's' : '')
+          ) : (
+            <>&nbsp;</>
+          )
         }
         padding={!isListView && !isGridView}
       />

@@ -95,16 +95,22 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   };
 
   useEffect(() => {
-    bridge.getAllPlaylists();
+    // bridge.getAllPlaylists();
+    // if (!playlistInfo) {
+    bridge.getPlaylistDetails(libraryId, playlistId);
+    // }
     bridge.getPlaylistTracks(libraryId, playlistId).catch(() => {});
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [libraryId, playlistId]);
 
-  useEffect(() => {
-    if (allPlaylists && !playlistInfo) {
-      bridge.getPlaylistDetails(libraryId, playlistId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allPlaylists, playlistInfo]);
+  // // Fallback in case playlist data is not included in the allPlaylists array
+  // useEffect(() => {
+  //   if (allPlaylists && !playlistInfo) {
+  //     bridge.getPlaylistDetails(libraryId, playlistId);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [allPlaylists, playlistInfo]);
 
   return {
     playlistInfo,
