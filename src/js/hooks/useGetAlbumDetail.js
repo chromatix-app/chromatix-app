@@ -105,9 +105,9 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   // Get the required album data
   useEffect(() => {
     // bridge.getAllAlbums();
-    if (!albumInfo) {
-      bridge.getAlbumDetails(libraryId, albumId);
-    }
+    // if (!albumInfo) {
+    bridge.getAlbumDetails(libraryId, albumId);
+    // }
     bridge.getAlbumTracks(libraryId, albumId).catch(() => {});
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

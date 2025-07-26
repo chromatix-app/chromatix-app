@@ -258,30 +258,30 @@ const useGetArtistDetail = ({ variant, libraryId, artistId }) => {
   // Get the required artist data
   useEffect(() => {
     // bridge.getAllArtists();
-    if (!artistInfo) {
-      if (variant === 'Artists') {
-        bridge.getArtistDetails(libraryId, artistId);
-      } else if (variant === 'AlbumArtists') {
-        bridge.getAlbumArtistDetails(libraryId, artistId);
-      }
+    // if (!artistInfo) {
+    if (variant === 'Artists') {
+      bridge.getArtistDetails(libraryId, artistId);
+    } else if (variant === 'AlbumArtists') {
+      bridge.getAlbumArtistDetails(libraryId, artistId);
     }
+    // }
     bridge.getAllArtistAlbums(libraryId, artistId);
     bridge.getAllArtistRelatedAlbums(libraryId, artistId);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [variant, libraryId, artistId]);
 
-  // Fallback in case artist data is not included in the allArtists array
-  useEffect(() => {
-    if (allArtists && !artistInfo) {
-      if (variant === 'Artists') {
-        bridge.getArtistDetails(libraryId, artistId);
-      } else if (variant === 'AlbumArtists') {
-        bridge.getAlbumArtistDetails(libraryId, artistId);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [variant, allArtists, artistInfo]);
+  // // Fallback in case artist data is not included in the allArtists array
+  // useEffect(() => {
+  //   if (allArtists && !artistInfo) {
+  //     if (variant === 'Artists') {
+  //       bridge.getArtistDetails(libraryId, artistId);
+  //     } else if (variant === 'AlbumArtists') {
+  //       bridge.getAlbumArtistDetails(libraryId, artistId);
+  //     }
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [variant, allArtists, artistInfo]);
 
   // Get the artist appearance albums
   useEffect(() => {
