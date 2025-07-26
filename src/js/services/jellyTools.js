@@ -368,8 +368,8 @@ export const getAllAlbumArtists = ({ accessToken, genre, libraryId, serverBaseUr
         })
         .catch((error) => {
           reject({
-            code: 'jellyfin.getAllArtists.1',
-            message: 'Failed to get all artists: ' + error?.message,
+            code: 'jellyfin.getAllAlbumArtists.1',
+            message: 'Failed to get all album artists: ' + error?.message,
             error: error,
           });
         })
@@ -378,8 +378,8 @@ export const getAllAlbumArtists = ({ accessToken, genre, libraryId, serverBaseUr
         });
     } catch (error) {
       reject({
-        code: 'jellyfin.getAllArtists.2',
-        message: 'Failed to get all artists: ' + error?.message,
+        code: 'jellyfin.getAllAlbumArtists.2',
+        message: 'Failed to get all album artists: ' + error?.message,
         error: error,
       });
     }

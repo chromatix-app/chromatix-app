@@ -8,7 +8,7 @@ import { ArtistDetail } from 'js/pages';
 // COMPONENT
 // ======================================================================
 
-const AlbumArtistDetail = ({ pageVariant = 'AlbumArtists' }) => {
+const AlbumArtistDetail = () => {
   return <ArtistDetail pageVariant="AlbumArtists" />;
 };
 
