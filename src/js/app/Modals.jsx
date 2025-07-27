@@ -14,9 +14,9 @@ import * as modals from 'js/modals';
 
 const Modals = () => {
   const dispatch = useDispatch();
-  const alertQueue = useSelector(({ popupsModel }) => popupsModel.alertQueue);
-  const currentConfirmData = useSelector(({ popupsModel }) => popupsModel.currentConfirmData);
-  const currentModal = useSelector(({ popupsModel }) => popupsModel.currentModal);
+  const alertQueue = useSelector(({ dialogModel }) => dialogModel.alertQueue);
+  const currentConfirmData = useSelector(({ dialogModel }) => dialogModel.currentConfirmData);
+  const currentModal = useSelector(({ dialogModel }) => dialogModel.currentModal);
 
   const getComponent = () => {
     // alert
@@ -35,21 +35,18 @@ const Modals = () => {
     return null;
   };
 
-  const closeCurrentModal = (event) => {
-    event.preventDefault();
-    if (event.target === event.currentTarget) {
-      // alert
-      if (alertQueue.length > 0) {
-        dispatch.popupsModel.closeAlert();
-      }
-      // confirm
-      else if (currentConfirmData) {
-        dispatch.popupsModel.closeConfirm();
-      }
-      // modal
-      else {
-        dispatch.popupsModel.closeModal();
-      }
+  const closeCurrentModal = () => {
+    // alert
+    if (alertQueue.length > 0) {
+      dispatch.dialogModel.closeAlert();
+    }
+    // confirm
+    else if (currentConfirmData) {
+      dispatch.dialogModel.closeConfirm();
+    }
+    // modal
+    else {
+      dispatch.dialogModel.closeModal();
     }
   };
 

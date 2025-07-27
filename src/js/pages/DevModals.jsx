@@ -19,9 +19,8 @@ const Component = () => {
         <Button
           size="small"
           onClick={() => {
-            dispatch.popupsModel.showAlert({
+            dispatch.dialogModel.showAlert({
               theme: 'warnRed',
-              prefix: 'Alert Prefix',
               title: 'Alert Title',
               body: 'This is the body of the alert.',
               // button: 'Close',
@@ -39,9 +38,8 @@ const Component = () => {
         <Button
           size="small"
           onClick={() => {
-            dispatch.popupsModel.showConfirm({
+            dispatch.dialogModel.showConfirm({
               theme: 'warnRed',
-              prefix: 'Alert Prefix',
               title: 'Alert Title',
               body: 'This is the body of the alert.',
               // yesButton: 'Yes',
@@ -63,7 +61,7 @@ const Component = () => {
         <Button
           size="small"
           onClick={() => {
-            dispatch.popupsModel.showModal('ReleaseNotes');
+            dispatch.dialogModel.showModal('ReleaseNotes');
           }}
         >
           Release Notes

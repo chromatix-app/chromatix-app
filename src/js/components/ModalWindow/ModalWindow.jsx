@@ -2,7 +2,6 @@
 // IMPORTS
 // ======================================================================
 
-import PropTypes from 'prop-types';
 import clsx from 'clsx';
 // import { motion } from 'framer-motion';
 
@@ -33,7 +32,6 @@ export const ModalWindow = ({ children, theme, variant }) => {
 
   return (
     <div
-      key={alert.title}
       className={clsx('modal', style.modal, style[theme], style[variant])}
       // initial={{ opacity: 0, scale: 0.8 }}
       // animate={{ opacity: 1, scale: 1 }}
@@ -43,16 +41,6 @@ export const ModalWindow = ({ children, theme, variant }) => {
       <div className={style.main}>{children}</div>
     </div>
   );
-};
-
-// ======================================================================
-// PROPTYPES
-// ======================================================================
-
-ModalWindow.propTypes = {
-  children: PropTypes.node.isRequired,
-  theme: PropTypes.string,
-  variant: PropTypes.string,
 };
 
 // ======================================================================

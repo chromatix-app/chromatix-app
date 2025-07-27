@@ -3,11 +3,10 @@
 // ======================================================================
 
 const state = {
-  // modal
+  alertQueue: [],
+  currentConfirmData: null,
   currentModal: null,
   currentModalData: null,
-  currentConfirmData: null,
-  alertQueue: [],
 };
 
 // ======================================================================
@@ -15,8 +14,8 @@ const state = {
 // ======================================================================
 
 const reducers = {
-  setState(rootState, payload) {
-    // console.log('%c--- setState ---', 'color:#079189');
+  setDialogState(rootState, payload) {
+    // console.log('%c--- setDialogState ---', 'color:#079189');
     return { ...rootState, ...payload };
   },
 };
@@ -26,36 +25,14 @@ const reducers = {
 // ======================================================================
 
 const effects = (dispatch) => ({
-  // ====================
-  // MODALS
-  // ====================
-
-  showModal(payload, rootState) {
-    if (typeof payload === 'object') {
-      dispatch.popupsModel.setState({
-        currentModal: payload.modal,
-        currentModalData: payload.data,
-      });
-    } else {
-      dispatch.popupsModel.setState({
-        currentModal: payload,
-        currentModalData: null,
-      });
-    }
-  },
-
-  closeModal(payload, rootState) {
-    dispatch.popupsModel.setState({
-      currentModal: null,
-      currentModalData: null,
-    });
-  },
+  //
+  // ALERTS
+  //
 
   showAlert(payload, rootState) {
     // OPTIONS
     // {
     //   theme
-    //   prefix
     //   title
     //   body
     //   button
@@ -66,7 +43,7 @@ const effects = (dispatch) => ({
     const baseOptions = {
       button: 'Ok',
       action: () => {
-        dispatch.popupsModel.closeAlert();
+        dispatch.dialogModel.closeAlert();
       },
     };
     const finalOptions = {
@@ -75,7 +52,7 @@ const effects = (dispatch) => ({
     };
 
     // get alert queue
-    let alertQueue = [...rootState.popupsModel.alertQueue];
+    let alertQueue = [...rootState.dialogModel.alertQueue];
 
     // check new alert isn't identical to last alert in queue
     let lastAlert = '';
@@ -85,7 +62,7 @@ const effects = (dispatch) => ({
     if (JSON.stringify(finalOptions) !== JSON.stringify(lastAlert)) {
       // add new alert to queue
       alertQueue.push(finalOptions);
-      dispatch.popupsModel.setState({
+      dispatch.dialogModel.setDialogState({
         alertQueue,
       });
     }
@@ -93,20 +70,23 @@ const effects = (dispatch) => ({
 
   closeAlert(payload, rootState) {
     // get alert queue
-    let alertQueue = [...rootState.popupsModel.alertQueue];
+    let alertQueue = [...rootState.dialogModel.alertQueue];
 
     // remove first item from queue
     alertQueue.shift();
-    dispatch.popupsModel.setState({
+    dispatch.dialogModel.setDialogState({
       alertQueue,
     });
   },
+
+  //
+  // CONFIRMATIONS
+  //
 
   showConfirm(payload, rootState) {
     // OPTIONS
     // {
     //   theme
-    //   prefix
     //   title
     //   body
     //   yesButton
@@ -121,10 +101,10 @@ const effects = (dispatch) => ({
       yesButton: 'Ok',
       noButton: 'Cancel',
       yesCallback: (callbackData) => {
-        dispatch.popupsModel.closeConfirm();
+        dispatch.dialogModel.closeConfirm();
       },
       noCallback: (callbackData) => {
-        dispatch.popupsModel.closeConfirm();
+        dispatch.dialogModel.closeConfirm();
       },
     };
     const finalOptions = {
@@ -132,14 +112,39 @@ const effects = (dispatch) => ({
       ...payload,
     };
 
-    dispatch.popupsModel.setState({
+    dispatch.dialogModel.setDialogState({
       currentConfirmData: finalOptions,
     });
   },
 
   closeConfirm(payload, rootState) {
-    dispatch.popupsModel.setState({
+    dispatch.dialogModel.setDialogState({
       currentConfirmData: null,
+    });
+  },
+
+  //
+  // MODALS
+  //
+
+  showModal(payload, rootState) {
+    if (typeof payload === 'object') {
+      dispatch.dialogModel.setDialogState({
+        currentModal: payload.modal,
+        currentModalData: payload.data,
+      });
+    } else {
+      dispatch.dialogModel.setDialogState({
+        currentModal: payload,
+        currentModalData: null,
+      });
+    }
+  },
+
+  closeModal(payload, rootState) {
+    dispatch.dialogModel.setDialogState({
+      currentModal: null,
+      currentModalData: null,
     });
   },
 });
@@ -148,14 +153,11 @@ const effects = (dispatch) => ({
 // EXPORT
 // ======================================================================
 
-export const popupsModel = {
+export const dialogModel = {
   // initial state
   state,
   // reducers - handle state changes with pure functions
   reducers,
-  // selectors - handle state changed based on other state properties
-  // selectors,
   // effects - handle state changes with impure functions
-  // (use async/await for async actions)
   effects,
 };

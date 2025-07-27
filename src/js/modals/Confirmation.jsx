@@ -2,13 +2,11 @@
 // IMPORTS
 // ======================================================================
 
-// import PropTypes from 'prop-types';
-import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import * as Dialog from '@radix-ui/react-dialog';
 // import clsx from 'clsx';
 
 import { Button, ModalWindow } from 'js/components';
-// import { useKeyEsc } from 'js/hooks';
 import style from './modals.module.scss';
 
 // ======================================================================
@@ -16,9 +14,8 @@ import style from './modals.module.scss';
 // ======================================================================
 
 const Confirmation = () => {
-  const focusRef = useRef(null);
   const dispatch = useDispatch();
-  const currentConfirmData = useSelector(({ popupsModel }) => popupsModel.currentConfirmData);
+  const currentConfirmData = useSelector(({ dialogModel }) => dialogModel.currentConfirmData);
 
   const modalTheme = currentConfirmData.theme ? currentConfirmData.theme : undefined;
   const callbackData = currentConfirmData.callbackData ? currentConfirmData.callbackData : null;
@@ -34,36 +31,34 @@ const Confirmation = () => {
     if (currentConfirmData.yesCallback) {
       currentConfirmData.yesCallback(callbackData);
     }
-    dispatch.popupsModel.closeConfirm();
+    dispatch.dialogModel.closeConfirm();
   };
 
   const doNo = () => {
     if (currentConfirmData.noCallback) {
       currentConfirmData.noCallback(callbackData);
     }
-    dispatch.popupsModel.closeConfirm();
+    dispatch.dialogModel.closeConfirm();
   };
-
-  // focus on load
-  useEffect(() => {
-    if (focusRef.current) {
-      focusRef.current.focus();
-    }
-  }, [focusRef]);
-
-  // // close on escape key
-  // useKeyEsc(doNo);
 
   return (
     <ModalWindow theme={modalTheme}>
-      {currentConfirmData.prefix && <div className={style.prefix}>{currentConfirmData.prefix}</div>}
-      {currentConfirmData.title && <div className={style.title}>{currentConfirmData.title}</div>}
-      {currentConfirmData.body && <div className={style.body}>{currentConfirmData.body}</div>}
+      {currentConfirmData.title && (
+        <Dialog.Title asChild>
+          <h1 className={style.title}>{currentConfirmData.title}</h1>
+        </Dialog.Title>
+      )}
+
+      {currentConfirmData.body && (
+        <Dialog.Description asChild>
+          <div className={style.body}>{currentConfirmData.body}</div>
+        </Dialog.Description>
+      )}
 
       {(currentConfirmData.yesButton || currentConfirmData.noButton) && (
         <div className={style.buttons}>
           {currentConfirmData.yesButton && (
-            <Button ref={focusRef} onClick={doYes} color={btnColor} size="modal" spacer="">
+            <Button onClick={doYes} color={btnColor} size="modal" spacer="">
               {currentConfirmData.yesButton}
             </Button>
           )}
@@ -78,14 +73,6 @@ const Confirmation = () => {
     </ModalWindow>
   );
 };
-
-// ======================================================================
-// PROPTYPES
-// ======================================================================
-
-// Confirmation.propTypes = {
-//   currentConfirmData: PropTypes.object.isRequired,
-// };
 
 // ======================================================================
 // EXPORT

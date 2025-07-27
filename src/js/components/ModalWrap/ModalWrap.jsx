@@ -2,8 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import PropTypes from 'prop-types';
-// import { motion } from 'framer-motion';
+import * as Dialog from '@radix-ui/react-dialog';
 import clsx from 'clsx';
 
 import style from './ModalWrap.module.scss';
@@ -12,36 +11,19 @@ import style from './ModalWrap.module.scss';
 // RENDER
 // ======================================================================
 
-export const ModalWrap = ({ children, close }) => {
+export const ModalWrap = ({ children, close, open = true }) => {
   return (
-    <div className={style.wrap}>
-      <div
-        className={style.blackout}
-        onClick={close}
-        // initial={{ opacity: 0 }}
-        // animate={{ opacity: 1 }}
-        // transition={{ duration: 0.15 }}
-      ></div>
-      <div className={clsx(style.center)}>
-        <div className={style.overflow}>
-          {/* onClick={close}> */}
-          <aside role="dialog" className={style.inner}>
-            {/* onClick={close}> */}
-            {children}
-          </aside>
-        </div>
-      </div>
-    </div>
+    <Dialog.Root open={open} onOpenChange={(isOpen) => !isOpen && close()}>
+      <Dialog.Portal>
+        <Dialog.Overlay className={style.blackout} />
+        <Dialog.Content className={clsx(style.center)} onPointerDownOutside={close}>
+          <div className={style.overflow}>
+            <div className={style.inner}>{children}</div>
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
-};
-
-// ======================================================================
-// PROPTYPES
-// ======================================================================
-
-ModalWrap.propTypes = {
-  children: PropTypes.node.isRequired,
-  close: PropTypes.func.isRequired,
 };
 
 // ======================================================================
