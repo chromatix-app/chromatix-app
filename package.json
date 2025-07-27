@@ -54,6 +54,7 @@
     "react-router-dom": "^5.3.4",
     "react-scripts": "^5.0.1",
     "sass": "^1.89.2",
+    "semver": "^7.7.2",
     "sonner": "^2.0.6",
     "yup": "^1.6.1"
   },
