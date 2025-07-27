@@ -16,6 +16,8 @@ const Alert = () => {
   const alertQueue = useSelector(({ dialogModel }) => dialogModel.alertQueue);
   const currentAlert = alertQueue[0];
 
+  if (!currentAlert) return null;
+
   const { icon, title, body, button, action } = currentAlert;
 
   return (
