@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import * as RadixPopover from '@radix-ui/react-popover';
 
-import { Icon, UserMenu } from 'js/components';
+import { Icon, ReleaseBanner, UserMenu } from 'js/components';
 import { useGetPlaylistSidebar, useKeyControl, useNavigationHistory } from 'js/hooks';
 import { electronPlatform } from 'js/utils';
 import * as bridge from 'js/services/bridge';
@@ -95,6 +95,8 @@ const SideBar = () => {
         )}
 
         {menuShowSearch && <SearchField />}
+
+        <ReleaseBanner />
 
         {(libraryIsVisible || (browseIsVisible && !menuShowSeparateBrowseSection)) && (
           <>

@@ -15,6 +15,7 @@ export { default as PageText } from './PageText/PageText';
 export { default as PlaybackErrorMessage } from './PlaybackErrorMessage/PlaybackErrorMessage';
 export { default as Queue } from './Queue/Queue';
 export { default as RangeSlider } from './RangeSlider/RangeSlider';
+export { default as ReleaseBanner } from './ReleaseBanner/ReleaseBanner';
 export { default as Settings } from './Settings/Settings';
 export { default as SettingsAbout } from './SettingsAbout/SettingsAbout';
 export { default as SettingsAppearance } from './SettingsAppearance/SettingsAppearance';

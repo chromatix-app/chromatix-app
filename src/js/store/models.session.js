@@ -18,6 +18,8 @@ const isProduction = process.env.REACT_APP_ENV === 'production';
 const sessionState = {
   sessionId: CryptoJS.lib.WordArray.random(16).toString(),
 
+  savedAppVersion: '0.0.0',
+
   currentServer: null,
   currentLibrary: null,
 
