@@ -16,7 +16,9 @@ import { ReactComponent as AlbumTagsIcon } from './icons/general/album-tags.svg'
 import { ReactComponent as ArrowDownIcon } from './icons/general/arrow-down.svg';
 import { ReactComponent as ArrowDownLongIcon } from './icons/general/arrow-down-long.svg';
 // import { ReactComponent as ArrowLeftIcon } from './icons/general/arrow-left.svg';
+// import { ReactComponent as ArrowLeftLongIcon } from './icons/general/arrow-left-long.svg';
 import { ReactComponent as ArrowRightIcon } from './icons/general/arrow-right.svg';
+import { ReactComponent as ArrowRightLongIcon } from './icons/general/arrow-right-long.svg';
 import { ReactComponent as ArrowsVerticalIcon } from './icons/general/arrows-vertical.svg';
 import { ReactComponent as ArrowUpIcon } from './icons/general/arrow-up.svg';
 import { ReactComponent as ArrowUpLongIcon } from './icons/general/arrow-up-long.svg';
@@ -121,7 +123,9 @@ export const customIcons = {
   ArrowDownIcon,
   ArrowDownLongIcon,
   // ArrowLeftIcon,
+  // ArrowLeftLongIcon,
   ArrowRightIcon,
+  ArrowRightLongIcon,
   ArrowsVerticalIcon,
   ArrowUpIcon,
   ArrowUpLongIcon,
