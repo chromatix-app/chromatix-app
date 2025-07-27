@@ -32,11 +32,11 @@ const effects = (dispatch) => ({
   showAlert(payload, rootState) {
     // OPTIONS
     // {
-    //   theme
-    //   title
-    //   body
-    //   button
-    //   action
+    //   icon,
+    //   title,
+    //   body,
+    //   button,
+    //   action,
     // }
 
     // create alert data
@@ -86,14 +86,14 @@ const effects = (dispatch) => ({
   showConfirm(payload, rootState) {
     // OPTIONS
     // {
-    //   theme
-    //   title
-    //   body
-    //   yesButton
-    //   yesCallback
-    //   noButton
-    //   noCallback
-    //   callbackData
+    //   icon,
+    //   title,
+    //   body,
+    //   yesButton,
+    //   yesCallback,
+    //   noButton,
+    //   noCallback,
+    //   callbackData,
     // }
 
     // create confirm data

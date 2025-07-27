@@ -17,55 +17,47 @@ const Confirmation = () => {
   const dispatch = useDispatch();
   const currentConfirmData = useSelector(({ dialogModel }) => dialogModel.currentConfirmData);
 
-  const modalTheme = currentConfirmData.theme ? currentConfirmData.theme : undefined;
-  const callbackData = currentConfirmData.callbackData ? currentConfirmData.callbackData : null;
-
-  let btnColor;
-  if (modalTheme === 'warnRed' || modalTheme === 'warnRedBorder') {
-    btnColor = 'redBtn';
-  } else if (modalTheme === 'warnOrangeBorder') {
-    btnColor = 'orangeBtn';
-  }
+  const { icon, title, body, yesButton, yesCallback, noButton, noCallback, callbackData } = currentConfirmData;
 
   const doYes = () => {
-    if (currentConfirmData.yesCallback) {
-      currentConfirmData.yesCallback(callbackData);
+    if (yesCallback) {
+      yesCallback(callbackData);
     }
     dispatch.dialogModel.closeConfirm();
   };
 
   const doNo = () => {
-    if (currentConfirmData.noCallback) {
-      currentConfirmData.noCallback(callbackData);
+    if (noCallback) {
+      noCallback(callbackData);
     }
     dispatch.dialogModel.closeConfirm();
   };
 
   return (
-    <ModalWindow theme={modalTheme}>
-      {currentConfirmData.title && (
+    <ModalWindow icon={icon}>
+      {title && (
         <Dialog.Title asChild>
-          <h1 className={style.title}>{currentConfirmData.title}</h1>
+          <h1 className={style.title}>{title}</h1>
         </Dialog.Title>
       )}
 
-      {currentConfirmData.body && (
+      {body && (
         <Dialog.Description asChild>
-          <div className={style.body}>{currentConfirmData.body}</div>
+          <div className={style.body}>{body}</div>
         </Dialog.Description>
       )}
 
-      {(currentConfirmData.yesButton || currentConfirmData.noButton) && (
+      {(yesButton || noButton) && (
         <div className={style.buttons}>
-          {currentConfirmData.yesButton && (
-            <Button onClick={doYes} color={btnColor} size="modal" spacer="">
-              {currentConfirmData.yesButton}
+          {yesButton && (
+            <Button onClick={doYes} size="modal" color="secondary">
+              {yesButton}
             </Button>
           )}
 
-          {currentConfirmData.noButton && (
-            <Button onClick={doNo} color="greyBtn" size="modal" spacer="">
-              {currentConfirmData.noButton}
+          {noButton && (
+            <Button onClick={doNo} size="modal" color="tertiary">
+              {noButton}
             </Button>
           )}
         </div>

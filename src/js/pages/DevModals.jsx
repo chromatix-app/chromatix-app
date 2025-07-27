@@ -20,6 +20,7 @@ const Component = () => {
           size="small"
           onClick={() => {
             dispatch.dialogModel.showAlert({
+              // icon: 'CheckCircleCheckedIcon',
               theme: 'warnRed',
               title: 'Alert Title',
               body: 'This is the body of the alert.',
@@ -38,10 +39,50 @@ const Component = () => {
         <Button
           size="small"
           onClick={() => {
-            dispatch.dialogModel.showConfirm({
+            dispatch.dialogModel.showAlert({
+              icon: 'InfoIcon',
               theme: 'warnRed',
               title: 'Alert Title',
               body: 'This is the body of the alert.',
+              // button: 'Close',
+              // action: () => {
+              //   console.log('Alert closed');
+              // },
+            });
+          }}
+        >
+          Alert - Info
+        </Button>
+
+        <br />
+
+        <Button
+          size="small"
+          onClick={() => {
+            dispatch.dialogModel.showAlert({
+              icon: 'CheckCircleCheckedIcon',
+              theme: 'warnRed',
+              title: 'Alert Title',
+              body: 'This is the body of the alert.',
+              // button: 'Close',
+              // action: () => {
+              //   console.log('Alert closed');
+              // },
+            });
+          }}
+        >
+          Alert - Success
+        </Button>
+
+        <br />
+
+        <Button
+          size="small"
+          onClick={() => {
+            dispatch.dialogModel.showConfirm({
+              theme: 'warnRed',
+              title: 'Confirmation Title',
+              body: 'This is the body of the confirmation.',
               // yesButton: 'Yes',
               // noButton: 'No',
               // yesCallback: () => {

@@ -14,35 +14,27 @@ import style from './modals.module.scss';
 
 const Alert = () => {
   const alertQueue = useSelector(({ dialogModel }) => dialogModel.alertQueue);
+  const currentAlert = alertQueue[0];
 
-  const alert = alertQueue[0];
-  const modalTheme = alert.theme ? alert.theme : undefined;
-  const btnAction = alert.action ? alert.action : null;
-
-  let btnColor;
-  if (modalTheme === 'warnRed' || modalTheme === 'warnRedBorder') {
-    btnColor = 'redBtn';
-  } else if (modalTheme === 'warnOrangeBorder') {
-    btnColor = 'orangeBtn';
-  }
+  const { icon, title, body, button, action } = currentAlert;
 
   return (
-    <ModalWindow theme={modalTheme}>
-      {alert.title && (
+    <ModalWindow icon={icon}>
+      {title && (
         <Dialog.Title asChild>
-          <h1 className={style.title}>{alert.title}</h1>
+          <h1 className={style.title}>{title}</h1>
         </Dialog.Title>
       )}
 
-      {alert.body && (
+      {body && (
         <Dialog.Description asChild>
-          <div className={style.body}>{alert.body}</div>
+          <div className={style.body}>{body}</div>
         </Dialog.Description>
       )}
 
       <div className={style.buttons}>
-        <Button size="modal" color={btnColor} onClick={btnAction} spacer="">
-          {alert.button}
+        <Button size="modal" color="secondary" onClick={action}>
+          {button}
         </Button>
       </div>
     </ModalWindow>

@@ -43,6 +43,9 @@ function useColorTheme(): void {
 
     const isLightTheme = chroma(colorPrimaryBackground).luminance() > 0.5;
 
+    let colorBlackout;
+    let colorButtonSecondary;
+
     let colorSecondaryBackground: string;
     let colorSecondaryBorder: string;
     let colorSecondaryCard: string;
@@ -54,6 +57,13 @@ function useColorTheme(): void {
 
     // Light theme handling
     if (isLightTheme) {
+      colorBlackout =
+        chroma(colorPrimaryBackground)
+          .brighten(0.5 * chromaMultiplier)
+          .hex() + decimalToHex(decimalMultiplier(opacityMultiplier, 0.6));
+      colorButtonSecondary = chroma(colorText)
+        .brighten(0.3 * chromaMultiplier)
+        .hex();
       colorSecondaryBackground = chroma(colorPrimaryBackground)
         .darken(0.4 * chromaMultiplier)
         .hex();
@@ -79,6 +89,13 @@ function useColorTheme(): void {
 
     // Dark theme handling
     else {
+      colorBlackout =
+        chroma(colorPrimaryBackground)
+          .darken(0.5 * chromaMultiplier)
+          .hex() + decimalToHex(decimalMultiplier(opacityMultiplier, 0.6));
+      colorButtonSecondary = chroma(colorText)
+        .darken(0.3 * chromaMultiplier)
+        .hex();
       colorSecondaryBackground = chroma(colorPrimaryBackground)
         .brighten(0.4 * chromaMultiplier)
         .hex();
@@ -131,6 +148,9 @@ function useColorTheme(): void {
       '--color-core': colorCore,
       '--color-text': colorText,
       '--color-primary-background': colorPrimaryBackground,
+      '--color-blackout': colorBlackout,
+
+      '--color-button-secondary': colorButtonSecondary,
 
       '--color-secondary-background': colorSecondaryBackground,
       '--color-secondary-border': colorSecondaryBorder,

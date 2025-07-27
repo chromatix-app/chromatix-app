@@ -5,7 +5,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ModalWrap } from 'js/components';
-
 import * as modals from 'js/modals';
 
 // ======================================================================

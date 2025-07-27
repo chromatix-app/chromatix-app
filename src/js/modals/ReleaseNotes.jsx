@@ -16,14 +16,14 @@ const ReleaseNotes = () => {
   const dispatch = useDispatch();
 
   return (
-    <ModalWindow theme="release">
+    <ModalWindow>
       <Dialog.Title asChild>
         <h1 className={style.title}>Version 1.0 launched</h1>
       </Dialog.Title>
 
       <Dialog.Description asChild>
         <div className={style.body}>
-          <p className="color-orange font-balance">
+          <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus venenatis ligula nunc, vel maximus est
             tincidunt et. Aliquam sit amet ligula vel est dictum laoreet a in sem. Donec commodo dolor urna, eget
             ultrices odio ultricies sit amet. Nullam consequat augue eu diam malesuada, sed cursus ex rhoncus. Donec
@@ -39,7 +39,7 @@ const ReleaseNotes = () => {
       </Dialog.Description>
 
       <div className={style.buttons}>
-        <Button color="orangeBtn" size="modal" spacer="" onClick={dispatch.dialogModel.closeModal}>
+        <Button size="modal" color="secondary" onClick={dispatch.dialogModel.closeModal}>
           Close
         </Button>
       </div>
