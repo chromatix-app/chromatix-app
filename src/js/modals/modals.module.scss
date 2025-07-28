@@ -96,6 +96,30 @@
   }
 }
 
+.dots {
+  display: flex;
+  margin-top: 20px;
+  margin-left: -4px;
+}
+
+.dot {
+  display: block;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.dotInner {
+  display: block;
+  width: 8px;
+  height: 8px;
+  background: var(--color-opacity-03);
+  border-radius: 50%;
+
+  .dotActive & {
+    background: var(--color-text);
+  }
+}
+
 .closeButton {
   position: absolute;
   top: 15px;

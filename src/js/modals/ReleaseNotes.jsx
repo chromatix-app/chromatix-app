@@ -51,9 +51,21 @@ const ReleaseNotes = () => {
         </div>
 
         <div>
+          <div className={style.dots}>
+            {whatsNew.map((_, index) => (
+              <span
+                key={index}
+                className={clsx(style.dot, { [style.dotActive]: index === currentIndex })}
+                onClick={() => setCurrentIndex(index)}
+              >
+                <span className={style.dotInner}></span>
+              </span>
+            ))}
+          </div>
+
           <div className={clsx(style.buttons, style.buttonsLeft)}>
             <Button size="small" color="secondary" onClick={handleNext}>
-              Next
+              {currentIndex < whatsNew.length - 1 ? 'Next' : 'Close'}
             </Button>
           </div>
         </div>
