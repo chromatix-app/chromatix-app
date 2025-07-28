@@ -59,7 +59,7 @@ export const ReleaseBanner = () => {
       <div className={style.wrap}>
         <button className={style.badge} onClick={handleOpen}>
           <div className={style.title}>What&rsquo;s new</div>
-          <div className={style.body}>Chromatix is now available to everyone.</div>
+          <div className={style.body}>Jellyfin support is now available in beta.</div>
           <div className={style.cta}>
             Read more
             <span className={style.icon}>

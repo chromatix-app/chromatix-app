@@ -13,9 +13,11 @@ import style from './ModalWindow.module.scss';
 // ======================================================================
 
 export const ModalWindow = ({ children, icon, variant }) => {
+  const variantClassName = 'wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1);
+
   return (
     <div
-      className={clsx(style.modal, style[variant])}
+      className={clsx(style.wrap, style[variantClassName])}
       // initial={{ opacity: 0, scale: 0.8 }}
       // animate={{ opacity: 1, scale: 1 }}
       // transition={{ duration: 0.15 }}

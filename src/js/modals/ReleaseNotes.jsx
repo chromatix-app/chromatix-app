@@ -2,10 +2,14 @@
 // IMPORTS
 // ======================================================================
 
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import * as Dialog from '@radix-ui/react-dialog';
+import clsx from 'clsx';
 
 import { Button, ModalWindow } from 'js/components';
+import whatsNew from 'js/_config/whatsNew';
+
 import style from './modals.module.scss';
 
 // ======================================================================
@@ -15,33 +19,51 @@ import style from './modals.module.scss';
 const ReleaseNotes = () => {
   const dispatch = useDispatch();
 
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const currentSlide = whatsNew[currentIndex];
+
+  const handleNext = () => {
+    if (currentIndex < whatsNew.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    } else {
+      dispatch.dialogModel.closeModal();
+    }
+  };
+
   return (
-    <ModalWindow>
-      <Dialog.Title asChild>
-        <h1 className={style.title}>Version 1.0 launched</h1>
-      </Dialog.Title>
+    <ModalWindow variant="ReleaseNotes">
+      <button className={style.closeButton} onClick={dispatch.dialogModel.closeModal}>
+        <span className="u-hidden">Close</span>
+      </button>
 
-      <Dialog.Description asChild>
-        <div className={style.body}>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus venenatis ligula nunc, vel maximus est
-            tincidunt et. Aliquam sit amet ligula vel est dictum laoreet a in sem. Donec commodo dolor urna, eget
-            ultrices odio ultricies sit amet. Nullam consequat augue eu diam malesuada, sed cursus ex rhoncus. Donec
-            elementum odio sit amet sem feugiat tincidunt.
-          </p>
-          <p>
-            Nunc eu eros nec est porta auctor in sit amet mauris. Vivamus et augue nisl. Donec tempor et lorem non
-            semper. Ut sed lacinia odio. Donec laoreet venenatis sagittis. Cras fringilla lectus ac hendrerit
-            pellentesque. Donec ultricies elementum volutpat. Nam molestie enim metus, non sollicitudin urna auctor
-            viverra. Phasellus est odio, sagittis at dolor ac, elementum sollicitudin erat.
-          </p>
+      <div className={style.releaseLeft}>
+        <div>
+          <p className={style.date}>{currentSlide.date}</p>
+
+          <Dialog.Title asChild>
+            <h1 className={style.title}>{currentSlide.title}</h1>
+          </Dialog.Title>
+
+          <Dialog.Description asChild>
+            <div className={style.body} dangerouslySetInnerHTML={{ __html: currentSlide.body }}></div>
+          </Dialog.Description>
         </div>
-      </Dialog.Description>
 
-      <div className={style.buttons}>
-        <Button size="modal" color="secondary" onClick={dispatch.dialogModel.closeModal}>
-          Close
-        </Button>
+        <div>
+          <div className={clsx(style.buttons, style.buttonsLeft)}>
+            <Button size="small" color="secondary" onClick={handleNext}>
+              Next
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className={style.releaseRight}>
+        <picture>
+          <source srcSet={`/images/compressed/${currentSlide.image}.webp`} type="image/webp" />
+          <img src={`/images/original/${currentSlide.image}.png`} alt="" draggable="false" />
+        </picture>
       </div>
     </ModalWindow>
   );
