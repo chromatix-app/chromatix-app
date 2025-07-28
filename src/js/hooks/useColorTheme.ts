@@ -60,7 +60,7 @@ function useColorTheme(): void {
       colorBlackout =
         chroma(colorPrimaryBackground)
           .brighten(0.5 * chromaMultiplier)
-          .hex() + decimalToHex(decimalMultiplier(opacityMultiplier, 0.6));
+          .hex() + decimalToHex(decimalMultiplier(opacityMultiplier, 0.9));
       colorButtonSecondary = chroma(colorText)
         .brighten(0.3 * chromaMultiplier)
         .hex();
@@ -92,7 +92,8 @@ function useColorTheme(): void {
       colorBlackout =
         chroma(colorPrimaryBackground)
           .darken(0.5 * chromaMultiplier)
-          .hex() + decimalToHex(decimalMultiplier(opacityMultiplier, 0.6));
+          .desaturate(0.35)
+          .hex() + decimalToHex(decimalMultiplier(opacityMultiplier, 0.8));
       colorButtonSecondary = chroma(colorText)
         .darken(0.3 * chromaMultiplier)
         .hex();
