@@ -2,6 +2,7 @@
 // IMPORTS
 // ======================================================================
 
+import { useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
 import { Icon } from 'js/components';
@@ -13,6 +14,8 @@ import style from './Settings.module.scss';
 // ======================================================================
 
 export const Settings = () => {
+  const dispatch = useDispatch();
+
   return (
     <div className={style.wrap}>
       {/* GENERAL */}
@@ -213,6 +216,22 @@ export const Settings = () => {
             <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
           </div>
         </NavLink>
+
+        <button
+          className={style.entry}
+          draggable="false"
+          onClick={() => {
+            dispatch.dialogModel.showModal('ReleaseNotes');
+          }}
+        >
+          <div className={style.entryIconSmall}>
+            <Icon icon="MegaphoneIcon" cover stroke strokeWidth={1.5} />
+          </div>
+          <div>Latest release notes</div>
+          <div className={style.entryArrow}>
+            <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
+          </div>
+        </button>
 
         <NavLink className={style.entry} to={'/settings/changelog'} draggable="false">
           <div className={style.entryIconSmall}>

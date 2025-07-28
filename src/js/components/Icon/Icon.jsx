@@ -60,6 +60,7 @@ import { ReactComponent as ListIcon } from './icons/general/list-small.svg';
 import { ReactComponent as LogoutIcon } from './icons/general/logout.svg';
 import { ReactComponent as MailIcon } from './icons/general/mail.svg';
 // import { ReactComponent as MailPlaneIcon } from './icons/general/mail-plane.svg';
+import { ReactComponent as MegaphoneIcon } from './icons/general/megaphone.svg';
 import { ReactComponent as MicrophoneIcon } from './icons/general/microphone.svg';
 import { ReactComponent as MusicNoteDoubleIcon } from './icons/general/music-note-double.svg';
 import { ReactComponent as MusicNoteSingleIcon } from './icons/general/music-note-single.svg';
@@ -167,6 +168,7 @@ export const customIcons = {
   LogoutIcon,
   MailIcon,
   // MailPlaneIcon,
+  MegaphoneIcon,
   MicrophoneIcon,
   MusicNoteDoubleIcon,
   MusicNoteSingleIcon,
