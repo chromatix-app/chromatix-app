@@ -8,6 +8,8 @@
   background: var(--color-secondary-background);
   border: 1px solid var(--color-secondary-border);
   border-radius: 9px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+  animation: modalFadeIn 0.15s ease-in-out forwards;
   will-change: transform, opacity;
 }
 
@@ -20,4 +22,15 @@
 
 .main {
   flex: 1 1 auto;
+}
+
+@keyframes modalFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
