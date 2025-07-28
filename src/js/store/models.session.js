@@ -425,8 +425,8 @@ const reducers = {
 
   setSortList(rootState, payload) {
     const { variant, sortKey } = payload;
-    const sortIndex = 'sort' + variant.charAt(0).toUpperCase() + variant.slice(1);
-    const orderIndex = 'order' + variant.charAt(0).toUpperCase() + variant.slice(1);
+    const sortIndex = 'sort' + variant?.charAt(0).toUpperCase() + variant?.slice(1);
+    const orderIndex = 'order' + variant?.charAt(0).toUpperCase() + variant?.slice(1);
     const currentSortKey = rootState[sortIndex];
     const currentOrderKey = rootState[orderIndex];
     let newSortKey = sortKey;
