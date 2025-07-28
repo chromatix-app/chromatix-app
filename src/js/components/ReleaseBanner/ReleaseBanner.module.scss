@@ -1,3 +1,5 @@
+@use '../../../css/_config/_mixins';
+
 .wrap {
   margin: 20px 0;
 
@@ -21,7 +23,7 @@
     padding: 9px 30px 9px 9px;
   }
 
-  // @include outline-self;
+  @include mixins.focus-self-outline;
 }
 
 .title,
@@ -73,15 +75,15 @@
   line-height: 0;
   text-indent: -9999px;
 
-  // @include outline-self;
+  @include mixins.focus-self-outline;
 
   &:before,
   &:after {
     content: '';
     display: block;
     position: absolute;
-    top: 13px;
-    left: 10px;
+    top: 14px;
+    left: 9px;
     width: 12px;
     height: 1px;
     background: var(--color-text);
