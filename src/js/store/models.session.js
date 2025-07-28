@@ -34,6 +34,7 @@ const sessionState = {
   volumeLevel: 100,
   volumeMuted: false,
 
+  menuShowBanners: true,
   menuShowIcons: true,
   menuShowSearch: true,
   menuShowAllPlaylists: true,

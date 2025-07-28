@@ -41,12 +41,20 @@ export const SettingsMenu = () => {
 //
 
 const GeneralSettings = ({ platformOpts }) => {
-  const menuShowIcons = useSelector(({ sessionModel }) => sessionModel.menuShowIcons);
+  const menuShowBanners = useSelector(({ sessionModel }) => sessionModel.menuShowBanners);
   const menuShowSearch = useSelector(({ sessionModel }) => sessionModel.menuShowSearch);
+  const menuShowIcons = useSelector(({ sessionModel }) => sessionModel.menuShowIcons);
 
   const menuItems = [
-    { key: 'menuShowIcons', label: 'Show icons', state: menuShowIcons },
+    {
+      key: 'menuShowBanners',
+      label: 'Show "what’s new" banners',
+      description:
+        'When major new features are added, we’ll display a small notification banner at the top of the sidebar menu to let you know.',
+      state: menuShowBanners,
+    },
     { key: 'menuShowSearch', label: 'Show search', state: menuShowSearch },
+    { key: 'menuShowIcons', label: 'Show icons', state: menuShowIcons },
   ];
 
   return <SettingsList title="General" menuItems={menuItems} />;

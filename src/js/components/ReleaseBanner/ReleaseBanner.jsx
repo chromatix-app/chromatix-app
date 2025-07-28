@@ -19,6 +19,7 @@ const isLocal = process.env.REACT_APP_ENV === 'local';
 export const ReleaseBanner = () => {
   const dispatch = useDispatch();
   const savedAppVersion = useSelector(({ sessionModel }) => sessionModel.savedAppVersion);
+  const menuShowBanners = useSelector(({ sessionModel }) => sessionModel.menuShowBanners);
 
   // options
   let messageAppVersion = '0.10.0';
@@ -37,8 +38,8 @@ export const ReleaseBanner = () => {
   // state ensures badge is immediately hidden on close, rather than awaiting the amplify refresh
   const [showBadge, setShowBadge] = useState(savedVersionIsOutdated);
 
-  // TO DO: remove this check
-  if (!isLocal) return null;
+  // TO DO: remove isLocal check
+  if (!isLocal || !menuShowBanners) return null;
 
   // show the release notes modal
   const handleOpen = () => {
