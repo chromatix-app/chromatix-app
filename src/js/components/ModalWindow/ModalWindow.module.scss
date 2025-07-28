@@ -15,8 +15,12 @@
 
   &ReleaseNotes {
     max-width: 880px;
-    min-height: 500px;
+    min-height: 460px;
     padding: 0;
+
+    @media (min-width: 880px) {
+      min-height: 500px;
+    }
   }
 }
 

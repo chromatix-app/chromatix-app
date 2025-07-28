@@ -217,6 +217,16 @@ export const Settings = () => {
           </div>
         </NavLink>
 
+        <NavLink className={style.entry} to={'/settings/changelog'} draggable="false">
+          <div className={style.entryIconSmall}>
+            <Icon icon="ClockRewindIcon" cover stroke strokeWidth={1.5} />
+          </div>
+          <div>Changelog</div>
+          <div className={style.entryArrow}>
+            <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
+          </div>
+        </NavLink>
+
         <button
           className={style.entry}
           draggable="false"
@@ -227,21 +237,11 @@ export const Settings = () => {
           <div className={style.entryIconSmall}>
             <Icon icon="MegaphoneIcon" cover stroke strokeWidth={1.5} />
           </div>
-          <div>Latest release notes</div>
+          <div>Latest release announcements</div>
           <div className={style.entryArrow}>
             <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
           </div>
         </button>
-
-        <NavLink className={style.entry} to={'/settings/changelog'} draggable="false">
-          <div className={style.entryIconSmall}>
-            <Icon icon="ClockRewindIcon" cover stroke strokeWidth={1.5} />
-          </div>
-          <div>Changelog</div>
-          <div className={style.entryArrow}>
-            <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
-          </div>
-        </NavLink>
       </div>
 
       {/* KO-FI */}
