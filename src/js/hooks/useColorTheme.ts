@@ -64,6 +64,7 @@ function useColorTheme(): void {
       colorButtonSecondary = chroma(colorText)
         .brighten(0.3 * chromaMultiplier)
         .hex();
+
       colorSecondaryBackground = chroma(colorPrimaryBackground)
         .darken(0.4 * chromaMultiplier)
         .hex();
@@ -79,6 +80,7 @@ function useColorTheme(): void {
       colorSecondaryActive = chroma(colorPrimaryBackground)
         .darken(0.75 * chromaMultiplier)
         .hex();
+
       colorTertiaryBackground = chroma(colorPrimaryBackground)
         .darken(0.9 * chromaMultiplier)
         .hex();
@@ -97,6 +99,7 @@ function useColorTheme(): void {
       colorButtonSecondary = chroma(colorText)
         .darken(0.3 * chromaMultiplier)
         .hex();
+
       colorSecondaryBackground = chroma(colorPrimaryBackground)
         .brighten(0.4 * chromaMultiplier)
         .hex();
@@ -112,6 +115,7 @@ function useColorTheme(): void {
       colorSecondaryActive = chroma(colorPrimaryBackground)
         .brighten(0.75 * chromaMultiplier)
         .hex();
+
       colorTertiaryBackground = chroma(colorPrimaryBackground)
         .brighten(0.9 * chromaMultiplier)
         .hex();

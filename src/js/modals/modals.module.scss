@@ -1,3 +1,5 @@
+@use '../../css/_config/_mixins';
+
 .title {
   font-size: 18px;
   font-weight: 600;
@@ -126,7 +128,10 @@
 .dot {
   display: block;
   padding: 5px;
+  // border-radius: 50%;
   cursor: pointer;
+
+  // @include mixins.focus-self-outline;
 }
 
 .dotInner {
@@ -152,6 +157,8 @@
   border-radius: 50%;
   z-index: 2;
   color: var(--color-primary-background);
+
+  @include mixins.focus-self-outline;
 
   &:before,
   &:after {

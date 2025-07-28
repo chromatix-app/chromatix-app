@@ -33,10 +33,6 @@ const ReleaseNotes = () => {
 
   return (
     <ModalWindow variant="ReleaseNotes">
-      <button className={style.closeButton} onClick={dispatch.dialogModel.closeModal}>
-        <span className="u-hidden">Close</span>
-      </button>
-
       <div className={style.releaseLeft}>
         <div>
           <p className={style.date}>{currentSlide.date}</p>
@@ -77,6 +73,10 @@ const ReleaseNotes = () => {
           <img src={`/images/original/${currentSlide.image}.png`} alt="" draggable="false" />
         </picture>
       </div>
+
+      <button className={style.closeButton} onClick={dispatch.dialogModel.closeModal}>
+        <span className="u-hidden">Close</span>
+      </button>
     </ModalWindow>
   );
 };
