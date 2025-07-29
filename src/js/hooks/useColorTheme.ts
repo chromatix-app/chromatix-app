@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // @ts-ignore - No type definitions available for chroma-js
 import chroma from 'chroma-js';
 
@@ -13,6 +13,8 @@ import { decimalMultiplier, decimalToHex, sendToElectron } from 'js/utils';
 
 function useColorTheme(): void {
   const defaultTheme = 'chromatix';
+
+  const dispatch = useDispatch();
 
   const accessibilityContrast = useSelector(({ sessionModel }: any) => sessionModel.accessibilityContrast);
 
@@ -205,6 +207,12 @@ function useColorTheme(): void {
       text: colorText,
       primary: colorCore,
     });
+
+    dispatch.sessionModel.setSessionState({
+      isLightTheme,
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     accessibilityContrast,
     hasQueueVisible,

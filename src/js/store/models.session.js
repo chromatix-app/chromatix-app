@@ -27,6 +27,7 @@ const sessionState = {
   currentColorBackground: '#021C27',
   currentColorText: '#ffffff',
   currentColorPrimary: '#f7277a',
+  isLightTheme: false,
 
   accessibilityFocus: false,
   accessibilityContrast: false,

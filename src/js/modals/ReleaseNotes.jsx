@@ -3,7 +3,7 @@
 // ======================================================================
 
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Dialog from '@radix-ui/react-dialog';
 import clsx from 'clsx';
 
@@ -18,10 +18,11 @@ import style from './modals.module.scss';
 
 const ReleaseNotes = () => {
   const dispatch = useDispatch();
-
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  const isLightTheme = useSelector((state) => state.sessionModel.isLightTheme);
   const currentSlide = whatsNew[currentIndex];
+
+  const currentImage = isLightTheme ? currentSlide.imageLight : currentSlide.imageDark;
 
   const handleNext = () => {
     if (currentIndex < whatsNew.length - 1) {
@@ -67,10 +68,10 @@ const ReleaseNotes = () => {
         </div>
       </div>
 
-      <div className={style.releaseRight}>
+      <div className={clsx(style.releaseRight, { [style.releaseRightLight]: isLightTheme })}>
         <picture>
-          <source srcSet={`/images/compressed/${currentSlide.image}.webp`} type="image/webp" />
-          <img src={`/images/original/${currentSlide.image}.png`} alt="" draggable="false" />
+          <source srcSet={`/images/compressed/${currentImage}.webp`} type="image/webp" />
+          <img src={`/images/original/${currentImage}.png`} alt="" draggable="false" />
         </picture>
       </div>
 
