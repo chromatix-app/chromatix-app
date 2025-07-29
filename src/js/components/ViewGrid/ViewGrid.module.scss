@@ -170,7 +170,7 @@
   background: var(--color-core);
   border: none;
   border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-light);
   transition: all ease-in-out 0.25s;
   color: var(--color-secondary-background);
   cursor: pointer;

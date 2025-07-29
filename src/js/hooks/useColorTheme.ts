@@ -59,7 +59,7 @@ function useColorTheme(): void {
     if (isLightTheme) {
       colorBlackout =
         chroma(colorPrimaryBackground)
-          .brighten(0.5 * chromaMultiplier)
+          .darken(0.2 * chromaMultiplier)
           .hex() + decimalToHex(decimalMultiplier(opacityMultiplier, 0.9));
       colorButtonSecondary = chroma(colorText)
         .brighten(0.3 * chromaMultiplier)
@@ -138,7 +138,9 @@ function useColorTheme(): void {
     const colorOpacity07 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.7));
     const colorOpacity08 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.8));
 
-    const colorShadow = isLightTheme ? '' : 'rgba(0, 0, 0, 0.4)';
+    const shadowHeavy = isLightTheme ? '0 4px 20px rgba(0, 0, 0, 0.1)' : '0 2px 20px rgba(0, 0, 0, 0.4)';
+    const shadowMedium = isLightTheme ? '0 4px 6px rgba(0, 0, 0, 0.05)' : '0 2px 10px rgba(0, 0, 0, 0.4)';
+    const shadowLight = isLightTheme ? '0 4px 6px rgba(0, 0, 0, 0.05)' : '0 2px 8px rgba(0, 0, 0, 0.35)';
 
     const opacity02 = decimalMultiplier(opacityMultiplier, 0.2);
     const opacity025 = decimalMultiplier(opacityMultiplier, 0.25);
@@ -180,7 +182,9 @@ function useColorTheme(): void {
       '--color-opacity-07': colorOpacity07,
       '--color-opacity-08': colorOpacity08,
 
-      '--color-shadow': colorShadow,
+      '--shadow-heavy': shadowHeavy,
+      '--shadow-medium': shadowMedium,
+      '--shadow-light': shadowLight,
 
       '--opacity-02': opacity02,
       '--opacity-025': opacity025,
