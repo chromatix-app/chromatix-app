@@ -10,7 +10,8 @@ import { customIcons } from 'js/components/Icon/Icon';
 // ======================================================================
 
 const Component = () => {
-  console.log(customIcons);
+  // console.log(customIcons);
+
   return (
     <>
       <TitleHeading title="Icons" />
