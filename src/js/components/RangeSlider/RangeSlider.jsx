@@ -48,6 +48,8 @@ export const RangeSlider = ({
             onChange={(event) => debouncedHandleChange(parseFloat(event.target.value))}
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
+            onTouchStart={handleMouseDown}
+            onTouchEnd={handleMouseUp}
             tabIndex={-1}
           />
         )}
