@@ -1,0 +1,52 @@
+.wrap {
+  display: flex;
+  overflow: hidden;
+  pointer-events: all !important;
+  width: 90%;
+  max-width: 600px;
+  padding: 30px;
+  margin: 20px auto 35px;
+  background: var(--color-secondary-background);
+  border: 1px solid var(--color-secondary-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-heavy);
+  animation: modalFadeIn 0.15s ease-in-out forwards;
+  will-change: transform, opacity;
+
+  &ReleaseNotes {
+    max-width: 880px;
+    min-height: 460px;
+    padding: 0;
+
+    @media (min-width: 880px) {
+      min-height: 500px;
+    }
+  }
+}
+
+.icon {
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  margin: 0 20px 0 0;
+}
+
+.main {
+  flex: 1 1 auto;
+
+  .wrapReleaseNotes & {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+@keyframes modalFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

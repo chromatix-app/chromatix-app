@@ -5,7 +5,7 @@
   position: fixed;
   top: 20px;
   right: 20px;
-  z-index: 888;
+  z-index: 555;
   // background: rgba(255, 0, 0, 0.1);
 
   @include mixins.electron-no-drag;
@@ -40,7 +40,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 887;
+  z-index: 554;
 
   .wrapInline & {
     z-index: auto;
@@ -60,7 +60,7 @@
   background: var(--color-secondary-background);
   border: 1px solid var(--color-secondary-border);
   border-radius: 9px;
-  box-shadow: 0 0 10px var(--color-shadow);
+  box-shadow: var(--shadow-medium);
 
   :global(.layout-content.cq-800) & {
     padding: 6px 6px 6px 15px;
@@ -75,8 +75,8 @@
   .wrapInline & {
     flex-direction: row-reverse;
     width: 100%;
-    background: var(--color-secondary-border);
-    border: 1px solid var(--color-opacity-005);
+    background: var(--color-tertiary-background);
+    border: 1px solid var(--color-tertiary-border);
     border-radius: 6px;
     box-shadow: none;
   }
@@ -174,8 +174,8 @@
   background: var(--color-secondary-background);
   border: 1px solid var(--color-secondary-border);
   border-radius: 9px;
-  box-shadow: 0 0 10px var(--color-shadow);
-  z-index: 888;
+  box-shadow: var(--shadow-medium);
+  z-index: 555;
   font-size: 13px;
   line-height: 16px;
   text-align: left;

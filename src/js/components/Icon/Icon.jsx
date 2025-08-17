@@ -16,7 +16,9 @@ import { ReactComponent as AlbumTagsIcon } from './icons/general/album-tags.svg'
 import { ReactComponent as ArrowDownIcon } from './icons/general/arrow-down.svg';
 import { ReactComponent as ArrowDownLongIcon } from './icons/general/arrow-down-long.svg';
 // import { ReactComponent as ArrowLeftIcon } from './icons/general/arrow-left.svg';
+// import { ReactComponent as ArrowLeftLongIcon } from './icons/general/arrow-left-long.svg';
 import { ReactComponent as ArrowRightIcon } from './icons/general/arrow-right.svg';
+import { ReactComponent as ArrowRightLongIcon } from './icons/general/arrow-right-long.svg';
 import { ReactComponent as ArrowsVerticalIcon } from './icons/general/arrows-vertical.svg';
 import { ReactComponent as ArrowUpIcon } from './icons/general/arrow-up.svg';
 import { ReactComponent as ArrowUpLongIcon } from './icons/general/arrow-up-long.svg';
@@ -58,6 +60,7 @@ import { ReactComponent as ListIcon } from './icons/general/list-small.svg';
 import { ReactComponent as LogoutIcon } from './icons/general/logout.svg';
 import { ReactComponent as MailIcon } from './icons/general/mail.svg';
 // import { ReactComponent as MailPlaneIcon } from './icons/general/mail-plane.svg';
+import { ReactComponent as MegaphoneIcon } from './icons/general/megaphone.svg';
 import { ReactComponent as MicrophoneIcon } from './icons/general/microphone.svg';
 import { ReactComponent as MusicNoteDoubleIcon } from './icons/general/music-note-double.svg';
 import { ReactComponent as MusicNoteSingleIcon } from './icons/general/music-note-single.svg';
@@ -121,7 +124,9 @@ export const customIcons = {
   ArrowDownIcon,
   ArrowDownLongIcon,
   // ArrowLeftIcon,
+  // ArrowLeftLongIcon,
   ArrowRightIcon,
+  ArrowRightLongIcon,
   ArrowsVerticalIcon,
   ArrowUpIcon,
   ArrowUpLongIcon,
@@ -163,6 +168,7 @@ export const customIcons = {
   LogoutIcon,
   MailIcon,
   // MailPlaneIcon,
+  MegaphoneIcon,
   MicrophoneIcon,
   MusicNoteDoubleIcon,
   MusicNoteSingleIcon,

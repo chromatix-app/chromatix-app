@@ -74,8 +74,8 @@
     width: 100%;
     padding: 7px 30px 7px 30px;
     margin: 0 0 1px;
-    background: var(--color-secondary-border);
-    border: 1px solid var(--color-opacity-005);
+    background: var(--color-tertiary-background);
+    border: 1px solid var(--color-tertiary-border);
     border-radius: 6px;
     font-size: 13px;
     color: var(--color-text);
@@ -87,7 +87,7 @@
     }
 
     &::placeholder {
-      color: var(--color-opacity-04);
+      color: var(--color-opacity-05);
     }
 
     &:focus {
@@ -157,8 +157,8 @@
   background: var(--color-secondary-background);
   border: 1px solid var(--color-secondary-border);
   border-radius: 11px;
-  box-shadow: 0 0 10px var(--color-shadow);
-  z-index: 999;
+  box-shadow: var(--shadow-medium);
+  z-index: 777;
 }
 
 .searchLoading,

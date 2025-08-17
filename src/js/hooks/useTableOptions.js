@@ -679,7 +679,7 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
       {
         colKey: 'thumb',
         label: '',
-        icon: variant.charAt(0).toUpperCase() + variant.slice(1) + 'Icon',
+        icon: variant?.charAt(0).toUpperCase() + variant?.slice(1) + 'Icon',
         colWidth: '41px',
         visible: true,
         visibleInHeader: false,

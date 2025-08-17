@@ -1,3 +1,12 @@
+# 0.49.0 (2025-08-17)
+
+Features:
+
+- Minor colour theme updates.
+- Modal functionality has been added for alerts, confirmations, and other important messages (although these are not used yet).
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.48.0 (2025-07-26)
 
 Features:

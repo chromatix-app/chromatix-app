@@ -2,17 +2,22 @@
 // IMPORTS
 // ======================================================================
 
+import { useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
 import { Icon } from 'js/components';
 
 import style from './Settings.module.scss';
 
+const isLocal = process.env.REACT_APP_ENV === 'local';
+
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
 export const Settings = () => {
+  const dispatch = useDispatch();
+
   return (
     <div className={style.wrap}>
       {/* GENERAL */}
@@ -223,6 +228,24 @@ export const Settings = () => {
             <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
           </div>
         </NavLink>
+
+        {isLocal && (
+          <button
+            className={style.entry}
+            draggable="false"
+            onClick={() => {
+              dispatch.dialogModel.showModal('ReleaseNotes');
+            }}
+          >
+            <div className={style.entryIconSmall}>
+              <Icon icon="MegaphoneIcon" cover stroke strokeWidth={1.5} />
+            </div>
+            <div>Latest release announcements</div>
+            <div className={style.entryArrow}>
+              <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
+            </div>
+          </button>
+        )}
       </div>
 
       {/* KO-FI */}

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // @ts-ignore - No type definitions available for chroma-js
 import chroma from 'chroma-js';
 
@@ -13,6 +13,8 @@ import { decimalMultiplier, decimalToHex, sendToElectron } from 'js/utils';
 
 function useColorTheme(): void {
   const defaultTheme = 'chromatix';
+
+  const dispatch = useDispatch();
 
   const accessibilityContrast = useSelector(({ sessionModel }: any) => sessionModel.accessibilityContrast);
 
@@ -43,6 +45,9 @@ function useColorTheme(): void {
 
     const isLightTheme = chroma(colorPrimaryBackground).luminance() > 0.5;
 
+    let colorBlackout;
+    let colorButtonSecondary;
+
     let colorSecondaryBackground: string;
     let colorSecondaryBorder: string;
     let colorSecondaryCard: string;
@@ -54,6 +59,14 @@ function useColorTheme(): void {
 
     // Light theme handling
     if (isLightTheme) {
+      colorBlackout =
+        chroma(colorPrimaryBackground)
+          .darken(0.2 * chromaMultiplier)
+          .hex() + decimalToHex(decimalMultiplier(opacityMultiplier, 0.9));
+      colorButtonSecondary = chroma(colorText)
+        .brighten(0.3 * chromaMultiplier)
+        .hex();
+
       colorSecondaryBackground = chroma(colorPrimaryBackground)
         .darken(0.4 * chromaMultiplier)
         .hex();
@@ -69,6 +82,7 @@ function useColorTheme(): void {
       colorSecondaryActive = chroma(colorPrimaryBackground)
         .darken(0.75 * chromaMultiplier)
         .hex();
+
       colorTertiaryBackground = chroma(colorPrimaryBackground)
         .darken(0.9 * chromaMultiplier)
         .hex();
@@ -79,6 +93,15 @@ function useColorTheme(): void {
 
     // Dark theme handling
     else {
+      colorBlackout =
+        chroma(colorPrimaryBackground)
+          .darken(0.5 * chromaMultiplier)
+          .desaturate(0.35)
+          .hex() + decimalToHex(decimalMultiplier(opacityMultiplier, 0.8));
+      colorButtonSecondary = chroma(colorText)
+        .darken(0.3 * chromaMultiplier)
+        .hex();
+
       colorSecondaryBackground = chroma(colorPrimaryBackground)
         .brighten(0.4 * chromaMultiplier)
         .hex();
@@ -94,6 +117,7 @@ function useColorTheme(): void {
       colorSecondaryActive = chroma(colorPrimaryBackground)
         .brighten(0.75 * chromaMultiplier)
         .hex();
+
       colorTertiaryBackground = chroma(colorPrimaryBackground)
         .brighten(0.9 * chromaMultiplier)
         .hex();
@@ -116,7 +140,9 @@ function useColorTheme(): void {
     const colorOpacity07 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.7));
     const colorOpacity08 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.8));
 
-    const colorShadow = isLightTheme ? '' : 'rgba(0, 0, 0, 0.4)';
+    const shadowHeavy = isLightTheme ? '0 4px 20px rgba(0, 0, 0, 0.1)' : '0 2px 20px rgba(0, 0, 0, 0.4)';
+    const shadowMedium = isLightTheme ? '0 4px 6px rgba(0, 0, 0, 0.05)' : '0 2px 10px rgba(0, 0, 0, 0.4)';
+    const shadowLight = isLightTheme ? '0 4px 6px rgba(0, 0, 0, 0.05)' : '0 2px 8px rgba(0, 0, 0, 0.35)';
 
     const opacity02 = decimalMultiplier(opacityMultiplier, 0.2);
     const opacity025 = decimalMultiplier(opacityMultiplier, 0.25);
@@ -131,6 +157,9 @@ function useColorTheme(): void {
       '--color-core': colorCore,
       '--color-text': colorText,
       '--color-primary-background': colorPrimaryBackground,
+      '--color-blackout': colorBlackout,
+
+      '--color-button-secondary': colorButtonSecondary,
 
       '--color-secondary-background': colorSecondaryBackground,
       '--color-secondary-border': colorSecondaryBorder,
@@ -155,7 +184,9 @@ function useColorTheme(): void {
       '--color-opacity-07': colorOpacity07,
       '--color-opacity-08': colorOpacity08,
 
-      '--color-shadow': colorShadow,
+      '--shadow-heavy': shadowHeavy,
+      '--shadow-medium': shadowMedium,
+      '--shadow-light': shadowLight,
 
       '--opacity-02': opacity02,
       '--opacity-025': opacity025,
@@ -176,6 +207,12 @@ function useColorTheme(): void {
       text: colorText,
       primary: colorCore,
     });
+
+    dispatch.sessionModel.setSessionState({
+      isLightTheme,
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     accessibilityContrast,
     hasQueueVisible,

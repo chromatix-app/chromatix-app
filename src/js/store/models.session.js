@@ -18,6 +18,8 @@ const isProduction = process.env.REACT_APP_ENV === 'production';
 const sessionState = {
   sessionId: CryptoJS.lib.WordArray.random(16).toString(),
 
+  savedAppVersion: '0.0.0',
+
   currentServer: null,
   currentLibrary: null,
 
@@ -25,6 +27,7 @@ const sessionState = {
   currentColorBackground: '#021C27',
   currentColorText: '#ffffff',
   currentColorPrimary: '#f7277a',
+  isLightTheme: false,
 
   accessibilityFocus: false,
   accessibilityContrast: false,
@@ -32,6 +35,7 @@ const sessionState = {
   volumeLevel: 100,
   volumeMuted: false,
 
+  menuShowBanners: true,
   menuShowIcons: true,
   menuShowSearch: true,
   menuShowAllPlaylists: true,
@@ -423,8 +427,8 @@ const reducers = {
 
   setSortList(rootState, payload) {
     const { variant, sortKey } = payload;
-    const sortIndex = 'sort' + variant.charAt(0).toUpperCase() + variant.slice(1);
-    const orderIndex = 'order' + variant.charAt(0).toUpperCase() + variant.slice(1);
+    const sortIndex = 'sort' + variant?.charAt(0).toUpperCase() + variant?.slice(1);
+    const orderIndex = 'order' + variant?.charAt(0).toUpperCase() + variant?.slice(1);
     const currentSortKey = rootState[sortIndex];
     const currentOrderKey = rootState[orderIndex];
     let newSortKey = sortKey;

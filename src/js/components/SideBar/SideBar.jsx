@@ -7,13 +7,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import * as RadixPopover from '@radix-ui/react-popover';
 
-import { Icon, UserMenu } from 'js/components';
+import { Icon, ReleaseBanner, UserMenu } from 'js/components';
 import { useGetPlaylistSidebar, useKeyControl, useNavigationHistory } from 'js/hooks';
 import { electronPlatform } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 import platformFeatures from 'js/_config/platformFeatures';
 
 import style from './SideBar.module.scss';
+
+const isLocal = process.env.REACT_APP_ENV === 'local';
 
 // ======================================================================
 // COMPONENT
@@ -95,6 +97,8 @@ const SideBar = () => {
         )}
 
         {menuShowSearch && <SearchField />}
+
+        {isLocal && <ReleaseBanner />}
 
         {(libraryIsVisible || (browseIsVisible && !menuShowSeparateBrowseSection)) && (
           <>

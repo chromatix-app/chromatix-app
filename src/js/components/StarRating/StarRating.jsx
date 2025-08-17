@@ -42,7 +42,7 @@ const StarRating = ({
     return null;
   }
 
-  const variantClassName = 'wrap' + variant.charAt(0).toUpperCase() + variant.slice(1);
+  const variantClassName = 'wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1);
   const actualRating = displayRating ? displayRating : rating;
   const starValue = actualRating / 2;
 

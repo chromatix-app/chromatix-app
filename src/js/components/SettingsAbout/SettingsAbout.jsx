@@ -16,7 +16,7 @@ const electronMoment = electronBuildDate ? moment(electronBuildDate * 1000) : nu
 const webMoment = moment(process.env.REACT_APP_DATE * 1000);
 
 const capitalise = (string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+  return string?.charAt(0).toUpperCase() + string?.slice(1);
 };
 
 export const SettingsAbout = () => {

@@ -32,11 +32,16 @@
 
 .entry {
   display: grid;
+  position: relative;
+  appearance: none;
   align-items: center;
   grid-template-columns: auto 1fr auto;
   gap: 20px;
+  width: 100%;
   padding: 10px 0 10px 1px;
+  background: transparent;
   border-bottom: 1px solid var(--color-opacity-01);
+  text-align: left;
 
   @include mixins.focus-self-outline;
 }
