@@ -8,7 +8,7 @@ import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 
 import Modals from 'js/app/Modals';
-import { ControlBar, Queue, SideBar, ToastNotification, UserMenu } from 'js/components';
+import { ControlBar, FullPagePlayer, Queue, SideBar, ToastNotification, UserMenu } from 'js/components';
 import {
   useColorTheme,
   useElectronStatus,
@@ -279,6 +279,7 @@ const AppMain = () => {
   const [contentContainerClass, setContentContainerClass] = useState(0);
   const [contentWidth, setContentWidth] = useState(0);
 
+  const fullPage = useSelector(({ appModel }) => appModel.fullPage);
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
 
   const { windowWidth } = useWindowSize();
@@ -320,23 +321,29 @@ const AppMain = () => {
   return (
     <div className="wrap">
       <div className="electron-drag"></div>
-      <div className="layout">
-        <div className="layout-sidebar">
-          <SideBar />
-        </div>
-        <div className="layout-controls">
-          <ControlBar />
-        </div>
-        <div ref={contentRef} id="content" className={clsx('layout-content', contentContainerClass)}>
-          {electronPlatform !== 'win' && <UserMenu />}
-          <BrowserRouteSwitch />
-        </div>
-        {queueIsVisible && (
-          <div className="layout-rightbar">
-            <Queue />
+
+      {fullPage && <FullPagePlayer />}
+
+      {!fullPage && (
+        <div className="layout">
+          <div className="layout-sidebar">
+            <SideBar />
           </div>
-        )}
-      </div>
+          <div className="layout-controls">
+            <ControlBar />
+          </div>
+          <div ref={contentRef} id="content" className={clsx('layout-content', contentContainerClass)}>
+            {electronPlatform !== 'win' && <UserMenu />}
+            <BrowserRouteSwitch />
+          </div>
+          {queueIsVisible && (
+            <div className="layout-rightbar">
+              <Queue />
+            </div>
+          )}
+        </div>
+      )}
+
       <Modals />
       <ToastNotification />
     </div>

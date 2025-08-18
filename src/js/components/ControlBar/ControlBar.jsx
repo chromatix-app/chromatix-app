@@ -13,6 +13,8 @@ import { analyticsEvent, durationToStringShort } from 'js/utils';
 
 import style from './ControlBar.module.scss';
 
+const isLocal = process.env.REACT_APP_ENV === 'local';
+
 // ======================================================================
 // COMPONENT
 // ======================================================================
@@ -156,6 +158,11 @@ const ControlBar = () => {
 
       <div className={style.secondary}>
         <div className={style.secondaryControls}>
+          {isLocal && (
+            <button className={style.expand} onClick={dispatch.appModel.fullPageOn}>
+              <Icon icon="ExpandSplitIcon" cover stroke />
+            </button>
+          )}
           <button
             className={clsx(style.queue, { [style.active]: queueIsVisible })}
             onClick={dispatch.sessionModel.queueVisibleToggle}

@@ -5,6 +5,7 @@ export { default as FilterMenu } from './FilterMenu/FilterMenu';
 export { default as FilterSelect } from './FilterSelect/FilterSelect';
 export { default as FilterToggle } from './FilterToggle/FilterToggle';
 export { default as FilterWrap } from './FilterWrap/FilterWrap';
+export { default as FullPagePlayer } from './FullPagePlayer/FullPagePlayer';
 export { default as Icon } from './Icon/Icon';
 export { default as Loading } from './Loading/Loading';
 export { default as ModalWindow } from './ModalWindow/ModalWindow';

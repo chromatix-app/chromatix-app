@@ -146,13 +146,14 @@
   }
 }
 
-button.shuffle,
-button.rewind,
-button.play,
-button.pause,
+button.expand,
 button.forward,
-button.repeat,
+button.pause,
+button.play,
 button.queue,
+button.repeat,
+button.rewind,
+button.shuffle,
 button.volume,
 .offline {
   display: block;
@@ -215,6 +216,10 @@ button.pause {
 
 button.volume {
   margin-right: 2px;
+}
+
+button.expand {
+  padding: 12px;
 }
 
 button.queue {
@@ -291,7 +296,7 @@ button.active {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 2px;
+  gap: 0;
 
   // @media (min-width: 1024px) {
   //   gap: 10px;
