@@ -2,15 +2,14 @@
 // IMPORTS
 // ======================================================================
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 
 import { Icon, RangeSlider } from 'js/components';
-import { useKeyMediaControls, useMediaControls, useMediaMeta } from 'js/hooks';
+import { useKeyMediaControls, useMediaControls, useMediaMeta, usePlayerProgress } from 'js/hooks';
 import { analyticsEvent, durationToStringShort } from 'js/utils';
-import * as playerX from 'js/services/player.native';
 
 import style from './ControlBar.module.scss';
 
@@ -183,81 +182,22 @@ const ControlBar = () => {
 };
 
 const ControlProgress = () => {
-  const dispatch = useDispatch();
-
-  const counterRef = useRef(0);
-  const didMountRef = useRef(false);
-  const intervalRef = useRef(null);
-  const mouseDownRef = useRef(false);
-
-  const playerInited = useSelector(({ playerModel }) => playerModel.playerInited);
-  const playerInteractionCount = useSelector(({ playerModel }) => playerModel.playerInteractionCount);
+  const {
+    trackProgress,
+    trackProgressCurrent,
+    trackProgressMax,
+    handleProgressChange,
+    handleProgressMouseDown,
+    handleProgressMouseUp,
+    isDisabled,
+  } = usePlayerProgress();
 
   const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
   const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
   const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
 
-  const [trackProgress, setTrackProgress] = useState(playerX.getCurrentProgress() * 1000 || 0);
-
   const realIndex = playingTrackKeys?.[playingTrackIndex];
   const trackCurrent = playingTrackList?.[realIndex];
-  const isDisabled = !trackCurrent ? true : false;
-
-  const trackProgressCurrent = trackProgress / 1000;
-  const trackProgressMax = trackCurrent?.duration ? trackCurrent?.duration / 1000 : 0;
-
-  // handle progress change
-  const handleProgressChange = useCallback(
-    (value) => {
-      setTrackProgress(value * 1000);
-      dispatch.playerModel.playerProgress(value * 1000);
-    },
-    [dispatch]
-  );
-
-  const handleProgressMouseDown = () => {
-    mouseDownRef.current = true;
-  };
-
-  const handleProgressMouseUp = () => {
-    mouseDownRef.current = false;
-    playerX.setProgress(trackProgress);
-  };
-
-  // handle track progress
-  const updateTrackProgress = (mouseDownRef, counterRef, setTrackProgress, dispatch) => {
-    if (!mouseDownRef.current) {
-      const newTrackProgress = Math.round(playerX.getCurrentProgress()) * 1000;
-      setTrackProgress(newTrackProgress);
-      // only update redux every 5 seconds
-      counterRef.current += 1;
-      if (counterRef.current === 5) {
-        dispatch.playerModel.playerProgress(newTrackProgress);
-        counterRef.current = 0;
-      }
-    }
-  };
-
-  // whilst track is playing, update track progress every second
-  useEffect(() => {
-    if (playerInited) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = setInterval(() => {
-        updateTrackProgress(mouseDownRef, counterRef, setTrackProgress, dispatch);
-      }, 1000);
-    }
-    return () => clearInterval(intervalRef.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playerInited, playingTrackIndex]);
-
-  // if a new track is selected, reset track progress
-  useEffect(() => {
-    if (didMountRef.current) {
-      setTrackProgress(0);
-    } else {
-      didMountRef.current = true;
-    }
-  }, [realIndex, playerInteractionCount]);
 
   return (
     <div className={style.scrubber}>
