@@ -1,0 +1,102 @@
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100vw;
+  min-width: 720px;
+  height: 100vh;
+  height: 100svh;
+  padding: 75px 80px;
+
+  > * {
+    width: 100%;
+  }
+}
+
+.topSpacer {
+  height: 100px;
+}
+
+//
+// NOW PLAYING
+//
+
+.nowPlaying {
+  display: flex;
+  justify-content: start;
+  align-items: flex-end;
+}
+
+.cover {
+  overflow: hidden;
+  flex: 0 0 auto;
+  width: 460px;
+  height: 460px;
+  margin-right: 60px;
+  background: var(--color-secondary-hover);
+  background-image: vars.$thumbnail;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 10px;
+  outline: 1px solid var(--color-opacity-01);
+
+  &Placeholder {
+    outline: 1px solid var(--color-opacity-015);
+  }
+}
+
+.details {
+  flex: 1 1 auto;
+  width: calc(100% - 460px - 60px);
+  padding-bottom: 40px;
+}
+
+.title {
+  font-size: 40px;
+  line-height: 1.1;
+  font-weight: bold;
+}
+
+.artist {
+  margin-top: 8px;
+  font-size: 22px;
+  line-height: 1.1;
+  color: var(--color-opacity-04);
+}
+
+.album {
+  margin-top: 12px;
+  font-size: 16px;
+  line-height: 1.1;
+}
+
+//
+// CONTROLS
+//
+
+.progress {
+  margin-top: 100px;
+}
+
+.controls {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto 1fr;
+  margin: 40px auto 0;
+
+  a {
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.rightCol {
+  margin: 0 20px 0 auto;
+}

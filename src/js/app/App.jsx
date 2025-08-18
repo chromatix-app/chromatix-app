@@ -286,6 +286,7 @@ const AppMain = () => {
 
   // Handle window resizing
   useEffect(() => {
+    if (fullPage) return;
     const newWidth = contentRef.current.offsetWidth;
     const bpList = breakPoints.filter((bp) => bp <= newWidth);
     const newContainerClass = bpList.map((bp) => 'cq-' + bp).join(' ');
@@ -300,7 +301,7 @@ const AppMain = () => {
       setContentBreakpoint(newBreakpoint);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [windowWidth, queueIsVisible]);
+  }, [windowWidth, queueIsVisible, fullPage]);
 
   // Store current breakpoint (this theoretically won't run until after the HTML has re-rendered, which is essential)
   useEffect(() => {
