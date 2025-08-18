@@ -1,3 +1,11 @@
+# 0.50.0 (2025-08-18)
+
+Updated:
+
+- Touch events added to RangeSlider component, to improve touch screen support.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.49.0 (2025-08-17)
 
 Features:
