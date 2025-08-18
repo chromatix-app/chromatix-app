@@ -20,29 +20,92 @@ const isLocal = process.env.REACT_APP_ENV === 'local';
 // ======================================================================
 
 const ControlBar = () => {
+  return (
+    <div className={style.wrap}>
+      <div className={style.leftSection}>
+        <NowPlaying />
+      </div>
+
+      <div className={style.centerSection}>
+        <PrimaryControls />
+        <ControlProgress />
+      </div>
+
+      <div className={style.rightSection}>
+        <SecondaryControls />
+      </div>
+    </div>
+  );
+};
+
+const NowPlaying = () => {
   const dispatch = useDispatch();
 
-  const isOnline = useSelector(({ appModel }) => appModel.isOnline);
+  const playingLink = useSelector(({ sessionModel }) => sessionModel.playingLink);
+  const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
+  const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
+  const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
+
+  const trackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
+
+  return (
+    <div className={style.nowPlaying}>
+      <div className={clsx(style.cover, { [style.coverPlaceholder]: !trackCurrent || !trackCurrent?.thumb })}>
+        {trackCurrent && (
+          <>
+            {trackCurrent.thumb && (
+              <div className={style.coverArtwork}>
+                <img src={trackCurrent.thumb} alt={trackCurrent.title} draggable="false" />
+              </div>
+            )}
+            {playingLink && (
+              <NavLink
+                className={style.coverLink}
+                to={playingLink}
+                draggable="false"
+                onClick={() => {
+                  dispatch.appModel.setAppState({ scrollToPlaying: true });
+                  analyticsEvent('Navigate to Playing');
+                }}
+              />
+            )}
+          </>
+        )}
+      </div>
+      <div className={style.text}>
+        {trackCurrent && (
+          <>
+            <div className={style.title}>{trackCurrent.title}</div>
+            <div className={style.artist}>
+              {trackCurrent.artistLink && (
+                <NavLink to={trackCurrent.artistLink} draggable="false">
+                  {trackCurrent.artist}
+                </NavLink>
+              )}
+              {!trackCurrent.artistLink && trackCurrent.artist}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export const PrimaryControls = ({ fullPage }) => {
+  const dispatch = useDispatch();
 
   const playerLoading = useSelector(({ playerModel }) => playerModel.playerLoading);
   const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
 
-  const volumeLevel = useSelector(({ sessionModel }) => sessionModel.volumeLevel);
-  const volumeMuted = useSelector(({ sessionModel }) => sessionModel.volumeMuted);
-
-  const playingLink = useSelector(({ sessionModel }) => sessionModel.playingLink);
   const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
   const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
   const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
   const playingRepeatAll = useSelector(({ sessionModel }) => sessionModel.playingRepeatAll);
   const playingRepeatOnce = useSelector(({ sessionModel }) => sessionModel.playingRepeatOnce);
   const playingShuffle = useSelector(({ sessionModel }) => sessionModel.playingShuffle);
-  const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
 
   const trackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
   const isDisabled = !trackCurrent ? true : false;
-
-  const volIcon = volumeMuted || volumeLevel <= 0 ? 'VolXIcon' : volumeLevel < 50 ? 'VolLowIcon' : 'VolHighIcon';
 
   // handle keyboard controls
   const controlHandlers = useMemo(
@@ -73,122 +136,98 @@ const ControlBar = () => {
   useMediaMeta(trackMeta);
 
   return (
-    <div className={style.wrap}>
-      <div className={style.current}>
-        <div className={clsx(style.cover, { [style.coverPlaceholder]: !trackCurrent || !trackCurrent?.thumb })}>
-          {trackCurrent && (
-            <>
-              {trackCurrent.thumb && (
-                <div className={style.coverArtwork}>
-                  <img src={trackCurrent.thumb} alt={trackCurrent.title} draggable="false" />
-                </div>
-              )}
-              {playingLink && (
-                <NavLink
-                  className={style.coverLink}
-                  to={playingLink}
-                  draggable="false"
-                  onClick={() => {
-                    dispatch.appModel.setAppState({ scrollToPlaying: true });
-                    analyticsEvent('Navigate to Playing');
-                  }}
-                />
-              )}
-            </>
-          )}
-        </div>
-        <div className={style.text}>
-          {trackCurrent && (
-            <>
-              <div className={style.title}>{trackCurrent.title}</div>
-              <div className={style.artist}>
-                {trackCurrent.artistLink && (
-                  <NavLink to={trackCurrent.artistLink} draggable="false">
-                    {trackCurrent.artist}
-                  </NavLink>
-                )}
-                {!trackCurrent.artistLink && trackCurrent.artist}
-              </div>
-            </>
-          )}
-        </div>
-      </div>
+    <div className={clsx(style.primaryControls, { [style.fullPage]: fullPage })}>
+      <button
+        className={clsx(style.shuffle, { [style.active]: playingShuffle })}
+        onClick={dispatch.playerModel.playerShuffleToggle}
+        disabled={isDisabled}
+      >
+        <Icon icon="ShuffleIcon" cover stroke />
+      </button>
+      <button className={style.rewind} onClick={dispatch.playerModel.playerPrev} disabled={isDisabled}>
+        <Icon icon="RewindIcon" cover stroke />
+      </button>
+      {!playerPlaying && (
+        <button className={style.play} onClick={dispatch.playerModel.playerResume} disabled={isDisabled}>
+          <Icon icon="PlayFilledIcon" cover />
+        </button>
+      )}
+      {playerPlaying && (
+        <button className={style.pause} onClick={dispatch.playerModel.playerPause}>
+          {!playerLoading && <Icon icon="PauseFilledIcon" cover />}
+          {playerLoading && <div className={style.loading}></div>}
+        </button>
+      )}
+      <button className={style.forward} onClick={dispatch.playerModel.playerNext} disabled={isDisabled}>
+        <Icon icon="FastForwardIcon" cover stroke />
+      </button>
+      <button
+        className={clsx(style.repeat, { [style.active]: playingRepeatAll || playingRepeatOnce })}
+        onClick={dispatch.playerModel.playerRepeatToggle}
+        disabled={isDisabled}
+      >
+        {playingRepeatOnce ? <Icon icon="RepeatOnceIcon" cover stroke /> : <Icon icon="RepeatAllIcon" cover stroke />}
+      </button>
+    </div>
+  );
+};
 
-      <div>
-        <div className={style.controls}>
-          <button
-            className={clsx(style.shuffle, { [style.active]: playingShuffle })}
-            onClick={dispatch.playerModel.playerShuffleToggle}
-            disabled={isDisabled}
-          >
-            <Icon icon="ShuffleIcon" cover stroke />
-          </button>
-          <button className={style.rewind} onClick={dispatch.playerModel.playerPrev} disabled={isDisabled}>
-            <Icon icon="RewindIcon" cover stroke />
-          </button>
-          {!playerPlaying && (
-            <button className={style.play} onClick={dispatch.playerModel.playerResume} disabled={isDisabled}>
-              <Icon icon="PlayFilledIcon" cover />
-            </button>
-          )}
-          {playerPlaying && (
-            <button className={style.pause} onClick={dispatch.playerModel.playerPause}>
-              {!playerLoading && <Icon icon="PauseFilledIcon" cover />}
-              {playerLoading && <div className={style.loading}></div>}
-            </button>
-          )}
-          <button className={style.forward} onClick={dispatch.playerModel.playerNext} disabled={isDisabled}>
-            <Icon icon="FastForwardIcon" cover stroke />
-          </button>
-          <button
-            className={clsx(style.repeat, { [style.active]: playingRepeatAll || playingRepeatOnce })}
-            onClick={dispatch.playerModel.playerRepeatToggle}
-            disabled={isDisabled}
-          >
-            {playingRepeatOnce ? (
-              <Icon icon="RepeatOnceIcon" cover stroke />
-            ) : (
-              <Icon icon="RepeatAllIcon" cover stroke />
-            )}
-          </button>
-        </div>
+export const SecondaryControls = ({ fullPage }) => {
+  const dispatch = useDispatch();
 
-        <ControlProgress />
-      </div>
+  const isOnline = useSelector(({ appModel }) => appModel.isOnline);
 
-      <div className={style.secondary}>
-        <div className={style.secondaryControls}>
-          {isLocal && (
-            <button className={style.expand} onClick={dispatch.appModel.fullPageOn}>
-              <Icon icon="ExpandSplitIcon" cover stroke />
-            </button>
-          )}
+  const volumeLevel = useSelector(({ sessionModel }) => sessionModel.volumeLevel);
+  const volumeMuted = useSelector(({ sessionModel }) => sessionModel.volumeMuted);
+  const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
+
+  const volIcon = volumeMuted || volumeLevel <= 0 ? 'VolXIcon' : volumeLevel < 50 ? 'VolLowIcon' : 'VolHighIcon';
+
+  return (
+    <div className={clsx(style.secondaryControls, { [style.fullPage]: fullPage })}>
+      <div className={style.secondaryButtons}>
+        {isLocal && !fullPage && (
+          <button className={style.expand} onClick={dispatch.appModel.fullPageOn}>
+            <Icon icon="ExpandSplitIcon" cover stroke />
+          </button>
+        )}
+
+        {isLocal && fullPage && (
+          <button className={style.expand} onClick={dispatch.appModel.fullPageOff}>
+            <Icon icon="CollapseIcon" cover stroke />
+          </button>
+        )}
+
+        {!fullPage && (
           <button
             className={clsx(style.queue, { [style.active]: queueIsVisible })}
             onClick={dispatch.sessionModel.queueVisibleToggle}
           >
             <Icon icon="QueueIcon" cover stroke />
           </button>
-          <button className={style.volume} onClick={dispatch.playerModel.volumeMuteToggle}>
-            <Icon icon={volIcon} cover stroke />
-          </button>
-        </div>
-        <div className={style.volSlider}>
-          <RangeSlider value={volumeMuted ? 0 : volumeLevel} handleChange={dispatch.playerModel.volumeLevelSet} />
-        </div>
-        {!isOnline && (
-          <div className={style.secondaryControls}>
-            <div className={style.offline} title="No Internet Connection">
-              <Icon icon="CloudOfflineIcon" cover stroke strokeWidth={1.2} />
-            </div>
-          </div>
         )}
+
+        <button className={style.volume} onClick={dispatch.playerModel.volumeMuteToggle}>
+          <Icon icon={volIcon} cover stroke />
+        </button>
       </div>
+
+      <div className={style.volSlider}>
+        <RangeSlider value={volumeMuted ? 0 : volumeLevel} handleChange={dispatch.playerModel.volumeLevelSet} />
+      </div>
+
+      {!isOnline && (
+        <div className={style.secondaryControls}>
+          <div className={style.offline} title="No Internet Connection">
+            <Icon icon="CloudOfflineIcon" cover stroke strokeWidth={1.2} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-const ControlProgress = () => {
+export const ControlProgress = () => {
   const {
     trackProgress,
     trackProgressCurrent,

@@ -4,7 +4,6 @@
 .wrap {
   display: grid;
   align-items: center;
-  // grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   grid-template-columns: minmax(0, 1fr) auto 1fr;
   height: 100px;
   padding: 9px 22px 10px;
@@ -25,7 +24,10 @@
 
 // CURRENTLY PLAYING
 
-.current {
+.leftSection {
+}
+
+.nowPlaying {
   display: flex;
   align-items: center;
   text-align: left;
@@ -132,7 +134,7 @@
 
 // PRIMARY CONTROLS
 
-.controls {
+.primaryControls {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -178,6 +180,14 @@ button.volume,
   &:not(:disabled):hover {
     background: var(--color-secondary-hover);
   }
+
+  .fullPage & {
+    border: 2px solid var(--color-primary-background);
+  }
+
+  &:not(:disabled):hover {
+    background: var(--color-secondary-background);
+  }
 }
 
 button.rewind {
@@ -197,7 +207,6 @@ button.play,
 button.pause {
   margin: 0 6px;
   background: var(--color-core) !important;
-  border: 2px solid var(--color-secondary-background);
   color: var(--color-secondary-background);
 
   &:disabled {
@@ -286,13 +295,25 @@ button.active {
 
 // SECONDARY CONTROLS
 
-.secondary {
-  display: flex;
-  align-items: center;
+.rightSection {
   margin: 0 0 0 auto;
 }
 
 .secondaryControls {
+  display: flex;
+  align-items: center;
+
+  // &.fullPage {
+  //   opacity: 0.4;
+
+  //   &:hover,
+  //   &:focus-within {
+  //     opacity: 1;
+  //   }
+  // }
+}
+
+.secondaryButtons {
   display: flex;
   justify-content: center;
   align-items: center;
