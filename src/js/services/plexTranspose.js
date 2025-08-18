@@ -405,6 +405,8 @@ export const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken)
   const artistTitle = isLikelyAppearance ? track.originalTitle : track.grandparentTitle;
   const artistLink = isLikelyAppearance ? null : '/artists/' + libraryId + '/' + track.grandparentRatingKey;
 
+  const originalSrc = `${serverBaseUrl}${track.Media[0].Part[0].key}?X-Plex-Token=${accessToken}`;
+
   return {
     kind: 'track',
     libraryId: libraryId,
@@ -426,7 +428,7 @@ export const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken)
     releaseDate: track.parentYear ? track.parentYear + '-01-01' : null,
     thumb: getThumb(track.thumb, serverBaseUrl, accessToken, thumbSizeSmall),
     thumbMedium: getThumb(track.thumb, serverBaseUrl, accessToken, thumbSizeMedium),
-    src: `${serverBaseUrl}${track.Media[0].Part[0].key}?X-Plex-Token=${accessToken}`,
+    src: originalSrc,
   };
 };
 

@@ -10,7 +10,7 @@ import clsx from 'clsx';
 import { Icon, RangeSlider } from 'js/components';
 import { useKeyMediaControls, useMediaControls, useMediaMeta } from 'js/hooks';
 import { analyticsEvent, durationToStringShort } from 'js/utils';
-import * as playerX from 'js/services/player';
+import * as playerX from 'js/services/player.native';
 
 import style from './ControlBar.module.scss';
 

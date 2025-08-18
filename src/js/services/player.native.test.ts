@@ -19,7 +19,7 @@
  */
 
 import { MockHTMLAudioElement } from '../../../__mocks__/HTMLAudioElement';
-import * as player from './player';
+import * as player from './player.native';
 
 // Mock document.createElement for audio elements directly in test file
 const originalCreateElement = document.createElement.bind(document);
