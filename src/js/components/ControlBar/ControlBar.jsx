@@ -216,11 +216,22 @@ export const SecondaryControls = ({ fullPage }) => {
         <RangeSlider value={volumeMuted ? 0 : volumeLevel} handleChange={dispatch.playerModel.volumeLevelSet} />
       </div>
 
-      {!isOnline && (
-        <div className={style.secondaryControls}>
-          <div className={style.offline} title="No Internet Connection">
-            <Icon icon="CloudOfflineIcon" cover stroke strokeWidth={1.2} />
-          </div>
+      {(fullPage || !isOnline) && (
+        <div className={style.secondaryButtons}>
+          {fullPage && (
+            <button
+              className={style.settings}
+              // onClick={}
+            >
+              <Icon icon="CogIcon" cover stroke />
+            </button>
+          )}
+
+          {!isOnline && (
+            <div className={style.offline} title="No Internet Connection">
+              <Icon icon="CloudOfflineIcon" cover stroke strokeWidth={1.2} />
+            </div>
+          )}
         </div>
       )}
     </div>

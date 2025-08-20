@@ -1,6 +1,7 @@
 @use '../../../css/_config/_mixins';
 
 .wrap {
+  width: 100%;
   margin: 20px 0;
 
   &:first-child {
@@ -9,6 +10,7 @@
 }
 
 .badge {
+  width: 100%;
   padding: 7px 30px 7px 7px;
   background: var(--color-tertiary-background);
   border: 1px solid var(--color-tertiary-border);
@@ -30,6 +32,7 @@
 .body,
 .cta {
   margin: 8px 0;
+  text-wrap: balance;
 
   &:first-child {
     margin-top: 0;

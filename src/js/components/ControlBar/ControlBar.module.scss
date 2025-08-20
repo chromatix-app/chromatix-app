@@ -155,6 +155,7 @@ button.play,
 button.queue,
 button.repeat,
 button.rewind,
+button.settings,
 button.shuffle,
 button.volume,
 .offline {
@@ -194,6 +195,7 @@ button.forward {
   padding: 8px 7px 8px 9px;
 }
 
+button.settings,
 button.shuffle,
 button.repeat {
   padding: 9px;
@@ -240,6 +242,7 @@ button.active {
   width: 36px;
   height: 36px;
   padding: 6px;
+  margin-left: 4px;
   background: var(--color-text) !important;
   color: var(--color-secondary-background) !important;
   cursor: default;
@@ -320,7 +323,7 @@ button.active {
   // }
 
   .volSlider + & {
-    margin-left: 16px;
+    margin-left: 6px;
   }
 }
 

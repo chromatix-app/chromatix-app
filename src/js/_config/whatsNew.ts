@@ -1,10 +1,19 @@
 export const whatsNew = [
+  // {
+  //   version: '0.1.0',
+  //   title: 'Jellyfin support',
+  //   date: 'September 2025',
+  //   body: `<p>Jellyfin users can now enjoy their music libraries in Chromatix too!</p>
+  //   <p>Right now you can only log into one service at a time, but multiple account support and quick switching will arrive in another update soon.</p>`,
+  //   imageDark: 'promo-009-dark',
+  //   imageLight: 'promo-009-light',
+  // },
   {
     version: '0.1.0',
-    title: 'Jellyfin support',
-    date: 'July 2025',
-    body: `<p>Jellyfin users can now enjoy their music libraries in Chromatix too!</p>
-    <p>Right now you can only log into one service at a time, but multiple account support and quick switching will arrive in another update soon.</p>`,
+    title: 'Full screen player',
+    date: 'August 2025',
+    body: `<p>Chromatix has a brand new full screen player mode.</p>
+    <p>Click the new full screen icon in the bottom control bar to try it out. You have access to all your music controls, and can click the settings cog for customisation options.</p>`,
     imageDark: 'promo-009-dark',
     imageLight: 'promo-009-light',
   },
