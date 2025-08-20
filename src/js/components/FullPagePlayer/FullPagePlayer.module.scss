@@ -10,7 +10,26 @@
   min-width: 720px;
   height: 100vh;
   height: 100svh;
-  padding: 75px 80px;
+  padding: 30px;
+
+  @media (min-width: 840px) and (min-height: 560px) {
+    padding: 40px;
+  }
+  @media (min-width: 1024px) and (min-height: 640px) {
+    padding: 50px;
+  }
+  @media (min-width: 1140px) and (min-height: 740px) {
+    padding: 65px;
+  }
+  @media (min-width: 1360px) and (min-height: 820px) {
+    padding: 75px 80px;
+  }
+  @media (min-width: 1580px) and (min-height: 900px) {
+    padding: 75px 90px;
+  }
+  @media (min-width: 1680px) and (min-height: 960px) {
+    padding: 75px 100px;
+  }
 
   > * {
     width: 100%;
@@ -34,9 +53,9 @@
 .cover {
   overflow: hidden;
   flex: 0 0 auto;
-  width: 460px;
-  height: 460px;
-  margin-right: 60px;
+  width: 240px;
+  height: 240px;
+  margin-right: 25px;
   background: var(--color-secondary-hover);
   background-image: vars.$thumbnail;
   background-size: contain;
@@ -44,6 +63,45 @@
   background-repeat: no-repeat;
   border-radius: 10px;
   outline: 1px solid var(--color-opacity-01);
+
+  @media (min-width: 840px) and (min-height: 560px) {
+    width: 280px;
+    height: 280px;
+    margin-right: 35px;
+  }
+  @media (min-width: 1024px) and (min-height: 640px) {
+    width: 340px;
+    height: 340px;
+    margin-right: 40px;
+  }
+  @media (min-width: 1140px) and (min-height: 740px) {
+    width: 400px;
+    height: 400px;
+    margin-right: 50px;
+  }
+  @media (min-width: 1280px) and (min-height: 770px) {
+    width: 430px;
+    height: 430px;
+    margin-right: 55px;
+  }
+  @media (min-width: 1360px) and (min-height: 820px) {
+    width: 460px;
+    height: 460px;
+    margin-right: 60px;
+  }
+  @media (min-width: 1580px) and (min-height: 900px) {
+    width: 520px;
+    height: 520px;
+    margin-right: 65px;
+  }
+  @media (min-width: 1680px) and (min-height: 960px) {
+    width: 580px;
+    height: 580px;
+  }
+  @media (min-width: 1920px) and (min-height: 1020px) {
+    width: 640px;
+    height: 640px;
+  }
 
   &Placeholder {
     outline: 1px solid var(--color-opacity-015);
@@ -64,7 +122,26 @@
 .details {
   flex: 1 1 auto;
   width: calc(100% - 460px - 60px);
-  padding-bottom: 40px;
+  padding-bottom: 20px;
+
+  @media (min-width: 840px) and (min-height: 560px) {
+    padding-bottom: 25px;
+  }
+  @media (min-width: 1024px) and (min-height: 640px) {
+    padding-bottom: 30px;
+  }
+  @media (min-width: 1140px) and (min-height: 740px) {
+    padding-bottom: 35px;
+  }
+  @media (min-width: 1360px) and (min-height: 820px) {
+    padding-bottom: 40px;
+  }
+  @media (min-width: 1580px) and (min-height: 900px) {
+    padding-bottom: 45px;
+  }
+  @media (min-width: 1680px) and (min-height: 960px) {
+    padding-bottom: 50px;
+  }
 
   a {
     @include mixins.focus-self-underline;
@@ -78,38 +155,131 @@
 }
 
 .title {
-  font-size: 40px;
+  font-size: 26px;
   line-height: 1.1;
   font-weight: bold;
+
+  @media (min-width: 840px) and (min-height: 560px) {
+    font-size: 30px;
+  }
+  @media (min-width: 1024px) and (min-height: 640px) {
+    font-size: 34px;
+  }
+  @media (min-width: 1140px) and (min-height: 740px) {
+    font-size: 37px;
+  }
+  @media (min-width: 1360px) and (min-height: 820px) {
+    font-size: 40px;
+  }
+  @media (min-width: 1580px) and (min-height: 900px) {
+    font-size: 44px;
+  }
+  @media (min-width: 1680px) and (min-height: 960px) {
+    font-size: 48px;
+  }
 }
 
 .artist {
-  margin-top: 8px;
-  font-size: 22px;
+  margin-top: 6px;
+  font-size: 18px;
   line-height: 1.1;
   color: var(--color-opacity-04);
+
+  @media (min-width: 840px) and (min-height: 560px) {
+    font-size: 19px;
+  }
+  @media (min-width: 1024px) and (min-height: 640px) {
+    margin-top: 7px;
+    font-size: 20px;
+  }
+  @media (min-width: 1140px) and (min-height: 740px) {
+    font-size: 21px;
+  }
+  @media (min-width: 1360px) and (min-height: 820px) {
+    margin-top: 8px;
+    font-size: 22px;
+  }
+  @media (min-width: 1580px) and (min-height: 900px) {
+    font-size: 24px;
+  }
+  @media (min-width: 1680px) and (min-height: 960px) {
+    font-size: 26px;
+  }
 }
 
 .album {
-  margin-top: 12px;
-  font-size: 16px;
+  margin-top: 10px;
+  font-size: 14px;
   line-height: 1.1;
+
+  @media (min-width: 840px) and (min-height: 560px) {
+  }
+  @media (min-width: 1024px) and (min-height: 640px) {
+    margin-top: 11px;
+    font-size: 15px;
+  }
+  @media (min-width: 1140px) and (min-height: 740px) {
+  }
+  @media (min-width: 1360px) and (min-height: 820px) {
+    margin-top: 12px;
+    font-size: 16px;
+  }
+  @media (min-width: 1580px) and (min-height: 900px) {
+    margin-top: 14px;
+    font-size: 18px;
+  }
 }
 
 .favourite {
-  margin: 16px 0 13px;
+  margin: 14px 0 11px;
+
+  @media (min-width: 840px) and (min-height: 560px) {
+  }
+  @media (min-width: 1024px) and (min-height: 640px) {
+    margin: 15px 0 12px;
+  }
+  @media (min-width: 1140px) and (min-height: 740px) {
+  }
+  @media (min-width: 1360px) and (min-height: 820px) {
+    margin: 16px 0 13px;
+  }
 }
 
 .rating {
-  margin: 18px 0;
+  margin: 16px 0;
+
+  @media (min-width: 840px) and (min-height: 560px) {
+  }
+  @media (min-width: 1024px) and (min-height: 640px) {
+    margin: 17px 0;
+  }
+  @media (min-width: 1140px) and (min-height: 740px) {
+  }
+  @media (min-width: 1360px) and (min-height: 820px) {
+    margin: 18px 0;
+  }
 }
 
 .specs {
-  margin-top: 12px;
+  margin-top: 10px;
   font-size: 12px;
   line-height: 1.1;
   text-transform: uppercase;
   color: var(--color-opacity-04);
+
+  @media (min-width: 840px) and (min-height: 560px) {
+  }
+  @media (min-width: 1024px) and (min-height: 640px) {
+    margin-top: 11px;
+  }
+  @media (min-width: 1140px) and (min-height: 740px) {
+  }
+  @media (min-width: 1360px) and (min-height: 820px) {
+    margin-top: 12px;
+  }
+  @media (min-width: 1580px) and (min-height: 900px) {
+    font-size: 13px;
+  }
 }
 
 //
@@ -117,7 +287,24 @@
 //
 
 .progress {
-  margin-top: 100px;
+  margin-top: 60px;
+
+  @media (min-width: 840px) and (min-height: 560px) {
+    margin-top: 70px;
+  }
+  @media (min-width: 1024px) and (min-height: 640px) {
+    margin-top: 80px;
+  }
+  @media (min-width: 1140px) and (min-height: 740px) {
+    margin-top: 90px;
+  }
+  @media (min-width: 1360px) and (min-height: 820px) {
+    margin-top: 100px;
+  }
+  @media (min-width: 1580px) and (min-height: 900px) {
+  }
+  @media (min-width: 1680px) and (min-height: 960px) {
+  }
 }
 
 .controls {
@@ -125,7 +312,14 @@
   justify-content: center;
   align-items: center;
   grid-template-columns: minmax(0, 1fr) auto 1fr;
-  margin: 40px auto 0;
+  margin: 30px auto 0;
+
+  @media (min-width: 840px) and (min-height: 560px) {
+    margin: 35px auto 0;
+  }
+  @media (min-width: 1024px) and (min-height: 640px) {
+    margin: 40px auto 0;
+  }
 
   a {
     &:hover {
