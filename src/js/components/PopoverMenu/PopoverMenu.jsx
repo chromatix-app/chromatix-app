@@ -16,6 +16,11 @@ import style from './PopoverMenu.module.scss';
 export const PopoverMenu = ({ children, variant, setter, entries, side = 'top', align = 'start' }) => {
   const hasGroups = entries.find((entry) => entry.variant === 'sectionHeading');
 
+  // Prevent custom escape handling from running
+  const handleEscapeKeyDown = (event) => {
+    event.stopPropagation();
+  };
+
   return (
     <RadixMenu.Root
     // open
@@ -26,6 +31,7 @@ export const PopoverMenu = ({ children, variant, setter, entries, side = 'top', 
         <RadixMenu.Content
           side={side}
           align={align}
+          onEscapeKeyDown={handleEscapeKeyDown}
           className={clsx(style.content, style['content' + variant], {
             [style.contentWithGroups]: hasGroups,
           })}
