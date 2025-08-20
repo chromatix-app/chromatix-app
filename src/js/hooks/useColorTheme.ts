@@ -16,6 +16,9 @@ function useColorTheme(): void {
 
   const dispatch = useDispatch();
 
+  const fullPage = useSelector(({ appModel }: any) => appModel.fullPage);
+  const fullPageTheme = useSelector(({ sessionModel }: any) => sessionModel.fullPageTheme);
+
   const accessibilityContrast = useSelector(({ sessionModel }: any) => sessionModel.accessibilityContrast);
 
   const currentServer = useSelector(({ sessionModel }: any) => sessionModel.currentServer);
@@ -32,7 +35,12 @@ function useColorTheme(): void {
   const currentColorText = useSelector(({ sessionModel }: any) => sessionModel.currentColorText);
 
   useEffect(() => {
-    const actualTheme = themes[currentTheme as keyof typeof themes] ? currentTheme : defaultTheme;
+    const actualTheme =
+      fullPage && !fullPageTheme
+        ? 'full-page'
+        : themes[currentTheme as keyof typeof themes]
+          ? currentTheme
+          : defaultTheme;
 
     const colorCore =
       currentTheme === 'custom' ? currentColorPrimary : themes[actualTheme as keyof typeof themes].primary;
@@ -222,6 +230,8 @@ function useColorTheme(): void {
     currentColorBackground,
     currentColorText,
     currentColorPrimary,
+    fullPage,
+    fullPageTheme,
   ]);
 }
 
