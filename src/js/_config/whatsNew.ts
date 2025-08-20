@@ -13,7 +13,7 @@ export const whatsNew = [
     title: 'Full screen player',
     date: 'August 2025',
     body: `<p>Chromatix has a brand new full screen player mode.</p>
-    <p>Click the new full screen icon in the bottom toolbar to try it out. You have access to all your music controls, and can click the settings cog for customisation options.</p>`,
+    <p>Click the new full screen icon in the bottom toolbar to try it out. You have access to all your music controls, and can also click the settings icon for customisation options.</p>`,
     imageDark: 'promo-010-dark',
     imageLight: 'promo-010-light',
   },
