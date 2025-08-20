@@ -281,14 +281,14 @@ const AppMain = () => {
   const [contentContainerClass, setContentContainerClass] = useState(0);
   const [contentWidth, setContentWidth] = useState(0);
 
-  const fullPage = useSelector(({ appModel }) => appModel.fullPage);
+  const fullPageMode = useSelector(({ appModel }) => appModel.fullPageMode);
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
 
   const { windowWidth } = useWindowSize();
 
   // Disable full page view on history change
   useEffect(() => {
-    if (fullPage) {
+    if (fullPageMode) {
       dispatch.appModel.fullPageOff();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -296,7 +296,7 @@ const AppMain = () => {
 
   // Handle window resizing
   useEffect(() => {
-    if (fullPage) return;
+    if (fullPageMode) return;
     const newWidth = contentRef.current.offsetWidth;
     const bpList = breakPoints.filter((bp) => bp <= newWidth);
     const newContainerClass = bpList.map((bp) => 'cq-' + bp).join(' ');
@@ -311,7 +311,7 @@ const AppMain = () => {
       setContentBreakpoint(newBreakpoint);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [windowWidth, queueIsVisible, fullPage]);
+  }, [windowWidth, queueIsVisible, fullPageMode]);
 
   // Store current breakpoint (this theoretically won't run until after the HTML has re-rendered, which is essential)
   useEffect(() => {
@@ -333,9 +333,9 @@ const AppMain = () => {
     <div className="wrap">
       <div className="electron-drag"></div>
 
-      {fullPage && <FullPagePlayer />}
+      {fullPageMode && <FullPagePlayer />}
 
-      {!fullPage && (
+      {!fullPageMode && (
         <div className="layout">
           <div className="layout-sidebar">
             <SideBar />

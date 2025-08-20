@@ -92,7 +92,7 @@ const NowPlaying = () => {
   );
 };
 
-export const PrimaryControls = ({ fullPage }) => {
+export const PrimaryControls = ({ fullPageMode }) => {
   const dispatch = useDispatch();
 
   const playerLoading = useSelector(({ playerModel }) => playerModel.playerLoading);
@@ -137,7 +137,7 @@ export const PrimaryControls = ({ fullPage }) => {
   useMediaMeta(trackMeta);
 
   return (
-    <div className={clsx(style.primaryControls, { [style.fullPage]: fullPage })}>
+    <div className={clsx(style.primaryControls, { [style.fullPageMode]: fullPageMode })}>
       <button
         className={clsx(style.shuffle, { [style.active]: playingShuffle })}
         onClick={dispatch.playerModel.playerShuffleToggle}
@@ -173,7 +173,7 @@ export const PrimaryControls = ({ fullPage }) => {
   );
 };
 
-export const SecondaryControls = ({ fullPage }) => {
+export const SecondaryControls = ({ fullPageMode }) => {
   const dispatch = useDispatch();
 
   const isOnline = useSelector(({ appModel }) => appModel.isOnline);
@@ -185,23 +185,23 @@ export const SecondaryControls = ({ fullPage }) => {
   const volIcon = volumeMuted || volumeLevel <= 0 ? 'VolXIcon' : volumeLevel < 50 ? 'VolLowIcon' : 'VolHighIcon';
 
   return (
-    <div className={clsx(style.secondaryControls, { [style.fullPage]: fullPage })}>
+    <div className={clsx(style.secondaryControls, { [style.fullPageMode]: fullPageMode })}>
       <div className={style.secondaryButtons}>
-        {isLocal && !fullPage && (
+        {isLocal && !fullPageMode && (
           <button className={style.expand} onClick={dispatch.appModel.fullPageOn}>
             <Icon icon="ExpandSplitIcon" cover stroke />
           </button>
         )}
 
-        {isLocal && fullPage && (
+        {isLocal && fullPageMode && (
           <button className={style.expand} onClick={dispatch.appModel.fullPageOff}>
             <Icon icon="CollapseIcon" cover stroke />
           </button>
         )}
 
-        {fullPage && <FullPageMenu />}
+        {fullPageMode && <FullPageMenu />}
 
-        {!fullPage && (
+        {!fullPageMode && (
           <button
             className={clsx(style.queue, { [style.active]: queueIsVisible })}
             onClick={dispatch.sessionModel.queueVisibleToggle}
@@ -301,7 +301,7 @@ const FullPageMenu = () => {
           variant: 'divider',
         },
         {
-          label: 'Use colour theme',
+          label: 'Match your theme',
           attr: 'fullPageTheme',
           checked: fullPageTheme,
         },

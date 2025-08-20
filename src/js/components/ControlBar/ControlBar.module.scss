@@ -181,7 +181,7 @@ span.settings,
   &:not(:disabled):hover {
     background: var(--color-secondary-hover);
 
-    .fullPage & {
+    .fullPageMode & {
       background: var(--color-secondary-background);
     }
   }
@@ -306,7 +306,7 @@ button.active {
   display: flex;
   align-items: center;
 
-  // &.fullPage {
+  // &.fullPageMode {
   //   opacity: 0.4;
 
   //   &:hover,

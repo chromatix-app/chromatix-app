@@ -16,7 +16,7 @@ function useColorTheme(): void {
 
   const dispatch = useDispatch();
 
-  const fullPage = useSelector(({ appModel }: any) => appModel.fullPage);
+  const fullPageMode = useSelector(({ appModel }: any) => appModel.fullPageMode);
   const fullPageTheme = useSelector(({ sessionModel }: any) => sessionModel.fullPageTheme);
 
   const accessibilityContrast = useSelector(({ sessionModel }: any) => sessionModel.accessibilityContrast);
@@ -36,7 +36,7 @@ function useColorTheme(): void {
 
   useEffect(() => {
     const actualTheme =
-      fullPage && !fullPageTheme
+      fullPageMode && !fullPageTheme
         ? 'full-page'
         : themes[currentTheme as keyof typeof themes]
           ? currentTheme
@@ -230,7 +230,7 @@ function useColorTheme(): void {
     currentColorBackground,
     currentColorText,
     currentColorPrimary,
-    fullPage,
+    fullPageMode,
     fullPageTheme,
   ]);
 }

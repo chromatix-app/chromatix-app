@@ -34,15 +34,15 @@ export const FullPagePlayer = () => {
       </div>
       <div>
         <div className={style.progress}>
-          <ControlProgress fullPage />
+          <ControlProgress fullPageMode />
         </div>
         <div className={style.controls}>
           <div className={style.leftCol}></div>
           <div className={style.centerCol}>
-            <PrimaryControls fullPage />
+            <PrimaryControls fullPageMode />
           </div>
           <div className={style.rightCol}>
-            <SecondaryControls fullPage />
+            <SecondaryControls fullPageMode />
           </div>
         </div>
       </div>

@@ -38,7 +38,7 @@ const appState = {
 
 const userState = {
   loggedIn: false,
-  fullPage: false,
+  fullPageMode: false,
 
   // TBC remove these...
   currentService: null,
@@ -131,13 +131,13 @@ const reducers = {
 
   fullPageOn(rootState) {
     // console.log('%c--- fullPageOn ---', 'color:#07a098');
-    analyticsEvent('Full Page: On');
-    return { ...rootState, fullPage: true };
+    analyticsEvent('Full Page Mode: On');
+    return { ...rootState, fullPageMode: true };
   },
 
   fullPageOff(rootState) {
     // console.log('%c--- fullPageOff ---', 'color:#07a098');
-    return { ...rootState, fullPage: false };
+    return { ...rootState, fullPageMode: false };
   },
 
   // showLoader(rootState) {
@@ -354,7 +354,7 @@ const effects = (dispatch) => {
       dispatch.appModel.setAppState({
         ...Object.assign({}, serverState),
         ...Object.assign({}, libraryState),
-        fullPage: false,
+        fullPageMode: false,
       });
       dispatch.playerModel.playerUnload();
     },
@@ -363,7 +363,7 @@ const effects = (dispatch) => {
       console.log('%c--- clearLibraryState ---', 'color:#07a098');
       dispatch.appModel.setAppState({
         ...Object.assign({}, libraryState),
-        fullPage: false,
+        fullPageMode: false,
       });
       rootState.appModel.history.push('/');
       bridge.getAllPlaylists();
