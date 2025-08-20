@@ -146,6 +146,14 @@
   @media (min-width: 1024px) {
     gap: 10px;
   }
+
+  &.fullPageMode {
+    width: auto;
+
+    @media (max-width: 1023px) {
+      justify-content: flex-start;
+    }
+  }
 }
 
 button.expand,
@@ -174,7 +182,7 @@ span.settings,
   @include mixins.focus-self-outline;
 
   &:disabled {
-    opacity: 0.4;
+    opacity: 0.5;
     cursor: default;
   }
 
@@ -210,6 +218,10 @@ button.pause {
   margin: 0 6px;
   background: var(--color-core) !important;
   color: var(--color-secondary-background);
+
+  .fullPageMode & {
+    color: var(--color-primary-background);
+  }
 
   &:disabled {
     background: var(--color-text) !important;
