@@ -4,7 +4,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 
 import Modals from 'js/app/Modals';
@@ -48,8 +48,8 @@ const App = () => {
 
   const gotRequiredData = useGotRequiredData();
 
-  const history = useHistory();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   useColorTheme();
   useElectronStatus();
@@ -273,6 +273,8 @@ const breakPoints = [620, 680, 800, 860, 920, 980, 1100, 1220];
 
 const AppMain = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
+
   const contentRef = useRef();
 
   const [contentBreakpoint, setContentBreakpoint] = useState(0);
@@ -283,6 +285,14 @@ const AppMain = () => {
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
 
   const { windowWidth } = useWindowSize();
+
+  // Disable full page view on history change
+  useEffect(() => {
+    if (fullPage) {
+      dispatch.appModel.fullPageOff();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location]);
 
   // Handle window resizing
   useEffect(() => {

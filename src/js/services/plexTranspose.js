@@ -14,7 +14,7 @@ import { XMLParser } from 'fast-xml-parser';
 // ======================================================================
 
 const thumbSizeSmall = 360;
-const thumbSizeMedium = 600;
+const thumbSizeMedium = 680;
 
 // ======================================================================
 // HELPERS

@@ -3,6 +3,7 @@
 // ======================================================================
 
 import * as bridge from 'js/services/bridge';
+import { analyticsEvent } from 'js/utils';
 
 // ======================================================================
 // OPTIONS
@@ -129,12 +130,13 @@ const reducers = {
   },
 
   fullPageOn(rootState) {
-    console.log('%c--- fullPageOn ---', 'color:#07a098');
+    // console.log('%c--- fullPageOn ---', 'color:#07a098');
+    analyticsEvent('Full Page: On');
     return { ...rootState, fullPage: true };
   },
 
   fullPageOff(rootState) {
-    console.log('%c--- fullPageOff ---', 'color:#07a098');
+    // console.log('%c--- fullPageOff ---', 'color:#07a098');
     return { ...rootState, fullPage: false };
   },
 
@@ -997,6 +999,18 @@ const effects = (dispatch) => {
         allArtistTracks,
         allAlbumTracks,
         allPlaylistTracks,
+      });
+
+      // update queue tracks
+      const playingTrackList = [...rootState.sessionModel.playingTrackList];
+      playingTrackList.forEach((track) => {
+        if (track.trackId === ratingKey) {
+          track.isFavourite = isFavourite;
+          track.userRating = rating;
+        }
+      });
+      dispatch.sessionModel.setSessionState({
+        playingTrackList,
       });
     },
 

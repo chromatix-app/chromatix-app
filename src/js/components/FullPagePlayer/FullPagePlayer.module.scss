@@ -50,10 +50,31 @@
   }
 }
 
+.coverLink,
+.coverArtwork,
+.coverArtwork img {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  object-fit: cover;
+}
+
 .details {
   flex: 1 1 auto;
   width: calc(100% - 460px - 60px);
   padding-bottom: 40px;
+
+  a {
+    @include mixins.focus-self-underline;
+
+    &:hover {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 2px;
+    }
+  }
 }
 
 .title {

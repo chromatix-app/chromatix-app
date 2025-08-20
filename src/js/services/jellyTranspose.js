@@ -3,6 +3,10 @@ We are transposing the API data to a format that is easier to work with in the a
 consistent between music services, and also doing some additional processing and validation.
 */
 
+// ======================================================================
+// IMPORTS
+// ======================================================================
+
 import { safeEncodeURIComponent } from 'js/utils/';
 
 // ======================================================================
@@ -10,7 +14,7 @@ import { safeEncodeURIComponent } from 'js/utils/';
 // ======================================================================
 
 const thumbSizeSmall = 360;
-const thumbSizeMedium = 600;
+const thumbSizeMedium = 680;
 
 // ======================================================================
 // HELPERS

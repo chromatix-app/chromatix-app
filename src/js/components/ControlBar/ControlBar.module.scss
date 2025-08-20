@@ -166,7 +166,7 @@ button.volume,
   // margin: 0 5px;
   background: none;
   border: none;
-  border: 2px solid var(--color-secondary-background);
+  border: 2px solid transparent;
   border-radius: 50%;
   cursor: pointer;
 
@@ -179,14 +179,10 @@ button.volume,
 
   &:not(:disabled):hover {
     background: var(--color-secondary-hover);
-  }
 
-  .fullPage & {
-    border: 2px solid var(--color-primary-background);
-  }
-
-  &:not(:disabled):hover {
-    background: var(--color-secondary-background);
+    .fullPage & {
+      background: var(--color-secondary-background);
+    }
   }
 }
 
