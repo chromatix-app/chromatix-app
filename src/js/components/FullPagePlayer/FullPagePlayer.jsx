@@ -53,16 +53,23 @@ export const FullPagePlayer = () => {
 const NowPlaying = () => {
   const dispatch = useDispatch();
 
-  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const fullPageArtist = useSelector(({ sessionModel }) => sessionModel.fullPageArtist);
+  const fullPageAlbum = useSelector(({ sessionModel }) => sessionModel.fullPageAlbum);
+  const fullPageIsFavourite = useSelector(({ sessionModel }) => sessionModel.fullPageIsFavourite);
+  const fullPageUserRating = useSelector(({ sessionModel }) => sessionModel.fullPageUserRating);
+  const fullPageCodec = useSelector(({ sessionModel }) => sessionModel.fullPageCodec);
+  const fullPageBitrate = useSelector(({ sessionModel }) => sessionModel.fullPageBitrate);
+  // const fullPageTheme = useSelector(({ sessionModel }) => sessionModel.fullPageTheme);
 
   const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
   const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
   const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
   const playingLink = useSelector(({ sessionModel }) => sessionModel.playingLink);
 
-  const trackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
-
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
+
+  const trackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
 
   const thumbSrc = trackCurrent?.thumbMedium || trackCurrent?.thumb;
 
@@ -98,27 +105,27 @@ const NowPlaying = () => {
           <>
             {trackCurrent.title && <div className={clsx(style.title, 'text-trim')}>{trackCurrent.title}</div>}
 
-            {trackCurrent.artist && trackCurrent.artistLink && (
+            {fullPageArtist && trackCurrent.artist && trackCurrent.artistLink && (
               <div className={clsx(style.artist, 'text-trim')}>
                 <NavLink to={trackCurrent.artistLink}>{trackCurrent.artist}</NavLink>
               </div>
             )}
 
-            {trackCurrent.artist && !trackCurrent.artistLink && (
+            {fullPageArtist && trackCurrent.artist && !trackCurrent.artistLink && (
               <div className={clsx(style.artist, 'text-trim')}>{trackCurrent.artist}</div>
             )}
 
-            {trackCurrent.album && trackCurrent.albumLink && (
+            {fullPageAlbum && trackCurrent.album && trackCurrent.albumLink && (
               <div className={clsx(style.album, 'text-trim')}>
                 <NavLink to={trackCurrent.albumLink}>{trackCurrent.album}</NavLink>
               </div>
             )}
 
-            {trackCurrent.album && !trackCurrent.albumLink && (
+            {fullPageAlbum && trackCurrent.album && !trackCurrent.albumLink && (
               <div className={clsx(style.album, 'text-trim')}>{trackCurrent.album}</div>
             )}
 
-            {platformOpts.enableIsFavourite && (
+            {fullPageIsFavourite && platformOpts.enableIsFavourite && (
               <div className={style.favourite}>
                 <Favourite
                   variant="fullpage"
@@ -130,7 +137,7 @@ const NowPlaying = () => {
               </div>
             )}
 
-            {platformOpts.enableUserRating && (
+            {fullPageUserRating && platformOpts.enableUserRating && (
               <div className={style.rating}>
                 <StarRating
                   variant="fullpage"
@@ -143,11 +150,11 @@ const NowPlaying = () => {
               </div>
             )}
 
-            {(trackCurrent.codec || trackCurrent.bitrate) && (
+            {((fullPageCodec && trackCurrent.codec) || (fullPageBitrate && trackCurrent.bitrate)) && (
               <div className={clsx(style.specs, 'text-trim')}>
-                {trackCurrent.codec && trackCurrent.codec}
-                {trackCurrent.codec && trackCurrent.bitrate && ' • '}
-                {trackCurrent.bitrate && `${trackCurrent.bitrate}kbps`}
+                {fullPageCodec && trackCurrent.codec && trackCurrent.codec}
+                {fullPageCodec && fullPageBitrate && trackCurrent.codec && trackCurrent.bitrate && ' • '}
+                {fullPageBitrate && trackCurrent.bitrate && `${trackCurrent.bitrate}kbps`}
               </div>
             )}
           </>

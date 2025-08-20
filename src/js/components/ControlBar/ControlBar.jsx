@@ -7,9 +7,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 
-import { Icon, RangeSlider } from 'js/components';
+import { Icon, PopoverMenu, RangeSlider } from 'js/components';
 import { useKeyMediaControls, useMediaControls, useMediaMeta, usePlayerProgress } from 'js/hooks';
 import { analyticsEvent, durationToStringShort } from 'js/utils';
+import platformFeatures from 'js/_config/platformFeatures';
 
 import style from './ControlBar.module.scss';
 
@@ -198,6 +199,8 @@ export const SecondaryControls = ({ fullPage }) => {
           </button>
         )}
 
+        {fullPage && <FullPageMenu />}
+
         {!fullPage && (
           <button
             className={clsx(style.queue, { [style.active]: queueIsVisible })}
@@ -216,25 +219,98 @@ export const SecondaryControls = ({ fullPage }) => {
         <RangeSlider value={volumeMuted ? 0 : volumeLevel} handleChange={dispatch.playerModel.volumeLevelSet} />
       </div>
 
-      {(fullPage || !isOnline) && (
+      {!isOnline && (
         <div className={style.secondaryButtons}>
-          {fullPage && (
-            <button
-              className={style.settings}
-              // onClick={}
-            >
-              <Icon icon="CogIcon" cover stroke />
-            </button>
-          )}
-
-          {!isOnline && (
-            <div className={style.offline} title="No Internet Connection">
-              <Icon icon="CloudOfflineIcon" cover stroke strokeWidth={1.2} />
-            </div>
-          )}
+          <div className={style.offline} title="No Internet Connection">
+            <Icon icon="CloudOfflineIcon" cover stroke strokeWidth={1.2} />
+          </div>
         </div>
       )}
     </div>
+  );
+};
+
+const FullPageMenu = () => {
+  const dispatch = useDispatch();
+
+  const fullPageArtist = useSelector(({ sessionModel }) => sessionModel.fullPageArtist);
+  const fullPageAlbum = useSelector(({ sessionModel }) => sessionModel.fullPageAlbum);
+  const fullPageIsFavourite = useSelector(({ sessionModel }) => sessionModel.fullPageIsFavourite);
+  const fullPageUserRating = useSelector(({ sessionModel }) => sessionModel.fullPageUserRating);
+  const fullPageCodec = useSelector(({ sessionModel }) => sessionModel.fullPageCodec);
+  const fullPageBitrate = useSelector(({ sessionModel }) => sessionModel.fullPageBitrate);
+  const fullPageTheme = useSelector(({ sessionModel }) => sessionModel.fullPageTheme);
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
+
+  const optionsSetter = (key, value) => {
+    dispatch.sessionModel.setSessionState({
+      [key]: value,
+    });
+  };
+
+  return (
+    <PopoverMenu
+      setter={optionsSetter}
+      entries={[
+        {
+          label: 'Title',
+          disabled: true,
+          checked: true,
+        },
+        {
+          label: 'Artist',
+          attr: 'fullPageArtist',
+          checked: fullPageArtist,
+        },
+        {
+          label: 'Album',
+          attr: 'fullPageAlbum',
+          checked: fullPageAlbum,
+        },
+        ...(platformOpts?.enableIsFavourite
+          ? [
+              {
+                label: 'Favourites',
+                attr: 'fullPageIsFavourite',
+                checked: fullPageIsFavourite,
+              },
+            ]
+          : []),
+        ...(platformOpts?.enableUserRating
+          ? [
+              {
+                label: 'Rating',
+                attr: 'fullPageUserRating',
+                checked: fullPageUserRating,
+              },
+            ]
+          : []),
+        {
+          label: 'Audio codec',
+          attr: 'fullPageCodec',
+          checked: fullPageCodec,
+        },
+        {
+          label: 'Bitrate',
+          attr: 'fullPageBitrate',
+          checked: fullPageBitrate,
+        },
+        {
+          variant: 'divider',
+        },
+        {
+          label: 'Use colour theme',
+          attr: 'fullPageTheme',
+          checked: fullPageTheme,
+        },
+      ]}
+    >
+      <span className={style.settings}>
+        <Icon icon="CogIcon" cover stroke />
+      </span>
+    </PopoverMenu>
   );
 };
 

@@ -13,7 +13,7 @@ import style from './PopoverMenu.module.scss';
 // COMPONENT
 // ======================================================================
 
-export const PopoverMenu = ({ children, variant, setter, entries, side = 'top', align = 'end' }) => {
+export const PopoverMenu = ({ children, variant, setter, entries, side = 'top', align = 'start' }) => {
   const hasGroups = entries.find((entry) => entry.variant === 'sectionHeading');
 
   return (

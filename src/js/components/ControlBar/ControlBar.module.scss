@@ -155,9 +155,9 @@ button.play,
 button.queue,
 button.repeat,
 button.rewind,
-button.settings,
 button.shuffle,
 button.volume,
+span.settings,
 .offline {
   display: block;
   position: relative;
@@ -187,6 +187,10 @@ button.volume,
   }
 }
 
+span.settings {
+  @include mixins.focus-child-outline;
+}
+
 button.rewind {
   padding: 8px 9px 8px 7px;
 }
@@ -195,9 +199,9 @@ button.forward {
   padding: 8px 7px 8px 9px;
 }
 
-button.settings,
 button.shuffle,
-button.repeat {
+button.repeat,
+span.settings {
   padding: 9px;
 }
 
