@@ -70,8 +70,8 @@ const ReleaseNotes = () => {
 
       <div className={clsx(style.releaseRight, { [style.releaseRightLight]: isLightTheme })}>
         <picture>
-          <source srcSet={`/images/compressed/${currentImage}.webp`} type="image/webp" />
-          <img src={`/images/original/${currentImage}.png`} alt="" draggable="false" />
+          <source srcSet={`/images/webp/${currentImage}.webp`} type="image/webp" />
+          <img src={`/images/compressed/${currentImage}.png`} alt="" draggable="false" />
         </picture>
       </div>
 
