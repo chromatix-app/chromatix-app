@@ -56,7 +56,7 @@ export const transposeServerArray = (array) => {
   return data;
 };
 
-export const transposeServerData = (server) => {
+const transposeServerData = (server) => {
   return {
     serverId: server.clientIdentifier,
     name: server.name || 'Unknown Plex Server',
@@ -76,7 +76,7 @@ export const transposeLibraryArray = (array) => {
   return data;
 };
 
-export const transposeLibraryData = (library) => {
+const transposeLibraryData = (library) => {
   return {
     libraryId: library.key,
     title: library.title,
@@ -123,7 +123,7 @@ export const transposeArtistAppearanceAlbumIdsArray = (array, libraryId, serverB
   return artistAppearanceAlbums;
 };
 
-export const transposeArtistData = (artist, libraryId, serverBaseUrl, accessToken) => {
+const transposeArtistData = (artist, libraryId, serverBaseUrl, accessToken) => {
   return {
     kind: 'artist',
     libraryId: libraryId,
@@ -159,7 +159,7 @@ export const transposeAlbumDetails = (array, libraryId, serverBaseUrl, accessTok
   return albumDetails;
 };
 
-export const transposeAlbumData = (album, libraryId, serverBaseUrl, accessToken) => {
+const transposeAlbumData = (album, libraryId, serverBaseUrl, accessToken) => {
   return {
     kind: 'album',
     libraryId: libraryId,
@@ -216,7 +216,7 @@ export const transposeFolderArray = (array, libraryId, serverBaseUrl, accessToke
   return data;
 };
 
-export const transposeFolderData = (folder, libraryId, serverBaseUrl, accessToken) => {
+const transposeFolderData = (folder, libraryId, serverBaseUrl, accessToken) => {
   if (folder.ratingKey) {
     if (folder.type !== 'track') {
       return null;
@@ -311,7 +311,7 @@ export const transposeCollectionItemArray = (array, libraryId, serverBaseUrl, ac
   return data;
 };
 
-export const transposeCollectionData = (collection, libraryId, serverBaseUrl, accessToken) => {
+const transposeCollectionData = (collection, libraryId, serverBaseUrl, accessToken) => {
   const collectionThumb = collection.thumb ? collection.thumb : collection.composite ? collection.composite : null;
   return {
     kind: 'collection',
@@ -371,7 +371,7 @@ export const transposeTagItemArray = (array, libraryId, serverBaseUrl, accessTok
   return data;
 };
 
-export const transposeGenreData = (type, genre, libraryId) => {
+const transposeGenreData = (type, genre, libraryId) => {
   return {
     kind: 'genre',
     libraryId: libraryId,
@@ -381,7 +381,7 @@ export const transposeGenreData = (type, genre, libraryId) => {
   };
 };
 
-export const transposeMoodData = (type, mood, libraryId) => {
+const transposeMoodData = (type, mood, libraryId) => {
   return {
     kind: 'mood',
     libraryId: libraryId,
@@ -391,7 +391,7 @@ export const transposeMoodData = (type, mood, libraryId) => {
   };
 };
 
-export const transposeStyleData = (type, style, libraryId) => {
+const transposeStyleData = (type, style, libraryId) => {
   return {
     kind: 'style',
     libraryId: libraryId,
@@ -414,7 +414,7 @@ export const transposeTrackArray = (array, libraryId, serverBaseUrl, accessToken
   return data;
 };
 
-export const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
+const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
   const isLikelyAppearance = track.originalTitle && track.originalTitle !== track.grandparentTitle;
 
   const artistTitle = isLikelyAppearance ? track.originalTitle : track.grandparentTitle;
@@ -477,7 +477,7 @@ export const transposeSearchResultsArray = (array, libraryId, serverBaseUrl, acc
   return data;
 };
 
-export const transposeSearchResultData = (result, libraryId, serverBaseUrl, accessToken) => {
+const transposeSearchResultData = (result, libraryId, serverBaseUrl, accessToken) => {
   if (result?.type) {
     if (result.type === 'artist') {
       return {
