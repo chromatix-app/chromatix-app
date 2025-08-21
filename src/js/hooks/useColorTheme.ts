@@ -213,7 +213,7 @@ function useColorTheme(): void {
     }
 
     sendToElectron('win', 'color-theme', {
-      background: hasQueueVisible ? colorSecondaryBackground : colorPrimaryBackground,
+      background: hasQueueVisible && !fullPageMode ? colorSecondaryBackground : colorPrimaryBackground,
       text: colorText,
       primary: colorCore,
     });
