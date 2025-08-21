@@ -91,7 +91,7 @@ const saveSessionData = (): void => {
 };
 
 // ======================================================================
-// GLOBAL ACCESS
+// DEBUGGING - GLOBAL STORE ACCESS
 // ======================================================================
 
 const isLocal = process.env.REACT_APP_ENV === 'local';

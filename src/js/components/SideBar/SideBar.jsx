@@ -15,8 +15,6 @@ import platformFeatures from 'js/_config/platformFeatures';
 
 import style from './SideBar.module.scss';
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
-
 // ======================================================================
 // COMPONENT
 // ======================================================================
@@ -29,6 +27,7 @@ const SideBar = () => {
 
   const currentService = useSelector(({ appModel }) => appModel.currentService);
 
+  const menuShowBanners = useSelector(({ sessionModel }) => sessionModel.menuShowBanners);
   const menuShowIcons = useSelector(({ sessionModel }) => sessionModel.menuShowIcons);
   const menuShowSearch = useSelector(({ sessionModel }) => sessionModel.menuShowSearch);
   const menuShowAllPlaylists = useSelector(({ sessionModel }) => sessionModel.menuShowAllPlaylists);
@@ -98,7 +97,7 @@ const SideBar = () => {
 
         {menuShowSearch && <SearchField />}
 
-        {isLocal && <ReleaseBanner />}
+        {menuShowBanners && <ReleaseBanner />}
 
         {(libraryIsVisible || (browseIsVisible && !menuShowSeparateBrowseSection)) && (
           <>

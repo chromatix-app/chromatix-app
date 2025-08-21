@@ -15,12 +15,33 @@ import style from './SettingsGeneral.module.scss';
 export const SettingsGeneral = () => {
   return (
     <div className={style.wrap}>
+      <GeneralSettings />
       <ServerSettings />
       <SortSettings />
       <RatingSettings />
       <PlaybackSettings />
     </div>
   );
+};
+
+//
+// GENERAL
+//
+
+const GeneralSettings = () => {
+  const menuShowBanners = useSelector(({ sessionModel }) => sessionModel.menuShowBanners);
+
+  const menuItems = [
+    {
+      key: 'menuShowBanners',
+      label: 'Show "what’s new" banners',
+      description:
+        'When major new features are added, we’ll display a small notification banner at the top of the sidebar menu to let you know.',
+      state: menuShowBanners,
+    },
+  ];
+
+  return <SettingsList title="General" menuItems={menuItems} />;
 };
 
 //

@@ -46,6 +46,7 @@ import { ReactComponent as DiscIcon } from './icons/general/disc.svg';
 import { ReactComponent as DownloadIcon } from './icons/general/download.svg';
 import { ReactComponent as EllipsisCircleIcon } from './icons/general/ellipsis-circle.svg';
 import { ReactComponent as ExpandIcon } from './icons/general/expand.svg';
+import { ReactComponent as ExpandSplitIcon } from './icons/general/expand-split.svg';
 import { ReactComponent as ExternalLinkIcon } from './icons/general/external-link.svg';
 import { ReactComponent as EyeIcon } from './icons/general/eye.svg';
 import { ReactComponent as FastForwardIcon } from './icons/general/fast-forward.svg';
@@ -154,6 +155,7 @@ export const customIcons = {
   DownloadIcon,
   EllipsisCircleIcon,
   ExpandIcon,
+  ExpandSplitIcon,
   ExternalLinkIcon,
   EyeIcon,
   FastForwardIcon,

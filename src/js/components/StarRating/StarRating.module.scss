@@ -30,7 +30,15 @@
   // }
 
   &Zero {
-    opacity: 0.6;
+    opacity: var(--opacity-06);
+  }
+
+  &Fullpage {
+    opacity: var(--opacity-04);
+
+    &:hover {
+      opacity: 1;
+    }
   }
 
   &ShowOnHover {
@@ -40,7 +48,7 @@
     // :global([data-row]:focus-within) &,
     :global(a:hover) &,
     :global([data-row]:hover) & {
-      opacity: 0.6;
+      opacity: var(--opacity-06);
     }
   }
 }

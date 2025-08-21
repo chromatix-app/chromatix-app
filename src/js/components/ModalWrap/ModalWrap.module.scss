@@ -37,8 +37,9 @@
   // Disabling pointer allows clicking outside the modal to close the window,
   // however when the content overflows it has a side effect of disabling
   // scrolling. This class enables scrolling if the content is overflowing.
-  .wrapHasOverflow & {
-    pointer-events: all;
+  &.centerWithOverflow {
+    pointer-events: all !important;
+    background: rgba(255, 0, 0, 0.1);
   }
 }
 

@@ -753,7 +753,7 @@ export const getFolderItems = () => {
 // GET ALL PLAYLISTS
 // ======================================================================
 
-export const getAllPlaylists = ({ accessToken, libraryId, serverBaseUrl, userId }) => {
+export const getAllPlaylists = ({ accessToken, libraryId, serverBaseUrl, timeStamp, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.playlist.getAllPlaylists(serverBaseUrl, userId);
@@ -802,7 +802,7 @@ export const getAllPlaylists = ({ accessToken, libraryId, serverBaseUrl, userId 
 // GET PLAYLIST DETAILS
 // ======================================================================
 
-export const getPlaylistDetails = ({ accessToken, libraryId, playlistId, serverBaseUrl, userId }) => {
+export const getPlaylistDetails = ({ accessToken, libraryId, playlistId, serverBaseUrl, timeStamp, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.playlist.getPlaylistDetails(serverBaseUrl, userId, playlistId);

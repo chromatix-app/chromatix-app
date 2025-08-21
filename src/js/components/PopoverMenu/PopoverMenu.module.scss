@@ -1,0 +1,120 @@
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
+
+// .trigger {
+//   display: flex;
+//   align-items: center;
+//   padding: 6px 6px;
+//   border-radius: 6px;
+//   font-size: 12px;
+//   line-height: 1;
+//   color: var(--color-opacity-06);
+
+//   @include mixins.focus-self-outline;
+
+//   .wrapLarge & {
+//     background: var(--color-opacity-03);
+//   }
+// }
+
+// .icon {
+//   display: inline-block;
+//   width: 14px;
+//   height: 14px;
+//   opacity: var(--opacity-06);
+//   color: var(--color-text);
+
+//   &:first-child {
+//     margin: 0 8px 0 0;
+//   }
+//   &:last-child {
+//     margin: 0 0 0 8px;
+//   }
+
+//   .wrapLarge & {
+//     margin: 0 !important;
+//     opacity: 1;
+//     color: var(--color-primary-background);
+//   }
+// }
+
+//
+// DROPDOWN
+//
+
+.content {
+  top: -2px;
+  left: 2px;
+  padding: 4px;
+  background: var(--color-secondary-background);
+  border: 1px solid var(--color-secondary-border);
+  border-radius: 5px;
+  box-shadow: var(--shadow-md);
+  z-index: 99;
+  font-size: 12px;
+  line-height: 14px;
+
+  &WithGroups {
+    left: 16px;
+  }
+
+  // Variant used on album views alongside play buttons
+  &Large {
+    top: 4px;
+    left: 0;
+  }
+}
+
+.sectionHeading {
+  padding: 7px 16px 6px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  // text-transform: uppercase;
+  color: var(--color-opacity-05);
+}
+
+.divider {
+  height: 1px;
+  margin: 4px 7px;
+  background: var(--color-secondary-border);
+}
+
+.checkboxItem {
+  display: block;
+  position: relative;
+  padding: 6px 16px 6px 8px;
+  border-radius: 2px;
+
+  &:not([data-disabled]):hover,
+  &:not([data-disabled]):focus {
+    background: var(--color-secondary-hover);
+    cursor: pointer;
+
+    @include mixins.focus-self-fill;
+  }
+
+  &[data-disabled] {
+    color: var(--color-opacity-04);
+  }
+
+  // &[data-state='checked'] {
+  //   color: var(--color-core);
+  // }
+}
+
+.checkboxIcon {
+  display: inline-block;
+  position: relative;
+  // top: -1px;
+  width: 14px;
+  height: 14px;
+  margin-right: 8px;
+
+  &Inactive {
+    opacity: var(--opacity-02);
+  }
+
+  [data-disabled] & {
+    opacity: var(--opacity-06);
+  }
+}

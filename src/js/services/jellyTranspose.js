@@ -3,6 +3,10 @@ We are transposing the API data to a format that is easier to work with in the a
 consistent between music services, and also doing some additional processing and validation.
 */
 
+// ======================================================================
+// IMPORTS
+// ======================================================================
+
 import { safeEncodeURIComponent } from 'js/utils/';
 
 // ======================================================================
@@ -10,7 +14,7 @@ import { safeEncodeURIComponent } from 'js/utils/';
 // ======================================================================
 
 const thumbSizeSmall = 360;
-const thumbSizeMedium = 600;
+const thumbSizeMedium = 680;
 
 // ======================================================================
 // HELPERS
@@ -127,7 +131,7 @@ export const transposeLibraryArray = (array) => {
   return data;
 };
 
-export const transposeLibraryData = (library) => {
+const transposeLibraryData = (library) => {
   return {
     libraryId: library.Id,
     title: library.Name,
@@ -182,7 +186,7 @@ export const transposeArtistDetails = (array, libraryId, serverBaseUrl, accessTo
 //   return artistAppearanceAlbums;
 // };
 
-export const transposeArtistData = (artist, libraryId, serverBaseUrl, accessToken, baseUrl = '/artists/') => {
+const transposeArtistData = (artist, libraryId, serverBaseUrl, accessToken, baseUrl = '/artists/') => {
   return {
     kind: 'artist',
     libraryId: libraryId,
@@ -218,7 +222,7 @@ export const transposeAlbumDetails = (array, libraryId, serverBaseUrl, accessTok
   return albumDetails;
 };
 
-export const transposeAlbumData = (album, libraryId, serverBaseUrl, accessToken) => {
+const transposeAlbumData = (album, libraryId, serverBaseUrl, accessToken) => {
   const artistName = album.AlbumArtist;
   const artistId =
     album.AlbumArtists?.filter((artist) => artist.Name === artistName)[0]?.Id || album.AlbumArtists?.[0]?.Id || null;
@@ -315,7 +319,7 @@ export const transposePlaylistDetails = (array, libraryId, serverBaseUrl, access
   return playlistDetails;
 };
 
-export const transposePlaylistData = (playlist, libraryId, serverBaseUrl, accessToken) => {
+const transposePlaylistData = (playlist, libraryId, serverBaseUrl, accessToken) => {
   return {
     kind: 'playlist',
     libraryId: libraryId,
@@ -358,7 +362,7 @@ export const transposePlaylistData = (playlist, libraryId, serverBaseUrl, access
 //   return data;
 // };
 
-// export const transposeCollectionData = (collection, libraryId, serverBaseUrl, accessToken) => {
+// const transposeCollectionData = (collection, libraryId, serverBaseUrl, accessToken) => {
 //   const collectionThumb = collection.thumb ? collection.thumb : collection.composite ? collection.composite : null;
 //   return {
 //     kind: 'collection',
@@ -405,7 +409,7 @@ export const transposeTagArray = (array, libraryId, primaryKey, secondaryKey) =>
 //   return data;
 // };
 
-export const transposeGenreData = (primaryKey, genre, libraryId) => {
+const transposeGenreData = (primaryKey, genre, libraryId) => {
   const genreId = safeEncodeURIComponent(genre);
   return {
     kind: 'genre',
@@ -416,7 +420,7 @@ export const transposeGenreData = (primaryKey, genre, libraryId) => {
   };
 };
 
-export const transposeTagData = (primaryKey, tag, libraryId) => {
+const transposeTagData = (primaryKey, tag, libraryId) => {
   const tagId = safeEncodeURIComponent(tag);
   return {
     kind: 'tag',
@@ -438,7 +442,7 @@ export const transposeTrackArray = (array, libraryId, serverBaseUrl, accessToken
   return data;
 };
 
-export const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
+const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
   const artistName = track.AlbumArtist;
   const artistId =
     track.AlbumArtists?.filter((artist) => artist.Name === artistName)[0]?.Id || track.AlbumArtists?.[0]?.Id || null;
@@ -499,7 +503,7 @@ export const transposeSearchResultsArray = (array, libraryId, serverBaseUrl, acc
   return data;
 };
 
-export const transposeSearchResultData = (result, libraryId, serverBaseUrl, accessToken) => {
+const transposeSearchResultData = (result, libraryId, serverBaseUrl, accessToken) => {
   if (result?.Type) {
     if (result.Type === 'MusicArtist') {
       return {
