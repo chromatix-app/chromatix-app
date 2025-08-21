@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -29,6 +29,7 @@ const virtualThreshold = !isLocal ? 150 : 1;
 const Queue = () => {
   const outerRef = useRef(null);
   const scrollPositionRef = useRef(0);
+  const [isRefReady, setIsRefReady] = useState(false);
 
   const queueExpandArtwork = useSelector(({ sessionModel }) => sessionModel.queueExpandArtwork);
 
@@ -74,6 +75,14 @@ const Queue = () => {
   const isVirtual = allEntries.length > virtualThreshold;
   const QueueComponent = isVirtual ? QueueVirtual : QueueStatic;
 
+  // Hacky workaround to force a re-render, because sometimes outerRef.current
+  // doesn't seem to exist when <QueueComponent> is mounted
+  useEffect(() => {
+    if (outerRef.current && !isRefReady) {
+      setIsRefReady(true);
+    }
+  }, [isRefReady]);
+
   // In a non-virtual list, we need to track the scroll position
   // to restore it if the list is re-rendered as a virtual list
   useEffect(() => {
@@ -96,7 +105,7 @@ const Queue = () => {
         className={clsx(style.scrollableOuter, 'u-scrollbars', { [style.scrollableOuterVirtual]: isVirtual })}
       >
         {!playingTrackKeys && <QueueEmpty />}
-        {playingTrackKeys && (
+        {playingTrackKeys && outerRef.current && (
           <QueueComponent
             entries={allEntries}
             playingShuffle={playingShuffle}
