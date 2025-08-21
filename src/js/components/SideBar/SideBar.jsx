@@ -29,6 +29,7 @@ const SideBar = () => {
 
   const currentService = useSelector(({ appModel }) => appModel.currentService);
 
+  const menuShowBanners = useSelector(({ sessionModel }) => sessionModel.menuShowBanners);
   const menuShowIcons = useSelector(({ sessionModel }) => sessionModel.menuShowIcons);
   const menuShowSearch = useSelector(({ sessionModel }) => sessionModel.menuShowSearch);
   const menuShowAllPlaylists = useSelector(({ sessionModel }) => sessionModel.menuShowAllPlaylists);
@@ -98,7 +99,7 @@ const SideBar = () => {
 
         {menuShowSearch && <SearchField />}
 
-        {isLocal && <ReleaseBanner />}
+        {isLocal && menuShowBanners && <ReleaseBanner />}
 
         {(libraryIsVisible || (browseIsVisible && !menuShowSeparateBrowseSection)) && (
           <>

@@ -9,7 +9,7 @@ export const whatsNew = [
   //   imageLight: 'promo-009-light',
   // },
   {
-    version: '0.1.0',
+    version: '0.51.0',
     title: 'Full screen player',
     date: 'August 2025',
     body: `<p>Chromatix has a brand new full screen player mode.</p>
@@ -18,7 +18,7 @@ export const whatsNew = [
     imageLight: 'promo-010-light',
   },
   {
-    version: '0.1.0',
+    version: '0.41.0',
     title: 'Artist track view',
     date: 'May 2025',
     body: `<p>A new track view has been added to artist pages, allowing you to view, play and shuffle all tracks by an artist in one go.</p>
@@ -27,7 +27,7 @@ export const whatsNew = [
     imageLight: 'promo-009-light',
   },
   {
-    version: '0.1.0',
+    version: '0.37.0',
     title: 'Column options',
     date: 'April 2025',
     body: `<p>List view columns can now be customised, allowing you to show and hide the fields you want. New fields have also been added, such as audio codec and bitrate.</p>
@@ -36,7 +36,7 @@ export const whatsNew = [
     imageLight: 'promo-008-light',
   },
   {
-    version: '0.1.0',
+    version: '0.32.0',
     title: 'Search & folders',
     date: 'Feb 2025',
     body: `<p>A search bar has been added to the main menu, letting you search for artists, albums, tracks, playlists, and more.</p>
