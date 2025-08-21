@@ -3,6 +3,7 @@
 // ======================================================================
 
 import * as bridge from 'js/services/bridge';
+import { analyticsEvent } from 'js/utils';
 
 // ======================================================================
 // OPTIONS
@@ -15,6 +16,8 @@ const maxDataLength = 5;
 // ======================================================================
 
 const appState = {
+  timeStamp: Date.now().toString().slice(0, -3), // seconds only
+
   inited: false,
   isOnline: true,
   standalone: false,
@@ -37,6 +40,7 @@ const appState = {
 
 const userState = {
   loggedIn: false,
+  fullPageMode: false,
 
   // TBC remove these...
   currentService: null,
@@ -125,6 +129,17 @@ const reducers = {
   setAppState(rootState, payload) {
     // console.log('%c--- setAppState ---', 'color:#07a098');
     return { ...rootState, ...payload };
+  },
+
+  fullPageOn(rootState) {
+    // console.log('%c--- fullPageOn ---', 'color:#07a098');
+    analyticsEvent('Full Page Mode: On');
+    return { ...rootState, fullPageMode: true };
+  },
+
+  fullPageOff(rootState) {
+    // console.log('%c--- fullPageOff ---', 'color:#07a098');
+    return { ...rootState, fullPageMode: false };
   },
 
   // showLoader(rootState) {
@@ -341,6 +356,7 @@ const effects = (dispatch) => {
       dispatch.appModel.setAppState({
         ...Object.assign({}, serverState),
         ...Object.assign({}, libraryState),
+        fullPageMode: false,
       });
       dispatch.playerModel.playerUnload();
     },
@@ -349,6 +365,7 @@ const effects = (dispatch) => {
       console.log('%c--- clearLibraryState ---', 'color:#07a098');
       dispatch.appModel.setAppState({
         ...Object.assign({}, libraryState),
+        fullPageMode: false,
       });
       rootState.appModel.history.push('/');
       bridge.getAllPlaylists();
@@ -984,6 +1001,18 @@ const effects = (dispatch) => {
         allArtistTracks,
         allAlbumTracks,
         allPlaylistTracks,
+      });
+
+      // update queue tracks
+      const playingTrackList = [...rootState.sessionModel.playingTrackList];
+      playingTrackList.forEach((track) => {
+        if (track.trackId === ratingKey) {
+          track.isFavourite = isFavourite;
+          track.userRating = rating;
+        }
+      });
+      dispatch.sessionModel.setSessionState({
+        playingTrackList,
       });
     },
 

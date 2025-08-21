@@ -1,6 +1,16 @@
 export const themes = {
   //
-  // FAVOURITES
+  // MISC
+  //
+
+  'full-page': {
+    background: '#111111',
+    text: '#ffffff',
+    primary: '#f7277a',
+  },
+
+  //
+  // CHROMATIX
   //
 
   chromatix: {

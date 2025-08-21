@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import semver from 'semver';
 
 import { Icon } from 'js/components';
+import whatsNew from 'js/_config/whatsNew';
 
 import style from './ReleaseBanner.module.scss';
 
@@ -14,53 +15,55 @@ import style from './ReleaseBanner.module.scss';
 // COMPONENT
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
-
 export const ReleaseBanner = () => {
   const dispatch = useDispatch();
+
   const savedAppVersion = useSelector(({ sessionModel }) => sessionModel.savedAppVersion);
-  const menuShowBanners = useSelector(({ sessionModel }) => sessionModel.menuShowBanners);
 
   // options
-  let messageAppVersion = '0.10.0';
-  let currentAppVersion = process.env.REACT_APP_VERSION || messageAppVersion;
+  const messageAppVersion = whatsNew[0]?.version || '0.0.0';
+  const currentAppVersion = process.env.REACT_APP_VERSION || messageAppVersion;
 
-  // option overrides for local development
-  if (isLocal) {
-    messageAppVersion = '0.0.7';
-    currentAppVersion = messageAppVersion;
-  }
+  // // dev testing overrides
+  // currentAppVersion = '0.51.0';
+  // messageAppVersion = '0.5.0';
+  // savedAppVersion = '0.1.0';
 
-  // determine whether the release badge should be shown
+  // determine whether the release banner should be shown
   const savedVersionIsValid = semver.valid(savedAppVersion) && semver.gt(savedAppVersion, '0.0.0');
   const savedVersionIsOutdated = !savedVersionIsValid || semver.lt(savedAppVersion, messageAppVersion);
 
-  // state ensures badge is immediately hidden on close, rather than awaiting the amplify refresh
-  const [showBadge, setShowBadge] = useState(savedVersionIsOutdated);
+  // // dev debugging
+  // console.log(111);
+  // console.log(`currentAppVersion: ${currentAppVersion}`);
+  // console.log(`messageAppVersion: ${messageAppVersion}`);
+  // console.log(`savedAppVersion: ${savedAppVersion}`);
+  // console.log(`savedVersionIsValid: ${savedVersionIsValid}`);
+  // console.log(`savedVersionIsOutdated: ${savedVersionIsOutdated}`);
 
-  // TO DO: remove isLocal check
-  if (!isLocal || !menuShowBanners) return null;
+  // state ensures banner is immediately hidden on close, rather than awaiting the amplify refresh
+  const [showBanner, setShowBanner] = useState(savedVersionIsOutdated);
 
-  // show the release notes modal
-  const handleOpen = () => {
+  // on click, show the release notes modal
+  const handleClick = () => {
     dispatch.dialogModel.showModal('ReleaseNotes');
   };
 
-  // on close, update the user version to match the current version in order to hide the badge
+  // on close, update the user version to match the current version in order to hide the banner
   const handleClose = () => {
-    setShowBadge(false);
+    setShowBanner(false);
     dispatch.sessionModel.setSessionState({
       savedAppVersion: currentAppVersion,
     });
   };
 
-  // only show the release badge if the user version is lower than the required version
-  if (showBadge) {
+  // only show the release banner if the user version is lower than the required version
+  if (showBanner) {
     return (
       <div className={style.wrap}>
-        <button className={style.badge} onClick={handleOpen}>
+        <button className={style.banner} onClick={handleClick}>
           <div className={style.title}>What&rsquo;s new</div>
-          <div className={style.body}>Jellyfin support is now available in beta.</div>
+          <div className={style.body}>Full screen player mode added.</div>
           <div className={style.cta}>
             Read more
             <span className={style.icon}>

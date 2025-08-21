@@ -831,6 +831,7 @@ export const getAllPlaylists = () => {
       const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+      const timeStamp = store.getState().appModel.timeStamp;
       const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
@@ -839,6 +840,7 @@ export const getAllPlaylists = () => {
           accessToken,
           libraryId,
           serverBaseUrl,
+          timeStamp,
           userId,
         })
         .then((response) => {
@@ -873,6 +875,7 @@ export const getPlaylistDetails = (libraryId, playlistId) => {
       const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+      const timeStamp = store.getState().appModel.timeStamp;
       const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
 
       serviceTools[currentService]
@@ -881,6 +884,7 @@ export const getPlaylistDetails = (libraryId, playlistId) => {
           libraryId,
           playlistId,
           serverBaseUrl,
+          timeStamp,
           userId,
         })
         .then((response) => {

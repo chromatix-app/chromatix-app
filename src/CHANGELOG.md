@@ -1,3 +1,18 @@
+# 0.51.0 (2025-08-18)
+
+Features:
+
+- Brand new full screen player mode, with customisation options.
+- New release banner in the sidebar to highlight new features and updates.
+  - This can be permanently disabled in the settings.
+- "What's new" modal detailing recent updates, which can be accessed by clicking the release banner, and from the settings menu.
+
+Updated:
+
+- Prevented playlist artwork from being regenerated every time the user navigates to a different playlist.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.50.0 (2025-08-18)
 
 Updated:

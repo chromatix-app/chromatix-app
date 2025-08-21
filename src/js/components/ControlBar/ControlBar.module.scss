@@ -4,7 +4,6 @@
 .wrap {
   display: grid;
   align-items: center;
-  // grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   grid-template-columns: minmax(0, 1fr) auto 1fr;
   height: 100px;
   padding: 9px 22px 10px;
@@ -25,7 +24,10 @@
 
 // CURRENTLY PLAYING
 
-.current {
+.leftSection {
+}
+
+.nowPlaying {
   display: flex;
   align-items: center;
   text-align: left;
@@ -132,7 +134,7 @@
 
 // PRIMARY CONTROLS
 
-.controls {
+.primaryControls {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -144,16 +146,26 @@
   @media (min-width: 1024px) {
     gap: 10px;
   }
+
+  &.fullPageMode {
+    width: auto;
+
+    @media (max-width: 1023px) {
+      justify-content: flex-start;
+    }
+  }
 }
 
-button.shuffle,
-button.rewind,
-button.play,
-button.pause,
+button.expand,
 button.forward,
-button.repeat,
+button.pause,
+button.play,
 button.queue,
+button.repeat,
+button.rewind,
+button.shuffle,
 button.volume,
+span.settings,
 .offline {
   display: block;
   position: relative;
@@ -163,20 +175,28 @@ button.volume,
   // margin: 0 5px;
   background: none;
   border: none;
-  border: 2px solid var(--color-secondary-background);
+  border: 2px solid transparent;
   border-radius: 50%;
   cursor: pointer;
 
   @include mixins.focus-self-outline;
 
   &:disabled {
-    opacity: 0.4;
+    opacity: 0.5;
     cursor: default;
   }
 
   &:not(:disabled):hover {
     background: var(--color-secondary-hover);
+
+    .fullPageMode & {
+      background: var(--color-secondary-background);
+    }
   }
+}
+
+span.settings {
+  @include mixins.focus-child-outline;
 }
 
 button.rewind {
@@ -188,7 +208,8 @@ button.forward {
 }
 
 button.shuffle,
-button.repeat {
+button.repeat,
+span.settings {
   padding: 9px;
 }
 
@@ -196,8 +217,11 @@ button.play,
 button.pause {
   margin: 0 6px;
   background: var(--color-core) !important;
-  border: 2px solid var(--color-secondary-background);
   color: var(--color-secondary-background);
+
+  .fullPageMode & {
+    color: var(--color-primary-background);
+  }
 
   &:disabled {
     background: var(--color-text) !important;
@@ -217,6 +241,10 @@ button.volume {
   margin-right: 2px;
 }
 
+button.expand {
+  padding: 12px;
+}
+
 button.queue {
   padding: 11px;
   margin-right: 0;
@@ -230,6 +258,7 @@ button.active {
   width: 36px;
   height: 36px;
   padding: 6px;
+  margin-left: 4px;
   background: var(--color-text) !important;
   color: var(--color-secondary-background) !important;
   cursor: default;
@@ -281,24 +310,36 @@ button.active {
 
 // SECONDARY CONTROLS
 
-.secondary {
-  display: flex;
-  align-items: center;
+.rightSection {
   margin: 0 0 0 auto;
 }
 
 .secondaryControls {
   display: flex;
+  align-items: center;
+
+  // &.fullPageMode {
+  //   opacity: 0.4;
+
+  //   &:hover,
+  //   &:focus-within {
+  //     opacity: 1;
+  //   }
+  // }
+}
+
+.secondaryButtons {
+  display: flex;
   justify-content: center;
   align-items: center;
-  gap: 2px;
+  gap: 0;
 
   // @media (min-width: 1024px) {
   //   gap: 10px;
   // }
 
   .volSlider + & {
-    margin-left: 16px;
+    margin-left: 6px;
   }
 }
 

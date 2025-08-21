@@ -16,6 +16,9 @@ function useColorTheme(): void {
 
   const dispatch = useDispatch();
 
+  const fullPageMode = useSelector(({ appModel }: any) => appModel.fullPageMode);
+  const fullPageTheme = useSelector(({ sessionModel }: any) => sessionModel.fullPageTheme);
+
   const accessibilityContrast = useSelector(({ sessionModel }: any) => sessionModel.accessibilityContrast);
 
   const currentServer = useSelector(({ sessionModel }: any) => sessionModel.currentServer);
@@ -32,7 +35,12 @@ function useColorTheme(): void {
   const currentColorText = useSelector(({ sessionModel }: any) => sessionModel.currentColorText);
 
   useEffect(() => {
-    const actualTheme = themes[currentTheme as keyof typeof themes] ? currentTheme : defaultTheme;
+    const actualTheme =
+      fullPageMode && !fullPageTheme
+        ? 'full-page'
+        : themes[currentTheme as keyof typeof themes]
+          ? currentTheme
+          : defaultTheme;
 
     const colorCore =
       currentTheme === 'custom' ? currentColorPrimary : themes[actualTheme as keyof typeof themes].primary;
@@ -140,9 +148,10 @@ function useColorTheme(): void {
     const colorOpacity07 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.7));
     const colorOpacity08 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.8));
 
-    const shadowHeavy = isLightTheme ? '0 4px 20px rgba(0, 0, 0, 0.1)' : '0 2px 20px rgba(0, 0, 0, 0.4)';
-    const shadowMedium = isLightTheme ? '0 4px 6px rgba(0, 0, 0, 0.05)' : '0 2px 10px rgba(0, 0, 0, 0.4)';
-    const shadowLight = isLightTheme ? '0 4px 6px rgba(0, 0, 0, 0.05)' : '0 2px 8px rgba(0, 0, 0, 0.35)';
+    const shadowLg = isLightTheme ? '0 4px 20px rgba(0, 0, 0, 0.1)' : '0 2px 20px rgba(0, 0, 0, 0.4)';
+    const shadowMd = isLightTheme ? '0 4px 6px rgba(0, 0, 0, 0.05)' : '0 2px 10px rgba(0, 0, 0, 0.4)';
+    const shadowSm = isLightTheme ? '0 4px 6px rgba(0, 0, 0, 0.05)' : '0 2px 8px rgba(0, 0, 0, 0.35)';
+    const shadowXs = isLightTheme ? '0 2px 4px rgba(0, 0, 0, 0.05)' : '0 2px 6px rgba(0, 0, 0, 0.2)';
 
     const opacity02 = decimalMultiplier(opacityMultiplier, 0.2);
     const opacity025 = decimalMultiplier(opacityMultiplier, 0.25);
@@ -184,9 +193,10 @@ function useColorTheme(): void {
       '--color-opacity-07': colorOpacity07,
       '--color-opacity-08': colorOpacity08,
 
-      '--shadow-heavy': shadowHeavy,
-      '--shadow-medium': shadowMedium,
-      '--shadow-light': shadowLight,
+      '--shadow-lg': shadowLg,
+      '--shadow-md': shadowMd,
+      '--shadow-sm': shadowSm,
+      '--shadow-xs': shadowXs,
 
       '--opacity-02': opacity02,
       '--opacity-025': opacity025,
@@ -203,7 +213,7 @@ function useColorTheme(): void {
     }
 
     sendToElectron('win', 'color-theme', {
-      background: hasQueueVisible ? colorSecondaryBackground : colorPrimaryBackground,
+      background: hasQueueVisible && !fullPageMode ? colorSecondaryBackground : colorPrimaryBackground,
       text: colorText,
       primary: colorCore,
     });
@@ -220,6 +230,8 @@ function useColorTheme(): void {
     currentColorBackground,
     currentColorText,
     currentColorPrimary,
+    fullPageMode,
+    fullPageTheme,
   ]);
 }
 

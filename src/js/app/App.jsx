@@ -4,11 +4,11 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 
 import Modals from 'js/app/Modals';
-import { ControlBar, Queue, SideBar, ToastNotification, UserMenu } from 'js/components';
+import { ControlBar, FullPagePlayer, Queue, SideBar, ToastNotification, UserMenu } from 'js/components';
 import {
   useColorTheme,
   useElectronStatus,
@@ -48,8 +48,8 @@ const App = () => {
 
   const gotRequiredData = useGotRequiredData();
 
-  const history = useHistory();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   useColorTheme();
   useElectronStatus();
@@ -273,18 +273,30 @@ const breakPoints = [620, 680, 800, 860, 920, 980, 1100, 1220];
 
 const AppMain = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
+
   const contentRef = useRef();
 
   const [contentBreakpoint, setContentBreakpoint] = useState(0);
   const [contentContainerClass, setContentContainerClass] = useState(0);
   const [contentWidth, setContentWidth] = useState(0);
 
+  const fullPageMode = useSelector(({ appModel }) => appModel.fullPageMode);
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
 
   const { windowWidth } = useWindowSize();
 
+  // Disable full page view on history change
+  useEffect(() => {
+    if (fullPageMode) {
+      dispatch.appModel.fullPageOff();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location]);
+
   // Handle window resizing
   useEffect(() => {
+    if (fullPageMode) return;
     const newWidth = contentRef.current.offsetWidth;
     const bpList = breakPoints.filter((bp) => bp <= newWidth);
     const newContainerClass = bpList.map((bp) => 'cq-' + bp).join(' ');
@@ -299,7 +311,7 @@ const AppMain = () => {
       setContentBreakpoint(newBreakpoint);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [windowWidth, queueIsVisible]);
+  }, [windowWidth, queueIsVisible, fullPageMode]);
 
   // Store current breakpoint (this theoretically won't run until after the HTML has re-rendered, which is essential)
   useEffect(() => {
@@ -320,23 +332,29 @@ const AppMain = () => {
   return (
     <div className="wrap">
       <div className="electron-drag"></div>
-      <div className="layout">
-        <div className="layout-sidebar">
-          <SideBar />
-        </div>
-        <div className="layout-controls">
-          <ControlBar />
-        </div>
-        <div ref={contentRef} id="content" className={clsx('layout-content', contentContainerClass)}>
-          {electronPlatform !== 'win' && <UserMenu />}
-          <BrowserRouteSwitch />
-        </div>
-        {queueIsVisible && (
-          <div className="layout-rightbar">
-            <Queue />
+
+      {fullPageMode && <FullPagePlayer />}
+
+      {!fullPageMode && (
+        <div className="layout">
+          <div className="layout-sidebar">
+            <SideBar />
           </div>
-        )}
-      </div>
+          <div className="layout-controls">
+            <ControlBar />
+          </div>
+          <div ref={contentRef} id="content" className={clsx('layout-content', contentContainerClass)}>
+            {electronPlatform !== 'win' && <UserMenu />}
+            <BrowserRouteSwitch />
+          </div>
+          {queueIsVisible && (
+            <div className="layout-rightbar">
+              <Queue />
+            </div>
+          )}
+        </div>
+      )}
+
       <Modals />
       <ToastNotification />
     </div>

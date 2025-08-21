@@ -144,7 +144,7 @@ export const preloadNextTrack = (trackSrc: string): void => {
   if (!enablePreloading) return;
 
   console.log('%c--- player - preloadNextTrack ---', 'color:#a18507');
-  console.log(trackSrc);
+  // console.log(trackSrc);
 
   const nextPlayerElement = getNextPlayerElement();
   if (nextPlayerElement && !isPreloading) {

@@ -14,7 +14,7 @@ import { XMLParser } from 'fast-xml-parser';
 // ======================================================================
 
 const thumbSizeSmall = 360;
-const thumbSizeMedium = 600;
+const thumbSizeMedium = 680;
 
 // ======================================================================
 // HELPERS
@@ -56,7 +56,7 @@ export const transposeServerArray = (array) => {
   return data;
 };
 
-export const transposeServerData = (server) => {
+const transposeServerData = (server) => {
   return {
     serverId: server.clientIdentifier,
     name: server.name || 'Unknown Plex Server',
@@ -76,7 +76,7 @@ export const transposeLibraryArray = (array) => {
   return data;
 };
 
-export const transposeLibraryData = (library) => {
+const transposeLibraryData = (library) => {
   return {
     libraryId: library.key,
     title: library.title,
@@ -123,7 +123,7 @@ export const transposeArtistAppearanceAlbumIdsArray = (array, libraryId, serverB
   return artistAppearanceAlbums;
 };
 
-export const transposeArtistData = (artist, libraryId, serverBaseUrl, accessToken) => {
+const transposeArtistData = (artist, libraryId, serverBaseUrl, accessToken) => {
   return {
     kind: 'artist',
     libraryId: libraryId,
@@ -159,7 +159,7 @@ export const transposeAlbumDetails = (array, libraryId, serverBaseUrl, accessTok
   return albumDetails;
 };
 
-export const transposeAlbumData = (album, libraryId, serverBaseUrl, accessToken) => {
+const transposeAlbumData = (album, libraryId, serverBaseUrl, accessToken) => {
   return {
     kind: 'album',
     libraryId: libraryId,
@@ -216,7 +216,7 @@ export const transposeFolderArray = (array, libraryId, serverBaseUrl, accessToke
   return data;
 };
 
-export const transposeFolderData = (folder, libraryId, serverBaseUrl, accessToken) => {
+const transposeFolderData = (folder, libraryId, serverBaseUrl, accessToken) => {
   if (folder.ratingKey) {
     if (folder.type !== 'track') {
       return null;
@@ -238,22 +238,37 @@ export const transposeFolderData = (folder, libraryId, serverBaseUrl, accessToke
 // PLAYLISTS
 // ======================================================================
 
-export const transposePlaylistArray = (array, libraryId, serverBaseUrl, accessToken) => {
+export const transposePlaylistArray = (array, libraryId, serverBaseUrl, accessToken, timeStamp) => {
   const data =
     array?.data?.MediaContainer?.Metadata?.map((playlist) =>
-      transposePlaylistData(playlist, libraryId, serverBaseUrl, accessToken)
+      transposePlaylistData(playlist, libraryId, serverBaseUrl, accessToken, timeStamp)
     ) || [];
   return data;
 };
 
-export const transposePlaylistDetails = (array, libraryId, serverBaseUrl, accessToken) => {
+export const transposePlaylistDetails = (array, libraryId, serverBaseUrl, accessToken, timeStamp) => {
   const playlist = array?.data?.MediaContainer?.Metadata[0];
-  const playlistDetails = transposePlaylistData(playlist, libraryId, serverBaseUrl, accessToken);
+  const playlistDetails = transposePlaylistData(playlist, libraryId, serverBaseUrl, accessToken, timeStamp);
   return playlistDetails;
 };
 
-export const transposePlaylistData = (playlist, libraryId, serverBaseUrl, accessToken) => {
-  const playlistThumb = playlist.thumb ? playlist.thumb : playlist.composite ? playlist.composite : null;
+const transposePlaylistData = (playlist, libraryId, serverBaseUrl, accessToken, timeStamp) => {
+  const hasThumb = Boolean(playlist.thumb);
+  let playlistComposite = null;
+
+  // Get the playlist composite image
+  if (!hasThumb && playlist.composite) {
+    // Remove trailing slashes and replace last URL segment with a fixed timestamp.
+    // This is because otherwise Plex will regenerate the thumb every time,
+    // which is noticeable in app.
+    playlistComposite = playlist.composite.replace(/\/+$/, '');
+    const lastSlashIndex = playlistComposite.lastIndexOf('/');
+    if (lastSlashIndex !== -1) {
+      playlistComposite = playlistComposite.substring(0, lastSlashIndex + 1) + timeStamp;
+    }
+  }
+
+  const playlistThumb = hasThumb ? playlist.thumb : playlistComposite;
   return {
     kind: 'playlist',
     libraryId: libraryId,
@@ -296,7 +311,7 @@ export const transposeCollectionItemArray = (array, libraryId, serverBaseUrl, ac
   return data;
 };
 
-export const transposeCollectionData = (collection, libraryId, serverBaseUrl, accessToken) => {
+const transposeCollectionData = (collection, libraryId, serverBaseUrl, accessToken) => {
   const collectionThumb = collection.thumb ? collection.thumb : collection.composite ? collection.composite : null;
   return {
     kind: 'collection',
@@ -356,7 +371,7 @@ export const transposeTagItemArray = (array, libraryId, serverBaseUrl, accessTok
   return data;
 };
 
-export const transposeGenreData = (type, genre, libraryId) => {
+const transposeGenreData = (type, genre, libraryId) => {
   return {
     kind: 'genre',
     libraryId: libraryId,
@@ -366,7 +381,7 @@ export const transposeGenreData = (type, genre, libraryId) => {
   };
 };
 
-export const transposeMoodData = (type, mood, libraryId) => {
+const transposeMoodData = (type, mood, libraryId) => {
   return {
     kind: 'mood',
     libraryId: libraryId,
@@ -376,7 +391,7 @@ export const transposeMoodData = (type, mood, libraryId) => {
   };
 };
 
-export const transposeStyleData = (type, style, libraryId) => {
+const transposeStyleData = (type, style, libraryId) => {
   return {
     kind: 'style',
     libraryId: libraryId,
@@ -399,11 +414,13 @@ export const transposeTrackArray = (array, libraryId, serverBaseUrl, accessToken
   return data;
 };
 
-export const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
+const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
   const isLikelyAppearance = track.originalTitle && track.originalTitle !== track.grandparentTitle;
 
   const artistTitle = isLikelyAppearance ? track.originalTitle : track.grandparentTitle;
   const artistLink = isLikelyAppearance ? null : '/artists/' + libraryId + '/' + track.grandparentRatingKey;
+
+  const originalSrc = `${serverBaseUrl}${track.Media[0].Part[0].key}?X-Plex-Token=${accessToken}`;
 
   return {
     kind: 'track',
@@ -426,7 +443,7 @@ export const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken)
     releaseDate: track.parentYear ? track.parentYear + '-01-01' : null,
     thumb: getThumb(track.thumb, serverBaseUrl, accessToken, thumbSizeSmall),
     thumbMedium: getThumb(track.thumb, serverBaseUrl, accessToken, thumbSizeMedium),
-    src: `${serverBaseUrl}${track.Media[0].Part[0].key}?X-Plex-Token=${accessToken}`,
+    src: originalSrc,
   };
 };
 
@@ -460,7 +477,7 @@ export const transposeSearchResultsArray = (array, libraryId, serverBaseUrl, acc
   return data;
 };
 
-export const transposeSearchResultData = (result, libraryId, serverBaseUrl, accessToken) => {
+const transposeSearchResultData = (result, libraryId, serverBaseUrl, accessToken) => {
   if (result?.type) {
     if (result.type === 'artist') {
       return {

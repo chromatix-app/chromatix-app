@@ -4,7 +4,7 @@
 
 import { PlaybackErrorMessage } from 'js/components';
 import { analyticsEvent, getTrackKeys } from 'js/utils';
-import * as playerX from 'js/services/player';
+import * as playerX from 'js/services/player.native';
 import * as bridge from 'js/services/bridge';
 
 // ======================================================================

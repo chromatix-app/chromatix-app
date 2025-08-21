@@ -80,6 +80,16 @@ const sessionState = {
   disableRepeatOnceOnSourceChange: true,
   revertRepeatOnceToRepeatAll: true,
 
+  // FULL PAGE OPTIONS
+
+  fullPageArtist: true,
+  fullPageAlbum: true,
+  fullPageIsFavourite: true,
+  fullPageUserRating: true,
+  fullPageCodec: true,
+  fullPageBitrate: true,
+  fullPageTheme: true,
+
   // VIEW OPTIONS
 
   viewArtists: 'grid',

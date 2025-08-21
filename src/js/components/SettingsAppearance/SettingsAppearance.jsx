@@ -40,10 +40,12 @@ const PresetThemeSettings = () => {
 
   const groupedThemes = Object.entries(themes).reduce((groups, [themeName, themeDetails]) => {
     const group = themeDetails.group;
-    if (!groups[group]) {
-      groups[group] = [];
+    if (group) {
+      if (!groups[group]) {
+        groups[group] = [];
+      }
+      groups[group].push([themeName, themeDetails]);
     }
-    groups[group].push([themeName, themeDetails]);
     return groups;
   }, {});
 

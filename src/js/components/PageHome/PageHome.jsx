@@ -98,13 +98,16 @@ export const PageHome = () => {
       </div>
 
       <div className={clsx(style.image, style.margin)}>
-        <img
-          src="/images/chromatix005.jpg"
-          alt="Chromatix music player for Plex"
-          width="1920"
-          height="1425"
-          draggable="false"
-        />
+        <picture>
+          <source type="image/webp" srcSet="/images/webp/chromatix005.webp" />
+          <img
+            src="/images/compressed/chromatix005.jpg"
+            alt="Chromatix music player for Plex"
+            width="1920"
+            height="1425"
+            draggable="false"
+          />
+        </picture>
       </div>
 
       <div className={style.intro}>
