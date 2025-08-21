@@ -1009,7 +1009,7 @@ export const getFolderItems = ({ accessToken, folderId, libraryId, serverBaseUrl
 // GET ALL PLAYLISTS
 // ======================================================================
 
-export const getAllPlaylists = ({ accessToken, libraryId, serverBaseUrl }) => {
+export const getAllPlaylists = ({ accessToken, libraryId, serverBaseUrl, timeStamp, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.playlist.getAllPlaylists(serverBaseUrl, libraryId);
@@ -1027,7 +1027,7 @@ export const getAllPlaylists = ({ accessToken, libraryId, serverBaseUrl }) => {
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposePlaylistArray(response, libraryId, serverBaseUrl, accessToken));
+          resolve(plexTranspose.transposePlaylistArray(response, libraryId, serverBaseUrl, accessToken, timeStamp));
         })
         .catch((error) => {
           reject({
@@ -1053,7 +1053,7 @@ export const getAllPlaylists = ({ accessToken, libraryId, serverBaseUrl }) => {
 // GET PLAYLIST DETAILS
 // ======================================================================
 
-export const getPlaylistDetails = ({ accessToken, libraryId, playlistId, serverBaseUrl, userId }) => {
+export const getPlaylistDetails = ({ accessToken, libraryId, playlistId, serverBaseUrl, timeStamp, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.playlist.getPlaylistDetails(serverBaseUrl, playlistId);
@@ -1066,7 +1066,7 @@ export const getPlaylistDetails = ({ accessToken, libraryId, playlistId, serverB
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposePlaylistDetails(response, libraryId, serverBaseUrl, accessToken));
+          resolve(plexTranspose.transposePlaylistDetails(response, libraryId, serverBaseUrl, accessToken, timeStamp));
         })
         .catch((error) => {
           reject({

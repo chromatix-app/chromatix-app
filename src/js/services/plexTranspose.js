@@ -238,22 +238,37 @@ export const transposeFolderData = (folder, libraryId, serverBaseUrl, accessToke
 // PLAYLISTS
 // ======================================================================
 
-export const transposePlaylistArray = (array, libraryId, serverBaseUrl, accessToken) => {
+export const transposePlaylistArray = (array, libraryId, serverBaseUrl, accessToken, timeStamp) => {
   const data =
     array?.data?.MediaContainer?.Metadata?.map((playlist) =>
-      transposePlaylistData(playlist, libraryId, serverBaseUrl, accessToken)
+      transposePlaylistData(playlist, libraryId, serverBaseUrl, accessToken, timeStamp)
     ) || [];
   return data;
 };
 
-export const transposePlaylistDetails = (array, libraryId, serverBaseUrl, accessToken) => {
+export const transposePlaylistDetails = (array, libraryId, serverBaseUrl, accessToken, timeStamp) => {
   const playlist = array?.data?.MediaContainer?.Metadata[0];
-  const playlistDetails = transposePlaylistData(playlist, libraryId, serverBaseUrl, accessToken);
+  const playlistDetails = transposePlaylistData(playlist, libraryId, serverBaseUrl, accessToken, timeStamp);
   return playlistDetails;
 };
 
-export const transposePlaylistData = (playlist, libraryId, serverBaseUrl, accessToken) => {
-  const playlistThumb = playlist.thumb ? playlist.thumb : playlist.composite ? playlist.composite : null;
+const transposePlaylistData = (playlist, libraryId, serverBaseUrl, accessToken, timeStamp) => {
+  const hasThumb = Boolean(playlist.thumb);
+  let playlistComposite = null;
+
+  // Get the playlist composite image
+  if (!hasThumb && playlist.composite) {
+    // Remove trailing slashes and replace last URL segment with a fixed timestamp.
+    // This is because otherwise Plex will regenerate the thumb every time,
+    // which is noticeable in app.
+    playlistComposite = playlist.composite.replace(/\/+$/, '');
+    const lastSlashIndex = playlistComposite.lastIndexOf('/');
+    if (lastSlashIndex !== -1) {
+      playlistComposite = playlistComposite.substring(0, lastSlashIndex + 1) + timeStamp;
+    }
+  }
+
+  const playlistThumb = hasThumb ? playlist.thumb : playlistComposite;
   return {
     kind: 'playlist',
     libraryId: libraryId,

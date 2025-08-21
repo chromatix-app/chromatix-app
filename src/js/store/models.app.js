@@ -16,6 +16,8 @@ const maxDataLength = 5;
 // ======================================================================
 
 const appState = {
+  timeStamp: Date.now().toString().slice(0, -3), // seconds only
+
   inited: false,
   isOnline: true,
   standalone: false,
