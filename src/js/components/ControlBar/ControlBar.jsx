@@ -14,8 +14,6 @@ import platformFeatures from 'js/_config/platformFeatures';
 
 import style from './ControlBar.module.scss';
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
-
 // ======================================================================
 // COMPONENT
 // ======================================================================
@@ -187,13 +185,13 @@ export const SecondaryControls = ({ fullPageMode }) => {
   return (
     <div className={clsx(style.secondaryControls, { [style.fullPageMode]: fullPageMode })}>
       <div className={style.secondaryButtons}>
-        {isLocal && !fullPageMode && (
+        {!fullPageMode && (
           <button className={style.expand} onClick={dispatch.appModel.fullPageOn}>
             <Icon icon="ExpandSplitIcon" cover stroke />
           </button>
         )}
 
-        {isLocal && fullPageMode && (
+        {fullPageMode && (
           <button className={style.expand} onClick={dispatch.appModel.fullPageOff}>
             <Icon icon="CollapseIcon" cover stroke />
           </button>

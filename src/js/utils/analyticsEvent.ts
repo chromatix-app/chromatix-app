@@ -12,17 +12,17 @@ const isLocal = process.env.REACT_APP_ENV === 'local';
  */
 
 const analyticsEvent = (event: string, props: object = {}) => {
-  const finalProps = {
-    ...props,
-    appPlatform: appPlatform,
-    appVersion: process.env.REACT_APP_VERSION || 'Unknown',
-    environment: process.env.REACT_APP_ENV || 'Unknown',
-    isElectron: isElectron,
-    electronVersion: electronVersion,
-  };
-
   if (!isLocal) {
     try {
+      const finalProps = {
+        ...props,
+        appPlatform: appPlatform,
+        appVersion: process.env.REACT_APP_VERSION || 'Unknown',
+        environment: process.env.REACT_APP_ENV || 'Unknown',
+        isElectron: isElectron,
+        electronVersion: electronVersion,
+      };
+
       track(event, finalProps);
       // window.umami.track(event, finalProps);
     } catch (error) {

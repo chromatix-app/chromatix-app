@@ -20,7 +20,7 @@ import style from './Queue.module.scss';
 
 const isLocal = process.env.REACT_APP_ENV === 'local';
 
-const virtualThreshold = !isLocal ? 150 : 150;
+const virtualThreshold = !isLocal ? 150 : 1;
 
 // ======================================================================
 // COMPONENT

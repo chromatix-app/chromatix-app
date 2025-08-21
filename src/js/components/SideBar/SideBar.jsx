@@ -15,8 +15,6 @@ import platformFeatures from 'js/_config/platformFeatures';
 
 import style from './SideBar.module.scss';
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
-
 // ======================================================================
 // COMPONENT
 // ======================================================================
@@ -99,7 +97,7 @@ const SideBar = () => {
 
         {menuShowSearch && <SearchField />}
 
-        {isLocal && menuShowBanners && <ReleaseBanner />}
+        {menuShowBanners && <ReleaseBanner />}
 
         {(libraryIsVisible || (browseIsVisible && !menuShowSeparateBrowseSection)) && (
           <>
