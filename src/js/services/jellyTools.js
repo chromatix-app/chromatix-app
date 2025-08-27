@@ -404,6 +404,9 @@ export const getArtistDetails = ({ accessToken, artistId, libraryId, serverBaseU
         .get(endpoint, {
           headers: getRequestHeaders(accessToken),
           signal: controller.signal,
+          params: {
+            Fields: artistAndAlbumFields,
+          },
         })
         .then((response) => {
           resolve(jellyTranspose.transposeArtistDetails(response, libraryId, serverBaseUrl, accessToken));
@@ -450,6 +453,7 @@ export const getAllArtistAlbums = ({ accessToken, artistId, libraryId, serverBas
             Recursive: true,
             SortBy: 'SortName',
             SortOrder: 'Ascending',
+            Fields: artistAndAlbumFields,
             // Filters: 'IsNotFolder', // Helps filter out compilation albums
             // ExcludeLocationTypes: 'Virtual', // Excludes virtual items, often compilations
           },
@@ -522,6 +526,7 @@ export const getAllArtistAppearanceAlbums = ({
             Recursive: true,
             SortBy: 'SortName',
             SortOrder: 'Ascending',
+            Fields: artistAndAlbumFields,
             // Filters: 'IsNotFolder', // Helps filter out compilation albums
             // ExcludeLocationTypes: 'Virtual', // Excludes virtual items, often compilations
           },
@@ -665,6 +670,9 @@ export const getAlbumDetails = ({ accessToken, albumId, libraryId, serverBaseUrl
         .get(endpoint, {
           headers: getRequestHeaders(accessToken),
           signal: controller.signal,
+          params: {
+            Fields: artistAndAlbumFields,
+          },
         })
         .then((response) => {
           resolve(jellyTranspose.transposeAlbumDetails(response, libraryId, serverBaseUrl, accessToken));
@@ -812,6 +820,9 @@ export const getPlaylistDetails = ({ accessToken, libraryId, playlistId, serverB
         .get(endpoint, {
           headers: getRequestHeaders(accessToken),
           signal: controller.signal,
+          params: {
+            Fields: artistAndAlbumFields,
+          },
         })
         .then((response) => {
           resolve(jellyTranspose.transposePlaylistDetails(response, libraryId, serverBaseUrl, accessToken));

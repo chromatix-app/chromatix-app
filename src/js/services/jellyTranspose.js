@@ -194,7 +194,7 @@ const transposeArtistData = (artist, libraryId, serverBaseUrl, accessToken, base
     title: artist.Name,
     genre: artist?.Genres?.[0],
     country: null,
-    addedAt: null,
+    addedAt: null, // artist.DateCreated ? new Date(artist.DateCreated).getTime() / 1000 : null,
     lastPlayed: null,
     userRating: null,
     isFavourite: artist.UserData?.IsFavorite || false,
