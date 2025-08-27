@@ -22,6 +22,11 @@ const storageJellyUserKey = config.storageJellyUserKey;
 const storageServiceKey = config.storageServiceKey;
 const storageTokenKey = config.storageTokenKey;
 
+const trackFields =
+  'CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,MediaStreams,ProductionLocations,Tags,UserData';
+const artistAndAlbumFields =
+  'BackdropImageTags,CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,ProductionLocations,Tags,UserData';
+
 // ======================================================================
 // ENDPOINTS
 // ======================================================================
@@ -305,8 +310,7 @@ export const getAllArtists = ({ accessToken, genre, libraryId, serverBaseUrl, ta
             Tags: tag || null,
             SortBy: 'SortName',
             SortOrder: 'Ascending',
-            Fields:
-              'BackdropImageTags,CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,ProductionLocations,Tags,UserData',
+            Fields: artistAndAlbumFields,
             // StartIndex: 0,
             // Limit: 100
           },
@@ -357,8 +361,7 @@ export const getAllAlbumArtists = ({ accessToken, genre, libraryId, serverBaseUr
             Tags: tag || null,
             SortBy: 'SortName',
             SortOrder: 'Ascending',
-            Fields:
-              'BackdropImageTags,CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,ProductionLocations,Tags,UserData',
+            Fields: artistAndAlbumFields,
             // StartIndex: 0,
             // Limit: 100
           },
@@ -568,8 +571,7 @@ export const getAllArtistTracks = ({ accessToken, artistId, artistName, libraryI
             Recursive: true,
             SortBy: 'Album,SortName',
             SortOrder: 'Ascending',
-            Fields:
-              'CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,ProductionLocations,Tags,UserData',
+            Fields: trackFields,
             // Filters: 'IsNotFolder', // Helps filter out compilation albums
             // ExcludeLocationTypes: 'Virtual', // Excludes virtual items, often compilations
           },
@@ -620,8 +622,7 @@ export const getAllAlbums = ({ accessToken, genre, libraryId, serverBaseUrl, tag
             Tags: tag || null,
             SortBy: 'SortName',
             SortOrder: 'Ascending',
-            Fields:
-              'BackdropImageTags,CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,ProductionLocations,Tags,UserData',
+            Fields: artistAndAlbumFields,
             // StartIndex: 0,
             // Limit: 100
           },
@@ -708,8 +709,7 @@ export const getAlbumTracks = ({ accessToken, albumId, libraryId, serverBaseUrl,
             IncludeItemTypes: 'Audio',
             SortBy: 'ParentIndexNumber,IndexNumber,SortName',
             SortOrder: 'Ascending',
-            Fields:
-              'CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,ProductionLocations,Tags,UserData',
+            Fields: trackFields,
           },
         })
         .then((response) => {
@@ -769,8 +769,7 @@ export const getAllPlaylists = ({ accessToken, libraryId, serverBaseUrl, timeSta
             Recursive: true,
             SortBy: 'SortName',
             SortOrder: 'Ascending',
-            Fields:
-              'BackdropImageTags,CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,ProductionLocations,Tags,UserData',
+            Fields: artistAndAlbumFields,
             // StartIndex: 0,
             // Limit: 100
           },
@@ -852,6 +851,9 @@ export const getPlaylistTracks = ({ accessToken, libraryId, playlistId, serverBa
         .get(endpoint, {
           headers: getRequestHeaders(accessToken),
           signal: controller.signal,
+          params: {
+            Fields: trackFields,
+          },
         })
         .then((response) => {
           resolve(jellyTranspose.transposeTrackArray(response, libraryId, serverBaseUrl, accessToken));

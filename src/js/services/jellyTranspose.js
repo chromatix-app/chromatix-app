@@ -446,6 +446,7 @@ const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
   const artistName = track.AlbumArtist;
   const artistId =
     track.AlbumArtists?.filter((artist) => artist.Name === artistName)[0]?.Id || track.AlbumArtists?.[0]?.Id || null;
+  const bitrate = track?.MediaStreams?.find((track) => track.Type.toLowerCase() === 'audio')?.BitRate;
 
   return {
     kind: 'track',
@@ -461,8 +462,8 @@ const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
     albumLink: '/albums/' + libraryId + '/' + track.AlbumId,
     trackNumber: track.IndexNumber,
     discNumber: track.ParentIndexNumber,
-    codec: null,
-    bitrate: null,
+    codec: track?.MediaStreams?.find((track) => track.Type.toLowerCase() === 'audio')?.Codec,
+    bitrate: bitrate ? Math.round(bitrate / 1000) : null,
     duration: track.RunTimeTicks / 10000,
     userRating: null,
     isFavourite: track.UserData?.IsFavorite || false,
