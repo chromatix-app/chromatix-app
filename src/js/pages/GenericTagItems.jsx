@@ -231,13 +231,25 @@ const Title = ({
             <>
               <FilterSelect
                 value={sortCollectionItems}
-                options={[
-                  { value: 'title', label: 'Alphabetical' },
-                  ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
-                  ...(platformOpts?.enableLastPlayed ? [{ value: 'lastPlayed', label: 'Date played' }] : []),
-                  ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
-                  ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
-                ]}
+                options={
+                  variant === 'artists'
+                    ? [
+                        { value: 'title', label: 'Alphabetical' },
+                        ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
+                        ...(platformOpts?.enableLastPlayed ? [{ value: 'lastPlayed', label: 'Date played' }] : []),
+                        ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
+                        ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
+                      ]
+                    : [
+                        { value: 'title', label: 'Alphabetical' },
+                        { value: 'artist', label: 'Artist' },
+                        ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
+                        ...(platformOpts?.enableLastPlayed ? [{ value: 'lastPlayed', label: 'Date played' }] : []),
+                        { value: 'releaseDate', label: 'Date released' },
+                        ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
+                        ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
+                      ]
+                }
                 setter={setSortCollectionItems}
               />
               <FilterToggle
