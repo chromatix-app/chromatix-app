@@ -251,11 +251,15 @@ const Title = ({
                   disabled: true,
                   checked: true,
                 },
-                {
-                  label: 'Country',
-                  attr: 'colCollectionArtistsCountry',
-                  checked: colOptions.country,
-                },
+                ...(platformOpts?.enableCountry
+                  ? [
+                      {
+                        label: 'Country',
+                        attr: 'colCollectionArtistsCountry',
+                        checked: colOptions.country,
+                      },
+                    ]
+                  : []),
                 {
                   label: 'Genre',
                   attr: 'colCollectionArtistsGenre',

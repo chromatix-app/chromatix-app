@@ -54,7 +54,7 @@ const useGetCollectionItems = ({
       ? {
           title: true,
           addedAt: viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsAddedAt),
-          country: viewCollectionItems === 'list' && colCollectionArtistsCountry,
+          country: platformOpts.enableCountry && viewCollectionItems === 'list' && colCollectionArtistsCountry,
           lastPlayed:
             viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsLastPlayed),
           genre: viewCollectionItems === 'list' && colCollectionArtistsGenre,
@@ -177,7 +177,7 @@ const useGetCollectionItems = ({
     colOptions:
       mediaType === 'Artist'
         ? {
-            country: colCollectionArtistsCountry,
+            country: platformOpts.enableCountry && colCollectionArtistsCountry,
             genre: colCollectionArtistsGenre,
             addedAt: colCollectionArtistsAddedAt,
             lastPlayed: colCollectionArtistsLastPlayed,

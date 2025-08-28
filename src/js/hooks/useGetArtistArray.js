@@ -37,7 +37,7 @@ const useGetArtistArray = ({ variant }) => {
   const allowedSort = {
     title: true,
     addedAt: viewArtists === 'grid' || (viewArtists === 'list' && colArtistsAddedAt),
-    country: viewArtists === 'list' && colArtistsCountry,
+    country: platformOpts.enableCountry && viewArtists === 'list' && colArtistsCountry,
     lastPlayed: viewArtists === 'grid' || (viewArtists === 'list' && colArtistsLastPlayed),
     genre: viewArtists === 'list' && colArtistsGenre,
     userRating:
@@ -107,7 +107,7 @@ const useGetArtistArray = ({ variant }) => {
     },
 
     colOptions: {
-      country: colArtistsCountry,
+      country: platformOpts.enableCountry && colArtistsCountry,
       genre: colArtistsGenre,
       addedAt: colArtistsAddedAt,
       lastPlayed: colArtistsLastPlayed,

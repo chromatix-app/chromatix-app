@@ -189,7 +189,7 @@ const Title = ({
   const colFields =
     variant === 'artists'
       ? [
-          { label: 'Country', attr: 'Country', key: 'country' },
+          ...(platformOpts?.enableCountry ? [{ label: 'Country', attr: 'Country', key: 'country' }] : []),
           { label: 'Genre', attr: 'Genre', key: 'genre' },
           { label: 'Added', attr: 'AddedAt', key: 'addedAt' },
           { label: 'Last played', attr: 'LastPlayed', key: 'lastPlayed' },
