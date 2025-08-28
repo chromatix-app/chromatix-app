@@ -379,8 +379,8 @@ const Title = ({
                   // { value: 'artist', label: 'Artist' },
                   // { value: 'artist-asc-releaseDate-asc', label: 'Artist, oldest release first' },
                   // { value: 'artist-asc-releaseDate-desc', label: 'Artist, newest release first' },
-                  { value: 'addedAt', label: 'Date added' },
-                  { value: 'lastPlayed', label: 'Date played' },
+                  ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
+                  ...(platformOpts?.enableLastPlayed ? [{ value: 'lastPlayed', label: 'Date played' }] : []),
                   { value: 'releaseDate', label: 'Date released' },
                   ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
                   ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
@@ -456,16 +456,24 @@ const Title = ({
                   attr: 'colArtistAlbumsReleaseDate',
                   checked: colOptions.releaseDate,
                 },
-                {
-                  label: 'Added',
-                  attr: 'colArtistAlbumsAddedAt',
-                  checked: colOptions.addedAt,
-                },
-                {
-                  label: 'Last played',
-                  attr: 'colArtistAlbumsLastPlayed',
-                  checked: colOptions.lastPlayed,
-                },
+                ...(platformOpts?.enableAddedAt
+                  ? [
+                      {
+                        label: 'Added',
+                        attr: 'colArtistAlbumsAddedAt',
+                        checked: colOptions.addedAt,
+                      },
+                    ]
+                  : []),
+                ...(platformOpts?.enableLastPlayed
+                  ? [
+                      {
+                        label: 'Last played',
+                        attr: 'colArtistAlbumsLastPlayed',
+                        checked: colOptions.lastPlayed,
+                      },
+                    ]
+                  : []),
                 ...(platformOpts?.enableIsFavourite
                   ? [
                       {

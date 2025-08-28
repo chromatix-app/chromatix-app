@@ -191,15 +191,15 @@ const Title = ({
       ? [
           ...(platformOpts?.enableCountry ? [{ label: 'Country', attr: 'Country', key: 'country' }] : []),
           { label: 'Genre', attr: 'Genre', key: 'genre' },
-          { label: 'Added', attr: 'AddedAt', key: 'addedAt' },
-          { label: 'Last played', attr: 'LastPlayed', key: 'lastPlayed' },
+          ...(platformOpts?.enableAddedAt ? [{ label: 'Added', attr: 'AddedAt', key: 'addedAt' }] : []),
+          ...(platformOpts?.enableLastPlayed ? [{ label: 'Last played', attr: 'LastPlayed', key: 'lastPlayed' }] : []),
         ]
       : [
           { label: 'Artist', attr: 'Artist', key: 'artist' },
           { label: 'Genre', attr: 'Genre', key: 'genre' },
           { label: 'Released', attr: 'ReleaseDate', key: 'releaseDate' },
-          { label: 'Added', attr: 'AddedAt', key: 'addedAt' },
-          { label: 'Last played', attr: 'LastPlayed', key: 'lastPlayed' },
+          ...(platformOpts?.enableAddedAt ? [{ label: 'Added', attr: 'AddedAt', key: 'addedAt' }] : []),
+          ...(platformOpts?.enableLastPlayed ? [{ label: 'Last played', attr: 'LastPlayed', key: 'lastPlayed' }] : []),
         ];
 
   return (
@@ -233,8 +233,8 @@ const Title = ({
                 value={sortCollectionItems}
                 options={[
                   { value: 'title', label: 'Alphabetical' },
-                  { value: 'addedAt', label: 'Date added' },
-                  { value: 'lastPlayed', label: 'Date played' },
+                  ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
+                  ...(platformOpts?.enableLastPlayed ? [{ value: 'lastPlayed', label: 'Date played' }] : []),
                   ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
                   ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
                 ]}

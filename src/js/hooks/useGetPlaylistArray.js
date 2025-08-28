@@ -38,8 +38,11 @@ const useGetPlaylistArray = () => {
     title: true,
     totalTracks: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsTotalTracks),
     duration: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsDuration),
-    addedAt: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsAddedAt),
-    lastPlayed: viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsLastPlayed),
+    addedAt:
+      platformOpts.enableAddedAt && (viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsAddedAt)),
+    lastPlayed:
+      platformOpts.enableLastPlayed &&
+      (viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsLastPlayed)),
     userRating:
       platformOpts.enableUserRating &&
       (viewPlaylists === 'grid' || (viewPlaylists === 'list' && colPlaylistsUserRating)),
@@ -105,8 +108,8 @@ const useGetPlaylistArray = () => {
     colOptions: {
       totalTracks: colPlaylistsTotalTracks,
       duration: colPlaylistsDuration,
-      addedAt: colPlaylistsAddedAt,
-      lastPlayed: colPlaylistsLastPlayed,
+      addedAt: platformOpts.enableAddedAt && colPlaylistsAddedAt,
+      lastPlayed: platformOpts.enableLastPlayed && colPlaylistsLastPlayed,
       userRating: platformOpts.enableUserRating && colPlaylistsUserRating,
       isFavourite: platformOpts.enableIsFavourite && colPlaylistsIsFavourite,
     },

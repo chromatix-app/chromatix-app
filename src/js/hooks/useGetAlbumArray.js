@@ -40,8 +40,9 @@ const useGetAlbumArray = () => {
     artist: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsArtist),
     'artist-asc-releaseDate-asc': viewAlbums === 'grid',
     'artist-asc-releaseDate-desc': viewAlbums === 'grid',
-    addedAt: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsAddedAt),
-    lastPlayed: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsLastPlayed),
+    addedAt: platformOpts.enableAddedAt && (viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsAddedAt)),
+    lastPlayed:
+      platformOpts.enableLastPlayed && (viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsLastPlayed)),
     genre: viewAlbums === 'list' && colAlbumsGenre,
     releaseDate: viewAlbums === 'grid' || (viewAlbums === 'list' && colAlbumsReleaseDate),
     userRating:
@@ -110,8 +111,8 @@ const useGetAlbumArray = () => {
       artist: colAlbumsArtist,
       genre: colAlbumsGenre,
       releaseDate: colAlbumsReleaseDate,
-      addedAt: colAlbumsAddedAt,
-      lastPlayed: colAlbumsLastPlayed,
+      addedAt: platformOpts.enableAddedAt && colAlbumsAddedAt,
+      lastPlayed: platformOpts.enableLastPlayed && colAlbumsLastPlayed,
       userRating: platformOpts.enableUserRating && colAlbumsUserRating,
       isFavourite: platformOpts.enableIsFavourite && colAlbumsIsFavourite,
     },

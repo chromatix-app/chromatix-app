@@ -21,6 +21,8 @@ export const platformFeatures = {
 
     // features
     enableCountry: false,
+    enableAddedAt: false,
+    enableLastPlayed: false,
     enableUserRating: false,
     enableIsFavourite: true,
   },
@@ -47,6 +49,8 @@ export const platformFeatures = {
 
     // features
     enableCountry: true,
+    enableAddedAt: true,
+    enableLastPlayed: true,
     enableUserRating: true,
     enableIsFavourite: false,
   },
