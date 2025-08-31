@@ -180,13 +180,20 @@ export const SecondaryControls = ({ fullPageMode }) => {
   const volumeMuted = useSelector(({ sessionModel }) => sessionModel.volumeMuted);
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
 
+  const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
+  const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
+  const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
+
+  const trackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
+  const isDisabled = !trackCurrent ? true : false;
+
   const volIcon = volumeMuted || volumeLevel <= 0 ? 'VolXIcon' : volumeLevel < 50 ? 'VolLowIcon' : 'VolHighIcon';
 
   return (
     <div className={clsx(style.secondaryControls, { [style.fullPageMode]: fullPageMode })}>
       <div className={style.secondaryButtons}>
         {!fullPageMode && (
-          <button className={style.expand} onClick={dispatch.appModel.fullPageOn}>
+          <button className={style.expand} onClick={dispatch.appModel.fullPageOn} disabled={isDisabled}>
             <Icon icon="ExpandSplitIcon" cover stroke />
           </button>
         )}
@@ -203,6 +210,7 @@ export const SecondaryControls = ({ fullPageMode }) => {
           <button
             className={clsx(style.queue, { [style.active]: queueIsVisible })}
             onClick={dispatch.sessionModel.queueVisibleToggle}
+            disabled={isDisabled}
           >
             <Icon icon="QueueIcon" cover stroke />
           </button>
