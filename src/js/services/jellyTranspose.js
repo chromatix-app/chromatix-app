@@ -24,7 +24,8 @@ const getUserImage = (primaryImageTag, serverBaseUrl, accessToken, userId) => {
   if (!primaryImageTag) {
     return null;
   }
-  return `${serverBaseUrl}/Users/${userId}/Images/Primary?api_key=${accessToken}&tag=${primaryImageTag}`;
+  return `${serverBaseUrl}/Users/${userId}/Images/Primary?tag=${primaryImageTag}`;
+  // &api_key=${accessToken}
 };
 
 const getThumb = (entry, serverBaseUrl, accessToken, size) => {
@@ -84,7 +85,8 @@ const getThumb = (entry, serverBaseUrl, accessToken, size) => {
     return null;
   }
 
-  return `${serverBaseUrl}/Items/${entryId}/Images/${imageKey}?api_key=${accessToken}&tag=${thumbImageTag}&fillHeight=${size}&fillWidth=${size}`;
+  return `${serverBaseUrl}/Items/${entryId}/Images/${imageKey}?fillHeight=${size}&fillWidth=${size}&quality=96&tag=${thumbImageTag}`;
+  // &api_key=${accessToken}
 };
 
 // ======================================================================
