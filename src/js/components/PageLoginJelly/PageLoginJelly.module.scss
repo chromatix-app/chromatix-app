@@ -39,6 +39,10 @@
   margin: 20px auto 0;
   font-size: 14px;
   text-wrap: balance;
+
+  p + p {
+    margin-top: 1em;
+  }
 }
 
 .form {

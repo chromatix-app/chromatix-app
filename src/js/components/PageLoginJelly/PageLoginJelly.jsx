@@ -37,7 +37,10 @@ export const PageLoginJelly = () => {
       .url('Invalid URL')
       .test('is-https', 'Server address must use HTTPS', (value) => {
         if (!value) return false;
-        return value.toLowerCase().startsWith('https://');
+        if (window.location.protocol === 'https:') {
+          return value.toLowerCase().startsWith('https://');
+        }
+        return true;
       })
       .required('Server address is required'),
     username: yup.string().required('Username is required'),
@@ -56,6 +59,12 @@ export const PageLoginJelly = () => {
             Sorry, we couldn't log you in.
             <br />
             Are your server address and login details correct?
+            {window.location.protocol === 'https:' && (
+              <>
+                <br />
+                Your server must have a valid SSL certificate.
+              </>
+            )}
           </>
         );
       }, 10);
@@ -68,6 +77,10 @@ export const PageLoginJelly = () => {
         <h1 className={style.title}>Login with Jellyfin</h1>
         <h2 className={style.subtitle}>(Beta)</h2>
         <div className={style.body}>
+          <p>
+            Your Jellyfin server must have a valid SSL certificate. If you are using a self-signed certificate, you may
+            need to add an exception in your browser.
+          </p>
           <p>
             Right now you can only log into one service at a time, and settings are not shared between accounts. We hope
             to add multiple account support soon.
