@@ -1107,7 +1107,6 @@ export const searchLibrary = ({
               Items: [...(libraryResponse.data?.Items || []), ...(playlistResponse.data?.Items || [])],
             },
           };
-          console.log(combinedResponse);
           resolve(jellyTranspose.transposeSearchResultsArray(combinedResponse, libraryId, serverBaseUrl, accessToken));
         })
         .catch((error) => {
