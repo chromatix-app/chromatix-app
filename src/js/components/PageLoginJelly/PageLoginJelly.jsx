@@ -62,8 +62,8 @@ export const PageLoginJelly = () => {
         <h2 className={style.subtitle}>(Beta)</h2>
         <div className={style.body}>
           <p>
-            Currently you can only login with one service at a time, and settings are not shared between accounts. We
-            hope to provide a future update to enable signing into multiple accounts at once.
+            Right now you can only log into one service at a time, and settings are not shared between accounts. We hope
+            to add multiple account support soon.
           </p>
         </div>
 
