@@ -173,8 +173,8 @@ const Title = ({
               value={sortArtists}
               options={[
                 { value: 'title', label: 'Alphabetical' },
-                { value: 'addedAt', label: 'Date added' },
-                { value: 'lastPlayed', label: 'Date played' },
+                ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
+                ...(platformOpts?.enableLastPlayed ? [{ value: 'lastPlayed', label: 'Date played' }] : []),
                 ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
                 ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
               ]}
@@ -227,26 +227,38 @@ const Title = ({
                 disabled: true,
                 checked: true,
               },
-              {
-                label: 'Country',
-                attr: 'colArtistsCountry',
-                checked: colOptions.country,
-              },
+              ...(platformOpts?.enableCountry
+                ? [
+                    {
+                      label: 'Country',
+                      attr: 'colArtistsCountry',
+                      checked: colOptions.country,
+                    },
+                  ]
+                : []),
               {
                 label: 'Genre',
                 attr: 'colArtistsGenre',
                 checked: colOptions.genre,
               },
-              {
-                label: 'Added',
-                attr: 'colArtistsAddedAt',
-                checked: colOptions.addedAt,
-              },
-              {
-                label: 'Last played',
-                attr: 'colArtistsLastPlayed',
-                checked: colOptions.lastPlayed,
-              },
+              ...(platformOpts?.enableAddedAt
+                ? [
+                    {
+                      label: 'Added',
+                      attr: 'colArtistsAddedAt',
+                      checked: colOptions.addedAt,
+                    },
+                  ]
+                : []),
+              ...(platformOpts?.enableLastPlayed
+                ? [
+                    {
+                      label: 'Last played',
+                      attr: 'colArtistsLastPlayed',
+                      checked: colOptions.lastPlayed,
+                    },
+                  ]
+                : []),
               ...(platformOpts?.enableIsFavourite
                 ? [
                     {

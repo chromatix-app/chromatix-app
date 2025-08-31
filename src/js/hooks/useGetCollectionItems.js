@@ -53,10 +53,13 @@ const useGetCollectionItems = ({
     mediaType === 'Artist'
       ? {
           title: true,
-          addedAt: viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsAddedAt),
-          country: viewCollectionItems === 'list' && colCollectionArtistsCountry,
+          addedAt:
+            platformOpts.enableAddedAt &&
+            (viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsAddedAt)),
+          country: platformOpts.enableCountry && viewCollectionItems === 'list' && colCollectionArtistsCountry,
           lastPlayed:
-            viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsLastPlayed),
+            platformOpts.enableLastPlayed &&
+            (viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionArtistsLastPlayed)),
           genre: viewCollectionItems === 'list' && colCollectionArtistsGenre,
           userRating:
             platformOpts.enableUserRating &&
@@ -70,9 +73,12 @@ const useGetCollectionItems = ({
           artist: viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsArtist),
           'artist-asc-releaseDate-asc': viewCollectionItems === 'grid',
           'artist-asc-releaseDate-desc': viewCollectionItems === 'grid',
-          addedAt: viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsAddedAt),
+          addedAt:
+            platformOpts.enableAddedAt &&
+            (viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsAddedAt)),
           lastPlayed:
-            viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsLastPlayed),
+            platformOpts.enableLastPlayed &&
+            (viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsLastPlayed)),
           genre: viewCollectionItems === 'list' && colCollectionAlbumsGenre,
           releaseDate:
             viewCollectionItems === 'grid' || (viewCollectionItems === 'list' && colCollectionAlbumsReleaseDate),
@@ -177,10 +183,10 @@ const useGetCollectionItems = ({
     colOptions:
       mediaType === 'Artist'
         ? {
-            country: colCollectionArtistsCountry,
+            country: platformOpts.enableCountry && colCollectionArtistsCountry,
             genre: colCollectionArtistsGenre,
-            addedAt: colCollectionArtistsAddedAt,
-            lastPlayed: colCollectionArtistsLastPlayed,
+            addedAt: platformOpts.enableAddedAt && colCollectionArtistsAddedAt,
+            lastPlayed: platformOpts.enableLastPlayed && colCollectionArtistsLastPlayed,
             userRating: platformOpts.enableUserRating && colCollectionArtistsUserRating,
             isFavourite: platformOpts.enableIsFavourite && colCollectionArtistsIsFavourite,
           }
@@ -188,8 +194,8 @@ const useGetCollectionItems = ({
             artist: colCollectionAlbumsArtist,
             genre: colCollectionAlbumsGenre,
             releaseDate: colCollectionAlbumsReleaseDate,
-            addedAt: colCollectionAlbumsAddedAt,
-            lastPlayed: colCollectionAlbumsLastPlayed,
+            addedAt: platformOpts.enableAddedAt && colCollectionAlbumsAddedAt,
+            lastPlayed: platformOpts.enableLastPlayed && colCollectionAlbumsLastPlayed,
             userRating: platformOpts.enableUserRating && colCollectionAlbumsUserRating,
             isFavourite: platformOpts.enableIsFavourite && colCollectionAlbumsIsFavourite,
           },

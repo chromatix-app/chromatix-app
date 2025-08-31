@@ -5,6 +5,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Button } from 'js/components';
+import platformFeatures from 'js/_config/platformFeatures';
 
 import style from './SettingsBrowse.module.scss';
 
@@ -12,25 +13,28 @@ import style from './SettingsBrowse.module.scss';
 // COMPONENT
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
-
 export const SettingsBrowse = () => {
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
+
   return (
     <div className={style.wrap}>
       <div className={style.group}>
         <div className={style.title}>View Modes</div>
         <ViewModeSettings />
       </div>
-      {isLocal && (
+      {platformOpts.enableIsFavourite && (
         <div className={style.group}>
-          <div className={style.title}>Favourites (Jellyfin only)</div>
+          <div className={style.title}>Favourites</div>
           <FavouriteSettings />
         </div>
       )}
-      <div className={style.group}>
-        <div className={style.title}>Star Ratings</div>
-        <StarRatingSettings />
-      </div>
+      {platformOpts.enableUserRating && (
+        <div className={style.group}>
+          <div className={style.title}>Star Ratings</div>
+          <StarRatingSettings />
+        </div>
+      )}
     </div>
   );
 };

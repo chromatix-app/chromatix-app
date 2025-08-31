@@ -158,7 +158,7 @@ const Title = ({
               value={sortCollections}
               options={[
                 { value: 'title', label: 'Alphabetical' },
-                { value: 'addedAt', label: 'Date added' },
+                ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
                 ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
               ]}
               setter={setSortCollections}
@@ -201,11 +201,15 @@ const Title = ({
                 disabled: true,
                 checked: true,
               },
-              {
-                label: 'Added',
-                attr: 'colCollectionAddedAt',
-                checked: colOptions.addedAt,
-              },
+              ...(platformOpts?.enableAddedAt
+                ? [
+                    {
+                      label: 'Added',
+                      attr: 'colCollectionAddedAt',
+                      checked: colOptions.addedAt,
+                    },
+                  ]
+                : []),
               ...(platformOpts?.enableUserRating
                 ? [
                     {

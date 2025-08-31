@@ -207,8 +207,8 @@ const Title = ({
                 value={sortCollectionItems}
                 options={[
                   { value: 'title', label: 'Alphabetical' },
-                  { value: 'addedAt', label: 'Date added' },
-                  { value: 'lastPlayed', label: 'Date played' },
+                  ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
+                  ...(platformOpts?.enableLastPlayed ? [{ value: 'lastPlayed', label: 'Date played' }] : []),
                   ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
                 ]}
                 setter={setSortCollectionItems}
@@ -251,26 +251,38 @@ const Title = ({
                   disabled: true,
                   checked: true,
                 },
-                {
-                  label: 'Country',
-                  attr: 'colCollectionArtistsCountry',
-                  checked: colOptions.country,
-                },
+                ...(platformOpts?.enableCountry
+                  ? [
+                      {
+                        label: 'Country',
+                        attr: 'colCollectionArtistsCountry',
+                        checked: colOptions.country,
+                      },
+                    ]
+                  : []),
                 {
                   label: 'Genre',
                   attr: 'colCollectionArtistsGenre',
                   checked: colOptions.genre,
                 },
-                {
-                  label: 'Added',
-                  attr: 'colCollectionArtistsAddedAt',
-                  checked: colOptions.addedAt,
-                },
-                {
-                  label: 'Last played',
-                  attr: 'colCollectionArtistsLastPlayed',
-                  checked: colOptions.lastPlayed,
-                },
+                ...(platformOpts?.enableAddedAt
+                  ? [
+                      {
+                        label: 'Added',
+                        attr: 'colCollectionArtistsAddedAt',
+                        checked: colOptions.addedAt,
+                      },
+                    ]
+                  : []),
+                ...(platformOpts?.enableLastPlayed
+                  ? [
+                      {
+                        label: 'Last played',
+                        attr: 'colCollectionArtistsLastPlayed',
+                        checked: colOptions.lastPlayed,
+                      },
+                    ]
+                  : []),
                 ...(platformOpts?.enableUserRating
                   ? [
                       {

@@ -12,7 +12,7 @@ import * as bridge from 'js/services/bridge';
 // STATE
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
+const isPreview = process.env.REACT_APP_ENV === 'preview';
 const isProduction = process.env.REACT_APP_ENV === 'production';
 
 const sessionState = {
@@ -23,7 +23,7 @@ const sessionState = {
   currentServer: null,
   currentLibrary: null,
 
-  currentTheme: isProduction ? 'chromatix' : isLocal ? 'chromatix-teal' : 'plex',
+  currentTheme: isProduction ? 'chromatix' : isPreview ? 'plex' : 'chromatix-teal',
   currentColorBackground: '#021C27',
   currentColorText: '#ffffff',
   currentColorPrimary: '#f7277a',

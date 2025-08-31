@@ -163,8 +163,8 @@ const Title = ({
               value={sortPlaylists}
               options={[
                 { value: 'title', label: 'Alphabetical' },
-                { value: 'addedAt', label: 'Date added' },
-                { value: 'lastPlayed', label: 'Date played' },
+                ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
+                ...(platformOpts?.enableLastPlayed ? [{ value: 'lastPlayed', label: 'Date played' }] : []),
                 { value: 'duration', label: 'Duration' },
                 ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
                 ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
@@ -229,16 +229,24 @@ const Title = ({
                 attr: 'colPlaylistsDuration',
                 checked: colOptions.duration,
               },
-              {
-                label: 'Added',
-                attr: 'colPlaylistsAddedAt',
-                checked: colOptions.addedAt,
-              },
-              {
-                label: 'Last played',
-                attr: 'colPlaylistsLastPlayed',
-                checked: colOptions.lastPlayed,
-              },
+              ...(platformOpts?.enableAddedAt
+                ? [
+                    {
+                      label: 'Added',
+                      attr: 'colPlaylistsAddedAt',
+                      checked: colOptions.addedAt,
+                    },
+                  ]
+                : []),
+              ...(platformOpts?.enableLastPlayed
+                ? [
+                    {
+                      label: 'Last played',
+                      attr: 'colPlaylistsLastPlayed',
+                      checked: colOptions.lastPlayed,
+                    },
+                  ]
+                : []),
               ...(platformOpts?.enableIsFavourite
                 ? [
                     {
