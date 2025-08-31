@@ -36,9 +36,10 @@ const useGetArtistArray = ({ variant }) => {
   // prevent sorting by a hidden field
   const allowedSort = {
     title: true,
-    addedAt: viewArtists === 'grid' || (viewArtists === 'list' && colArtistsAddedAt),
-    country: viewArtists === 'list' && colArtistsCountry,
-    lastPlayed: viewArtists === 'grid' || (viewArtists === 'list' && colArtistsLastPlayed),
+    addedAt: platformOpts.enableAddedAt && (viewArtists === 'grid' || (viewArtists === 'list' && colArtistsAddedAt)),
+    country: platformOpts.enableCountry && viewArtists === 'list' && colArtistsCountry,
+    lastPlayed:
+      platformOpts.enableLastPlayed && (viewArtists === 'grid' || (viewArtists === 'list' && colArtistsLastPlayed)),
     genre: viewArtists === 'list' && colArtistsGenre,
     userRating:
       platformOpts.enableUserRating && (viewArtists === 'grid' || (viewArtists === 'list' && colArtistsUserRating)),
@@ -107,10 +108,10 @@ const useGetArtistArray = ({ variant }) => {
     },
 
     colOptions: {
-      country: colArtistsCountry,
+      country: platformOpts.enableCountry && colArtistsCountry,
       genre: colArtistsGenre,
-      addedAt: colArtistsAddedAt,
-      lastPlayed: colArtistsLastPlayed,
+      addedAt: platformOpts.enableAddedAt && colArtistsAddedAt,
+      lastPlayed: platformOpts.enableLastPlayed && colArtistsLastPlayed,
       userRating: platformOpts.enableUserRating && colArtistsUserRating,
       isFavourite: platformOpts.enableIsFavourite && colArtistsIsFavourite,
     },

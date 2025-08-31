@@ -8,8 +8,6 @@ import { PageText, TitleHeading } from 'js/components';
 // COMPONENT
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
-
 const Component = () => {
   return (
     <>
@@ -33,20 +31,18 @@ const Component = () => {
           </a>
           .
         </p>
-        {isLocal && (
-          <p>
-            Jellyfin users can link their account to Last.fm using a plugin such as{' '}
-            <a
-              href="https://github.com/jesseward/jellyfin-plugin-lastfm"
-              target="_blank"
-              rel="noreferrer nofollow"
-              draggable="false"
-            >
-              this one
-            </a>
-            .
-          </p>
-        )}
+        <p>
+          Jellyfin users can link their account to Last.fm using a plugin such as{' '}
+          <a
+            href="https://github.com/jesseward/jellyfin-plugin-lastfm"
+            target="_blank"
+            rel="noreferrer nofollow"
+            draggable="false"
+          >
+            this one
+          </a>
+          .
+        </p>
 
         <br />
         <h2>Notes</h2>

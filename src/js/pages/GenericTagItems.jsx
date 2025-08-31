@@ -189,17 +189,17 @@ const Title = ({
   const colFields =
     variant === 'artists'
       ? [
-          { label: 'Country', attr: 'Country', key: 'country' },
+          ...(platformOpts?.enableCountry ? [{ label: 'Country', attr: 'Country', key: 'country' }] : []),
           { label: 'Genre', attr: 'Genre', key: 'genre' },
-          { label: 'Added', attr: 'AddedAt', key: 'addedAt' },
-          { label: 'Last played', attr: 'LastPlayed', key: 'lastPlayed' },
+          ...(platformOpts?.enableAddedAt ? [{ label: 'Added', attr: 'AddedAt', key: 'addedAt' }] : []),
+          ...(platformOpts?.enableLastPlayed ? [{ label: 'Last played', attr: 'LastPlayed', key: 'lastPlayed' }] : []),
         ]
       : [
           { label: 'Artist', attr: 'Artist', key: 'artist' },
           { label: 'Genre', attr: 'Genre', key: 'genre' },
           { label: 'Released', attr: 'ReleaseDate', key: 'releaseDate' },
-          { label: 'Added', attr: 'AddedAt', key: 'addedAt' },
-          { label: 'Last played', attr: 'LastPlayed', key: 'lastPlayed' },
+          ...(platformOpts?.enableAddedAt ? [{ label: 'Added', attr: 'AddedAt', key: 'addedAt' }] : []),
+          ...(platformOpts?.enableLastPlayed ? [{ label: 'Last played', attr: 'LastPlayed', key: 'lastPlayed' }] : []),
         ];
 
   return (
@@ -231,13 +231,25 @@ const Title = ({
             <>
               <FilterSelect
                 value={sortCollectionItems}
-                options={[
-                  { value: 'title', label: 'Alphabetical' },
-                  { value: 'addedAt', label: 'Date added' },
-                  { value: 'lastPlayed', label: 'Date played' },
-                  ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
-                  ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
-                ]}
+                options={
+                  variant === 'artists'
+                    ? [
+                        { value: 'title', label: 'Alphabetical' },
+                        ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
+                        ...(platformOpts?.enableLastPlayed ? [{ value: 'lastPlayed', label: 'Date played' }] : []),
+                        ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
+                        ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
+                      ]
+                    : [
+                        { value: 'title', label: 'Alphabetical' },
+                        { value: 'artist', label: 'Artist' },
+                        ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
+                        ...(platformOpts?.enableLastPlayed ? [{ value: 'lastPlayed', label: 'Date played' }] : []),
+                        { value: 'releaseDate', label: 'Date released' },
+                        ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
+                        ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
+                      ]
+                }
                 setter={setSortCollectionItems}
               />
               <FilterToggle

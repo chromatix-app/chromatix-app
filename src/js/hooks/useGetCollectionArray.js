@@ -1,11 +1,15 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import platformFeatures from 'js/_config/platformFeatures';
 import { sortList } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 
 const useGetCollectionArray = (collectionKey) => {
   const dispatch = useDispatch();
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
 
   // const mediaType = collectionKey.includes('Artist') ? 'Artist' : 'Album';
 
@@ -29,7 +33,9 @@ const useGetCollectionArray = (collectionKey) => {
   // prevent sorting by a hidden field
   const allowedSort = {
     title: true,
-    addedAt: viewCollections === 'grid' || (viewCollections === 'list' && colCollectionAddedAt),
+    addedAt:
+      platformOpts.enableAddedAt &&
+      (viewCollections === 'grid' || (viewCollections === 'list' && colCollectionAddedAt)),
     userRating: viewCollections === 'grid' || (viewCollections === 'list' && colCollectionUserRating),
   };
   const actualSortCollections = allowedSort[sortCollections] ? sortCollections : 'title';
@@ -91,7 +97,7 @@ const useGetCollectionArray = (collectionKey) => {
     },
 
     colOptions: {
-      addedAt: colCollectionAddedAt,
+      addedAt: platformOpts.enableAddedAt && colCollectionAddedAt,
       userRating: colCollectionUserRating,
     },
 

@@ -12,15 +12,11 @@ export const defaultRoutes = [
     exact: true,
     component: 'Home',
   },
-  ...(isLocal
-    ? [
-        {
-          path: '/login-jellyfin',
-          exact: true,
-          component: 'LoginJelly',
-        },
-      ]
-    : []),
+  {
+    path: '/login-jellyfin',
+    exact: true,
+    component: 'LoginJelly',
+  },
 
   // error
   {

@@ -1,3 +1,12 @@
+# 0.52.0 (2025-09-01)
+
+Features:
+
+- Login with Jellyfin! Chromatix now supports Jellyfin as well as Plex.
+  - Note that right now you can only log into one service at a time, and settings are not shared between accounts. We hope to add multiple account support soon.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.51.0 (2025-08-21)
 
 Features:

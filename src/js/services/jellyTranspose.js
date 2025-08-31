@@ -24,7 +24,8 @@ const getUserImage = (primaryImageTag, serverBaseUrl, accessToken, userId) => {
   if (!primaryImageTag) {
     return null;
   }
-  return `${serverBaseUrl}/Users/${userId}/Images/Primary?api_key=${accessToken}&tag=${primaryImageTag}`;
+  return `${serverBaseUrl}/Users/${userId}/Images/Primary?tag=${primaryImageTag}`;
+  // &api_key=${accessToken}
 };
 
 const getThumb = (entry, serverBaseUrl, accessToken, size) => {
@@ -84,7 +85,8 @@ const getThumb = (entry, serverBaseUrl, accessToken, size) => {
     return null;
   }
 
-  return `${serverBaseUrl}/Items/${entryId}/Images/${imageKey}?api_key=${accessToken}&tag=${thumbImageTag}&fillHeight=${size}&fillWidth=${size}`;
+  return `${serverBaseUrl}/Items/${entryId}/Images/${imageKey}?fillHeight=${size}&fillWidth=${size}&quality=96&tag=${thumbImageTag}`;
+  // &api_key=${accessToken}
 };
 
 // ======================================================================
@@ -194,7 +196,7 @@ const transposeArtistData = (artist, libraryId, serverBaseUrl, accessToken, base
     title: artist.Name,
     genre: artist?.Genres?.[0],
     country: null,
-    addedAt: null,
+    addedAt: null, // artist.DateCreated ? new Date(artist.DateCreated).getTime() / 1000 : null,
     lastPlayed: null,
     userRating: null,
     isFavourite: artist.UserData?.IsFavorite || false,
@@ -446,6 +448,7 @@ const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
   const artistName = track.AlbumArtist;
   const artistId =
     track.AlbumArtists?.filter((artist) => artist.Name === artistName)[0]?.Id || track.AlbumArtists?.[0]?.Id || null;
+  const bitrate = track?.MediaStreams?.find((track) => track.Type.toLowerCase() === 'audio')?.BitRate;
 
   return {
     kind: 'track',
@@ -461,8 +464,8 @@ const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
     albumLink: '/albums/' + libraryId + '/' + track.AlbumId,
     trackNumber: track.IndexNumber,
     discNumber: track.ParentIndexNumber,
-    codec: null,
-    bitrate: null,
+    codec: track?.MediaStreams?.find((track) => track.Type.toLowerCase() === 'audio')?.Codec,
+    bitrate: bitrate ? Math.round(bitrate / 1000) : null,
     duration: track.RunTimeTicks / 10000,
     userRating: null,
     isFavourite: track.UserData?.IsFavorite || false,

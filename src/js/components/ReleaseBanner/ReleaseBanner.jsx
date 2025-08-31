@@ -66,7 +66,8 @@ export const ReleaseBanner = () => {
       <div className={style.wrap}>
         <button className={style.banner} onClick={handleClick}>
           <div className={style.title}>What&rsquo;s new</div>
-          <div className={style.body}>Full screen player mode added.</div>
+          {/* <div className={style.body}>Full screen player mode added.</div> */}
+          <div className={style.body}>Jellyfin server support is now available.</div>
           <div className={style.cta}>
             Read more
             <span className={style.icon}>

@@ -75,8 +75,12 @@ const useGetArtistDetail = ({ variant, libraryId, artistId }) => {
   // prevent sorting by a hidden field
   const allowedSort = {
     title: true,
-    addedAt: viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsAddedAt),
-    lastPlayed: viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsLastPlayed),
+    addedAt:
+      platformOpts.enableAddedAt &&
+      (viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsAddedAt)),
+    lastPlayed:
+      platformOpts.enableLastPlayed &&
+      (viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsLastPlayed)),
     genre: viewArtistAlbums === 'list' && colArtistAlbumsGenre,
     releaseDate: viewArtistAlbums === 'grid' || (viewArtistAlbums === 'list' && colArtistAlbumsReleaseDate),
     userRating:
@@ -324,8 +328,8 @@ const useGetArtistDetail = ({ variant, libraryId, artistId }) => {
     colOptions: {
       genre: colArtistAlbumsGenre,
       releaseDate: colArtistAlbumsReleaseDate,
-      addedAt: colArtistAlbumsAddedAt,
-      lastPlayed: colArtistAlbumsLastPlayed,
+      addedAt: platformOpts.enableAddedAt && colArtistAlbumsAddedAt,
+      lastPlayed: platformOpts.enableLastPlayed && colArtistAlbumsLastPlayed,
       userRating: platformOpts.enableUserRating && colArtistAlbumsUserRating,
       isFavourite: platformOpts.enableIsFavourite && colArtistAlbumsIsFavourite,
     },

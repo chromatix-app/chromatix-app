@@ -19,11 +19,15 @@ import style from './PageLoginJelly.module.scss';
 
 const isLocal = process.env.REACT_APP_ENV === 'local';
 
+const devServer = process.env.REACT_APP_JELLY_SERVER || '';
+const devUsername = process.env.REACT_APP_JELLY_USERNAME || '';
+const devPassword = process.env.REACT_APP_JELLY_PASSWORD || '';
+
 export const PageLoginJelly = () => {
   const initialValues = {
-    server: isLocal ? 'http://192.168.1.201:8096' : '',
-    username: isLocal ? 'Alex' : '',
-    password: '',
+    server: isLocal ? devServer : '',
+    username: isLocal ? devUsername : '',
+    password: isLocal ? devPassword : '',
     general: '',
   };
 
@@ -56,6 +60,12 @@ export const PageLoginJelly = () => {
       <div className={style.main}>
         <h1 className={style.title}>Login with Jellyfin</h1>
         <h2 className={style.subtitle}>(Beta)</h2>
+        <div className={style.body}>
+          <p>
+            Right now you can only log into one service at a time, and settings are not shared between accounts. We hope
+            to add multiple account support soon.
+          </p>
+        </div>
 
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
           {({ errors, touched, isSubmitting }) => (

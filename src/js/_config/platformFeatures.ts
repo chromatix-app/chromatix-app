@@ -20,6 +20,9 @@ export const platformFeatures = {
     menuAlbumTags: true,
 
     // features
+    enableCountry: false,
+    enableAddedAt: false,
+    enableLastPlayed: false,
     enableUserRating: false,
     enableIsFavourite: true,
   },
@@ -45,6 +48,9 @@ export const platformFeatures = {
     menuAlbumTags: false,
 
     // features
+    enableCountry: true,
+    enableAddedAt: true,
+    enableLastPlayed: true,
     enableUserRating: true,
     enableIsFavourite: false,
   },
