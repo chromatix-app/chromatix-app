@@ -5,8 +5,8 @@ export const whatsNew = [
     date: 'September 2025',
     body: `<p>Jellyfin users can now enjoy their music libraries in Chromatix too!</p>
     <p>Right now you can only log into one service at a time, and settings are not shared between accounts, but we hope to add multiple account support soon.</p>`,
-    imageDark: 'promo-010-dark',
-    imageLight: 'promo-010-light',
+    imageDark: 'promo-011-dark',
+    imageLight: 'promo-011-light',
   },
   {
     version: '0.51.0',
