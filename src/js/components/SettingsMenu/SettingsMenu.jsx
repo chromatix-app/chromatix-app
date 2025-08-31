@@ -4,7 +4,7 @@
 
 import { useSelector } from 'react-redux';
 
-import { PageText, SettingsList } from 'js/components';
+import { SettingsList } from 'js/components';
 import platformFeatures from 'js/_config/platformFeatures';
 
 import style from './SettingsMenu.module.scss';
@@ -13,19 +13,15 @@ import style from './SettingsMenu.module.scss';
 // COMPONENT
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
-
 export const SettingsMenu = () => {
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
 
   return (
     <>
-      {isLocal && (
-        <PageText fontSize="small">
-          <p>Some sections may be unavailable, depending on whether you are logged in with Plex or Jellyfin.</p>
-        </PageText>
-      )}
+      {/* <PageText fontSize="small">
+        <p>Some sections may be unavailable, depending on whether you are logged in with Plex or Jellyfin.</p>
+      </PageText> */}
       <div className={style.wrap}>
         <GeneralSettings platformOpts={platformOpts} />
         <LibrarySettings platformOpts={platformOpts} />
@@ -70,7 +66,7 @@ const LibrarySettings = ({ platformOpts }) => {
       state: menuShowArtists && platformOpts.menuArtists,
       disabled: !platformOpts.menuArtists,
     },
-    ...(isLocal
+    ...(platformOpts.menuAlbumArtists
       ? [
           {
             key: 'menuShowAlbumArtists',
@@ -86,12 +82,16 @@ const LibrarySettings = ({ platformOpts }) => {
       state: menuShowAlbums && platformOpts.menuAlbums,
       disabled: !platformOpts.menuAlbums,
     },
-    {
-      key: 'menuShowFolders',
-      label: 'Folders',
-      state: menuShowFolders && platformOpts.menuFolders,
-      disabled: !platformOpts.menuFolders,
-    },
+    ...(platformOpts.menuFolders
+      ? [
+          {
+            key: 'menuShowFolders',
+            label: 'Folders',
+            state: menuShowFolders && platformOpts.menuFolders,
+            disabled: !platformOpts.menuFolders,
+          },
+        ]
+      : []),
     {
       key: 'menuShowPlaylists',
       label: 'Playlists',
@@ -130,18 +130,22 @@ const BrowseSettings = ({ platformOpts }) => {
     {
       type: 'spacer',
     },
-    {
-      key: 'menuShowArtistCollections',
-      label: 'Artist Collections',
-      state: menuShowArtistCollections && platformOpts.menuArtistCollections,
-      disabled: !platformOpts.menuArtistCollections,
-    },
-    {
-      key: 'menuShowAlbumCollections',
-      label: 'Album Collections',
-      state: menuShowAlbumCollections && platformOpts.menuAlbumCollections,
-      disabled: !platformOpts.menuAlbumCollections,
-    },
+    ...(platformOpts.menuArtistCollections
+      ? [
+          {
+            key: 'menuShowArtistCollections',
+            label: 'Artist Collections',
+            state: menuShowArtistCollections && platformOpts.menuArtistCollections,
+            disabled: !platformOpts.menuArtistCollections,
+          },
+          {
+            key: 'menuShowAlbumCollections',
+            label: 'Album Collections',
+            state: menuShowAlbumCollections && platformOpts.menuAlbumCollections,
+            disabled: !platformOpts.menuAlbumCollections,
+          },
+        ]
+      : []),
     {
       key: 'menuShowArtistGenres',
       label: 'Artist Genres',
@@ -154,31 +158,39 @@ const BrowseSettings = ({ platformOpts }) => {
       state: menuShowAlbumGenres && platformOpts.menuAlbumGenres,
       disabled: !platformOpts.menuAlbumGenres,
     },
-    {
-      key: 'menuShowArtistMoods',
-      label: 'Artist Moods',
-      state: menuShowArtistMoods && platformOpts.menuArtistStyles,
-      disabled: !platformOpts.menuArtistStyles,
-    },
-    {
-      key: 'menuShowAlbumMoods',
-      label: 'Album Moods',
-      state: menuShowAlbumMoods && platformOpts.menuAlbumStyles,
-      disabled: !platformOpts.menuAlbumStyles,
-    },
-    {
-      key: 'menuShowArtistStyles',
-      label: 'Artist Styles',
-      state: menuShowArtistStyles && platformOpts.menuArtistStyles,
-      disabled: !platformOpts.menuArtistStyles,
-    },
-    {
-      key: 'menuShowAlbumStyles',
-      label: 'Album Styles',
-      state: menuShowAlbumStyles && platformOpts.menuAlbumStyles,
-      disabled: !platformOpts.menuAlbumStyles,
-    },
-    ...(isLocal
+    ...(platformOpts.menuArtistMoods
+      ? [
+          {
+            key: 'menuShowArtistMoods',
+            label: 'Artist Moods',
+            state: menuShowArtistMoods && platformOpts.menuArtistMoods,
+            disabled: !platformOpts.menuArtistMoods,
+          },
+          {
+            key: 'menuShowAlbumMoods',
+            label: 'Album Moods',
+            state: menuShowAlbumMoods && platformOpts.menuAlbumMoods,
+            disabled: !platformOpts.menuAlbumMoods,
+          },
+        ]
+      : []),
+    ...(platformOpts.menuArtistStyles
+      ? [
+          {
+            key: 'menuShowArtistStyles',
+            label: 'Artist Styles',
+            state: menuShowArtistStyles && platformOpts.menuArtistStyles,
+            disabled: !platformOpts.menuArtistStyles,
+          },
+          {
+            key: 'menuShowAlbumStyles',
+            label: 'Album Styles',
+            state: menuShowAlbumStyles && platformOpts.menuAlbumStyles,
+            disabled: !platformOpts.menuAlbumStyles,
+          },
+        ]
+      : []),
+    ...(platformOpts.menuArtistTags
       ? [
           {
             key: 'menuShowArtistTags',

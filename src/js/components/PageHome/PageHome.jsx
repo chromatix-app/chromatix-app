@@ -16,8 +16,6 @@ import style from './PageHome.module.scss';
 // COMPONENT
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
-
 export const PageHome = () => {
   const dispatch = useDispatch();
   const downloadsRef = useRef(null);
@@ -67,7 +65,7 @@ export const PageHome = () => {
             <Button onClick={scrollToDownloads} icon={<Icon icon="DownloadIcon" cover stroke strokeWidth={2} />}>
               Download the App
             </Button>
-            <div className={isLocal ? 'mt-20' : 'mt-20'}></div>
+            <div className="mt-20"></div>
           </>
         )}
 
@@ -81,19 +79,15 @@ export const PageHome = () => {
           >
             Login with Plex
           </Button>
-          {isLocal && (
-            <>
-              <Button
-                to="/login-jellyfin"
-                color={isElectron ? 'primary' : 'tertiary'}
-                size={isElectron ? 'large' : 'medium'}
-                wrap={false}
-                icon={<Icon icon="JellyfinSiteIcon" cover />}
-              >
-                Login with Jellyfin
-              </Button>
-            </>
-          )}
+          <Button
+            to="/login-jellyfin"
+            color={isElectron ? 'primary' : 'tertiary'}
+            size={isElectron ? 'large' : 'medium'}
+            wrap={false}
+            icon={<Icon icon="JellyfinSiteIcon" cover />}
+          >
+            Login with Jellyfin
+          </Button>
         </div>
       </div>
 
@@ -131,19 +125,15 @@ export const PageHome = () => {
           >
             Login with Plex
           </Button>
-          {isLocal && (
-            <>
-              <Button
-                to="/login-jellyfin"
-                color={isElectron ? 'primary' : 'tertiary'}
-                size={isElectron ? 'large' : 'medium'}
-                wrap={false}
-                icon={<Icon icon="JellyfinSiteIcon" cover />}
-              >
-                Login with Jellyfin
-              </Button>
-            </>
-          )}
+          <Button
+            to="/login-jellyfin"
+            color={isElectron ? 'primary' : 'tertiary'}
+            size={isElectron ? 'large' : 'medium'}
+            wrap={false}
+            icon={<Icon icon="JellyfinSiteIcon" cover />}
+          >
+            Login with Jellyfin
+          </Button>
         </div>
 
         {!isElectron && (
