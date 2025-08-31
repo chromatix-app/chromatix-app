@@ -130,7 +130,8 @@ export const login = (values) => {
   const { server, username, password } = values;
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.auth.login(server);
+      const parsedServer = server.replace(/\/+$/, '');
+      const endpoint = endpointConfig.auth.login(parsedServer);
       axios
         .post(
           endpoint,
@@ -149,7 +150,7 @@ export const login = (values) => {
           const accessToken = response?.data?.AccessToken;
           const userId = response?.data?.User?.Id;
           if (accessToken && userId) {
-            setLocalStorage(storageJellyServerKey, server);
+            setLocalStorage(storageJellyServerKey, parsedServer);
             setLocalStorage(storageJellyUserKey, userId);
             setLocalStorage(storageServiceKey, 'jellyfin');
             setLocalStorage(storageTokenKey, accessToken);

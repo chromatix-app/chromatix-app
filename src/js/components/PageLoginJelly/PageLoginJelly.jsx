@@ -32,7 +32,14 @@ export const PageLoginJelly = () => {
   };
 
   const validationSchema = yup.object({
-    server: yup.string().url('Invalid URL').required('Server address is required'),
+    server: yup
+      .string()
+      .url('Invalid URL')
+      .test('is-https', 'Server address must use HTTPS', (value) => {
+        if (!value) return false;
+        return value.toLowerCase().startsWith('https://');
+      })
+      .required('Server address is required'),
     username: yup.string().required('Username is required'),
     password: yup.string().required('Password is required'),
   });
@@ -72,7 +79,7 @@ export const PageLoginJelly = () => {
             <Form className={style.form}>
               <div className={style.formRow}>
                 <label htmlFor="server">Jellyfin Server Address *</label>
-                <Field type="text" id="server" name="server" placeholder="Example: http://192.168.0.1:8096" />
+                <Field type="text" id="server" name="server" placeholder="Example: https://192.168.0.1:8920" />
                 {errors.server && touched.server && <div className={style.errorField}>{errors.server}</div>}
               </div>
 
