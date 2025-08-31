@@ -53,8 +53,8 @@ export const PageHome = () => {
 
         <div className={style.body}>
           <p>
-            Chromatix is a desktop music player for Plex, that transforms your listening experience and makes
-            interacting with your music libraries a joy.
+            Chromatix is a desktop music player for Plex and Jellyfin that transforms your listening experience and
+            makes interacting with your music libraries a joy.
           </p>
         </div>
 
@@ -110,7 +110,7 @@ export const PageHome = () => {
         <div className="mt-40"></div>
 
         <div className={style.body}>
-          <p>Login with your Plex account to begin experiencing your music library in a whole new way.</p>
+          <p>Login with your Plex or Jellyfin account to begin experiencing your music library in a whole new way.</p>
         </div>
 
         <div className="mt-50"></div>

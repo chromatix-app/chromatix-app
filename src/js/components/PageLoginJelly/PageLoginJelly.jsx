@@ -60,6 +60,12 @@ export const PageLoginJelly = () => {
       <div className={style.main}>
         <h1 className={style.title}>Login with Jellyfin</h1>
         <h2 className={style.subtitle}>(Beta)</h2>
+        <div className={style.body}>
+          <p>
+            Currently you can only login with one service at a time, and settings are not shared between accounts. We
+            hope to provide a future update to enable signing into multiple accounts at once.
+          </p>
+        </div>
 
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
           {({ errors, touched, isSubmitting }) => (
