@@ -175,7 +175,8 @@ export const getUserInfo = (service) => {
     })
     .catch((error) => {
       console.error(error);
-      store.dispatch.appModel.setAppState({ errorUser: true });
+      logout();
+      // store.dispatch.appModel.setAppState({ errorUser: true });
       analyticsEvent('Error: ' + toUpperFirst(service) + ' - Get User Info');
     });
 };
