@@ -20,8 +20,10 @@
 
   &WithoutLibrary {
     :global(html.electron.electron-platform-win) & {
-      left: 20px;
-      right: auto;
+      // left: 20px;
+      // right: auto;
+      top: 50px;
+      right: 20px;
     }
   }
 

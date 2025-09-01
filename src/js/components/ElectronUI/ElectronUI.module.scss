@@ -3,17 +3,151 @@
 
 .menu {
   position: fixed;
-  top: 50px;
+  top: 4px;
   left: 0;
   z-index: 999;
-  font-size: 12px;
-  line-height: 16px;
+}
 
-  ul {
-    margin: 0 0 0 30px;
+.trigger {
+  display: flex;
+  align-items: center;
+  width: 60px;
+  height: 50px;
+  // background: transparent;
+  // background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+
+  @include mixins.focus-self-outline;
+  @include mixins.electron-no-drag;
+}
+
+.line1,
+.line2,
+.line3 {
+  display: block;
+  position: absolute;
+  top: 19px;
+  left: 22px;
+  width: 20px;
+  height: 1px;
+  background: vars.$color-text;
+
+  :global(html.logged-in) & {
+    left: 16px;
+    background: var(--color-opacity-04);
   }
+}
+.line2 {
+  top: 25px;
+}
+.line3 {
+  top: 31px;
+}
+
+//
+// DROPDOWN
+//
+
+.content {
+  left: 11px;
+  width: 350px;
+  padding: 4px;
+  background: var(--color-secondary-background);
+  border: 1px solid var(--color-secondary-border);
+  border-radius: 9px;
+  box-shadow: var(--shadow-md);
+  z-index: 999;
+  font-size: 12px;
+  line-height: 14px;
+
+  :global(html.logged-in) & {
+    background: var(--color-tertiary-background);
+    border: 1px solid var(--color-tertiary-border);
+  }
+}
+
+.sectionHeading {
+  padding: 6px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-opacity-06);
+}
+
+.label,
+.item {
+  display: block;
+  position: relative;
+  padding: 6px 8px;
+  border-radius: 5px;
 }
 
 .label {
   color: var(--color-opacity-05);
+}
+
+.item {
+  cursor: pointer;
+
+  &:not([data-disabled]):hover,
+  &:not([data-disabled]):focus {
+    background: var(--color-secondary-hover);
+    outline: none;
+
+    @include mixins.focus-self-fill;
+
+    :global(html.logged-in) & {
+      background: var(--color-tertiary-hover);
+    }
+  }
+
+  &[data-disabled] {
+    color: var(--color-opacity-04);
+  }
+}
+
+.separator {
+  height: 1px;
+  margin: 4px 6px;
+  background: var(--color-secondary-border);
+
+  :global(html.logged-in) & {
+    background: var(--color-tertiary-border);
+  }
+}
+
+.checkboxItem {
+  display: flex;
+  position: relative;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:not([data-disabled]):hover,
+  &:not([data-disabled]):focus {
+    background: var(--color-secondary-hover);
+    outline: none;
+
+    @include mixins.focus-self-fill;
+
+    :global(html.logged-in) & {
+      background: var(--color-tertiary-hover);
+    }
+  }
+
+  &[data-disabled] {
+    color: var(--color-opacity-04);
+    cursor: not-allowed;
+  }
+}
+
+.checkboxIcon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-left: 8px;
+  color: var(--color-primary);
 }

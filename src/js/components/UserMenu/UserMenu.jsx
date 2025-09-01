@@ -9,7 +9,7 @@ import * as RadixMenu from '@radix-ui/react-dropdown-menu';
 import clsx from 'clsx';
 
 import { Icon } from 'js/components';
-import { electronPlatform } from 'js/utils';
+// import { electronPlatform } from 'js/utils';
 
 import style from './UserMenu.module.scss';
 
@@ -32,7 +32,7 @@ const UserMenu = ({ variant = 'default', withoutLibrary = false }) => {
   const hasQueueVisible = queueIsVisible && hasSelectedLibrary;
 
   const anchorSide = variant === 'Inline' ? 'right' : 'bottom';
-  const anchorAlign = variant === 'Inline' || electronPlatform === 'win' ? 'start' : 'end';
+  const anchorAlign = variant === 'Inline' ? 'start' : 'end'; //|| electronPlatform === 'win'
 
   return (
     <>
