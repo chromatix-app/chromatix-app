@@ -81,10 +81,7 @@ const useElectronStatus = (): void => {
           }
         });
         window.ipcRenderer.on('updateMenu', function (_event: any, message: any) {
-          // if (isWindowsApp) {
           dispatch.appModel.setAppState({ electronMenu: JSON.parse(message) });
-          console.log(JSON.parse(message));
-          // }
         });
         inited.current = true;
       }

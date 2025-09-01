@@ -1,0 +1,19 @@
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
+
+.menu {
+  position: fixed;
+  top: 50px;
+  left: 0;
+  z-index: 999;
+  font-size: 12px;
+  line-height: 16px;
+
+  ul {
+    margin: 0 0 0 30px;
+  }
+}
+
+.label {
+  color: var(--color-opacity-05);
+}
