@@ -64,6 +64,7 @@ function useColorTheme(): void {
 
     let colorTertiaryBackground: string;
     let colorTertiaryBorder: string;
+    let colorTertiaryHover: string;
 
     // Light theme handling
     if (isLightTheme) {
@@ -96,6 +97,9 @@ function useColorTheme(): void {
         .hex();
       colorTertiaryBorder = chroma(colorPrimaryBackground)
         .darken(1.2 * chromaMultiplier)
+        .hex();
+      colorTertiaryHover = chroma(colorPrimaryBackground)
+        .darken(1.25 * chromaMultiplier)
         .hex();
     }
 
@@ -131,6 +135,9 @@ function useColorTheme(): void {
         .hex();
       colorTertiaryBorder = chroma(colorPrimaryBackground)
         .brighten(1.2 * chromaMultiplier)
+        .hex();
+      colorTertiaryHover = chroma(colorPrimaryBackground)
+        .brighten(1.25 * chromaMultiplier)
         .hex();
     }
 
@@ -178,6 +185,7 @@ function useColorTheme(): void {
 
       '--color-tertiary-background': colorTertiaryBackground,
       '--color-tertiary-border': colorTertiaryBorder,
+      '--color-tertiary-hover': colorTertiaryHover,
 
       '--color-opacity-0025': colorOpacity0025,
       '--color-opacity-005': colorOpacity005,
