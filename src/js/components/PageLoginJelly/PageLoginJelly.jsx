@@ -38,7 +38,7 @@ export const PageLoginJelly = () => {
       .url('Invalid URL')
       .test('is-https', 'Server address must use HTTPS', (value) => {
         if (!value) return false;
-        if (window.location.protocol === 'https:') {
+        if (!isElectron && window.location.protocol === 'https:') {
           return value.toLowerCase().startsWith('https://');
         }
         return true;
@@ -150,11 +150,10 @@ export const PageLoginJelly = () => {
           {isElectron && (
             <>
               <p>Your Jellyfin server must be running and should have a valid SSL certificate.</p>
-              <p>Self-signed certificates are not supported.</p>
-              {/* <p>
-                If you are having trouble logging in, you can toggle "Allow Insecure Connections" in the "Advanced" menu
-                to allow logging in to unsecured servers, but this is not advised.
-              </p> */}
+              <p>
+                If you are having trouble logging in, you can toggle "Allow Insecure Connections" in the "Advanced"
+                section of the main menu to allow logging in to unsecured servers, but this is not advised.
+              </p>
             </>
           )}
         </div>

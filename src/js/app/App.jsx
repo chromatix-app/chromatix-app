@@ -19,7 +19,7 @@ import {
   useWindowSize,
 } from 'js/hooks';
 import { ErrorPage } from 'js/pages';
-import { getBrowserName, getOperatingSystemName, isElectron, electronPlatform } from 'js/utils';
+import { getBrowserName, getOperatingSystemName, isElectron, electronPlatform, sendToElectron } from 'js/utils';
 import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 
 // ======================================================================
@@ -82,6 +82,11 @@ const App = () => {
 
   // initialise on load
   useEffect(() => {
+    // send app info to electron
+    sendToElectron('any', 'app-info', {
+      version: process.env.REACT_APP_VERSION,
+    });
+
     // add browser and OS information to html
     document.documentElement.setAttribute('data-browser', getBrowserName());
     document.documentElement.setAttribute('data-os', getOperatingSystemName());
