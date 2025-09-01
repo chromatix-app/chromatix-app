@@ -8,7 +8,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 
 import Modals from 'js/app/Modals';
-import { ControlBar, FullPagePlayer, Queue, SideBar, ToastNotification, UserMenu } from 'js/components';
+import { ControlBar, ElectronUI, FullPagePlayer, Queue, SideBar, ToastNotification, UserMenu } from 'js/components';
 import {
   useColorTheme,
   useElectronStatus,
@@ -139,7 +139,7 @@ const App = () => {
   if (errorFastestConnection) {
     return (
       <div className="wrap">
-        <div className="electron-drag"></div>
+        {isElectron && <ElectronUI />}
         <ErrorPage
           title="Oops!"
           body={
@@ -159,7 +159,7 @@ const App = () => {
   } else if (errorLibraries) {
     return (
       <div className="wrap">
-        <div className="electron-drag"></div>
+        {isElectron && <ElectronUI />}
         <ErrorPage
           title="Oops!"
           body={
@@ -179,7 +179,7 @@ const App = () => {
   } else if (errorLogin) {
     return (
       <div className="wrap">
-        <div className="electron-drag"></div>
+        {isElectron && <ElectronUI />}
         <ErrorPage
           title="Oops!"
           body={
@@ -199,7 +199,7 @@ const App = () => {
   } else if (errorServers) {
     return (
       <div className="wrap">
-        <div className="electron-drag"></div>
+        {isElectron && <ElectronUI />}
         <ErrorPage
           title="Oops!"
           body={
@@ -219,7 +219,7 @@ const App = () => {
   } else if (errorUser) {
     return (
       <div className="wrap">
-        <div className="electron-drag"></div>
+        {isElectron && <ElectronUI />}
         <ErrorPage
           title="Oops!"
           body={
@@ -242,7 +242,7 @@ const App = () => {
   else if (!inited || (loggedIn && !gotRequiredData)) {
     return (
       <div className="wrap">
-        <div className="electron-drag"></div>
+        {isElectron && <ElectronUI />}
         <div className="loading"></div>
       </div>
     );
@@ -252,7 +252,7 @@ const App = () => {
   else if (!loggedIn) {
     return (
       <div className="wrap wrap--home">
-        <div className="electron-drag"></div>
+        {isElectron && <ElectronUI />}
         <BrowserRouteSwitch />
       </div>
     );
@@ -263,7 +263,7 @@ const App = () => {
     if (!currentServer || !currentLibrary) {
       return (
         <div className="wrap">
-          <div className="electron-drag"></div>
+          {isElectron && <ElectronUI />}
           <BrowserRouteSwitch />
           <UserMenu />
         </div>
@@ -336,7 +336,7 @@ const AppMain = () => {
 
   return (
     <div className="wrap">
-      <div className="electron-drag"></div>
+      {isElectron && <ElectronUI />}
 
       {fullPageMode && <FullPagePlayer />}
 
