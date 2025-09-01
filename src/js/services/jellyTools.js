@@ -144,6 +144,7 @@ export const login = (values) => {
               'Content-Type': 'application/json',
               'X-Emby-Authorization': `MediaBrowser Client="${appName}", Device="${deviceName}", DeviceId="${deviceId}", Version="${appVersion}"`,
             },
+            timeout: 10000,
           }
         )
         .then((response) => {

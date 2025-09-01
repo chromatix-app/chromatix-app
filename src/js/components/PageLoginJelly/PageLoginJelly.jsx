@@ -10,6 +10,7 @@ import clsx from 'clsx';
 
 import { Button } from 'js/components';
 import * as bridge from 'js/services/bridge';
+import { isElectron } from 'js/utils';
 
 import style from './PageLoginJelly.module.scss';
 
@@ -53,20 +54,37 @@ export const PageLoginJelly = () => {
       setFieldTouched('password', false);
       setFieldValue('password', '', false);
       setTimeout(function () {
-        setFieldError(
-          'general',
-          <>
-            Sorry, we couldn't log you in.
-            <br />
-            Are your server address and login details correct?
-            {window.location.protocol === 'https:' && (
-              <>
-                <br />
-                Your server must have a valid SSL certificate.
-              </>
-            )}
-          </>
-        );
+        if (
+          [
+            'CERT_AUTHORITY_INVALID',
+            'CERT_REJECTED',
+            'CERT_UNTRUSTED',
+            'DEPTH_ZERO_SELF_SIGNED_CERT',
+            'ERR_CERT_AUTHORITY_INVALID',
+            'ERR_CERT_REJECTED',
+            'ERR_CERT_UNTRUSTED',
+            'ERR_NETWORK',
+            'ERR_TLS_CERT_ALTNAME_INVALID',
+            'SELF_SIGNED_CERT_IN_CHAIN',
+          ].includes(err?.error?.code)
+        ) {
+          setFieldError(
+            'general',
+            <>
+              <p>Sorry, we couldn't log you in.</p>
+              <p>Your server must be running and have a valid SSL certificate.</p>
+            </>
+          );
+        } else {
+          setFieldError(
+            'general',
+            <>
+              <p>Sorry, we couldn't log you in.</p>
+              <p>Are your login details correct?</p>
+              {window.location.protocol === 'https:' && <p>Your server must have a valid SSL certificate.</p>}
+            </>
+          );
+        }
       }, 10);
     });
   };
@@ -77,10 +95,6 @@ export const PageLoginJelly = () => {
         <h1 className={style.title}>Login with Jellyfin</h1>
         <h2 className={style.subtitle}>(Beta)</h2>
         <div className={style.body}>
-          <p>
-            Your Jellyfin server must have a valid SSL certificate. If you are using a self-signed certificate, you may
-            need to add an exception in your browser.
-          </p>
           <p>
             Right now you can only log into one service at a time, and settings are not shared between accounts. We hope
             to add multiple account support soon.
@@ -122,6 +136,28 @@ export const PageLoginJelly = () => {
             </Form>
           )}
         </Formik>
+      </div>
+
+      <div className={style.troubleshooting}>
+        <h2 className={style.subtitle}>Troubleshooting</h2>
+        <div className={style.body}>
+          {!isElectron && (
+            <>
+              <p>Your Jellyfin server must be running and have a valid SSL certificate.</p>
+              <p>If you are using a self-signed certificate, you may need to add an exception in your browser.</p>
+            </>
+          )}
+          {isElectron && (
+            <>
+              <p>Your Jellyfin server must be running and should have a valid SSL certificate.</p>
+              <p>Self-signed certificates are not supported.</p>
+              {/* <p>
+                If you are having trouble logging in, you can toggle "Allow Insecure Connections" in the "Advanced" menu
+                to allow logging in to unsecured servers, but this is not advised.
+              </p> */}
+            </>
+          )}
+        </div>
       </div>
 
       <div className={style.border}></div>
