@@ -22,6 +22,7 @@ const appState = {
   isOnline: true,
   standalone: false,
   history: null,
+  electronMenu: null,
 
   contentBreakpoint: 0,
   contentWidth: 0,

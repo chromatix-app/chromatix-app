@@ -22,7 +22,7 @@ const useElectronStatus = (): void => {
   const isDisabled = !trackCurrent ? true : false;
   const isDisabledRef = useRef(isDisabled);
 
-  const enableStatus = isElectron && electronPlatform === 'win';
+  const isWindowsApp = isElectron && electronPlatform === 'win';
 
   // Update a ref here to avoid closure issues
   useEffect(() => {
@@ -32,7 +32,7 @@ const useElectronStatus = (): void => {
   // Send the player status to Electron
   useEffect(() => {
     try {
-      if (enableStatus) {
+      if (isWindowsApp) {
         const playerStatus = isDisabled ? 'disabled' : playerPlaying ? 'playing' : 'paused';
         sendToElectron('any', 'player-status', {
           status: playerStatus,
@@ -46,14 +46,14 @@ const useElectronStatus = (): void => {
       // Handle error
       console.error(error);
     }
-  }, [isDisabled, playerPlaying, trackCurrent, enableStatus]);
+  }, [isDisabled, playerPlaying, trackCurrent, isWindowsApp]);
 
   // Listen for incoming messages from Electron
   useEffect(() => {
     try {
       if (!inited.current && window.ipcRenderer) {
         window.ipcRenderer.on('message', function (_event: any, message: string) {
-          if (enableStatus) {
+          if (isWindowsApp) {
             console.log('%c--- from electron - ' + message + ' ---', 'font-weight:bold;');
             try {
               switch (message) {
@@ -79,6 +79,12 @@ const useElectronStatus = (): void => {
           } else {
             console.log('%c--- from electron (ignored) - ' + message + ' ---', 'font-weight:bold;');
           }
+        });
+        window.ipcRenderer.on('updateMenu', function (_event: any, message: any) {
+          // if (isWindowsApp) {
+          dispatch.appModel.setAppState({ electronMenu: JSON.parse(message) });
+          console.log(JSON.parse(message));
+          // }
         });
         inited.current = true;
       }
