@@ -39,7 +39,7 @@ const ElectronUI = () => {
 const ElectronMenu = ({ electronMenu }) => {
   // console.log(electronMenu);
 
-  const fiteredMenu = electronMenu.filter(
+  const filteredMenu = electronMenu.filter(
     (item) => !ignoredTopItems.includes(item.label) && !ignoredTopItems.includes(item.role)
   );
 
@@ -54,7 +54,7 @@ const ElectronMenu = ({ electronMenu }) => {
   const renderAllMenuItems = () => {
     const allItems = [];
 
-    fiteredMenu.forEach((topItem, topIndex) => {
+    filteredMenu.forEach((topItem, topIndex) => {
       // Top menu items
       allItems.push(
         <RadixMenu.Label key={`header-${topIndex}`} className={style.sectionHeading}>
@@ -119,7 +119,7 @@ const ElectronMenu = ({ electronMenu }) => {
       }
 
       // Separator between sections (except for the last one)
-      if (topIndex < fiteredMenu.length - 1) {
+      if (topIndex < filteredMenu.length - 1) {
         allItems.push(<RadixMenu.Separator key={`separator-${topIndex}`} className={style.separator} />);
       }
     });
