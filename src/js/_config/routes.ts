@@ -348,9 +348,9 @@ export const authRoutes = [
     component: 'SettingsLastFM',
   },
   {
-    path: '/settings/menu',
+    path: '/settings/sidebar',
     exact: true,
-    component: 'SettingsMenu',
+    component: 'SettingsSidebar',
   },
 
   // dev tools

@@ -49,7 +49,7 @@ export { default as SettingsChangelog } from './SettingsChangelog';
 export { default as SettingsDownloads } from './SettingsDownloads';
 export { default as SettingsGeneral } from './SettingsGeneral';
 export { default as SettingsLastFM } from './SettingsLastFM';
-export { default as SettingsMenu } from './SettingsMenu';
+export { default as SettingsSidebar } from './SettingsSidebar';
 
 export { default as DevIcons } from './DevIcons';
 export { default as DevModals } from './DevModals';

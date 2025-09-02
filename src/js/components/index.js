@@ -27,7 +27,7 @@ export { default as SettingsChangelog } from './SettingsChangelog/SettingsChange
 export { default as SettingsDownloads } from './SettingsDownloads/SettingsDownloads';
 export { default as SettingsGeneral } from './SettingsGeneral/SettingsGeneral';
 export { default as SettingsList } from './SettingsList/SettingsList';
-export { default as SettingsMenu } from './SettingsMenu/SettingsMenu';
+export { default as SettingsSidebar } from './SettingsSidebar/SettingsSidebar';
 export { default as SideBar } from './SideBar/SideBar';
 export { default as StarRating } from './StarRating/StarRating';
 export { default as TitleBasic } from './TitleBasic/TitleBasic';

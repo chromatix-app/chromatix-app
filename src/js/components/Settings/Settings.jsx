@@ -53,11 +53,11 @@ export const Settings = () => {
           </div>
         </NavLink>
 
-        <NavLink className={style.entry} to={'/settings/menu'} draggable="false">
+        <NavLink className={style.entry} to={'/settings/sidebar'} draggable="false">
           <div className={style.entryIconSmall}>
             <Icon icon="SideBarSmallIcon" cover stroke strokeWidth={1.5} />
           </div>
-          <div>Menu</div>
+          <div>Sidebar</div>
           <div className={style.entryArrow}>
             <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
           </div>
