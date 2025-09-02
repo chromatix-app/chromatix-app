@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { SettingsMenu, TitleHeading } from 'js/components';
+import { SettingsSidebar, TitleHeading } from 'js/components';
 
 // ======================================================================
 // COMPONENT
@@ -11,8 +11,8 @@ import { SettingsMenu, TitleHeading } from 'js/components';
 const Component = () => {
   return (
     <>
-      <TitleHeading title="Menu Settings" />
-      <SettingsMenu />
+      <TitleHeading title="Sidebar Settings" />
+      <SettingsSidebar />
     </>
   );
 };

@@ -5,6 +5,7 @@
 import { useSelector } from 'react-redux';
 
 import { SettingsList } from 'js/components';
+import platformFeatures from 'js/_config/platformFeatures';
 
 import style from './SettingsGeneral.module.scss';
 
@@ -13,12 +14,15 @@ import style from './SettingsGeneral.module.scss';
 // ======================================================================
 
 export const SettingsGeneral = () => {
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
+
   return (
     <div className={style.wrap}>
       <GeneralSettings />
       <ServerSettings />
       <SortSettings />
-      <RatingSettings />
+      {platformOpts.enableUserRating && <RatingSettings />}
       <PlaybackSettings />
     </div>
   );
@@ -109,7 +113,7 @@ const RatingSettings = () => {
     },
   ];
 
-  return <SettingsList title="Star Ratings" menuItems={menuItems} />;
+  return <SettingsList title="Rating System" menuItems={menuItems} />;
 };
 
 //

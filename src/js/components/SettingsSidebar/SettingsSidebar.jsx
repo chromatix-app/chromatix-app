@@ -7,13 +7,13 @@ import { useSelector } from 'react-redux';
 import { SettingsList } from 'js/components';
 import platformFeatures from 'js/_config/platformFeatures';
 
-import style from './SettingsMenu.module.scss';
+import style from './SettingsSidebar.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-export const SettingsMenu = () => {
+export const SettingsSidebar = () => {
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
 
@@ -233,4 +233,4 @@ const PlaylistSettings = ({ platformOpts }) => {
 // EXPORT
 // ======================================================================
 
-export default SettingsMenu;
+export default SettingsSidebar;
