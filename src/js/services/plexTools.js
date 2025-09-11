@@ -5,8 +5,10 @@
 import axios from 'axios';
 
 import config from 'js/_config/config';
-import { getBrowserName, getLocalStorage, raceToSuccess, setLocalStorage } from 'js/utils';
+import { getLocalStorage, raceToSuccess, setLocalStorage } from 'js/utils';
 import * as plexTranspose from 'js/services/plexTranspose';
+import getPlayerPlatformName from 'js/utils/getPlayerPlatformName';
+import getPlayerDeviceName from 'js/utils/getPlayerDeviceName';
 
 // ======================================================================
 // OPTIONS
@@ -1430,7 +1432,6 @@ export const setStarRating = ({ accessToken, rating, ratingKey, serverBaseUrl, s
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.rating.setStarRating(serverBaseUrl, ratingKey, rating);
-      const browserName = getBrowserName();
       const params = {
         identifier: 'com.plexapp.plugins.library',
         key: ratingKey,
@@ -1447,8 +1448,8 @@ export const setStarRating = ({ accessToken, rating, ratingKey, serverBaseUrl, s
             'X-Plex-Client-Identifier': clientId,
             'X-Plex-Session-Identifier': sessionId,
             'X-Plex-Product': appName,
-            'X-Plex-Device-Name': browserName,
-            'X-Plex-Platform': browserName,
+            'X-Plex-Device-Name': getPlayerDeviceName(),
+            'X-Plex-Platform': getPlayerPlatformName(),
             'X-Plex-Device-Icon': clientIcon,
           },
         })
@@ -1491,7 +1492,6 @@ export const logPlaybackStatus = ({
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.status.logPlaybackStatus(serverBaseUrl);
-      const browserName = getBrowserName();
       const params = {
         type: type,
         key: trackId,
@@ -1546,8 +1546,8 @@ export const logPlaybackStatus = ({
             'X-Plex-Client-Identifier': clientId,
             'X-Plex-Session-Identifier': sessionId,
             'X-Plex-Product': appName,
-            'X-Plex-Device-Name': browserName,
-            'X-Plex-Platform': browserName,
+            'X-Plex-Device-Name': getPlayerDeviceName(),
+            'X-Plex-Platform': getPlayerPlatformName(),
             'X-Plex-Device-Icon': clientIcon,
           },
         })
@@ -1590,7 +1590,6 @@ export const logPlaybackQuit = ({
 }) => {
   try {
     const endpoint = endpointConfig.status.logPlaybackStatus(serverBaseUrl);
-    const browserName = getBrowserName();
     const params = new URLSearchParams({
       type: type,
       key: trackId,
@@ -1612,8 +1611,8 @@ export const logPlaybackQuit = ({
         'X-Plex-Client-Identifier': clientId,
         'X-Plex-Session-Identifier': sessionId,
         'X-Plex-Product': appName,
-        'X-Plex-Device-Name': browserName,
-        'X-Plex-Platform': browserName,
+        'X-Plex-Device-Name': getPlayerDeviceName(),
+        'X-Plex-Platform': getPlayerPlatformName(),
         'X-Plex-Device-Icon': clientIcon,
       },
     });
