@@ -47,6 +47,7 @@
     height: 56px;
     margin-right: 12px;
   }
+
   @media (min-width: 1024px) {
     width: 68px;
     height: 68px;
@@ -101,6 +102,12 @@
   @media (min-width: 1024px) {
     width: calc(100% - 75px);
   }
+}
+
+.trackCurrent {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .title {
@@ -299,10 +306,12 @@ button.active {
   line-height: 1;
   color: var(--color-opacity-07);
 }
+
 .scrubLeft {
   margin-right: 8px;
   text-align: right;
 }
+
 .scrubRight {
   margin-left: 8px;
   text-align: left;
