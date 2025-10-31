@@ -12,10 +12,6 @@ import style from './SettingsAbout.module.scss';
 
 const envData = getEnvironment();
 
-const capitalise = (string) => {
-  return string?.charAt(0).toUpperCase() + string?.slice(1);
-};
-
 export const SettingsAbout = () => {
   return (
     <div className={style.wrap}>
@@ -30,7 +26,7 @@ export const SettingsAbout = () => {
             )}
             {envData.electronPlatformName && (
               <p>
-                Platform: <strong>{capitalise(envData.electronPlatformName)}</strong>
+                Platform: <strong>{envData.electronPlatformName}</strong>
               </p>
             )}
             {envData.electronBuildDate && (
