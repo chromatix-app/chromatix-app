@@ -99,7 +99,7 @@ const getRequestHeaders = (accessToken) => {
     'X-Emby-Client': envData.appName,
     'X-Emby-Device': envData.deviceName,
     'X-Emby-Device-Id': envData.deviceId,
-    'X-Emby-Client-Version': envData.webVersion,
+    'X-Emby-Client-Version': envData.webVersion || '0.0.0',
   };
 };
 
