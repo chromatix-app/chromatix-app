@@ -1,3 +1,11 @@
+# 0.53.0 (2025-10-31)
+
+Updated:
+
+- Added a universal getEnvironment utility function to act as a single source of truth for all information about the app environment, including browser and OS info, version info, build info and Electron app info.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.52.0 (2025-09-02)
 
 Features:
