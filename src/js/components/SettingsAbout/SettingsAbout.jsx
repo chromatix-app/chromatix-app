@@ -2,9 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import moment from 'moment';
-
-import { isElectron, electronPlatform, electronVersion, electronBuildDate } from 'js/utils';
+import { getEnvironment } from 'js/utils';
 
 import style from './SettingsAbout.module.scss';
 
@@ -12,34 +10,28 @@ import style from './SettingsAbout.module.scss';
 // COMPONENT
 // ======================================================================
 
-const electronMoment = electronBuildDate ? moment(electronBuildDate * 1000) : null;
-const webMoment = moment(process.env.REACT_APP_DATE * 1000);
-
-const capitalise = (string) => {
-  return string?.charAt(0).toUpperCase() + string?.slice(1);
-};
+const envData = getEnvironment();
 
 export const SettingsAbout = () => {
   return (
     <div className={style.wrap}>
-      {isElectron && (electronVersion || electronPlatform || electronBuildDate) && (
+      {envData.isElectron && (envData.electronVersion || envData.electronPlatformName || envData.electronBuildDate) && (
         <div className={style.group}>
           <div className={style.title}>Chromatix Desktop</div>
           <div className={style.body}>
-            {electronVersion && (
+            {envData.electronVersion && (
               <p>
-                Version: <strong>{electronVersion}</strong>
+                Version: <strong>{envData.electronVersion}</strong>
               </p>
             )}
-            {electronPlatform && (
+            {envData.electronPlatformName && (
               <p>
-                Platform: <strong>{capitalise(electronPlatform)}</strong>
+                Platform: <strong>{envData.electronPlatformName}</strong>
               </p>
             )}
-            {electronMoment && (
+            {envData.electronBuildDate && (
               <p>
-                Compiled: <strong>{electronMoment.format('dddd Do MMMM YYYY')}</strong> at{' '}
-                <strong>{electronMoment.format('HH:mm:ss')}</strong>
+                Compiled: <strong>{envData.electronBuildDate}</strong> at <strong>{envData.electronBuildTime}</strong>
               </p>
             )}
           </div>
@@ -50,14 +42,13 @@ export const SettingsAbout = () => {
         <div className={style.title}>Chromatix Web App</div>
         <div className={style.body}>
           <p>
-            Version: <strong>{process.env.REACT_APP_VERSION}</strong>
+            Version: <strong>{envData.webVersion}</strong>
           </p>
           <p>
-            Environment: <strong>{capitalise(process.env.REACT_APP_ENV)}</strong>
+            Environment: <strong>{envData.webEnvName}</strong>
           </p>
           <p>
-            Compiled: <strong>{webMoment.format('dddd Do MMMM YYYY')}</strong> at{' '}
-            <strong>{webMoment.format('HH:mm:ss')}</strong>
+            Compiled: <strong>{envData.webBuildDate}</strong> at <strong>{envData.webBuildTime}</strong>
           </p>
         </div>
       </div>

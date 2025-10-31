@@ -19,7 +19,7 @@ import {
   useWindowSize,
 } from 'js/hooks';
 import { ErrorPage } from 'js/pages';
-import { getBrowserName, getOperatingSystemName, isElectron, electronPlatform, sendToElectron } from 'js/utils';
+import { getEnvironment, sendToElectron } from 'js/utils';
 import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 
 // ======================================================================
@@ -29,6 +29,8 @@ import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 const isLocal = process.env.REACT_APP_ENV === 'local';
 const isPreview = process.env.REACT_APP_ENV === 'preview';
 const isProduction = process.env.REACT_APP_ENV === 'production';
+
+const envData = getEnvironment();
 
 const App = () => {
   const inited = useSelector(({ appModel }) => appModel.inited);
@@ -88,8 +90,8 @@ const App = () => {
     });
 
     // add browser and OS information to html
-    document.documentElement.setAttribute('data-browser', getBrowserName());
-    document.documentElement.setAttribute('data-os', getOperatingSystemName());
+    document.documentElement.setAttribute('data-browser', envData.browserName);
+    document.documentElement.setAttribute('data-os', envData.osName);
 
     // add local class to html
     if (isLocal) {
@@ -97,9 +99,9 @@ const App = () => {
     }
 
     // add electron classes to html
-    if (isElectron) {
+    if (envData.isElectron) {
       document.documentElement.classList.add('electron');
-      document.documentElement.classList.add('electron-platform-' + electronPlatform);
+      document.documentElement.classList.add('electron-platform-' + envData.electronPlatformId);
     }
 
     // save history for reference within models
@@ -139,7 +141,7 @@ const App = () => {
   if (errorFastestConnection) {
     return (
       <div className="wrap">
-        {isElectron && <ElectronUI />}
+        {envData.isElectron && <ElectronUI />}
         <ErrorPage
           title="Oops!"
           body={
@@ -159,7 +161,7 @@ const App = () => {
   } else if (errorLibraries) {
     return (
       <div className="wrap">
-        {isElectron && <ElectronUI />}
+        {envData.isElectron && <ElectronUI />}
         <ErrorPage
           title="Oops!"
           body={
@@ -179,7 +181,7 @@ const App = () => {
   } else if (errorLogin) {
     return (
       <div className="wrap">
-        {isElectron && <ElectronUI />}
+        {envData.isElectron && <ElectronUI />}
         <ErrorPage
           title="Oops!"
           body={
@@ -199,7 +201,7 @@ const App = () => {
   } else if (errorServers) {
     return (
       <div className="wrap">
-        {isElectron && <ElectronUI />}
+        {envData.isElectron && <ElectronUI />}
         <ErrorPage
           title="Oops!"
           body={
@@ -219,7 +221,7 @@ const App = () => {
   } else if (errorUser) {
     return (
       <div className="wrap">
-        {isElectron && <ElectronUI />}
+        {envData.isElectron && <ElectronUI />}
         <ErrorPage
           title="Oops!"
           body={
@@ -242,7 +244,7 @@ const App = () => {
   else if (!inited || (loggedIn && !gotRequiredData)) {
     return (
       <div className="wrap">
-        {isElectron && <ElectronUI />}
+        {envData.isElectron && <ElectronUI />}
         <div className="loading"></div>
       </div>
     );
@@ -252,7 +254,7 @@ const App = () => {
   else if (!loggedIn) {
     return (
       <div className="wrap wrap--home">
-        {isElectron && <ElectronUI />}
+        {envData.isElectron && <ElectronUI />}
         <BrowserRouteSwitch />
       </div>
     );
@@ -263,7 +265,7 @@ const App = () => {
     if (!currentServer || !currentLibrary) {
       return (
         <div className="wrap">
-          {isElectron && <ElectronUI />}
+          {envData.isElectron && <ElectronUI />}
           <BrowserRouteSwitch />
           <UserMenu />
         </div>
@@ -336,7 +338,7 @@ const AppMain = () => {
 
   return (
     <div className="wrap">
-      {isElectron && <ElectronUI />}
+      {envData.isElectron && <ElectronUI />}
 
       {fullPageMode && <FullPagePlayer />}
 
@@ -349,7 +351,7 @@ const AppMain = () => {
             <ControlBar />
           </div>
           <div ref={contentRef} id="content" className={clsx('layout-content', contentContainerClass)}>
-            {electronPlatform !== 'win' && <UserMenu />}
+            {envData.electronPlatformId !== 'win' && <UserMenu />}
             <BrowserRouteSwitch />
           </div>
           {queueIsVisible && (

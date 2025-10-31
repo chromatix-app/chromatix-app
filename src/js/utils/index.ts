@@ -1,5 +1,3 @@
-export * from './environment';
-
 export { default as analyticsEvent } from './analyticsEvent';
 export { default as decimalMultiplier } from './decimalMultiplier';
 export { default as decimalToHex } from './decimalToHex';
@@ -7,9 +5,8 @@ export { default as durationToStringLong } from './durationToStringLong';
 export { default as durationToStringMed } from './durationToStringMed';
 export { default as durationToStringShort } from './durationToStringShort';
 export { default as formatRecentDate } from './formatRecentDate';
-export { default as getBrowserName } from './getBrowserName';
+export { default as getEnvironment } from './getEnvironment';
 export { default as getLocalStorage } from './getLocalStorage';
-export { default as getOperatingSystemName } from './getOperatingSystemName';
 export { default as getTrackKeys } from './getTrackKeys';
 export { default as pageWasReloaded } from './pageWasReloaded';
 export { default as raceToSuccess } from './raceToSuccess';

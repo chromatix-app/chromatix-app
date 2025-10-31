@@ -6,9 +6,9 @@ import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
-import moment from 'moment';
 
 import App from 'js/app/App';
+import getEnvironment from 'js/utils/getEnvironment';
 import store from 'js/store/store';
 
 import 'css/styles.scss';
@@ -17,18 +17,21 @@ import 'css/styles.scss';
 // INIT
 // ======================================================================
 
-const buildDate: string = moment(Number(process.env.REACT_APP_DATE) * 1000).format('DD/MM/YYYY HH:mm:ss');
+const envData = getEnvironment();
 
 console.log(
   '%c*************** INIT - ' +
-    process.env.REACT_APP_ENV +
+    envData.webEnvName +
     ' - v' +
-    process.env.REACT_APP_VERSION +
+    envData.webVersion +
     ' - ' +
-    buildDate +
+    envData.webBuildDate +
+    ' ' +
+    envData.webBuildTime +
     ' ***************',
   'font-weight:bold;color:#c70284;'
 );
+console.log(envData);
 
 // ======================================================================
 // APP

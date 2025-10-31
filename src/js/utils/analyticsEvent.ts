@@ -1,8 +1,9 @@
 import { track } from '@vercel/analytics';
 
-import { isElectron, electronVersion, appPlatform } from './environment';
+import getEnvironment from './getEnvironment';
 
 const isLocal = process.env.REACT_APP_ENV === 'local';
+const envData = getEnvironment();
 
 /**
  * Tracks analytics events with automatic platform and environment metadata.
@@ -16,11 +17,11 @@ const analyticsEvent = (event: string, props: object = {}) => {
     try {
       const finalProps = {
         ...props,
-        appPlatform: appPlatform,
-        appVersion: process.env.REACT_APP_VERSION || 'Unknown',
-        environment: process.env.REACT_APP_ENV || 'Unknown',
-        isElectron: isElectron,
-        electronVersion: electronVersion,
+        appPlatform: envData.appPlatformName,
+        appVersion: envData.webVersion,
+        environment: envData.webEnvName,
+        isElectron: envData.isElectron,
+        electronVersion: envData.electronVersion,
       };
 
       track(event, finalProps);
