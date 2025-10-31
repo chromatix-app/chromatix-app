@@ -17,8 +17,8 @@ const analyticsEvent = (event: string, props: object = {}) => {
     try {
       const finalProps = {
         ...props,
-        appPlatform: envData.appPlatformName,
-        appVersion: envData.webVersion,
+        appPlatform: envData.appPlatformName || 'Unknown',
+        appVersion: envData.webVersion || 'Unknown',
         environment: envData.webEnvName,
         isElectron: envData.isElectron,
         electronVersion: envData.electronVersion,

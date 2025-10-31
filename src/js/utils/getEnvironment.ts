@@ -60,7 +60,7 @@ const getEnvironment = (): EnvironmentData => {
     webBuildTime: webBuildTime,
     webBuildUnix: webBuildUnix,
     webEnvId: process.env.REACT_APP_ENV || null,
-    webEnvName: capitalise(process.env.REACT_APP_ENV) || null,
+    webEnvName: capitalise(process.env.REACT_APP_ENV),
     webVersion: process.env.REACT_APP_VERSION || null,
     ...electronDetails,
   };

@@ -27,7 +27,7 @@ const envData = getEnvironment();
 const ElectronUI = () => {
   const electronMenu = useSelector(({ appModel }) => appModel.electronMenu);
 
-  const displayMenu = semver.gte(envData.electronVersion, '0.3.1');
+  const displayMenu = envData.electronVersion && semver.gte(envData.electronVersion, '0.3.1');
 
   return (
     <>
