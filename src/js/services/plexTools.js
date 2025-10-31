@@ -5,14 +5,15 @@
 import axios from 'axios';
 
 import config from 'js/_config/config';
-import { getBrowserName, getLocalStorage, raceToSuccess, setLocalStorage } from 'js/utils';
+import { getEnvironment, getLocalStorage, raceToSuccess, setLocalStorage } from 'js/utils';
 import * as plexTranspose from 'js/services/plexTranspose';
 
 // ======================================================================
 // OPTIONS
 // ======================================================================
 
-const appName = 'Chromatix';
+const envData = getEnvironment();
+
 const clientId = 'chromatix.app';
 const clientIcon = 'https://chromatix.app/icon/icon-512.png';
 
@@ -124,6 +125,19 @@ const getRequestHeaders = (accessToken) => {
   };
 };
 
+const getPlaybackHeaders = (accessToken, sessionId) => {
+  return {
+    'Content-Type': 'application/json',
+    'X-Plex-Token': accessToken,
+    'X-Plex-Client-Identifier': clientId,
+    'X-Plex-Session-Identifier': sessionId,
+    'X-Plex-Product': envData.appName,
+    'X-Plex-Device-Name': envData.deviceName,
+    'X-Plex-Platform': envData.appPlatformName,
+    'X-Plex-Device-Icon': clientIcon,
+  };
+};
+
 // ======================================================================
 // ABORT HANDLING
 // ======================================================================
@@ -156,7 +170,7 @@ export const login = () => {
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
-              'X-Plex-Product': appName,
+              'X-Plex-Product': envData.appName,
               'X-Plex-Client-Identifier': clientId,
               'X-Plex-Device-Icon': clientIcon, // NOTE: this doesn't seem to work
             },
@@ -172,7 +186,7 @@ export const login = () => {
 
           // redirect to the Plex login page
           const authAppUrl = `https://app.plex.tv/auth#?clientID=${clientId}&code=${pinCode}&context%5Bdevice%5D%5Bproduct%5D=${encodeURIComponent(
-            appName
+            envData.appName
           )}&forwardUrl=${encodeURIComponent(redirectUrl)}`;
           window.location.href = authAppUrl;
 
@@ -1430,7 +1444,6 @@ export const setStarRating = ({ accessToken, rating, ratingKey, serverBaseUrl, s
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.rating.setStarRating(serverBaseUrl, ratingKey, rating);
-      const browserName = getBrowserName();
       const params = {
         identifier: 'com.plexapp.plugins.library',
         key: ratingKey,
@@ -1442,14 +1455,7 @@ export const setStarRating = ({ accessToken, rating, ratingKey, serverBaseUrl, s
           params: params,
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientId,
-            'X-Plex-Session-Identifier': sessionId,
-            'X-Plex-Product': appName,
-            'X-Plex-Device-Name': browserName,
-            'X-Plex-Platform': browserName,
-            'X-Plex-Device-Icon': clientIcon,
+            ...getPlaybackHeaders(accessToken, sessionId),
           },
         })
         .then((_response) => {
@@ -1491,7 +1497,6 @@ export const logPlaybackStatus = ({
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.status.logPlaybackStatus(serverBaseUrl);
-      const browserName = getBrowserName();
       const params = {
         type: type,
         key: trackId,
@@ -1540,16 +1545,7 @@ export const logPlaybackStatus = ({
       axios
         .get(endpoint, {
           params: params,
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Plex-Token': accessToken,
-            'X-Plex-Client-Identifier': clientId,
-            'X-Plex-Session-Identifier': sessionId,
-            'X-Plex-Product': appName,
-            'X-Plex-Device-Name': browserName,
-            'X-Plex-Platform': browserName,
-            'X-Plex-Device-Icon': clientIcon,
-          },
+          headers: getPlaybackHeaders(accessToken, sessionId),
         })
         .then((_response) => {
           resolve();
@@ -1590,7 +1586,6 @@ export const logPlaybackQuit = ({
 }) => {
   try {
     const endpoint = endpointConfig.status.logPlaybackStatus(serverBaseUrl);
-    const browserName = getBrowserName();
     const params = new URLSearchParams({
       type: type,
       key: trackId,
@@ -1606,16 +1601,7 @@ export const logPlaybackQuit = ({
     fetch(fetchUrl, {
       method: 'GET',
       keepalive: true,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Plex-Token': accessToken,
-        'X-Plex-Client-Identifier': clientId,
-        'X-Plex-Session-Identifier': sessionId,
-        'X-Plex-Product': appName,
-        'X-Plex-Device-Name': browserName,
-        'X-Plex-Platform': browserName,
-        'X-Plex-Device-Icon': clientIcon,
-      },
+      headers: getPlaybackHeaders(accessToken, sessionId),
     });
   } catch (error) {
     // do nothing

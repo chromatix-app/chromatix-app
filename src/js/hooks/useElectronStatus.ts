@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { electronPlatform, isElectron, sendToElectron } from 'js/utils';
+import { getEnvironment, sendToElectron } from 'js/utils';
+
+const envData = getEnvironment();
 
 /**
  * Custom hook that manages Electron integration for media controls and status updates.
@@ -22,7 +24,7 @@ const useElectronStatus = (): void => {
   const isDisabled = !trackCurrent ? true : false;
   const isDisabledRef = useRef(isDisabled);
 
-  const isWindowsApp = isElectron && electronPlatform === 'win';
+  const isWindowsApp = envData.isElectron && envData.electronPlatformId === 'win';
 
   // Update a ref here to avoid closure issues
   useEffect(() => {

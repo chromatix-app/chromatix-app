@@ -7,8 +7,7 @@ import * as RadixMenu from '@radix-ui/react-dropdown-menu';
 import semver from 'semver';
 
 import { Icon } from 'js/components';
-import { sendToElectron } from 'js/utils';
-import { electronVersion } from 'js/utils';
+import { getEnvironment, sendToElectron } from 'js/utils';
 
 import style from './ElectronUI.module.scss';
 
@@ -19,6 +18,8 @@ import style from './ElectronUI.module.scss';
 const ignoredTopItems = ['Chromatix', 'File', 'Edit', 'History', 'Developer', 'Help'];
 const ignoredNestedItems = ['about', 'hide', 'hideOthers', 'unhide', 'quit', 'services', 'window'];
 
+const envData = getEnvironment();
+
 // ======================================================================
 // COMPONENT
 // ======================================================================
@@ -26,7 +27,7 @@ const ignoredNestedItems = ['about', 'hide', 'hideOthers', 'unhide', 'quit', 'se
 const ElectronUI = () => {
   const electronMenu = useSelector(({ appModel }) => appModel.electronMenu);
 
-  const displayMenu = semver.gte(electronVersion, '0.3.1');
+  const displayMenu = semver.gte(envData.electronVersion, '0.3.1');
 
   return (
     <>

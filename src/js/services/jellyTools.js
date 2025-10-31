@@ -5,17 +5,14 @@
 import axios from 'axios';
 
 import config from 'js/_config/config';
-import { getLocalStorage, safeDecodeURIComponent, setLocalStorage } from 'js/utils';
+import { getEnvironment, getLocalStorage, safeDecodeURIComponent, setLocalStorage } from 'js/utils';
 import * as jellyTranspose from 'js/services/jellyTranspose';
 
 // ======================================================================
 // OPTIONS
 // ======================================================================
 
-const appName = 'Chromatix';
-const deviceName = 'Chromatix';
-const deviceId = 'Chromatix';
-const appVersion = '1.0.0';
+const envData = getEnvironment();
 
 const storageJellyServerKey = config.storageJellyServerKey;
 const storageJellyUserKey = config.storageJellyUserKey;
@@ -99,10 +96,10 @@ const getRequestHeaders = (accessToken) => {
   return {
     Accept: 'application/json',
     'X-Emby-Token': accessToken,
-    'X-Emby-Client': appName,
-    'X-Emby-Device': deviceName,
-    'X-Emby-Device-Id': deviceId,
-    'X-Emby-Client-Version': appVersion,
+    'X-Emby-Client': envData.appName,
+    'X-Emby-Device': envData.deviceName,
+    'X-Emby-Device-Id': envData.deviceId,
+    'X-Emby-Client-Version': envData.webVersion,
   };
 };
 
@@ -142,7 +139,7 @@ export const login = (values) => {
           {
             headers: {
               'Content-Type': 'application/json',
-              'X-Emby-Authorization': `MediaBrowser Client="${appName}", Device="${deviceName}", DeviceId="${deviceId}", Version="${appVersion}"`,
+              'X-Emby-Authorization': `MediaBrowser Client="${envData.appName}", Device="${envData.deviceName}", DeviceId="${envData.deviceId}", Version="${envData.webVersion}"`,
             },
             timeout: 10000,
           }

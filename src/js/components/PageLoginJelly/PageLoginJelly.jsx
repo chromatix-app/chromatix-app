@@ -10,7 +10,7 @@ import clsx from 'clsx';
 
 import { Button } from 'js/components';
 import * as bridge from 'js/services/bridge';
-import { isElectron } from 'js/utils';
+import { getEnvironment } from 'js/utils';
 
 import style from './PageLoginJelly.module.scss';
 
@@ -23,6 +23,8 @@ const isLocal = process.env.REACT_APP_ENV === 'local';
 const devServer = process.env.REACT_APP_JELLY_SERVER || '';
 const devUsername = process.env.REACT_APP_JELLY_USERNAME || '';
 const devPassword = process.env.REACT_APP_JELLY_PASSWORD || '';
+
+const envData = getEnvironment();
 
 export const PageLoginJelly = () => {
   const initialValues = {
@@ -141,13 +143,13 @@ export const PageLoginJelly = () => {
       <div className={style.troubleshooting}>
         <h2 className={style.subtitle}>Troubleshooting</h2>
         <div className={style.body}>
-          {!isElectron && (
+          {!envData.isElectron && (
             <>
               <p>Your Jellyfin server must be running and have a valid SSL certificate.</p>
               <p>If you are using a self-signed certificate, you may need to add an exception in your browser.</p>
             </>
           )}
-          {isElectron && (
+          {envData.isElectron && (
             <>
               <p>Your Jellyfin server must be running and have a valid SSL certificate.</p>
               <p>

@@ -1,15 +1,9 @@
-import { isElectron } from './environment';
-
 /**
  * Detects the user's browser name based on the user agent string
- * @returns The detected browser name or 'Unknown'
+ * @returns {string} The detected browser name or 'Unknown'
  */
 
 const getBrowserName = (): string => {
-  if (isElectron) {
-    return 'Chromatix';
-  }
-
   const userAgent: string = navigator.userAgent;
 
   interface BrowserInfo {

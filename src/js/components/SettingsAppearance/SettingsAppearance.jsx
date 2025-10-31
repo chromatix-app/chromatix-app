@@ -7,17 +7,18 @@ import clsx from 'clsx';
 
 import { themes } from 'js/_config/themes';
 import { Icon, SettingsList } from 'js/components';
-import { getOperatingSystemName, isElectron, electronPlatform } from 'js/utils';
+import { getEnvironment } from 'js/utils';
 
 import style from './SettingsAppearance.module.scss';
+
+const envData = getEnvironment();
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
 export const SettingsAppearance = () => {
-  const osName = getOperatingSystemName();
-  const isWin = osName === 'Windows' || (isElectron && electronPlatform === 'win');
+  const isWin = envData.osName === 'Windows';
 
   return (
     <div className={style.wrap}>

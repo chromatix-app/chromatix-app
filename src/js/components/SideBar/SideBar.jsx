@@ -9,11 +9,13 @@ import * as RadixPopover from '@radix-ui/react-popover';
 
 import { Icon, ReleaseBanner, UserMenu } from 'js/components';
 import { useGetPlaylistSidebar, useKeyControl, useNavigationHistory } from 'js/hooks';
-import { electronPlatform } from 'js/utils';
+import { getEnvironment } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 import platformFeatures from 'js/_config/platformFeatures';
 
 import style from './SideBar.module.scss';
+
+const envData = getEnvironment();
 
 // ======================================================================
 // COMPONENT
@@ -89,7 +91,7 @@ const SideBar = () => {
         </button>
       </div>
       <div className={style.wrap}>
-        {electronPlatform === 'win' && (
+        {envData.electronPlatformId === 'win' && (
           <div className={style.userMenu}>
             <UserMenu variant="Inline" />
           </div>

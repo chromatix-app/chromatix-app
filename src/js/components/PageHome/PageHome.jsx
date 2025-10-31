@@ -8,13 +8,15 @@ import clsx from 'clsx';
 
 import { Button, Icon } from 'js/components';
 import { useGetDownloadLinks } from 'js/hooks';
-import { analyticsEvent, isElectron } from 'js/utils';
+import { analyticsEvent, getEnvironment } from 'js/utils';
 
 import style from './PageHome.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
+
+const envData = getEnvironment();
 
 export const PageHome = () => {
   const dispatch = useDispatch();
@@ -60,7 +62,7 @@ export const PageHome = () => {
 
         <div className="mt-45 mt-lg-50"></div>
 
-        {!isElectron && (
+        {!envData.isElectron && (
           <>
             <Button onClick={scrollToDownloads} icon={<Icon icon="DownloadIcon" cover stroke strokeWidth={2} />}>
               Download the App
@@ -72,8 +74,8 @@ export const PageHome = () => {
         <div className={style.buttons}>
           <Button
             onClick={dispatch.appModel.doPlexLogin}
-            color={isElectron ? 'primary' : 'tertiary'}
-            size={isElectron ? 'large' : 'medium'}
+            color={envData.isElectron ? 'primary' : 'tertiary'}
+            size={envData.isElectron ? 'large' : 'medium'}
             wrap={false}
             icon={<Icon icon="PlexSiteIcon" cover />}
           >
@@ -81,8 +83,8 @@ export const PageHome = () => {
           </Button>
           <Button
             to="/login-jellyfin"
-            color={isElectron ? 'primary' : 'tertiary'}
-            size={isElectron ? 'large' : 'medium'}
+            color={envData.isElectron ? 'primary' : 'tertiary'}
+            size={envData.isElectron ? 'large' : 'medium'}
             wrap={false}
             icon={<Icon icon="JellyfinSiteIcon" cover />}
           >
@@ -118,8 +120,8 @@ export const PageHome = () => {
         <div className={style.buttons}>
           <Button
             onClick={dispatch.appModel.doPlexLogin}
-            color={isElectron ? 'primary' : 'tertiary'}
-            size={isElectron ? 'large' : 'medium'}
+            color={envData.isElectron ? 'primary' : 'tertiary'}
+            size={envData.isElectron ? 'large' : 'medium'}
             wrap={false}
             icon={<Icon icon="PlexSiteIcon" cover />}
           >
@@ -127,8 +129,8 @@ export const PageHome = () => {
           </Button>
           <Button
             to="/login-jellyfin"
-            color={isElectron ? 'primary' : 'tertiary'}
-            size={isElectron ? 'large' : 'medium'}
+            color={envData.isElectron ? 'primary' : 'tertiary'}
+            size={envData.isElectron ? 'large' : 'medium'}
             wrap={false}
             icon={<Icon icon="JellyfinSiteIcon" cover />}
           >
@@ -136,7 +138,7 @@ export const PageHome = () => {
           </Button>
         </div>
 
-        {!isElectron && (
+        {!envData.isElectron && (
           <>
             <div className="mt-100"></div>
 
