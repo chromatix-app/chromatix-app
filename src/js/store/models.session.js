@@ -28,9 +28,18 @@ const sessionState = {
 
   // GENERAL OPTIONS
 
+  optionSortNumbersFirst: false,
+  optionSortIgnoreLeadingArticles: true,
+
+  optionUseHalfStars: true,
+
   disableRepeatOnceOnTrackChange: true,
   disableRepeatOnceOnSourceChange: true,
   revertRepeatOnceToRepeatAll: true,
+
+  optionLogPlaybackToServer: true,
+
+  optionShowFullTitles_Deprecated: false,
 
   // APPEARANCE OPTIONS
 
@@ -50,20 +59,19 @@ const sessionState = {
   // MENU / SIDEBAR OPTIONS
 
   menuShowBanners: true,
-  menuShowIcons: true,
+
   menuShowSearch: true,
+  menuShowIcons: true,
+
   menuShowAllPlaylists: true,
   menuShowSeparateBrowseSection: true,
-
-  menuOpenLibrary: true,
-  menuOpenBrowse: true,
-  menuOpenPlaylists: true,
 
   menuShowArtists: true,
   menuShowAlbumArtists: true,
   menuShowAlbums: true,
   menuShowFolders: true,
   menuShowPlaylists: true,
+
   menuShowArtistCollections: true,
   menuShowAlbumCollections: true,
   menuShowArtistGenres: true,
@@ -75,11 +83,9 @@ const sessionState = {
   menuShowArtistTags: true,
   menuShowAlbumTags: true,
 
-  optionLogPlaybackToServer: true,
-  optionSortNumbersFirst: false,
-  optionSortIgnoreLeadingArticles: true,
-  optionShowFullTitles_Deprecated: false,
-  optionUseHalfStars: true,
+  menuOpenLibrary: true,
+  menuOpenBrowse: true,
+  menuOpenPlaylists: true,
 
   // CONTROL BAR OPTIONS
 
