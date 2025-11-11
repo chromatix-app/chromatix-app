@@ -132,6 +132,7 @@ const NowPlaying = () => {
                   type="track"
                   itemId={trackCurrent.trackId}
                   isFavourite={trackCurrent.isFavourite}
+                  size={20}
                   editable
                 />
               </div>
@@ -144,7 +145,7 @@ const NowPlaying = () => {
                   type="track"
                   ratingKey={trackCurrent.trackId}
                   rating={trackCurrent.userRating}
-                  size={14}
+                  size={16}
                   editable
                 />
               </div>

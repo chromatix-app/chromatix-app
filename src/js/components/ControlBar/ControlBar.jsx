@@ -259,6 +259,8 @@ const FullPageMenu = () => {
   return (
     <PopoverMenu
       setter={optionsSetter}
+      top={-2}
+      left={2}
       entries={[
         {
           label: 'Title',

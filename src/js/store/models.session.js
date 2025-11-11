@@ -67,9 +67,6 @@ const sessionState = {
   optionShowFullTitles_Deprecated: false,
   optionUseHalfStars: true,
 
-  queueIsVisible: false,
-  queueExpandArtwork: true,
-
   winCustomScrollbars: true,
   winAutoHideScrollbars: false,
   winScrollbarWidth: 12,
@@ -79,6 +76,18 @@ const sessionState = {
   disableRepeatOnceOnTrackChange: true,
   disableRepeatOnceOnSourceChange: true,
   revertRepeatOnceToRepeatAll: true,
+
+  // QUEUE OPTIONS
+
+  queueIsVisible: false,
+  queueExpandArtwork: true,
+
+  queueArtist: true,
+  queueAlbum: true,
+  queueCodec: true,
+  queueBitrate: true,
+  queueIsFavourite: true,
+  queueUserRating: true,
 
   // FULL PAGE OPTIONS
 

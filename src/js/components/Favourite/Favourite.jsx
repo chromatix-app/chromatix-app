@@ -6,7 +6,7 @@ import * as bridge from 'js/services/bridge';
 
 import style from './Favourite.module.scss';
 
-const Favourite = ({ editable = false, isFavourite, itemId, type, variant }) => {
+const Favourite = ({ editable = false, isFavourite, itemId, size = 14, type, variant }) => {
   const variantClassName = 'wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1);
 
   const toggleFavourite = useCallback(
@@ -20,7 +20,13 @@ const Favourite = ({ editable = false, isFavourite, itemId, type, variant }) => 
   );
 
   return (
-    <span className={clsx(style.wrap, style[variantClassName], { [style.wrapEditable]: editable })}>
+    <span
+      className={clsx(style.wrap, style[variantClassName], { [style.wrapEditable]: editable })}
+      style={{
+        width: size,
+        height: size,
+      }}
+    >
       <span className={style.outer} onClick={toggleFavourite}>
         <span className={style.inner} onClick={toggleFavourite}>
           {isFavourite ? <Icon icon="HeartIcon" cover /> : <Icon icon="HeartIcon" cover stroke />}
