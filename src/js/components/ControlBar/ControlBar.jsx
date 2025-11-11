@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 
-import { Icon, PopoverMenu, RangeSlider, StarRating } from 'js/components';
+import { Favourite, Icon, PopoverMenu, RangeSlider, StarRating } from 'js/components';
 import { useKeyMediaControls, useMediaControls, useMediaMeta, usePlayerProgress } from 'js/hooks';
 import { analyticsEvent, durationToStringShort } from 'js/utils';
 import platformFeatures from 'js/_config/platformFeatures';
@@ -40,16 +40,22 @@ const ControlBar = () => {
 const NowPlaying = () => {
   const dispatch = useDispatch();
 
+  const controlBarIsFavourite = useSelector(({ sessionModel }) => sessionModel.controlBarIsFavourite);
+  const controlBarUserRating = useSelector(({ sessionModel }) => sessionModel.controlBarUserRating);
+
   const playingLink = useSelector(({ sessionModel }) => sessionModel.playingLink);
   const playingTrackList = useSelector(({ sessionModel }) => sessionModel.playingTrackList);
   const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
   const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
 
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
+
   const trackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
 
   return (
     <div className={style.nowPlaying}>
-      <div className={clsx(style.cover, { [style.coverPlaceholder]: !trackCurrent || !trackCurrent?.thumb })}>
+      <div className={clsx(style.coverWrap, { [style.coverPlaceholder]: !trackCurrent || !trackCurrent?.thumb })}>
         {trackCurrent && (
           <>
             {trackCurrent.thumb && (
@@ -71,28 +77,44 @@ const NowPlaying = () => {
           </>
         )}
       </div>
-      <div className={style.text}>
+
+      <div className={style.detailsWrap}>
         {trackCurrent && (
-          <div className={style.trackCurrent}>
-            <div>
-              <div className={style.title}>{trackCurrent.title}</div>
-              <div className={style.artist}>
-                {trackCurrent.artistLink && (
-                  <NavLink to={trackCurrent.artistLink} draggable="false">
-                    {trackCurrent.artist}
-                  </NavLink>
-                )}
-                {!trackCurrent.artistLink && trackCurrent.artist}
-              </div>
+          <>
+            <div className={style.title}>{trackCurrent.title}</div>
+            <div className={style.artist}>
+              {trackCurrent.artistLink && (
+                <NavLink to={trackCurrent.artistLink} draggable="false">
+                  {trackCurrent.artist}
+                </NavLink>
+              )}
+              {!trackCurrent.artistLink && trackCurrent.artist}
             </div>
-            <StarRating
-              type="track"
-              ratingKey={trackCurrent.trackId}
-              rating={trackCurrent.userRating}
-              editable
-              size={14}
-            />
-          </div>
+
+            {controlBarIsFavourite && platformOpts?.enableIsFavourite && (
+              <div className={style.favourite}>
+                <Favourite
+                  type="track"
+                  itemId={trackCurrent.trackId}
+                  isFavourite={trackCurrent.isFavourite}
+                  size={14}
+                  editable
+                />
+              </div>
+            )}
+
+            {controlBarUserRating && platformOpts?.enableUserRating && (
+              <div className={style.rating}>
+                <StarRating
+                  type="track"
+                  ratingKey={trackCurrent.trackId}
+                  rating={trackCurrent.userRating}
+                  editable
+                  size={13}
+                />
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

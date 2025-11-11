@@ -33,7 +33,7 @@
   text-align: left;
 }
 
-.cover,
+.coverWrap,
 .coverArtwork,
 .coverLink {
   flex: 0 0 auto;
@@ -55,7 +55,7 @@
   }
 }
 
-.cover {
+.coverWrap {
   background: var(--color-secondary-hover);
   background-image: vars.$thumbnail;
   background-size: contain;
@@ -96,7 +96,7 @@
   }
 }
 
-.text {
+.detailsWrap {
   width: calc(100% - 60px);
 
   @media (min-width: 1024px) {
@@ -137,6 +137,13 @@
   a {
     @include mixins.focus-self-underline;
   }
+}
+
+.favourite {
+  margin-top: 1px;
+}
+.rating {
+  margin-top: 3px;
 }
 
 // PRIMARY CONTROLS

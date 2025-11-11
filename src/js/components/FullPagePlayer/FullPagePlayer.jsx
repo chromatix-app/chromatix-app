@@ -128,7 +128,6 @@ const NowPlaying = () => {
             {fullPageIsFavourite && platformOpts.enableIsFavourite && (
               <div className={style.favourite}>
                 <Favourite
-                  variant="fullpage"
                   type="track"
                   itemId={trackCurrent.trackId}
                   isFavourite={trackCurrent.isFavourite}

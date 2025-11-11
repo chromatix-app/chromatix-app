@@ -23,6 +23,17 @@ const sessionState = {
   currentServer: null,
   currentLibrary: null,
 
+  volumeLevel: 100,
+  volumeMuted: false,
+
+  // GENERAL OPTIONS
+
+  disableRepeatOnceOnTrackChange: true,
+  disableRepeatOnceOnSourceChange: true,
+  revertRepeatOnceToRepeatAll: true,
+
+  // APPEARANCE OPTIONS
+
   currentTheme: isProduction ? 'chromatix' : isPreview ? 'plex' : 'chromatix-teal',
   currentColorBackground: '#021C27',
   currentColorText: '#ffffff',
@@ -32,8 +43,11 @@ const sessionState = {
   accessibilityFocus: false,
   accessibilityContrast: false,
 
-  volumeLevel: 100,
-  volumeMuted: false,
+  winCustomScrollbars: true,
+  winAutoHideScrollbars: false,
+  winScrollbarWidth: 12,
+
+  // MENU / SIDEBAR OPTIONS
 
   menuShowBanners: true,
   menuShowIcons: true,
@@ -67,15 +81,10 @@ const sessionState = {
   optionShowFullTitles_Deprecated: false,
   optionUseHalfStars: true,
 
-  winCustomScrollbars: true,
-  winAutoHideScrollbars: false,
-  winScrollbarWidth: 12,
+  // CONTROL BAR OPTIONS
 
-  // PLAYBACK OPTIONS
-
-  disableRepeatOnceOnTrackChange: true,
-  disableRepeatOnceOnSourceChange: true,
-  revertRepeatOnceToRepeatAll: true,
+  controlBarIsFavourite: true,
+  controlBarUserRating: true,
 
   // QUEUE OPTIONS
 
