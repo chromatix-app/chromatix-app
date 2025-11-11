@@ -35,8 +35,12 @@
 //
 
 .expandedEntry {
-  min-height: 369px;
+  min-height: 312px;
   padding: 4px 10px 20px;
+
+  @media (min-width: 1024px) {
+    min-height: 352px;
+  }
 
   a {
     &:hover {
@@ -47,7 +51,7 @@
 
 .expandedThumb {
   overflow: hidden;
-  margin: 15px 1px 12px;
+  margin: 15px 1px 0;
   background: var(--color-primary-background);
   background-image: vars.$thumbnail;
   background-size: contain;
@@ -62,17 +66,6 @@
   img {
     aspect-ratio: 1 / 1;
   }
-}
-
-.expandedTitle {
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.expandedArtist {
-  margin-top: 3px;
-  font-size: 11px;
-  color: var(--color-opacity-06);
 }
 
 .expandedLink {
@@ -126,6 +119,86 @@
   }
 }
 
+.expandedDetails {
+  margin: 12px 0 0;
+}
+
+.expandedDetailsMain {
+  flex: 0 0 auto;
+  width: 100%;
+  // width: calc(100% - 30px);
+
+  .expandedDetails:hover & {
+    width: calc(100% - 30px);
+  }
+}
+
+.expandedDetailsButton {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  // background: rgba(255, 255, 255, 0.1);
+}
+
+.expandedTitle {
+  min-height: 24px;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: bold;
+}
+
+.expandedArtist {
+  min-height: 20px;
+  margin-top: 3px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--color-opacity-06);
+}
+
+.expandedAlbum {
+  min-height: 17px;
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 17px;
+}
+
+.expandedSpecs {
+  min-height: 14px;
+  margin-top: 5px;
+  font-size: 10px;
+  line-height: 14px;
+  text-transform: uppercase;
+  color: var(--color-opacity-06);
+}
+
+.expandedFavourite {
+  margin-top: 10px;
+}
+
+.expandedRating {
+  margin-top: 10px;
+}
+
+.expandedSettings {
+  display: block;
+  visibility: hidden;
+  width: 20px;
+  height: 24px;
+  padding: 4px 2px;
+  color: var(--color-opacity-05);
+
+  .expandedDetails:hover & {
+    visibility: visible;
+  }
+
+  &:hover {
+    color: var(--color-text);
+  }
+
+  @include mixins.focus-self-outline;
+}
+
 //
 // LABEL
 //
@@ -158,7 +231,7 @@ button.label {
   right: 10px;
   width: 12px;
   height: 12px;
-  margin-top: -6px;
+  margin-top: -3px;
   opacity: 0;
 
   .label:hover & {

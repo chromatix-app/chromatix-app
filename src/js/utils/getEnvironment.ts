@@ -29,7 +29,7 @@ interface EnvironmentData {
 
 let cachedData: EnvironmentData | null = null;
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
+// const isLocal = process.env.REACT_APP_ENV === 'local';
 
 /**
  * Determine various useful information about the user's environment
@@ -76,15 +76,15 @@ const getEnvironment = (): EnvironmentData => {
 
   envData.deviceName = 'Chromatix for ' + envData.appPlatformName;
 
-  // Debug logging
-  if (isLocal) {
-    const sortedKeys = Object.keys(envData).sort();
-    for (let keyIndex = 0; keyIndex < sortedKeys.length; keyIndex++) {
-      const key = sortedKeys[keyIndex];
-      const value = envData[key as keyof EnvironmentData];
-      console.log(key, ':', value);
-    }
-  }
+  // // Debug logging
+  // if (isLocal) {
+  //   const sortedKeys = Object.keys(envData).sort();
+  //   for (let keyIndex = 0; keyIndex < sortedKeys.length; keyIndex++) {
+  //     const key = sortedKeys[keyIndex];
+  //     const value = envData[key as keyof EnvironmentData];
+  //     console.log(key, ':', value);
+  //   }
+  // }
 
   // Cache for efficiency
   cachedData = envData;

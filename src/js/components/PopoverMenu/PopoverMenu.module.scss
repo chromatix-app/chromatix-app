@@ -43,8 +43,6 @@
 //
 
 .content {
-  top: -2px;
-  left: 2px;
   padding: 4px;
   background: var(--color-secondary-background);
   border: 1px solid var(--color-secondary-border);
@@ -56,6 +54,11 @@
 
   &WithGroups {
     left: 16px;
+  }
+
+  &Tertiary {
+    background: var(--color-tertiary-background);
+    border: 1px solid var(--color-tertiary-border);
   }
 
   // Variant used on album views alongside play buttons
@@ -77,6 +80,10 @@
   height: 1px;
   margin: 4px 7px;
   background: var(--color-secondary-border);
+
+  .contentTertiary & {
+    background: var(--color-tertiary-border);
+  }
 }
 
 .checkboxItem {
@@ -91,6 +98,10 @@
     cursor: pointer;
 
     @include mixins.focus-self-fill;
+
+    .contentTertiary & {
+      background: var(--color-tertiary-hover);
+    }
   }
 
   &[data-disabled] {

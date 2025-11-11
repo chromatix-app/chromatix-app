@@ -158,14 +158,14 @@ export const login = (values) => {
         .catch((error) => {
           reject({
             code: 'jellyfin.login.1',
-            message: 'Failed to generate PIN',
+            message: 'Failed to login',
             error: error,
           });
         });
     } catch (error) {
       reject({
         code: 'jellyfin.login.2',
-        message: 'Failed to generate PIN',
+        message: 'Failed to login',
         error: error,
       });
     }

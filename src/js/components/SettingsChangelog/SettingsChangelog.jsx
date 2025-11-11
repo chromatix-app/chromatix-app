@@ -96,6 +96,7 @@ const convertLists = (text) => {
           listStack.pop();
         }
         result += '</ul>';
+        listDepth = 0;
       }
       result += line + '\n';
     }
@@ -108,6 +109,7 @@ const convertLists = (text) => {
       listStack.pop();
     }
     result += '</ul>';
+    listDepth = 0;
   }
 
   return result;

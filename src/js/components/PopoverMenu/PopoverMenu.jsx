@@ -13,13 +13,26 @@ import style from './PopoverMenu.module.scss';
 // COMPONENT
 // ======================================================================
 
-export const PopoverMenu = ({ children, variant, setter, entries, side = 'top', align = 'start' }) => {
+export const PopoverMenu = ({
+  children,
+  variant,
+  appearance = 'secondary',
+  setter,
+  entries,
+  side = 'top',
+  align = 'start',
+  top = 0,
+  left = 0,
+}) => {
   const hasGroups = entries.find((entry) => entry.variant === 'sectionHeading');
 
   // Prevent custom escape handling from running
   const handleEscapeKeyDown = (event) => {
     event.stopPropagation();
   };
+
+  const appearanceClass = appearance ? 'content' + appearance.charAt(0).toUpperCase() + appearance.slice(1) : '';
+  const variantClass = variant ? 'content' + variant.charAt(0).toUpperCase() + variant.slice(1) : '';
 
   return (
     <RadixMenu.Root
@@ -32,9 +45,13 @@ export const PopoverMenu = ({ children, variant, setter, entries, side = 'top', 
           side={side}
           align={align}
           onEscapeKeyDown={handleEscapeKeyDown}
-          className={clsx(style.content, style['content' + variant], {
+          className={clsx(style.content, style[appearanceClass], style[variantClass], {
             [style.contentWithGroups]: hasGroups,
           })}
+          style={{
+            top: top + 'px',
+            left: left + 'px',
+          }}
         >
           {entries.map((entry, index) => (
             <MenuEntry key={index} setter={setter} totalEntries={entries?.length} {...entry} />
