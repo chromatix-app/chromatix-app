@@ -23,6 +23,26 @@ const sessionState = {
   currentServer: null,
   currentLibrary: null,
 
+  volumeLevel: 100,
+  volumeMuted: false,
+
+  // GENERAL OPTIONS
+
+  optionSortNumbersFirst: false,
+  optionSortIgnoreLeadingArticles: true,
+
+  optionUseHalfStars: true,
+
+  disableRepeatOnceOnTrackChange: true,
+  disableRepeatOnceOnSourceChange: true,
+  revertRepeatOnceToRepeatAll: true,
+
+  optionLogPlaybackToServer: true,
+
+  optionShowFullTitles_Deprecated: false,
+
+  // APPEARANCE OPTIONS
+
   currentTheme: isProduction ? 'chromatix' : isPreview ? 'plex' : 'chromatix-teal',
   currentColorBackground: '#021C27',
   currentColorText: '#ffffff',
@@ -32,24 +52,26 @@ const sessionState = {
   accessibilityFocus: false,
   accessibilityContrast: false,
 
-  volumeLevel: 100,
-  volumeMuted: false,
+  winCustomScrollbars: true,
+  winAutoHideScrollbars: false,
+  winScrollbarWidth: 12,
+
+  // MENU / SIDEBAR OPTIONS
 
   menuShowBanners: true,
-  menuShowIcons: true,
+
   menuShowSearch: true,
+  menuShowIcons: true,
+
   menuShowAllPlaylists: true,
   menuShowSeparateBrowseSection: true,
-
-  menuOpenLibrary: true,
-  menuOpenBrowse: true,
-  menuOpenPlaylists: true,
 
   menuShowArtists: true,
   menuShowAlbumArtists: true,
   menuShowAlbums: true,
   menuShowFolders: true,
   menuShowPlaylists: true,
+
   menuShowArtistCollections: true,
   menuShowAlbumCollections: true,
   menuShowArtistGenres: true,
@@ -61,21 +83,14 @@ const sessionState = {
   menuShowArtistTags: true,
   menuShowAlbumTags: true,
 
-  optionLogPlaybackToServer: true,
-  optionSortNumbersFirst: false,
-  optionSortIgnoreLeadingArticles: true,
-  optionShowFullTitles_Deprecated: false,
-  optionUseHalfStars: true,
+  menuOpenLibrary: true,
+  menuOpenBrowse: true,
+  menuOpenPlaylists: true,
 
-  winCustomScrollbars: true,
-  winAutoHideScrollbars: false,
-  winScrollbarWidth: 12,
+  // CONTROL BAR OPTIONS
 
-  // PLAYBACK OPTIONS
-
-  disableRepeatOnceOnTrackChange: true,
-  disableRepeatOnceOnSourceChange: true,
-  revertRepeatOnceToRepeatAll: true,
+  controlBarIsFavourite: true,
+  controlBarUserRating: true,
 
   // QUEUE OPTIONS
 

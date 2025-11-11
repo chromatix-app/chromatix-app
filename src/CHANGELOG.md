@@ -1,3 +1,12 @@
+# 0.55.0 (2025-11-11)
+
+Features:
+
+- Added star ratings and favourites to the control bar playing information.
+- Created a new "controls" settings page to allow hiding and showing of these new fields.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.54.0 (2025-11-11)
 
 Features:

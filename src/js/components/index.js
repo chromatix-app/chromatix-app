@@ -24,6 +24,7 @@ export { default as SettingsAbout } from './SettingsAbout/SettingsAbout';
 export { default as SettingsAppearance } from './SettingsAppearance/SettingsAppearance';
 export { default as SettingsBrowse } from './SettingsBrowse/SettingsBrowse';
 export { default as SettingsChangelog } from './SettingsChangelog/SettingsChangelog';
+export { default as SettingsControls } from './SettingsControls/SettingsControls';
 export { default as SettingsDownloads } from './SettingsDownloads/SettingsDownloads';
 export { default as SettingsGeneral } from './SettingsGeneral/SettingsGeneral';
 export { default as SettingsList } from './SettingsList/SettingsList';

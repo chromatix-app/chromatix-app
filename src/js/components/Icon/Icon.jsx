@@ -41,6 +41,7 @@ import { ReactComponent as CloudOfflineIcon } from './icons/general/cloud-offlin
 import { ReactComponent as CogIcon } from './icons/general/cog.svg';
 import { ReactComponent as CollapseIcon } from './icons/general/collapse.svg';
 // import { ReactComponent as ColumnsCircleIcon } from './icons/general/columns-circle.svg';
+import { ReactComponent as ControlBarIcon } from './icons/general/control-bar.svg';
 import { ReactComponent as CrossSmallIcon } from './icons/general/cross-small.svg';
 import { ReactComponent as DiscIcon } from './icons/general/disc.svg';
 import { ReactComponent as DownloadIcon } from './icons/general/download.svg';
@@ -86,7 +87,7 @@ import { ReactComponent as RewindIcon } from './icons/general/rewind.svg';
 import { ReactComponent as SearchIcon } from './icons/general/search.svg';
 import { ReactComponent as ServerIcon } from './icons/general/server.svg';
 import { ReactComponent as ShuffleIcon } from './icons/general/shuffle.svg';
-import { ReactComponent as SideBarSmallIcon } from './icons/general/side-bar-small.svg';
+import { ReactComponent as SideBarIcon } from './icons/general/sidebar.svg';
 import { ReactComponent as SkipBackIcon } from './icons/general/skip-back.svg';
 import { ReactComponent as SkipForwardIcon } from './icons/general/skip-forward.svg';
 import { ReactComponent as StarEmptyIcon } from './icons/general/star-empty.svg';
@@ -150,6 +151,7 @@ export const customIcons = {
   CogIcon,
   CollapseIcon,
   // ColumnsCircleIcon,
+  ControlBarIcon,
   CrossSmallIcon,
   DiscIcon,
   DownloadIcon,
@@ -195,7 +197,7 @@ export const customIcons = {
   SearchIcon,
   ServerIcon,
   ShuffleIcon,
-  SideBarSmallIcon,
+  SideBarIcon,
   SkipBackIcon,
   SkipForwardIcon,
   StarEmptyIcon,

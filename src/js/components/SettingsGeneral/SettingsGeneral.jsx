@@ -20,10 +20,10 @@ export const SettingsGeneral = () => {
   return (
     <div className={style.wrap}>
       <GeneralSettings />
-      <ServerSettings />
       <SortSettings />
       {platformOpts.enableUserRating && <RatingSettings />}
       <PlaybackSettings />
+      <ServerSettings />
     </div>
   );
 };
@@ -46,26 +46,6 @@ const GeneralSettings = () => {
   ];
 
   return <SettingsList title="General" menuItems={menuItems} />;
-};
-
-//
-// SERVER
-//
-
-const ServerSettings = () => {
-  const optionLogPlaybackToServer = useSelector(({ sessionModel }) => sessionModel.optionLogPlaybackToServer);
-
-  const menuItems = [
-    {
-      key: 'optionLogPlaybackToServer',
-      label: 'Log playback events to server.',
-      description:
-        'This is used to tell your media server what is currently playing. Your server may use this information for things like updating play counts and tracking usage.',
-      state: optionLogPlaybackToServer,
-    },
-  ];
-
-  return <SettingsList title="Server" menuItems={menuItems} />;
 };
 
 //
@@ -150,6 +130,26 @@ const PlaybackSettings = () => {
   ];
 
   return <SettingsList title="Playback" menuItems={menuItems} />;
+};
+
+//
+// SERVER
+//
+
+const ServerSettings = () => {
+  const optionLogPlaybackToServer = useSelector(({ sessionModel }) => sessionModel.optionLogPlaybackToServer);
+
+  const menuItems = [
+    {
+      key: 'optionLogPlaybackToServer',
+      label: 'Log playback events to server.',
+      description:
+        'This is used to tell your media server what is currently playing. Your server may use this information for things like updating play counts and tracking usage.',
+      state: optionLogPlaybackToServer,
+    },
+  ];
+
+  return <SettingsList title="Server" menuItems={menuItems} />;
 };
 
 // ======================================================================

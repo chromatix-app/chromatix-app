@@ -333,6 +333,11 @@ export const authRoutes = [
     component: 'SettingsChangelog',
   },
   {
+    path: '/settings/controls',
+    exact: true,
+    component: 'SettingsControls',
+  },
+  {
     path: '/settings/downloads',
     exact: true,
     component: 'SettingsDownloads',

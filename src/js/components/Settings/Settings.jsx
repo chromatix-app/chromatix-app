@@ -54,10 +54,20 @@ export const Settings = () => {
         </NavLink>
 
         <NavLink className={style.entry} to={'/settings/sidebar'} draggable="false">
-          <div className={style.entryIconSmall}>
-            <Icon icon="SideBarSmallIcon" cover stroke strokeWidth={1.5} />
+          <div className={style.entryIconTiny}>
+            <Icon icon="SideBarIcon" cover stroke strokeWidth={1.5} />
           </div>
           <div>Sidebar</div>
+          <div className={style.entryArrow}>
+            <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
+          </div>
+        </NavLink>
+
+        <NavLink className={style.entry} to={'/settings/controls'} draggable="false">
+          <div className={style.entryIconTiny}>
+            <Icon icon="ControlBarIcon" cover stroke strokeWidth={1.5} />
+          </div>
+          <div>Controls</div>
           <div className={style.entryArrow}>
             <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
           </div>

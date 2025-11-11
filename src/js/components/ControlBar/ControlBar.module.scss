@@ -33,7 +33,7 @@
   text-align: left;
 }
 
-.cover,
+.coverWrap,
 .coverArtwork,
 .coverLink {
   flex: 0 0 auto;
@@ -47,6 +47,7 @@
     height: 56px;
     margin-right: 12px;
   }
+
   @media (min-width: 1024px) {
     width: 68px;
     height: 68px;
@@ -54,7 +55,7 @@
   }
 }
 
-.cover {
+.coverWrap {
   background: var(--color-secondary-hover);
   background-image: vars.$thumbnail;
   background-size: contain;
@@ -95,12 +96,18 @@
   }
 }
 
-.text {
+.detailsWrap {
   width: calc(100% - 60px);
 
   @media (min-width: 1024px) {
     width: calc(100% - 75px);
   }
+}
+
+.trackCurrent {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .title {
@@ -130,6 +137,13 @@
   a {
     @include mixins.focus-self-underline;
   }
+}
+
+.favourite {
+  margin-top: 1px;
+}
+.rating {
+  margin-top: 3px;
 }
 
 // PRIMARY CONTROLS
@@ -299,10 +313,12 @@ button.active {
   line-height: 1;
   color: var(--color-opacity-07);
 }
+
 .scrubLeft {
   margin-right: 8px;
   text-align: right;
 }
+
 .scrubRight {
   margin-left: 8px;
   text-align: left;

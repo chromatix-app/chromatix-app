@@ -38,7 +38,7 @@
   grid-template-columns: auto 1fr auto;
   gap: 20px;
   width: 100%;
-  padding: 10px 0 10px 1px;
+  padding: 9px 0 9px 1px;
   background: transparent;
   border-bottom: 1px solid var(--color-opacity-01);
   text-align: left;
@@ -46,15 +46,25 @@
   @include mixins.focus-self-outline;
 }
 
+.entryIconTiny,
 .entryIconSmall,
 .entryIconMed,
 .entryIconLarge {
   display: block;
+  opacity: 0.5;
+  // background: rgba(255, 0, 0, 0.5);
+}
+
+.entryIconTiny {
+  width: 16px;
+  height: 16px;
+  margin: 3px;
+}
+
+.entryIconSmall {
   width: 20px;
   height: 20px;
   margin: 1px;
-  opacity: 0.5;
-  // background: rgba(255, 0, 0, 0.5);
 }
 
 .entryIconMed {
