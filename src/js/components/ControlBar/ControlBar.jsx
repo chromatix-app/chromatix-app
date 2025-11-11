@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 
-import { Icon, PopoverMenu, RangeSlider } from 'js/components';
+import { Icon, PopoverMenu, RangeSlider, StarRating } from 'js/components';
 import { useKeyMediaControls, useMediaControls, useMediaMeta, usePlayerProgress } from 'js/hooks';
 import { analyticsEvent, durationToStringShort } from 'js/utils';
 import platformFeatures from 'js/_config/platformFeatures';
@@ -73,17 +73,26 @@ const NowPlaying = () => {
       </div>
       <div className={style.text}>
         {trackCurrent && (
-          <>
-            <div className={style.title}>{trackCurrent.title}</div>
-            <div className={style.artist}>
-              {trackCurrent.artistLink && (
-                <NavLink to={trackCurrent.artistLink} draggable="false">
-                  {trackCurrent.artist}
-                </NavLink>
-              )}
-              {!trackCurrent.artistLink && trackCurrent.artist}
+          <div className={style.trackCurrent}>
+            <div>
+              <div className={style.title}>{trackCurrent.title}</div>
+              <div className={style.artist}>
+                {trackCurrent.artistLink && (
+                  <NavLink to={trackCurrent.artistLink} draggable="false">
+                    {trackCurrent.artist}
+                  </NavLink>
+                )}
+                {!trackCurrent.artistLink && trackCurrent.artist}
+              </div>
             </div>
-          </>
+            <StarRating
+              type="track"
+              ratingKey={trackCurrent.trackId}
+              rating={trackCurrent.userRating}
+              editable
+              size={14}
+            />
+          </div>
         )}
       </div>
     </div>
