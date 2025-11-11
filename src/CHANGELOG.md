@@ -1,6 +1,14 @@
+# 0.54.0 (2025-11-11)
+
+Features:
+
+- Updated the expanded sidebar playing information with additional details and options to show and hide specific elements.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.53.0 (2025-10-31)
 
-Updated:
+Code changes:
 
 - Added a universal getEnvironment utility function to act as a single source of truth for all information about the app environment, including browser and OS info, version info, build info and Electron app info.
 
@@ -24,7 +32,7 @@ Features:
   - This can be permanently disabled in the settings.
 - "What's new" modal detailing recent updates, which can be accessed by clicking the release banner, and from the settings menu.
 
-Updated:
+Code changes:
 
 - Prevented playlist artwork from being regenerated every time the user navigates to a different playlist.
 
@@ -32,7 +40,7 @@ Updated:
 
 # 0.50.0 (2025-08-18)
 
-Updated:
+Code changes:
 
 - Touch events added to RangeSlider component, to improve touch screen support.
 
@@ -84,7 +92,7 @@ Features:
 - Home page amends for mobile.
 - Added error messaging when visiting URLs for items that do not exist.
 
-Updated:
+Code changes:
 
 - Updated error logging.
 - Updated release-it configuration for automated deployments.
@@ -177,7 +185,7 @@ Features:
 - Globally toggling star rating visibility has been deprecated now that individual toggles are available.
   - However, new buttons to toggle star ratings on and off for all sections have been added to the settings page.
 
-Updated:
+Code changes:
 
 - Minor Plex API performance improvements by omitting unnecessary fields.
 - Larger artwork in header sections, if the viewport is large enough.
@@ -206,9 +214,6 @@ Features:
 - Added list view for artist albums.
   - (Note that this completes the adding of list views to all sections.)
 - Added buttons to globally toggle between grid and list view within the general settings section.
-
-Updated:
-
 - Moved accessibility settings into the general settings section for simplicity.
 
 <!-- CHANGELOG SPLIT MARKER -->
@@ -351,7 +356,7 @@ Features:
 
 - Icon artwork added when viewing a specific genre, mood or style.
 
-Updated:
+Code changes:
 
 - Improved keyboard handling when an input is focused.
 

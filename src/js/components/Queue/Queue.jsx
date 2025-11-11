@@ -21,7 +21,7 @@ import style from './Queue.module.scss';
 
 const isLocal = process.env.REACT_APP_ENV === 'local';
 
-const virtualThreshold = !isLocal ? 150 : 150;
+const virtualThreshold = !isLocal ? 150 : 50;
 
 // ======================================================================
 // COMPONENT
@@ -229,7 +229,7 @@ const QueueVirtual = ({
   const platformOpts = platformFeatures[currentService] || {};
   const { windowWidth } = useWindowSize();
 
-  // Hacky workaround to force a re-render if certain props changes
+  // Hacky workaround to force a re-render if certain props change
   const extraRows = [
     queueExpandArtwork ? 1 : 0,
     queueArtist ? 1 : 0,
