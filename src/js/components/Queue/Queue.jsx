@@ -10,7 +10,7 @@ import clsx from 'clsx';
 
 import platformFeatures from 'js/_config/platformFeatures';
 import { Favourite, Icon, PopoverMenu, StarRating } from 'js/components';
-import { useGetQueuedTracks } from 'js/hooks';
+import { useGetQueuedTracks, useWindowSize } from 'js/hooks';
 import { analyticsEvent } from 'js/utils';
 
 import style from './Queue.module.scss';
@@ -32,7 +32,14 @@ const Queue = () => {
   const scrollPositionRef = useRef(0);
   const [isRefReady, setIsRefReady] = useState(false);
 
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
   const queueExpandArtwork = useSelector(({ sessionModel }) => sessionModel.queueExpandArtwork);
+  const queueArtist = useSelector(({ sessionModel }) => sessionModel.queueArtist);
+  const queueAlbum = useSelector(({ sessionModel }) => sessionModel.queueAlbum);
+  const queueCodec = useSelector(({ sessionModel }) => sessionModel.queueCodec);
+  const queueBitrate = useSelector(({ sessionModel }) => sessionModel.queueBitrate);
+  const queueIsFavourite = useSelector(({ sessionModel }) => sessionModel.queueIsFavourite);
+  const queueUserRating = useSelector(({ sessionModel }) => sessionModel.queueUserRating);
 
   const {
     playingTrackIndex,
@@ -111,7 +118,14 @@ const Queue = () => {
             entries={allEntries}
             playingShuffle={playingShuffle}
             upcomingTracks={upcomingTracks.length}
+            currentService={currentService}
             queueExpandArtwork={queueExpandArtwork}
+            queueArtist={queueArtist}
+            queueAlbum={queueAlbum}
+            queueCodec={queueCodec}
+            queueBitrate={queueBitrate}
+            queueIsFavourite={queueIsFavourite}
+            queueUserRating={queueUserRating}
             outerRef={outerRef}
             {...(isVirtual && {
               initialOffset: scrollPositionRef.current,
@@ -186,14 +200,45 @@ const QueueStatic = ({ entries, playingShuffle, upcomingTracks, queueExpandArtwo
 // ======================================================================
 
 // Config
-const nowPlayingLargeHeight = 369;
 const nowPlayingSmallHeight = 92;
+const nowPlayingLargeHeight1 = 312;
+const nowPlayingLargeHeight2 = 352;
+const nowPlayingArtistHeight = 23;
+const nowPlayingAlbumHeight = 21;
+const nowPlayingSpecsHeight = 19;
+const nowPlayingFavouriteHeight = 25;
+const nowPlayingRatingHeight = 26;
 const labelHeight = 42;
 const trackHeight = 50;
 
-const QueueVirtual = ({ entries, playingShuffle, upcomingTracks, queueExpandArtwork, initialOffset, outerRef }) => {
-  // Hacky workaround to force a re-render if queueExpandArtwork changes
-  const extraRows = queueExpandArtwork ? 1 : 0;
+const QueueVirtual = ({
+  entries,
+  playingShuffle,
+  upcomingTracks,
+  currentService,
+  queueExpandArtwork,
+  queueArtist,
+  queueAlbum,
+  queueCodec,
+  queueBitrate,
+  queueIsFavourite,
+  queueUserRating,
+  initialOffset,
+  outerRef,
+}) => {
+  const platformOpts = platformFeatures[currentService] || {};
+  const { windowWidth } = useWindowSize();
+
+  // Hacky workaround to force a re-render if certain props changes
+  const extraRows = [
+    queueExpandArtwork ? 1 : 0,
+    queueArtist ? 1 : 0,
+    queueAlbum ? 1 : 0,
+    queueCodec || queueBitrate ? 1 : 0,
+    queueIsFavourite ? 1 : 0,
+    queueUserRating ? 1 : 0,
+    windowWidth >= 1024 ? 1 : 0,
+  ].reduce((a, b) => a + b, 0);
 
   // Helper to determine row heights
   const estimateSize = useCallback(
@@ -202,14 +247,38 @@ const QueueVirtual = ({ entries, playingShuffle, upcomingTracks, queueExpandArtw
       if (!entry) {
         return 0;
       } else if (entry.rowType === 'playing') {
-        return queueExpandArtwork ? nowPlayingLargeHeight : nowPlayingSmallHeight;
+        if (queueExpandArtwork) {
+          return (
+            (windowWidth < 1024 ? nowPlayingLargeHeight1 : 0) +
+            (windowWidth >= 1024 ? nowPlayingLargeHeight2 : 0) +
+            (queueArtist ? nowPlayingArtistHeight : 0) +
+            (queueAlbum ? nowPlayingAlbumHeight : 0) +
+            (queueCodec || queueBitrate ? nowPlayingSpecsHeight : 0) +
+            (queueIsFavourite && platformOpts.enableIsFavourite ? nowPlayingFavouriteHeight : 0) +
+            (queueUserRating && platformOpts.enableUserRating ? nowPlayingRatingHeight : 0)
+          );
+        } else {
+          return nowPlayingSmallHeight;
+        }
       } else if (entry.rowType.endsWith('Label')) {
         return labelHeight;
       } else {
         return trackHeight;
       }
     },
-    [entries, queueExpandArtwork]
+    [
+      entries,
+      queueExpandArtwork,
+      queueArtist,
+      queueAlbum,
+      queueCodec,
+      queueBitrate,
+      queueIsFavourite,
+      queueUserRating,
+      platformOpts.enableIsFavourite,
+      platformOpts.enableUserRating,
+      windowWidth,
+    ]
   );
 
   // Setup the virtualizer

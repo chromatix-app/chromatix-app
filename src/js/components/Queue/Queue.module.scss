@@ -142,24 +142,32 @@
 }
 
 .expandedTitle {
+  min-height: 24px;
   font-size: 17px;
+  line-height: 24px;
   font-weight: bold;
 }
 
 .expandedArtist {
+  min-height: 20px;
   margin-top: 3px;
   font-size: 14px;
+  line-height: 20px;
   color: var(--color-opacity-06);
 }
 
 .expandedAlbum {
+  min-height: 17px;
   margin-top: 4px;
   font-size: 12px;
+  line-height: 17px;
 }
 
 .expandedSpecs {
+  min-height: 14px;
   margin-top: 5px;
   font-size: 10px;
+  line-height: 14px;
   text-transform: uppercase;
   color: var(--color-opacity-06);
 }

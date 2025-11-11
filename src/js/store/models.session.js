@@ -84,10 +84,10 @@ const sessionState = {
 
   queueArtist: true,
   queueAlbum: true,
-  queueIsFavourite: true,
-  queueUserRating: true,
   queueCodec: true,
   queueBitrate: true,
+  queueIsFavourite: true,
+  queueUserRating: true,
 
   // FULL PAGE OPTIONS
 
