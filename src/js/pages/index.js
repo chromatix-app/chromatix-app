@@ -46,6 +46,7 @@ export { default as SettingsAbout } from './SettingsAbout';
 export { default as SettingsAppearance } from './SettingsAppearance';
 export { default as SettingsBrowse } from './SettingsBrowse';
 export { default as SettingsChangelog } from './SettingsChangelog';
+export { default as SettingsControls } from './SettingsControls';
 export { default as SettingsDownloads } from './SettingsDownloads';
 export { default as SettingsGeneral } from './SettingsGeneral';
 export { default as SettingsLastFM } from './SettingsLastFM';
