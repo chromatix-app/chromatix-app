@@ -20,7 +20,7 @@ const serviceTools = {
 const storageServiceKey = config.storageServiceKey;
 const storageTokenKey = config.storageTokenKey;
 
-// NOTE: this is a temporary flag just in case this change
+// [NOTE] this is a temporary flag just in case this change
 // causes any issues and needs to be reverted
 const refetchData = true;
 
@@ -81,10 +81,11 @@ const checkIfLoggedIn = () => {
     const accessToken = getLocalStorage(storageTokenKey);
     if (accessToken) {
       let service = getLocalStorage(storageServiceKey);
-      // NOTE: this is here for backwards compatibility
+      // [NOTE] this is here for backwards compatibility
       if (!service) {
         service = 'plex';
       }
+      analyticsEvent(toUpperFirst(service) + ' / Logged In');
       resolve({ service });
     } else {
       reject({
@@ -101,7 +102,7 @@ const checkIfLoggedIn = () => {
 // ======================================================================
 
 /*
-Note:
+[NOTE]
 Jellyfin login is API based and does not redirect you away.
 */
 
@@ -111,7 +112,7 @@ export const jellyLogin = (values) => {
     jellyTools
       .login(values)
       .then((_response) => {
-        analyticsEvent('Jellyfin / Login Success');
+        analyticsEvent('Jellyfin / Logged In');
         getUserInfo('jellyfin');
       })
       .catch((error) => {
@@ -127,7 +128,7 @@ export const jellyLogin = (values) => {
 // ======================================================================
 
 /*
-Note:
+[NOTE]
 Plex login actually redirects you away to a Plex login page on their site.
 On return, a Plex PIN is verified in the init function, and then user data is fetched.
 */
@@ -137,7 +138,8 @@ export const plexLogin = () => {
   plexTools
     .login()
     .then((_response) => {
-      analyticsEvent('Plex / Login Success');
+      // [NOTE] this isn't normally reached as Plex login redirects you away
+      analyticsEvent('Plex / Logged In');
     })
     .catch((error) => {
       console.error(error);

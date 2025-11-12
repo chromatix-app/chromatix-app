@@ -134,13 +134,13 @@ const reducers = {
 
   fullPageOn(rootState) {
     // console.log('%c--- fullPageOn ---', 'color:#07a098');
-    analyticsEvent('Full Page Mode / On');
+    analyticsEvent('Full Page / Show');
     return { ...rootState, fullPageMode: true };
   },
 
   fullPageOff(rootState) {
     // console.log('%c--- fullPageOff ---', 'color:#07a098');
-    analyticsEvent('Full Page Mode / Off');
+    analyticsEvent('Full Page / Hide');
     return { ...rootState, fullPageMode: false };
   },
 

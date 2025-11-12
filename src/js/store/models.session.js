@@ -7,6 +7,7 @@ import sha3 from 'crypto-js/sha3';
 
 import config from 'js/_config/config';
 import * as bridge from 'js/services/bridge';
+import { analyticsEvent } from 'js/utils';
 
 // ======================================================================
 // STATE
@@ -453,6 +454,7 @@ const reducers = {
 
   queueVisibleToggle(rootState, payload) {
     // console.log('%c--- queueVisibleToggle ---', 'color:#0f60b7');
+    analyticsEvent('Queue / ' + (rootState.queueIsVisible ? 'Hide' : 'Show'));
     return {
       ...rootState,
       queueIsVisible: !rootState.queueIsVisible,
