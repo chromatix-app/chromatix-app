@@ -250,6 +250,10 @@ const FavouriteSettings = () => {
   );
   const colCollectionAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsIsFavourite);
 
+  const controlBarIsFavourite = useSelector(({ sessionModel }) => sessionModel.controlBarIsFavourite);
+  const queueIsFavourite = useSelector(({ sessionModel }) => sessionModel.queueIsFavourite);
+  const fullPageIsFavourite = useSelector(({ sessionModel }) => sessionModel.fullPageIsFavourite);
+
   const allValues = [
     gridArtistsIsFavourite,
     gridArtistAlbumsIsFavourite,
@@ -267,6 +271,10 @@ const FavouriteSettings = () => {
     colPlaylistIsFavourite,
     colCollectionArtistsIsFavourite,
     colCollectionAlbumsIsFavourite,
+
+    controlBarIsFavourite,
+    queueIsFavourite,
+    fullPageIsFavourite,
   ];
 
   const firstValue = allValues[0];
@@ -290,6 +298,10 @@ const FavouriteSettings = () => {
       colPlaylistIsFavourite: true,
       colCollectionArtistsIsFavourite: true,
       colCollectionAlbumsIsFavourite: true,
+
+      controlBarIsFavourite: true,
+      queueIsFavourite: true,
+      fullPageIsFavourite: true,
     });
   };
 
@@ -311,6 +323,10 @@ const FavouriteSettings = () => {
       colPlaylistIsFavourite: false,
       colCollectionArtistsIsFavourite: false,
       colCollectionAlbumsIsFavourite: false,
+
+      controlBarIsFavourite: false,
+      queueIsFavourite: false,
+      fullPageIsFavourite: false,
     });
   };
 
@@ -402,6 +418,10 @@ const StarRatingSettings = () => {
   const colCollectionArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsUserRating);
   const colCollectionAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsUserRating);
 
+  const controlBarUserRating = useSelector(({ sessionModel }) => sessionModel.controlBarUserRating);
+  const queueUserRating = useSelector(({ sessionModel }) => sessionModel.queueUserRating);
+  const fullPageUserRating = useSelector(({ sessionModel }) => sessionModel.fullPageUserRating);
+
   const allValues = [
     gridArtistsUserRating,
     gridArtistAlbumsUserRating,
@@ -421,6 +441,10 @@ const StarRatingSettings = () => {
     colCollectionUserRating,
     colCollectionArtistsUserRating,
     colCollectionAlbumsUserRating,
+
+    controlBarUserRating,
+    queueUserRating,
+    fullPageUserRating,
   ];
 
   const firstValue = allValues[0];
@@ -446,6 +470,10 @@ const StarRatingSettings = () => {
       colCollectionUserRating: true,
       colCollectionArtistsUserRating: true,
       colCollectionAlbumsUserRating: true,
+
+      controlBarUserRating: true,
+      queueUserRating: true,
+      fullPageUserRating: true,
     });
   };
 
@@ -469,6 +497,10 @@ const StarRatingSettings = () => {
       colCollectionUserRating: false,
       colCollectionArtistsUserRating: false,
       colCollectionAlbumsUserRating: false,
+
+      controlBarUserRating: false,
+      queueUserRating: false,
+      fullPageUserRating: false,
     });
   };
 
