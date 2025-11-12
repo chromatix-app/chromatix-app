@@ -48,7 +48,7 @@ export const ReleaseBanner = () => {
   // on click, show the release notes modal
   const handleClick = () => {
     dispatch.dialogModel.showModal('ReleaseNotes');
-    analyticsEvent('Release Banner: Clicked');
+    analyticsEvent('Release Banner / Clicked');
   };
 
   // on close, update the user version to match the current version in order to hide the banner
@@ -57,7 +57,7 @@ export const ReleaseBanner = () => {
     dispatch.sessionModel.setSessionState({
       savedAppVersion: currentAppVersion,
     });
-    analyticsEvent('Release Banner: Closed');
+    analyticsEvent('Release Banner / Closed');
   };
 
   // only show the release banner if the user version is lower than the required version

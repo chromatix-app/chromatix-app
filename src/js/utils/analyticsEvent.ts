@@ -13,8 +13,10 @@ const envData = getEnvironment();
  */
 
 const analyticsEvent = (event: string, props: object = {}) => {
-  if (!isLocal) {
+  if (isLocal) {
     try {
+      console.log(`%cAnalytics: ${event}`, 'color:#a8bdbe');
+
       const finalProps = {
         ...props,
         appPlatform: envData.appPlatformName || 'Unknown',

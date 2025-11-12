@@ -66,11 +66,11 @@ export const init = () => {
           ].includes(error.code)
         ) {
           console.error(error);
-          analyticsEvent('Error: Init - ' + error.code);
+          analyticsEvent('Error / Init / ' + error.code);
         }
       } else {
         console.error(error);
-        analyticsEvent('Error: Init - Unknown Error');
+        analyticsEvent('Error / Init / Unknown Error');
       }
     });
 };
@@ -111,12 +111,12 @@ export const jellyLogin = (values) => {
     jellyTools
       .login(values)
       .then((_response) => {
-        analyticsEvent('Jellyfin: Login Success');
+        analyticsEvent('Jellyfin / Login Success');
         getUserInfo('jellyfin');
       })
       .catch((error) => {
         console.error(error);
-        analyticsEvent('Error: Jellyfin - Login');
+        analyticsEvent('Jellyfin / Error / Login');
         reject(error);
       });
   });
@@ -137,12 +137,12 @@ export const plexLogin = () => {
   plexTools
     .login()
     .then((_response) => {
-      analyticsEvent('Plex: Login Success');
+      analyticsEvent('Plex / Login Success');
     })
     .catch((error) => {
       console.error(error);
       store.dispatch.appModel.setAppState({ errorLogin: true });
-      analyticsEvent('Error: Plex - Login');
+      analyticsEvent('Plex / Error / Login');
     });
 };
 
@@ -156,7 +156,7 @@ export const logout = () => {
   jellyTools.logout();
   plexTools.logout();
   store.dispatch.appModel.setLoggedOut();
-  analyticsEvent(toUpperFirst(currentService) + ': Logout');
+  analyticsEvent(toUpperFirst(currentService) + ' / Logout');
 };
 
 // ======================================================================
@@ -177,7 +177,7 @@ export const getUserInfo = (service) => {
       console.error(error);
       logout();
       // store.dispatch.appModel.setAppState({ errorUser: true });
-      analyticsEvent('Error: ' + toUpperFirst(service) + ' - Get User Info');
+      analyticsEvent(toUpperFirst(service) + ' / Error / Get User Info');
     });
 };
 
@@ -208,7 +208,7 @@ export const getAllServers = () => {
         .catch((error) => {
           console.error(error);
           store.dispatch.appModel.setAppState({ errorServers: true });
-          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get All Servers');
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get All Servers');
         })
         .finally(() => {
           getUserServersRunning = false;
@@ -236,7 +236,7 @@ const getFastestConnection = async (currentServer, currentService, currentUser) 
   } catch (error) {
     console.error(error);
     store.dispatch.appModel.setAppState({ errorFastestConnection: true });
-    analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Fastest Server Connection');
+    analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Fastest Server Connection');
     throw error;
   }
   return serverBaseUrl;
@@ -285,7 +285,7 @@ export const getAllLibraries = async () => {
           .catch((error) => {
             console.error(error);
             store.dispatch.appModel.setAppState({ errorLibraries: true });
-            analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get All Libraries');
+            analyticsEvent(toUpperFirst(currentService) + ' / Error / Get All Libraries');
           })
           .finally(() => {
             getUserLibrariesRunning = false;
@@ -327,7 +327,7 @@ export const getAllArtists = () => {
         })
         .catch((error) => {
           console.error(error);
-          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get All Artists');
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get All Artists');
         })
         .finally(() => {
           getAllArtistsRunning = false;
@@ -368,7 +368,7 @@ export const getAllAlbumArtists = () => {
         })
         .catch((error) => {
           console.error(error);
-          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get All Album Artists');
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get All Album Artists');
         })
         .finally(() => {
           getAllAlbumArtistsRunning = false;
@@ -411,7 +411,7 @@ export const getArtistDetails = (libraryId, artistId) => {
           if (error?.error?.status === 400 || error?.error?.status === 404) {
             store.dispatch.appModel.storeArtist404({ artistId });
           }
-          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Artist Details');
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Artist Details');
         })
         .finally(() => {
           getArtistDetailsRunning = false;
@@ -456,7 +456,7 @@ export const getAlbumArtistDetails = (libraryId, artistId) => {
           if (error?.error?.status === 400 || error?.error?.status === 404) {
             store.dispatch.appModel.storeAlbumArtist404({ artistId });
           }
-          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Album Artist Details');
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Album Artist Details');
         })
         .finally(() => {
           getAlbumArtistDetailsRunning = false;
@@ -496,7 +496,7 @@ export const getAllArtistAlbums = (libraryId, artistId) => {
         })
         .catch((error) => {
           console.error(error);
-          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Artist Albums');
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Artist Albums');
         })
         .finally(() => {
           getAllArtistAlbumsRunning = false;
@@ -534,7 +534,7 @@ export const getAllArtistRelatedAlbums = (libraryId, artistId) => {
         })
         .catch((error) => {
           console.error(error);
-          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Artist Related Albums');
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Artist Related Albums');
         })
         .finally(() => {
           getAllArtistRelatedAlbumsRunning = false;
@@ -580,7 +580,7 @@ export const getAllArtistAppearanceAlbums = (libraryId, artistId, artistName) =>
         })
         .catch((error) => {
           console.error(error);
-          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Artist Appearance Albums');
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Artist Appearance Albums');
         })
         .finally(() => {
           getAllArtistAppearanceAlbumsRunning = false;
@@ -625,7 +625,7 @@ export const getAllArtistTracks = (libraryId, artistId, artistName) => {
         })
         .catch((error) => {
           console.error(error);
-          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Artist Tracks');
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Artist Tracks');
         })
         .finally(() => {
           getAllArtistTracksRunning = false;
@@ -666,7 +666,7 @@ export const getAllAlbums = () => {
         })
         .catch((error) => {
           console.error(error);
-          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get All Albums');
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get All Albums');
         })
         .finally(() => {
           getAllAlbumsRunning = false;
@@ -710,7 +710,7 @@ export const getAlbumDetails = (libraryId, albumId, callback) => {
           if (error?.error?.status === 400 || error?.error?.status === 404) {
             store.dispatch.appModel.storeAlbum404({ albumId });
           }
-          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Album Details');
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Album Details');
         })
         .finally(() => {
           getAlbumDetailsRunning = false;
@@ -752,7 +752,7 @@ export const getAlbumTracks = (libraryId, albumId) => {
           })
           .catch((error) => {
             console.error(error);
-            analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Album Tracks');
+            analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Album Tracks');
             reject(error);
           })
           .finally(() => {
@@ -802,7 +802,7 @@ export const getFolderItems = (folderId) => {
             if (error?.error?.status === 400 || error?.error?.status === 404) {
               store.dispatch.appModel.storeFolder404({ libraryId, folderId });
             }
-            analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Folder Items');
+            analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Folder Items');
             reject(error);
           })
           .finally(() => {
@@ -850,7 +850,7 @@ export const getAllPlaylists = () => {
         })
         .catch((error) => {
           console.error(error);
-          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get All Playlists');
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get All Playlists');
         })
         .finally(() => {
           getAllPlaylistsRunning = false;
@@ -897,7 +897,7 @@ export const getPlaylistDetails = (libraryId, playlistId) => {
           if (error?.error?.status === 400 || error?.error?.status === 404) {
             store.dispatch.appModel.storePlaylist404({ playlistId });
           }
-          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Playlist Details');
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Playlist Details');
         })
         .finally(() => {
           getPlaylistDetailsRunning = false;
@@ -937,7 +937,7 @@ export const getPlaylistTracks = (libraryId, playlistId) => {
           })
           .catch((error) => {
             console.error(error);
-            analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Playlist Tracks');
+            analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Playlist Tracks');
             reject(error);
           })
           .finally(() => {
@@ -984,7 +984,7 @@ export const getAllCollections = () => {
         })
         .catch((error) => {
           console.error(error);
-          analyticsEvent('Error: Plex - Get All Collections');
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get All Collections');
         })
         .finally(() => {
           getAllCollectionsRunning = false;
@@ -1046,7 +1046,7 @@ export const getCollectionItems = (libraryId, collectionId, typeKey) => {
           if (error?.error?.status === 400 || error?.error?.status === 404) {
             store.dispatch.appModel[`store${typeKey}Collection404`]({ collectionId });
           }
-          analyticsEvent('Error: Plex - Get Collection Items');
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Collection Items');
         })
         .finally(() => {
           getCollectionItemsRunning[typeKey] = false;
@@ -1102,7 +1102,7 @@ const getAllPlexTags = (typeKey) => {
         })
         .catch((error) => {
           console.error(error);
-          analyticsEvent('Error: Plex - Get All Tags');
+          analyticsEvent('Plex / Error / Get All Tags');
         })
         .finally(() => {
           getAllTagsRunning[typeKey] = false;
@@ -1139,7 +1139,7 @@ const getAllJellyfinTags = () => {
         })
         .catch((error) => {
           console.error(error);
-          analyticsEvent('Error: Jellyfin - Get All Tags');
+          analyticsEvent('Jellyfin / Error / Get All Tags');
         })
         .finally(() => {
           getAllJellyfinTagsRunning = false;
@@ -1217,7 +1217,7 @@ export const getTagItems = (libraryId, tagId, typeKey) => {
           if (error?.error?.status === 400 || error?.error?.status === 404) {
             store.dispatch.appModel[`store${typeKey}404`]({ tagId });
           }
-          analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Get Tag Items');
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Tag Items');
         })
         .finally(() => {
           getTagItemsRunning[typeKey] = false;
@@ -1261,11 +1261,11 @@ const searchLibrary2 = (query, searchCounter) => {
           searchResultCounter: searchCounter,
         });
       }
-      analyticsEvent(toUpperFirst(currentService) + ': Search');
+      analyticsEvent(toUpperFirst(currentService) + ' / Search');
     })
     .catch((error) => {
       console.error(error);
-      analyticsEvent('Error: ' + toUpperFirst(currentService) + ' - Search Library');
+      analyticsEvent(toUpperFirst(currentService) + ' / Error / Search Library');
     });
 };
 
@@ -1298,11 +1298,11 @@ export const toggleFavourite = (type, itemId, isFavourite) => {
       } else if (type === 'collection' || type === 'collections') {
         store.dispatch.appModel.setCollectionRating({ ratingKey: itemId, isFavourite });
       }
-      analyticsEvent('Jellyfin: Toggle Favourite');
+      analyticsEvent('Jellyfin / Toggle Favourite');
     })
     .catch((error) => {
       console.error(error);
-      analyticsEvent('Error: Jellyfin - Toggle Favourite');
+      analyticsEvent('Jellyfin / Error / Toggle Favourite');
     });
 };
 
@@ -1334,11 +1334,11 @@ export const setStarRating = (type, ratingKey, rating) => {
       } else if (type === 'collection' || type === 'collections') {
         store.dispatch.appModel.setCollectionRating({ ratingKey, rating });
       }
-      analyticsEvent('Plex: Set Star Rating');
+      analyticsEvent('Plex / Set Star Rating');
     })
     .catch((error) => {
       console.error(error);
-      analyticsEvent('Error: Plex - Set Star Rating');
+      analyticsEvent('Plex / Error / Set Star Rating');
     });
 };
 
@@ -1394,17 +1394,16 @@ export const logPlaybackStatus = (currentTrack, state, currentTime) => {
         const errorStatus = error?.error?.response?.status || 'Unknown';
         const errorMessage = error?.error?.response?.statusText || 'Unknown Error';
         analyticsEvent(
-          'Error: ' +
-            toUpperFirst(currentService) +
-            ' - Log Playback - ' +
+          toUpperFirst(currentService) +
+            ' / Error / Log Playback / ' +
             errorCode +
-            ' - ' +
+            ' / ' +
             errorStatus +
-            ' - ' +
+            ' / ' +
             errorMessage
         );
         try {
-          analyticsEvent('Log Error: ' + JSON.stringify(error));
+          analyticsEvent('Log Error / ' + JSON.stringify(error));
         } catch (_event) {
           //
         }
