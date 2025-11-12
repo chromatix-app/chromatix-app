@@ -93,6 +93,7 @@ import { ReactComponent as SkipForwardIcon } from './icons/general/skip-forward.
 import { ReactComponent as StarEmptyIcon } from './icons/general/star-empty.svg';
 import { ReactComponent as StarFullIcon } from './icons/general/star-full.svg';
 import { ReactComponent as StarHalfIcon } from './icons/general/star-half.svg';
+import { ReactComponent as VanishedCircleIcon } from './icons/general/vanished-circle.svg';
 // import { ReactComponent as VolDownIcon } from './icons/general/vol-down.svg';
 import { ReactComponent as VolHighIcon } from './icons/general/vol-high.svg';
 import { ReactComponent as VolLowIcon } from './icons/general/vol-low.svg';
@@ -203,6 +204,7 @@ export const customIcons = {
   StarEmptyIcon,
   StarFullIcon,
   StarHalfIcon,
+  VanishedCircleIcon,
   // VolDownIcon,
   VolHighIcon,
   VolLowIcon,
@@ -230,7 +232,7 @@ const getIconComponent = (icon) => {
   }
 };
 
-export const Icon = ({ icon, cover, stroke, strokeWidth = 1 }) => {
+export const Icon = ({ icon, cover, dashed, stroke, strokeAndFill, strokeWidth = 1 }) => {
   const DisplayIcon = getIconComponent(icon);
   if (!DisplayIcon) return null;
   return (
@@ -239,6 +241,8 @@ export const Icon = ({ icon, cover, stroke, strokeWidth = 1 }) => {
       className={clsx(style.icon, {
         [style.iconCover]: cover,
         [style.iconStroke]: stroke,
+        [style.iconStrokeAndFill]: strokeAndFill,
+        [style.iconDashed]: dashed,
         [style['iconStrokeWidth' + parseFloat(strokeWidth) * 10]]: strokeWidth,
       })}
     >

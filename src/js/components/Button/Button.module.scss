@@ -31,11 +31,14 @@
   }
 
   &:disabled {
+    cursor: default;
+    cursor: not-allowed;
+  }
+
+  &.disabled:disabled {
     background: var(--color-opacity-005) !important;
     border: 1px solid var(--color-opacity-01) !important;
     color: var(--color-opacity-03) !important;
-    cursor: default;
-    cursor: not-allowed;
   }
 
   :global(.text-center) & {
@@ -166,6 +169,8 @@
   line-height: 16px;
 
   .icon {
+    top: 1px;
+    margin: -1px 10px -1px 0;
     width: 14px;
     height: 14px;
   }

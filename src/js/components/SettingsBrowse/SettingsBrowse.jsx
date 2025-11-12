@@ -4,7 +4,7 @@
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Button } from 'js/components';
+import { Button, Icon } from 'js/components';
 import platformFeatures from 'js/_config/platformFeatures';
 
 import style from './SettingsBrowse.module.scss';
@@ -178,18 +178,40 @@ const ViewModeSettings = () => {
               inline
               wrap={false}
               onClick={toggleGridView}
-              disabled={allSame && firstValue === 'grid'}
+              icon={<Icon icon="GridIcon" cover strokeAndFill />}
+              color={allSame && firstValue === 'grid' ? 'primary' : 'tertiary'}
+              style={{
+                zIndex: allSame && firstValue === 'grid' ? 2 : 'initial',
+              }}
             >
-              Use grid view everywhere
+              Grid view
             </Button>
             <Button
               size="small"
               inline
               wrap={false}
               onClick={toggleListView}
-              disabled={allSame && firstValue === 'list'}
+              icon={<Icon icon="ListIcon" cover stroke />}
+              color={allSame && firstValue === 'list' ? 'primary' : 'tertiary'}
+              style={{
+                zIndex: allSame && firstValue === 'list' ? 2 : 'initial',
+              }}
             >
-              Use list view everywhere
+              List view
+            </Button>
+            <Button
+              size="small"
+              inline
+              wrap={false}
+              icon={<Icon icon="VanishedCircleIcon" cover stroke />}
+              color={!allSame ? 'primary' : 'tertiary'}
+              disabled={true}
+              renderDisabled={false}
+              style={{
+                zIndex: !allSame ? 2 : 'initial',
+              }}
+            >
+              Mixed
             </Button>
           </div>
         </div>
@@ -308,18 +330,40 @@ const FavouriteSettings = () => {
               inline
               wrap={false}
               onClick={toggleShowFavourites}
-              disabled={allSame && firstValue === true}
+              icon={<Icon icon="HeartIcon" cover strokeAndFill />}
+              color={allSame && firstValue === true ? 'primary' : 'tertiary'}
+              style={{
+                zIndex: allSame && firstValue === true ? 2 : 'initial',
+              }}
             >
-              Show favourites everywhere
+              Visible
             </Button>
             <Button
               size="small"
               inline
               wrap={false}
               onClick={toggleHideFavourites}
-              disabled={allSame && firstValue === false}
+              icon={<Icon icon="HeartIcon" cover stroke />}
+              color={allSame && firstValue === false ? 'primary' : 'tertiary'}
+              style={{
+                zIndex: allSame && firstValue === false ? 2 : 'initial',
+              }}
             >
-              Hide favourites everywhere
+              Hidden
+            </Button>
+            <Button
+              size="small"
+              inline
+              wrap={false}
+              icon={<Icon icon="VanishedCircleIcon" cover stroke />}
+              color={!allSame ? 'primary' : 'tertiary'}
+              disabled={true}
+              renderDisabled={false}
+              style={{
+                zIndex: !allSame ? 2 : 'initial',
+              }}
+            >
+              Mixed
             </Button>
           </div>
         </div>
@@ -444,18 +488,40 @@ const StarRatingSettings = () => {
               inline
               wrap={false}
               onClick={toggleShowUserRating}
-              disabled={allSame && firstValue === true}
+              icon={<Icon icon="StarFullIcon" cover strokeAndFill />}
+              color={allSame && firstValue === true ? 'primary' : 'tertiary'}
+              style={{
+                zIndex: allSame && firstValue === true ? 2 : 'initial',
+              }}
             >
-              Show star ratings everywhere
+              Visible
             </Button>
             <Button
               size="small"
               inline
               wrap={false}
               onClick={toggleHideUserRating}
-              disabled={allSame && firstValue === false}
+              icon={<Icon icon="StarFullIcon" cover stroke />}
+              color={allSame && firstValue === false ? 'primary' : 'tertiary'}
+              style={{
+                zIndex: allSame && firstValue === false ? 2 : 'initial',
+              }}
             >
-              Hide star ratings everywhere
+              Hidden
+            </Button>
+            <Button
+              size="small"
+              inline
+              wrap={false}
+              icon={<Icon icon="VanishedCircleIcon" cover stroke />}
+              color={!allSame ? 'primary' : 'tertiary'}
+              disabled={true}
+              renderDisabled={false}
+              style={{
+                zIndex: !allSame ? 2 : 'initial',
+              }}
+            >
+              Mixed
             </Button>
           </div>
         </div>
