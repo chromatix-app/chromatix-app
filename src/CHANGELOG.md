@@ -1,3 +1,11 @@
+# 0.56.0 (2025-11-12)
+
+Features:
+
+- Updated buttons in the "browse settings" section to be much clearer using segmented controls.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.55.0 (2025-11-11)
 
 Features:
