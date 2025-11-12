@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
 import { Icon } from 'js/components';
+import { analyticsEvent } from 'js/utils';
 
 import style from './Settings.module.scss';
 
@@ -112,6 +113,9 @@ export const Settings = () => {
           target="_blank"
           rel="noreferrer nofollow"
           draggable="false"
+          onClick={() => {
+            analyticsEvent('Link / Email');
+          }}
         >
           <div className={style.entryIconSmall}>
             <Icon icon="MailIcon" cover stroke strokeWidth={1.5} />
@@ -133,6 +137,9 @@ export const Settings = () => {
           target="_blank"
           rel="noreferrer nofollow"
           draggable="false"
+          onClick={() => {
+            analyticsEvent('Link / Reddit');
+          }}
         >
           <div className={style.entryIconLarge}>
             <Icon icon="RedditIcon" cover stroke strokeWidth={1.5} />
@@ -154,6 +161,9 @@ export const Settings = () => {
           target="_blank"
           rel="noreferrer nofollow"
           draggable="false"
+          onClick={() => {
+            analyticsEvent('Link / GitHub');
+          }}
         >
           <div className={style.entryIconMed}>
             <Icon icon="GithubIcon" cover stroke strokeWidth={1.5} />
@@ -175,6 +185,9 @@ export const Settings = () => {
           target="_blank"
           rel="noreferrer nofollow"
           draggable="false"
+          onClick={() => {
+            analyticsEvent('Link / Bluesky');
+          }}
         >
           <div className={style.entryIconMed}>
             <Icon icon="BlueskyIcon" cover stroke strokeWidth={1.5} />
@@ -196,6 +209,9 @@ export const Settings = () => {
           target="_blank"
           rel="noreferrer nofollow"
           draggable="false"
+          onClick={() => {
+            analyticsEvent('Link / Featurebase');
+          }}
         >
           <div className={style.entryIconMed}>
             <Icon icon="FeaturebaseIcon" cover stroke strokeWidth={1.5} />
@@ -242,6 +258,7 @@ export const Settings = () => {
           draggable="false"
           onClick={() => {
             dispatch.dialogModel.showModal('ReleaseNotes');
+            analyticsEvent('Settings / Release Announcements');
           }}
         >
           <div className={style.entryIconSmall}>
@@ -264,6 +281,9 @@ export const Settings = () => {
             target="_blank"
             rel="noreferrer nofollow"
             draggable="false"
+            onClick={() => {
+              analyticsEvent('Link / Ko-fi');
+            }}
           >
             Support me on Ko-fi
           </a>
