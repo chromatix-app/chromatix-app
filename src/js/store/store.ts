@@ -17,7 +17,7 @@ import config from 'js/_config/config';
 // ======================================================================
 
 // For now, we'll use a simpler typing approach
-// TODO: Improve typing when models are converted to TypeScript
+// [TODO] Improve typing when models are converted to TypeScript
 type Store = any;
 
 // ======================================================================

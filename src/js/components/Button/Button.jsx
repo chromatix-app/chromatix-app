@@ -24,7 +24,19 @@ const getComponentType = (props) => {
 
 export const Button = forwardRef(
   (
-    { children, className, color, icon, inline = false, loading = false, type = 'button', size, wrap = true, ...props },
+    {
+      children,
+      className,
+      color,
+      icon,
+      inline = false,
+      loading = false,
+      renderDisabled = true,
+      size,
+      type = 'button',
+      wrap = true,
+      ...props
+    },
     ref
   ) => {
     const Component = getComponentType(props);
@@ -38,6 +50,7 @@ export const Button = forwardRef(
         className={clsx(className, style.btn, style[colorClass], style[sizeClass], {
           [style.loading]: loading,
           [style.inline]: inline,
+          [style.disabled]: renderDisabled && props.disabled,
         })}
         type={type}
         {...props}

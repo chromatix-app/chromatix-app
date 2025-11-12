@@ -172,7 +172,7 @@ export const login = () => {
               'Content-Type': 'application/json',
               'X-Plex-Product': envData.appName,
               'X-Plex-Client-Identifier': clientId,
-              'X-Plex-Device-Icon': clientIcon, // NOTE: this doesn't seem to work
+              'X-Plex-Device-Icon': clientIcon, // [NOTE] this doesn't seem to work
             },
           }
         )
@@ -741,7 +741,7 @@ export const getAllArtistAppearanceAlbumIds = ({ accessToken, artistName, librar
       const controller = new AbortController();
       abortControllers.push(controller);
 
-      // NOTE: we are using a query string because of the use of a != operator
+      // [NOTE] we are using a query string because of the use of a != operator
       const queryString = `?type=10&track.originalTitle=${encodeURIComponent(
         artistName
       )}&artist.title!=${encodeURIComponent(artistName)}&excludeFields=${albumExcludeFields}`;
@@ -800,7 +800,7 @@ export const getAllArtistTracks = ({ accessToken, artistId, artistName, libraryI
       });
 
       // Request 2: Get artist appearance tracks
-      // NOTE: we are using a query string because of the use of a != operator
+      // [NOTE] we are using a query string because of the use of a != operator
       const queryString = `?type=10&track.originalTitle=${encodeURIComponent(
         artistName
       )}&artist.title!=${encodeURIComponent(artistName)}&excludeFields=${albumExcludeFields}`;

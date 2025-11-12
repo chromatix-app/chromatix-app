@@ -7,6 +7,7 @@ import sha3 from 'crypto-js/sha3';
 
 import config from 'js/_config/config';
 import * as bridge from 'js/services/bridge';
+import { analyticsEvent } from 'js/utils';
 
 // ======================================================================
 // STATE
@@ -453,6 +454,7 @@ const reducers = {
 
   queueVisibleToggle(rootState, payload) {
     // console.log('%c--- queueVisibleToggle ---', 'color:#0f60b7');
+    analyticsEvent('Queue / ' + (rootState.queueIsVisible ? 'Hide' : 'Show'));
     return {
       ...rootState,
       queueIsVisible: !rootState.queueIsVisible,
@@ -560,14 +562,14 @@ const effects = (dispatch) => ({
       try {
         localStorageState = localStorage.getItem(sessionKey) ? JSON.parse(localStorage.getItem(sessionKey)) : {};
 
-        // NOTE: this is here for backwards compatibility
+        // [NOTE] this is here for backwards compatibility
         if (typeof localStorageState.optionLogPlexPlayback !== 'undefined') {
           console.log('%c--- migrating optionLogPlexPlayback to optionLogPlaybackToServer ---', 'color:#0f60b7');
           localStorageState.optionLogPlaybackToServer = localStorageState.optionLogPlexPlayback;
           delete localStorageState.optionLogPlexPlayback;
         }
 
-        // NOTE: this is here to clean up some old data that should never have been saved here
+        // [NOTE] this is here to clean up some old data that should never have been saved here
         if (localStorageState.appModel) {
           console.log('%c--- removing appModel from localStorageState ---', 'color:#0f60b7');
           delete localStorageState.appModel;
@@ -615,9 +617,9 @@ const effects = (dispatch) => ({
     const currentServerId = currentServer ? currentServer.serverId : null;
     if (currentServerId !== payload) {
       bridge.abortAllRequests();
-      // TODO: update this
+      // [TODO] update this
       const newServer = rootState.appModel.allServers.find((server) => server.serverId === payload);
-      // TODO: what if currentServer is null?
+      // [TODO] what if currentServer is null?
       dispatch.sessionModel.setSessionState({
         // pretty sure "...rootState" wasn't supposed to be here and causes way too much data to be cached
         // ...rootState,
@@ -637,7 +639,7 @@ const effects = (dispatch) => ({
     if (currentLibraryId !== payload) {
       bridge.abortAllRequests();
       const newLibrary = rootState.appModel.allLibraries.find((library) => library.libraryId === payload);
-      // TODO: what if currentLibrary is null?
+      // [TODO] what if currentLibrary is null?
       dispatch.sessionModel.setSessionState({
         currentLibrary: newLibrary,
       });

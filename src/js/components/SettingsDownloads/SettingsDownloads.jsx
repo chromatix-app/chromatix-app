@@ -16,13 +16,13 @@ export const SettingsDownloads = () => {
   const { macSiliconDownloadUrl, macUniversalDownloadUrl, windowsDownloadUrl } = useGetDownloadLinks();
 
   const logDownloadMacSilicon = () => {
-    analyticsEvent('Download: macOS', { source: 'settings' });
+    analyticsEvent('Download / Settings / macOS');
   };
   const logDownloadMacUniversal = () => {
-    analyticsEvent('Download: macOS (Universal)', { source: 'settings' });
+    analyticsEvent('Download / Settings / macOS (Universal)');
   };
   const logDownloadWindows = () => {
-    analyticsEvent('Download: Windows', { source: 'settings' });
+    analyticsEvent('Download / Settings / Windows');
   };
 
   return (
