@@ -35,7 +35,7 @@ const Alert = () => {
       )}
 
       <div className={style.buttons}>
-        <Button size="modal" color="secondary" onClick={action}>
+        <Button size="modal" color="mono" onClick={action}>
           {button}
         </Button>
       </div>

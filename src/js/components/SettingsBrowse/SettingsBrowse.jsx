@@ -179,7 +179,7 @@ const ViewModeSettings = () => {
               wrap={false}
               onClick={toggleGridView}
               icon={<Icon icon="GridIcon" cover strokeAndFill />}
-              color={allSame && firstValue === 'grid' ? 'primary' : 'tertiary'}
+              color={allSame && firstValue === 'grid' ? 'primary' : 'secondary'}
               style={{
                 zIndex: allSame && firstValue === 'grid' ? 2 : 'initial',
               }}
@@ -192,7 +192,7 @@ const ViewModeSettings = () => {
               wrap={false}
               onClick={toggleListView}
               icon={<Icon icon="ListIcon" cover stroke />}
-              color={allSame && firstValue === 'list' ? 'primary' : 'tertiary'}
+              color={allSame && firstValue === 'list' ? 'primary' : 'secondary'}
               style={{
                 zIndex: allSame && firstValue === 'list' ? 2 : 'initial',
               }}
@@ -204,7 +204,7 @@ const ViewModeSettings = () => {
               inline
               wrap={false}
               icon={<Icon icon="VanishedCircleIcon" cover stroke />}
-              color={!allSame ? 'primary' : 'tertiary'}
+              color={!allSame ? 'primary' : 'secondary'}
               disabled={true}
               renderDisabled={false}
               style={{
@@ -347,7 +347,7 @@ const FavouriteSettings = () => {
               wrap={false}
               onClick={toggleShowFavourites}
               icon={<Icon icon="HeartIcon" cover strokeAndFill />}
-              color={allSame && firstValue === true ? 'primary' : 'tertiary'}
+              color={allSame && firstValue === true ? 'primary' : 'secondary'}
               style={{
                 zIndex: allSame && firstValue === true ? 2 : 'initial',
               }}
@@ -360,7 +360,7 @@ const FavouriteSettings = () => {
               wrap={false}
               onClick={toggleHideFavourites}
               icon={<Icon icon="HeartIcon" cover stroke />}
-              color={allSame && firstValue === false ? 'primary' : 'tertiary'}
+              color={allSame && firstValue === false ? 'primary' : 'secondary'}
               style={{
                 zIndex: allSame && firstValue === false ? 2 : 'initial',
               }}
@@ -372,7 +372,7 @@ const FavouriteSettings = () => {
               inline
               wrap={false}
               icon={<Icon icon="VanishedCircleIcon" cover stroke />}
-              color={!allSame ? 'primary' : 'tertiary'}
+              color={!allSame ? 'primary' : 'secondary'}
               disabled={true}
               renderDisabled={false}
               style={{
@@ -521,7 +521,7 @@ const StarRatingSettings = () => {
               wrap={false}
               onClick={toggleShowUserRating}
               icon={<Icon icon="StarFullIcon" cover strokeAndFill />}
-              color={allSame && firstValue === true ? 'primary' : 'tertiary'}
+              color={allSame && firstValue === true ? 'primary' : 'secondary'}
               style={{
                 zIndex: allSame && firstValue === true ? 2 : 'initial',
               }}
@@ -534,7 +534,7 @@ const StarRatingSettings = () => {
               wrap={false}
               onClick={toggleHideUserRating}
               icon={<Icon icon="StarFullIcon" cover stroke />}
-              color={allSame && firstValue === false ? 'primary' : 'tertiary'}
+              color={allSame && firstValue === false ? 'primary' : 'secondary'}
               style={{
                 zIndex: allSame && firstValue === false ? 2 : 'initial',
               }}
@@ -546,7 +546,7 @@ const StarRatingSettings = () => {
               inline
               wrap={false}
               icon={<Icon icon="VanishedCircleIcon" cover stroke />}
-              color={!allSame ? 'primary' : 'tertiary'}
+              color={!allSame ? 'primary' : 'secondary'}
               disabled={true}
               renderDisabled={false}
               style={{

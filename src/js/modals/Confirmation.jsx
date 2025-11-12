@@ -50,7 +50,7 @@ const Confirmation = () => {
       {(yesButton || noButton) && (
         <div className={style.buttons}>
           {yesButton && (
-            <Button onClick={doYes} size="modal" color="secondary">
+            <Button onClick={doYes} size="modal" color="mono">
               {yesButton}
             </Button>
           )}
