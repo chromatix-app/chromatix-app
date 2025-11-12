@@ -868,7 +868,7 @@ const TrackRow = ({
   const trackIndex = trackNumber - 1 - discIndex;
   const trackIsLoaded = isTrackLoaded(tableVariant, entry.trackId);
 
-  // TODO: Should probably show actual track numbers on all albums, even if only 1 disc
+  // [TODO] Should probably show actual track numbers on all albums, even if only 1 disc
   if (showDiscNumbers && entry.trackNumber) {
     trackNumber = entry.trackNumber;
   }
