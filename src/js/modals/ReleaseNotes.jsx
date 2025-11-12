@@ -61,7 +61,7 @@ const ReleaseNotes = () => {
           </div>
 
           <div className={clsx(style.buttons, style.buttonsLeft)}>
-            <Button size="small" color="secondary" onClick={handleNext}>
+            <Button size="small" color="mono" onClick={handleNext}>
               {currentIndex < whatsNew.length - 1 ? 'Next' : 'Close'}
             </Button>
           </div>

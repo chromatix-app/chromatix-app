@@ -13,7 +13,9 @@ const envData = getEnvironment();
  */
 
 const analyticsEvent = (event: string, props: object = {}) => {
-  if (!isLocal) {
+  if (isLocal) {
+    console.log(`%c/// ${event}`, 'color:#a8bdbe');
+  } else {
     try {
       const finalProps = {
         ...props,

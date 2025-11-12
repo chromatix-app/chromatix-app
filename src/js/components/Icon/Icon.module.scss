@@ -49,6 +49,21 @@
     }
   }
 
+  &StrokeAndFill {
+    path,
+    ellipse {
+      fill: currentColor;
+      stroke: currentColor;
+    }
+  }
+
+  &Dashed {
+    path,
+    ellipse {
+      stroke-dasharray: 3;
+    }
+  }
+
   &StrokeWidth10 {
     path,
     ellipse {

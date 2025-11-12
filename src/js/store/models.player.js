@@ -285,6 +285,7 @@ const effects = (dispatch) => ({
     console.log('%c--- playerLoadArtist ---', 'color:#5c16b1');
     const { artistId, artistName, playingOrder = null, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
 
+    const currentService = rootState.appModel.currentService;
     const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
     const allArtistTracks = rootState.appModel.allArtistTracks;
     const currentArtistTracks = allArtistTracks[libraryId + '-' + artistId];
@@ -317,13 +318,14 @@ const effects = (dispatch) => ({
       playingShuffle: isShuffle,
     });
 
-    analyticsEvent('Music: Play (Artist)');
+    analyticsEvent(toUpperFirst(currentService) + ' / Music / Play (Artist)');
   },
 
   async playerLoadAlbum(payload, rootState) {
     console.log('%c--- playerLoadAlbum ---', 'color:#5c16b1');
     const { albumId, playingOrder = null, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
 
+    const currentService = rootState.appModel.currentService;
     const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
     const allAlbumTracks = rootState.appModel.allAlbumTracks;
     const currentAlbumTracks = allAlbumTracks[libraryId + '-' + albumId];
@@ -356,13 +358,14 @@ const effects = (dispatch) => ({
       playingShuffle: isShuffle,
     });
 
-    analyticsEvent('Music: Play (Album)');
+    analyticsEvent(toUpperFirst(currentService) + ' / Music / Play (Album)');
   },
 
   async playerLoadPlaylist(payload, rootState) {
     console.log('%c--- playerLoadPlaylist ---', 'color:#5c16b1');
     const { playlistId, playingOrder = null, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
 
+    const currentService = rootState.appModel.currentService;
     const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
     const allPlaylistTracks = rootState.appModel.allPlaylistTracks;
     const currentPlaylistTracks = allPlaylistTracks[libraryId + '-' + playlistId];
@@ -395,13 +398,14 @@ const effects = (dispatch) => ({
       playingShuffle: isShuffle,
     });
 
-    analyticsEvent('Music: Play (Playlist)');
+    analyticsEvent(toUpperFirst(currentService) + ' / Music / Play (Playlist)');
   },
 
   async playerLoadFolder(payload, rootState) {
     console.log('%c--- playerLoadFolder ---', 'color:#5c16b1');
     const { folderId, playingOrder = null, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
 
+    const currentService = rootState.appModel.currentService;
     const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
     const allFolderItems = rootState.appModel.allFolderItems;
     const currentFolderItems = allFolderItems[libraryId + '-' + folderId]?.filter((entry) => entry.kind === 'track');
@@ -434,7 +438,7 @@ const effects = (dispatch) => ({
       playingShuffle: isShuffle,
     });
 
-    analyticsEvent('Music: Play (Folder)');
+    analyticsEvent(toUpperFirst(currentService) + ' / Music / Play (Folder)');
   },
 
   playerLoadTrackList(payload, rootState) {
@@ -475,6 +479,7 @@ const effects = (dispatch) => ({
   playerLoadIndex(payload, rootState) {
     // console.log('%c--- playerLoadIndex ---', 'color:#5c16b1');
     try {
+      const currentService = rootState.appModel.currentService;
       const disableRepeatOnceOnTrackChange = rootState.sessionModel.disableRepeatOnceOnTrackChange;
       const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
       const playingTrackList = rootState.sessionModel.playingTrackList;
@@ -504,7 +509,7 @@ const effects = (dispatch) => ({
         // log playback state to server
         if (play) {
           bridge.logPlaybackPlay(currentTrack, progress);
-          analyticsEvent('Music: Play (Track)');
+          analyticsEvent(toUpperFirst(currentService) + ' / Music / Play (Track)');
         }
         // disable repeat once
         if (playingTrackIndex !== index && disableRepeatOnceOnTrackChange) {
@@ -536,13 +541,14 @@ const effects = (dispatch) => ({
         playerPlaying: true,
       });
       // log playback state to server
+      const currentService = rootState.appModel.currentService;
       const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
       const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
       const playingTrackList = rootState.sessionModel.playingTrackList;
       const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
       const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
       bridge.logPlaybackPlay(currentTrack, playingTrackProgress);
-      analyticsEvent('Music: Play (Resume)');
+      analyticsEvent(toUpperFirst(currentService) + ' / Music / Play (Resume)');
     }
   },
 
@@ -571,13 +577,14 @@ const effects = (dispatch) => ({
       playerPlaying: false,
     });
     // log playback state to server
+    const currentService = rootState.appModel.currentService;
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
     const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
     const playingTrackList = rootState.sessionModel.playingTrackList;
     const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
     const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
     bridge.logPlaybackPause(currentTrack, playingTrackProgress);
-    analyticsEvent('Music: Pause');
+    analyticsEvent(toUpperFirst(currentService) + ' / Music / Pause');
   },
 
   playerRestart(payload, rootState) {
@@ -591,6 +598,7 @@ const effects = (dispatch) => ({
 
   playerPrev(payload, rootState) {
     // console.log('%c--- playerPrev ---', 'color:#5c16b1');
+    const currentService = rootState.appModel.currentService;
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
     const playingRepeatAll = rootState.sessionModel.playingRepeatAll;
     const playingTrackCount = rootState.sessionModel.playingTrackCount;
@@ -598,22 +606,23 @@ const effects = (dispatch) => ({
     // play previous track, if available
     if (playingTrackIndex > 0 && currentTime <= 5) {
       dispatch.playerModel.playerLoadIndex({ index: playingTrackIndex - 1, play: true });
-      analyticsEvent('Music: Previous Track');
+      analyticsEvent(toUpperFirst(currentService) + ' / Music / Previous Track');
     }
     // else play last track, if on repeat
     else if (playingRepeatAll && currentTime <= 5) {
       dispatch.playerModel.playerLoadIndex({ index: playingTrackCount - 1, play: true });
-      analyticsEvent('Music: Previous Track');
+      analyticsEvent(toUpperFirst(currentService) + ' / Music / Previous Track');
     }
     // else restart current track
     else {
       dispatch.playerModel.playerRestart();
-      analyticsEvent('Music: Restart Track');
+      analyticsEvent(toUpperFirst(currentService) + ' / Music / Restart Track');
     }
   },
 
   playerNext(payload, rootState) {
     // console.log('%c--- playerNext - ' + (payload === true ? 'true' : 'false') + ' ---', 'color:#5c16b1');
+    const currentService = rootState.appModel.currentService;
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
     const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
     const playingTrackList = rootState.sessionModel.playingTrackList;
@@ -625,24 +634,24 @@ const effects = (dispatch) => ({
     // repeat current track, if on repeat once
     if (playingRepeatOnce && payload === true) {
       dispatch.playerModel.playerLoadIndex({ index: playingTrackIndex, play: true });
-      analyticsEvent('Music: Next Track (Repeat Once) (Auto)');
+      analyticsEvent(toUpperFirst(currentService) + ' / Music / Next Track (Repeat Once) (Auto)');
     } else {
       // play next track, if available
       if (playingTrackIndex < playingTrackCount - 1) {
         dispatch.playerModel.playerLoadIndex({ index: playingTrackIndex + 1, play: true });
         if (payload === true) {
-          analyticsEvent('Music: Next Track (Auto)');
+          analyticsEvent(toUpperFirst(currentService) + ' / Music / Next Track (Auto)');
         } else {
-          analyticsEvent('Music: Next Track');
+          analyticsEvent(toUpperFirst(currentService) + ' / Music / Next Track');
         }
       }
       // else play first track, if on repeat all
       else if (playingRepeatAll) {
         dispatch.playerModel.playerLoadIndex({ index: 0, play: true });
         if (payload === true) {
-          analyticsEvent('Music: Next Track (Restart) (Auto)');
+          analyticsEvent(toUpperFirst(currentService) + ' / Music / Next Track (Restart) (Auto)');
         } else {
-          analyticsEvent('Music: Next Track (Restart)');
+          analyticsEvent(toUpperFirst(currentService) + ' / Music / Next Track (Restart)');
         }
       }
       // else load first track, but don't play
@@ -656,6 +665,7 @@ const effects = (dispatch) => ({
 
   playerRepeatToggle(payload, rootState) {
     // console.log('%c--- playerRepeatToggle ---', 'color:#5c16b1');
+    const currentService = rootState.appModel.currentService;
     const playingRepeatAll = rootState.sessionModel.playingRepeatAll;
     const playingRepeatOnce = rootState.sessionModel.playingRepeatOnce;
     if (playingRepeatAll) {
@@ -664,21 +674,21 @@ const effects = (dispatch) => ({
         playingRepeatAll: false,
         playingRepeatOnce: true,
       });
-      analyticsEvent('Music: Repeat Once');
+      analyticsEvent(toUpperFirst(currentService) + ' / Music / Repeat Once');
     } else if (playingRepeatOnce) {
       // repeat off
       dispatch.sessionModel.setSessionState({
         playingRepeatAll: false,
         playingRepeatOnce: false,
       });
-      analyticsEvent('Music: Repeat Off');
+      analyticsEvent(toUpperFirst(currentService) + ' / Music / Repeat Off');
     } else {
       // repeat all
       dispatch.sessionModel.setSessionState({
         playingRepeatAll: true,
         playingRepeatOnce: false,
       });
-      analyticsEvent('Music: Repeat All');
+      analyticsEvent(toUpperFirst(currentService) + ' / Music / Repeat All');
     }
 
     // Update the next track based on new repeat settings
@@ -686,6 +696,7 @@ const effects = (dispatch) => ({
   },
 
   playerRepeatOff(payload, rootState) {
+    const currentService = rootState.appModel.currentService;
     const playingRepeatOnce = rootState.sessionModel.playingRepeatOnce;
     const revertRepeatOnceToRepeatAll = rootState.sessionModel.revertRepeatOnceToRepeatAll;
     if (playingRepeatOnce) {
@@ -694,7 +705,7 @@ const effects = (dispatch) => ({
         playingRepeatAll: revertRepeatOnceToRepeatAll,
         playingRepeatOnce: false,
       });
-      analyticsEvent('Music: Repeat All');
+      analyticsEvent(toUpperFirst(currentService) + ' / Music / Repeat All');
 
       // Update the next track based on new repeat settings
       dispatch.playerModel.updateNextTrack();
@@ -703,6 +714,7 @@ const effects = (dispatch) => ({
 
   playerShuffleToggle(payload, rootState) {
     // console.log('%c--- toggleShuffle ---', 'color:#5c16b1');
+    const currentService = rootState.appModel.currentService;
     const playingOrder = rootState.sessionModel.playingOrder;
     const playingShuffle = rootState.sessionModel.playingShuffle;
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
@@ -722,7 +734,7 @@ const effects = (dispatch) => ({
     // Update the next track based on new order
     dispatch.playerModel.updateNextTrack();
 
-    analyticsEvent('Music: Shuffle ' + (isShuffle ? 'On' : 'Off'));
+    analyticsEvent(toUpperFirst(currentService) + ' / Music / Shuffle ' + (isShuffle ? 'On' : 'Off'));
   },
 
   updateNextTrack(payload, rootState) {
@@ -767,6 +779,7 @@ const effects = (dispatch) => ({
   volumeMuteToggle(payload, rootState) {
     // console.log('%c--- volumeMuteToggle ---', 'color:#5c16b1');
     const defaultVolumeLevel = 75;
+    const currentService = rootState.appModel.currentService;
     const volumeLevel = rootState.sessionModel.volumeLevel;
     const volumeMuted = rootState.sessionModel.volumeMuted;
     let newVolumeLevel;
@@ -798,7 +811,7 @@ const effects = (dispatch) => ({
     });
     const actualVolume = newVolumeMuted ? 0 : newVolumeLevel;
     playerX.setVolume(actualVolume);
-    analyticsEvent('Music: Mute ' + (newVolumeMuted ? 'On' : 'Off'));
+    analyticsEvent(toUpperFirst(currentService) + ' / Music / Mute ' + (newVolumeMuted ? 'On' : 'Off'));
   },
 });
 
@@ -813,4 +826,12 @@ export const playerModel = {
   reducers,
   // effects - handle state changes with impure functions
   effects,
+};
+
+// ======================================================================
+// HELPER FUNCTIONS
+// ======================================================================
+
+const toUpperFirst = (string) => {
+  return string?.charAt(0).toUpperCase() + string?.slice(1);
 };
