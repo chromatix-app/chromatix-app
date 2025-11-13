@@ -158,7 +158,11 @@ export const logout = () => {
   jellyTools.logout();
   plexTools.logout();
   store.dispatch.appModel.setLoggedOut();
-  analyticsEvent(toUpperFirst(currentService) + ' / Logout');
+  if (currentService) {
+    analyticsEvent(toUpperFirst(currentService) + ' / Logout');
+  } else {
+    analyticsEvent('Logout (could not get user info)');
+  }
 };
 
 // ======================================================================
