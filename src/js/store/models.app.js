@@ -45,7 +45,7 @@ const userState = {
 
   // TBC remove these...
   currentService: null,
-  currentUser: null,
+  currentAccount: null,
   allServers: null,
 
   // TBC add this...
@@ -247,12 +247,12 @@ const effects = (dispatch) => {
 
     setLoggedIn(payload, rootState) {
       console.log('%c--- setLoggedIn ---', 'color:#07a098');
-      const { currentService, currentUser } = payload;
+      const { currentService, currentAccount } = payload;
       dispatch.appModel.setAppState({
         inited: true,
         loggedIn: true,
         currentService,
-        currentUser,
+        currentAccount,
       });
       dispatch.sessionModel.loadLocalStorage();
       dispatch.playerModel.playerRefresh();

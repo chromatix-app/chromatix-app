@@ -176,7 +176,7 @@ export const getUserInfo = (service) => {
     .then((response) => {
       store.dispatch.appModel.setLoggedIn({
         currentService: service,
-        currentUser: response,
+        currentAccount: response,
       });
     })
     .catch((error) => {
@@ -201,7 +201,8 @@ export const getAllServers = () => {
       getUserServersRunning = true;
 
       const currentService = store.getState().appModel.currentService;
-      const serverBaseUrl = currentService === 'jellyfin' ? store.getState().appModel.currentUser.serverBaseUrl : null;
+      const serverBaseUrl =
+        currentService === 'jellyfin' ? store.getState().appModel.currentAccount.serverBaseUrl : null;
 
       serviceTools[currentService]
         .getAllServers({
@@ -227,11 +228,11 @@ export const getAllServers = () => {
 // GET FASTEST SERVER CONNECTION
 // ======================================================================
 
-const getFastestConnection = async (currentServer, currentService, currentUser) => {
+const getFastestConnection = async (currentServer, currentService, currentAccount) => {
   let serverBaseUrl;
   try {
-    if (currentUser?.serverBaseUrl) {
-      serverBaseUrl = currentUser.serverBaseUrl;
+    if (currentAccount?.serverBaseUrl) {
+      serverBaseUrl = currentAccount.serverBaseUrl;
       store.dispatch.appModel.setAppState({ serverBaseUrl });
     } else {
       await plexTools.getFastestConnection({ server: currentServer }).then((response) => {
@@ -264,19 +265,19 @@ export const getAllLibraries = async () => {
         getUserLibrariesRunning = true;
 
         const currentService = store.getState().appModel.currentService;
-        const currentUser = currentService === 'jellyfin' ? store.getState().appModel.currentUser : null;
+        const currentAccount = currentService === 'jellyfin' ? store.getState().appModel.currentAccount : null;
 
         // before getting libraries, get the fastest server connection
         let serverBaseUrl;
         try {
-          serverBaseUrl = await getFastestConnection(currentServer, currentService, currentUser);
+          serverBaseUrl = await getFastestConnection(currentServer, currentService, currentAccount);
         } catch (error) {
           getUserLibrariesRunning = false;
           return;
         }
 
         const accessToken = store.getState().sessionModel.currentServer.accessToken;
-        const userId = currentUser?.userId;
+        const userId = currentAccount?.userId;
 
         serviceTools[currentService]
           .getAllLibraries({
@@ -398,7 +399,7 @@ export const getArtistDetails = (libraryId, artistId) => {
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
-      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
+      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
 
       serviceTools[currentService]
         .getArtistDetails({
@@ -443,7 +444,7 @@ export const getAlbumArtistDetails = (libraryId, artistId) => {
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
-      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
+      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
 
       serviceTools[currentService]
         .getArtistDetails({
@@ -486,7 +487,7 @@ export const getAllArtistAlbums = (libraryId, artistId) => {
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
-      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
+      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
 
       serviceTools[currentService]
         .getAllArtistAlbums({
@@ -564,7 +565,7 @@ export const getAllArtistAppearanceAlbums = (libraryId, artistId, artistName) =>
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
-      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
+      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
 
       serviceTools[currentService]
         .getAllArtistAppearanceAlbums({
@@ -610,7 +611,7 @@ export const getAllArtistTracks = (libraryId, artistId, artistName) => {
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
-      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
+      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
 
       serviceTools[currentService]
         .getAllArtistTracks({
@@ -741,7 +742,7 @@ export const getAlbumTracks = (libraryId, albumId) => {
         const accessToken = store.getState().sessionModel.currentServer.accessToken;
         const currentService = store.getState().appModel.currentService;
         const serverBaseUrl = store.getState().appModel.serverBaseUrl;
-        const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
+        const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
 
         serviceTools[currentService]
           .getAlbumTracks({
@@ -839,7 +840,7 @@ export const getAllPlaylists = () => {
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const timeStamp = store.getState().appModel.timeStamp;
-      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
+      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
       serviceTools[currentService]
@@ -883,7 +884,7 @@ export const getPlaylistDetails = (libraryId, playlistId) => {
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const timeStamp = store.getState().appModel.timeStamp;
-      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
+      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
 
       serviceTools[currentService]
         .getPlaylistDetails({
@@ -1130,7 +1131,7 @@ const getAllJellyfinTags = () => {
       getAllJellyfinTagsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
-      const userId = store.getState().appModel.currentUser.userId;
+      const userId = store.getState().appModel.currentAccount.userId;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
       jellyTools
@@ -1247,7 +1248,7 @@ const searchLibrary2 = (query, searchCounter) => {
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const currentService = store.getState().appModel.currentService;
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
-  const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
+  const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
   const { libraryId } = store.getState().sessionModel.currentLibrary;
 
   serviceTools[currentService]
@@ -1282,7 +1283,7 @@ const searchLibrary2 = (query, searchCounter) => {
 export const toggleFavourite = (type, itemId, isFavourite) => {
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
-  const userId = store.getState().appModel.currentUser.userId;
+  const userId = store.getState().appModel.currentAccount.userId;
 
   jellyTools
     .toggleFavourite({
@@ -1378,7 +1379,7 @@ export const logPlaybackStatus = (currentTrack, state, currentTime) => {
     const currentService = store.getState().appModel.currentService;
     const serverBaseUrl = store.getState().appModel.serverBaseUrl;
     const sessionId = store.getState().sessionModel.sessionId;
-    const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
+    const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
     const { trackId, trackKey, duration } = currentTrack || {};
 
     serviceTools[currentService]
@@ -1424,7 +1425,7 @@ export const logPlaybackQuit = (currentTrack, currentTime) => {
     const currentService = store.getState().appModel.currentService;
     const serverBaseUrl = store.getState().appModel.serverBaseUrl;
     const sessionId = store.getState().sessionModel.sessionId;
-    const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
+    const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
     const { trackId, trackKey, duration } = currentTrack || {};
 
     serviceTools[currentService].logPlaybackQuit({

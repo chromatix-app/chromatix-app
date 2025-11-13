@@ -19,7 +19,7 @@ import style from './UserMenu.module.scss';
 const UserMenu = ({ variant = 'default', withoutLibrary = false }) => {
   const dispatch = useDispatch();
 
-  const currentUser = useSelector(({ appModel }) => appModel.currentUser);
+  const currentAccount = useSelector(({ appModel }) => appModel.currentAccount);
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
@@ -53,12 +53,12 @@ const UserMenu = ({ variant = 'default', withoutLibrary = false }) => {
               </div>
             )}
             <div className={style.thumb}>
-              {!currentUser.thumb && (
+              {!currentAccount.thumb && (
                 <span className={style.thumbIcon}>
                   <Icon icon="ArtistCollectionsIcon" cover stroke strokeWidth={1.4} />
                 </span>
               )}
-              {currentUser.thumb && <img src={currentUser.thumb} alt="Profile" draggable="false" />}
+              {currentAccount.thumb && <img src={currentAccount.thumb} alt="Profile" draggable="false" />}
             </div>
           </RadixMenu.Trigger>
 
@@ -73,7 +73,7 @@ const UserMenu = ({ variant = 'default', withoutLibrary = false }) => {
                   <RadixMenu.Group className={style.group}>
                     <RadixMenu.Label className={style.label}>
                       {/* Plex •  */}
-                      {currentUser.email || currentUser.username}
+                      {currentAccount.email || currentAccount.username}
                     </RadixMenu.Label>
 
                     {allServers.map((server) => (

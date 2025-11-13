@@ -556,8 +556,8 @@ const effects = (dispatch) => ({
     // attempt to retrieve the current user's session state from local storage
     const loggedIn = rootState.appModel.loggedIn;
     if (loggedIn) {
-      const userName = rootState.appModel.currentUser.userId;
-      const userHash = sha3('music' + userName, { outputLength: 224 }).toString();
+      const userId = rootState.appModel.currentAccount.userId;
+      const userHash = sha3('music' + userId, { outputLength: 224 }).toString();
       const sessionKey = config.storageSessionKey + '-' + userHash;
       try {
         localStorageState = localStorage.getItem(sessionKey) ? JSON.parse(localStorage.getItem(sessionKey)) : {};
