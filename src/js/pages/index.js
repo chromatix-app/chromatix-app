@@ -1,6 +1,7 @@
 export { default as Home } from './Home';
 export { default as LoginJelly } from './LoginJelly';
 
+export { default as UserArray } from './UserArray';
 export { default as ServerArray } from './ServerArray';
 export { default as LibraryArray } from './LibraryArray';
 

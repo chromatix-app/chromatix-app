@@ -41,6 +41,11 @@ export const authRoutes = [
     redirect: '/artists',
   },
   {
+    path: '/users',
+    exact: true,
+    component: 'UserArray',
+  },
+  {
     path: '/servers',
     exact: true,
     component: 'ServerArray',

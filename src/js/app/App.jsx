@@ -36,13 +36,16 @@ const App = () => {
   const inited = useSelector(({ appModel }) => appModel.inited);
   const loggedIn = useSelector(({ appModel }) => appModel.loggedIn);
 
+  const errorAllUsers = useSelector(({ appModel }) => appModel.errorAllUsers);
   const errorFastestConnection = useSelector(({ appModel }) => appModel.errorFastestConnection);
   const errorLibraries = useSelector(({ appModel }) => appModel.errorLibraries);
   const errorLogin = useSelector(({ appModel }) => appModel.errorLogin);
   const errorServers = useSelector(({ appModel }) => appModel.errorServers);
+  const errorSwitchUser = useSelector(({ appModel }) => appModel.errorSwitchUser);
   const errorUser = useSelector(({ appModel }) => appModel.errorUser);
 
   const accessibilityFocus = useSelector(({ sessionModel }) => sessionModel.accessibilityFocus);
+  const currentUser = useSelector(({ sessionModel }) => sessionModel.currentUser);
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const winCustomScrollbars = useSelector(({ sessionModel }) => sessionModel.winCustomScrollbars);
@@ -138,7 +141,27 @@ const App = () => {
   }, [loggedIn]);
 
   // error pages
-  if (errorFastestConnection) {
+  if (errorAllUsers) {
+    return (
+      <div className="wrap">
+        {envData.isElectron && <ElectronUI />}
+        <ErrorPage
+          title="Oops!"
+          body={
+            <>
+              Sorry, there was an error retrieving your available users.
+              <br />
+              <br />
+              Please try again.
+            </>
+          }
+          buttonText="Ok"
+          buttonClick={dispatch.appModel.dismissErrorAllUsers}
+        />
+        {loggedIn && <UserMenu withoutLibrary />}
+      </div>
+    );
+  } else if (errorFastestConnection) {
     return (
       <div className="wrap">
         {envData.isElectron && <ElectronUI />}
@@ -149,7 +172,7 @@ const App = () => {
               Sorry, it was not possible to connect to the requested server.
               <br />
               <br />
-              Please try again later.
+              Please try again.
             </>
           }
           buttonText="Ok"
@@ -169,7 +192,7 @@ const App = () => {
               Sorry, there was an error retrieving your available libraries.
               <br />
               <br />
-              Please try again later.
+              Please try again.
             </>
           }
           buttonText="Ok"
@@ -189,7 +212,7 @@ const App = () => {
               Sorry, there was an error logging in to your account.
               <br />
               <br />
-              Please try again later.
+              Please try again.
             </>
           }
           buttonText="Ok"
@@ -209,11 +232,31 @@ const App = () => {
               Sorry, there was an error retrieving your available servers.
               <br />
               <br />
-              Please try again later.
+              Please try again.
             </>
           }
           buttonText="Ok"
           buttonClick={dispatch.appModel.dismissErrorServers}
+        />
+        {loggedIn && <UserMenu withoutLibrary />}
+      </div>
+    );
+  } else if (errorSwitchUser) {
+    return (
+      <div className="wrap">
+        {envData.isElectron && <ElectronUI />}
+        <ErrorPage
+          title="Oops!"
+          body={
+            <>
+              Sorry, there was an error switching your user.
+              <br />
+              <br />
+              Please try again.
+            </>
+          }
+          buttonText="Ok"
+          buttonClick={dispatch.appModel.dismissErrorSwitchUser}
         />
         {loggedIn && <UserMenu withoutLibrary />}
       </div>
@@ -229,7 +272,7 @@ const App = () => {
               Sorry, there was an error retrieving your user data.
               <br />
               <br />
-              Please try again later.
+              Please try again.
             </>
           }
           buttonText="Ok"
@@ -262,7 +305,7 @@ const App = () => {
 
   // logged in
   else {
-    if (!currentServer || !currentLibrary) {
+    if (!currentUser || !currentServer || !currentLibrary) {
       return (
         <div className="wrap">
           {envData.isElectron && <ElectronUI />}

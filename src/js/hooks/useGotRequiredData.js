@@ -1,17 +1,78 @@
 import { useSelector } from 'react-redux';
 
 const useGotRequiredData = () => {
+  const allUsers = useSelector(({ appModel }) => appModel.allUsers);
   const allServers = useSelector(({ appModel }) => appModel.allServers);
   const allLibraries = useSelector(({ appModel }) => appModel.allLibraries);
 
-  // const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+
+  const currentUser = useSelector(({ sessionModel }) => sessionModel.currentUser);
+  const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
 
-  const gotRequiredData = allServers && (allServers.length === 0 || allLibraries || !currentLibrary) ? true : false;
+  // If we don't have users data yet, we're not ready
+  if (!allUsers) {
+    // console.log(111111);
+    return false;
+  }
 
-  // console.log(gotRequiredData, allServers, allLibraries, currentLibrary?.libraryId);
+  // If there are no users, we have all the data we need
+  if (currentService === 'plex' && allUsers.length === 0) {
+    // console.log(222222);
+    return true;
+  }
 
-  return gotRequiredData;
+  // If we have users and there's no current user selected, we have all the data we need
+  if (currentService === 'plex' && !currentUser) {
+    // console.log(333333);
+    return true;
+  }
+
+  // A CURRENT USER IS SET, CONTINUE...
+
+  // If we don't have servers data yet, we're not ready
+  if (!allServers) {
+    // console.log(444444);
+    return false;
+  }
+
+  // If there are no servers, we have all the data we need
+  if (allServers.length === 0) {
+    // console.log(555555);
+    return true;
+  }
+
+  // If we have servers and there's no current server selected, we have all the data we need
+  if (!currentServer) {
+    // console.log(666666);
+    return true;
+  }
+
+  // A CURRENT SERVER IS SET, CONTINUE...
+
+  // If we don't have libraries data yet, we're not ready
+  if (!allLibraries) {
+    // console.log(777777);
+    return false;
+  }
+
+  // If there are no libraries, we have all the data we need
+  if (allLibraries.length === 0) {
+    // console.log(888888);
+    return true;
+  }
+
+  // If we have libraries and there's no current library selected, we have all the data we need
+  if (!currentLibrary) {
+    // console.log(999999);
+    return true;
+  }
+
+  // A CURRENT LIBRARY IS SET, CONTINUE...
+
+  // Default
+  return true;
 };
 
 export default useGotRequiredData;

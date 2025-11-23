@@ -21,6 +21,7 @@ const sessionState = {
 
   savedAppVersion: '0.0.0',
 
+  currentUser: null,
   currentServer: null,
   currentLibrary: null,
 
@@ -332,13 +333,13 @@ const state = Object.assign({}, sessionState, playingState);
 
 const reducers = {
   setSessionState(rootState, payload) {
-    console.log('%c--- setSessionState ---', 'color:#0f60b7');
+    // console.log('%c--- setSessionState ---', 'color:#0f60b7');
     // console.log(payload);
     return { ...rootState, ...payload };
   },
 
   //
-  // THEME
+  // THEME HANDLING
   //
 
   setTheme(rootState, payload) {
@@ -370,71 +371,8 @@ const reducers = {
   },
 
   //
-  // SERVER & LIBRARY
+  // MISC
   //
-
-  setCurrentServer(rootState, payload) {
-    console.log('%c--- setCurrentServer ---', 'color:#0f60b7');
-    return {
-      ...rootState,
-      currentServer: payload,
-      currentLibrary: null,
-      ...Object.assign({}, playingState),
-    };
-  },
-
-  setServerIndex(rootState, payload) {
-    // console.log('%c--- setServerIndex ---', 'color:#0f60b7');
-    const currentServer = rootState.currentServer;
-    const { serverBaseUrlCurrent, serverBaseUrlIndex } = payload;
-    // update the currentServer object with the new serverBaseUrl
-    const updatedServer = {
-      ...currentServer,
-      serverBaseUrlCurrent,
-      serverBaseUrlIndex,
-    };
-    return {
-      ...rootState,
-      currentServer: updatedServer,
-    };
-  },
-
-  setCurrentLibrary(rootState, payload) {
-    console.log('%c--- setCurrentLibrary ---', 'color:#0f60b7');
-    return {
-      ...rootState,
-      currentLibrary: payload,
-    };
-  },
-
-  refreshCurrentServer(rootState, payload) {
-    console.log('%c--- refreshCurrentServer ---', 'color:#0f60b7');
-    const currentServerToken = rootState.currentServer ? rootState.currentServer.serverId : null;
-    const refreshedServer = payload?.find((server) => server.serverId === currentServerToken);
-    if (refreshedServer) {
-      return {
-        ...rootState,
-        currentServer: refreshedServer,
-      };
-    } else {
-      return {
-        ...rootState,
-        currentServer: null,
-        currentLibrary: null,
-        ...Object.assign({}, playingState),
-      };
-    }
-  },
-
-  refreshCurrentLibrary(rootState, payload) {
-    console.log('%c--- refreshCurrentLibrary ---', 'color:#0f60b7');
-    const currentLibraryToken = rootState.currentLibrary ? rootState.currentLibrary.libraryId : null;
-    const refreshedLibrary = payload?.find((library) => library.libraryId === currentLibraryToken);
-    return {
-      ...rootState,
-      currentLibrary: refreshedLibrary ? refreshedLibrary : null,
-    };
-  },
 
   setPlayingTrackProgress(rootState, payload) {
     // console.log('%c--- setPlayingTrackProgress ---', 'color:#0f60b7');
@@ -601,6 +539,129 @@ const effects = (dispatch) => ({
     });
   },
 
+  //
+  // USER HANDLING
+  //
+
+  setCurrentUser(payload, rootState) {
+    console.log('%c--- setCurrentUser ---', 'color:#0f60b7');
+    dispatch.sessionModel.setSessionState({
+      currentUser: payload,
+    });
+    dispatch.sessionModel.switchUser(payload);
+  },
+
+  validateCurrentUser(payload, rootState) {
+    console.log('%c--- validateCurrentUser ---', 'color:#0f60b7');
+    console.log(payload);
+    const currentUserId = rootState.sessionModel.currentUser ? rootState.sessionModel.currentUser.userId : null;
+    const refreshedUser = payload?.find((user) => user.userId === currentUserId);
+    // Select cached session user
+    if (refreshedUser) {
+      dispatch.sessionModel.setSessionState({
+        currentUser: refreshedUser,
+      });
+      dispatch.sessionModel.switchUser(refreshedUser);
+      console.log('A', true, 'verified');
+    }
+    // Select only available user
+    else if (payload.length === 1) {
+      dispatch.sessionModel.setSessionState({
+        currentUser: payload[0],
+      });
+      dispatch.sessionModel.switchUser(payload[0]);
+      console.log('A', true, 1);
+    }
+    // No user selected - no need to do anything here
+  },
+
+  switchUser(payload, rootState) {
+    console.log('%c--- switchUser ---', 'color:#07a098');
+    const currentService = rootState.appModel.currentService;
+    if (currentService === 'plex' && payload.uuid) {
+      bridge.switchUser({
+        uuid: payload.uuid,
+        pin: '',
+      });
+    } else {
+      dispatch.appModel.storeUserToken(null);
+    }
+  },
+
+  unsetCurrentUser(payload, rootState) {
+    console.log('%c--- unsetCurrentUser ---', 'color:#0f60b7');
+    bridge.abortAllRequests();
+    dispatch.sessionModel.setSessionState({
+      currentUser: null,
+    });
+    dispatch.playerModel.playerPause();
+    dispatch.appModel.clearUserState();
+  },
+
+  //
+  // SERVER HANDLING
+  //
+
+  setCurrentServer(payload, rootState) {
+    console.log('%c--- setCurrentServer ---', 'color:#0f60b7');
+    dispatch.sessionModel.setSessionState({
+      currentServer: payload,
+    });
+    bridge.getAllLibraries();
+  },
+
+  switchCurrentServer(payload, rootState) {
+    console.log('%c--- switchCurrentServer ---', 'color:#0f60b7');
+    const currentServerId = rootState.sessionModel.currentServer ? rootState.sessionModel.currentServer.serverId : null;
+    if (currentServerId !== payload) {
+      bridge.abortAllRequests();
+      const newServer = rootState.appModel.allServers.find((server) => server.serverId === payload);
+      // [TODO] what if newServer is not found?
+      dispatch.sessionModel.setSessionState({
+        currentServer: newServer,
+        currentLibrary: null,
+        ...Object.assign({}, playingState),
+      });
+      dispatch.appModel.clearServerState();
+      dispatch.persistentModel.clearHistoryState();
+      dispatch.playerModel.playerUnload();
+      bridge.getAllLibraries();
+    }
+  },
+
+  validateCurrentServer(payload, rootState) {
+    console.log('%c--- validateCurrentServer ---', 'color:#0f60b7');
+    const currentServerId = rootState.sessionModel.currentServer ? rootState.sessionModel.currentServer.serverId : null;
+    const refreshedServer = payload?.find((server) => server.serverId === currentServerId);
+    // Select cached session server
+    if (refreshedServer) {
+      dispatch.sessionModel.setSessionState({
+        currentServer: refreshedServer,
+      });
+      bridge.getAllLibraries();
+      console.log('B', true, 'verified');
+    }
+    // Select only available server
+    else if (payload.length === 1) {
+      dispatch.sessionModel.setSessionState({
+        currentServer: payload[0],
+        currentLibrary: null,
+        ...Object.assign({}, playingState),
+      });
+      bridge.getAllLibraries();
+      console.log('B', true, 1);
+    }
+    // No server selected
+    else {
+      dispatch.sessionModel.setSessionState({
+        currentServer: null,
+        currentLibrary: null,
+        ...Object.assign({}, playingState),
+      });
+      console.log('B', false);
+    }
+  },
+
   unsetCurrentServer(payload, rootState) {
     console.log('%c--- unsetCurrentServer ---', 'color:#0f60b7');
     dispatch.sessionModel.setSessionState({
@@ -609,26 +670,50 @@ const effects = (dispatch) => ({
       ...Object.assign({}, playingState),
     });
     dispatch.appModel.clearServerState();
+    dispatch.playerModel.playerUnload();
   },
 
-  switchCurrentServer(payload, rootState) {
-    console.log('%c--- switchCurrentServer ---', 'color:#0f60b7');
-    const currentServer = rootState.sessionModel.currentServer;
-    const currentServerId = currentServer ? currentServer.serverId : null;
-    if (currentServerId !== payload) {
-      bridge.abortAllRequests();
-      // [TODO] update this
-      const newServer = rootState.appModel.allServers.find((server) => server.serverId === payload);
-      // [TODO] what if currentServer is null?
+  //
+  // LIBRARY HANDLING
+  //
+
+  setCurrentLibrary(payload, rootState) {
+    console.log('%c--- setCurrentLibrary ---', 'color:#0f60b7');
+    dispatch.sessionModel.setSessionState({
+      currentLibrary: payload,
+    });
+  },
+
+  validateCurrentLibrary(payload, rootState) {
+    console.log('%c--- validateCurrentLibrary ---', 'color:#0f60b7');
+    const currentLibraryId = rootState.sessionModel.currentLibrary
+      ? rootState.sessionModel.currentLibrary.libraryId
+      : null;
+    const refreshedLibrary = payload?.find((library) => library.libraryId === currentLibraryId);
+    // Select cached session library
+    if (refreshedLibrary) {
       dispatch.sessionModel.setSessionState({
-        // pretty sure "...rootState" wasn't supposed to be here and causes way too much data to be cached
-        // ...rootState,
-        currentServer: newServer,
+        currentLibrary: refreshedLibrary,
+      });
+      console.log('C', true, 'verified');
+    }
+    // Select only available library
+    else if (payload.length === 1) {
+      dispatch.sessionModel.setSessionState({
+        currentLibrary: payload[0],
+        ...Object.assign({}, playingState),
+      });
+      dispatch.playerModel.playerUnload();
+      console.log('C', true, 1);
+    }
+    // No library selected
+    else {
+      dispatch.sessionModel.setSessionState({
         currentLibrary: null,
         ...Object.assign({}, playingState),
       });
-      dispatch.appModel.clearServerState();
-      dispatch.persistentModel.clearHistoryState();
+      dispatch.playerModel.playerUnload();
+      console.log('C', false);
     }
   },
 
@@ -639,7 +724,7 @@ const effects = (dispatch) => ({
     if (currentLibraryId !== payload) {
       bridge.abortAllRequests();
       const newLibrary = rootState.appModel.allLibraries.find((library) => library.libraryId === payload);
-      // [TODO] what if currentLibrary is null?
+      // [TODO] what if newLibrary is not found?
       dispatch.sessionModel.setSessionState({
         currentLibrary: newLibrary,
       });

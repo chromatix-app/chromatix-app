@@ -188,6 +188,51 @@ export const getUserInfo = (service) => {
 };
 
 // ======================================================================
+// GET ALL USERS
+// ======================================================================
+
+export const getAllUsers = (service) => {
+  console.log('%c--- bridge - getAllUsers ---', 'color:#f9743b;');
+  if (service === 'jellyfin') {
+    store.dispatch.appModel.storeAllUsers([]);
+  } else {
+    serviceTools[service]
+      .getAllUsers()
+      .then((response) => {
+        store.dispatch.appModel.storeAllUsers(response);
+      })
+      .catch((error) => {
+        console.error(error);
+        store.dispatch.appModel.setAppState({ errorAllUsers: true });
+        analyticsEvent(toUpperFirst(service) + ' / Error / Get All Users');
+      });
+  }
+};
+
+// ======================================================================
+// SWITCH USER
+// ======================================================================
+
+export const switchUser = ({ uuid, pin }) => {
+  console.log('%c--- bridge - switchUser ---', 'color:#f9743b;');
+  const currentService = store.getState().appModel.currentService;
+
+  serviceTools[currentService]
+    .switchUser({
+      uuid,
+      pin,
+    })
+    .then((response) => {
+      store.dispatch.appModel.storeUserToken(response);
+    })
+    .catch((error) => {
+      console.error(error);
+      store.dispatch.appModel.setAppState({ errorSwitchUser: true });
+      analyticsEvent(toUpperFirst(currentService) + ' / Error / Switch User');
+    });
+};
+
+// ======================================================================
 // GET ALL SERVERS
 // ======================================================================
 
@@ -203,10 +248,12 @@ export const getAllServers = () => {
       const currentService = store.getState().appModel.currentService;
       const serverBaseUrl =
         currentService === 'jellyfin' ? store.getState().appModel.currentAccount.serverBaseUrl : null;
+      const userToken = store.getState().appModel.userToken;
 
       serviceTools[currentService]
         .getAllServers({
           serverBaseUrl,
+          userToken,
         })
         .then((response) => {
           // console.log(response);
@@ -286,8 +333,7 @@ export const getAllLibraries = async () => {
             userId,
           })
           .then((response) => {
-            store.dispatch.sessionModel.refreshCurrentLibrary(response);
-            store.dispatch.appModel.setAppState({ allLibraries: response });
+            store.dispatch.appModel.storeAllLibraries(response);
           })
           .catch((error) => {
             console.error(error);

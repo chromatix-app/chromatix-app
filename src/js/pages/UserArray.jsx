@@ -4,23 +4,23 @@
 
 import { useSelector } from 'react-redux';
 
-import { ViewServers, Loading, TitleBasic } from 'js/components';
+import { ViewUsers, Loading, TitleBasic } from 'js/components';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const ServerArray = () => {
-  const allServers = useSelector(({ appModel }) => appModel.allServers);
+const UserArray = () => {
+  const allUsers = useSelector(({ appModel }) => appModel.allUsers);
 
   return (
     <main className="wrap-inner">
       <div className="wrap-middle text-center">
-        {!allServers && <Loading forceVisible inline />}
-        {allServers && (
+        {!allUsers && <Loading forceVisible inline />}
+        {allUsers && (
           <>
-            <TitleBasic title={allServers.length > 0 ? 'Servers' : 'No Servers Available'} />
-            <ViewServers variant="servers" entries={allServers} />
+            <TitleBasic title={allUsers.length > 0 ? 'Select User' : 'No Users Available'} />
+            <ViewUsers entries={allUsers} />
           </>
         )}
       </div>
@@ -32,4 +32,4 @@ const ServerArray = () => {
 // EXPORT
 // ======================================================================
 
-export default ServerArray;
+export default UserArray;

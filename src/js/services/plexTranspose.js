@@ -30,18 +30,40 @@ const getThumb = (thumb, serverBaseUrl, accessToken, size) => {
 };
 
 // ======================================================================
+// ALL USERS
+// ======================================================================
+
+export const transposeAllUsersArray = (array) => {
+  const data = array?.data?.users?.map((user) => transposeAllUserData(user)) || [];
+  return data;
+};
+
+const transposeAllUserData = (user) => {
+  return {
+    admin: user.admin,
+    displayName: user.title || user.username,
+    email: user.email,
+    guest: user.guest,
+    pinProtected: user.protected,
+    restrictionProfile: user.restrictionProfile,
+    thumb: user.thumb,
+    userId: user.id,
+    uuid: user.uuid,
+  };
+};
+
+// ======================================================================
 // USER
 // ======================================================================
 
 export const transposeUserData = (user) => {
   const parser = new XMLParser({ ignoreAttributes: false });
   const data = parser.parse(user.data).user;
-
   return {
-    userId: data['@_id'],
+    displayName: data['@_title'] || data['@_username'],
     email: data['email'],
     thumb: data['@_thumb'],
-    displayName: data['@_title'] || data['@_username'],
+    userId: data['@_id'],
   };
 };
 
