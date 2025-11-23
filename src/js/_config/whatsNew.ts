@@ -1,6 +1,17 @@
 export const whatsNew = [
   {
+    version: '0.57.0',
+    bannerTitle: 'Plex Home user switching is now available.',
+    title: 'Plex Home user switching',
+    date: 'November 2025',
+    body: `<p>Plex accounts with multiple users configured via Plex Home can now easily switch between users within Chromatix.</p>
+    <p>Just click the "Switch User" option in the user menu to get started.</p>`,
+    imageDark: 'promo-012-dark',
+    imageLight: 'promo-012-light',
+  },
+  {
     version: '0.52.0',
+    bannerTitle: 'Jellyfin server support is now available.',
     title: 'Jellyfin support',
     date: 'September 2025',
     body: `<p>Jellyfin users can now enjoy their music libraries in Chromatix too!</p>
@@ -26,15 +37,15 @@ export const whatsNew = [
     imageDark: 'promo-009-dark',
     imageLight: 'promo-009-light',
   },
-  {
-    version: '0.37.0',
-    title: 'Column options',
-    date: 'April 2025',
-    body: `<p>List view columns can now be customised, allowing you to show and hide the fields you want. New fields have also been added, such as audio codec and bitrate.</p>
-    <p>Plus, the long-requested “repeat one track” capability has been added in.</p>`,
-    imageDark: 'promo-008-dark',
-    imageLight: 'promo-008-light',
-  },
+  // {
+  //   version: '0.37.0',
+  //   title: 'Column options',
+  //   date: 'April 2025',
+  //   body: `<p>List view columns can now be customised, allowing you to show and hide the fields you want. New fields have also been added, such as audio codec and bitrate.</p>
+  //   <p>Plus, the long-requested “repeat one track” capability has been added in.</p>`,
+  //   imageDark: 'promo-008-dark',
+  //   imageLight: 'promo-008-light',
+  // },
   // {
   //   version: '0.32.0',
   //   title: 'Search & folders',
