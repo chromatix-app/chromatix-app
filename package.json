@@ -21,6 +21,8 @@
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+    "svg:compress": "node lib/svg-compress.mjs --skip-existing",
+    "svg:compress:all": "node lib/svg-compress.mjs",
     "test": "react-scripts test",
     "test:all": "react-scripts test --watchAll=false",
     "prepare": "husky"
