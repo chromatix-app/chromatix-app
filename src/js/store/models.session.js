@@ -546,9 +546,9 @@ const effects = (dispatch) => ({
   setCurrentUser(payload, rootState) {
     console.log('%c--- setCurrentUser ---', 'color:#0f60b7');
     dispatch.sessionModel.setSessionState({
-      currentUser: payload,
+      currentUser: payload.user,
     });
-    dispatch.sessionModel.switchUser(payload);
+    dispatch.sessionModel.switchUser({ user: payload.user, pin: payload.pin });
   },
 
   validateCurrentUser(payload, rootState) {
@@ -561,7 +561,7 @@ const effects = (dispatch) => ({
       dispatch.sessionModel.setSessionState({
         currentUser: refreshedUser,
       });
-      dispatch.sessionModel.switchUser(refreshedUser);
+      dispatch.sessionModel.switchUser({ user: refreshedUser, pin: '' });
       console.log('A', true, 'verified');
     }
     // Select only available user
@@ -569,7 +569,7 @@ const effects = (dispatch) => ({
       dispatch.sessionModel.setSessionState({
         currentUser: payload[0],
       });
-      dispatch.sessionModel.switchUser(payload[0]);
+      dispatch.sessionModel.switchUser({ user: payload[0], pin: '' });
       console.log('A', true, 1);
     }
     // No user selected - no need to do anything here
@@ -578,10 +578,11 @@ const effects = (dispatch) => ({
   switchUser(payload, rootState) {
     console.log('%c--- switchUser ---', 'color:#07a098');
     const currentService = rootState.appModel.currentService;
-    if (currentService === 'plex' && payload.uuid) {
+    const { user, pin } = payload;
+    if (currentService === 'plex' && user?.uuid) {
       bridge.switchUser({
-        uuid: payload.uuid,
-        pin: '',
+        uuid: user.uuid,
+        pin: pin,
       });
     } else {
       dispatch.appModel.storeUserToken(null);

@@ -393,6 +393,10 @@ export const switchUser = ({ uuid, pin }) => {
         .post(
           endpoint,
           {
+            includeSubscriptions: 1,
+            includeProviders: 1,
+            includeSettings: 1,
+            includeSharedSettings: 1,
             pin: pin,
           },
           {
