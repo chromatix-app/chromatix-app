@@ -133,21 +133,27 @@ const UserMenu = ({ variant = 'default', withoutLibrary = false }) => {
                 </>
               )}
 
-              <RadixMenu.Group className={style.group}>
-                {allUsers && allUsers.length > 1 && (
-                  <RadixMenu.Item asChild>
-                    <button className={style.button} onClick={dispatch.sessionModel.unsetCurrentUser}>
-                      <span className={style.iconBefore}>
-                        <Icon icon="PeopleIcon" cover stroke />
-                      </span>
-                      Switch User
-                      <span className={clsx(style.iconArrow, style.iconHover)}>
-                        <Icon icon="NextIcon" cover stroke />
-                      </span>
-                    </button>
-                  </RadixMenu.Item>
-                )}
+              {allUsers && allUsers.length > 1 && (
+                <>
+                  <RadixMenu.Group className={style.group}>
+                    <RadixMenu.Item asChild>
+                      <button className={style.button} onClick={dispatch.sessionModel.unsetCurrentUser}>
+                        <span className={style.iconBefore}>
+                          <Icon icon="PeopleIcon" cover stroke />
+                        </span>
+                        Switch User
+                        <span className={clsx(style.iconArrow, style.iconHover)}>
+                          <Icon icon="NextIcon" cover stroke />
+                        </span>
+                      </button>
+                    </RadixMenu.Item>
+                  </RadixMenu.Group>
 
+                  <RadixMenu.Separator className={style.separator} />
+                </>
+              )}
+
+              <RadixMenu.Group className={style.group}>
                 {hasSelectedLibrary && allServers && (
                   <RadixMenu.Item asChild>
                     <NavLink className={style.button} to={'/settings'} draggable="false">
