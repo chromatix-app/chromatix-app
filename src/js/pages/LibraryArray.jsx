@@ -25,7 +25,9 @@ const LibraryArray = () => {
             <TitleBasic title={allLibraries.length > 0 ? 'Libraries' : 'No Libraries Available'} />
             <ViewServers variant="libraries" entries={allLibraries} />
             {allServers && allServers.length > 1 && (
-              <Button onClick={dispatch.sessionModel.unsetCurrentServer}>Back to Servers</Button>
+              <Button size="medium" onClick={dispatch.sessionModel.unsetCurrentServer}>
+                Back to Servers
+              </Button>
             )}
           </>
         )}

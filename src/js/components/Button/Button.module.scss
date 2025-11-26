@@ -32,11 +32,11 @@
 
   &:disabled {
     cursor: default;
-    cursor: not-allowed;
+    // cursor: not-allowed;
   }
 
   &.disabled:disabled {
-    background: var(--color-opacity-005) !important;
+    background-color: var(--color-opacity-005) !important;
     border: 1px solid var(--color-opacity-01) !important;
     color: var(--color-opacity-03) !important;
   }
@@ -46,8 +46,8 @@
   }
 
   :global(html.logged-in) & {
-    background: var(--color-core);
-    border: 1px solid var(--color-opacity-02);
+    background-color: var(--color-core);
+    border: 1px solid var(--color-opacity-015);
     color: var(--color-primary-background);
   }
 
@@ -64,7 +64,7 @@
   &.loading {
     background-image: url(../../../images/loading-white.gif);
     background-image: url(../../../images/loading-white.png);
-    background-size: 32px 32px;
+    background-size: 24px 24px;
     background-position: 50% 50%;
     background-repeat: no-repeat;
 
@@ -104,44 +104,49 @@
 }
 
 //
-// VARIANTS
+// COLORS
 //
 
 .colorMono {
   :global(html.logged-in) & {
-    background: var(--color-button-secondary);
+    background-color: var(--color-button-secondary);
     border: 1px solid var(--color-text);
     color: var(--color-primary-background);
   }
 }
 
 .colorSecondary {
-  background: vars.$color-secondary-border;
+  background-color: vars.$color-secondary-border;
   border: 1px solid vars.$color-opacity-01;
   color: vars.$color-text;
 
   :global(html.logged-in) & {
-    background: var(--color-secondary-background);
+    background-color: var(--color-secondary-background);
     border: 1px solid var(--color-secondary-border);
     color: var(--color-text);
   }
 }
 
 .colorTertiary {
-  background: vars.$color-secondary-border;
+  background-color: vars.$color-secondary-border;
   border: 1px solid vars.$color-opacity-01;
   color: vars.$color-text;
 
   :global(html.logged-in) & {
-    background: var(--color-tertiary-background);
+    background-color: var(--color-tertiary-background);
     border: 1px solid var(--color-tertiary-border);
     color: var(--color-text);
   }
 }
 
+//
+// SIZES
+//
+
 .sizeMedium {
   max-width: 210px;
   padding: 15px 10px;
+  border-radius: 8px;
   font-size: 16px;
   line-height: 20px;
 
@@ -156,8 +161,9 @@
   }
 }
 
-.sizeModal {
+.sizeSmall {
   min-width: 120px;
+  max-width: 210px;
   padding: 12px 16px;
   border-radius: 6px;
   font-size: 14px;
@@ -169,8 +175,9 @@
   }
 }
 
-.sizeSmall {
+.sizeTiny {
   min-width: 90px;
+  max-width: 210px;
   padding: 8px 16px;
   border-radius: 6px;
   font-size: 14px;
@@ -178,8 +185,8 @@
 
   .icon {
     top: 1px;
-    margin: -1px 10px -1px 0;
     width: 14px;
     height: 14px;
+    margin: -1px 10px -1px 0;
   }
 }

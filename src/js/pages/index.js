@@ -53,6 +53,7 @@ export { default as SettingsGeneral } from './SettingsGeneral';
 export { default as SettingsLastFM } from './SettingsLastFM';
 export { default as SettingsSidebar } from './SettingsSidebar';
 
+export { default as DevComponents } from './DevComponents';
 export { default as DevIcons } from './DevIcons';
 export { default as DevModals } from './DevModals';
 

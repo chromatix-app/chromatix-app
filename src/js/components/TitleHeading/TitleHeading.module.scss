@@ -247,8 +247,9 @@
   display: inline-flex;
   position: relative;
   align-items: center;
-  padding: 2px 10px;
+  padding: 1px 9px;
   background: var(--color-core);
+  border: 1px solid var(--color-opacity-01);
   border-radius: 6px;
 
   font-size: 12px;
@@ -256,7 +257,7 @@
   color: var(--color-primary-background);
 
   :global(.cq-800) & {
-    padding: 4px 12px;
+    padding: 3px 11px;
   }
 
   @include mixins.focus-self-outline;

@@ -17,7 +17,7 @@ const Component = () => {
       <TitleHeading title="Modals" />
       <PageText fontSize="small" wysiwyg={false}>
         <Button
-          size="small"
+          size="tiny"
           onClick={() => {
             dispatch.dialogModel.showAlert({
               // icon: 'CheckCircleCheckedIcon',
@@ -37,7 +37,7 @@ const Component = () => {
         <br />
 
         <Button
-          size="small"
+          size="tiny"
           onClick={() => {
             dispatch.dialogModel.showAlert({
               icon: 'InfoIcon',
@@ -57,7 +57,7 @@ const Component = () => {
         <br />
 
         <Button
-          size="small"
+          size="tiny"
           onClick={() => {
             dispatch.dialogModel.showAlert({
               icon: 'CheckCircleCheckedIcon',
@@ -77,7 +77,7 @@ const Component = () => {
         <br />
 
         <Button
-          size="small"
+          size="tiny"
           onClick={() => {
             dispatch.dialogModel.showConfirm({
               theme: 'warnRed',
@@ -100,7 +100,7 @@ const Component = () => {
         <br />
 
         <Button
-          size="small"
+          size="tiny"
           onClick={() => {
             dispatch.dialogModel.showModal('ReleaseNotes');
           }}
