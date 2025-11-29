@@ -78,6 +78,7 @@
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react": "^7.37.5",
     "husky": "^9.1.7",
+    "input-otp": "^1.4.2",
     "lint-staged": "^16.2.6",
     "prettier": "^3.6.2",
     "release-it": "^17.11.0",
