@@ -2,10 +2,9 @@
 // IMPORTS
 // ======================================================================
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Formik, Form, Field } from 'formik';
-import * as yup from 'yup';
+import { OTPInput } from 'input-otp';
 
 import { Button, Icon } from 'js/components';
 
@@ -74,55 +73,45 @@ const UserList = ({ entries, setPinUser, setRenderPinEntry }) => {
 
 const UserForm = ({ pinUser, setRenderPinEntry }) => {
   const dispatch = useDispatch();
+  const [pin, setPin] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const initialValues = {
-    pin: '',
-  };
-
-  const validationSchema = yup.object({
-    // pin is required and must be 4 characters long
-    pin: yup.string().required('Pin is required').length(4, 'Pin must be exactly 4 characters'),
-  });
-
-  const onSubmit = (values, { setFieldTouched, setFieldValue, setFieldError, setSubmitting }) => {
-    console.log(values);
-    dispatch.sessionModel.setCurrentUser({ user: pinUser, pin: values.pin });
-  };
+  // Auto-submit when PIN is complete
+  useEffect(() => {
+    if (pin.length === 4 && !isSubmitting) {
+      setIsSubmitting(true);
+      dispatch.sessionModel.setCurrentUser({ user: pinUser, pin });
+    }
+  }, [pin, isSubmitting, dispatch.sessionModel, pinUser]);
 
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-      {({ errors, touched, isSubmitting }) => (
-        <div className={style.wrap}>
-          <Form className={style.form}>
-            <div>
-              <Field
-                className={style.input}
-                type="password"
-                id="pin"
-                name="pin"
-                maxLength={4}
-                autoComplete="off"
-                data-form-type="other"
-                data-1p-ignore="true"
-                data-bwignore="true"
-                data-lpignore="true"
-              />
-              {/* {errors.pin && touched.pin && <div className={style.errorField}>{errors.pin}</div>} */}
-            </div>
-            <div className={style.submit}>
-              <Button type="submit" size="small" color="primary" disabled={isSubmitting}>
-                Submit
-              </Button>
-            </div>
-            <div className={style.cancel}>
-              <Button size="tiny" color="tertiary" onClick={() => setRenderPinEntry(false)}>
-                Cancel
-              </Button>
-            </div>
-          </Form>
+    <div className={style.wrap}>
+      <div className={style.form}>
+        <div className={style.otpWrapper}>
+          <OTPInput
+            maxLength={4}
+            value={pin}
+            onChange={setPin}
+            autoFocus
+            render={({ slots }) => (
+              <div className={style.otpContainer}>
+                {slots.map((slot, idx) => (
+                  <div key={idx} className={style.otpSlot} data-active={slot.isActive}>
+                    {slot.char !== null ? '*' : null}
+                    {slot.hasFakeCaret && <div className={style.otpCaret} />}
+                  </div>
+                ))}
+              </div>
+            )}
+          />
         </div>
-      )}
-    </Formik>
+        <div className={style.cancel}>
+          <Button size="tiny" color="tertiary" onClick={() => setRenderPinEntry(false)}>
+            Cancel
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 };
 
