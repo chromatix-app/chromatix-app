@@ -106,18 +106,17 @@ import { ReactComponent as VolXIcon } from './icons/general-compressed/vol-x.svg
 import { ReactComponent as AppleSiteIcon } from './icons/site-compressed/apple.svg';
 import { ReactComponent as FeaturebaseSiteIcon } from './icons/site-compressed/featurebase.svg';
 import { ReactComponent as GithubSiteIcon } from './icons/site-compressed/github.svg';
-import { ReactComponent as JellyfinSiteIcon } from './icons/site-compressed/jellyfin.svg';
+import { ReactComponent as JellyfinSiteIcon } from './icons/site-original/jellyfin.svg';
 import { ReactComponent as LinuxSiteIcon } from './icons/site-compressed/linux.svg';
 import { ReactComponent as PlexSiteIcon } from './icons/site-compressed/plex.svg';
-import { ReactComponent as RedditSiteIcon } from './icons/site-compressed/reddit.svg';
+import { ReactComponent as RedditSiteIcon } from './icons/site-original/reddit.svg';
 import { ReactComponent as WindowsSiteIcon } from './icons/site-compressed/windows.svg';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-export const customIcons = {
-  // General Icons
+export const generalIcons = {
   AccessibilityIcon,
   AlbumCollectionsIcon,
   AlbumGenresIcon,
@@ -212,8 +211,9 @@ export const customIcons = {
   // VolOffIcon,
   // VolUpIcon,
   VolXIcon,
+};
 
-  // Site Custom Icons
+export const siteIcons = {
   AppleSiteIcon,
   FeaturebaseSiteIcon,
   GithubSiteIcon,
@@ -225,8 +225,10 @@ export const customIcons = {
 };
 
 const getIconComponent = (icon) => {
-  if (customIcons[icon]) {
-    return customIcons[icon];
+  if (generalIcons[icon]) {
+    return generalIcons[icon];
+  } else if (siteIcons[icon]) {
+    return siteIcons[icon];
   } else {
     return null;
   }

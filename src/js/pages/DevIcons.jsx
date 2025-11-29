@@ -3,20 +3,18 @@
 // ======================================================================
 
 import { Icon, PageText, TitleHeading } from 'js/components';
-import { customIcons } from 'js/components/Icon/Icon';
+import { generalIcons, siteIcons } from 'js/components/Icon/Icon';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
 const Component = () => {
-  // console.log(customIcons);
-
   return (
     <>
       <TitleHeading title="Icons" />
       <PageText fontSize="small" wysiwyg={false}>
-        {Object.keys(customIcons).map((iconName) => (
+        {Object.keys(generalIcons).map((iconName) => (
           <div key={iconName}>
             <span
               style={{
@@ -29,6 +27,27 @@ const Component = () => {
               }}
             >
               <Icon icon={iconName} cover stroke />
+            </span>
+            {iconName}
+          </div>
+        ))}
+
+        <br />
+
+        {Object.keys(siteIcons).map((iconName) => (
+          <div key={iconName}>
+            <span
+              style={{
+                display: 'inline-block',
+                position: 'relative',
+                width: 28,
+                height: 28,
+                marginRight: 12,
+                marginBottom: 4,
+                // top: 2,
+              }}
+            >
+              <Icon icon={iconName} cover />
             </span>
             {iconName}
           </div>
