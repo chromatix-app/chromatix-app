@@ -58,6 +58,9 @@ const endpointConfig = {
     getAlbumDetails: (serverBaseUrl, albumId) => `${serverBaseUrl}/Items/${albumId}`,
     getAlbumTracks: (serverBaseUrl, userId) => `${serverBaseUrl}/Users/${userId}/Items`,
   },
+  track: {
+    getAllTracks: (serverBaseUrl, userId) => `${serverBaseUrl}/Users/${userId}/Items`,
+  },
   folder: {
     getFolderItems: null,
   },
@@ -736,6 +739,52 @@ export const getAlbumTracks = ({ accessToken, albumId, libraryId, serverBaseUrl,
       reject({
         code: 'jellyfin.getAlbumTracks.2',
         message: 'Failed to get album tracks: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALL TRACKS
+// ======================================================================
+
+export const getAllTracks = ({ accessToken, libraryId, serverBaseUrl, userId }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.track.getAllTracks(serverBaseUrl, userId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+          params: {
+            ParentId: libraryId,
+            IncludeItemTypes: 'Audio',
+            Recursive: true,
+            SortBy: 'Random',
+            Fields: trackFields,
+          },
+        })
+        .then((response) => {
+          resolve(jellyTranspose.transposeTrackArray(response, libraryId, serverBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'jellyfin.getAllTracks.1',
+            message: 'Failed to get all tracks: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'jellyfin.getAllTracks.2',
+        message: 'Failed to get all tracks: ' + error?.message,
         error: error,
       });
     }

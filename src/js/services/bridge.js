@@ -774,6 +774,36 @@ export const getAlbumTracks = (libraryId, albumId) => {
 };
 
 // ======================================================================
+// GET ALL TRACKS
+// ======================================================================
+
+export const getAllTracks = (libraryId) => {
+  return new Promise((resolve, reject) => {
+    console.log('%c--- bridge - getAllTracks ---', 'color:#f9743b;');
+    const accessToken = store.getState().sessionModel.currentServer.accessToken;
+    const currentService = store.getState().appModel.currentService;
+    const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+    const userId = currentService === 'jellyfin' ? store.getState().appModel.currentUser.userId : null;
+
+    serviceTools[currentService]
+      .getAllTracks({
+        accessToken,
+        libraryId,
+        serverBaseUrl,
+        userId,
+      })
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        console.error(error);
+        analyticsEvent(toUpperFirst(currentService) + ' / Error / Get All Tracks');
+        reject(error);
+      });
+  });
+};
+
+// ======================================================================
 // GET FOLDER ITEMS
 // ======================================================================
 

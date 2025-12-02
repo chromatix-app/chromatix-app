@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   FilterMenu,
@@ -22,6 +22,7 @@ import platformFeatures from 'js/_config/platformFeatures';
 // ======================================================================
 
 const AlbumArray = () => {
+  const dispatch = useDispatch();
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
 
@@ -40,6 +41,11 @@ const AlbumArray = () => {
     sortedAlbums,
   } = useGetAlbumArray();
 
+  // Handler for Play/Shuffle All buttons
+  const handlePlayAll = (isShuffle) => {
+    dispatch.playerModel.playerLoadAllTracks({ isShuffle });
+  };
+
   const isLoading = !sortedAlbums;
   const isEmptyList = !isLoading && sortedAlbums?.length === 0;
   const isGridView = !isLoading && !isEmptyList && viewAlbums === 'grid';
@@ -51,6 +57,7 @@ const AlbumArray = () => {
         <Title
           colOptions={colOptions}
           gridOptions={gridOptions}
+          handlePlayAll={handlePlayAll}
           isGridView={isGridView}
           isListView={isListView}
           orderAlbums={orderAlbums}
@@ -75,6 +82,7 @@ const AlbumArray = () => {
           <Title
             colOptions={colOptions}
             gridOptions={gridOptions}
+            handlePlayAll={handlePlayAll}
             isGridView={isGridView}
             isListView={isListView}
             orderAlbums={orderAlbums}
@@ -100,6 +108,7 @@ const AlbumArray = () => {
           <Title
             colOptions={colOptions}
             gridOptions={gridOptions}
+            handlePlayAll={handlePlayAll}
             isGridView={isGridView}
             isListView={isListView}
             orderAlbums={orderAlbums}
@@ -121,6 +130,7 @@ const AlbumArray = () => {
 const Title = ({
   colOptions,
   gridOptions,
+  handlePlayAll,
   isGridView,
   isListView,
   orderAlbums,
@@ -142,6 +152,8 @@ const Title = ({
           sortedAlbums ? sortedAlbums?.length + ' Album' + (sortedAlbums?.length !== 1 ? 's' : '') : <>&nbsp;</>
         }
         padding={!isListView && !isGridView}
+        showPlay={true}
+        handlePlay={handlePlayAll}
       />
       <FilterWrap padding={!isListView && !isGridView}>
         <FilterToggle

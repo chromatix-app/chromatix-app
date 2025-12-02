@@ -72,6 +72,9 @@ const endpointConfig = {
     getAlbumDetails: (serverBaseUrl, albumId) => `${serverBaseUrl}/library/metadata/${albumId}`,
     getAlbumTracks: (serverBaseUrl, albumId) => `${serverBaseUrl}/library/metadata/${albumId}/children`,
   },
+  track: {
+    getAllTracks: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/all`,
+  },
   folder: {
     getFolderItems: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/folder`,
   },
@@ -960,6 +963,51 @@ export const getAlbumTracks = ({ accessToken, albumId, libraryId, serverBaseUrl,
       reject({
         code: 'plex.getAlbumTracks.2',
         message: 'Failed to get album tracks: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALL TRACKS
+// ======================================================================
+
+export const getAllTracks = ({ accessToken, libraryId, serverBaseUrl }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.track.getAllTracks(serverBaseUrl, libraryId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            type: 10,
+            sort: 'random',
+            excludeFields: trackExcludeFields,
+            excludeElements: excludeElements,
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeTrackArray(response, libraryId, serverBaseUrl, accessToken));
+        })
+        .catch((error) => {
+          reject({
+            code: 'plex.getAllTracks.1',
+            message: 'Failed to get all tracks: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'plex.getAllTracks.2',
+        message: 'Failed to get all tracks: ' + error?.message,
         error: error,
       });
     }

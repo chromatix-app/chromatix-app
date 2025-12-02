@@ -441,6 +441,45 @@ const effects = (dispatch) => ({
     analyticsEvent(toUpperFirst(currentService) + ' / Music / Play (Folder)');
   },
 
+  async playerLoadAllTracks(payload, rootState) {
+    console.log('%c--- playerLoadAllTracks ---', 'color:#5c16b1');
+    const { isShuffle = true } = payload || {};
+
+    const currentService = rootState.appModel.currentService;
+    const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
+
+    // Fetch all tracks from the library
+    const allTracks = await bridge.getAllTracks(libraryId);
+
+    if (!allTracks || allTracks.length === 0) {
+      console.error('No tracks found in library');
+      return;
+    }
+
+    // Generate track keys (shuffled or not)
+    const trackKeys = getTrackKeys(allTracks.length, null, isShuffle, null);
+
+    dispatch.playerModel.playerLoadTrackList({
+      playingVariant: 'all-tracks',
+      playingServerId: rootState.sessionModel.currentServer?.serverId,
+      playingLibraryId: libraryId,
+      playingArtistId: null,
+      playingAlbumId: null,
+      playingPlaylistId: null,
+      playingFolderId: null,
+      playingLink: `/library/${libraryId}`,
+      playingOrder: null,
+      playingTrackIndex: 0,
+      playingTrackKeys: trackKeys,
+      playingTrackList: allTracks,
+      playingTrackCount: allTracks.length,
+      playingTrackProgress: 0,
+      playingShuffle: isShuffle,
+    });
+
+    analyticsEvent(toUpperFirst(currentService) + ' / Music / Play (' + (isShuffle ? 'Shuffle All' : 'All') + ')');
+  },
+
   playerLoadTrackList(payload, rootState) {
     // console.log('%c--- playerLoadTrackList ---', 'color:#5c16b1');
     dispatch.playerModel.setPlayerState({
