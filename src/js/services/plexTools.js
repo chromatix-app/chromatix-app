@@ -360,22 +360,30 @@ export const getUserInfo = () => {
 
 export const getAllUsers = () => {
   return new Promise((resolve, reject) => {
-    const accessToken = getLocalStorage(storageTokenKey);
-    const endpoint = endpointConfig.user.getAllUsers();
-    axios
-      .get(endpoint, {
-        headers: getRequestHeaders(accessToken),
-      })
-      .then((response) => {
-        resolve(plexTranspose.transposeAllUsersArray(response));
-      })
-      .catch((error) => {
-        reject({
-          code: 'plex.getAllUsers.1',
-          message: 'Failed to get all users: ' + error?.message,
-          error: error,
+    try {
+      const accessToken = getLocalStorage(storageTokenKey);
+      const endpoint = endpointConfig.user.getAllUsers();
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeAllUsersArray(response));
+        })
+        .catch((error) => {
+          reject({
+            code: 'plex.getAllUsers.1',
+            message: 'Failed to get all users: ' + error?.message,
+            error: error,
+          });
         });
+    } catch (error) {
+      reject({
+        code: 'plex.getAllUsers.2',
+        message: 'Failed to get all users: ' + error?.message,
+        error: error,
       });
+    }
   });
 };
 

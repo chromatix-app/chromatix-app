@@ -72,7 +72,9 @@ const UserMenu = ({ variant = 'default', withoutLibrary = false }) => {
               {hasSelectedLibrary && allServers && (
                 <>
                   <RadixMenu.Group className={style.group}>
-                    <RadixMenu.Label className={style.label}>Plex → {currentUser?.displayName}</RadixMenu.Label>
+                    <RadixMenu.Label className={style.label}>
+                      Plex → {currentUser?.displayName || 'User'}
+                    </RadixMenu.Label>
 
                     {allServers.map((server) => (
                       <React.Fragment key={server.serverId}>
