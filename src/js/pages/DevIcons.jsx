@@ -22,7 +22,19 @@ const Component = () => {
                 position: 'relative',
                 width: 14,
                 height: 14,
-                marginRight: 12,
+                marginRight: 16,
+                top: 2,
+              }}
+            >
+              <Icon icon={iconName} cover />
+            </span>
+            <span
+              style={{
+                display: 'inline-block',
+                position: 'relative',
+                width: 14,
+                height: 14,
+                marginRight: 16,
                 top: 2,
               }}
             >
@@ -42,9 +54,9 @@ const Component = () => {
                 position: 'relative',
                 width: 28,
                 height: 28,
-                marginRight: 12,
+                marginRight: 16,
                 marginBottom: 4,
-                // top: 2,
+                top: -5,
               }}
             >
               <Icon icon={iconName} cover />

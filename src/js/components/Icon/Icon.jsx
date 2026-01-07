@@ -90,9 +90,9 @@ import { ReactComponent as ShuffleIcon } from './icons/general-compressed/shuffl
 import { ReactComponent as SideBarIcon } from './icons/general-compressed/sidebar.svg';
 import { ReactComponent as SkipBackIcon } from './icons/general-compressed/skip-back.svg';
 import { ReactComponent as SkipForwardIcon } from './icons/general-compressed/skip-forward.svg';
-import { ReactComponent as StarEmptyIcon } from './icons/general-compressed/star-empty.svg';
-import { ReactComponent as StarFullIcon } from './icons/general-compressed/star-full.svg';
-import { ReactComponent as StarHalfIcon } from './icons/general-compressed/star-half.svg';
+import { ReactComponent as StarEmptyIcon } from './icons/general-original/star-empty.svg';
+import { ReactComponent as StarFullIcon } from './icons/general-original/star-full.svg';
+import { ReactComponent as StarHalfIcon } from './icons/general-original/star-half.svg';
 import { ReactComponent as VanishedCircleIcon } from './icons/general-compressed/vanished-circle.svg';
 // import { ReactComponent as VolDownIcon } from './icons/general-compressed/vol-down.svg';
 import { ReactComponent as VolHighIcon } from './icons/general-compressed/vol-high.svg';
