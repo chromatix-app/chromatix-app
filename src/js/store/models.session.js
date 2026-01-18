@@ -30,6 +30,9 @@ const sessionState = {
 
   // GENERAL OPTIONS
 
+  optionKeepHomeUsersLoggedIn: true,
+  optionRememberLastLibrary: true,
+
   optionSortNumbersFirst: false,
   optionSortIgnoreLeadingArticles: true,
 
@@ -553,11 +556,12 @@ const effects = (dispatch) => ({
 
   validateCurrentUser(payload, rootState) {
     console.log('%c--- validateCurrentUser ---', 'color:#0f60b7');
-    console.log(payload);
+    const optionKeepHomeUsersLoggedIn = rootState.sessionModel.optionKeepHomeUsersLoggedIn;
+    const optionRememberLastLibrary = rootState.sessionModel.optionRememberLastLibrary;
     const currentUserId = rootState.sessionModel.currentUser ? rootState.sessionModel.currentUser.userId : null;
     const refreshedUser = payload?.find((user) => user.userId === currentUserId);
     // Select cached session user
-    if (refreshedUser) {
+    if (refreshedUser && (payload.length === 1 || optionKeepHomeUsersLoggedIn)) {
       dispatch.sessionModel.setSessionState({
         currentUser: refreshedUser,
       });
@@ -571,6 +575,15 @@ const effects = (dispatch) => ({
       });
       dispatch.sessionModel.switchUser({ user: payload[0], pin: '' });
       console.log('A', 'User', true, 'auto loaded the only user');
+    }
+    // Cached session user should not be kept logged in
+    else if (refreshedUser) {
+      dispatch.sessionModel.setSessionState({
+        currentUser: null,
+        ...(!optionRememberLastLibrary ? { currentServer: null } : {}),
+        ...(!optionRememberLastLibrary ? { currentLibrary: null } : {}),
+      });
+      console.log('A', 'User', false, 'cached user not kept logged in');
     }
     // No user selected - no need to do anything here, selection screen will be shown
     else {
@@ -595,10 +608,15 @@ const effects = (dispatch) => ({
   unsetCurrentUser(payload, rootState) {
     console.log('%c--- unsetCurrentUser ---', 'color:#0f60b7');
     bridge.abortAllRequests();
+    const optionRememberLastLibrary = rootState.sessionModel.optionRememberLastLibrary;
+    dispatch.playerModel.playerPause();
     dispatch.sessionModel.setSessionState({
       currentUser: null,
+      ...(!optionRememberLastLibrary ? { currentServer: null } : {}),
+      ...(!optionRememberLastLibrary ? { currentLibrary: null } : {}),
+      ...Object.assign({}, playingState),
+      // ...(!optionRememberLastLibrary ? Object.assign({}, playingState) : {}),
     });
-    dispatch.playerModel.playerPause();
     dispatch.appModel.clearUserState();
   },
 

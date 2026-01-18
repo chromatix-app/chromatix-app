@@ -20,6 +20,7 @@ export const SettingsGeneral = () => {
   return (
     <div className={style.wrap}>
       <GeneralSettings />
+      {currentService === 'plex' && <PlexHomeSettings />}
       <SortSettings />
       {platformOpts.enableUserRating && <RatingSettings />}
       <PlaybackSettings />
@@ -46,6 +47,30 @@ const GeneralSettings = () => {
   ];
 
   return <SettingsList title="General" menuItems={menuItems} />;
+};
+
+//
+// PLEX HOME
+//
+
+const PlexHomeSettings = () => {
+  const optionKeepHomeUsersLoggedIn = useSelector(({ sessionModel }) => sessionModel.optionKeepHomeUsersLoggedIn);
+  const optionRememberLastLibrary = useSelector(({ sessionModel }) => sessionModel.optionRememberLastLibrary);
+
+  const menuItems = [
+    {
+      key: 'optionKeepHomeUsersLoggedIn',
+      label: 'Automatically sign in Plex Home users.',
+      state: optionKeepHomeUsersLoggedIn,
+    },
+    {
+      key: 'optionRememberLastLibrary',
+      label: 'Remember currently selected library when switching Plex Home users.',
+      state: optionRememberLastLibrary,
+    },
+  ];
+
+  return <SettingsList title="Plex Home" menuItems={menuItems} />;
 };
 
 //
