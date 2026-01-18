@@ -84,6 +84,12 @@ const UserForm = ({ pinUser, setRenderPinEntry }) => {
     }
   }, [pin, isSubmitting, dispatch.sessionModel, pinUser]);
 
+  // [NOTE] We don't really need to handle submission state here,
+  // because useGotRequiredData stops anything from rendering anyway
+  if (isSubmitting) {
+    return null;
+  }
+
   return (
     <div className={style.wrap}>
       <div className={style.form}>

@@ -562,7 +562,7 @@ const effects = (dispatch) => ({
         currentUser: refreshedUser,
       });
       dispatch.sessionModel.switchUser({ user: refreshedUser, pin: '' });
-      console.log('A', true, 'verified');
+      console.log('A', 'User', true, 'refreshed cached user');
     }
     // Select only available user
     else if (payload.length === 1) {
@@ -570,13 +570,16 @@ const effects = (dispatch) => ({
         currentUser: payload[0],
       });
       dispatch.sessionModel.switchUser({ user: payload[0], pin: '' });
-      console.log('A', true, 1);
+      console.log('A', 'User', true, 'auto loaded the only user');
     }
-    // No user selected - no need to do anything here
+    // No user selected - no need to do anything here, selection screen will be shown
+    else {
+      console.log('A', 'User', false, 'no user selected');
+    }
   },
 
   switchUser(payload, rootState) {
-    console.log('%c--- switchUser ---', 'color:#07a098');
+    console.log('%c--- switchUser ---', 'color:#0f60b7');
     const currentService = rootState.appModel.currentService;
     const { user, pin } = payload;
     if (currentService === 'plex' && user?.uuid) {
@@ -640,7 +643,7 @@ const effects = (dispatch) => ({
         currentServer: refreshedServer,
       });
       bridge.getAllLibraries();
-      console.log('B', true, 'verified');
+      console.log('B', 'Server', true, 'refreshed cached server');
     }
     // Select only available server
     else if (payload.length === 1) {
@@ -650,7 +653,7 @@ const effects = (dispatch) => ({
         ...Object.assign({}, playingState),
       });
       bridge.getAllLibraries();
-      console.log('B', true, 1);
+      console.log('B', 'Server', true, 'auto loaded the only server');
     }
     // No server selected
     else {
@@ -659,7 +662,7 @@ const effects = (dispatch) => ({
         currentLibrary: null,
         ...Object.assign({}, playingState),
       });
-      console.log('B', false);
+      console.log('B', 'Server', false, 'no server selected');
     }
   },
 
@@ -696,7 +699,7 @@ const effects = (dispatch) => ({
       dispatch.sessionModel.setSessionState({
         currentLibrary: refreshedLibrary,
       });
-      console.log('C', true, 'verified');
+      console.log('C', 'Library', true, 'refreshed cached library');
     }
     // Select only available library
     else if (payload.length === 1) {
@@ -705,7 +708,7 @@ const effects = (dispatch) => ({
         ...Object.assign({}, playingState),
       });
       dispatch.playerModel.playerUnload();
-      console.log('C', true, 1);
+      console.log('C', 'Library', true, 'auto loaded the only library');
     }
     // No library selected
     else {
@@ -714,7 +717,7 @@ const effects = (dispatch) => ({
         ...Object.assign({}, playingState),
       });
       dispatch.playerModel.playerUnload();
-      console.log('C', false);
+      console.log('C', 'Library', false, 'no library selected');
     }
   },
 
