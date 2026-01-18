@@ -56,13 +56,30 @@ const UserList = ({ entries, setPinUser, setRenderPinEntry }) => {
                   )}
                   {entry?.thumb && <img src={entry?.thumb} alt="Profile" draggable="false" />}
                 </div>
+
                 <div className={style.title}>{entry.displayName}</div>
-                {entry.admin && <div className={style.admin}>Admin</div>}
-                {entry.restrictionProfile && <div>{formatRestrictionProfile(entry.restrictionProfile)}</div>}
-                {entry.guest && <div>Guest</div>}
-                {!entry.admin && !entry.restrictionProfile && !entry.guest && <div>Standard</div>}
-                {entry.pinProtected && <div>Pin Protected</div>}
+
+                <div>
+                  {entry.admin && (
+                    <span className={style.iconAdmin}>
+                      <Icon icon="CrownIcon" cover />
+                    </span>
+                  )}
+
+                  {entry.admin && <>Admin</>}
+                  {entry.restrictionProfile && <>{formatRestrictionProfile(entry.restrictionProfile)}</>}
+                  {entry.guest && <>Guest</>}
+                  {!entry.admin && !entry.restrictionProfile && !entry.guest && <>Standard</>}
+                </div>
               </div>
+
+              {entry.pinProtected && (
+                <div className={style.locked}>
+                  <span className={style.iconLock}>
+                    <Icon icon="PadlockIcon" cover stroke />
+                  </span>
+                </div>
+              )}
             </button>
           );
         })}
