@@ -43,6 +43,7 @@ import { ReactComponent as CollapseIcon } from './icons/general-compressed/colla
 // import { ReactComponent as ColumnsCircleIcon } from './icons/general-compressed/columns-circle.svg';
 import { ReactComponent as ControlBarIcon } from './icons/general-compressed/control-bar.svg';
 import { ReactComponent as CrossSmallIcon } from './icons/general-compressed/cross-small.svg';
+import { ReactComponent as CrownIcon } from './icons/general-compressed/crown.svg';
 import { ReactComponent as DiscIcon } from './icons/general-compressed/disc.svg';
 import { ReactComponent as DownloadIcon } from './icons/general-compressed/download.svg';
 import { ReactComponent as EllipsisCircleIcon } from './icons/general-compressed/ellipsis-circle.svg';
@@ -67,6 +68,7 @@ import { ReactComponent as MicrophoneIcon } from './icons/general-compressed/mic
 import { ReactComponent as MusicNoteDoubleIcon } from './icons/general-compressed/music-note-double.svg';
 import { ReactComponent as MusicNoteSingleIcon } from './icons/general-compressed/music-note-single.svg';
 import { ReactComponent as NextIcon } from './icons/general-compressed/next.svg';
+import { ReactComponent as PadlockIcon } from './icons/general-compressed/padlock.svg';
 import { ReactComponent as PaintPaletteIcon } from './icons/general-compressed/paint-palette.svg';
 // import { ReactComponent as PauseCircleIcon } from './icons/general-compressed/pause-circle.svg';
 import { ReactComponent as PauseFilledIcon } from './icons/general-compressed/pause-filled.svg';
@@ -152,6 +154,7 @@ export const generalIcons = {
   CollapseIcon,
   // ColumnsCircleIcon,
   ControlBarIcon,
+  CrownIcon,
   CrossSmallIcon,
   DiscIcon,
   DownloadIcon,
@@ -177,6 +180,7 @@ export const generalIcons = {
   MusicNoteDoubleIcon,
   MusicNoteSingleIcon,
   NextIcon,
+  PadlockIcon,
   PaintPaletteIcon,
   // PauseCircleIcon,
   PauseFilledIcon,
