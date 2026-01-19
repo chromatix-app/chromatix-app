@@ -3,6 +3,7 @@
 Features:
 
 - Added Plex Home user switching support. Users with multiple Plex Home users enabled can now switch between different Plex Home users directly within Chromatix.
+- Added additional settings to control visibility of information and buttons in the control bar.
 
 <!-- CHANGELOG SPLIT MARKER -->
 

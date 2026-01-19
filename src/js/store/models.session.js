@@ -94,8 +94,15 @@ const sessionState = {
 
   // CONTROL BAR OPTIONS
 
+  controlBarTitle: true,
+  controlBarArtist: true,
   controlBarIsFavourite: true,
   controlBarUserRating: true,
+
+  controlBarFullPageToggle: true,
+  controlBarQueueToggle: true,
+  controlBarVolumeToggle: true,
+  controlBarVolumeSlider: true,
 
   // QUEUE OPTIONS
 
