@@ -382,7 +382,6 @@ const effects = (dispatch) => {
 
     storeAllUsers(payload, rootState) {
       console.log('%c--- storeAllUsers ---', 'color:#07a098');
-      console.log(payload);
       dispatch.appModel.setAppState({
         allUsers: payload,
       });

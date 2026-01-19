@@ -3,7 +3,7 @@ export const whatsNew = [
     version: '0.57.0',
     bannerTitle: 'Plex Home user switching is now available.',
     title: 'Plex Home user switching',
-    date: 'November 2025',
+    date: 'January 2026',
     body: `<p>Plex accounts with multiple users configured via Plex Home can now easily switch between users within Chromatix.</p>
     <p>Just click the "Switch User" option in the user menu to get started.</p>`,
     imageDark: 'promo-012-dark',
