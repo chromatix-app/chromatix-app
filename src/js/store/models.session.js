@@ -99,6 +99,11 @@ const sessionState = {
   controlBarIsFavourite: true,
   controlBarUserRating: true,
 
+  controlBarFullPageToggle: true,
+  controlBarQueueToggle: true,
+  controlBarVolumeToggle: true,
+  controlBarVolumeSlider: true,
+
   // QUEUE OPTIONS
 
   queueIsVisible: false,

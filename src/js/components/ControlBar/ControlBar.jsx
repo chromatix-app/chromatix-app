@@ -220,6 +220,11 @@ export const SecondaryControls = ({ fullPageMode }) => {
   const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
   const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
 
+  const controlBarFullPageToggle = useSelector(({ sessionModel }) => sessionModel.controlBarFullPageToggle);
+  const controlBarQueueToggle = useSelector(({ sessionModel }) => sessionModel.controlBarQueueToggle);
+  const controlBarVolumeToggle = useSelector(({ sessionModel }) => sessionModel.controlBarVolumeToggle);
+  const controlBarVolumeSlider = useSelector(({ sessionModel }) => sessionModel.controlBarVolumeSlider);
+
   const trackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
   const expandDisabled = !trackCurrent ? true : false;
   const queueDisabled = !trackCurrent && !queueIsVisible ? true : false;
@@ -229,12 +234,6 @@ export const SecondaryControls = ({ fullPageMode }) => {
   return (
     <div className={clsx(style.secondaryControls, { [style.fullPageMode]: fullPageMode })}>
       <div className={style.secondaryButtons}>
-        {!fullPageMode && (
-          <button className={style.expand} onClick={dispatch.appModel.fullPageOn} disabled={expandDisabled}>
-            <Icon icon="ExpandSplitIcon" cover stroke />
-          </button>
-        )}
-
         {fullPageMode && (
           <button className={style.expand} onClick={dispatch.appModel.fullPageOff}>
             <Icon icon="CollapseIcon" cover stroke />
@@ -243,7 +242,13 @@ export const SecondaryControls = ({ fullPageMode }) => {
 
         {fullPageMode && <FullPageMenu />}
 
-        {!fullPageMode && (
+        {!fullPageMode && controlBarFullPageToggle && (
+          <button className={style.expand} onClick={dispatch.appModel.fullPageOn} disabled={expandDisabled}>
+            <Icon icon="ExpandSplitIcon" cover stroke />
+          </button>
+        )}
+
+        {!fullPageMode && controlBarQueueToggle && (
           <button
             className={clsx(style.queue, { [style.active]: queueIsVisible })}
             onClick={dispatch.sessionModel.queueVisibleToggle}
@@ -253,14 +258,18 @@ export const SecondaryControls = ({ fullPageMode }) => {
           </button>
         )}
 
-        <button className={style.volume} onClick={dispatch.playerModel.volumeMuteToggle}>
-          <Icon icon={volIcon} cover stroke />
-        </button>
+        {controlBarVolumeToggle && (
+          <button className={style.volume} onClick={dispatch.playerModel.volumeMuteToggle}>
+            <Icon icon={volIcon} cover stroke />
+          </button>
+        )}
       </div>
 
-      <div className={style.volSlider}>
-        <RangeSlider value={volumeMuted ? 0 : volumeLevel} handleChange={dispatch.playerModel.volumeLevelSet} />
-      </div>
+      {controlBarVolumeSlider && (
+        <div className={style.volSlider}>
+          <RangeSlider value={volumeMuted ? 0 : volumeLevel} handleChange={dispatch.playerModel.volumeLevelSet} />
+        </div>
+      )}
 
       {!isOnline && (
         <div className={style.secondaryButtons}>

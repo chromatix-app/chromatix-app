@@ -18,11 +18,10 @@ export const SettingsControls = () => {
   const platformOpts = platformFeatures[currentService] || {};
 
   return (
-    <>
-      <div className={style.wrap}>
-        <NowPlayingSettings platformOpts={platformOpts} />
-      </div>
-    </>
+    <div className={style.wrap}>
+      <NowPlayingSettings platformOpts={platformOpts} />
+      <SecondarySettings platformOpts={platformOpts} />
+    </div>
   );
 };
 
@@ -39,19 +38,19 @@ const NowPlayingSettings = ({ platformOpts }) => {
   const menuItems = [
     {
       key: 'controlBarTitle',
-      label: 'Show title',
+      label: 'Title',
       state: controlBarTitle,
     },
     {
       key: 'controlBarArtist',
-      label: 'Show artist',
+      label: 'Artist',
       state: controlBarArtist,
     },
     ...(platformOpts.enableIsFavourite
       ? [
           {
             key: 'controlBarIsFavourite',
-            label: 'Show favourites',
+            label: 'Favourites',
             state: controlBarIsFavourite && platformOpts.enableIsFavourite,
             disabled: !platformOpts.enableIsFavourite,
           },
@@ -61,7 +60,7 @@ const NowPlayingSettings = ({ platformOpts }) => {
       ? [
           {
             key: 'controlBarUserRating',
-            label: 'Show star ratings',
+            label: 'Star ratings',
             state: controlBarUserRating && platformOpts.enableUserRating,
             disabled: !platformOpts.enableUserRating,
           },
@@ -70,6 +69,42 @@ const NowPlayingSettings = ({ platformOpts }) => {
   ];
 
   return <SettingsList title="Now playing" menuItems={menuItems} />;
+};
+
+//
+// SECONDARY CONTROLS
+//
+
+const SecondarySettings = ({ platformOpts }) => {
+  const controlBarFullPageToggle = useSelector(({ sessionModel }) => sessionModel.controlBarFullPageToggle);
+  const controlBarQueueToggle = useSelector(({ sessionModel }) => sessionModel.controlBarQueueToggle);
+  const controlBarVolumeToggle = useSelector(({ sessionModel }) => sessionModel.controlBarVolumeToggle);
+  const controlBarVolumeSlider = useSelector(({ sessionModel }) => sessionModel.controlBarVolumeSlider);
+
+  const menuItems = [
+    {
+      key: 'controlBarFullPageToggle',
+      label: 'Full screen player toggle',
+      state: controlBarFullPageToggle,
+    },
+    {
+      key: 'controlBarQueueToggle',
+      label: 'Queue toggle',
+      state: controlBarQueueToggle,
+    },
+    {
+      key: 'controlBarVolumeToggle',
+      label: 'Volume toggle',
+      state: controlBarVolumeToggle,
+    },
+    {
+      key: 'controlBarVolumeSlider',
+      label: 'Volume slider',
+      state: controlBarVolumeSlider,
+    },
+  ];
+
+  return <SettingsList title="Secondary controls" menuItems={menuItems} />;
 };
 
 // ======================================================================
