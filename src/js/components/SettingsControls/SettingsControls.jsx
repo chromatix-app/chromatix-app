@@ -20,26 +20,38 @@ export const SettingsControls = () => {
   return (
     <>
       <div className={style.wrap}>
-        <GeneralSettings platformOpts={platformOpts} />
+        <NowPlayingSettings platformOpts={platformOpts} />
       </div>
     </>
   );
 };
 
 //
-// GENERAL
+// NOW PLAYING
 //
 
-const GeneralSettings = ({ platformOpts }) => {
+const NowPlayingSettings = ({ platformOpts }) => {
+  const controlBarTitle = useSelector(({ sessionModel }) => sessionModel.controlBarTitle);
+  const controlBarArtist = useSelector(({ sessionModel }) => sessionModel.controlBarArtist);
   const controlBarIsFavourite = useSelector(({ sessionModel }) => sessionModel.controlBarIsFavourite);
   const controlBarUserRating = useSelector(({ sessionModel }) => sessionModel.controlBarUserRating);
 
   const menuItems = [
+    {
+      key: 'controlBarTitle',
+      label: 'Show title',
+      state: controlBarTitle,
+    },
+    {
+      key: 'controlBarArtist',
+      label: 'Show artist',
+      state: controlBarArtist,
+    },
     ...(platformOpts.enableIsFavourite
       ? [
           {
             key: 'controlBarIsFavourite',
-            label: 'Show Favourites',
+            label: 'Show favourites',
             state: controlBarIsFavourite && platformOpts.enableIsFavourite,
             disabled: !platformOpts.enableIsFavourite,
           },
@@ -49,7 +61,7 @@ const GeneralSettings = ({ platformOpts }) => {
       ? [
           {
             key: 'controlBarUserRating',
-            label: 'Show Star Ratings',
+            label: 'Show star ratings',
             state: controlBarUserRating && platformOpts.enableUserRating,
             disabled: !platformOpts.enableUserRating,
           },
@@ -57,7 +69,7 @@ const GeneralSettings = ({ platformOpts }) => {
       : []),
   ];
 
-  return <SettingsList title="General" menuItems={menuItems} />;
+  return <SettingsList title="Now playing" menuItems={menuItems} />;
 };
 
 // ======================================================================

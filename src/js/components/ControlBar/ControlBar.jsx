@@ -40,6 +40,8 @@ const ControlBar = () => {
 const NowPlaying = () => {
   const dispatch = useDispatch();
 
+  const controlBarTitle = useSelector(({ sessionModel }) => sessionModel.controlBarTitle);
+  const controlBarArtist = useSelector(({ sessionModel }) => sessionModel.controlBarArtist);
   const controlBarIsFavourite = useSelector(({ sessionModel }) => sessionModel.controlBarIsFavourite);
   const controlBarUserRating = useSelector(({ sessionModel }) => sessionModel.controlBarUserRating);
 
@@ -81,15 +83,18 @@ const NowPlaying = () => {
       <div className={style.detailsWrap}>
         {trackCurrent && (
           <>
-            <div className={style.title}>{trackCurrent.title}</div>
-            <div className={style.artist}>
-              {trackCurrent.artistLink && (
-                <NavLink to={trackCurrent.artistLink} draggable="false">
-                  {trackCurrent.artist}
-                </NavLink>
-              )}
-              {!trackCurrent.artistLink && trackCurrent.artist}
-            </div>
+            {controlBarTitle && <div className={style.title}>{trackCurrent.title}</div>}
+
+            {controlBarArtist && (
+              <div className={style.artist}>
+                {trackCurrent.artistLink && (
+                  <NavLink to={trackCurrent.artistLink} draggable="false">
+                    {trackCurrent.artist}
+                  </NavLink>
+                )}
+                {!trackCurrent.artistLink && trackCurrent.artist}
+              </div>
+            )}
 
             {controlBarIsFavourite && platformOpts?.enableIsFavourite && (
               <div className={style.favourite}>

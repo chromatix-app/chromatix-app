@@ -94,6 +94,8 @@ const sessionState = {
 
   // CONTROL BAR OPTIONS
 
+  controlBarTitle: true,
+  controlBarArtist: true,
   controlBarIsFavourite: true,
   controlBarUserRating: true,
 
