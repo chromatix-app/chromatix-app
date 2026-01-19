@@ -573,18 +573,20 @@ const effects = (dispatch) => ({
   playerPause(payload, rootState) {
     // console.log('%c--- playerPause ---', 'color:#5c16b1');
     playerX.pause();
-    dispatch.playerModel.setPlayerState({
-      playerPlaying: false,
-    });
     // log playback state to server
-    const currentService = rootState.appModel.currentService;
-    const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
-    const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
-    const playingTrackList = rootState.sessionModel.playingTrackList;
-    const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
-    const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
-    bridge.logPlaybackPause(currentTrack, playingTrackProgress);
-    analyticsEvent(toUpperFirst(currentService) + ' / Music / Pause');
+    if (rootState.playerModel.playerPlaying) {
+      dispatch.playerModel.setPlayerState({
+        playerPlaying: false,
+      });
+      const currentService = rootState.appModel.currentService;
+      const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+      const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
+      const playingTrackList = rootState.sessionModel.playingTrackList;
+      const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
+      const currentTrack = playingTrackList[playingTrackKeys[playingTrackIndex]];
+      bridge.logPlaybackPause(currentTrack, playingTrackProgress);
+      analyticsEvent(toUpperFirst(currentService) + ' / Music / Pause');
+    }
   },
 
   playerRestart(payload, rootState) {

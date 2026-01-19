@@ -2,11 +2,9 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Button, ViewServers, Loading, TitleBasic } from 'js/components';
-import * as bridge from 'js/services/bridge';
 
 // ======================================================================
 // COMPONENT
@@ -15,11 +13,8 @@ import * as bridge from 'js/services/bridge';
 const LibraryArray = () => {
   const dispatch = useDispatch();
 
+  const allServers = useSelector(({ appModel }) => appModel.allServers);
   const allLibraries = useSelector(({ appModel }) => appModel.allLibraries);
-
-  useEffect(() => {
-    bridge.getAllLibraries();
-  }, []);
 
   return (
     <main className="wrap-inner">
@@ -29,7 +24,11 @@ const LibraryArray = () => {
           <>
             <TitleBasic title={allLibraries.length > 0 ? 'Libraries' : 'No Libraries Available'} />
             <ViewServers variant="libraries" entries={allLibraries} />
-            <Button onClick={dispatch.sessionModel.unsetCurrentServer}>Back to Servers</Button>
+            {allServers && allServers.length > 1 && (
+              <Button size="medium" onClick={dispatch.sessionModel.unsetCurrentServer}>
+                Back to Servers
+              </Button>
+            )}
           </>
         )}
       </div>

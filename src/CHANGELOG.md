@@ -1,3 +1,11 @@
+# 0.57.0 (2026-01-19)
+
+Features:
+
+- Added Plex Home user switching support. Users with multiple Plex Home users enabled can now switch between different Plex Home users directly within Chromatix.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.56.0 (2025-11-12)
 
 Features:

@@ -166,9 +166,9 @@
   right: 0;
   width: 40px;
   height: 40px;
-  padding: 11px 9px 11px 13px;
+  padding: 10px 8px 10px 12px;
   background: var(--color-core);
-  border: none;
+  border: 1px solid var(--color-opacity-01);
   border-radius: 50%;
   box-shadow: var(--shadow-sm);
   transition: all ease-in-out 0.25s;
@@ -182,7 +182,7 @@
 }
 
 .pauseButton {
-  padding: 12px;
+  padding: 11px;
 }
 
 .body {

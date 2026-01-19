@@ -41,6 +41,11 @@ export const authRoutes = [
     redirect: '/artists',
   },
   {
+    path: '/users',
+    exact: true,
+    component: 'UserArray',
+  },
+  {
     path: '/servers',
     exact: true,
     component: 'ServerArray',
@@ -361,6 +366,16 @@ export const authRoutes = [
   // dev tools
   ...(isLocal
     ? [
+        {
+          path: '/components',
+          exact: true,
+          component: 'DevComponents',
+        },
+        {
+          path: '/dev-components',
+          exact: true,
+          redirect: '/components',
+        },
         {
           path: '/icons',
           exact: true,

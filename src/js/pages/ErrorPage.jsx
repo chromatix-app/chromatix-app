@@ -26,7 +26,7 @@ const ErrorPage = ({ title, body, buttonText, buttonClick }) => {
         <div className="mt-50"></div>
 
         {buttonText && buttonClick && (
-          <Button className="btn btn-primary" onClick={buttonClick}>
+          <Button className="btn btn-primary" size="small" onClick={buttonClick}>
             {buttonText}
           </Button>
         )}

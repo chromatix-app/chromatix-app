@@ -100,7 +100,7 @@ export const transposeUserData = (data, serverBaseUrl, accessToken, userId) => {
     userId: user.Id,
     email: null,
     thumb: getUserImage(user.PrimaryImageTag, serverBaseUrl, accessToken, userId),
-    username: user.Name,
+    displayName: user.Name,
     serverBaseUrl,
   };
 };

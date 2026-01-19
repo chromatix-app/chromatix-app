@@ -38,3 +38,4 @@ export { default as UserMenu } from './UserMenu/UserMenu';
 export { default as ViewGrid } from './ViewGrid/ViewGrid';
 export { default as ViewList } from './ViewList/ViewList';
 export { default as ViewServers } from './ViewServers/ViewServers';
+export { default as ViewUsers } from './ViewUsers/ViewUsers';

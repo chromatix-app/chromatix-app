@@ -19,15 +19,16 @@ import style from './UserMenu.module.scss';
 const UserMenu = ({ variant = 'default', withoutLibrary = false }) => {
   const dispatch = useDispatch();
 
-  const currentUser = useSelector(({ appModel }) => appModel.currentUser);
+  const currentUser = useSelector(({ sessionModel }) => sessionModel.currentUser);
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
 
+  const allUsers = useSelector(({ appModel }) => appModel.allUsers);
   const allServers = useSelector(({ appModel }) => appModel.allServers);
   const allLibraries = useSelector(({ appModel }) => appModel.allLibraries);
 
-  const hasSelectedLibrary = currentServer && currentLibrary && withoutLibrary === false;
+  const hasSelectedLibrary = currentUser && currentServer && currentLibrary && withoutLibrary === false;
   const hasQueueVisible = queueIsVisible && hasSelectedLibrary;
 
   const anchorSide = variant === 'Inline' ? 'right' : 'bottom';
@@ -53,12 +54,12 @@ const UserMenu = ({ variant = 'default', withoutLibrary = false }) => {
               </div>
             )}
             <div className={style.thumb}>
-              {!currentUser.thumb && (
+              {!currentUser?.thumb && (
                 <span className={style.thumbIcon}>
                   <Icon icon="ArtistCollectionsIcon" cover stroke strokeWidth={1.4} />
                 </span>
               )}
-              {currentUser.thumb && <img src={currentUser.thumb} alt="Profile" draggable="false" />}
+              {currentUser?.thumb && <img src={currentUser?.thumb} alt="Profile" draggable="false" />}
             </div>
           </RadixMenu.Trigger>
 
@@ -72,8 +73,7 @@ const UserMenu = ({ variant = 'default', withoutLibrary = false }) => {
                 <>
                   <RadixMenu.Group className={style.group}>
                     <RadixMenu.Label className={style.label}>
-                      {/* Plex •  */}
-                      {currentUser.email || currentUser.username}
+                      Plex → {currentUser?.displayName || 'User'}
                     </RadixMenu.Label>
 
                     {allServers.map((server) => (
@@ -129,6 +129,26 @@ const UserMenu = ({ variant = 'default', withoutLibrary = false }) => {
                           })}
                       </React.Fragment>
                     ))}
+                  </RadixMenu.Group>
+
+                  <RadixMenu.Separator className={style.separator} />
+                </>
+              )}
+
+              {allUsers && allUsers.length > 1 && (
+                <>
+                  <RadixMenu.Group className={style.group}>
+                    <RadixMenu.Item asChild>
+                      <button className={style.button} onClick={dispatch.sessionModel.unsetCurrentUser}>
+                        <span className={style.iconBefore}>
+                          <Icon icon="PeopleIcon" cover stroke />
+                        </span>
+                        Switch User
+                        <span className={clsx(style.iconArrow, style.iconHover)}>
+                          <Icon icon="NextIcon" cover stroke />
+                        </span>
+                      </button>
+                    </RadixMenu.Item>
                   </RadixMenu.Group>
 
                   <RadixMenu.Separator className={style.separator} />

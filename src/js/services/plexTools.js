@@ -48,6 +48,8 @@ const endpointConfig = {
     pinStatus: (pinId) => `https://plex.tv/api/v2/pins/${pinId}`,
   },
   user: {
+    getAllUsers: () => 'https://plex.tv/api/v2/home/users',
+    switchUser: (uuid) => `https://plex.tv/api/v2/home/users/${uuid}/switch`,
     getUserInfo: () => 'https://plex.tv/users/account',
   },
   server: {
@@ -117,16 +119,23 @@ const endpointConfig = {
 // STANDARD HEADERS FOR MOST REQUESTS
 
 const getRequestHeaders = (accessToken) => {
-  return {
+  const headers = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
     'X-Plex-Token': accessToken,
     'X-Plex-Client-Identifier': clientId,
   };
+
+  // // [TODO]
+  // if (restrictionProfileId) {
+  //   headers['X-Plex-Restriction-Profile'] = restrictionProfileId;
+  // }
+
+  return headers;
 };
 
 const getPlaybackHeaders = (accessToken, sessionId) => {
-  return {
+  const headers = {
     'Content-Type': 'application/json',
     'X-Plex-Token': accessToken,
     'X-Plex-Client-Identifier': clientId,
@@ -136,6 +145,13 @@ const getPlaybackHeaders = (accessToken, sessionId) => {
     'X-Plex-Platform': envData.appPlatformName,
     'X-Plex-Device-Icon': clientIcon,
   };
+
+  // // [TODO]
+  // if (restrictionProfileId) {
+  //   headers['X-Plex-Restriction-Profile'] = restrictionProfileId;
+  // }
+
+  return headers;
 };
 
 // ======================================================================
@@ -208,6 +224,15 @@ export const login = () => {
       });
     }
   });
+};
+
+// ======================================================================
+// LOGOUT
+// ======================================================================
+
+export const logout = () => {
+  window.localStorage.removeItem(storageServiceKey);
+  window.localStorage.removeItem(storageTokenKey);
 };
 
 // ======================================================================
@@ -292,15 +317,6 @@ const checkPinStatus2 = (pinId, retryCount = 0) => {
 };
 
 // ======================================================================
-// LOGOUT
-// ======================================================================
-
-export const logout = () => {
-  window.localStorage.removeItem(storageServiceKey);
-  window.localStorage.removeItem(storageTokenKey);
-};
-
-// ======================================================================
 // GET USER INFO
 // ======================================================================
 
@@ -339,13 +355,90 @@ export const getUserInfo = () => {
 };
 
 // ======================================================================
-// GET ALL SERVERS
+// GET ALL USERS
 // ======================================================================
 
-export const getAllServers = () => {
+export const getAllUsers = () => {
   return new Promise((resolve, reject) => {
     try {
       const accessToken = getLocalStorage(storageTokenKey);
+      const endpoint = endpointConfig.user.getAllUsers();
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+        })
+        .then((response) => {
+          resolve(plexTranspose.transposeAllUsersArray(response));
+        })
+        .catch((error) => {
+          reject({
+            code: 'plex.getAllUsers.1',
+            message: 'Failed to get all users: ' + error?.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'plex.getAllUsers.2',
+        message: 'Failed to get all users: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// SWITCH USER
+// ======================================================================
+
+export const switchUser = ({ uuid, pin }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const accessToken = getLocalStorage(storageTokenKey);
+      const endpoint = endpointConfig.user.switchUser(uuid);
+
+      axios
+        .post(
+          endpoint,
+          {
+            includeSubscriptions: 1,
+            includeProviders: 1,
+            includeSettings: 1,
+            includeSharedSettings: 1,
+            pin: pin,
+          },
+          {
+            headers: getRequestHeaders(accessToken),
+          }
+        )
+        .then((response) => {
+          resolve(response?.data?.authToken);
+        })
+        .catch((error) => {
+          reject({
+            code: 'plex.switchUser.1',
+            message: 'Failed to switch home user: ' + error?.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'plex.switchUser.2',
+        message: 'Failed to switch home user: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET ALL SERVERS
+// ======================================================================
+
+export const getAllServers = ({ userToken }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const accessToken = userToken || getLocalStorage(storageTokenKey);
       const endpoint = endpointConfig.server.getAllServers();
       axios
         .get(endpoint, {

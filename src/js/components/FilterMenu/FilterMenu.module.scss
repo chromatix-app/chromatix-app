@@ -15,7 +15,7 @@
 .trigger {
   display: flex;
   align-items: center;
-  padding: 6px 6px;
+  padding: 6px;
   border-radius: 6px;
   font-size: 12px;
   line-height: 1;
@@ -24,7 +24,9 @@
   @include mixins.focus-self-outline;
 
   .wrapLarge & {
-    background: var(--color-opacity-03);
+    padding: 5px 9px;
+    background: var(--color-secondary-background);
+    border: 1px solid var(--color-secondary-border);
   }
 }
 
@@ -45,7 +47,7 @@
   .wrapLarge & {
     margin: 0 !important;
     opacity: 1;
-    color: var(--color-primary-background);
+    color: var(--color-opacity-07);
   }
 }
 
