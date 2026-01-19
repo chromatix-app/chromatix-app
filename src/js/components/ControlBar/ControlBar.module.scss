@@ -209,24 +209,6 @@ span.settings,
   }
 }
 
-span.settings {
-  @include mixins.focus-child-outline;
-}
-
-button.rewind {
-  padding: 8px 9px 8px 7px;
-}
-
-button.forward {
-  padding: 8px 7px 8px 9px;
-}
-
-button.shuffle,
-button.repeat,
-span.settings {
-  padding: 9px;
-}
-
 button.play,
 button.pause {
   margin: 0 6px;
@@ -252,17 +234,50 @@ button.pause {
   padding: 12px;
 }
 
-button.volume {
-  margin-right: 2px;
+button.rewind {
+  padding: 8px 9px 8px 7px;
+}
+
+button.forward {
+  padding: 8px 7px 8px 9px;
+}
+
+button.shuffle,
+button.repeat {
+  padding: 9px;
 }
 
 button.expand {
   padding: 12px;
+
+  div:not(:last-child) > & {
+    &:last-child {
+      margin-right: 4px;
+    }
+  }
 }
 
 button.queue {
   padding: 11px;
-  margin-right: 0;
+
+  div:not(:last-child) > & {
+    &:last-child {
+      margin-right: 8px;
+    }
+  }
+}
+
+span.settings {
+  padding: 9px;
+  @include mixins.focus-child-outline;
+}
+
+button.volume {
+  div:not(:last-child) > & {
+    &:last-child {
+      margin-right: 2px;
+    }
+  }
 }
 
 button.active {

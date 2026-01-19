@@ -18,28 +18,39 @@ export const SettingsControls = () => {
   const platformOpts = platformFeatures[currentService] || {};
 
   return (
-    <>
-      <div className={style.wrap}>
-        <GeneralSettings platformOpts={platformOpts} />
-      </div>
-    </>
+    <div className={style.wrap}>
+      <NowPlayingSettings platformOpts={platformOpts} />
+      <SecondarySettings platformOpts={platformOpts} />
+    </div>
   );
 };
 
 //
-// GENERAL
+// NOW PLAYING
 //
 
-const GeneralSettings = ({ platformOpts }) => {
+const NowPlayingSettings = ({ platformOpts }) => {
+  const controlBarTitle = useSelector(({ sessionModel }) => sessionModel.controlBarTitle);
+  const controlBarArtist = useSelector(({ sessionModel }) => sessionModel.controlBarArtist);
   const controlBarIsFavourite = useSelector(({ sessionModel }) => sessionModel.controlBarIsFavourite);
   const controlBarUserRating = useSelector(({ sessionModel }) => sessionModel.controlBarUserRating);
 
   const menuItems = [
+    {
+      key: 'controlBarTitle',
+      label: 'Title',
+      state: controlBarTitle,
+    },
+    {
+      key: 'controlBarArtist',
+      label: 'Artist',
+      state: controlBarArtist,
+    },
     ...(platformOpts.enableIsFavourite
       ? [
           {
             key: 'controlBarIsFavourite',
-            label: 'Show Favourites',
+            label: 'Favourites',
             state: controlBarIsFavourite && platformOpts.enableIsFavourite,
             disabled: !platformOpts.enableIsFavourite,
           },
@@ -49,7 +60,7 @@ const GeneralSettings = ({ platformOpts }) => {
       ? [
           {
             key: 'controlBarUserRating',
-            label: 'Show Star Ratings',
+            label: 'Star ratings',
             state: controlBarUserRating && platformOpts.enableUserRating,
             disabled: !platformOpts.enableUserRating,
           },
@@ -57,7 +68,43 @@ const GeneralSettings = ({ platformOpts }) => {
       : []),
   ];
 
-  return <SettingsList title="General" menuItems={menuItems} />;
+  return <SettingsList title="Now playing" menuItems={menuItems} />;
+};
+
+//
+// SECONDARY CONTROLS
+//
+
+const SecondarySettings = ({ platformOpts }) => {
+  const controlBarFullPageToggle = useSelector(({ sessionModel }) => sessionModel.controlBarFullPageToggle);
+  const controlBarQueueToggle = useSelector(({ sessionModel }) => sessionModel.controlBarQueueToggle);
+  const controlBarVolumeToggle = useSelector(({ sessionModel }) => sessionModel.controlBarVolumeToggle);
+  const controlBarVolumeSlider = useSelector(({ sessionModel }) => sessionModel.controlBarVolumeSlider);
+
+  const menuItems = [
+    {
+      key: 'controlBarFullPageToggle',
+      label: 'Full screen player toggle',
+      state: controlBarFullPageToggle,
+    },
+    {
+      key: 'controlBarQueueToggle',
+      label: 'Queue toggle',
+      state: controlBarQueueToggle,
+    },
+    {
+      key: 'controlBarVolumeToggle',
+      label: 'Volume toggle',
+      state: controlBarVolumeToggle,
+    },
+    {
+      key: 'controlBarVolumeSlider',
+      label: 'Volume slider',
+      state: controlBarVolumeSlider,
+    },
+  ];
+
+  return <SettingsList title="Secondary controls" menuItems={menuItems} />;
 };
 
 // ======================================================================
