@@ -1,6 +1,7 @@
 export { default as Home } from './Home';
 export { default as LoginJelly } from './LoginJelly';
 
+export { default as UserArray } from './UserArray';
 export { default as ServerArray } from './ServerArray';
 export { default as LibraryArray } from './LibraryArray';
 
@@ -52,6 +53,7 @@ export { default as SettingsGeneral } from './SettingsGeneral';
 export { default as SettingsLastFM } from './SettingsLastFM';
 export { default as SettingsSidebar } from './SettingsSidebar';
 
+export { default as DevComponents } from './DevComponents';
 export { default as DevIcons } from './DevIcons';
 export { default as DevModals } from './DevModals';
 

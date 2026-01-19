@@ -27,10 +27,12 @@ const appState = {
   contentBreakpoint: 0,
   contentWidth: 0,
 
+  errorAllUsers: false,
   errorFastestConnection: false,
   errorLibraries: false,
   errorLogin: false,
   errorServers: false,
+  errorSwitchUser: false,
   errorUser: false,
 
   scrollToPlaying: false,
@@ -39,16 +41,18 @@ const appState = {
   notifications: [],
 };
 
-const userState = {
+const accountState = {
   loggedIn: false,
   fullPageMode: false,
 
-  // TBC remove these...
   currentService: null,
-  currentUser: null,
-  allServers: null,
+  currentAccount: null,
 
-  // TBC add this...
+  allUsers: null,
+
+  // TBC (account switching) remove the above...
+
+  // TBC (account switching) add the below...
   // allAccounts: [{
   //   service: 'plex',
   //   userId: null,
@@ -64,6 +68,11 @@ const userState = {
 //   currentAccount: null,
 //   allServers: null,
 // };
+
+const userState = {
+  userToken: null,
+  allServers: null,
+};
 
 const serverState = {
   serverBaseUrl: null,
@@ -120,7 +129,7 @@ const libraryState = {
   searchResults: null,
 };
 
-const state = Object.assign({}, appState, userState, serverState, libraryState);
+const state = Object.assign({}, appState, accountState, userState, serverState, libraryState);
 
 // ======================================================================
 // REDUCERS
@@ -247,22 +256,23 @@ const effects = (dispatch) => {
 
     setLoggedIn(payload, rootState) {
       console.log('%c--- setLoggedIn ---', 'color:#07a098');
-      const { currentService, currentUser } = payload;
+      const { currentService, currentAccount } = payload;
       dispatch.appModel.setAppState({
         inited: true,
         loggedIn: true,
         currentService,
-        currentUser,
+        currentAccount,
       });
       dispatch.sessionModel.loadLocalStorage();
       dispatch.playerModel.playerRefresh();
-      bridge.getAllServers();
+      bridge.getAllUsers(currentService);
     },
 
     setLoggedOut(payload, rootState) {
       console.log('%c--- setLoggedOut ---', 'color:#07a098');
       dispatch.appModel.setAppState({
         inited: true,
+        ...Object.assign({}, accountState),
         ...Object.assign({}, userState),
         ...Object.assign({}, serverState),
         ...Object.assign({}, libraryState),
@@ -306,6 +316,15 @@ const effects = (dispatch) => {
     // ERROR HANDLING
     //
 
+    dismissErrorAllUsers(payload, rootState) {
+      // console.log('%c--- dismissErrorAllUsers ---', 'color:#07a098');
+      const currentService = rootState.appModel.currentService;
+      dispatch.appModel.setAppState({
+        errorAllUsers: false,
+      });
+      bridge.getAllUsers(currentService);
+    },
+
     dismissErrorFastestConnection(payload, rootState) {
       // console.log('%c--- dismissErrorFastestConnection ---', 'color:#07a098');
       dispatch.appModel.setAppState({
@@ -341,6 +360,14 @@ const effects = (dispatch) => {
       bridge.getAllServers();
     },
 
+    dismissErrorSwitchUser(payload, rootState) {
+      // console.log('%c--- dismissErrorSwitchUser ---', 'color:#07a098');
+      dispatch.appModel.setAppState({
+        errorSwitchUser: false,
+      });
+      dispatch.sessionModel.unsetCurrentUser();
+    },
+
     dismissErrorUser(payload, rootState) {
       // console.log('%c--- dismissErrorUser ---', 'color:#07a098');
       dispatch.appModel.setAppState({
@@ -350,8 +377,55 @@ const effects = (dispatch) => {
     },
 
     //
-    // SERVER & LIBRARY HANDLING
+    // USER HANDLING
     //
+
+    storeAllUsers(payload, rootState) {
+      console.log('%c--- storeAllUsers ---', 'color:#07a098');
+      dispatch.appModel.setAppState({
+        allUsers: payload,
+      });
+
+      // If no users, revert to current account
+      if (!payload || payload.length < 1) {
+        const currentAccount = rootState.appModel.currentAccount;
+        dispatch.sessionModel.validateCurrentUser([currentAccount]);
+      }
+      // Validate session user against new list
+      else {
+        dispatch.sessionModel.validateCurrentUser(payload);
+      }
+    },
+
+    storeUserToken(payload, rootState) {
+      console.log('%c--- storeUserToken ---', 'color:#07a098');
+      dispatch.appModel.setAppState({
+        userToken: payload,
+      });
+      bridge.getAllServers();
+    },
+
+    clearUserState(payload, rootState) {
+      console.log('%c--- clearUserState ---', 'color:#07a098');
+      dispatch.appModel.setAppState({
+        ...Object.assign({}, userState),
+        ...Object.assign({}, serverState),
+        ...Object.assign({}, libraryState),
+        fullPageMode: false,
+      });
+    },
+
+    //
+    // SERVER HANDLING
+    //
+
+    storeAllServers(payload, rootState) {
+      console.log('%c--- storeAllServers ---', 'color:#07a098');
+      dispatch.appModel.setAppState({
+        allServers: payload,
+      });
+      dispatch.sessionModel.validateCurrentServer(payload);
+    },
 
     clearServerState(payload, rootState) {
       console.log('%c--- clearServerState ---', 'color:#07a098');
@@ -360,7 +434,18 @@ const effects = (dispatch) => {
         ...Object.assign({}, libraryState),
         fullPageMode: false,
       });
-      dispatch.playerModel.playerUnload();
+    },
+
+    //
+    // LIBRARY HANDLING
+    //
+
+    storeAllLibraries(payload, rootState) {
+      console.log('%c--- storeAllLibraries ---', 'color:#07a098');
+      dispatch.appModel.setAppState({
+        allLibraries: payload,
+      });
+      dispatch.sessionModel.validateCurrentLibrary(payload);
     },
 
     clearLibraryState(payload, rootState) {
@@ -371,23 +456,6 @@ const effects = (dispatch) => {
       });
       rootState.appModel.history.push('/');
       bridge.getAllPlaylists();
-    },
-
-    storeAllServers(payload, rootState) {
-      // console.log('%c--- storeAllServers ---', 'color:#07a098');
-      dispatch.appModel.setAppState({
-        allServers: payload,
-      });
-      dispatch.sessionModel.refreshCurrentServer(payload);
-      bridge.getAllLibraries();
-    },
-
-    storeAllLibraries(payload, rootState) {
-      // console.log('%c--- storeAllLibraries ---', 'color:#07a098');
-      dispatch.appModel.setAppState({
-        allLibraries: payload,
-      });
-      dispatch.sessionModel.refreshCurrentLibrary(payload);
     },
 
     //

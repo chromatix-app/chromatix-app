@@ -130,4 +130,10 @@
       stroke-width: 2;
     }
   }
+  &StrokeWidth30 {
+    path,
+    ellipse {
+      stroke-width: 3;
+    }
+  }
 }

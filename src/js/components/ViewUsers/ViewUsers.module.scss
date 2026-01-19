@@ -1,0 +1,202 @@
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
+
+.wrap {
+  width: 100%;
+  padding: 0 30px 50px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+
+  &[data-total='1'] {
+    grid-template-columns: repeat(1, 1fr);
+    width: 150px;
+  }
+  &[data-total='2'] {
+    grid-template-columns: repeat(2, 1fr);
+    width: 320px;
+  }
+  &[data-total='3'] {
+    grid-template-columns: repeat(3, 1fr);
+    width: 490px;
+  }
+  &[data-total='4'],
+  &[data-total='7'],
+  &[data-total='8'] {
+    grid-template-columns: repeat(4, 1fr);
+    width: 660px;
+  }
+  &[data-total='5'],
+  &[data-total='9'],
+  &[data-total='10'] {
+    grid-template-columns: repeat(5, 1fr);
+    width: 830px;
+  }
+
+  // @media (max-width: 1059px) {
+  //   grid-template-columns: repeat(5, 1fr);
+  //   width: 830px;
+  // }
+}
+
+.entry {
+  display: flex;
+  position: relative;
+  width: 100%;
+  padding: 9px;
+  background: var(--color-secondary-background);
+  border: 1px solid var(--color-secondary-border);
+  border-radius: 13px;
+  box-shadow: var(--shadow-sm);
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: center;
+  color: var(--color-opacity-04);
+
+  @include mixins.focus-self-outline;
+
+  &:hover,
+  &:focus {
+    background: var(--color-tertiary-background);
+    border: 1px solid var(--color-tertiary-border);
+  }
+
+  > * {
+    width: 100%;
+  }
+}
+
+.thumb {
+  overflow: hidden;
+  background: var(--color-opacity-01);
+  border-radius: 6px;
+  aspect-ratio: 1 / 1;
+}
+
+.thumbIcon {
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  opacity: var(--opacity-02);
+}
+
+.title {
+  margin-top: 10px;
+  font-size: 14px;
+  text-wrap: balance;
+  color: var(--color-text);
+}
+
+.locked {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  width: 28px;
+  height: 28px;
+  padding: 7px;
+  background: var(--color-text);
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  color: var(--color-primary-background);
+
+  // .entry:hover &,
+  // .entry:focus & {
+  //   background: var(--color-tertiary-background);
+  //   border: 1px solid var(--color-tertiary-border);
+  // }
+}
+
+.iconAdmin {
+  display: inline-block;
+  position: relative;
+  top: 2px;
+  width: 14px;
+  height: 14px;
+  margin: -2px 6px -2px -1px;
+}
+
+.iconLock {
+  display: inline-block;
+  position: relative;
+  width: 14px;
+  height: 14px;
+}
+
+//
+// FORM
+//
+
+.form {
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.cancel {
+  width: 120px;
+  margin: 50px auto 0;
+}
+
+//
+// OTP INPUT
+//
+
+.otpWrapper {
+  margin-bottom: 20px;
+}
+
+.otpContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.otpSlot {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  width: 56px;
+  height: 72px;
+  padding: 10px 0;
+  background: var(--color-secondary-background);
+  border: 2px solid var(--color-secondary-border);
+  border-radius: 8px;
+  transition: border-color 0.2s;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 40px;
+  line-height: 48px;
+  font-weight: 600;
+  color: var(--color-text);
+
+  &[data-active='true'] {
+    border-color: var(--color-text);
+  }
+}
+
+.otpCaret {
+  position: absolute;
+  width: 2px;
+  height: 32px;
+  background-color: var(--color-text);
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}

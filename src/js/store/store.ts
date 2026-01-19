@@ -76,13 +76,13 @@ const savePersistentData = (): void => {
 const saveSessionData = (): void => {
   const loggedIn = store.getState().appModel.loggedIn;
   if (loggedIn) {
-    const userName = store.getState().appModel.currentUser?.userId;
-    if (userName) {
+    const userId = store.getState().appModel.currentAccount?.userId;
+    if (userId) {
       const newSessionString = JSON.stringify(store.getState().sessionModel);
       if (newSessionString !== sessionString) {
         // console.log('%cSAVE SESSION DATA', 'color:#1fb800');
         sessionString = newSessionString;
-        const userHash = sha3('music' + userName, { outputLength: 224 }).toString();
+        const userHash = sha3('music' + userId, { outputLength: 224 }).toString();
         const sessionKey = config.storageSessionKey + '-' + userHash;
         localStorage.setItem(sessionKey, sessionString);
       }

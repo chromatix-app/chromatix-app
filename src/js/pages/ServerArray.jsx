@@ -2,11 +2,9 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { ViewServers, Loading, TitleBasic } from 'js/components';
-import * as bridge from 'js/services/bridge';
 
 // ======================================================================
 // COMPONENT
@@ -14,10 +12,6 @@ import * as bridge from 'js/services/bridge';
 
 const ServerArray = () => {
   const allServers = useSelector(({ appModel }) => appModel.allServers);
-
-  useEffect(() => {
-    bridge.getAllServers();
-  }, []);
 
   return (
     <main className="wrap-inner">

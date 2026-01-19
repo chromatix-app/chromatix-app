@@ -174,7 +174,7 @@ const ViewModeSettings = () => {
           </div>
           <div className={style.buttons}>
             <Button
-              size="small"
+              size="tiny"
               inline
               wrap={false}
               onClick={toggleGridView}
@@ -187,7 +187,7 @@ const ViewModeSettings = () => {
               Grid view
             </Button>
             <Button
-              size="small"
+              size="tiny"
               inline
               wrap={false}
               onClick={toggleListView}
@@ -200,7 +200,7 @@ const ViewModeSettings = () => {
               List view
             </Button>
             <Button
-              size="small"
+              size="tiny"
               inline
               wrap={false}
               icon={<Icon icon="VanishedCircleIcon" cover stroke />}
@@ -342,7 +342,7 @@ const FavouriteSettings = () => {
           </div>
           <div className={style.buttons}>
             <Button
-              size="small"
+              size="tiny"
               inline
               wrap={false}
               onClick={toggleShowFavourites}
@@ -355,7 +355,7 @@ const FavouriteSettings = () => {
               Visible
             </Button>
             <Button
-              size="small"
+              size="tiny"
               inline
               wrap={false}
               onClick={toggleHideFavourites}
@@ -368,7 +368,7 @@ const FavouriteSettings = () => {
               Hidden
             </Button>
             <Button
-              size="small"
+              size="tiny"
               inline
               wrap={false}
               icon={<Icon icon="VanishedCircleIcon" cover stroke />}
@@ -516,7 +516,7 @@ const StarRatingSettings = () => {
           </div>
           <div className={style.buttons}>
             <Button
-              size="small"
+              size="tiny"
               inline
               wrap={false}
               onClick={toggleShowUserRating}
@@ -529,7 +529,7 @@ const StarRatingSettings = () => {
               Visible
             </Button>
             <Button
-              size="small"
+              size="tiny"
               inline
               wrap={false}
               onClick={toggleHideUserRating}
@@ -542,7 +542,7 @@ const StarRatingSettings = () => {
               Hidden
             </Button>
             <Button
-              size="small"
+              size="tiny"
               inline
               wrap={false}
               icon={<Icon icon="VanishedCircleIcon" cover stroke />}

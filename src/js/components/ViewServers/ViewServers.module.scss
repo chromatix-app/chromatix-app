@@ -15,26 +15,27 @@
   align-items: center;
   width: 100%;
   max-width: 300px;
-  padding: 12px 30px;
-  margin: 0 auto 5px;
-  background: transparent;
-  border: 1px solid var(--color-opacity-01);
+  padding: 10px 20px;
+  margin: 0 auto 6px;
+  background: var(--color-secondary-background);
+  border: 1px solid var(--color-secondary-border);
   border-radius: 8px;
+  box-shadow: var(--shadow-sm);
   text-align: left;
 
   @include mixins.focus-self-outline;
 
   &:hover,
   &:focus {
-    background: var(--color-secondary-background);
-    border: 1px solid var(--color-secondary-border);
+    background: var(--color-tertiary-background);
+    border: 1px solid var(--color-tertiary-border);
   }
 }
 
 .icon {
   width: 28px;
   height: 28px;
-  margin-right: 20px;
+  margin-right: 18px;
 }
 
 .title {
