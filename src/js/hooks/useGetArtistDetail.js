@@ -15,6 +15,7 @@ const useGetArtistDetail = ({ variant, libraryId, artistId }) => {
   const artistInfo = allArtists?.find((artist) => artist.artistId === artistId);
 
   const artistThumb = artistInfo?.thumb;
+  const artistThumbMedium = artistInfo?.thumbMedium;
   const artistName = artistInfo?.title;
   const artistCountry = artistInfo?.country;
   const artistGenre = artistInfo?.genre;
@@ -304,6 +305,7 @@ const useGetArtistDetail = ({ variant, libraryId, artistId }) => {
   return {
     artistInfo,
     artistThumb,
+    artistThumbMedium,
     artistName,
     artistCountry,
     artistGenre,

@@ -92,19 +92,15 @@ const App = () => {
       version: process.env.REACT_APP_VERSION,
     });
 
-    // add browser and OS information to html
+    // add web environment data attributes to html
+    document.documentElement.setAttribute('data-env', envData.webEnvId);
     document.documentElement.setAttribute('data-browser', envData.browserName);
     document.documentElement.setAttribute('data-os', envData.osName);
 
-    // add local class to html
-    if (isLocal) {
-      document.documentElement.classList.add('env-local');
-    }
-
-    // add electron classes to html
+    // add electron environment data attributes to html
     if (envData.isElectron) {
-      document.documentElement.classList.add('electron');
-      document.documentElement.classList.add('electron-platform-' + envData.electronPlatformId);
+      document.documentElement.setAttribute('data-is-electron', true);
+      document.documentElement.setAttribute('data-electron-platform', envData.electronPlatformId);
     }
 
     // save history for reference within models
@@ -115,30 +111,22 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // initialise on load
+  // toggle logged-in data attribute on html
   useEffect(() => {
-    // add scrollbars preferences to html
-    document.documentElement.setAttribute('data-scrollbars', winCustomScrollbars);
-    document.documentElement.setAttribute('data-scrollbars-hide', winAutoHideScrollbars);
-  }, [winCustomScrollbars, winAutoHideScrollbars]);
+    document.documentElement.setAttribute('data-logged-in', loggedIn);
+  }, [loggedIn]);
 
-  // toggle class on html if accessibility focus is enabled
+  // toggle accessibility focus data attribute on html
   useEffect(() => {
-    if (accessibilityFocus) {
-      document.documentElement.classList.add('access-focus');
-    } else {
-      document.documentElement.classList.remove('access-focus');
-    }
+    document.documentElement.setAttribute('data-access-focus', accessibilityFocus);
   }, [accessibilityFocus]);
 
-  // toggle class on html if logged in
+  // toggle scrollbar preference data attributes on html (Windows only)
   useEffect(() => {
-    if (loggedIn) {
-      document.documentElement.classList.add('logged-in');
-    } else {
-      document.documentElement.classList.remove('logged-in');
-    }
-  }, [loggedIn]);
+    if (envData.osName !== 'Windows') return;
+    document.documentElement.setAttribute('data-scrollbars-custom', winCustomScrollbars);
+    document.documentElement.setAttribute('data-scrollbars-autohide', winAutoHideScrollbars);
+  }, [winCustomScrollbars, winAutoHideScrollbars]);
 
   // error pages
   if (errorAllUsers) {

@@ -11,9 +11,19 @@ function useStyleOptions(): void {
       '--scrollbar-width': winScrollbarWidth ? `${winScrollbarWidth}px` : '8px',
     };
 
-    for (const option in options) {
-      document.documentElement.style.setProperty(option, options[option].toString());
+    // Get or create the style element for dynamic style options
+    let styleElement = document.getElementById('dynamic-style-props') as HTMLStyleElement;
+    if (!styleElement) {
+      styleElement = document.createElement('style');
+      styleElement.id = 'dynamic-style-props';
+      document.head.appendChild(styleElement);
     }
+
+    // Update the style element with the new CSS variables
+    const cssText = `:root {\n${Object.entries(options)
+      .map(([key, value]) => `  ${key}: ${value};`)
+      .join('\n')}\n}`;
+    styleElement.textContent = cssText;
   }, [winScrollbarWidth]);
 }
 

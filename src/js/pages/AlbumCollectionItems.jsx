@@ -44,6 +44,7 @@ const AlbumCollectionItems = () => {
     setColumnVisibility,
 
     collectionThumb,
+    collectionThumbMedium,
     collectionTitle,
     collectionRating,
   } = useGetCollectionItems({
@@ -73,6 +74,7 @@ const AlbumCollectionItems = () => {
           collectionId={collectionId}
           collectionRating={collectionRating}
           collectionThumb={collectionThumb}
+          collectionThumbMedium={collectionThumbMedium}
           collectionTitle={collectionTitle}
           colOptions={colOptions}
           gridOptions={gridOptions}
@@ -97,6 +99,7 @@ const AlbumCollectionItems = () => {
             collectionId={collectionId}
             collectionRating={collectionRating}
             collectionThumb={collectionThumb}
+            collectionThumbMedium={collectionThumbMedium}
             collectionTitle={collectionTitle}
             colOptions={colOptions}
             gridOptions={gridOptions}
@@ -127,6 +130,7 @@ const AlbumCollectionItems = () => {
             collectionId={collectionId}
             collectionRating={collectionRating}
             collectionThumb={collectionThumb}
+            collectionThumbMedium={collectionThumbMedium}
             collectionTitle={collectionTitle}
             colOptions={colOptions}
             gridOptions={gridOptions}
@@ -153,6 +157,7 @@ const Title = ({
   collectionId,
   collectionRating,
   collectionThumb,
+  collectionThumbMedium,
   collectionTitle,
   colOptions,
   gridOptions,
@@ -173,6 +178,7 @@ const Title = ({
     <TitleHeading
       key={libraryId + '-' + collectionId}
       thumb={collectionThumb}
+      thumbExpand={collectionThumbMedium}
       title={collectionTitle}
       detail={
         // Note: if adding fields here in future, use array structure as per AlbumDetail etc

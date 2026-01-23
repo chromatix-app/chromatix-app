@@ -216,16 +216,28 @@ function useColorTheme(): void {
       '--opacity-08': opacity08,
     };
 
-    for (const color in colors) {
-      document.documentElement.style.setProperty(color, colors[color].toString());
+    // Get or create the style element for dynamic theme variables
+    let styleElement = document.getElementById('dynamic-theme-props') as HTMLStyleElement;
+    if (!styleElement) {
+      styleElement = document.createElement('style');
+      styleElement.id = 'dynamic-theme-props';
+      document.head.appendChild(styleElement);
     }
 
+    // Update the style element with the new CSS variables
+    const cssText = `:root {\n${Object.entries(colors)
+      .map(([key, value]) => `  ${key}: ${value};`)
+      .join('\n')}\n}`;
+    styleElement.textContent = cssText;
+
+    // Send updated colors to Electron main process
     sendToElectron('win', 'color-theme', {
       background: hasQueueVisible && !fullPageMode ? colorSecondaryBackground : colorPrimaryBackground,
       text: colorText,
       primary: colorCore,
     });
 
+    // Save whether the theme is light or dark in the session state
     dispatch.sessionModel.setSessionState({
       isLightTheme,
     });

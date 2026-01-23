@@ -1,3 +1,15 @@
+# 0.58.0 (2026-01-23)
+
+Features:
+
+- Clicking the album art thumbnail in the header of artist, album, playlist and collection detail pages now opens a full screen modal with a larger version of the artwork.
+
+Code changes:
+
+- Removed all classes and styes from the html element, and replaced these with data attributes for better clarity, and dynamically updated style tags for dynamic styles such as theme variables.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.57.0 (2026-01-19)
 
 Features:

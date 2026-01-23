@@ -70,7 +70,7 @@
     background: var(--color-opacity-015);
 
     .scrollableOuterVirtual & {
-      :global(.env-local) & {
+      :global(html[data-env='local']) & {
         background: var(--color-core);
         opacity: 0.6;
       }
