@@ -798,7 +798,7 @@ const StandardRow = ({ virtualEntry, entry, tableVariant, tableOptions, gridTemp
               } else {
                 return (
                   <div key={rowKey + '-' + index} className={style.thumb}>
-                    {entry.thumb && <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />}
+                    {entry.thumbSm && <img src={entry.thumbSm} alt={entry.title} draggable="false" loading="lazy" />}
                   </div>
                 );
               }
@@ -1037,7 +1037,7 @@ const TrackRow = ({
             case 'thumb':
               return (
                 <div key={rowKey + '-' + index} className={style.thumb}>
-                  {entry.thumb && <img src={entry.thumb} alt={entry.title} draggable="false" loading="lazy" />}
+                  {entry.thumbSm && <img src={entry.thumbSm} alt={entry.title} draggable="false" loading="lazy" />}
                 </div>
               );
 

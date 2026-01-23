@@ -71,7 +71,7 @@ const NowPlaying = () => {
 
   const trackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
 
-  const thumbSrc = trackCurrent?.thumbMd || trackCurrent?.thumb;
+  const thumbSrc = trackCurrent?.thumbMd || trackCurrent?.thumbSm;
 
   // console.log(trackCurrent);
 

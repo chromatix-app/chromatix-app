@@ -46,7 +46,7 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const allAlbumTracks = useSelector(({ appModel }) => appModel.allAlbumTracks);
   const albumTracks = allAlbumTracks[libraryId + '-' + albumId];
 
-  const albumThumb = albumInfo?.thumb;
+  const albumThumb = albumInfo?.thumbSm;
   const albumThumbMedium = albumInfo?.thumbMd;
   const albumTitle = albumInfo?.title;
   const albumArtist = albumInfo?.artist;

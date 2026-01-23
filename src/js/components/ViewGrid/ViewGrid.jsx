@@ -461,7 +461,7 @@ const ListEntry = React.memo(
   ({
     variant,
     trackNumber,
-    thumb,
+    thumbSm,
     title,
     albumId,
     artist,
@@ -570,7 +570,7 @@ const ListEntry = React.memo(
     const ratingKey = ratingKeyMap[variant] || null;
 
     // Icons
-    const isIconCard = iconImage && !thumb && !trackId;
+    const isIconCard = iconImage && !thumbSm && !trackId;
     const isSquareCard = !isIconCard || variant === 'folders';
 
     return (
@@ -585,7 +585,7 @@ const ListEntry = React.memo(
         {/* Thumbnail */}
         <div className={clsx(style.thumb, { [style.thumbSquare]: isSquareCard, [style.thumbWithIcon]: isIconCard })}>
           {/* Artwork */}
-          {thumb && <img src={thumb} alt={title} draggable="false" loading="lazy" />}
+          {thumbSm && <img src={thumbSm} alt={title} draggable="false" loading="lazy" />}
 
           {/* Icon */}
           {isIconCard && (
