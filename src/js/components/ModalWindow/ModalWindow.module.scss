@@ -17,7 +17,8 @@
     overflow: visible;
     padding: 10px;
     max-width: 680px;
-    width: min(calc(100vw - 60px), calc(100vh - 60px));
+    margin: 40px auto 45px;
+    width: min(calc(100vw - 90px), calc(100vh - 90px));
   }
 
   &ReleaseNotes {

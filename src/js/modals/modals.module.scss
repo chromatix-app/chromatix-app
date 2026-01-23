@@ -193,6 +193,7 @@
   &ImagePreview {
     top: -24px;
     right: -24px;
+    @include mixins.electron-no-drag;
   }
 
   &:before,

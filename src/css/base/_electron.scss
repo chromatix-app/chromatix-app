@@ -9,9 +9,9 @@
     top: 0;
     left: 0;
     right: 20px;
-    height: 40px;
+    height: 32px;
 
-    // background: rgba(255, 0, 0, 0.2);
+    background: rgba(255, 0, 0, 0.2);
     // z-index: 999999;
 
     @include mixins.electron-drag;
