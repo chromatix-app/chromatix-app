@@ -44,19 +44,17 @@ const TitleHeading = ({
       </div>
       <div className={clsx(style.wrap, { [style.wrapPadding]: padding })}>
         {thumb && (
-          <div className={style.thumb}>
-            <img
-              src={thumb}
-              alt={title}
-              onClick={() => {
-                dispatch.dialogModel.showModal({
-                  modal: 'ImagePreview',
-                  data: { src: thumbExpand || thumb, title },
-                });
-              }}
-              draggable="false"
-            />
-          </div>
+          <button
+            className={style.thumb}
+            onClick={() => {
+              dispatch.dialogModel.showModal({
+                modal: 'ImagePreview',
+                data: { src: thumbExpand || thumb, title },
+              });
+            }}
+          >
+            <img src={thumb} alt={title} draggable="false" />
+          </button>
         )}
         {icon && (
           <div className={style.thumbBg}>

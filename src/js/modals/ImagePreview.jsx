@@ -20,6 +20,8 @@ const ImagePreview = () => {
 
   const currentModalData = useSelector((state) => state.dialogModel.currentModalData);
 
+  if (!currentModalData?.src) return null;
+
   return (
     <ModalWindow variant="ImagePreview">
       <VisuallyHidden>
@@ -28,7 +30,7 @@ const ImagePreview = () => {
       </VisuallyHidden>
 
       <div className={style.imagePreview}>
-        <img src={currentModalData.src} alt={currentModalData.title} />
+        <img src={currentModalData.src} alt={currentModalData?.title} />
       </div>
 
       <button

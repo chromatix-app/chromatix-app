@@ -28,6 +28,7 @@
 
 .thumb,
 .thumbBg {
+  position: relative;
   overflow: hidden;
   flex: 0 0 auto;
   align-self: flex-start;
@@ -79,6 +80,8 @@
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
+
+  @include mixins.focus-self-outline;
 }
 
 .thumbBg {
