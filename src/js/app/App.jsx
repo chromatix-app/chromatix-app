@@ -123,8 +123,9 @@ const App = () => {
 
   // toggle scrollbar preference data attributes on html (Windows only)
   useEffect(() => {
-    document.documentElement.setAttribute('data-scrollbars', winCustomScrollbars);
-    document.documentElement.setAttribute('data-scrollbars-hide', winAutoHideScrollbars);
+    if (envData.osName !== 'Windows') return;
+    document.documentElement.setAttribute('data-scrollbars-custom', winCustomScrollbars);
+    document.documentElement.setAttribute('data-scrollbars-autohide', winAutoHideScrollbars);
   }, [winCustomScrollbars, winAutoHideScrollbars]);
 
   // error pages

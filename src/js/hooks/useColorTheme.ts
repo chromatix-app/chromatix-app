@@ -217,10 +217,10 @@ function useColorTheme(): void {
     };
 
     // Get or create the style element for dynamic theme variables
-    let styleElement = document.getElementById('dynamic-theme-vars') as HTMLStyleElement;
+    let styleElement = document.getElementById('dynamic-theme-props') as HTMLStyleElement;
     if (!styleElement) {
       styleElement = document.createElement('style');
-      styleElement.id = 'dynamic-theme-vars';
+      styleElement.id = 'dynamic-theme-props';
       document.head.appendChild(styleElement);
     }
 
