@@ -15,8 +15,8 @@ body {
   color: vars.$color-text;
 }
 
-html.logged-in,
-html.logged-in body {
+html[data-logged-in='true'],
+html[data-logged-in='true'] body {
   min-width: 720px;
   color: var(--color-text);
   overscroll-behavior: none;
@@ -33,7 +33,7 @@ html {
     sans-serif;
   font-size: 62.5%;
 
-  &.logged-in {
+  &[data-logged-in='true'] {
     font-family: -apple-system, 'SF Pro', 'Inter', Helvetica, Arial, sans-serif;
   }
 

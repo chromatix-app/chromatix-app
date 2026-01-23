@@ -111,29 +111,21 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // toggle logged-in data attribute on html
+  useEffect(() => {
+    document.documentElement.setAttribute('data-logged-in', loggedIn);
+  }, [loggedIn]);
+
+  // toggle accessibility focus data attribute on html
+  useEffect(() => {
+    document.documentElement.setAttribute('data-access-focus', accessibilityFocus);
+  }, [accessibilityFocus]);
+
   // toggle scrollbar preference data attributes on html (Windows only)
   useEffect(() => {
     document.documentElement.setAttribute('data-scrollbars', winCustomScrollbars);
     document.documentElement.setAttribute('data-scrollbars-hide', winAutoHideScrollbars);
   }, [winCustomScrollbars, winAutoHideScrollbars]);
-
-  // toggle class on html if accessibility focus is enabled
-  useEffect(() => {
-    if (accessibilityFocus) {
-      document.documentElement.classList.add('access-focus');
-    } else {
-      document.documentElement.classList.remove('access-focus');
-    }
-  }, [accessibilityFocus]);
-
-  // toggle class on html if logged in
-  useEffect(() => {
-    if (loggedIn) {
-      document.documentElement.classList.add('logged-in');
-    } else {
-      document.documentElement.classList.remove('logged-in');
-    }
-  }, [loggedIn]);
 
   // error pages
   if (errorAllUsers) {

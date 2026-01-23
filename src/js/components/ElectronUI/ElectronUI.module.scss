@@ -33,7 +33,7 @@
   height: 1px;
   background: vars.$color-text;
 
-  :global(html.logged-in) & {
+  :global(html[data-logged-in='true']) & {
     left: 16px;
     background: var(--color-opacity-04);
   }
@@ -61,7 +61,7 @@
   font-size: 12px;
   line-height: 14px;
 
-  :global(html.logged-in) & {
+  :global(html[data-logged-in='true']) & {
     background: var(--color-tertiary-background);
     border: 1px solid var(--color-tertiary-border);
   }
@@ -97,7 +97,7 @@
 
     @include mixins.focus-self-fill;
 
-    :global(html.logged-in) & {
+    :global(html[data-logged-in='true']) & {
       background: var(--color-tertiary-hover);
     }
   }
@@ -112,7 +112,7 @@
   margin: 4px 6px;
   background: var(--color-secondary-border);
 
-  :global(html.logged-in) & {
+  :global(html[data-logged-in='true']) & {
     background: var(--color-tertiary-border);
   }
 }
@@ -133,7 +133,7 @@
 
     @include mixins.focus-self-fill;
 
-    :global(html.logged-in) & {
+    :global(html[data-logged-in='true']) & {
       background: var(--color-tertiary-hover);
     }
   }
