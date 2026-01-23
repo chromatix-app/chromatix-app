@@ -24,6 +24,7 @@ const AlbumDetail = () => {
   const {
     albumInfo,
     albumThumb,
+    albumThumbMedium,
     albumTitle,
     albumArtist,
     albumReleaseDate,
@@ -76,6 +77,7 @@ const AlbumDetail = () => {
           albumRating={albumRating}
           albumReleaseDate={albumReleaseDate}
           albumThumb={albumThumb}
+          albumThumbMedium={albumThumbMedium}
           albumTitle={albumTitle}
           albumTrackCount={albumTrackCount}
           albumTracks={albumTracks}
@@ -107,6 +109,7 @@ const AlbumDetail = () => {
             albumRating={albumRating}
             albumReleaseDate={albumReleaseDate}
             albumThumb={albumThumb}
+            albumThumbMedium={albumThumbMedium}
             albumTitle={albumTitle}
             albumTrackCount={albumTrackCount}
             albumTracks={albumTracks}
@@ -132,6 +135,7 @@ const Title = ({
   albumRating,
   albumReleaseDate,
   albumThumb,
+  albumThumbMedium,
   albumTitle,
   albumTrackCount,
   albumTracks,
@@ -146,6 +150,7 @@ const Title = ({
     <TitleHeading
       key={libraryId + '-' + albumId}
       thumb={albumThumb}
+      thumbExpand={albumThumbMedium}
       title={albumTitle}
       subtitle={
         albumArtist && (

@@ -24,6 +24,7 @@ const PlaylistDetail = () => {
   const {
     playlistInfo,
     playlistThumb,
+    playlistThumbMedium,
     playlistTitle,
     playlistTrackCount,
     playlistDurationString,
@@ -74,6 +75,7 @@ const PlaylistDetail = () => {
           playlistIsFavourite={playlistIsFavourite}
           playlistRating={playlistRating}
           playlistThumb={playlistThumb}
+          playlistThumbMedium={playlistThumbMedium}
           playlistTitle={playlistTitle}
           playlistTrackCount={playlistTrackCount}
           playlistTracks={playlistTracks}
@@ -101,6 +103,7 @@ const PlaylistDetail = () => {
             playlistIsFavourite={playlistIsFavourite}
             playlistRating={playlistRating}
             playlistThumb={playlistThumb}
+            playlistThumbMedium={playlistThumbMedium}
             playlistTitle={playlistTitle}
             playlistTrackCount={playlistTrackCount}
             playlistTracks={playlistTracks}
@@ -123,6 +126,7 @@ const Title = ({
   playlistIsFavourite,
   playlistRating,
   playlistThumb,
+  playlistThumbMedium,
   playlistTitle,
   playlistTrackCount,
   playlistTracks,
@@ -132,6 +136,7 @@ const Title = ({
     <TitleHeading
       key={libraryId + '-' + playlistId}
       thumb={playlistThumb}
+      thumbExpand={playlistThumbMedium}
       title={playlistTitle}
       subtitle={playlistTracks ? playlistTrackCount + ' tracks' : <>&nbsp;</>}
       detail={

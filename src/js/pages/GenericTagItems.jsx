@@ -42,6 +42,7 @@ const GenericTagItems = ({
     setColumnVisibility,
 
     collectionThumb,
+    collectionThumbMedium,
     collectionTitle,
   } = useGetCollectionItems({
     libraryId,
@@ -71,6 +72,7 @@ const GenericTagItems = ({
           collectionId={collectionId}
           collectionKey={collectionKey}
           collectionThumb={collectionThumb}
+          collectionThumbMedium={collectionThumbMedium}
           collectionTitle={collectionTitle}
           colOptions={colOptions}
           gridOptions={gridOptions}
@@ -102,6 +104,7 @@ const GenericTagItems = ({
             collectionId={collectionId}
             collectionKey={collectionKey}
             collectionThumb={collectionThumb}
+            collectionThumbMedium={collectionThumbMedium}
             collectionTitle={collectionTitle}
             colOptions={colOptions}
             gridOptions={gridOptions}
@@ -134,6 +137,7 @@ const GenericTagItems = ({
             collectionId={collectionId}
             collectionKey={collectionKey}
             collectionThumb={collectionThumb}
+            collectionThumbMedium={collectionThumbMedium}
             collectionTitle={collectionTitle}
             colOptions={colOptions}
             gridOptions={gridOptions}
@@ -162,6 +166,7 @@ const Title = ({
   collectionId,
   collectionKey,
   collectionThumb,
+  collectionThumbMedium,
   collectionTitle,
   colOptions,
   gridOptions,
@@ -206,6 +211,7 @@ const Title = ({
     <TitleHeading
       key={libraryId + '-' + collectionId}
       thumb={collectionThumb}
+      thumbExpand={collectionThumbMedium}
       title={collectionTitle}
       subtitle={
         sortedCollectionItems ? (

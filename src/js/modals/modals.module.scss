@@ -55,6 +55,22 @@
 }
 
 //
+// IMAGE PREVIEW
+//
+
+.imagePreview {
+  overflow: hidden;
+  border-radius: 4px;
+  font-size: 0;
+  line-height: 0;
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+//
 // RELEASE NOTES
 //
 
@@ -156,6 +172,10 @@
   }
 }
 
+//
+// CLOSE BUTTON
+//
+
 .closeButton {
   position: absolute;
   top: 15px;
@@ -169,6 +189,11 @@
   color: var(--color-primary-background);
 
   @include mixins.focus-self-outline;
+
+  &ImagePreview {
+    top: -24px;
+    right: -24px;
+  }
 
   &:before,
   &:after {

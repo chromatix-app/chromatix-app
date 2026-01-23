@@ -3,6 +3,7 @@
 // ======================================================================
 
 import { useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import clsx from 'clsx';
 
 import { Icon } from 'js/components';
@@ -19,6 +20,7 @@ const TitleHeading = ({
   subtitle,
   detail,
   thumb,
+  thumbExpand,
   icon,
   showPlay,
   optionsMenu,
@@ -26,6 +28,8 @@ const TitleHeading = ({
   filters,
   padding = true,
 }) => {
+  const dispatch = useDispatch();
+
   const triggerRef = useRef(null);
   const isNearTop = useNearTop(triggerRef, 90);
 
@@ -41,7 +45,17 @@ const TitleHeading = ({
       <div className={clsx(style.wrap, { [style.wrapPadding]: padding })}>
         {thumb && (
           <div className={style.thumb}>
-            <img src={thumb} alt={title} draggable="false" />
+            <img
+              src={thumb}
+              alt={title}
+              onClick={() => {
+                dispatch.dialogModel.showModal({
+                  modal: 'ImagePreview',
+                  data: { src: thumbExpand || thumb, title },
+                });
+              }}
+              draggable="false"
+            />
           </div>
         )}
         {icon && (
