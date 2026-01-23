@@ -202,7 +202,7 @@ const transposeArtistData = (artist, libraryId, serverBaseUrl, accessToken, base
     isFavourite: artist.UserData?.IsFavorite || false,
     link: baseUrl + libraryId + '/' + artist.Id,
     thumb: getThumb(artist, serverBaseUrl, accessToken, thumbSizeSmall),
-    thumbMedium: getThumb(artist, serverBaseUrl, accessToken, thumbSizeMedium),
+    thumbMd: getThumb(artist, serverBaseUrl, accessToken, thumbSizeMedium),
   };
 };
 
@@ -245,7 +245,7 @@ const transposeAlbumData = (album, libraryId, serverBaseUrl, accessToken) => {
     releaseDate: album.PremiereDate,
     link: '/albums/' + libraryId + '/' + album.Id,
     thumb: getThumb(album, serverBaseUrl, accessToken, thumbSizeSmall),
-    thumbMedium: getThumb(album, serverBaseUrl, accessToken, thumbSizeMedium),
+    thumbMd: getThumb(album, serverBaseUrl, accessToken, thumbSizeMedium),
   };
 };
 
@@ -335,7 +335,7 @@ const transposePlaylistData = (playlist, libraryId, serverBaseUrl, accessToken) 
     totalTracks: playlist.ChildCount,
     duration: playlist.RunTimeTicks / 10000,
     thumb: getThumb(playlist, serverBaseUrl, accessToken, thumbSizeSmall),
-    thumbMedium: getThumb(playlist, serverBaseUrl, accessToken, thumbSizeMedium),
+    thumbMd: getThumb(playlist, serverBaseUrl, accessToken, thumbSizeMedium),
   };
 };
 
@@ -380,7 +380,7 @@ const transposePlaylistData = (playlist, libraryId, serverBaseUrl, accessToken) 
 //       '/' +
 //       collection.ratingKey,
 //     thumb: getThumb(serverBaseUrl, collectionThumb, thumbSizeSmall, accessToken),
-//     thumbMedium: getThumb(serverBaseUrl, collectionThumb, thumbSizeMedium, accessToken),
+//     thumbMd: getThumb(serverBaseUrl, collectionThumb, thumbSizeMedium, accessToken),
 //   };
 // };
 
@@ -471,7 +471,7 @@ const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
     isFavourite: track.UserData?.IsFavorite || false,
     releaseDate: track.PremiereDate || null,
     thumb: getThumb(track, serverBaseUrl, accessToken, thumbSizeSmall),
-    thumbMedium: getThumb(track, serverBaseUrl, accessToken, thumbSizeMedium),
+    thumbMd: getThumb(track, serverBaseUrl, accessToken, thumbSizeMedium),
     src: `${serverBaseUrl}/Audio/${track.Id}/stream?static=true&api_key=${accessToken}`,
   };
 };

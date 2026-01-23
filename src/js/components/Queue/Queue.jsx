@@ -389,13 +389,8 @@ const NowPlayingLarge = ({ entry, virtualEntry }) => {
       }}
     >
       <div className={style.expandedThumb}>
-        {(entry.thumbMedium || entry.thumb) && (
-          <img
-            src={entry.thumbMedium ? entry.thumbMedium : entry.thumb}
-            alt={entry.title}
-            draggable="false"
-            loading="lazy"
-          />
+        {(entry.thumbMd || entry.thumb) && (
+          <img src={entry.thumbMd ? entry.thumbMd : entry.thumb} alt={entry.title} draggable="false" loading="lazy" />
         )}
         {playingLink && (
           <NavLink

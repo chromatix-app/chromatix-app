@@ -109,7 +109,7 @@ const useGetCollectionItems = ({
     : null;
 
   const collectionThumb = collectionInfo?.thumb;
-  const collectionThumbMedium = collectionInfo?.thumbMedium;
+  const collectionThumbMedium = collectionInfo?.thumbMd;
   const collectionTitle = collectionInfo?.title;
   const collectionRating = collectionInfo?.userRating;
 

@@ -159,7 +159,7 @@ const transposeArtistData = (artist, libraryId, serverBaseUrl, accessToken) => {
     isFavourite: false,
     link: '/artists/' + libraryId + '/' + artist.ratingKey,
     thumb: getThumb(artist.thumb, serverBaseUrl, accessToken, thumbSizeSmall),
-    thumbMedium: getThumb(artist.thumb, serverBaseUrl, accessToken, thumbSizeMedium),
+    thumbMd: getThumb(artist.thumb, serverBaseUrl, accessToken, thumbSizeMedium),
   };
 };
 
@@ -198,7 +198,7 @@ const transposeAlbumData = (album, libraryId, serverBaseUrl, accessToken) => {
     releaseDate: album.originallyAvailableAt,
     link: '/albums/' + libraryId + '/' + album.ratingKey,
     thumb: getThumb(album.thumb, serverBaseUrl, accessToken, thumbSizeSmall),
-    thumbMedium: getThumb(album.thumb, serverBaseUrl, accessToken, thumbSizeMedium),
+    thumbMd: getThumb(album.thumb, serverBaseUrl, accessToken, thumbSizeMedium),
   };
 };
 
@@ -304,7 +304,7 @@ const transposePlaylistData = (playlist, libraryId, serverBaseUrl, accessToken, 
     totalTracks: playlist.leafCount,
     duration: playlist.duration,
     thumb: getThumb(playlistThumb, serverBaseUrl, accessToken, thumbSizeSmall),
-    thumbMedium: getThumb(playlistThumb, serverBaseUrl, accessToken, thumbSizeMedium),
+    thumbMd: getThumb(playlistThumb, serverBaseUrl, accessToken, thumbSizeMedium),
   };
 };
 
@@ -349,7 +349,7 @@ const transposeCollectionData = (collection, libraryId, serverBaseUrl, accessTok
       '/' +
       collection.ratingKey,
     thumb: getThumb(collectionThumb, serverBaseUrl, accessToken, thumbSizeSmall),
-    thumbMedium: getThumb(collectionThumb, serverBaseUrl, accessToken, thumbSizeMedium),
+    thumbMd: getThumb(collectionThumb, serverBaseUrl, accessToken, thumbSizeMedium),
   };
 };
 
@@ -464,7 +464,7 @@ const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
     userRating: track.userRating,
     releaseDate: track.parentYear ? track.parentYear + '-01-01' : null,
     thumb: getThumb(track.thumb, serverBaseUrl, accessToken, thumbSizeSmall),
-    thumbMedium: getThumb(track.thumb, serverBaseUrl, accessToken, thumbSizeMedium),
+    thumbMd: getThumb(track.thumb, serverBaseUrl, accessToken, thumbSizeMedium),
     src: originalSrc,
   };
 };
