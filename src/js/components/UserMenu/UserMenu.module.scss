@@ -19,7 +19,7 @@
   }
 
   &WithoutLibrary {
-    :global(html.electron.electron-platform-win) & {
+    :global(html[data-electron-platform='win']) & {
       // left: 20px;
       // right: auto;
       top: 50px;
@@ -84,7 +84,7 @@
   }
 
   .wrapWithoutLibrary & {
-    :global(html.electron.electron-platform-win) & {
+    :global(html[data-electron-platform='win']) & {
       justify-content: flex-start;
       margin: 0 auto 0 0;
     }
@@ -199,7 +199,7 @@
     padding-top: 4px;
   }
 
-  :global(.electron-platform-win) & {
+  :global(html[data-electron-platform='win']) & {
     font-weight: 600;
     letter-spacing: 0.04em;
   }

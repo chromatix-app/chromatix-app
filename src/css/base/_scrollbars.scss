@@ -1,7 +1,6 @@
 // Custom scrollbars (Windows only)
 
-html[data-scrollbars='true'][data-os='Windows'],
-html[data-scrollbars='true'].electron.electron-platform-win2 {
+html[data-scrollbars='true'][data-os='Windows'] {
   ::-webkit-scrollbar {
     width: var(--scrollbar-width); // For vertical scrollbar
     height: var(--scrollbar-width); // For horizontal scrollbar
