@@ -22,8 +22,8 @@ body {
   }
 }
 
-html.logged-in,
-html.logged-in body {
+html[data-logged-in='true'],
+html[data-logged-in='true'] body {
   min-width: 720px;
   background: var(--color-primary-background);
   overscroll-behavior: none;

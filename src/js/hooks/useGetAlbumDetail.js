@@ -47,6 +47,7 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const albumTracks = allAlbumTracks[libraryId + '-' + albumId];
 
   const albumThumb = albumInfo?.thumb;
+  const albumThumbMedium = albumInfo?.thumbMedium;
   const albumTitle = albumInfo?.title;
   const albumArtist = albumInfo?.artist;
   const albumReleaseDate = albumInfo?.releaseDate ? moment(albumInfo?.releaseDate).format('YYYY') : null;
@@ -126,6 +127,7 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
     albumInfo,
 
     albumThumb,
+    albumThumbMedium,
     albumTitle,
     albumArtist,
     albumReleaseDate,

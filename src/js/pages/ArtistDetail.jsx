@@ -32,6 +32,7 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
   const {
     artistInfo,
     artistThumb,
+    artistThumbMedium,
     artistName,
     artistCountry,
     artistGenre,
@@ -113,6 +114,7 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
           artistRating={artistRating}
           artistReleasesTotal={artistReleasesTotal}
           artistThumb={artistThumb}
+          artistThumbMedium={artistThumbMedium}
           artistTracksTotal={artistTracksTotal}
           colOptions={colOptions}
           gridOptions={gridOptions}
@@ -151,6 +153,7 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
             artistRating={artistRating}
             artistReleasesTotal={artistReleasesTotal}
             artistThumb={artistThumb}
+            artistThumbMedium={artistThumbMedium}
             artistTracksTotal={artistTracksTotal}
             colOptions={colOptions}
             gridOptions={gridOptions}
@@ -190,6 +193,7 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
             artistRating={artistRating}
             artistReleasesTotal={artistReleasesTotal}
             artistThumb={artistThumb}
+            artistThumbMedium={artistThumbMedium}
             artistTracksTotal={artistTracksTotal}
             colOptions={colOptions}
             gridOptions={gridOptions}
@@ -232,6 +236,7 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
             artistRating={artistRating}
             artistReleasesTotal={artistReleasesTotal}
             artistThumb={artistThumb}
+            artistThumbMedium={artistThumbMedium}
             artistTracksTotal={artistTracksTotal}
             colOptions={colTrackOptions}
             gridOptions={gridOptions}
@@ -265,6 +270,7 @@ const Title = ({
   artistRating,
   artistReleasesTotal,
   artistThumb,
+  artistThumbMedium,
   artistTracksTotal,
   colOptions,
   gridOptions,
@@ -296,6 +302,7 @@ const Title = ({
     <TitleHeading
       key={libraryId + '-' + artistId}
       thumb={artistThumb}
+      thumbExpand={artistThumbMedium}
       title={artistName}
       subtitle={subtitle}
       detail={

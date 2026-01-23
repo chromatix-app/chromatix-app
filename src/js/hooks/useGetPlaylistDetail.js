@@ -49,6 +49,7 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   const playlistTracks = allPlaylistTracks[libraryId + '-' + playlistId];
 
   const playlistThumb = playlistInfo?.thumb;
+  const playlistThumbMedium = playlistInfo?.thumbMedium;
   const playlistTitle = playlistInfo?.title;
   const playlistTrackCount = playlistTracks?.length;
   const playlistDurationMillisecs = playlistTracks?.reduce((acc, track) => acc + track.duration, 0);
@@ -116,6 +117,7 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
     playlistInfo,
 
     playlistThumb,
+    playlistThumbMedium,
     playlistTitle,
     playlistTrackCount,
     playlistDurationString,

@@ -41,7 +41,7 @@
 .measure {
   height: 0;
 
-  :global(.env-local) & {
+  :global(html[data-env='local']) & {
     height: 1px;
     background: var(--color-core);
     opacity: 0.15;
@@ -52,7 +52,7 @@
   display: grid;
   gap: 0 10px;
 
-  // :global(.env-local) & {
+  // :global(html[data-env="local"]) & {
   //   background: rgba(255, 255, 255, 0.05);
   // }
 }

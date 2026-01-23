@@ -1,7 +1,6 @@
 // Custom scrollbars (Windows only)
 
-html[data-scrollbars='true'][data-os='Windows'],
-html[data-scrollbars='true'].electron.electron-platform-win2 {
+html[data-scrollbars-custom='true'][data-os='Windows'] {
   ::-webkit-scrollbar {
     width: var(--scrollbar-width); // For vertical scrollbar
     height: var(--scrollbar-width); // For horizontal scrollbar
@@ -20,7 +19,7 @@ html[data-scrollbars='true'].electron.electron-platform-win2 {
 
   // Optionally only show scrollbars on hover
 
-  &[data-scrollbars-hide='true'] {
+  &[data-scrollbars-autohide='true'] {
     ::-webkit-scrollbar {
       visibility: hidden;
     }
