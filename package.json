@@ -6,8 +6,10 @@
   "private": "true",
   "homepage": "/",
   "scripts": {
-    "start": "REACT_APP_VERSION=$npm_package_version REACT_APP_DATE=$(date +%s) react-scripts start",
-    "start-https": "REACT_APP_VERSION=$npm_package_version REACT_APP_DATE=$(date +%s) HTTPS=true react-scripts start",
+    "start": "npm run dev",
+    "start-https": "npm run dev-https",
+    "dev": "REACT_APP_VERSION=$npm_package_version REACT_APP_DATE=$(date +%s) react-scripts start",
+    "dev-https": "REACT_APP_VERSION=$npm_package_version REACT_APP_DATE=$(date +%s) HTTPS=true react-scripts start",
     "build": "REACT_APP_VERSION=$npm_package_version REACT_APP_DATE=$(date +%s) react-scripts build",
     "release:stage": "release-it --config .release-staging.json",
     "release:staging": "npm run release:stage",
