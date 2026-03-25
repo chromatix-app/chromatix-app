@@ -1,4 +1,4 @@
-# 0.58.0 (2026-01-23)
+# 0.58.0 (2026-03-25)
 
 Just very minor tweaks, bug fixes, and maintenance tasks.
 
