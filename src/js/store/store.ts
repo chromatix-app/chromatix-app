@@ -108,4 +108,3 @@ if (isLocal && config.globalStore) {
 // ======================================================================
 
 export default store;
-export type { Store };

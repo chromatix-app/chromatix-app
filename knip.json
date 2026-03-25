@@ -1,0 +1,18 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": ["src/index.tsx", "**/*.test.ts"],
+  "ignoreDependencies": [
+    "eslint-config-react-app",
+    "sass",
+    "@babel/plugin-proposal-private-property-in-object",
+    "tslib",
+    "webpack"
+  ],
+  "project": ["src/**/*.{ts,tsx,js,jsx}"],
+  "rules": {
+    "duplicates": "off",
+    "exports": "off",
+    "files": "off"
+  },
+  "tags": ["-lintignore"]
+}
