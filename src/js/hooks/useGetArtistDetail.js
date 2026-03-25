@@ -14,8 +14,8 @@ const useGetArtistDetail = ({ variant, libraryId, artistId }) => {
   const allArtists = useSelector(({ appModel }) => appModel[`all${variant}`]);
   const artistInfo = allArtists?.find((artist) => artist.artistId === artistId);
 
-  const artistThumb = artistInfo?.thumb;
-  const artistThumbMedium = artistInfo?.thumbMedium;
+  const artistThumb = artistInfo?.thumbSm;
+  const artistThumbMedium = artistInfo?.thumbMd;
   const artistName = artistInfo?.title;
   const artistCountry = artistInfo?.country;
   const artistGenre = artistInfo?.genre;

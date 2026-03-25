@@ -54,12 +54,12 @@ const UserMenu = ({ variant = 'default', withoutLibrary = false }) => {
               </div>
             )}
             <div className={style.thumb}>
-              {!currentUser?.thumb && (
+              {!currentUser?.thumbSm && (
                 <span className={style.thumbIcon}>
                   <Icon icon="ArtistCollectionsIcon" cover stroke strokeWidth={1.4} />
                 </span>
               )}
-              {currentUser?.thumb && <img src={currentUser?.thumb} alt="Profile" draggable="false" />}
+              {currentUser?.thumbSm && <img src={currentUser?.thumbSm} alt="Profile" draggable="false" />}
             </div>
           </RadixMenu.Trigger>
 

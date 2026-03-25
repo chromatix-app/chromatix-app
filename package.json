@@ -6,8 +6,10 @@
   "private": "true",
   "homepage": "/",
   "scripts": {
-    "start": "REACT_APP_VERSION=$npm_package_version REACT_APP_DATE=$(date +%s) react-scripts start",
-    "start-https": "REACT_APP_VERSION=$npm_package_version REACT_APP_DATE=$(date +%s) HTTPS=true react-scripts start",
+    "start": "npm run dev",
+    "start-https": "npm run dev-https",
+    "dev": "REACT_APP_VERSION=$npm_package_version REACT_APP_DATE=$(date +%s) react-scripts start",
+    "dev-https": "REACT_APP_VERSION=$npm_package_version REACT_APP_DATE=$(date +%s) HTTPS=true react-scripts start",
     "build": "REACT_APP_VERSION=$npm_package_version REACT_APP_DATE=$(date +%s) react-scripts build",
     "release:stage": "release-it --config .release-staging.json",
     "release:staging": "npm run release:stage",
@@ -25,7 +27,8 @@
     "svg:compress:all": "node lib/svg-compress.mjs",
     "test": "react-scripts test",
     "test:all": "react-scripts test --watchAll=false",
-    "prepare": "husky"
+    "prepare": "husky",
+    "knip": "knip"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [
@@ -46,22 +49,23 @@
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-visually-hidden": "^1.2.4",
     "@rematch/core": "^2.2.0",
-    "@tanstack/react-virtual": "^3.13.18",
+    "@tanstack/react-virtual": "^3.13.23",
     "@vercel/analytics": "^1.6.1",
-    "axios": "^1.13.2",
+    "axios": "^1.13.6",
     "chroma-js": "^3.2.0",
     "clsx": "^2.1.1",
     "crypto-js": "^4.2.0",
-    "fast-xml-parser": "^5.3.3",
+    "fast-xml-parser": "^5.5.9",
     "formik": "^2.4.9",
+    "lodash": "^4.17.23",
     "moment": "^2.30.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-redux": "^9.2.0",
     "react-router-dom": "^5.3.4",
     "react-scripts": "^5.0.1",
-    "sass": "^1.97.2",
-    "semver": "^7.7.3",
+    "sass": "^1.98.0",
+    "semver": "^7.7.4",
     "sonner": "^2.0.7",
     "yup": "^1.7.1"
   },
@@ -69,27 +73,29 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/crypto-js": "^4.2.2",
     "@types/jest": "^30.0.0",
-    "@types/node": "^25.0.9",
-    "@types/react": "^19.2.8",
+    "@types/lodash": "^4.17.24",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@types/react-redux": "^7.1.34",
     "@types/react-router-dom": "^5.3.3",
     "chalk": "^5.6.2",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.3.1",
+    "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "eslint-plugin-react": "^7.37.5",
     "husky": "^9.1.7",
     "input-otp": "^1.4.2",
-    "lint-staged": "^16.2.7",
-    "prettier": "^3.8.0",
+    "knip": "^6.0.5",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.1",
     "release-it": "^17.11.0",
     "sharp": "^0.34.5",
-    "svgo": "^4.0.0",
+    "svgo": "^4.0.1",
     "tinify": "^1.8.2",
     "tslib": "^2.8.1",
     "typescript": "^4.9.5",
-    "webpack": "^5.104.1"
+    "webpack": "^5.105.4"
   },
   "overrides": {
     "react-refresh": "0.11.0"
@@ -99,11 +105,10 @@
       "last 1 versions"
     ],
     "production": [
-      "last 2 versions",
-      ">0.25%",
-      "ie 11",
-      "ios 7",
-      "android 4"
+      "defaults",
+      "last 3 versions",
+      "> 0.25%",
+      "not dead"
     ]
   }
 }

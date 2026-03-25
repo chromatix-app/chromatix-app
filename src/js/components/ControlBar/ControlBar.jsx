@@ -57,12 +57,12 @@ const NowPlaying = () => {
 
   return (
     <div className={style.nowPlaying}>
-      <div className={clsx(style.coverWrap, { [style.coverPlaceholder]: !trackCurrent || !trackCurrent?.thumb })}>
+      <div className={clsx(style.coverWrap, { [style.coverPlaceholder]: !trackCurrent || !trackCurrent?.thumbSm })}>
         {trackCurrent && (
           <>
-            {trackCurrent.thumb && (
+            {trackCurrent.thumbSm && (
               <div className={style.coverArtwork}>
-                <img src={trackCurrent.thumb} alt={trackCurrent.title} draggable="false" />
+                <img src={trackCurrent.thumbSm} alt={trackCurrent.title} draggable="false" />
               </div>
             )}
             {playingLink && (
@@ -161,7 +161,7 @@ export const PrimaryControls = ({ fullPageMode }) => {
           title: trackCurrent.title,
           artist: trackCurrent.artist,
           album: trackCurrent.album,
-          artwork: [{ src: trackCurrent.thumb ? trackCurrent.thumb : null }],
+          artwork: [{ src: trackCurrent.thumbSm ? trackCurrent.thumbSm : null }],
         }
       : null;
   }, [trackCurrent]);

@@ -48,8 +48,8 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   const allPlaylistTracks = useSelector(({ appModel }) => appModel.allPlaylistTracks);
   const playlistTracks = allPlaylistTracks[libraryId + '-' + playlistId];
 
-  const playlistThumb = playlistInfo?.thumb;
-  const playlistThumbMedium = playlistInfo?.thumbMedium;
+  const playlistThumb = playlistInfo?.thumbSm;
+  const playlistThumbMedium = playlistInfo?.thumbMd;
   const playlistTitle = playlistInfo?.title;
   const playlistTrackCount = playlistTracks?.length;
   const playlistDurationMillisecs = playlistTracks?.reduce((acc, track) => acc + track.duration, 0);

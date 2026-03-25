@@ -609,7 +609,7 @@ const SearchResults = ({ setSearchResultsVisible }) => {
               <Icon icon={result.icon} cover stroke />
             </div>
             <div className={style.searchThumb}>
-              {result.thumb && <img src={result.thumb} alt={result.title} draggable="false" loading="lazy" />}
+              {result.thumbSm && <img src={result.thumbSm} alt={result.title} draggable="false" loading="lazy" />}
             </div>
             <div>
               <div className={style.searchTitle}>{result.title}</div>

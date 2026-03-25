@@ -389,13 +389,8 @@ const NowPlayingLarge = ({ entry, virtualEntry }) => {
       }}
     >
       <div className={style.expandedThumb}>
-        {(entry.thumbMedium || entry.thumb) && (
-          <img
-            src={entry.thumbMedium ? entry.thumbMedium : entry.thumb}
-            alt={entry.title}
-            draggable="false"
-            loading="lazy"
-          />
+        {(entry.thumbMd || entry.thumbSm) && (
+          <img src={entry.thumbMd ? entry.thumbMd : entry.thumbSm} alt={entry.title} draggable="false" loading="lazy" />
         )}
         {playingLink && (
           <NavLink
@@ -634,7 +629,7 @@ const TrackEntry = ({ entry, isCurrentlyPlaying = false, virtualEntry }) => {
       tabIndex={0}
     >
       <div className={style.trackThumb}>
-        {entry.thumb && <img src={entry.thumb} alt={entry.title} loading="lazy" draggable="false" />}
+        {entry.thumbSm && <img src={entry.thumbSm} alt={entry.title} loading="lazy" draggable="false" />}
       </div>
 
       <div className={clsx(style.trackContent, 'text-trim')}>
