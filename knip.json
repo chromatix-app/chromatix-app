@@ -1,5 +1,5 @@
 {
-  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "$schema": "https://unpkg.com/knip@6/schema.json",
   "entry": ["src/index.tsx", "**/*.test.ts"],
   "ignoreDependencies": [
     "eslint-config-react-app",
