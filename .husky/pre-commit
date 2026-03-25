@@ -4,5 +4,8 @@
 # Run linting and formatting checks on staged files
 npx lint-staged
 
+# Check for unused dependencies and exports
+npm run knip
+
 # Run tests non-interactively
 CI=true npm run test:all
