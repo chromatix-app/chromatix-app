@@ -41,7 +41,7 @@ const useElectronStatus = (): void => {
           title: trackCurrent?.title,
           artist: trackCurrent?.artist,
           album: trackCurrent?.album,
-          // artwork: trackCurrent?.thumb,
+          // artwork: trackCurrent?.thumbSm,
         });
       }
     } catch (error) {

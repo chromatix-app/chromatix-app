@@ -49,12 +49,12 @@ const UserList = ({ entries, setPinUser, setRenderPinEntry }) => {
             >
               <div>
                 <div className={style.thumb}>
-                  {!entry?.thumb && (
+                  {!entry?.thumbSm && (
                     <span className={style.thumbIcon}>
                       <Icon icon="ArtistCollectionsIcon" cover stroke strokeWidth={3} />
                     </span>
                   )}
-                  {entry?.thumb && <img src={entry?.thumb} alt="Profile" draggable="false" />}
+                  {entry?.thumbSm && <img src={entry?.thumbSm} alt="Profile" draggable="false" />}
                 </div>
 
                 <div className={style.title}>{entry.displayName}</div>

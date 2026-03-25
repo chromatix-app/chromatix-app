@@ -342,7 +342,15 @@ const Title = ({
                 index === 1 && isFirstItemFavourite ? (
                   <span key={`sep-${index}`}>&nbsp; </span>
                 ) : (
-                  <span key={`sep-${index}`}> • </span>
+                  <span
+                    key={`sep-${index}`}
+                    style={{
+                      paddingInline: 2,
+                    }}
+                  >
+                    {' '}
+                    •{' '}
+                  </span>
                 );
 
               return [...acc, separator, item];
