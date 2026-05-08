@@ -276,6 +276,7 @@
 }
 
 .playIcon,
+.pauseIcon,
 .shuffleIcon {
   display: block;
   position: relative;
@@ -285,8 +286,8 @@
 }
 
 .shuffleIcon {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
   // margin: 0 4px 0 -3px;
   margin: 0 0 0 0;
 }

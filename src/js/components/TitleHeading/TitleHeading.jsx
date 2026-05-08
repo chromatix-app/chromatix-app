@@ -84,9 +84,15 @@ const TitleHeading = ({
                           : handlePlay && handlePlay(false)
                     }
                   >
-                    <span className={style.playIcon}>
-                      <Icon icon={isPlaying ? 'PauseFilledIcon' : 'PlayFilledIcon'} cover />
-                    </span>
+                    {!isPlaying ? (
+                      <span className={style.playIcon}>
+                        <Icon icon="PlayFilledIcon" cover />
+                      </span>
+                    ) : (
+                      <span className={style.pauseIcon}>
+                        <Icon icon="PauseFilledIcon" cover />
+                      </span>
+                    )}
                     <span className={style.playText}>{isPlaying ? 'Pause' : 'Play'}</span>
                   </button>
                   <button

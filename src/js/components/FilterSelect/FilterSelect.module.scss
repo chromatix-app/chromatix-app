@@ -33,9 +33,9 @@
     border-bottom-left-radius: 0;
   }
   .wrapLarge:not(:last-child) & {
+    border-right: none;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    border-right: none;
   }
 }
 
@@ -73,12 +73,12 @@
 .content {
   top: 2px;
   left: -7px;
+  z-index: 99;
   padding: 4px;
   background: var(--color-secondary-background);
   border: 1px solid var(--color-secondary-border);
   border-radius: 5px;
   box-shadow: var(--shadow-md);
-  z-index: 99;
   font-size: 12px;
   line-height: 14px;
 
