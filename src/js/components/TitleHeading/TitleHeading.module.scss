@@ -249,7 +249,9 @@
 .shuffleButton {
   display: inline-flex;
   position: relative;
+  justify-content: center;
   align-items: center;
+  min-width: 78px;
   padding: 1px 9px;
   background: var(--color-core);
   border: 1px solid var(--color-opacity-01);
@@ -287,15 +289,15 @@
 
 .stickyWrap {
   position: sticky;
-  pointer-events: none;
   grid-column: 1 / -1; // this is here to make the element full widht when within a grid
   top: 0;
-  opacity: 0;
   z-index: 2;
+  opacity: 0;
+  pointer-events: none;
 
   &Visible {
-    pointer-events: auto;
     opacity: 1;
+    pointer-events: auto;
   }
 }
 

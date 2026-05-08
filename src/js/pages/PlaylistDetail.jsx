@@ -21,6 +21,10 @@ const PlaylistDetail = () => {
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
 
+  const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
+  const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
+  const playingPlaylistId = useSelector(({ sessionModel }) => sessionModel.playingPlaylistId);
+
   const {
     playlistInfo,
     playlistThumb,
@@ -61,6 +65,9 @@ const PlaylistDetail = () => {
   const isEmptyList = !isLoading && playlistTracks?.length === 0;
   const isListView = !isLoading && !isEmptyList;
 
+  const isLoaded = playingVariant === 'playlists' && playingPlaylistId === playlistId;
+  const isPlaying = isLoaded && playerPlaying;
+
   return (
     <>
       {(isLoading || isEmptyList) && (
@@ -68,6 +75,8 @@ const PlaylistDetail = () => {
           colOptions={colOptions}
           doPlay={doPlay}
           isListView={isListView}
+          isLoaded={isLoaded}
+          isPlaying={isPlaying}
           libraryId={libraryId}
           platformOpts={platformOpts}
           playlistDurationString={playlistDurationString}
@@ -96,6 +105,8 @@ const PlaylistDetail = () => {
             colOptions={colOptions}
             doPlay={doPlay}
             isListView={isListView}
+            isLoaded={isLoaded}
+            isPlaying={isPlaying}
             libraryId={libraryId}
             platformOpts={platformOpts}
             playlistDurationString={playlistDurationString}
@@ -119,6 +130,8 @@ const Title = ({
   colOptions,
   doPlay,
   isListView,
+  isLoaded,
+  isPlaying,
   libraryId,
   platformOpts,
   playlistDurationString,
@@ -259,6 +272,8 @@ const Title = ({
         />
       }
       showPlay={true}
+      isLoaded={isLoaded}
+      isPlaying={isPlaying}
       handlePlay={playlistTracks && playlistTracks.length > 0 ? doPlay : null}
     />
   );

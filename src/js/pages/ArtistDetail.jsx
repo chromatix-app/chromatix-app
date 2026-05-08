@@ -31,6 +31,10 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
 
+  const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
+  const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
+  const playingArtistId = useSelector(({ sessionModel }) => sessionModel.playingArtistId);
+
   const {
     artistInfo,
     artistThumb,
@@ -120,6 +124,9 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
   const isListView = !isLoading2 && !isEmptyList1 && viewArtistAlbums === 'list';
   const isTrackView = !isLoading2 && !isEmptyList1 && viewArtistAlbums === 'track';
 
+  const isLoaded = playingVariant === 'artists' && playingArtistId === artistId;
+  const isPlaying = isLoaded && playerPlaying;
+
   return (
     <>
       {(isLoading2 || isEmptyList1 || isEmptyList2) && (
@@ -140,7 +147,9 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
           gridOptions={gridOptions}
           isGridView={isGridView}
           isListView={isListView}
+          isLoaded={isLoaded}
           isLoading1={isLoading1}
+          isPlaying={isPlaying}
           isTrackView={isTrackView}
           libraryId={libraryId}
           orderArtistAlbums={orderArtistAlbums}
@@ -181,7 +190,9 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
             gridOptions={gridOptions}
             isGridView={isGridView}
             isListView={isListView}
+            isLoaded={isLoaded}
             isLoading1={isLoading1}
+            isPlaying={isPlaying}
             isTrackView={isTrackView}
             libraryId={libraryId}
             orderArtistAlbums={orderArtistAlbums}
@@ -223,7 +234,9 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
             gridOptions={gridOptions}
             isGridView={isGridView}
             isListView={isListView}
+            isLoaded={isLoaded}
             isLoading1={isLoading1}
+            isPlaying={isPlaying}
             isTrackView={isTrackView}
             libraryId={libraryId}
             orderArtistAlbums={orderArtistAlbums}
@@ -268,7 +281,9 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
             gridOptions={gridOptions}
             isGridView={isGridView}
             isListView={isListView}
+            isLoaded={isLoaded}
             isLoading1={isLoading1}
+            isPlaying={isPlaying}
             isTrackView={isTrackView}
             libraryId={libraryId}
             orderArtistAlbums={orderArtistAlbums}
@@ -304,7 +319,9 @@ const Title = ({
   gridOptions,
   isGridView,
   isListView,
+  isLoaded,
   isLoading1,
+  isPlaying,
   isTrackView,
   libraryId,
   orderArtistAlbums,
@@ -625,6 +642,8 @@ const Title = ({
         </>
       }
       showPlay={true}
+      isLoaded={isLoaded}
+      isPlaying={isPlaying}
       handlePlay={sortedArtistTracks && sortedArtistTracks.length > 0 ? doPlay : null}
     />
   );

@@ -21,6 +21,10 @@ const AlbumDetail = () => {
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
 
+  const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
+  const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
+  const playingAlbumId = useSelector(({ sessionModel }) => sessionModel.playingAlbumId);
+
   const {
     albumInfo,
     albumThumb,
@@ -65,6 +69,9 @@ const AlbumDetail = () => {
   const isEmptyList = !isLoading && albumTracks?.length === 0;
   const isListView = !isLoading && !isEmptyList;
 
+  const isLoaded = playingVariant === 'albums' && playingAlbumId === albumId;
+  const isPlaying = isLoaded && playerPlaying;
+
   return (
     <>
       {(isLoading || isEmptyList) && (
@@ -84,6 +91,8 @@ const AlbumDetail = () => {
           colOptions={colOptions}
           doPlay={doPlay}
           isListView={isListView}
+          isLoaded={isLoaded}
+          isPlaying={isPlaying}
           libraryId={libraryId}
           platformOpts={platformOpts}
           setColumnVisibility={setColumnVisibility}
@@ -116,6 +125,8 @@ const AlbumDetail = () => {
             colOptions={colOptions}
             doPlay={doPlay}
             isListView={isListView}
+            isLoaded={isLoaded}
+            isPlaying={isPlaying}
             libraryId={libraryId}
             setColumnVisibility={setColumnVisibility}
             platformOpts={platformOpts}
@@ -142,6 +153,8 @@ const Title = ({
   colOptions,
   doPlay,
   isListView,
+  isLoaded,
+  isPlaying,
   libraryId,
   platformOpts,
   setColumnVisibility,
@@ -271,6 +284,8 @@ const Title = ({
         />
       }
       showPlay={true}
+      isLoaded={isLoaded}
+      isPlaying={isPlaying}
       handlePlay={albumTracks && albumTracks.length > 0 ? doPlay : null}
     />
   );
