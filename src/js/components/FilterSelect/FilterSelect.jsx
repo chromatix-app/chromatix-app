@@ -19,6 +19,8 @@ export const FilterSelect = ({ variant, value, options, setter, icon = 'ArrowsVe
     setter(newValue);
   };
 
+  const valueLabel = options.find((option) => option.value === value)?.label;
+
   return (
     <div className={clsx(style.wrap, style['wrap' + variant])}>
       <RadixSelect.Root
@@ -26,7 +28,7 @@ export const FilterSelect = ({ variant, value, options, setter, icon = 'ArrowsVe
         onValueChange={handleValueChange}
         // open
       >
-        <RadixSelect.Trigger className={style.trigger}>
+        <RadixSelect.Trigger className={style.trigger} aria-label={valueLabel}>
           <span className={style.icon}>
             <Icon icon={icon} cover stroke />
           </span>

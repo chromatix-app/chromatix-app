@@ -22,7 +22,7 @@ export const FilterToggle = ({ variant, value, options, setter, icon = 'ArrowsVe
 
   return (
     <div className={clsx(style.wrap, style['wrap' + variant])}>
-      <button className={style.trigger} onClick={handleValueChange}>
+      <button className={style.trigger} onClick={handleValueChange} aria-label={valueString}>
         <span className={style.icon}>
           <Icon icon={icon} cover stroke />
         </span>

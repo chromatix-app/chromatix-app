@@ -89,7 +89,11 @@ const TitleHeading = ({
                     </span>
                     <span className={style.playText}>{isPlaying ? 'Pause' : 'Play'}</span>
                   </button>
-                  <button className={style.shuffleButton} onClick={() => handlePlay && handlePlay(true)}>
+                  <button
+                    className={style.shuffleButton}
+                    onClick={() => handlePlay && handlePlay(true)}
+                    aria-label="Shuffle"
+                  >
                     <span className={style.shuffleIcon}>
                       <Icon icon="ShuffleIcon" cover stroke strokeWidth={1.4} />
                     </span>
