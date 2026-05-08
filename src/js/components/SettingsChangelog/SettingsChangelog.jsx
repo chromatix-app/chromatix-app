@@ -2,9 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { useEffect, useState } from 'react';
-
-import changelog from 'CHANGELOG.md';
+import changelog from '../../../CHANGELOG.md?raw';
 
 import style from './SettingsChangelog.module.scss';
 
@@ -13,21 +11,10 @@ import style from './SettingsChangelog.module.scss';
 // ======================================================================
 
 const SettingsChangelog = () => {
-  const [markdownContent, setMarkdownContent] = useState('');
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch(changelog);
-      const data = await response.text();
-      setMarkdownContent(data);
-    };
-    fetchData();
-  }, []);
-
   return (
     <div className={style.wrap}>
       <div className="font-markdown">
-        {markdownContent.split(/<!--[\s\S]*?-->/g).map((item, key) => {
+        {changelog.split(/<!--[\s\S]*?-->/g).map((item, key) => {
           if (item) {
             const myHtml = convertMarkdown(item.trim());
             if (myHtml) {
@@ -53,7 +40,12 @@ const SettingsChangelog = () => {
 const convertMarkdown = (text) => {
   let convertedMarkdown = convertLists(text);
   convertedMarkdown = convertLines(convertedMarkdown);
+  convertedMarkdown = convertInlineCode(convertedMarkdown);
   return convertedMarkdown;
+};
+
+const convertInlineCode = (text) => {
+  return text.replace(/`([^`]+)`/g, '<code>$1</code>');
 };
 
 const convertLists = (text) => {

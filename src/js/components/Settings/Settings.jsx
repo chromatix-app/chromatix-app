@@ -109,7 +109,7 @@ export const Settings = () => {
 
         <a
           className={style.entry}
-          href={'mailto:' + process.env.REACT_APP_EMAIL_ADDRESS + '?subject=Feedback'}
+          href={'mailto:' + import.meta.env.VITE_EMAIL_ADDRESS + '?subject=Feedback'}
           target="_blank"
           rel="noreferrer nofollow"
           draggable="false"

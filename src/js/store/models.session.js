@@ -13,8 +13,8 @@ import { analyticsEvent } from 'js/utils';
 // STATE
 // ======================================================================
 
-const isPreview = process.env.REACT_APP_ENV === 'preview';
-const isProduction = process.env.REACT_APP_ENV === 'production';
+const isPreview = import.meta.env.VITE_ENV === 'preview';
+const isProduction = import.meta.env.VITE_ENV === 'production';
 
 const sessionState = {
   sessionId: CryptoJS.lib.WordArray.random(16).toString(),

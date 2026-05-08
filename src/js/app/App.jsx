@@ -26,9 +26,9 @@ import BrowserRouteSwitch from 'js/app/BrowserRouteSwitch';
 // COMPONENT
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
-const isPreview = process.env.REACT_APP_ENV === 'preview';
-const isProduction = process.env.REACT_APP_ENV === 'production';
+const isLocal = import.meta.env.VITE_ENV === 'local';
+const isPreview = import.meta.env.VITE_ENV === 'preview';
+const isProduction = import.meta.env.VITE_ENV === 'production';
 
 const envData = getEnvironment();
 
@@ -89,7 +89,7 @@ const App = () => {
   useEffect(() => {
     // send app info to electron
     sendToElectron('any', 'app-info', {
-      version: process.env.REACT_APP_VERSION,
+      version: import.meta.env.VITE_VERSION,
     });
 
     // add web environment data attributes to html

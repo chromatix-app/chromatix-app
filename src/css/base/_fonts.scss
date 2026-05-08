@@ -18,8 +18,8 @@ body {
 html[data-logged-in='true'],
 html[data-logged-in='true'] body {
   min-width: 720px;
-  color: var(--color-text);
   overscroll-behavior: none;
+  color: var(--color-text);
 }
 
 html {
@@ -164,7 +164,30 @@ strong {
     text-decoration: underline;
     color: var(--color-core);
 
-    @include mixins.focus-self-outline();
+    // @include mixins.focus-self-outline();
+    &:focus-visible:not(:active):not(:disabled) {
+      html[data-access-focus='true'] & {
+        @media (hover: hover) {
+          outline: 2px solid var(--color-text);
+          outline-offset: 2px;
+        }
+      }
+    }
+  }
+
+  code {
+    padding: 0.2em 0.4em;
+    background: var(--color-opacity-015);
+    border-radius: 4px;
+    font-family:
+      'SF Mono',
+      SF Mono,
+      'SF Mono Regular',
+      Consolas,
+      'Liberation Mono',
+      Courier,
+      monospace;
+    font-size: 0.95em;
   }
 }
 

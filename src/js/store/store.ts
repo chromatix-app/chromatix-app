@@ -94,7 +94,7 @@ const saveSessionData = (): void => {
 // DEBUGGING - GLOBAL STORE ACCESS
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
+const isLocal = import.meta.env.VITE_ENV === 'local';
 
 if (isLocal && config.globalStore) {
   (window as any).store = store;

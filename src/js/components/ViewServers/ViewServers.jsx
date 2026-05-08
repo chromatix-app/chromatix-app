@@ -12,7 +12,7 @@ import style from './ViewServers.module.scss';
 // COMPONENT
 // ======================================================================
 
-// const isProduction = process.env.REACT_APP_ENV === 'production';
+// const isProduction = import.meta.env.VITE_ENV === 'production';
 // const serverProtocol = isProduction ? 'https://' : 'http://';
 
 const ViewServers = ({ entries, variant }) => {

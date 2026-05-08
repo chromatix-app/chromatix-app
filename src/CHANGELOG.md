@@ -1,3 +1,23 @@
+# 0.60.0 (2026-05-08)
+
+Features:
+
+- Play button added to artist detail pages, with the same behaviour as album and playlist play buttons.
+- The play button on album, playlist, and artist detail pages now toggles play/pause/resume.
+- Filter controls on artist detail pages are now icon-only, matching the design of album and playlist detail pages.
+
+Code changes:
+
+- Migrated build tooling from Create React App (CRA) to Vite 8.
+- Upgraded TypeScript from v4 to v6.
+- Upgraded ESLint from v8 to v10.
+- Replaced Jest (via `react-scripts`) with Vitest as the test runner.
+- JS bundle split: Radix UI extracted into a separate chunk for better long-term caching.
+- `@types/react` and `@types/react-dom` pinned to v18 to match the React 18 runtime.
+- Added `isStoreReady()` guard to all bridge functions to prevent premature API calls during Vite HMR before the Redux store has been hydrated from localStorage.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.59.0 (2026-03-25)
 
 Just very minor tweaks, bug fixes, and maintenance tasks.

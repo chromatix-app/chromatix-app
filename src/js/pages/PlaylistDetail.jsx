@@ -21,6 +21,10 @@ const PlaylistDetail = () => {
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
 
+  const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
+  const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
+  const playingPlaylistId = useSelector(({ sessionModel }) => sessionModel.playingPlaylistId);
+
   const {
     playlistInfo,
     playlistThumb,
@@ -61,6 +65,9 @@ const PlaylistDetail = () => {
   const isEmptyList = !isLoading && playlistTracks?.length === 0;
   const isListView = !isLoading && !isEmptyList;
 
+  const isLoaded = playingVariant === 'playlists' && playingPlaylistId === playlistId;
+  const isPlaying = isLoaded && playerPlaying;
+
   return (
     <>
       {(isLoading || isEmptyList) && (
@@ -68,6 +75,8 @@ const PlaylistDetail = () => {
           colOptions={colOptions}
           doPlay={doPlay}
           isListView={isListView}
+          isLoaded={isLoaded}
+          isPlaying={isPlaying}
           libraryId={libraryId}
           platformOpts={platformOpts}
           playlistDurationString={playlistDurationString}
@@ -96,6 +105,8 @@ const PlaylistDetail = () => {
             colOptions={colOptions}
             doPlay={doPlay}
             isListView={isListView}
+            isLoaded={isLoaded}
+            isPlaying={isPlaying}
             libraryId={libraryId}
             platformOpts={platformOpts}
             playlistDurationString={playlistDurationString}
@@ -119,6 +130,8 @@ const Title = ({
   colOptions,
   doPlay,
   isListView,
+  isLoaded,
+  isPlaying,
   libraryId,
   platformOpts,
   playlistDurationString,
@@ -139,6 +152,7 @@ const Title = ({
       thumbExpand={playlistThumbMedium}
       title={playlistTitle}
       subtitle={playlistTracks ? playlistTrackCount + ' tracks' : <>&nbsp;</>}
+      padding={!isListView}
       detail={
         playlistTracks ? (
           <>
@@ -194,72 +208,76 @@ const Title = ({
           <>&nbsp;</>
         )
       }
-      showPlay={true}
       optionsMenu={
-        <FilterMenu
-          variant="Large"
-          icon="CogIcon"
-          iconStrokeWidth={1.2}
-          setter={setColumnVisibility}
-          entries={[
-            {
-              label: 'Artwork',
-              attr: 'colPlaylistArtwork',
-              checked: colOptions.artwork,
-            },
-            {
-              label: 'Title',
-              disabled: true,
-              checked: true,
-            },
-            {
-              label: 'Artist',
-              attr: 'colPlaylistArtist',
-              checked: colOptions.artist,
-            },
-            {
-              label: 'Album',
-              attr: 'colPlaylistAlbum',
-              checked: colOptions.album,
-            },
-            {
-              label: 'Audio codec',
-              attr: 'colPlaylistCodec',
-              checked: colOptions.codec,
-            },
-            {
-              label: 'Bitrate',
-              attr: 'colPlaylistBitrate',
-              checked: colOptions.bitrate,
-            },
-            {
-              label: 'Duration',
-              attr: 'colPlaylistDuration',
-              checked: colOptions.duration,
-            },
-            ...(platformOpts?.enableIsFavourite
-              ? [
-                  {
-                    label: 'Favourite',
-                    attr: 'colPlaylistIsFavourite',
-                    checked: colOptions.isFavourite,
-                  },
-                ]
-              : []),
-            ...(platformOpts?.enableUserRating
-              ? [
-                  {
-                    label: 'Rating',
-                    attr: 'colPlaylistUserRating',
-                    checked: colOptions.userRating,
-                  },
-                ]
-              : []),
-          ]}
-        />
+        <div>
+          <FilterMenu
+            variant="Large"
+            label="Options"
+            icon="CogIcon"
+            iconStrokeWidth={1.2}
+            setter={setColumnVisibility}
+            entries={[
+              {
+                label: 'Artwork',
+                attr: 'colPlaylistArtwork',
+                checked: colOptions.artwork,
+              },
+              {
+                label: 'Title',
+                disabled: true,
+                checked: true,
+              },
+              {
+                label: 'Artist',
+                attr: 'colPlaylistArtist',
+                checked: colOptions.artist,
+              },
+              {
+                label: 'Album',
+                attr: 'colPlaylistAlbum',
+                checked: colOptions.album,
+              },
+              {
+                label: 'Audio codec',
+                attr: 'colPlaylistCodec',
+                checked: colOptions.codec,
+              },
+              {
+                label: 'Bitrate',
+                attr: 'colPlaylistBitrate',
+                checked: colOptions.bitrate,
+              },
+              {
+                label: 'Duration',
+                attr: 'colPlaylistDuration',
+                checked: colOptions.duration,
+              },
+              ...(platformOpts?.enableIsFavourite
+                ? [
+                    {
+                      label: 'Favourite',
+                      attr: 'colPlaylistIsFavourite',
+                      checked: colOptions.isFavourite,
+                    },
+                  ]
+                : []),
+              ...(platformOpts?.enableUserRating
+                ? [
+                    {
+                      label: 'Rating',
+                      attr: 'colPlaylistUserRating',
+                      checked: colOptions.userRating,
+                    },
+                  ]
+                : []),
+            ]}
+          />
+        </div>
       }
+      showPlay={true}
+      isLoaded={isLoaded}
+      isPlaying={isPlaying}
       handlePlay={playlistTracks && playlistTracks.length > 0 ? doPlay : null}
-      padding={!isListView}
     />
   );
 };

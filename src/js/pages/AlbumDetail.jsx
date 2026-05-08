@@ -21,6 +21,10 @@ const AlbumDetail = () => {
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
 
+  const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
+  const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
+  const playingAlbumId = useSelector(({ sessionModel }) => sessionModel.playingAlbumId);
+
   const {
     albumInfo,
     albumThumb,
@@ -65,6 +69,9 @@ const AlbumDetail = () => {
   const isEmptyList = !isLoading && albumTracks?.length === 0;
   const isListView = !isLoading && !isEmptyList;
 
+  const isLoaded = playingVariant === 'albums' && playingAlbumId === albumId;
+  const isPlaying = isLoaded && playerPlaying;
+
   return (
     <>
       {(isLoading || isEmptyList) && (
@@ -84,6 +91,8 @@ const AlbumDetail = () => {
           colOptions={colOptions}
           doPlay={doPlay}
           isListView={isListView}
+          isLoaded={isLoaded}
+          isPlaying={isPlaying}
           libraryId={libraryId}
           platformOpts={platformOpts}
           setColumnVisibility={setColumnVisibility}
@@ -116,6 +125,8 @@ const AlbumDetail = () => {
             colOptions={colOptions}
             doPlay={doPlay}
             isListView={isListView}
+            isLoaded={isLoaded}
+            isPlaying={isPlaying}
             libraryId={libraryId}
             setColumnVisibility={setColumnVisibility}
             platformOpts={platformOpts}
@@ -142,6 +153,8 @@ const Title = ({
   colOptions,
   doPlay,
   isListView,
+  isLoaded,
+  isPlaying,
   libraryId,
   platformOpts,
   setColumnVisibility,
@@ -159,6 +172,7 @@ const Title = ({
           </NavLink>
         )
       }
+      padding={!isListView}
       detail={
         albumTracks ? (
           <>
@@ -216,62 +230,66 @@ const Title = ({
           <>&nbsp;</>
         )
       }
-      showPlay={true}
       optionsMenu={
-        <FilterMenu
-          variant="Large"
-          icon="CogIcon"
-          iconStrokeWidth={1.2}
-          setter={setColumnVisibility}
-          entries={[
-            {
-              label: 'Title',
-              disabled: true,
-              checked: true,
-            },
-            {
-              label: 'Artist',
-              attr: 'colAlbumArtist',
-              checked: colOptions.artist,
-            },
-            {
-              label: 'Audio codec',
-              attr: 'colAlbumCodec',
-              checked: colOptions.codec,
-            },
-            {
-              label: 'Bitrate',
-              attr: 'colAlbumBitrate',
-              checked: colOptions.bitrate,
-            },
-            {
-              label: 'Duration',
-              attr: 'colAlbumDuration',
-              checked: colOptions.duration,
-            },
-            ...(platformOpts?.enableIsFavourite
-              ? [
-                  {
-                    label: 'Favourite',
-                    attr: 'colAlbumIsFavourite',
-                    checked: colOptions.isFavourite,
-                  },
-                ]
-              : []),
-            ...(platformOpts?.enableUserRating
-              ? [
-                  {
-                    label: 'Rating',
-                    attr: 'colAlbumUserRating',
-                    checked: colOptions.userRating,
-                  },
-                ]
-              : []),
-          ]}
-        />
+        <div>
+          <FilterMenu
+            variant="Large"
+            label="Options"
+            icon="CogIcon"
+            iconStrokeWidth={1.2}
+            setter={setColumnVisibility}
+            entries={[
+              {
+                label: 'Title',
+                disabled: true,
+                checked: true,
+              },
+              {
+                label: 'Artist',
+                attr: 'colAlbumArtist',
+                checked: colOptions.artist,
+              },
+              {
+                label: 'Audio codec',
+                attr: 'colAlbumCodec',
+                checked: colOptions.codec,
+              },
+              {
+                label: 'Bitrate',
+                attr: 'colAlbumBitrate',
+                checked: colOptions.bitrate,
+              },
+              {
+                label: 'Duration',
+                attr: 'colAlbumDuration',
+                checked: colOptions.duration,
+              },
+              ...(platformOpts?.enableIsFavourite
+                ? [
+                    {
+                      label: 'Favourite',
+                      attr: 'colAlbumIsFavourite',
+                      checked: colOptions.isFavourite,
+                    },
+                  ]
+                : []),
+              ...(platformOpts?.enableUserRating
+                ? [
+                    {
+                      label: 'Rating',
+                      attr: 'colAlbumUserRating',
+                      checked: colOptions.userRating,
+                    },
+                  ]
+                : []),
+            ]}
+          />
+        </div>
       }
+      showPlay={true}
+      isLoaded={isLoaded}
+      isPlaying={isPlaying}
       handlePlay={albumTracks && albumTracks.length > 0 ? doPlay : null}
-      padding={!isListView}
     />
   );
 };

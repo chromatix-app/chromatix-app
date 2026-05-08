@@ -25,6 +25,18 @@ const storageTokenKey = config.storageTokenKey;
 const refetchData = true;
 
 // ======================================================================
+// HELPER - CHECK IF STORE IS READY
+// ======================================================================
+
+// Used during development to guard against a Vite HMR timing issue where bridge functions can fire
+// before the store has been rehydrated from localStorage. In production this never occurs, so we skip the check.
+const isStoreReady = () => {
+  if (import.meta.env.PROD) return true;
+  const { sessionModel } = store.getState();
+  return Boolean(sessionModel.currentServer) && Boolean(sessionModel.currentLibrary);
+};
+
+// ======================================================================
 // ABORT HANDLING
 // ======================================================================
 
@@ -355,6 +367,7 @@ export const getAllLibraries = async () => {
 let getAllArtistsRunning;
 
 export const getAllArtists = () => {
+  if (!isStoreReady()) return;
   if (!getAllArtistsRunning) {
     const haveGotAllArtists = store.getState().appModel.haveGotAllArtists;
     if (refetchData || !haveGotAllArtists) {
@@ -396,6 +409,7 @@ export const getAllArtists = () => {
 let getAllAlbumArtistsRunning;
 
 export const getAllAlbumArtists = () => {
+  if (!isStoreReady()) return;
   if (!getAllAlbumArtistsRunning) {
     const haveGotAllAlbumArtists = store.getState().appModel.haveGotAllAlbumArtists;
     if (refetchData || !haveGotAllAlbumArtists) {
@@ -437,6 +451,7 @@ export const getAllAlbumArtists = () => {
 let getArtistDetailsRunning;
 
 export const getArtistDetails = (libraryId, artistId) => {
+  if (!isStoreReady()) return;
   if (!getArtistDetailsRunning) {
     const prevArtistDetails = store.getState().appModel.allArtists?.find((artist) => artist.artistId === artistId);
     if (refetchData || !prevArtistDetails) {
@@ -480,6 +495,7 @@ export const getArtistDetails = (libraryId, artistId) => {
 let getAlbumArtistDetailsRunning;
 
 export const getAlbumArtistDetails = (libraryId, artistId) => {
+  if (!isStoreReady()) return;
   if (!getAlbumArtistDetailsRunning) {
     const prevAlbumArtistDetails = store
       .getState()
@@ -525,6 +541,7 @@ export const getAlbumArtistDetails = (libraryId, artistId) => {
 let getAllArtistAlbumsRunning;
 
 export const getAllArtistAlbums = (libraryId, artistId) => {
+  if (!isStoreReady()) return;
   if (!getAllArtistAlbumsRunning) {
     const prevAllAlbums = store.getState().appModel.allArtistAlbums[libraryId + '-' + artistId];
     if (refetchData || !prevAllAlbums) {
@@ -565,6 +582,7 @@ export const getAllArtistAlbums = (libraryId, artistId) => {
 let getAllArtistRelatedAlbumsRunning;
 
 export const getAllArtistRelatedAlbums = (libraryId, artistId) => {
+  if (!isStoreReady()) return;
   if (!getAllArtistRelatedAlbumsRunning) {
     const prevAllRelated = store.getState().appModel.allArtistRelatedAlbums[libraryId + '-' + artistId];
     if (refetchData || !prevAllRelated) {
@@ -603,6 +621,7 @@ export const getAllArtistRelatedAlbums = (libraryId, artistId) => {
 let getAllArtistAppearanceAlbumsRunning;
 
 export const getAllArtistAppearanceAlbums = (libraryId, artistId, artistName) => {
+  if (!isStoreReady()) return;
   if (!getAllArtistAppearanceAlbumsRunning) {
     const prevAllAppearanceAlbums = store.getState().appModel.allArtistAppearanceAlbums[libraryId + '-' + artistId];
     if (refetchData || !prevAllAppearanceAlbums) {
@@ -649,42 +668,54 @@ export const getAllArtistAppearanceAlbums = (libraryId, artistId, artistName) =>
 let getAllArtistTracksRunning;
 
 export const getAllArtistTracks = (libraryId, artistId, artistName) => {
-  if (!getAllArtistTracksRunning) {
-    const prevArtistTracks = store.getState().appModel.allArtistTracks[libraryId + '-' + artistId];
-    if (refetchData || !prevArtistTracks) {
-      console.log('%c--- bridge - getAllArtistTracks ---', 'color:#f9743b;');
-      getAllArtistTracksRunning = true;
-      const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const currentService = store.getState().appModel.currentService;
-      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
-      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
-
-      serviceTools[currentService]
-        .getAllArtistTracks({
-          accessToken,
-          artistId,
-          artistName,
-          libraryId,
-          serverBaseUrl,
-          userId,
-        })
-        .then((response) => {
-          // console.log(response);
-          store.dispatch.appModel.storeArtistTracks({
-            libraryId,
-            artistId,
-            artistTracks: response,
-          });
-        })
-        .catch((error) => {
-          console.error(error);
-          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Artist Tracks');
-        })
-        .finally(() => {
-          getAllArtistTracksRunning = false;
-        });
+  return new Promise((resolve, reject) => {
+    if (!isStoreReady()) {
+      resolve();
+      return;
     }
-  }
+    if (!getAllArtistTracksRunning) {
+      const prevArtistTracks = store.getState().appModel.allArtistTracks[libraryId + '-' + artistId];
+      if (refetchData || !prevArtistTracks) {
+        console.log('%c--- bridge - getAllArtistTracks ---', 'color:#f9743b;');
+        getAllArtistTracksRunning = true;
+        const accessToken = store.getState().sessionModel.currentServer.accessToken;
+        const currentService = store.getState().appModel.currentService;
+        const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+        const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
+
+        serviceTools[currentService]
+          .getAllArtistTracks({
+            accessToken,
+            artistId,
+            artistName,
+            libraryId,
+            serverBaseUrl,
+            userId,
+          })
+          .then((response) => {
+            // console.log(response);
+            store.dispatch.appModel.storeArtistTracks({
+              libraryId,
+              artistId,
+              artistTracks: response,
+            });
+            resolve();
+          })
+          .catch((error) => {
+            console.error(error);
+            analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Artist Tracks');
+            reject(error);
+          })
+          .finally(() => {
+            getAllArtistTracksRunning = false;
+          });
+      } else {
+        resolve();
+      }
+    } else {
+      resolve();
+    }
+  });
 };
 
 // ======================================================================
@@ -694,6 +725,7 @@ export const getAllArtistTracks = (libraryId, artistId, artistName) => {
 let getAllAlbumsRunning;
 
 export const getAllAlbums = () => {
+  if (!isStoreReady()) return;
   if (!getAllAlbumsRunning) {
     const haveGotAllAlbums = store.getState().appModel.haveGotAllAlbums;
     if (refetchData || !haveGotAllAlbums) {
@@ -735,6 +767,7 @@ export const getAllAlbums = () => {
 let getAlbumDetailsRunning;
 
 export const getAlbumDetails = (libraryId, albumId, callback) => {
+  if (!isStoreReady()) return;
   if (!getAlbumDetailsRunning) {
     const prevAlbumDetails = store.getState().appModel.allAlbums?.find((album) => album.albumId === albumId);
     if (refetchData || !prevAlbumDetails) {
@@ -780,6 +813,10 @@ let getAlbumTracksRunning;
 
 export const getAlbumTracks = (libraryId, albumId) => {
   return new Promise((resolve, reject) => {
+    if (!isStoreReady()) {
+      resolve();
+      return;
+    }
     if (!getAlbumTracksRunning) {
       const prevAlbumTracks = store.getState().appModel.allAlbumTracks[libraryId + '-' + albumId];
       if (refetchData || !prevAlbumTracks) {
@@ -828,6 +865,10 @@ let getFolderItemsRunning;
 
 export const getFolderItems = (folderId) => {
   return new Promise((resolve, reject) => {
+    if (!isStoreReady()) {
+      resolve();
+      return;
+    }
     if (!getFolderItemsRunning) {
       const { libraryId } = store.getState().sessionModel.currentLibrary;
       const prevFolderItems = store.getState().appModel.allFolderItems[libraryId + '-' + folderId];
@@ -877,6 +918,7 @@ export const getFolderItems = (folderId) => {
 let getAllPlaylistsRunning;
 
 export const getAllPlaylists = () => {
+  if (!isStoreReady()) return;
   if (!getAllPlaylistsRunning) {
     const prevAllPlaylists = store.getState().appModel.allPlaylists;
     if (refetchData || !prevAllPlaylists) {
@@ -919,6 +961,7 @@ export const getAllPlaylists = () => {
 let getPlaylistDetailsRunning;
 
 export const getPlaylistDetails = (libraryId, playlistId) => {
+  if (!isStoreReady()) return;
   if (!getPlaylistDetailsRunning) {
     const prevPlaylistDetails = store
       .getState()
@@ -967,6 +1010,10 @@ let getPlaylistTracksRunning;
 
 export const getPlaylistTracks = (libraryId, playlistId) => {
   return new Promise((resolve, reject) => {
+    if (!isStoreReady()) {
+      resolve();
+      return;
+    }
     if (!getPlaylistTracksRunning) {
       const prevPlaylistTracks = store.getState().appModel.allPlaylistTracks[libraryId + '-' + playlistId];
       if (refetchData || !prevPlaylistTracks) {
@@ -1012,6 +1059,7 @@ export const getPlaylistTracks = (libraryId, playlistId) => {
 let getAllCollectionsRunning;
 
 export const getAllCollections = () => {
+  if (!isStoreReady()) return;
   if (!getAllCollectionsRunning) {
     const prevAllArtistCollections = store.getState().appModel.allArtistCollections;
     const prevAllAlbumCollections = store.getState().appModel.allAlbumCollections;
@@ -1058,6 +1106,7 @@ let getCollectionItemsRunning = {
 let collectionItemsTimeouts = [];
 
 export const getCollectionItems = (libraryId, collectionId, typeKey) => {
+  if (!isStoreReady()) return;
   // Ensure that collection items are not fetched before parent collection arrays are fetched
   if (getAllCollectionsRunning) {
     collectionItemsTimeouts.push(
@@ -1133,6 +1182,7 @@ let getAllTagsRunning = {
 };
 
 const getAllPlexTags = (typeKey) => {
+  if (!isStoreReady()) return;
   if (!getAllTagsRunning[typeKey]) {
     const prevAllTags = store.getState().appModel[`all${typeKey}`];
     if (refetchData || !prevAllTags) {
@@ -1167,6 +1217,7 @@ const getAllPlexTags = (typeKey) => {
 let getAllJellyfinTagsRunning;
 
 const getAllJellyfinTags = () => {
+  if (!isStoreReady()) return;
   if (!getAllJellyfinTagsRunning) {
     const prevAllArtistGenres = store.getState().appModel.allArtistGenres;
     const prevAllAlbumGenres = store.getState().appModel.allAlbumGenres;
@@ -1219,6 +1270,7 @@ let getTagItemsRunning = {
 let tagItemsTimeouts = [];
 
 export const getTagItems = (libraryId, tagId, typeKey) => {
+  if (!isStoreReady()) return;
   // Ensure that tag items are not fetched before parent tag arrays are fetched
   const currentService = store.getState().appModel.currentService;
   if (currentService === 'plex') {
@@ -1286,6 +1338,7 @@ export const getTagItems = (libraryId, tagId, typeKey) => {
 let searchCounter = 0;
 
 export const searchLibrary = (query) => {
+  if (!isStoreReady()) return;
   searchCounter += 1;
   searchLibrary2(query, searchCounter);
 };
@@ -1327,6 +1380,7 @@ const searchLibrary2 = (query, searchCounter) => {
 // ======================================================================
 
 export const toggleFavourite = (type, itemId, isFavourite) => {
+  if (!isStoreReady()) return;
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
   const userId = store.getState().appModel.currentAccount.userId;
@@ -1364,6 +1418,7 @@ export const toggleFavourite = (type, itemId, isFavourite) => {
 // ======================================================================
 
 export const setStarRating = (type, ratingKey, rating) => {
+  if (!isStoreReady()) return;
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
   const sessionId = store.getState().sessionModel.sessionId;

@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// @ts-ignore - No type definitions available for chroma-js
 import chroma from 'chroma-js';
 
 import { themes } from 'js/_config/themes';

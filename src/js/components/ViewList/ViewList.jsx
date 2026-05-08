@@ -19,7 +19,7 @@ import style from './ViewList.module.scss';
 // OPTIONS
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
+const isLocal = import.meta.env.VITE_ENV === 'local';
 
 const virtualThreshold = !isLocal ? 200 : 1;
 
@@ -186,7 +186,7 @@ const ViewListTracks = ({
         playingTrackCurrent.trackId === trackId
       );
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     [
       albumId,
       folderId,

@@ -18,11 +18,11 @@ import style from './PageLoginJelly.module.scss';
 // COMPONENT
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
+const isLocal = import.meta.env.VITE_ENV === 'local';
 
-const devServer = process.env.REACT_APP_JELLY_SERVER || '';
-const devUsername = process.env.REACT_APP_JELLY_USERNAME || '';
-const devPassword = process.env.REACT_APP_JELLY_PASSWORD || '';
+const devServer = import.meta.env.VITE_JELLY_SERVER || '';
+const devUsername = import.meta.env.VITE_JELLY_USERNAME || '';
+const devPassword = import.meta.env.VITE_JELLY_PASSWORD || '';
 
 const envData = getEnvironment();
 

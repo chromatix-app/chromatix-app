@@ -3,8 +3,13 @@
 
 .wrap {
   display: inline-block;
-  margin-right: 18px;
   margin-left: -6px;
+  margin-right: 18px;
+
+  &Large {
+    margin-left: 0;
+    margin-right: 0;
+  }
 }
 
 .trigger {
@@ -17,14 +22,29 @@
   color: var(--color-opacity-06);
 
   @include mixins.focus-self-outline;
+
+  .wrapLarge & {
+    padding: 5px 9px;
+    background: var(--color-secondary-background);
+    border: 1px solid var(--color-secondary-border);
+  }
+  .wrapLarge:not(:first-child) & {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .wrapLarge:not(:last-child) & {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none;
+  }
 }
 
 .icon {
   display: inline-block;
   width: 14px;
   height: 14px;
-  color: var(--color-text);
   opacity: var(--opacity-06);
+  color: var(--color-text);
 
   &:first-child {
     margin: 0 8px 0 0;
@@ -32,16 +52,28 @@
   &:last-child {
     margin: 0 0 0 8px;
   }
+
+  .wrapLarge & {
+    margin: 0 !important;
+    opacity: 1;
+    color: var(--color-opacity-07);
+  }
+}
+
+.label {
+  .wrapLarge & {
+    display: none;
+  }
 }
 
 .content {
   left: 8px;
+  z-index: 99;
   padding: 6px 0;
   background: var(--color-secondary-background);
   border: 1px solid var(--color-secondary-border);
   border-radius: 5px;
   box-shadow: var(--shadow-md);
-  z-index: 99;
   font-size: 13px;
   line-height: 1;
 }
