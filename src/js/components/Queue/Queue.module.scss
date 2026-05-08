@@ -51,6 +51,7 @@
 
 .expandedThumb {
   overflow: hidden;
+  aspect-ratio: 1 / 1;
   margin: 15px 1px 0;
   background: var(--color-primary-background);
   background-image: vars.$thumbnail;
@@ -59,7 +60,6 @@
   background-repeat: no-repeat;
   border-radius: 6px;
   outline: 1px solid var(--color-opacity-01);
-  aspect-ratio: 1 / 1;
 
   @include mixins.electron-no-drag;
 

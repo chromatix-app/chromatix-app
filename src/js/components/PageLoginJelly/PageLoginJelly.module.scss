@@ -2,8 +2,8 @@
 @use '../../../css/_config/_vars';
 
 .wrap {
-  padding: 80px 15px 50px;
   z-index: 2;
+  padding: 80px 15px 50px;
   text-align: center;
 
   @media (min-width: 768px) {

@@ -4,9 +4,9 @@
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 886;
   width: 100%;
   height: 100%;
-  z-index: 886;
 }
 
 .blackout {
@@ -14,32 +14,32 @@
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 887;
   width: 100%;
   height: 100%;
   background: var(--color-blackout);
   backdrop-filter: blur(5px);
   animation: modalFadeIn 0.15s ease-in-out forwards;
-  z-index: 887;
 }
 
 .center {
   display: flex;
   position: absolute;
-  pointer-events: none !important;
   flex-direction: column;
   justify-content: center;
   top: 0;
   left: 0;
+  z-index: 888;
   width: 100%;
   height: 100%;
-  z-index: 888;
+  pointer-events: none !important;
 
   // Disabling pointer allows clicking outside the modal to close the window,
   // however when the content overflows it has a side effect of disabling
   // scrolling. This class enables scrolling if the content is overflowing.
   &.centerWithOverflow {
-    pointer-events: all !important;
     background: rgba(255, 0, 0, 0.1);
+    pointer-events: all !important;
   }
 }
 

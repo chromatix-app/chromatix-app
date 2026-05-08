@@ -143,18 +143,18 @@
 .controlButtonWrap {
   display: block;
   position: absolute;
-  pointer-events: none;
   bottom: 10px;
   right: 10px;
   opacity: 0;
   transform: translateY(10px);
   transition: all ease-in-out 0.25s;
+  pointer-events: none;
 
   .card:hover &,
   .card.cardCurrent & {
-    pointer-events: all;
     opacity: 1;
     transform: translateY(0);
+    pointer-events: all;
   }
 }
 
@@ -172,8 +172,8 @@
   border-radius: 50%;
   box-shadow: var(--shadow-sm);
   transition: all ease-in-out 0.25s;
-  color: var(--color-secondary-background);
   cursor: pointer;
+  color: var(--color-secondary-background);
 
   .card:hover &:hover,
   .card.cardCurrent &:hover {

@@ -18,9 +18,9 @@
     // vertical-align: text-bottom;
     vertical-align: baseline !important;
     overflow: visible;
-    user-select: none;
     width: 1em;
     height: 1em;
+    user-select: none;
   }
 
   path,
@@ -39,21 +39,21 @@
   }
 
   &Stroke {
-    fill: none;
     stroke: currentColor;
+    fill: none;
 
     path,
     ellipse {
-      fill: none;
       stroke: currentColor;
+      fill: none;
     }
   }
 
   &StrokeAndFill {
     path,
     ellipse {
-      fill: currentColor;
       stroke: currentColor;
+      fill: currentColor;
     }
   }
 
