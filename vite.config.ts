@@ -20,6 +20,7 @@ const fullReloadOnHooksChange = {
 };
 
 export default defineConfig({
+  appType: 'spa',
   plugins: [react(), svgr(), fullReloadOnHooksChange],
   resolve: {
     tsconfigPaths: true,
