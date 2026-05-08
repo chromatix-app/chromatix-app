@@ -1,3 +1,16 @@
+# 0.60.0 (2026-05-08)
+
+Code changes:
+
+- Migrated build tooling from Create React App (CRA) to Vite 8.
+- Upgraded TypeScript from v4 to v6.
+- Upgraded ESLint from v8 to v10.
+- Replaced Jest (via `react-scripts`) with Vitest as the test runner.
+- JS bundle split: Radix UI extracted into a separate chunk for better long-term caching.
+- `@types/react` and `@types/react-dom` pinned to v18 to match the React 18 runtime.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.59.0 (2026-03-25)
 
 Just very minor tweaks, bug fixes, and maintenance tasks.

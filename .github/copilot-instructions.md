@@ -6,11 +6,11 @@ Chromatix is a desktop music player for Plex and Jellyfin, built as a React web 
 
 ## Tech Stack
 
-- **React 18** (Create React App) — UI framework
+- **React 18** (Vite 8) — UI framework
 - **React Router v5** — Client-side routing
 - **Rematch (Redux)** — Global state management
 - **Sass (SCSS)** — Styling, with CSS Modules for component-scoped styles
-- **TypeScript** — Used for utilities, hooks, config, and new files; legacy components are `.jsx`/`.js`
+- **TypeScript 6** — Used for utilities, hooks, config, and new files; legacy components are `.jsx`/`.js`
 - **Tanstack Virtual** — Virtualised lists (artists, albums, tracks, queue)
 - **Radix UI** — Accessible UI primitives (dialogs, dropdowns, popovers, selects)
 - **Axios** — HTTP requests to Plex/Jellyfin APIs
@@ -63,7 +63,11 @@ src/
   types/
     global.d.ts          # Global type declarations
 lib/                     # Node scripts for image processing and SVG compression
-public/                  # Static assets
+public/                  # Static assets (served as-is; root index.html is the Vite entry)
+index.html               # Vite entry point (at project root)
+vite.config.ts           # Vite + Vitest configuration
+vitest.setup.ts          # Vitest setup (wires HTMLAudioElement mock)
+eslint.config.js         # ESLint 10 flat config
 ```
 
 ## Module Resolution
@@ -148,44 +152,51 @@ describe('Testing "functionName" function', () => {
 });
 ```
 
-Jest manual mocks for browser APIs unavailable in jsdom (e.g. `HTMLAudioElement`) live in `__mocks__/` at the root.
+Vitest manual mocks for browser APIs unavailable in jsdom (e.g. `HTMLAudioElement`) live in `__mocks__/` at the root. The setup file is `vitest.setup.ts` at the project root.
+
+Tests use **Vitest** with `globals: true` — no need to import `describe`, `test`, `expect`, `vi`, etc.
 
 - Run tests in watch mode with `npm run test`
 - Run all tests once with `npm run test:all`
 
 ## Key Scripts
 
-- `npm start` / `npm run dev` — Start dev server
-- `npm run build` — Production build
+- `npm start` / `npm run dev` — Start dev server (port 3000)
+- `npm run build` — Production build (output to `build/`)
 - `npm run lint` — Run ESLint
 - `npm run lint:fix` — Run ESLint with auto-fix
 - `npm run prettier` — Check formatting
 - `npm run prettier:fix` — Auto-format all files
-- `npm run test` / `npm run test:all` — Run tests (watch / once)
+- `npm run typecheck` — Run TypeScript type check without emitting
 - `npm run knip` — Dead code detection
+- `npm run check` — Run knip, lint, prettier, and typecheck in sequence
+- `npm run test` / `npm run test:all` — Run tests (watch / once)
 - `npm run images:convert:new` — Convert new images to WebP
 - `npm run images:tinify:new` — Compress new images via Tinify
 - `npm run svg:compress` — Compress new SVGs
 
 ## Environment Variables
 
-Set via `process.env` (Create React App convention, prefixed `REACT_APP_`):
+Set via `import.meta.env` (Vite convention, prefixed `VITE_`):
 
-- `REACT_APP_VERSION` — App version (injected from `package.json` at build time)
-- `REACT_APP_DATE` — Build timestamp (Unix seconds)
-- `REACT_APP_ENV` — Environment identifier (`local`, `preview`, `production`)
+- `VITE_VERSION` — App version (injected from `package.json` at build time)
+- `VITE_DATE` — Build timestamp (Unix seconds)
+- `VITE_ENV` — Environment identifier (`local`, `preview`, `production`)
 
 ## Coding Conventions
 
-- ESLint, Prettier, and EditorConfig enforce code style
-- Husky + lint-staged run linting and formatting checks on pre-commit
+- ESLint 10 (flat config at `eslint.config.js`), Prettier, and EditorConfig enforce code style
+- `package.json` has `"type": "module"` — the project is ESM-native
+- Husky + lint-staged run ESLint and Prettier checks on staged files at pre-commit; knip, typecheck, and tests also run pre-commit
 - Knip is used for dead code detection — avoid unused exports, imports, and files
 - Use `clsx` for all conditional class name composition (not string concatenation)
 - Use CSS Modules for component-scoped styles; import as `style` and reference as `style.className`
-- Use `getEnvironment()` from `js/utils` as the single source of truth for environment, browser, OS, and Electron info — do not access `process.env` or `navigator` directly for these
+- Use `getEnvironment()` from `js/utils` as the single source of truth for environment, browser, OS, and Electron info — do not access `import.meta.env` or `navigator` directly for these
 - Use `getLocalStorage` / `setLocalStorage` from `js/utils` for all localStorage access
 - Use `safeEncodeURIComponent` / `safeDecodeURIComponent` from `js/utils` rather than the native globals
 - Section comments use a consistent banner style: `// ======================================================================`
+- SVG components use the Vite-native `?react` import suffix: `import FooIcon from './foo.svg?react'`
+- Do **not** use Prettier as an ESLint plugin — run `npm run prettier` separately; `eslint-config-prettier` disables conflicting formatting rules
 
 ## Response Style
 

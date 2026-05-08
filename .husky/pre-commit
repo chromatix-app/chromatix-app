@@ -4,6 +4,9 @@
 # Run linting and formatting checks on staged files
 npx lint-staged
 
+# Run TypeScript type check
+npm run typecheck
+
 # Run knip to check dependencies
 npm run knip
 

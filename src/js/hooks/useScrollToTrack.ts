@@ -45,7 +45,6 @@ const useScrollToTrack = (): void => {
       const playingElement = document.getElementById(trackId);
       if (playingElement) {
         playingElement.scrollIntoView({
-          // @ts-ignore
           behavior: 'instant',
           block: 'center',
         });

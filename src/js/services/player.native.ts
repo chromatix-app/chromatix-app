@@ -2,7 +2,7 @@
 // OPTIONS
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
+const isLocal = import.meta.env.VITE_ENV === 'local';
 
 const enablePreloading = isLocal;
 const preloadAtTimeRemaining = 45000;

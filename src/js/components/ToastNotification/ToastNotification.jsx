@@ -5,7 +5,7 @@ import clsx from 'clsx';
 
 import style from './ToastNotification.module.scss';
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
+const isLocal = import.meta.env.VITE_ENV === 'local';
 const devMode = !isLocal ? false : false;
 const defaultDuration = !devMode ? 6000 : 999999999;
 

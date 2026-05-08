@@ -101,8 +101,6 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
     bridge.getPlaylistDetails(libraryId, playlistId);
     // }
     bridge.getPlaylistTracks(libraryId, playlistId).catch(() => {});
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [libraryId, playlistId]);
 
   // // Fallback in case playlist data is not included in the allPlaylists array

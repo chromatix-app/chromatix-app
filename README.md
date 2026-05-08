@@ -24,9 +24,7 @@ Get started at [https://chromatix.app/](https://chromatix.app/)
 > [!IMPORTANT]
 > Chromatix is a solo side project of mine, so I don't have the time or resources to maintain it as a full-time project. I do my best to keep it running, but please be patient with any issues or delays in updates.
 >
-> This codebase is probably a bit of a mess, probably lacks a lot of best practices, and uses some outdated technologies (e.g. create-react-app) that I should probably change, but I either still like them or haven’t had time to migrate to newer things yet.
->
-> I also started migrating a few utilities to TypeScript, but it’s a slow process, not complete yet, and not a high priority for me.
+> This codebase is partially migrated to TypeScript - new utilities and hooks are written in TypeScript, but legacy components remain as `.jsx`/`.js` and are migrated opportunistically.
 
 # 2. License
 
@@ -52,7 +50,7 @@ Deploy to production by running `npm run release:prod`
 
 # 5. Tech stack
 
-This project is built with Create React App (which is deprecated, I know).
+This project is built with [Vite](https://vite.dev/) and React 18.
 
 It uses Rematch (Redux) for global state management.
 
@@ -84,9 +82,11 @@ This repo uses [Husky](https://typicode.github.io/husky/) to ensure that certain
 
 This includes:
 
-1. Running eslint to check for code quality issues.
-2. Running prettier to format code.
-3. Running tests to ensure code correctness.
+1. Running eslint on staged files to check for code quality issues.
+2. Running prettier on staged files to check formatting.
+3. Running TypeScript type checking.
+4. Running knip to check for unused dependencies and exports.
+5. Running tests to ensure code correctness.
 
 If any of these fail, the commit will be aborted, and you will need to fix the issues.
 
@@ -95,16 +95,24 @@ You can also run these tasks manually using the following commands:
 ```bash
 npm run lint
 npm run prettier
+npm run typecheck
+npm run knip
 npm run test
+```
+
+Or run all checks at once (excluding tests) with:
+
+```bash
+npm run check
 ```
 
 # 8. Use of AI
 
-AI is an obviously common but controversial tool in software development right now. After years of building websites and web apps by hand, and over a year of building and maintaining Chromatix manually, I do use [GitHub Copilot](https://github.com/features/copilot) — and I want to be transparent about that.
+AI is an obviously common but controversial tool in software development right now. After years of building websites and web apps by hand, and over a year of building and maintaining Chromatix manually, I do now use [GitHub Copilot](https://github.com/features/copilot) and I want to be transparent about that.
 
 I have no interest in AI slop. All AI-assisted code is manually reviewed before it's committed. AI can be wrong, inconsistent, and confidently incorrect, so I treat it as a tool that needs oversight rather than a source of truth.
 
-In practice, I've so far used it mostly for writing unit tests (the bulk of test files in this project were Copilot-assisted), but increasinly use it for other tasks throughout the codebase. A `.github/copilot-instructions.md` file is included in this repo, which documents project conventions and guides Copilot towards consistent output.
+In practice, I've so far used it mostly for writing unit tests (the bulk of test files in this project were Copilot-assisted), but increasingly use it for other tasks throughout the codebase. A `.github/copilot-instructions.md` file is included in this repo, which documents project conventions and guides Copilot towards consistent output.
 
 I also use GitHub Copilot code review, which has been useful for catching minor mistakes and oversights that are easy to miss in a manual review.
 
@@ -118,7 +126,7 @@ This is also the best place for feature requests and bug reports, as it allows y
 
 # 10. Contributing
 
-I’m not particularly looking for contributors, and hadn’t really planned to open the code base as I’m happy keeping this as a personal side project, but I keep getting requests to open source it for the sake of transparency, so here it is.
+I’m not particularly looking for contributors, and hadn’t really planned to open source the code base as I’m happy keeping this as a personal side project, but I kept getting requests to open source it for the sake of transparency, so here it is.
 
 ## 10.1. Want to help?
 
