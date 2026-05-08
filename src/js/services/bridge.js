@@ -649,42 +649,50 @@ export const getAllArtistAppearanceAlbums = (libraryId, artistId, artistName) =>
 let getAllArtistTracksRunning;
 
 export const getAllArtistTracks = (libraryId, artistId, artistName) => {
-  if (!getAllArtistTracksRunning) {
-    const prevArtistTracks = store.getState().appModel.allArtistTracks[libraryId + '-' + artistId];
-    if (refetchData || !prevArtistTracks) {
-      console.log('%c--- bridge - getAllArtistTracks ---', 'color:#f9743b;');
-      getAllArtistTracksRunning = true;
-      const accessToken = store.getState().sessionModel.currentServer.accessToken;
-      const currentService = store.getState().appModel.currentService;
-      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
-      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
+  return new Promise((resolve, reject) => {
+    if (!getAllArtistTracksRunning) {
+      const prevArtistTracks = store.getState().appModel.allArtistTracks[libraryId + '-' + artistId];
+      if (refetchData || !prevArtistTracks) {
+        console.log('%c--- bridge - getAllArtistTracks ---', 'color:#f9743b;');
+        getAllArtistTracksRunning = true;
+        const accessToken = store.getState().sessionModel.currentServer.accessToken;
+        const currentService = store.getState().appModel.currentService;
+        const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+        const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
 
-      serviceTools[currentService]
-        .getAllArtistTracks({
-          accessToken,
-          artistId,
-          artistName,
-          libraryId,
-          serverBaseUrl,
-          userId,
-        })
-        .then((response) => {
-          // console.log(response);
-          store.dispatch.appModel.storeArtistTracks({
-            libraryId,
+        serviceTools[currentService]
+          .getAllArtistTracks({
+            accessToken,
             artistId,
-            artistTracks: response,
+            artistName,
+            libraryId,
+            serverBaseUrl,
+            userId,
+          })
+          .then((response) => {
+            // console.log(response);
+            store.dispatch.appModel.storeArtistTracks({
+              libraryId,
+              artistId,
+              artistTracks: response,
+            });
+            resolve();
+          })
+          .catch((error) => {
+            console.error(error);
+            analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Artist Tracks');
+            reject(error);
+          })
+          .finally(() => {
+            getAllArtistTracksRunning = false;
           });
-        })
-        .catch((error) => {
-          console.error(error);
-          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Artist Tracks');
-        })
-        .finally(() => {
-          getAllArtistTracksRunning = false;
-        });
+      } else {
+        resolve();
+      }
+    } else {
+      resolve();
     }
-  }
+  });
 };
 
 // ======================================================================

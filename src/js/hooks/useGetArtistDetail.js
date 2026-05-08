@@ -290,15 +290,16 @@ const useGetArtistDetail = ({ variant, libraryId, artistId }) => {
   useEffect(() => {
     if (libraryId && artistId && artistName) {
       bridge.getAllArtistAppearanceAlbums(libraryId, artistId, artistName);
+      bridge.getAllArtistTracks(libraryId, artistId, artistName);
     }
   }, [libraryId, artistId, artistName]);
 
-  // Get the artist tracks
-  useEffect(() => {
-    if (viewArtistAlbums === 'track' && libraryId && artistId && artistName) {
-      bridge.getAllArtistTracks(libraryId, artistId, artistName);
-    }
-  }, [libraryId, artistId, artistName, viewArtistAlbums]);
+  // // Get the artist tracks
+  // useEffect(() => {
+  //   if (viewArtistAlbums === 'track' && libraryId && artistId && artistName) {
+  //     bridge.getAllArtistTracks(libraryId, artistId, artistName);
+  //   }
+  // }, [libraryId, artistId, artistName, viewArtistAlbums]);
 
   return {
     artistInfo,
@@ -315,8 +316,8 @@ const useGetArtistDetail = ({ variant, libraryId, artistId }) => {
     sortedArtistAppearances,
 
     sortedAllReleasesAndAppearances,
-    sortedArtistTracks: viewArtistAlbums === 'track' ? sortedArtistTracks : null,
-    sortedArtistTracksOrder: viewArtistAlbums === 'track' ? sortedArtistTracksOrder : null,
+    sortedArtistTracks: sortedArtistTracks,
+    sortedArtistTracksOrder: sortedArtistTracksOrder,
 
     artistAlbumsGroupByType,
 

@@ -139,6 +139,7 @@ const Title = ({
       thumbExpand={playlistThumbMedium}
       title={playlistTitle}
       subtitle={playlistTracks ? playlistTrackCount + ' tracks' : <>&nbsp;</>}
+      padding={!isListView}
       detail={
         playlistTracks ? (
           <>
@@ -194,7 +195,6 @@ const Title = ({
           <>&nbsp;</>
         )
       }
-      showPlay={true}
       optionsMenu={
         <FilterMenu
           variant="Large"
@@ -258,8 +258,8 @@ const Title = ({
           ]}
         />
       }
+      showPlay={true}
       handlePlay={playlistTracks && playlistTracks.length > 0 ? doPlay : null}
-      padding={!isListView}
     />
   );
 };

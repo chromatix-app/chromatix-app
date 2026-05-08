@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -25,6 +25,8 @@ import platformFeatures from 'js/_config/platformFeatures';
 
 const ArtistDetail = ({ pageVariant = 'Artists' }) => {
   const { libraryId, artistId } = useParams();
+
+  const dispatch = useDispatch();
 
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
@@ -81,6 +83,23 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
     return <TitleHeading title="Artist not found" />;
   }
 
+  const doPlay = (isShuffle) => {
+    dispatch.playerModel.playerLoadArtist({
+      artistId,
+      artistName,
+      isShuffle,
+      playingOrder: sortedArtistTracksOrder,
+      trackIndex: sortedArtistTracksOrder ? sortedArtistTracksOrder[0] : 0,
+    });
+
+    // [NOTE] The commented snippet below could be used to switch to the track
+    // view when pressing play. Maybe this should be an optional setting.
+
+    // if (viewArtistAlbums !== 'track') {
+    //   setViewArtistAlbums('track');
+    // }
+  };
+
   // Check everything is loaded for album views
   const isLoading1 = !artistInfo || !sortedArtistAlbums || !sortedArtistRelated || !sortedArtistAppearances;
 
@@ -95,7 +114,7 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
     sortedArtistAppearances?.length === 0;
 
   // Check if track view is empty
-  const isEmptyList2 = !isLoading2 && sortedArtistTracks?.length === 0;
+  const isEmptyList2 = !isLoading2 && viewArtistAlbums === 'track' && sortedArtistTracks?.length === 0;
 
   const isGridView = !isLoading2 && !isEmptyList1 && viewArtistAlbums === 'grid';
   const isListView = !isLoading2 && !isEmptyList1 && viewArtistAlbums === 'list';
@@ -117,6 +136,7 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
           artistThumbMedium={artistThumbMedium}
           artistTracksTotal={artistTracksTotal}
           colOptions={colOptions}
+          doPlay={doPlay}
           gridOptions={gridOptions}
           isGridView={isGridView}
           isListView={isListView}
@@ -130,6 +150,7 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
           setSortArtistAlbums={setSortArtistAlbums}
           setViewArtistAlbums={setViewArtistAlbums}
           sortArtistAlbums={sortArtistAlbums}
+          sortedArtistTracks={sortedArtistTracks}
           viewArtistAlbums={viewArtistAlbums}
         />
       )}
@@ -156,6 +177,7 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
             artistThumbMedium={artistThumbMedium}
             artistTracksTotal={artistTracksTotal}
             colOptions={colOptions}
+            doPlay={doPlay}
             gridOptions={gridOptions}
             isGridView={isGridView}
             isListView={isListView}
@@ -169,6 +191,7 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
             setSortArtistAlbums={setSortArtistAlbums}
             setViewArtistAlbums={setViewArtistAlbums}
             sortArtistAlbums={sortArtistAlbums}
+            sortedArtistTracks={sortedArtistTracks}
             viewArtistAlbums={viewArtistAlbums}
           />
         </ViewGrid>
@@ -196,6 +219,7 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
             artistThumbMedium={artistThumbMedium}
             artistTracksTotal={artistTracksTotal}
             colOptions={colOptions}
+            doPlay={doPlay}
             gridOptions={gridOptions}
             isGridView={isGridView}
             isListView={isListView}
@@ -209,6 +233,7 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
             setSortArtistAlbums={setSortArtistAlbums}
             setViewArtistAlbums={setViewArtistAlbums}
             sortArtistAlbums={sortArtistAlbums}
+            sortedArtistTracks={sortedArtistTracks}
             viewArtistAlbums={viewArtistAlbums}
           />
         </ViewList>
@@ -239,6 +264,7 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
             artistThumbMedium={artistThumbMedium}
             artistTracksTotal={artistTracksTotal}
             colOptions={colTrackOptions}
+            doPlay={doPlay}
             gridOptions={gridOptions}
             isGridView={isGridView}
             isListView={isListView}
@@ -252,6 +278,7 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
             setSortArtistAlbums={setSortArtistAlbums}
             setViewArtistAlbums={setViewArtistAlbums}
             sortArtistAlbums={sortArtistAlbums}
+            sortedArtistTracks={sortedArtistTracks}
             viewArtistAlbums={viewArtistAlbums}
           />
         </ViewList>
@@ -273,6 +300,7 @@ const Title = ({
   artistThumbMedium,
   artistTracksTotal,
   colOptions,
+  doPlay,
   gridOptions,
   isGridView,
   isListView,
@@ -286,6 +314,7 @@ const Title = ({
   setSortArtistAlbums,
   setViewArtistAlbums,
   sortArtistAlbums,
+  sortedArtistTracks,
   viewArtistAlbums,
 }) => {
   let subtitle = <>&nbsp;</>;
@@ -305,6 +334,7 @@ const Title = ({
       thumbExpand={artistThumbMedium}
       title={artistName}
       subtitle={subtitle}
+      padding={!isGridView && !isListView && !isTrackView}
       detail={
         <>
           {[
@@ -357,7 +387,6 @@ const Title = ({
             }, [])}
         </>
       }
-      padding={!isGridView && !isListView && !isTrackView}
       filters={
         <>
           {/* <FilterToggle
@@ -595,6 +624,8 @@ const Title = ({
           )}
         </>
       }
+      showPlay={true}
+      handlePlay={sortedArtistTracks && sortedArtistTracks.length > 0 ? doPlay : null}
     />
   );
 };

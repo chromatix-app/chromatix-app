@@ -159,6 +159,7 @@ const Title = ({
           </NavLink>
         )
       }
+      padding={!isListView}
       detail={
         albumTracks ? (
           <>
@@ -216,7 +217,6 @@ const Title = ({
           <>&nbsp;</>
         )
       }
-      showPlay={true}
       optionsMenu={
         <FilterMenu
           variant="Large"
@@ -270,8 +270,8 @@ const Title = ({
           ]}
         />
       }
+      showPlay={true}
       handlePlay={albumTracks && albumTracks.length > 0 ? doPlay : null}
-      padding={!isListView}
     />
   );
 };
