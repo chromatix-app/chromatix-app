@@ -110,8 +110,6 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
     bridge.getAlbumDetails(libraryId, albumId);
     // }
     bridge.getAlbumTracks(libraryId, albumId).catch(() => {});
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [albumId, libraryId]);
 
   // // Fallback in case album data is not included in the allAlbums array

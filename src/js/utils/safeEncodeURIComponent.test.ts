@@ -1,6 +1,7 @@
 // Generated using GitHub Copilot
 
 import safeEncodeURIComponent from './safeEncodeURIComponent';
+import safeDecodeURIComponent from './safeDecodeURIComponent';
 
 describe('Testing "safeEncodeURIComponent" function', () => {
   test('Test with empty input', () => {
@@ -66,9 +67,6 @@ describe('Testing "safeEncodeURIComponent" function', () => {
   });
 
   test('Test roundtrip encoding and decoding', () => {
-    // Import the decode function to test roundtrip
-    const safeDecodeURIComponent = require('./safeDecodeURIComponent').default;
-
     const testStrings = [
       'Hello World',
       'Query?param=value&another=123',

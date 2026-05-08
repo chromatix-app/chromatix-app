@@ -2,8 +2,8 @@
 // DEFAULT (LOGGED OUT) ROUTES
 // ======================================================================
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
-// const isProduction = process.env.REACT_APP_ENV === 'production';
+const isLocal = import.meta.env.VITE_ENV === 'local';
+// const isProduction = import.meta.env.VITE_ENV === 'production';
 
 export const defaultRoutes = [
   // main

@@ -23,7 +23,7 @@ export const ReleaseBanner = () => {
 
   // options
   const messageAppVersion = whatsNew[0]?.version || '0.0.0';
-  const currentAppVersion = process.env.REACT_APP_VERSION?.split('-')[0] || messageAppVersion;
+  const currentAppVersion = import.meta.env.VITE_VERSION?.split('-')[0] || messageAppVersion;
 
   // // dev testing overrides
   // currentAppVersion = '0.51.0';

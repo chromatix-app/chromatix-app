@@ -272,8 +272,6 @@ const useGetArtistDetail = ({ variant, libraryId, artistId }) => {
     // }
     bridge.getAllArtistAlbums(libraryId, artistId);
     bridge.getAllArtistRelatedAlbums(libraryId, artistId);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [variant, libraryId, artistId]);
 
   // // Fallback in case artist data is not included in the allArtists array

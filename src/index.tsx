@@ -11,7 +11,7 @@ import App from 'js/app/App';
 import getEnvironment from 'js/utils/getEnvironment';
 import store from 'js/store/store';
 
-import 'css/styles.scss';
+import './css/styles.scss';
 
 // ======================================================================
 // INIT

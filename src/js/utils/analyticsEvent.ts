@@ -2,7 +2,7 @@ import { track } from '@vercel/analytics';
 
 import getEnvironment from './getEnvironment';
 
-const isLocal = process.env.REACT_APP_ENV === 'local';
+const isLocal = import.meta.env.VITE_ENV === 'local';
 const envData = getEnvironment();
 
 /**

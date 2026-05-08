@@ -29,7 +29,7 @@ interface EnvironmentData {
 
 let cachedData: EnvironmentData | null = null;
 
-// const isLocal = process.env.REACT_APP_ENV === 'local';
+// const isLocal = import.meta.env.VITE_ENV === 'local';
 
 /**
  * Determine various useful information about the user's environment
@@ -45,7 +45,7 @@ const getEnvironment = (): EnvironmentData => {
   const electronDetails = getElectronDetails();
   const { isElectron } = electronDetails;
 
-  const webBuildUnix = process.env.REACT_APP_DATE || null;
+  const webBuildUnix = import.meta.env.VITE_DATE || null;
   const webBuildMoment = webBuildUnix ? moment(parseInt(webBuildUnix, 10) * 1000) : null;
   const webBuildDate = webBuildMoment ? webBuildMoment.format('dddd Do MMMM YYYY') : null;
   const webBuildTime = webBuildMoment ? webBuildMoment.format('HH:mm:ss') : null;
@@ -59,9 +59,9 @@ const getEnvironment = (): EnvironmentData => {
     webBuildDate: webBuildDate,
     webBuildTime: webBuildTime,
     webBuildUnix: webBuildUnix,
-    webEnvId: process.env.REACT_APP_ENV || null,
-    webEnvName: capitalise(process.env.REACT_APP_ENV),
-    webVersion: process.env.REACT_APP_VERSION || null,
+    webEnvId: import.meta.env.VITE_ENV || null,
+    webEnvName: capitalise(import.meta.env.VITE_ENV),
+    webVersion: import.meta.env.VITE_VERSION || null,
     ...electronDetails,
   };
 

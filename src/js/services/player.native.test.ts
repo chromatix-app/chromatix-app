@@ -33,18 +33,18 @@ global.document.createElement = (tagName: string) => {
 };
 
 // Mock requestAnimationFrame
-global.requestAnimationFrame = jest.fn((cb) => setTimeout(cb, 0));
+global.requestAnimationFrame = vi.fn((cb) => setTimeout(cb, 0)) as unknown as typeof requestAnimationFrame;
 
 describe('Player Service', () => {
   const mockCallbacks = {
-    onLoadStart: jest.fn(),
-    onCanPlay: jest.fn(),
-    onEnded: jest.fn(),
-    onError: jest.fn(),
+    onLoadStart: vi.fn(),
+    onCanPlay: vi.fn(),
+    onEnded: vi.fn(),
+    onError: vi.fn(),
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     // Reset player state between tests
     player.unload();
   });
@@ -86,7 +86,7 @@ describe('Player Service', () => {
     });
 
     test('should not reinitialize if already initialized', () => {
-      const createElementSpy = jest.spyOn(document, 'createElement');
+      const createElementSpy = vi.spyOn(document, 'createElement');
 
       // First init
       player.init({
@@ -531,7 +531,7 @@ describe('Player Service', () => {
     });
 
     test('should apply volume to both audio elements', () => {
-      const createElementSpy = jest.spyOn(document, 'createElement');
+      const createElementSpy = vi.spyOn(document, 'createElement');
 
       player.setVolume(50);
 
@@ -549,7 +549,7 @@ describe('Player Service', () => {
       // Unload first to reset
       player.unload();
 
-      const createElementSpy = jest.spyOn(document, 'createElement');
+      const createElementSpy = vi.spyOn(document, 'createElement');
 
       // Initialize with specific volume
       player.init({
@@ -571,7 +571,7 @@ describe('Player Service', () => {
       // Unload first to reset
       player.unload();
 
-      const createElementSpy = jest.spyOn(document, 'createElement');
+      const createElementSpy = vi.spyOn(document, 'createElement');
 
       // Initialize muted
       player.init({
