@@ -8,7 +8,6 @@
   "homepage": "/",
   "scripts": {
     "start": "npm run dev",
-    "start-https": "HTTPS=true npm run dev",
     "dev": "VITE_VERSION=$npm_package_version VITE_DATE=$(date +%s) vite",
     "build": "VITE_VERSION=$npm_package_version VITE_DATE=$(date +%s) vite build",
     "release:stage": "release-it --config .release-staging.json",

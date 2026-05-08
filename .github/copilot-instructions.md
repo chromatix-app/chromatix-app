@@ -25,10 +25,9 @@ src/
   index.tsx              # App entry point
   CHANGELOG.md           # User-facing changelog
   css/
-    global.scss          # Master stylesheet (imports all partials)
-    styles.scss
     _config/             # SCSS variables, mixins, typography, props
     base/                # Reset, fonts, grid, scrollbars, etc.
+    styles.scss          # Master stylesheet (imports all partials)
   js/
     _config/             # App-wide config and static data
       config.ts          # Storage keys, encryption keys, global flags
