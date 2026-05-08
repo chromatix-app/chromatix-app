@@ -404,8 +404,8 @@ const Title = ({
             }, [])}
         </>
       }
-      filters={
-        <>
+      optionsMenu={
+        <div>
           {/* <FilterToggle
             value={viewArtistAlbums}
             options={[
@@ -416,6 +416,7 @@ const Title = ({
             icon={viewArtistAlbums === 'grid' ? 'GridIcon' : 'ListIcon'}
           /> */}
           <FilterSelect
+            variant="Large"
             value={viewArtistAlbums}
             options={[
               { value: 'grid', label: 'Grid view' },
@@ -434,6 +435,7 @@ const Title = ({
           {viewArtistAlbums === 'grid' && (
             <>
               <FilterSelect
+                variant="Large"
                 value={sortArtistAlbums}
                 options={[
                   { value: 'title', label: 'Alphabetical' },
@@ -449,6 +451,7 @@ const Title = ({
                 setter={setSortArtistAlbums}
               />
               <FilterToggle
+                variant="Large"
                 value={orderArtistAlbums}
                 options={[
                   { value: 'asc', label: 'Ascending' },
@@ -458,7 +461,7 @@ const Title = ({
                 icon={orderArtistAlbums === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
               />
               <FilterMenu
-                label="Options"
+                variant="Large"
                 icon="CogIcon"
                 setter={setColumnVisibility}
                 entries={[
@@ -494,7 +497,7 @@ const Title = ({
           )}
           {viewArtistAlbums === 'list' && (
             <FilterMenu
-              label="Options"
+              variant="Large"
               icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
@@ -570,7 +573,7 @@ const Title = ({
           )}
           {viewArtistAlbums === 'track' && (
             <FilterMenu
-              label="Options"
+              variant="Large"
               icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
@@ -639,7 +642,7 @@ const Title = ({
               ]}
             />
           )}
-        </>
+        </div>
       }
       showPlay={true}
       isLoaded={isLoaded}

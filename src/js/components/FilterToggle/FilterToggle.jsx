@@ -2,6 +2,8 @@
 // IMPORTS
 // ======================================================================
 
+import clsx from 'clsx';
+
 import { Icon } from 'js/components';
 
 import style from './FilterToggle.module.scss';
@@ -10,7 +12,7 @@ import style from './FilterToggle.module.scss';
 // COMPONENT
 // ======================================================================
 
-export const FilterToggle = ({ value, options, setter, icon = 'ArrowsVerticalIcon' }) => {
+export const FilterToggle = ({ variant, value, options, setter, icon = 'ArrowsVerticalIcon' }) => {
   const handleValueChange = () => {
     const otherOption = options.find((option) => option.value !== value);
     setter(otherOption.value);
@@ -19,12 +21,12 @@ export const FilterToggle = ({ value, options, setter, icon = 'ArrowsVerticalIco
   const valueString = options.find((option) => option.value === value)?.label;
 
   return (
-    <div className={style.wrap}>
+    <div className={clsx(style.wrap, style['wrap' + variant])}>
       <button className={style.trigger} onClick={handleValueChange}>
         <span className={style.icon}>
           <Icon icon={icon} cover stroke />
         </span>
-        <span>{valueString}</span>
+        <span className={style.label}>{valueString}</span>
       </button>
     </div>
   );

@@ -14,13 +14,13 @@ import style from './FilterSelect.module.scss';
 // COMPONENT
 // ======================================================================
 
-export const FilterSelect = ({ value, options, setter, icon = 'ArrowsVerticalIcon' }) => {
+export const FilterSelect = ({ variant, value, options, setter, icon = 'ArrowsVerticalIcon' }) => {
   const handleValueChange = (newValue) => {
     setter(newValue);
   };
 
   return (
-    <div className={style.wrap}>
+    <div className={clsx(style.wrap, style['wrap' + variant])}>
       <RadixSelect.Root
         value={value}
         onValueChange={handleValueChange}
@@ -30,11 +30,13 @@ export const FilterSelect = ({ value, options, setter, icon = 'ArrowsVerticalIco
           <span className={style.icon}>
             <Icon icon={icon} cover stroke />
           </span>
-          <RadixSelect.Value />
+          <span className={style.value}>
+            <RadixSelect.Value />
+          </span>
         </RadixSelect.Trigger>
 
         <RadixSelect.Portal>
-          <RadixSelect.Content position="popper" className={style.content}>
+          <RadixSelect.Content position="popper" className={clsx(style.content, style['content' + variant])}>
             <RadixSelect.Viewport className={style.viewport}>
               {options.map((option) => (
                 <SelectEntry key={option.value} value={option.value}>

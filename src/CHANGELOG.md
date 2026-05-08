@@ -1,5 +1,11 @@
 # 0.60.0 (2026-05-08)
 
+Features:
+
+- Play button added to artist detail pages, with the same behaviour as album and playlist play buttons.
+- The play button on album, playlist, and artist detail pages now toggles play/pause/resume.
+- Filter controls on artist detail pages are now icon-only, matching the design of album and playlist detail pages.
+
 Code changes:
 
 - Migrated build tooling from Create React App (CRA) to Vite 8.

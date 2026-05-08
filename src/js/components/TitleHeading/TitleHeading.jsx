@@ -93,7 +93,7 @@ const TitleHeading = ({
                     <span className={style.shuffleIcon}>
                       <Icon icon="ShuffleIcon" cover stroke strokeWidth={1.4} />
                     </span>
-                    <span className={style.shuffleText}>Shuffle</span>
+                    {/* <span className={style.shuffleText}>Shuffle</span> */}
                   </button>
                 </>
               )}

@@ -231,57 +231,59 @@ const Title = ({
         )
       }
       optionsMenu={
-        <FilterMenu
-          variant="Large"
-          icon="CogIcon"
-          iconStrokeWidth={1.2}
-          setter={setColumnVisibility}
-          entries={[
-            {
-              label: 'Title',
-              disabled: true,
-              checked: true,
-            },
-            {
-              label: 'Artist',
-              attr: 'colAlbumArtist',
-              checked: colOptions.artist,
-            },
-            {
-              label: 'Audio codec',
-              attr: 'colAlbumCodec',
-              checked: colOptions.codec,
-            },
-            {
-              label: 'Bitrate',
-              attr: 'colAlbumBitrate',
-              checked: colOptions.bitrate,
-            },
-            {
-              label: 'Duration',
-              attr: 'colAlbumDuration',
-              checked: colOptions.duration,
-            },
-            ...(platformOpts?.enableIsFavourite
-              ? [
-                  {
-                    label: 'Favourite',
-                    attr: 'colAlbumIsFavourite',
-                    checked: colOptions.isFavourite,
-                  },
-                ]
-              : []),
-            ...(platformOpts?.enableUserRating
-              ? [
-                  {
-                    label: 'Rating',
-                    attr: 'colAlbumUserRating',
-                    checked: colOptions.userRating,
-                  },
-                ]
-              : []),
-          ]}
-        />
+        <div>
+          <FilterMenu
+            variant="Large"
+            icon="CogIcon"
+            iconStrokeWidth={1.2}
+            setter={setColumnVisibility}
+            entries={[
+              {
+                label: 'Title',
+                disabled: true,
+                checked: true,
+              },
+              {
+                label: 'Artist',
+                attr: 'colAlbumArtist',
+                checked: colOptions.artist,
+              },
+              {
+                label: 'Audio codec',
+                attr: 'colAlbumCodec',
+                checked: colOptions.codec,
+              },
+              {
+                label: 'Bitrate',
+                attr: 'colAlbumBitrate',
+                checked: colOptions.bitrate,
+              },
+              {
+                label: 'Duration',
+                attr: 'colAlbumDuration',
+                checked: colOptions.duration,
+              },
+              ...(platformOpts?.enableIsFavourite
+                ? [
+                    {
+                      label: 'Favourite',
+                      attr: 'colAlbumIsFavourite',
+                      checked: colOptions.isFavourite,
+                    },
+                  ]
+                : []),
+              ...(platformOpts?.enableUserRating
+                ? [
+                    {
+                      label: 'Rating',
+                      attr: 'colAlbumUserRating',
+                      checked: colOptions.userRating,
+                    },
+                  ]
+                : []),
+            ]}
+          />
+        </div>
       }
       showPlay={true}
       isLoaded={isLoaded}
