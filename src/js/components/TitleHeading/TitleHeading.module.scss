@@ -201,6 +201,7 @@
 .subtitle {
   margin-top: 5px;
   font-size: 14px;
+  line-height: 20px;
   font-weight: bold;
   color: var(--color-opacity-06);
 
@@ -216,6 +217,7 @@
 .detail {
   margin-top: 4px;
   font-size: 12px;
+  line-height: 17px;
   color: var(--color-opacity-06);
 
   :global(.cq-800) & {
@@ -258,18 +260,19 @@
   border-radius: 6px;
 
   font-size: 12px;
+  line-height: 16px;
   font-weight: bold;
   color: var(--color-primary-background);
 
   :global(.cq-800) & {
-    padding: 3px 11px;
+    padding: 3px 10px;
   }
 
   @include mixins.focus-self-outline;
 }
 
 .shuffleButton {
-  min-width: 44px;
+  min-width: 38px;
 }
 
 .playIcon,

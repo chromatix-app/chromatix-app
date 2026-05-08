@@ -405,7 +405,7 @@ const Title = ({
         </>
       }
       optionsMenu={
-        <div>
+        <div className="filterIconWrap">
           {/* <FilterToggle
             value={viewArtistAlbums}
             options={[
