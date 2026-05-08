@@ -14,6 +14,7 @@ Code changes:
 - Replaced Jest (via `react-scripts`) with Vitest as the test runner.
 - JS bundle split: Radix UI extracted into a separate chunk for better long-term caching.
 - `@types/react` and `@types/react-dom` pinned to v18 to match the React 18 runtime.
+- Added `isStoreReady()` guard to all bridge functions to prevent premature API calls during Vite HMR before the Redux store has been hydrated from localStorage.
 
 <!-- CHANGELOG SPLIT MARKER -->
 
