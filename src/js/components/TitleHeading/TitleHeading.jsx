@@ -25,6 +25,8 @@ const TitleHeading = ({
   showPlay,
   optionsMenu,
   handlePlay,
+  isLoaded = false,
+  isPlaying = false,
   filters,
   padding = true,
 }) => {
@@ -72,17 +74,30 @@ const TitleHeading = ({
             <div className={style.buttons}>
               {showPlay && (
                 <>
-                  <button className={style.playButton} onClick={() => handlePlay && handlePlay(false)}>
+                  <button
+                    className={style.playButton}
+                    onClick={() =>
+                      isPlaying
+                        ? dispatch.playerModel.playerPause()
+                        : isLoaded
+                          ? dispatch.playerModel.playerResume()
+                          : handlePlay && handlePlay(false)
+                    }
+                  >
                     <span className={style.playIcon}>
-                      <Icon icon="PlayFilledIcon" cover />
+                      <Icon icon={isPlaying ? 'PauseFilledIcon' : 'PlayFilledIcon'} cover />
                     </span>
-                    <span className={style.playText}>Play</span>
+                    <span className={style.playText}>{isPlaying ? 'Pause' : 'Play'}</span>
                   </button>
-                  <button className={style.shuffleButton} onClick={() => handlePlay && handlePlay(true)}>
+                  <button
+                    className={style.shuffleButton}
+                    onClick={() => handlePlay && handlePlay(true)}
+                    aria-label="Shuffle"
+                  >
                     <span className={style.shuffleIcon}>
                       <Icon icon="ShuffleIcon" cover stroke strokeWidth={1.4} />
                     </span>
-                    <span className={style.shuffleText}>Shuffle</span>
+                    {/* <span className={style.shuffleText}>Shuffle</span> */}
                   </button>
                 </>
               )}
