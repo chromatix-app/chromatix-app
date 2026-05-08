@@ -10,6 +10,7 @@
     "start": "npm run dev",
     "dev": "VITE_VERSION=$npm_package_version VITE_DATE=$(date +%s) vite",
     "build": "VITE_VERSION=$npm_package_version VITE_DATE=$(date +%s) vite build",
+    "preview": "vite preview",
     "release:stage": "release-it --config .release-staging.json",
     "release:staging": "npm run release:stage",
     "release:prod": "release-it --config .release-production.json",
