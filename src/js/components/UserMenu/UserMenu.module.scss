@@ -168,6 +168,7 @@
 
 .menu {
   overflow-y: auto;
+  z-index: 555;
   min-width: 100%;
   max-height: calc(100vh - 95px);
   max-height: calc(100svh - 95px);
@@ -177,7 +178,6 @@
   border: 1px solid var(--color-secondary-border);
   border-radius: 9px;
   box-shadow: var(--shadow-md);
-  z-index: 555;
   font-size: 13px;
   line-height: 16px;
   text-align: left;

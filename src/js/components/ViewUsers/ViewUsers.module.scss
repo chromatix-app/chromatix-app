@@ -73,9 +73,9 @@
 
 .thumb {
   overflow: hidden;
+  aspect-ratio: 1 / 1;
   background: var(--color-opacity-01);
   border-radius: 6px;
-  aspect-ratio: 1 / 1;
 }
 
 .thumbIcon {

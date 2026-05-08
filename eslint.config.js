@@ -33,7 +33,7 @@ export default tseslint.config(
     languageOptions: {
       globals: { ...globals.browser, ...globals.es2020 },
       parserOptions: {
-        projectService: { allowDefaultProject: ['lib/*.mjs'] },
+        projectService: { allowDefaultProject: ['lib/*.mjs', 'postcss.config.js'] },
         tsconfigRootDir: import.meta.dirname,
       },
     },

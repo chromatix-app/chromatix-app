@@ -51,13 +51,13 @@
 
 .content {
   left: 11px;
+  z-index: 999;
   width: 350px;
   padding: 4px;
   background: var(--color-secondary-background);
   border: 1px solid var(--color-secondary-border);
   border-radius: 9px;
   box-shadow: var(--shadow-md);
-  z-index: 999;
   font-size: 12px;
   line-height: 14px;
 
@@ -139,8 +139,8 @@
   }
 
   &[data-disabled] {
-    color: var(--color-opacity-04);
     cursor: not-allowed;
+    color: var(--color-opacity-04);
   }
 }
 

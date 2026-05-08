@@ -42,10 +42,10 @@
 .header {
   position: sticky;
   top: 90px;
+  z-index: 3;
   padding: 0 20px 8px;
   margin: 0 -5px 20px;
   background: var(--color-primary-background);
-  z-index: 3;
   font-weight: bold;
 
   :global(.cq-800) & {
