@@ -25,7 +25,7 @@ export const FilterMenu = ({ variant, label, icon = 'EllipsisCircleIcon', iconSt
           <span className={style.icon}>
             <Icon icon={icon} cover stroke strokeWidth={iconStrokeWidth} />
           </span>
-          <span>{label}</span>
+          <span className={style.label}>{label}</span>
           {/* <RadixMenu.Value /> */}
         </RadixMenu.Trigger>
 

@@ -32,7 +32,7 @@ export const FilterSelect = ({ variant, value, options, setter, icon = 'ArrowsVe
           <span className={style.icon}>
             <Icon icon={icon} cover stroke />
           </span>
-          <span className={style.value}>
+          <span className={style.label}>
             <RadixSelect.Value />
           </span>
         </RadixSelect.Trigger>

@@ -462,6 +462,7 @@ const Title = ({
               />
               <FilterMenu
                 variant="Large"
+                label="Options"
                 icon="CogIcon"
                 setter={setColumnVisibility}
                 entries={[
@@ -498,6 +499,7 @@ const Title = ({
           {viewArtistAlbums === 'list' && (
             <FilterMenu
               variant="Large"
+              label="Options"
               icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
@@ -574,6 +576,7 @@ const Title = ({
           {viewArtistAlbums === 'track' && (
             <FilterMenu
               variant="Large"
+              label="Options"
               icon="CogIcon"
               setter={setColumnVisibility}
               entries={[

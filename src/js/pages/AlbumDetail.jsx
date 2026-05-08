@@ -234,6 +234,7 @@ const Title = ({
         <div>
           <FilterMenu
             variant="Large"
+            label="Options"
             icon="CogIcon"
             iconStrokeWidth={1.2}
             setter={setColumnVisibility}
