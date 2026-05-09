@@ -1,15 +1,15 @@
 import { useSelector } from 'react-redux';
 
-const useGotRequiredData = () => {
-  const allUsers = useSelector(({ appModel }) => appModel.allUsers);
-  const allServers = useSelector(({ appModel }) => appModel.allServers);
-  const allLibraries = useSelector(({ appModel }) => appModel.allLibraries);
+const useGotRequiredData = (): boolean => {
+  const allUsers = useSelector(({ appModel }: any) => appModel.allUsers);
+  const allServers = useSelector(({ appModel }: any) => appModel.allServers);
+  const allLibraries = useSelector(({ appModel }: any) => appModel.allLibraries);
 
-  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const currentService = useSelector(({ appModel }: any) => appModel.currentService);
 
-  const currentUser = useSelector(({ sessionModel }) => sessionModel.currentUser);
-  const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
-  const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
+  const currentUser = useSelector(({ sessionModel }: any) => sessionModel.currentUser);
+  const currentServer = useSelector(({ sessionModel }: any) => sessionModel.currentServer);
+  const currentLibrary = useSelector(({ sessionModel }: any) => sessionModel.currentLibrary);
 
   // If we don't have users data yet, we're not ready
   if (!allUsers) {
