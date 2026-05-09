@@ -430,7 +430,9 @@ const NowPlayingLarge = ({ entry, virtualEntry }) => {
 
           {queueAlbum && entry.album && entry.albumLink && (
             <div className={clsx(style.expandedAlbum, 'text-trim')}>
-              <NavLink to={entry.albumLink}>{entry.album}</NavLink>
+              <NavLink to={entry.albumLink} tabIndex={-1}>
+                {entry.album}
+              </NavLink>
             </div>
           )}
 
