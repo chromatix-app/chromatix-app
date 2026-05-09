@@ -93,7 +93,7 @@ const TitleHeading = ({
                         <Icon icon="PauseFilledIcon" cover />
                       </span>
                     )}
-                    <span className={style.playText}>{isPlaying ? 'Pause' : 'Play'}</span>
+                    <span className={style.playText}>{isPlaying ? 'Pause' : isLoaded ? 'Resume' : 'Play'}</span>
                   </button>
                   <button
                     className={style.shuffleButton}
