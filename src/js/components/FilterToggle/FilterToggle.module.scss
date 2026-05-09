@@ -24,7 +24,7 @@
   @include mixins.focus-self-outline;
 
   .wrapLarge & {
-    padding: 5px 11px;
+    padding: 5px 12px;
     background: var(--color-secondary-card);
     border: 1px solid var(--color-tertiary-background);
   }
