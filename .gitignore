@@ -1,4 +1,5 @@
 node_modules/
+.eslintcache
 .sass-cache/
 .ftpconfig
 .DS_Store

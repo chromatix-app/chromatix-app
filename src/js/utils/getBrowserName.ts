@@ -13,13 +13,12 @@ const getBrowserName = (): string => {
 
   const browsers: BrowserInfo[] = [
     { name: 'Microsoft Edge', identifier: 'Edg' },
-    { name: 'Brave', identifier: 'Brave' },
     { name: 'Opera', identifier: ['Opera', 'OPR'] },
-    { name: 'Chrome', identifier: 'Chrome' },
+    { name: 'Samsung Internet', identifier: 'SamsungBrowser' },
     { name: 'Chromium', identifier: 'Chromium' },
+    { name: 'Chrome', identifier: 'Chrome' },
     { name: 'Firefox', identifier: 'Firefox' },
     { name: 'Safari', identifier: 'Safari' },
-    { name: 'Samsung Internet', identifier: 'SamsungBrowser' },
     { name: 'Microsoft Internet Explorer', identifier: 'Trident' },
   ];
 
