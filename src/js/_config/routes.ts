@@ -367,34 +367,24 @@ export const authRoutes = [
   ...(isLocal
     ? [
         {
-          path: '/components',
+          path: '/dev',
+          exact: true,
+          component: 'DevIndex',
+        },
+        {
+          path: '/dev/components',
           exact: true,
           component: 'DevComponents',
         },
         {
-          path: '/dev-components',
-          exact: true,
-          redirect: '/components',
-        },
-        {
-          path: '/icons',
+          path: '/dev/icons',
           exact: true,
           component: 'DevIcons',
         },
         {
-          path: '/dev-icons',
-          exact: true,
-          redirect: '/icons',
-        },
-        {
-          path: '/modals',
+          path: '/dev/modals',
           exact: true,
           component: 'DevModals',
-        },
-        {
-          path: '/dev-modals',
-          exact: true,
-          redirect: '/modals',
         },
       ]
     : []),

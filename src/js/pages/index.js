@@ -55,6 +55,7 @@ export { default as SettingsSidebar } from './SettingsSidebar';
 
 export { default as DevComponents } from './DevComponents';
 export { default as DevIcons } from './DevIcons';
+export { default as DevIndex } from './DevIndex';
 export { default as DevModals } from './DevModals';
 
 export { default as Error404Auth } from './Error404Auth';

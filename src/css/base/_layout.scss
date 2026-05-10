@@ -399,46 +399,47 @@
 
   // margins + padding
   @for $i from 0 through 10 {
-    $units: null;
     $i5: 5;
+    $iUnits: null;
+    $i5units: px;
     @if $i > 0 {
       $i5: #{$i}5;
       $i: #{$i}0;
-      $units: px;
+      $iUnits: px;
     }
     .mt#{$key}-#{$i} {
-      margin-top: #{$i}#{$units};
+      margin-top: #{$i}#{$iUnits};
     }
     .mt#{$key}-#{$i5} {
-      margin-top: #{$i5}#{$units};
+      margin-top: #{$i5}#{$i5units};
     }
     .mb-#{$key}#{$i} {
-      margin-bottom: #{$i}#{$units};
+      margin-bottom: #{$i}#{$iUnits};
     }
     .mb#{$key}-#{$i5} {
-      margin-bottom: #{$i5}#{$units};
+      margin-bottom: #{$i5}#{$i5units};
     }
     // .mx-#{$key}#{$i} {
-    //   margin-left: #{$i}#{$units};
-    //   margin-right: #{$i}#{$units};
+    //   margin-left: #{$i}#{$iUnits};
+    //   margin-right: #{$i}#{$iUnits};
     // }
     // .my-#{$key}#{$i} {
-    //   margin-top: #{$i}#{$units};
-    //   margin-bottom: #{$i}#{$units};
+    //   margin-top: #{$i}#{$iUnits};
+    //   margin-bottom: #{$i}#{$iUnits};
     // }
     .pt-#{$key}#{$i} {
-      padding-top: #{$i}#{$units};
+      padding-top: #{$i}#{$iUnits};
     }
     // .pb-#{$key}#{$i} {
-    //   padding-bottom: #{$i}#{$units};
+    //   padding-bottom: #{$i}#{$iUnits};
     // }
     // .px-#{$key}#{$i} {
-    //   padding-left: #{$i}#{$units};
-    //   padding-right: #{$i}#{$units};
+    //   padding-left: #{$i}#{$iUnits};
+    //   padding-right: #{$i}#{$iUnits};
     // }
     // .py-#{$key}#{$i} {
-    //   padding-top: #{$i}#{$units};
-    //   padding-bottom: #{$i}#{$units};
+    //   padding-top: #{$i}#{$iUnits};
+    //   padding-bottom: #{$i}#{$iUnits};
     // }
   }
 }
