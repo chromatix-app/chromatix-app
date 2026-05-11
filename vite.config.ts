@@ -26,6 +26,7 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   server: {
+    host: true,
     port: 3000,
     open: true,
   },
