@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import clsx from 'clsx';
 
@@ -22,20 +22,14 @@ export const PageHome = () => {
   const dispatch = useDispatch();
   const downloadsRef = useRef(null);
 
-  const { macSiliconDownloadUrl, macUniversalDownloadUrl, windowsDownloadUrl } = useGetDownloadLinks();
+  const downloadLinks = useGetDownloadLinks();
 
   const scrollToDownloads = () => {
     downloadsRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const logDownloadMacSilicon = () => {
-    analyticsEvent('Download / Home / macOS');
-  };
-  const logDownloadMacUniversal = () => {
-    analyticsEvent('Download / Home / macOS (Universal)');
-  };
-  const logDownloadWindows = () => {
-    analyticsEvent('Download / Home / Windows');
+  const logDownload = (label) => {
+    analyticsEvent(`Download / Home / ${label}`);
   };
 
   return (
@@ -149,60 +143,33 @@ export const PageHome = () => {
 
               <div className={style.downloadsFlex}>
                 <div>
-                  <a
-                    className={style.downloadsLink}
-                    href={macSiliconDownloadUrl}
-                    target="_blank"
-                    rel="noreferrer nofollow"
-                    draggable="false"
-                    onClick={logDownloadMacSilicon}
-                  >
-                    <span className={style.downloadsIcon}>
-                      <Icon icon="AppleSiteIcon" cover />
-                    </span>
-                    Download for macOS (Apple Silicon)
-                  </a>
-
-                  <br />
-
-                  <a
-                    className={style.downloadsLink}
-                    href={macUniversalDownloadUrl}
-                    target="_blank"
-                    rel="noreferrer nofollow"
-                    draggable="false"
-                    onClick={logDownloadMacUniversal}
-                  >
-                    <span className={style.downloadsIcon}>
-                      <Icon icon="AppleSiteIcon" cover />
-                    </span>
-                    Download for macOS (Intel)
-                  </a>
-
-                  <br />
-
-                  <a
-                    className={style.downloadsLink}
-                    href={windowsDownloadUrl}
-                    target="_blank"
-                    rel="noreferrer nofollow"
-                    draggable="false"
-                    onClick={logDownloadWindows}
-                  >
-                    <span className={style.downloadsIcon}>
-                      <Icon icon="WindowsSiteIcon" cover />
-                    </span>
-                    Download for Windows
-                  </a>
-
-                  <br />
-
-                  <div className={style.downloadsLink}>
-                    <span className={style.downloadsIcon}>
-                      <Icon icon="LinuxSiteIcon" cover />
-                    </span>
-                    Linux coming soon
-                  </div>
+                  {downloadLinks.map(({ icon, label, url }, index) => (
+                    <React.Fragment key={label}>
+                      {index > 0 && <br />}
+                      {url ? (
+                        <a
+                          className={style.downloadsLink}
+                          href={url}
+                          target="_blank"
+                          rel="noreferrer nofollow"
+                          draggable="false"
+                          onClick={() => logDownload(label)}
+                        >
+                          <span className={style.downloadsIcon}>
+                            <Icon icon={icon} cover />
+                          </span>
+                          {label}
+                        </a>
+                      ) : (
+                        <div className={style.downloadsLink}>
+                          <span className={style.downloadsIcon}>
+                            <Icon icon={icon} cover />
+                          </span>
+                          {label}
+                        </div>
+                      )}
+                    </React.Fragment>
+                  ))}
                 </div>
               </div>
             </div>
