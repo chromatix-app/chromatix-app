@@ -21,6 +21,7 @@
     left: 80px;
   }
 
+  html[data-electron-platform='lin'] &,
   html[data-electron-platform='win'] & {
     right: 140px;
   }

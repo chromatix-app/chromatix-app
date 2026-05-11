@@ -7,6 +7,7 @@
   height: 100%;
   border-left: 1px solid var(--color-secondary-border);
 
+  :global(html[data-electron-platform='lin']) &,
   :global(html[data-electron-platform='win']) & {
     padding-top: 30px;
   }
@@ -20,6 +21,7 @@
   background: var(--color-secondary-background);
   font-size: 12px;
 
+  :global(html[data-electron-platform='lin']) &,
   :global(html[data-electron-platform='win']) & {
     // height: calc(100% - 30px);
     padding-top: 0px;

@@ -24,6 +24,7 @@ const useElectronStatus = (): void => {
   const isDisabled = !trackCurrent ? true : false;
   const isDisabledRef = useRef(isDisabled);
 
+  const isLinuxApp = envData.isElectron && envData.electronPlatformId === 'lin';
   const isWindowsApp = envData.isElectron && envData.electronPlatformId === 'win';
 
   // Update a ref here to avoid closure issues
@@ -83,7 +84,7 @@ const useElectronStatus = (): void => {
           }
         });
         window.ipcRenderer.on('updateMenu', function (_event: any, message: any) {
-          if (isWindowsApp) {
+          if (isLinuxApp || isWindowsApp) {
             dispatch.appModel.setAppState({ electronMenu: JSON.parse(message) });
           }
         });

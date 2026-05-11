@@ -1,5 +1,6 @@
 // Custom scrollbars (Windows only)
 
+html[data-scrollbars-custom='true'][data-os='Linux'],
 html[data-scrollbars-custom='true'][data-os='Windows'] {
   ::-webkit-scrollbar {
     width: var(--scrollbar-width); // For vertical scrollbar

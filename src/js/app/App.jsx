@@ -123,7 +123,7 @@ const App = () => {
 
   // toggle scrollbar preference data attributes on html (Windows only)
   useEffect(() => {
-    if (envData.osName !== 'Windows') return;
+    if (envData.osName !== 'Linux' && envData.osName !== 'Windows') return;
     document.documentElement.setAttribute('data-scrollbars-custom', winCustomScrollbars);
     document.documentElement.setAttribute('data-scrollbars-autohide', winAutoHideScrollbars);
   }, [winCustomScrollbars, winAutoHideScrollbars]);
@@ -382,7 +382,7 @@ const AppMain = () => {
             <ControlBar />
           </div>
           <div ref={contentRef} id="content" className={clsx('layout-content', contentContainerClass)}>
-            {envData.electronPlatformId !== 'win' && <UserMenu />}
+            {envData.electronPlatformId !== 'lin' && envData.electronPlatformId !== 'win' && <UserMenu />}
             <BrowserRouteSwitch />
           </div>
           {queueIsVisible && (
