@@ -19,6 +19,7 @@
   }
 
   &WithoutLibrary {
+    :global(html[data-electron-platform='lin']) &,
     :global(html[data-electron-platform='win']) & {
       // left: 20px;
       // right: auto;
@@ -84,6 +85,7 @@
   }
 
   .wrapWithoutLibrary & {
+    :global(html[data-electron-platform='lin']) &,
     :global(html[data-electron-platform='win']) & {
       justify-content: flex-start;
       margin: 0 auto 0 0;
@@ -199,6 +201,7 @@
     padding-top: 4px;
   }
 
+  :global(html[data-electron-platform='lin']) &,
   :global(html[data-electron-platform='win']) & {
     font-weight: 600;
     letter-spacing: 0.04em;

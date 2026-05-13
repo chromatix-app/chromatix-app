@@ -46,6 +46,9 @@ export class MockHTMLAudioElement {
   }
 
   load() {
+    // Real browsers reset currentTime to 0 and pause on load()
+    this.currentTime = 0;
+    this.paused = true;
     // Simulate loading sequence
     setTimeout(() => {
       this.triggerEvent('loadstart');

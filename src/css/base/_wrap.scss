@@ -63,6 +63,7 @@
     width: 220px;
   }
 
+  html[data-electron-platform='lin'] &,
   html[data-electron-platform='win'] & {
     width: 207px;
 
@@ -94,6 +95,7 @@
     width: 320px;
   }
 
+  html[data-electron-platform='lin'] &,
   html[data-electron-platform='win'] & {
     &:after {
       content: '';

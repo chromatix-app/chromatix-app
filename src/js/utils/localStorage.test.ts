@@ -70,9 +70,6 @@ describe('Testing "setLocalStorage" and "getLocalStorage" functions', () => {
 
   // CORRUPTION / TAMPERING
 
-  // getLocalStorage has no guard against corrupt data — CryptoJS silently returns
-  // an empty string when decryption fails. This test documents that behaviour so
-  // future refactors don't accidentally change it.
   test('Returns an empty string when the stored value is not valid ciphertext', () => {
     localStorage.setItem('test-key', 'not-valid-ciphertext');
     expect(getLocalStorage('test-key')).toBe('');

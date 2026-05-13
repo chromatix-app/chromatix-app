@@ -18,14 +18,15 @@ const envData = getEnvironment();
 // ======================================================================
 
 export const SettingsAppearance = () => {
-  const isWin = envData.osName === 'Windows';
+  const isLinuxOS = envData.osName === 'Linux';
+  const isWindowsOS = envData.osName === 'Windows';
 
   return (
     <div className={style.wrap}>
       <PresetThemeSettings />
       <CustomThemeSettings />
       <DisplaySettings />
-      {isWin && <ScrollbarSettings />}
+      {(isLinuxOS || isWindowsOS) && <ScrollbarSettings />}
     </div>
   );
 };
