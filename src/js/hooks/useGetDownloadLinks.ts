@@ -10,43 +10,65 @@ interface GitHubRelease {
   assets: GitHubAsset[];
 }
 
-interface DownloadLink {
+interface DownloadLinkAsset {
+  kind: 'link';
   icon: string;
   label: string;
-  url: string | null;
+  url: string;
 }
+
+interface DownloadLinkNote {
+  kind: 'note';
+  icon: string;
+  label: string;
+}
+
+type DownloadLink = DownloadLinkAsset | DownloadLinkNote;
 
 const FALLBACK_URL = 'https://github.com/chromatix-app/chromatix-release/releases/latest';
 
-interface DownloadLinkConfig {
+interface DownloadLinkConfigBase {
   icon: string;
   label: string;
-  assetMatcher: ((name: string) => boolean) | null;
 }
+
+interface DownloadLinkConfigAsset extends DownloadLinkConfigBase {
+  kind: 'link';
+  assetMatcher: (name: string) => boolean;
+}
+
+interface DownloadLinkConfigNote extends DownloadLinkConfigBase {
+  kind: 'note';
+}
+
+type DownloadLinkConfig = DownloadLinkConfigAsset | DownloadLinkConfigNote;
 
 const DOWNLOAD_CONFIGS: DownloadLinkConfig[] = [
   // macOS
   {
+    kind: 'link',
     icon: 'AppleSiteIcon',
     label: 'Download for macOS (Apple Silicon)',
     assetMatcher: (name) => name.endsWith('arm64.dmg'),
   },
   {
+    kind: 'link',
     icon: 'AppleSiteIcon',
-    label: 'Download for macOS (Intel)',
+    label: 'Download for macOS (Universal)',
     assetMatcher: (name) => name.endsWith('universal.dmg'),
   },
   // Windows
   {
+    kind: 'link',
     icon: 'WindowsSiteIcon',
     label: 'Download for Windows',
     assetMatcher: (name) => name.endsWith('.exe'),
   },
   // Linux
   {
+    kind: 'note',
     icon: 'LinuxSiteIcon',
     label: 'Linux coming soon',
-    assetMatcher: null,
   },
   // {
   //   icon: 'LinuxSiteIcon',
@@ -82,30 +104,52 @@ const DOWNLOAD_CONFIGS: DownloadLinkConfig[] = [
   // },
 ];
 
-const DEFAULT_LINKS: DownloadLink[] = DOWNLOAD_CONFIGS.map(({ icon, label, assetMatcher }) => ({
-  icon,
-  label,
-  url: assetMatcher ? FALLBACK_URL : null,
-}));
+const getDownloadLink = (config: DownloadLinkConfig, assets?: GitHubAsset[]): DownloadLink => {
+  if (config.kind === 'note') {
+    return {
+      kind: 'note',
+      icon: config.icon,
+      label: config.label,
+    };
+  }
+
+  return {
+    kind: 'link',
+    icon: config.icon,
+    label: config.label,
+    url: assets?.find((asset) => config.assetMatcher(asset.name))?.browser_download_url ?? FALLBACK_URL,
+  };
+};
+
+const DEFAULT_LINKS: DownloadLink[] = DOWNLOAD_CONFIGS.map((config) => getDownloadLink(config));
 
 const useGetDownloadLinks = (): DownloadLink[] => {
   const [downloadLinks, setDownloadLinks] = useState<DownloadLink[]>(DEFAULT_LINKS);
 
   useEffect(() => {
+    let isMounted = true;
+
     axios
       .get<GitHubRelease>('https://api.github.com/repos/chromatix-app/chromatix-release/releases/latest')
       .then((response) => {
+        if (!isMounted) {
+          return;
+        }
+
         const assets = response.data.assets;
-        setDownloadLinks(
-          DOWNLOAD_CONFIGS.map(({ icon, label, assetMatcher }) => ({
-            icon,
-            label,
-            url: assetMatcher
-              ? (assets.find((asset) => assetMatcher(asset.name))?.browser_download_url ?? FALLBACK_URL)
-              : null,
-          }))
-        );
+        setDownloadLinks(DOWNLOAD_CONFIGS.map((config) => getDownloadLink(config, assets)));
+      })
+      .catch(() => {
+        if (!isMounted) {
+          return;
+        }
+
+        setDownloadLinks(DEFAULT_LINKS);
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return downloadLinks;

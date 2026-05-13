@@ -143,29 +143,29 @@ export const PageHome = () => {
 
               <div className={style.downloadsFlex}>
                 <div>
-                  {downloadLinks.map(({ icon, label, url }, index) => (
-                    <React.Fragment key={label}>
+                  {downloadLinks.map((downloadLink, index) => (
+                    <React.Fragment key={downloadLink.label}>
                       {index > 0 && <br />}
-                      {url ? (
+                      {downloadLink.kind === 'link' ? (
                         <a
                           className={style.downloadsLink}
-                          href={url}
+                          href={downloadLink.url}
                           target="_blank"
                           rel="noreferrer nofollow"
                           draggable="false"
-                          onClick={() => logDownload(label)}
+                          onClick={() => logDownload(downloadLink.label)}
                         >
                           <span className={style.downloadsIcon}>
-                            <Icon icon={icon} cover />
+                            <Icon icon={downloadLink.icon} cover />
                           </span>
-                          {label}
+                          {downloadLink.label}
                         </a>
                       ) : (
                         <div className={style.downloadsLink}>
                           <span className={style.downloadsIcon}>
-                            <Icon icon={icon} cover />
+                            <Icon icon={downloadLink.icon} cover />
                           </span>
-                          {label}
+                          {downloadLink.label}
                         </div>
                       )}
                     </React.Fragment>
