@@ -1,12 +1,7 @@
 // Generated using GitHub Copilot
 
-import CryptoJS from 'crypto-js';
-import config from 'js/_config/config';
-
 import getLocalStorage from './getLocalStorage';
 import setLocalStorage from './setLocalStorage';
-
-const encryptionKey = config.encryptionKey;
 
 describe('Testing "setLocalStorage" and "getLocalStorage" functions', () => {
   beforeEach(() => {
@@ -75,20 +70,8 @@ describe('Testing "setLocalStorage" and "getLocalStorage" functions', () => {
 
   // CORRUPTION / TAMPERING
 
-  test('Returns null when the stored value is not valid ciphertext', () => {
+  test('Returns an empty string when the stored value is not valid ciphertext', () => {
     localStorage.setItem('test-key', 'not-valid-ciphertext');
-    expect(getLocalStorage('test-key')).toBeNull();
-  });
-
-  test('Returns a legacy value encrypted without the payload prefix', () => {
-    const legacyEncryptedValue = CryptoJS.AES.encrypt('legacy-value', encryptionKey).toString();
-    localStorage.setItem('test-key', legacyEncryptedValue);
-    expect(getLocalStorage('test-key')).toBe('legacy-value');
-  });
-
-  test('Returns null for a legacy encrypted empty string', () => {
-    const legacyEncryptedValue = CryptoJS.AES.encrypt('', encryptionKey).toString();
-    localStorage.setItem('test-key', legacyEncryptedValue);
-    expect(getLocalStorage('test-key')).toBeNull();
+    expect(getLocalStorage('test-key')).toBe('');
   });
 });

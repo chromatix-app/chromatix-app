@@ -121,7 +121,7 @@ const App = () => {
     document.documentElement.setAttribute('data-access-focus', accessibilityFocus);
   }, [accessibilityFocus]);
 
-  // toggle scrollbar preference data attributes on html (Windows only)
+  // toggle scrollbar preference data attributes on html (Linux and Windows only)
   useEffect(() => {
     if (envData.osName !== 'Linux' && envData.osName !== 'Windows') return;
     document.documentElement.setAttribute('data-scrollbars-custom', winCustomScrollbars);

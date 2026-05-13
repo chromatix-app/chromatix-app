@@ -3,7 +3,6 @@ import CryptoJS from 'crypto-js';
 import config from 'js/_config/config';
 
 const encryptionKey = config.encryptionKey;
-const storagePayloadPrefix = '__chromatix__:';
 
 /**
  * Sets an encrypted value in localStorage
@@ -13,8 +12,7 @@ const storagePayloadPrefix = '__chromatix__:';
 
 const setLocalStorage = (key: string, value: string | number | boolean | object): void => {
   const stringValue: string = typeof value === 'object' ? JSON.stringify(value) : String(value);
-  const payload: string = `${storagePayloadPrefix}${stringValue}`;
-  const encryptedValue: string = CryptoJS.AES.encrypt(payload, encryptionKey).toString();
+  const encryptedValue: string = CryptoJS.AES.encrypt(stringValue, encryptionKey).toString();
   window.localStorage.setItem(key, encryptedValue);
 };
 

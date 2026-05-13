@@ -70,6 +70,9 @@ const DOWNLOAD_CONFIGS: DownloadLinkConfig[] = [
     icon: 'LinuxSiteIcon',
     label: 'Linux coming soon',
   },
+
+  // [NOTE] The following Linux downloaded options will be uncommented, tested and added in a future release.
+
   // {
   //   icon: 'LinuxSiteIcon',
   //   label: 'Download for Linux (AppImage, ARM64)',
