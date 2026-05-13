@@ -230,7 +230,7 @@ function useColorTheme(): void {
     styleElement.textContent = cssText;
 
     // Send updated colors to Electron main process
-    sendToElectron('win', 'color-theme', {
+    sendToElectron(['win', 'lin'], 'color-theme', {
       background: hasQueueVisible && !fullPageMode ? colorSecondaryBackground : colorPrimaryBackground,
       text: colorText,
       primary: colorCore,

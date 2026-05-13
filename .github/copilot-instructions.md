@@ -193,7 +193,12 @@ Set via `import.meta.env` (Vite convention, prefixed `VITE_`):
 - Use `getEnvironment()` from `js/utils` as the single source of truth for environment, browser, OS, and Electron info — do not access `import.meta.env` or `navigator` directly for these
 - Use `getLocalStorage` / `setLocalStorage` from `js/utils` for all localStorage access
 - Use `safeEncodeURIComponent` / `safeDecodeURIComponent` from `js/utils` rather than the native globals
-- Section comments use a consistent banner style: `// ======================================================================`
+- Section comments use a consistent three-line banner style — a divider, a title, then a closing divider:
+  ```
+  // ======================================================================
+  // SECTION TITLE
+  // ======================================================================
+  ```
 - SVG components use the Vite-native `?react` import suffix: `import FooIcon from './foo.svg?react'`
 - Do **not** use Prettier as an ESLint plugin — run `npm run prettier` separately; `eslint-config-prettier` disables conflicting formatting rules
 

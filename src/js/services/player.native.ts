@@ -13,6 +13,7 @@ const preloadAtPercentage = 0.6;
 // ======================================================================
 
 let nextTrackSrc: string | null = null;
+let preloadedTrackSrc: string | null = null;
 let isNextTrackPreloaded = false;
 
 // ======================================================================
@@ -68,8 +69,12 @@ const setupPlayerElement = (
   element.volume = volumeMuted ? 0 : volumeLevel / 100;
   element.preload = 'auto';
 
-  element.addEventListener('loadstart', onLoadStart);
-  element.addEventListener('canplay', onCanPlay);
+  element.addEventListener('loadstart', () => {
+    if (getCurrentPlayerElement() === element) onLoadStart();
+  });
+  element.addEventListener('canplay', () => {
+    if (getCurrentPlayerElement() === element) onCanPlay();
+  });
   element.addEventListener('ended', onEnded);
   element.addEventListener('error', (event: Event) => onError({ event, playerElement: element }));
 };
@@ -106,13 +111,14 @@ export const unload = (): void => {
   isPreloading = false;
   isNextTrackPreloaded = false;
   nextTrackSrc = null;
+  preloadedTrackSrc = null;
 };
 
 export const loadTrack = (trackSrc: string, progress: number = 0, play: boolean = true): void => {
   console.log('%c--- player - loadTrack ---', 'color:#a18507');
 
   // First, try to use preloaded track if it matches
-  if (enablePreloading && isNextTrackPreloaded && nextTrackSrc === trackSrc) {
+  if (enablePreloading && isNextTrackPreloaded && nextTrackSrc === trackSrc && preloadedTrackSrc === trackSrc) {
     const success = switchToPreloadedTrack(progress, play);
     if (success) {
       console.log('%c--- player - used preloaded track ---', 'color:#a18507');
@@ -123,11 +129,14 @@ export const loadTrack = (trackSrc: string, progress: number = 0, play: boolean 
   // Fallback to regular loading
   const currentPlayerElement = getCurrentPlayerElement();
   if (currentPlayerElement) {
-    // Stop the other player if it's playing
+    // Stop the other player if it's playing, and discard any in-flight preload
     const otherPlayer = getNextPlayerElement();
     if (otherPlayer) {
       otherPlayer.pause();
     }
+    isPreloading = false;
+    isNextTrackPreloaded = false;
+    preloadedTrackSrc = null;
 
     currentPlayerElement.src = trackSrc;
     currentPlayerElement.load();
@@ -150,14 +159,19 @@ export const preloadNextTrack = (trackSrc: string): void => {
   if (nextPlayerElement && !isPreloading) {
     isPreloading = true;
     isNextTrackPreloaded = false;
+    preloadedTrackSrc = trackSrc;
     nextPlayerElement.src = trackSrc;
     nextPlayerElement.preload = 'auto'; // Ensure aggressive preloading
     nextPlayerElement.load();
 
+    // Capture src in closure so stale listeners from abandoned preloads are no-ops
+    const capturedSrc = trackSrc;
+
     // Try to load enough data for smooth playback
     nextPlayerElement.addEventListener(
-      'canplaythrough', // Wait for enough data to play through
+      'canplaythrough',
       () => {
+        if (preloadedTrackSrc !== capturedSrc) return;
         isPreloading = false;
         isNextTrackPreloaded = true;
         console.log('%c--- player - next track fully preloaded ---', 'color:#a18507');
@@ -165,16 +179,13 @@ export const preloadNextTrack = (trackSrc: string): void => {
       { once: true }
     );
 
-    // Fallback in case canplaythrough doesn't fire
+    // Reset preloading flag on error so future preloads are not permanently blocked
     nextPlayerElement.addEventListener(
-      'canplay',
+      'error',
       () => {
-        if (isPreloading) {
-          setTimeout(() => {
-            isPreloading = false;
-            isNextTrackPreloaded = true;
-          }, 500); // Small delay to ensure more data is buffered
-        }
+        if (preloadedTrackSrc !== capturedSrc) return;
+        isPreloading = false;
+        preloadedTrackSrc = null;
       },
       { once: true }
     );
@@ -207,6 +218,7 @@ const switchToPreloadedTrack = (progress: number = 0, play: boolean = true): boo
     // Reset preloading state
     isNextTrackPreloaded = false;
     nextTrackSrc = null;
+    preloadedTrackSrc = null;
 
     console.log('%c--- player - switched to preloaded track ---', 'color:#dac97f');
     return true;
@@ -292,10 +304,14 @@ export const setNextTrack = (trackSrc: string | null): void => {
   console.log('%c--- player - setNextTrack ---', 'color:#dac97f');
   nextTrackSrc = trackSrc;
   isNextTrackPreloaded = false;
+  isPreloading = false;
+  preloadedTrackSrc = null;
 };
 
 export const clearNextTrack = (): void => {
   console.log('%c--- player - clearNextTrack ---', 'color:#dac97f');
   nextTrackSrc = null;
   isNextTrackPreloaded = false;
+  isPreloading = false;
+  preloadedTrackSrc = null;
 };

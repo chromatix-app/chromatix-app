@@ -26,6 +26,7 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   server: {
+    host: true,
     port: 3000,
     open: true,
   },
@@ -57,5 +58,8 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./vitest.setup.ts'],
+    env: {
+      VITE_ENV: 'local',
+    },
   },
 });

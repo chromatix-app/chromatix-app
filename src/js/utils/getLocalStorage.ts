@@ -12,12 +12,17 @@ const encryptionKey = config.encryptionKey;
 
 const getLocalStorage = (key: string): string | null => {
   const encryptedValue: string | null = window.localStorage.getItem(key);
-  if (encryptedValue) {
+  if (!encryptedValue) {
+    return null;
+  }
+
+  try {
     const bytes = CryptoJS.AES.decrypt(encryptedValue, encryptionKey);
     const decryptedValue: string = bytes.toString(CryptoJS.enc.Utf8);
     return decryptedValue;
+  } catch {
+    return null;
   }
-  return null;
 };
 
 export default getLocalStorage;

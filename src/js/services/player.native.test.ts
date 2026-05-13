@@ -3,39 +3,58 @@
 /**
  * Player Service Test Suite
  *
- * This test suite validates the dual audio element player system with preloading capabilities.
- * It uses a custom MockHTMLAudioElement to simulate browser audio functionality in Jest.
+ * Validates the dual audio element player with preloading (A/B switching).
+ * Each test reimports the module fresh so module-level state is fully zeroed.
+ * The VITE_ENV=local flag (set in vite.config.ts test.env) enables preloading.
  *
- * Test coverage includes:
- * - Initialization and setup
- * - Track loading with and without preloading
- * - Preloading system (timing, switching, edge cases)
- * - Playback controls (play, pause, restart, progress)
- * - Volume controls and boundary handling
- * - Progress tracking and auto-preloading triggers
- * - Advanced preloading logic and fallback scenarios
- * - Error handling and edge cases
- * - State management across operations
+ * Mock audio elements are captured at createElement time so tests can inspect
+ * their state (src, currentTime, volume, paused) directly.
  */
 
 import { MockHTMLAudioElement } from '../../../__mocks__/HTMLAudioElement';
-import * as player from './player.native';
 
-// Mock document.createElement for audio elements directly in test file
+// ======================================================================
+// HELPERS
+// ======================================================================
+
+/**
+ * Reimports player.native with fresh module state.
+ * Must be called inside beforeEach after vi.resetModules().
+ */
+async function freshPlayer() {
+  const mod = await import('./player.native');
+  return mod;
+}
+
+type Player = Awaited<ReturnType<typeof freshPlayer>>;
+
+// Captured mock elements — reset alongside the module.
+let createdElements: MockHTMLAudioElement[] = [];
+
+// ======================================================================
+// GLOBAL SETUP
+// ======================================================================
+
 const originalCreateElement = document.createElement.bind(document);
 
-// Simple direct replacement approach
 global.document.createElement = (tagName: string) => {
   if (tagName.toLowerCase() === 'audio') {
-    return new MockHTMLAudioElement() as any;
+    const el = new MockHTMLAudioElement();
+    createdElements.push(el);
+    return el as any;
   }
   return originalCreateElement(tagName);
 };
 
-// Mock requestAnimationFrame
 global.requestAnimationFrame = vi.fn((cb) => setTimeout(cb, 0)) as unknown as typeof requestAnimationFrame;
 
+// ======================================================================
+// TESTS
+// ======================================================================
+
 describe('Player Service', () => {
+  let player: Player;
+
   const mockCallbacks = {
     onLoadStart: vi.fn(),
     onCanPlay: vi.fn(),
@@ -43,731 +62,711 @@ describe('Player Service', () => {
     onError: vi.fn(),
   };
 
-  beforeEach(() => {
+  const defaultInit = () =>
+    player.init({
+      volumeLevel: 75,
+      volumeMuted: false,
+      ...mockCallbacks,
+    });
+
+  beforeEach(async () => {
     vi.clearAllMocks();
-    // Reset player state between tests
-    player.unload();
+    vi.resetModules();
+    createdElements = [];
+    player = await freshPlayer();
   });
 
-  describe('Initialization', () => {
-    test('should initialize dual audio elements', () => {
-      expect(() =>
-        player.init({
-          volumeLevel: 75,
-          volumeMuted: false,
-          ...mockCallbacks,
-        })
-      ).not.toThrow();
+  // Convenience accessors — after init(), elements are always [A, B].
+  const elementA = () => createdElements[0];
+  const elementB = () => createdElements[1];
 
-      // Test that we can call player functions without errors after init
-      expect(() => player.getCurrentProgress()).not.toThrow();
-      expect(() => player.getCurrentDuration()).not.toThrow();
+  // ======================================================================
+  // INITIALISATION
+  // ======================================================================
+
+  describe('Initialisation', () => {
+    test('creates two audio elements on first init', () => {
+      defaultInit();
+      expect(createdElements).toHaveLength(2);
     });
 
-    test('should set initial volume correctly', () => {
-      player.init({
-        volumeLevel: 50,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
-
-      // Volume operations should not throw errors
-      expect(() => player.setVolume(75)).not.toThrow();
+    test('sets volume correctly on both elements (unmuted)', () => {
+      player.init({ volumeLevel: 60, volumeMuted: false, ...mockCallbacks });
+      expect(elementA().volume).toBe(0.6);
+      expect(elementB().volume).toBe(0.6);
     });
 
-    test('should handle muted initialization', () => {
-      expect(() =>
-        player.init({
-          volumeLevel: 75,
-          volumeMuted: true,
-          ...mockCallbacks,
-        })
-      ).not.toThrow();
+    test('sets volume to 0 on both elements when muted', () => {
+      player.init({ volumeLevel: 80, volumeMuted: true, ...mockCallbacks });
+      expect(elementA().volume).toBe(0);
+      expect(elementB().volume).toBe(0);
     });
 
-    test('should not reinitialize if already initialized', () => {
-      const createElementSpy = vi.spyOn(document, 'createElement');
+    test('does not create new elements on a second init call', () => {
+      defaultInit();
+      defaultInit();
+      expect(createdElements).toHaveLength(2);
+    });
 
-      // First init
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
+    test('registers loadstart, canplay, ended, and error listeners on both elements', () => {
+      defaultInit();
+      // Each MockHTMLAudioElement exposes eventListeners via the internal map.
+      // Trigger events on element A and verify the callbacks fire.
+      (elementA() as any).mockTriggerEvent('loadstart');
+      expect(mockCallbacks.onLoadStart).toHaveBeenCalledTimes(1);
 
-      const initialCallCount = createElementSpy.mock.calls.length;
+      (elementA() as any).mockTriggerEvent('canplay');
+      expect(mockCallbacks.onCanPlay).toHaveBeenCalledTimes(1);
 
-      // Second init should not create new elements
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
+      (elementA() as any).mockTriggerEvent('ended');
+      expect(mockCallbacks.onEnded).toHaveBeenCalledTimes(1);
 
-      expect(createElementSpy.mock.calls.length).toBe(initialCallCount);
+      (elementA() as any).mockTriggerError({});
+      expect(mockCallbacks.onError).toHaveBeenCalledTimes(1);
+    });
+
+    test('registers listeners on element B too', () => {
+      defaultInit();
+      (elementB() as any).mockTriggerEvent('ended');
+      expect(mockCallbacks.onEnded).toHaveBeenCalledTimes(1);
+    });
+
+    test('returns 0 for progress and duration before init', () => {
+      expect(player.getCurrentProgress()).toBe(0);
+      expect(player.getCurrentDuration()).toBe(0);
     });
   });
+
+  // ======================================================================
+  // TRACK LOADING
+  // ======================================================================
 
   describe('Track Loading', () => {
-    beforeEach(() => {
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
+    beforeEach(() => defaultInit());
+
+    test('sets src on the active element', () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      expect(elementA().src).toBe('http://example.com/track1.mp3');
     });
 
-    test('should load track normally when no preload available', () => {
-      const trackSrc = 'http://example.com/track1.mp3';
-
-      expect(() => player.loadTrack(trackSrc)).not.toThrow();
+    test('starts playback by default', async () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      // play() is async in the mock; give the micro-task queue a tick
+      await Promise.resolve();
+      expect(elementA().paused).toBe(false);
     });
 
-    test('should load track with custom progress', () => {
-      const trackSrc = 'http://example.com/track1.mp3';
-      const progress = 30000; // 30 seconds
-
-      expect(() => player.loadTrack(trackSrc, progress)).not.toThrow();
+    test('does not play when play=false', async () => {
+      player.loadTrack('http://example.com/track1.mp3', 0, false);
+      await Promise.resolve();
+      expect(elementA().paused).toBe(true);
     });
 
-    test('should load track without auto-playing', () => {
-      const trackSrc = 'http://example.com/track1.mp3';
-
-      expect(() => player.loadTrack(trackSrc, 0, false)).not.toThrow();
+    test('seeks to the correct position when progress is provided', () => {
+      player.loadTrack('http://example.com/track1.mp3', 30000);
+      // 30 000 ms → 30 s
+      expect(elementA().currentTime).toBe(30);
     });
 
-    test('should attempt to use preloaded track when available', async () => {
-      const track1 = 'http://example.com/track1.mp3';
-      const track2 = 'http://example.com/track2.mp3';
+    test('does not seek when progress is 0', () => {
+      player.loadTrack('http://example.com/track1.mp3', 0);
+      expect(elementA().currentTime).toBe(0);
+    });
 
-      // Load first track and set next for preloading
-      player.loadTrack(track1);
-      player.setNextTrack(track2);
-      player.preloadNextTrack(track2);
+    test('pauses the inactive element when loading a new track', async () => {
+      // Load track1 on A, it starts playing
+      player.loadTrack('http://example.com/track1.mp3');
+      await Promise.resolve();
+      expect(elementA().paused).toBe(false);
 
-      // Wait for preloading to potentially complete
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      // Simulate B being active (e.g. from a prior preload switch) so the
+      // explicit otherPlayer.pause() call in loadTrack is meaningfully tested.
+      (elementB() as any).paused = false;
 
-      // Now load the preloaded track - should not throw
-      expect(() => player.loadTrack(track2)).not.toThrow();
+      // Load track2 — still on A (no preload switch). B must be explicitly paused.
+      player.loadTrack('http://example.com/track2.mp3');
+      expect(elementB().paused).toBe(true);
     });
   });
 
-  describe('Preloading System', () => {
-    beforeEach(() => {
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
+  // ======================================================================
+  // UNLOAD
+  // ======================================================================
+
+  describe('Unload', () => {
+    test('clears src on both elements', () => {
+      defaultInit();
+      player.loadTrack('http://example.com/track1.mp3');
+      player.unload();
+      expect(elementA().src).toBe('');
+      expect(elementB().src).toBe('');
     });
 
-    test('should set next track for preloading', () => {
-      const nextTrackSrc = 'http://example.com/track2.mp3';
-
-      expect(() => player.setNextTrack(nextTrackSrc)).not.toThrow();
+    test('pauses both elements', async () => {
+      defaultInit();
+      player.loadTrack('http://example.com/track1.mp3');
+      await Promise.resolve();
+      player.unload();
+      expect(elementA().paused).toBe(true);
+      expect(elementB().paused).toBe(true);
     });
 
-    test('should clear next track', () => {
+    test('can be called before init without throwing', () => {
+      expect(() => player.unload()).not.toThrow();
+    });
+
+    test('can be called multiple times without throwing', () => {
+      defaultInit();
+      player.unload();
+      expect(() => player.unload()).not.toThrow();
+    });
+
+    test('resets preload state so updateProgress does nothing afterwards', () => {
+      defaultInit();
+      player.loadTrack('http://example.com/track1.mp3');
       player.setNextTrack('http://example.com/track2.mp3');
-      expect(() => player.clearNextTrack()).not.toThrow();
-    });
+      player.unload();
 
-    test('should start preloading next track', () => {
-      const nextTrackSrc = 'http://example.com/track2.mp3';
-      player.setNextTrack(nextTrackSrc);
-
-      expect(() => player.preloadNextTrack(nextTrackSrc)).not.toThrow();
-    });
-
-    test('should not preload if already preloading', () => {
-      const nextTrackSrc = 'http://example.com/track2.mp3';
-      player.setNextTrack(nextTrackSrc);
-
-      // Start first preload
-      player.preloadNextTrack(nextTrackSrc);
-
-      // Second preload should be ignored (not throw)
-      expect(() => player.preloadNextTrack(nextTrackSrc)).not.toThrow();
-    });
-
-    test('should handle preloading completion events', async () => {
-      const nextTrackSrc = 'http://example.com/track2.mp3';
-      player.setNextTrack(nextTrackSrc);
-      player.preloadNextTrack(nextTrackSrc);
-
-      // Wait for mock events to fire
-      await new Promise((resolve) => setTimeout(resolve, 300));
-
-      // Preloading should have completed without errors
-      expect(mockCallbacks.onError).not.toHaveBeenCalled();
+      // After unload nextTrackSrc is null — updateProgress should be a no-op
+      const srcBefore = elementB().src;
+      player.updateProgress(90000);
+      expect(elementB().src).toBe(srcBefore);
     });
   });
+
+  // ======================================================================
+  // PLAYBACK CONTROLS
+  // ======================================================================
 
   describe('Playback Controls', () => {
     beforeEach(() => {
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
+      defaultInit();
       player.loadTrack('http://example.com/track1.mp3');
     });
 
-    test('should pause playback', () => {
-      expect(() => player.pause()).not.toThrow();
+    test('pause() pauses the active element', async () => {
+      await Promise.resolve();
+      expect(elementA().paused).toBe(false);
+      player.pause();
+      expect(elementA().paused).toBe(true);
     });
 
-    test('should resume playback', () => {
-      expect(() => player.resume()).not.toThrow();
+    test('resume() unpauses the active element', async () => {
+      await Promise.resolve();
+      player.pause();
+      expect(elementA().paused).toBe(true);
+      player.resume();
+      await Promise.resolve();
+      expect(elementA().paused).toBe(false);
     });
 
-    test('should restart track', () => {
-      expect(() => player.restart()).not.toThrow();
+    test('restart() resets currentTime to 0 and starts playing', async () => {
+      player.setProgress(60000); // seek to 60 s
+      expect(elementA().currentTime).toBe(60);
+      player.restart();
+      expect(elementA().currentTime).toBe(0);
+      await Promise.resolve();
+      expect(elementA().paused).toBe(false);
     });
 
-    test('should set progress', () => {
-      expect(() => player.setProgress(30000)).not.toThrow(); // 30 seconds
+    test('setProgress() converts ms to seconds on the active element', () => {
+      player.setProgress(45000);
+      expect(elementA().currentTime).toBe(45);
     });
 
-    test('should handle progress at track boundaries', () => {
-      expect(() => player.setProgress(0)).not.toThrow(); // Start
-      expect(() => player.setProgress(100000)).not.toThrow(); // End
+    test('setProgress(0) seeks to start', () => {
+      player.setProgress(50000);
+      player.setProgress(0);
+      expect(elementA().currentTime).toBe(0);
+    });
+
+    test('getCurrentProgress() returns currentTime of the active element in seconds', () => {
+      player.setProgress(33000);
+      expect(player.getCurrentProgress()).toBe(33);
+    });
+
+    test('getCurrentDuration() returns duration of the active element in seconds', () => {
+      // MockHTMLAudioElement.duration = 100
+      expect(player.getCurrentDuration()).toBe(100);
     });
   });
+
+  // ======================================================================
+  // VOLUME CONTROLS
+  // ======================================================================
 
   describe('Volume Controls', () => {
-    beforeEach(() => {
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
+    beforeEach(() => defaultInit());
+
+    test('setVolume() applies to both elements as a fraction', () => {
+      player.setVolume(50);
+      expect(elementA().volume).toBe(0.5);
+      expect(elementB().volume).toBe(0.5);
     });
 
-    test('should set volume level', () => {
-      expect(() => player.setVolume(50)).not.toThrow();
+    test('setVolume(0) silences both elements', () => {
+      player.setVolume(0);
+      expect(elementA().volume).toBe(0);
+      expect(elementB().volume).toBe(0);
     });
 
-    test('should handle volume boundaries', () => {
-      expect(() => player.setVolume(0)).not.toThrow(); // Minimum
-      expect(() => player.setVolume(100)).not.toThrow(); // Maximum
-    });
-
-    test('should handle extreme volume values gracefully', () => {
-      expect(() => player.setVolume(-10)).not.toThrow(); // Negative
-      expect(() => player.setVolume(150)).not.toThrow(); // Over 100
+    test('setVolume(100) sets both elements to full volume', () => {
+      player.setVolume(100);
+      expect(elementA().volume).toBe(1);
+      expect(elementB().volume).toBe(1);
     });
   });
 
-  describe('Progress Tracking', () => {
-    beforeEach(() => {
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
+  // ======================================================================
+  // CALLBACKS AND EVENTS
+  // ======================================================================
+
+  describe('Callbacks and Events', () => {
+    beforeEach(() => defaultInit());
+
+    test('onLoadStart fires when the active element emits loadstart', async () => {
       player.loadTrack('http://example.com/track1.mp3');
+      // MockHTMLAudioElement fires loadstart asynchronously via load()
+      await new Promise((r) => setTimeout(r, 100));
+      expect(mockCallbacks.onLoadStart).toHaveBeenCalled();
     });
 
-    test('should return current progress', () => {
-      const progress = player.getCurrentProgress();
-      expect(typeof progress).toBe('number');
-      expect(progress).toBeGreaterThanOrEqual(0);
+    test('onCanPlay fires when the active element emits canplay', async () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      await new Promise((r) => setTimeout(r, 200));
+      expect(mockCallbacks.onCanPlay).toHaveBeenCalled();
     });
 
-    test('should return current duration', () => {
-      const duration = player.getCurrentDuration();
-      expect(typeof duration).toBe('number');
-      expect(duration).toBeGreaterThanOrEqual(0);
+    test('onEnded fires when the active element emits ended', () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      (elementA() as any).mockTriggerEvent('ended');
+      expect(mockCallbacks.onEnded).toHaveBeenCalledTimes(1);
     });
 
-    test('should handle progress updates without next track', () => {
-      // No next track set - should not trigger preloading
-      expect(() => player.updateProgress(60000)).not.toThrow();
+    test('onError fires with the correct playerElement when the active element errors', () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      (elementA() as any).mockTriggerError({});
+      expect(mockCallbacks.onError).toHaveBeenCalledTimes(1);
+      const callArg = mockCallbacks.onError.mock.calls[0][0];
+      expect(callArg).toHaveProperty('event');
+      expect(callArg).toHaveProperty('playerElement');
     });
 
-    test('should trigger preloading at 60% progress', () => {
-      const nextTrackSrc = 'http://example.com/track2.mp3';
-      player.setNextTrack(nextTrackSrc);
-
-      // Mock a 100-second track, trigger at 60% (60 seconds)
-      expect(() => player.updateProgress(60000)).not.toThrow();
+    test('onError fires on element B when it errors (e.g. during preload)', () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      (elementB() as any).mockTriggerError({});
+      expect(mockCallbacks.onError).toHaveBeenCalledTimes(1);
     });
 
-    test('should trigger preloading at 45 seconds remaining', () => {
-      const nextTrackSrc = 'http://example.com/track2.mp3';
-      player.setNextTrack(nextTrackSrc);
+    test('onLoadStart and onCanPlay fire on element B after it becomes the active player', async () => {
+      // The active-player guard must allow events through on B once it is the current player.
+      player.loadTrack('http://example.com/track1.mp3');
+      player.setNextTrack('http://example.com/track2.mp3');
+      player.preloadNextTrack('http://example.com/track2.mp3');
+      await new Promise((r) => setTimeout(r, 300));
 
-      // Mock a 100-second track, 44 seconds remaining (56 seconds in)
-      expect(() => player.updateProgress(56000)).not.toThrow();
+      // Switch to B
+      player.loadTrack('http://example.com/track2.mp3');
+      await Promise.resolve();
+      vi.clearAllMocks();
+
+      // Load a new track on B (now the active element) — B's events must reach the callbacks
+      player.loadTrack('http://example.com/track3.mp3');
+      await new Promise((r) => setTimeout(r, 200));
+
+      expect(mockCallbacks.onLoadStart).toHaveBeenCalled();
+      expect(mockCallbacks.onCanPlay).toHaveBeenCalled();
     });
+  });
 
-    test('should not retrigger preloading if already preloaded', () => {
-      const nextTrackSrc = 'http://example.com/track2.mp3';
-      player.setNextTrack(nextTrackSrc);
+  // ======================================================================
+  // PRELOADING SYSTEM
+  // ======================================================================
 
-      // First trigger should start preloading
+  describe('Preloading System', () => {
+    beforeEach(() => defaultInit());
+
+    test('setNextTrack() followed by updateProgress at 60% triggers preload on element B', () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      player.setNextTrack('http://example.com/track2.mp3');
+
+      // Mock duration is 100 s → 60 000 ms = 60%
       player.updateProgress(60000);
 
-      // Second trigger should not cause issues
-      expect(() => player.updateProgress(70000)).not.toThrow();
+      // preloadNextTrack sets src on the inactive (B) element synchronously
+      expect(elementB().src).toBe('http://example.com/track2.mp3');
     });
 
-    test('should not preload if duration is zero or invalid', () => {
-      const nextTrackSrc = 'http://example.com/track2.mp3';
-      player.setNextTrack(nextTrackSrc);
+    test('setNextTrack() followed by updateProgress at 45 s remaining triggers preload', () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      player.setNextTrack('http://example.com/track2.mp3');
 
-      // Mock zero duration by not having loaded track properly
-      // This tests the getCurrentDuration() <= 0 check
-      expect(() => player.updateProgress(60000)).not.toThrow();
-    });
-  });
+      // 100 s track, 56 000 ms elapsed → 44 s remaining (< 45 s threshold)
+      player.updateProgress(56000);
 
-  describe('Advanced Preloading Logic', () => {
-    beforeEach(() => {
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
+      expect(elementB().src).toBe('http://example.com/track2.mp3');
     });
 
-    test('should handle preloading timing thresholds correctly', () => {
-      const currentTrack = 'http://example.com/track1.mp3';
-      const nextTrack = 'http://example.com/track2.mp3';
+    test('updateProgress below both thresholds does not trigger preload', () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      player.setNextTrack('http://example.com/track2.mp3');
 
-      player.loadTrack(currentTrack);
-      player.setNextTrack(nextTrack);
+      // 30 000 ms = 30% of 100 s track, 70 s remaining — neither threshold met
+      player.updateProgress(30000);
 
-      // Test various progress points
-      expect(() => player.updateProgress(30000)).not.toThrow(); // 30% - too early
-      expect(() => player.updateProgress(59000)).not.toThrow(); // 59% - just before threshold
-      expect(() => player.updateProgress(60000)).not.toThrow(); // 60% - should trigger
-      expect(() => player.updateProgress(55000)).not.toThrow(); // 45s remaining - should trigger
+      expect(elementB().src).toBe('');
     });
 
-    test('should switch to preloaded track successfully', async () => {
-      const track1 = 'http://example.com/track1.mp3';
-      const track2 = 'http://example.com/track2.mp3';
+    test('updateProgress without a next track set does not start preloading', () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      // No setNextTrack() call
+      player.updateProgress(90000);
 
-      // Setup preloading scenario
-      player.loadTrack(track1);
-      player.setNextTrack(track2);
-      player.preloadNextTrack(track2);
-
-      // Wait for preloading events
-      await new Promise((resolve) => setTimeout(resolve, 300));
-
-      // Attempt to use preloaded track
-      expect(() => player.loadTrack(track2)).not.toThrow();
+      expect(elementB().src).toBe('');
     });
 
-    test('should fallback gracefully when preloaded track not ready', () => {
-      const track1 = 'http://example.com/track1.mp3';
-      const track2 = 'http://example.com/track2.mp3';
-
-      // Setup but don't wait for preloading to complete
-      player.loadTrack(track1);
-      player.setNextTrack(track2);
-      player.preloadNextTrack(track2);
-
-      // Immediately try to use - should fallback to regular loading
-      expect(() => player.loadTrack(track2)).not.toThrow();
-    });
-  });
-
-  describe('Error Handling and Edge Cases', () => {
-    test('should handle operations before initialization', () => {
-      // These should not throw even if called before init
-      expect(() => player.getCurrentProgress()).not.toThrow();
-      expect(() => player.getCurrentDuration()).not.toThrow();
-      expect(() => player.pause()).not.toThrow();
-      expect(() => player.resume()).not.toThrow();
-      expect(() => player.restart()).not.toThrow();
-      expect(() => player.setVolume(75)).not.toThrow();
-      expect(() => player.setProgress(30000)).not.toThrow();
-    });
-
-    test('should handle unload gracefully', () => {
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
-
+    test('clearNextTrack() and setNextTrack(null) both prevent updateProgress from triggering preload', () => {
       player.loadTrack('http://example.com/track1.mp3');
 
-      expect(() => player.unload()).not.toThrow();
+      player.setNextTrack('http://example.com/track2.mp3');
+      player.clearNextTrack();
+      player.updateProgress(90000);
+      expect(elementB().src).toBe('');
+
+      player.setNextTrack('http://example.com/track2.mp3');
+      player.setNextTrack(null);
+      player.updateProgress(90000);
+      expect(elementB().src).toBe('');
     });
 
-    test('should handle unload before initialization', () => {
-      expect(() => player.unload()).not.toThrow();
-    });
-
-    test('should handle multiple unload calls', () => {
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
-
-      expect(() => player.unload()).not.toThrow();
-      expect(() => player.unload()).not.toThrow(); // Second call
-    });
-
-    test('should handle preloading operations without next track', () => {
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
-
-      // These should handle gracefully when no next track is set
-      expect(() => player.updateProgress(60000)).not.toThrow();
-      expect(() => player.clearNextTrack()).not.toThrow();
-    });
-
-    test('should handle invalid track sources', () => {
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
-
-      expect(() => player.loadTrack('')).not.toThrow(); // Empty string
-      expect(() => player.loadTrack('invalid-url')).not.toThrow(); // Invalid URL
-    });
-
-    test('should handle negative progress values', () => {
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
-
+    test('preloadNextTrack() is a no-op while already preloading (idempotent)', () => {
       player.loadTrack('http://example.com/track1.mp3');
+      player.preloadNextTrack('http://example.com/track2.mp3');
 
-      expect(() => player.setProgress(-1000)).not.toThrow(); // Negative progress
-      expect(() => player.updateProgress(-1000)).not.toThrow(); // Negative update
-    });
-  });
-
-  describe('State Management', () => {
-    beforeEach(() => {
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
+      // Second call while isPreloading=true should not reassign src
+      const srcAfterFirst = elementB().src;
+      player.preloadNextTrack('http://example.com/track3.mp3');
+      expect(elementB().src).toBe(srcAfterFirst);
     });
 
-    test('should maintain state across multiple track loads', () => {
-      const track1 = 'http://example.com/track1.mp3';
-      const track2 = 'http://example.com/track2.mp3';
-      const track3 = 'http://example.com/track3.mp3';
+    test('full flow: updateProgress triggers preload, preload completes, loadTrack switches to element B', async () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      player.setNextTrack('http://example.com/track2.mp3');
 
-      // Load multiple tracks in sequence
-      expect(() => player.loadTrack(track1)).not.toThrow();
-      expect(() => player.setNextTrack(track2)).not.toThrow();
-      expect(() => player.loadTrack(track2)).not.toThrow();
-      expect(() => player.setNextTrack(track3)).not.toThrow();
-      expect(() => player.loadTrack(track3)).not.toThrow();
+      // Trigger preloading via progress threshold (60% of 100 s mock track)
+      player.updateProgress(60000);
+
+      // B should have been assigned the next track src immediately
+      expect(elementB().src).toBe('http://example.com/track2.mp3');
+
+      // Wait for mock's async canplaythrough to fire (50 + 100 + 100 ms = 250 ms)
+      await new Promise((r) => setTimeout(r, 300));
+
+      // loadTrack detects the preloaded src and switches to B
+      player.loadTrack('http://example.com/track2.mp3');
+      await Promise.resolve();
+
+      expect(elementB().paused).toBe(false); // B is now the active player
+      expect(elementA().paused).toBe(true); // A was paused on switch
+      expect(player.getCurrentDuration()).toBe(100); // reads now come from B
     });
 
-    test('should handle rapid next track changes', () => {
-      const tracks = [
-        'http://example.com/track1.mp3',
-        'http://example.com/track2.mp3',
-        'http://example.com/track3.mp3',
-        'http://example.com/track4.mp3',
-      ];
-
-      player.loadTrack(tracks[0]);
-
-      // Rapidly change next track
-      tracks.slice(1).forEach((track) => {
-        expect(() => player.setNextTrack(track)).not.toThrow();
-      });
-    });
-
-    test('should clear state properly on unload', () => {
-      // Setup some state
+    test('after preload completes, loading the preloaded track switches to element B', async () => {
       player.loadTrack('http://example.com/track1.mp3');
       player.setNextTrack('http://example.com/track2.mp3');
       player.preloadNextTrack('http://example.com/track2.mp3');
 
-      // Unload should clear everything
-      player.unload();
+      // Wait for mock's async canplaythrough to fire (50 + 100 + 100 ms = 250 ms)
+      await new Promise((r) => setTimeout(r, 300));
 
-      // Operations after unload should still not throw
-      expect(() => player.getCurrentProgress()).not.toThrow();
-      expect(() => player.updateProgress(60000)).not.toThrow();
+      player.loadTrack('http://example.com/track2.mp3');
+      await Promise.resolve();
+
+      expect(player.getCurrentDuration()).toBe(100); // reads now come from B
+      expect(elementA().paused).toBe(true);
     });
-  });
-  describe('Configuration', () => {
-    test('should respect enablePreloading setting', () => {
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
 
-      // Set next track and try to preload
+    test('preload switch seeks to the correct position when progress is provided', async () => {
+      player.loadTrack('http://example.com/track1.mp3');
       player.setNextTrack('http://example.com/track2.mp3');
+      player.preloadNextTrack('http://example.com/track2.mp3');
+      await new Promise((r) => setTimeout(r, 300));
 
-      // Should be able to call preload function without errors
-      expect(() => player.preloadNextTrack('http://example.com/track2.mp3')).not.toThrow();
+      player.loadTrack('http://example.com/track2.mp3', 30000);
+      await Promise.resolve();
+
+      expect(elementB().currentTime).toBe(30);
+    });
+
+    test('preload switch does not start playback when play=false', async () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      player.setNextTrack('http://example.com/track2.mp3');
+      player.preloadNextTrack('http://example.com/track2.mp3');
+      await new Promise((r) => setTimeout(r, 300));
+
+      player.loadTrack('http://example.com/track2.mp3', 0, false);
+      await Promise.resolve();
+
+      expect(elementB().paused).toBe(true);
+    });
+
+    test('when preloaded track is not yet ready, falls back to regular load on current element', () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      player.setNextTrack('http://example.com/track2.mp3');
+      player.preloadNextTrack('http://example.com/track2.mp3');
+
+      // Immediately load before the async canplaythrough event fires —
+      // isNextTrackPreloaded is still false, so loadTrack falls back to regular loading on A.
+      player.loadTrack('http://example.com/track2.mp3');
+
+      expect(elementA().src).toBe('http://example.com/track2.mp3');
+    });
+
+    test('after a preload switch, a subsequent preload uses the now-idle element A', async () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      player.setNextTrack('http://example.com/track2.mp3');
+      player.preloadNextTrack('http://example.com/track2.mp3');
+      await new Promise((r) => setTimeout(r, 300));
+
+      // Switch to track2 on element B — A is now the idle element
+      player.loadTrack('http://example.com/track2.mp3');
+
+      player.setNextTrack('http://example.com/track3.mp3');
+      player.preloadNextTrack('http://example.com/track3.mp3');
+
+      expect(elementA().src).toBe('http://example.com/track3.mp3');
+    });
+
+    test('unload resets preload state — updateProgress does nothing afterwards', () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      player.setNextTrack('http://example.com/track2.mp3');
+      player.unload();
+
+      player.updateProgress(90000);
+      expect(elementB().src).toBe('');
+    });
+
+    test('a preload error unblocks future preloads via updateProgress', () => {
+      // A network error on the idle element must reset isPreloading so that
+      // subsequent updateProgress calls can start a new preload.
+      player.loadTrack('http://example.com/track1.mp3');
+      player.setNextTrack('http://example.com/track2.mp3');
+      player.preloadNextTrack('http://example.com/track2.mp3');
+
+      (elementB() as any).mockTriggerError({});
+
+      player.setNextTrack('http://example.com/track3.mp3');
+      player.updateProgress(90000);
+
+      expect(elementB().src).toBe('http://example.com/track3.mp3');
+    });
+
+    test('changing nextTrack mid-preload does not cause the stale preloaded track to play', async () => {
+      // If nextTrackSrc changes while a preload is in flight, the canplaythrough
+      // completing for the old track must not cause loadTrack to switch to an
+      // element that has the wrong content.
+      player.loadTrack('http://example.com/track1.mp3');
+      player.setNextTrack('http://example.com/track2.mp3');
+      player.preloadNextTrack('http://example.com/track2.mp3');
+
+      // Next track changes mid-preload (e.g. shuffle or repeat toggle)
+      player.setNextTrack('http://example.com/track7.mp3');
+
+      // Preload for track2 completes on B — B has track2, nextTrackSrc is now track7
+      await new Promise((r) => setTimeout(r, 300));
+
+      // loadTrack must load track7 on A, not switch to B which has track2
+      player.loadTrack('http://example.com/track7.mp3');
+      await Promise.resolve();
+
+      expect(elementA().src).toBe('http://example.com/track7.mp3');
+    });
+
+    test('changing nextTrack mid-preload allows updateProgress to preload the new next track', async () => {
+      // The stale canplaythrough completing must not leave isNextTrackPreloaded=true
+      // (blocking updateProgress) for a track that is no longer next.
+      player.loadTrack('http://example.com/track1.mp3');
+      player.setNextTrack('http://example.com/track2.mp3');
+      player.preloadNextTrack('http://example.com/track2.mp3');
+
+      // Queue changes before preload finishes — this must invalidate the in-flight preload
+      player.setNextTrack('http://example.com/track7.mp3');
+
+      // Stale canplaythrough fires for track2 — must be a no-op
+      await new Promise((r) => setTimeout(r, 300));
+
+      // updateProgress must now trigger a fresh preload for track7, not be blocked
+      player.updateProgress(90000);
+
+      expect(elementB().src).toBe('http://example.com/track7.mp3');
+    });
+
+    test('skipping while a preload is in flight resets state so the next updateProgress triggers a fresh preload', () => {
+      // When loadTrack falls back to regular loading, it must reset isPreloading
+      // so that updateProgress is not blocked for the duration of the abandoned download.
+      player.loadTrack('http://example.com/track1.mp3');
+      player.setNextTrack('http://example.com/track2.mp3');
+      player.preloadNextTrack('http://example.com/track2.mp3');
+
+      // User skips — preload not ready, falls back to loading track3 on A
+      player.loadTrack('http://example.com/track3.mp3');
+      expect(elementA().src).toBe('http://example.com/track3.mp3');
+
+      player.setNextTrack('http://example.com/track4.mp3');
+      player.updateProgress(90000);
+
+      expect(elementB().src).toBe('http://example.com/track4.mp3');
+    });
+
+    test('falling back to regular loading aborts the in-flight preload so a subsequent loadTrack is not corrupted', async () => {
+      // When loadTrack falls back, the abandoned preload's canplaythrough completing
+      // must not set isNextTrackPreloaded for a track that is no longer on the idle element.
+      player.loadTrack('http://example.com/track1.mp3');
+      player.setNextTrack('http://example.com/track2.mp3');
+      player.preloadNextTrack('http://example.com/track2.mp3');
+
+      // Preload not ready — falls back to loading track2 on A
+      player.loadTrack('http://example.com/track2.mp3');
+      expect(elementA().src).toBe('http://example.com/track2.mp3');
+
+      // models.player.js sets next track after every loadTrack call
+      player.setNextTrack('http://example.com/track3.mp3');
+
+      // B's abandoned download completes
+      await new Promise((r) => setTimeout(r, 300));
+
+      // track3 must load on A normally, not switch to B which has track2
+      player.loadTrack('http://example.com/track3.mp3');
+      await Promise.resolve();
+
+      expect(elementA().src).toBe('http://example.com/track3.mp3');
+    });
+
+    test('onLoadStart and onCanPlay do not fire when the idle element is buffering in the background', async () => {
+      // These callbacks drive UI state (spinner, enable controls) — they must only
+      // fire for the active player element, not for background preloading on B.
+      player.loadTrack('http://example.com/track1.mp3');
+
+      // Wait for A's own loadstart and canplay to settle, then reset
+      await new Promise((r) => setTimeout(r, 200));
+      vi.clearAllMocks();
+
+      player.setNextTrack('http://example.com/track2.mp3');
+      player.updateProgress(60000);
+
+      // Wait for B's async loadstart and canplay to fire
+      await new Promise((r) => setTimeout(r, 200));
+
+      expect(mockCallbacks.onLoadStart).not.toHaveBeenCalled();
+      expect(mockCallbacks.onCanPlay).not.toHaveBeenCalled();
+    });
+
+    test('stale { once } listeners from an abandoned preload do not corrupt the next preload', async () => {
+      // If a preload is abandoned before canplaythrough fires, the { once } listener
+      // remains on the idle element. When the next preload's canplaythrough fires,
+      // the stale listener must be a no-op so the fresh preload can switch cleanly.
+      player.loadTrack('http://example.com/track1.mp3');
+      player.setNextTrack('http://example.com/track2.mp3');
+      player.preloadNextTrack('http://example.com/track2.mp3');
+
+      // Abandon before canplaythrough fires
+      player.unload();
+
+      player.loadTrack('http://example.com/track3.mp3');
+      player.setNextTrack('http://example.com/track4.mp3');
+      player.preloadNextTrack('http://example.com/track4.mp3');
+
+      // Both the stale (track2) and fresh (track4) listeners fire — stale must be a no-op
+      await new Promise((r) => setTimeout(r, 300));
+
+      player.loadTrack('http://example.com/track4.mp3');
+      await Promise.resolve();
+
+      expect(elementA().paused).toBe(true); // A (track3) paused on switch
+      expect(elementB().paused).toBe(false); // B (track4) is now the active player
     });
   });
 
-  describe('Detailed Volume Behavior', () => {
-    beforeEach(() => {
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
+  // ======================================================================
+  // MULTI-TRACK STATE MANAGEMENT
+  // ======================================================================
+
+  describe('Multi-track State Management', () => {
+    beforeEach(() => defaultInit());
+
+    test('loading sequential tracks updates src correctly each time', () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      expect(elementA().src).toBe('http://example.com/track1.mp3');
+
+      player.loadTrack('http://example.com/track2.mp3');
+      expect(elementA().src).toBe('http://example.com/track2.mp3');
+
+      player.loadTrack('http://example.com/track3.mp3');
+      expect(elementA().src).toBe('http://example.com/track3.mp3');
     });
 
-    test('should apply volume to both audio elements', () => {
-      const createElementSpy = vi.spyOn(document, 'createElement');
-
-      player.setVolume(50);
-
-      // Both elements should have been created and volume set
-      const audioElements = createElementSpy.mock.results
-        .filter((result) => result.value && typeof result.value.volume !== 'undefined')
-        .map((result) => result.value);
-
-      audioElements.forEach((element) => {
-        expect(element.volume).toBe(0.5); // 50/100
-      });
-    });
-
-    test('should handle volume correctly during initialization', () => {
-      // Unload first to reset
+    test('getCurrentProgress() returns 0 after unload', () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      player.setProgress(30000);
+      expect(player.getCurrentProgress()).toBe(30); // confirm position was set
       player.unload();
-
-      const createElementSpy = vi.spyOn(document, 'createElement');
-
-      // Initialize with specific volume
-      player.init({
-        volumeLevel: 80,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
-
-      const audioElements = createElementSpy.mock.results
-        .filter((result) => result.value && typeof result.value.volume !== 'undefined')
-        .map((result) => result.value);
-
-      audioElements.forEach((element) => {
-        expect(element.volume).toBe(0.8); // 80/100
-      });
+      // unload() calls element.load(), which resets currentTime to 0 (matching real browser behaviour)
+      expect(player.getCurrentProgress()).toBe(0);
     });
 
-    test('should mute correctly during initialization', () => {
-      // Unload first to reset
-      player.unload();
+    test('rapid setNextTrack calls only keep the last value', () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      player.setNextTrack('http://example.com/track2.mp3');
+      player.setNextTrack('http://example.com/track3.mp3');
+      player.setNextTrack('http://example.com/track4.mp3');
 
-      const createElementSpy = vi.spyOn(document, 'createElement');
-
-      // Initialize muted
-      player.init({
-        volumeLevel: 80,
-        volumeMuted: true,
-        ...mockCallbacks,
-      });
-
-      const audioElements = createElementSpy.mock.results
-        .filter((result) => result.value && typeof result.value.volume !== 'undefined')
-        .map((result) => result.value);
-
-      audioElements.forEach((element) => {
-        expect(element.volume).toBe(0); // Muted
-      });
+      // Only the last next track should be preloaded
+      player.updateProgress(90000);
+      expect(elementB().src).toBe('http://example.com/track4.mp3');
     });
   });
 
-  describe('Player Element Switching Logic', () => {
-    beforeEach(() => {
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
-    });
+  // ======================================================================
+  // EDGE CASES
+  // ======================================================================
 
-    test('should use different elements for current and preloaded tracks', async () => {
-      const track1 = 'http://example.com/track1.mp3';
-      const track2 = 'http://example.com/track2.mp3';
-
-      // Load first track
-      player.loadTrack(track1);
-
-      // Set up preloading
-      player.setNextTrack(track2);
-      player.preloadNextTrack(track2);
-
-      // Wait for preloading
-      await new Promise((resolve) => setTimeout(resolve, 300));
-
-      // Switch to preloaded track
-      player.loadTrack(track2);
-
-      // Should not throw and should have switched elements
-      expect(() => player.getCurrentProgress()).not.toThrow();
-      expect(() => player.getCurrentDuration()).not.toThrow();
-    });
-
-    test('should pause other player when loading new track', () => {
-      const track1 = 'http://example.com/track1.mp3';
-      const track2 = 'http://example.com/track2.mp3';
-
-      // Load first track
-      player.loadTrack(track1);
-      player.resume(); // Start playing
-
-      // Load second track - should pause first
-      player.loadTrack(track2);
-
-      // Should not cause conflicts
+  describe('Edge Cases', () => {
+    test('all controls are safe to call before init (no throw)', () => {
       expect(() => player.pause()).not.toThrow();
+      expect(() => player.resume()).not.toThrow();
+      expect(() => player.restart()).not.toThrow();
+      expect(() => player.setVolume(50)).not.toThrow();
+      expect(() => player.setProgress(30000)).not.toThrow();
+      expect(() => player.updateProgress(60000)).not.toThrow();
+      expect(() => player.setNextTrack('http://example.com/track.mp3')).not.toThrow();
+      expect(() => player.clearNextTrack()).not.toThrow();
+      expect(player.getCurrentProgress()).toBe(0);
+      expect(player.getCurrentDuration()).toBe(0);
     });
-  });
 
-  describe('Progress and Duration Accuracy', () => {
-    beforeEach(() => {
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
+    test('loadTrack with empty string src is handled without throwing', () => {
+      defaultInit();
+      expect(() => player.loadTrack('')).not.toThrow();
+      expect(elementA().src).toBe('');
+    });
+
+    test('setProgress with a negative value is passed through to the element', () => {
+      defaultInit();
       player.loadTrack('http://example.com/track1.mp3');
+      // The player does no bounds-checking; the browser would clamp it.
+      // Verify no throw and the value is set.
+      player.setProgress(-5000);
+      expect(elementA().currentTime).toBe(-5);
     });
 
-    test('should return accurate progress values', () => {
-      // Set specific progress
-      player.setProgress(45000); // 45 seconds
-
-      const progress = player.getCurrentProgress();
-      expect(progress).toBe(45); // Should be in seconds
-    });
-
-    test('should return mock duration', () => {
-      const duration = player.getCurrentDuration();
-      expect(duration).toBe(100); // Mock duration from HTMLAudioElement
-    });
-    test('should handle progress updates correctly', () => {
-      const nextTrack = 'http://example.com/track2.mp3';
-      player.setNextTrack(nextTrack);
-
-      // Test progress that should trigger preloading (60%)
-      // The actual preloading behavior is internal, just test it doesn't throw
-      expect(() => player.updateProgress(60000)).not.toThrow(); // 60 seconds = 60% of 100s track
-    });
-
-    test('should handle progress that triggers 45s remaining threshold', () => {
-      const nextTrack = 'http://example.com/track2.mp3';
-      player.setNextTrack(nextTrack);
-
-      // Test progress that triggers 45s remaining threshold
-      expect(() => player.updateProgress(56000)).not.toThrow(); // 56s = 44s remaining (less than 45s)
-    });
-  });
-
-  describe('Event Handling and Callbacks', () => {
-    test('should call provided callbacks during initialization', () => {
-      // Simply test that initialization works with callbacks
-      expect(() =>
-        player.init({
-          volumeLevel: 75,
-          volumeMuted: false,
-          ...mockCallbacks,
-        })
-      ).not.toThrow();
-
-      // Verify that the player was initialized correctly
-      expect(() => player.getCurrentProgress()).not.toThrow();
-      expect(() => player.getCurrentDuration()).not.toThrow();
-    });
-
-    test('should handle track loading events', async () => {
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
-
-      player.loadTrack('http://example.com/track1.mp3');
-
-      // Wait for mock events to fire
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      // Mock should have triggered some events
-      expect(mockCallbacks.onLoadStart).toHaveBeenCalled();
-    });
-  });
-
-  describe('Preloading State Management', () => {
-    beforeEach(() => {
-      player.init({
-        volumeLevel: 75,
-        volumeMuted: false,
-        ...mockCallbacks,
-      });
-    });
-
-    test('should track preloading state correctly', () => {
-      const track1 = 'http://example.com/track1.mp3';
-      const track2 = 'http://example.com/track2.mp3';
-
-      player.loadTrack(track1);
-      player.setNextTrack(track2);
-
-      // Start preloading
-      player.preloadNextTrack(track2);
-
-      // Try to preload again - should be ignored
-      expect(() => player.preloadNextTrack(track2)).not.toThrow();
-
-      // Should be able to handle multiple preload attempts gracefully
-    });
-
-    test('should reset preloading state after track switch', async () => {
-      const track1 = 'http://example.com/track1.mp3';
-      const track2 = 'http://example.com/track2.mp3';
-      const track3 = 'http://example.com/track3.mp3';
-
-      // Set up preloading scenario
-      player.loadTrack(track1);
-      player.setNextTrack(track2);
-      player.preloadNextTrack(track2);
-
-      // Wait for preloading to complete
-      await new Promise((resolve) => setTimeout(resolve, 300));
-
-      // Switch to preloaded track
-      player.loadTrack(track2);
-
-      // Should be able to set new next track
-      expect(() => player.setNextTrack(track3)).not.toThrow();
-      expect(() => player.preloadNextTrack(track3)).not.toThrow();
-    });
-
-    test('should clear preloading state on unload', () => {
-      const track2 = 'http://example.com/track2.mp3';
-
-      player.setNextTrack(track2);
-      player.preloadNextTrack(track2);
-
-      // Unload should reset everything
-      player.unload();
-
-      // Should be able to start fresh
-      expect(() => player.setNextTrack(track2)).not.toThrow();
-      expect(() => player.preloadNextTrack(track2)).not.toThrow();
+    test('updateProgress with zero duration is a no-op', () => {
+      defaultInit();
+      // Do not call loadTrack — mock duration defaults to 100; override it to 0.
+      (elementA() as any).duration = 0;
+      player.setNextTrack('http://example.com/track2.mp3');
+      player.updateProgress(60000);
+      // B should remain untouched
+      expect(elementB().src).toBe('');
     });
   });
 });
