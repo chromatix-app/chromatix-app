@@ -11,7 +11,7 @@ import { decimalMultiplier, decimalToHex, sendToElectron } from 'js/utils';
  */
 
 function useColorTheme(): void {
-  const defaultTheme = 'chromatix';
+  const defaultTheme = 'chromatix-magenta';
 
   const dispatch = useDispatch();
 
