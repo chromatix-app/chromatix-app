@@ -13,15 +13,17 @@ import style from './SettingsList.module.scss';
 // COMPONENT
 // ======================================================================
 
-const SettingsList = ({ title, menuItems }) => {
+const SettingsList = ({ title, description, menuItems }) => {
   const dispatch = useDispatch();
 
   return (
-    <div className={style.group}>
+    <div className="settingsGroup">
       {title && <div className={style.title}>{title}</div>}
 
+      {description && <div className={style.topDescription}>{description}</div>}
+
       <div className={style.list}>
-        {menuItems.map(({ type = 'checkbox', key, label, description, state, disabled, props }, index) => {
+        {menuItems.map(({ type = 'checkbox', key, label, description, state, disabled, props, options }, index) => {
           if (type === 'spacer') {
             return <div key={index} className={style.spacer} />;
           } else if (type === 'checkbox') {

@@ -13,29 +13,29 @@ import style from './SettingsBrowse.module.scss';
 // COMPONENT
 // ======================================================================
 
-export const SettingsBrowse = () => {
+export const SettingsBrowse = ({ debug }) => {
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
 
   return (
-    <div className={style.wrap}>
-      <div className={style.group}>
+    <>
+      <div className="settingsGroup">
         <div className={style.title}>View Modes</div>
         <ViewModeSettings />
       </div>
-      {platformOpts.enableIsFavourite && (
-        <div className={style.group}>
+      {(platformOpts.enableIsFavourite || debug) && (
+        <div className="settingsGroup">
           <div className={style.title}>Favourites</div>
           <FavouriteSettings />
         </div>
       )}
-      {platformOpts.enableUserRating && (
-        <div className={style.group}>
+      {(platformOpts.enableUserRating || debug) && (
+        <div className="settingsGroup">
           <div className={style.title}>Star Ratings</div>
           <StarRatingSettings />
         </div>
       )}
-    </div>
+    </>
   );
 };
 

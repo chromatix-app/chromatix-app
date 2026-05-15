@@ -3,6 +3,7 @@
 // ======================================================================
 
 import React from 'react';
+import clsx from 'clsx';
 
 import { Icon } from 'js/components';
 import { useGetDownloadLinks } from 'js/hooks';
@@ -22,8 +23,8 @@ export const SettingsDownloads = () => {
   };
 
   return (
-    <div className={style.wrap}>
-      <div className={style.group}>
+    <>
+      <div className={clsx('settingsGroup', style.group)}>
         <div>Get the Chromatix app for desktop platforms here:</div>
 
         <div className={style.downloads}>
@@ -55,7 +56,7 @@ export const SettingsDownloads = () => {
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

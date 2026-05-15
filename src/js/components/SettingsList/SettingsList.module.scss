@@ -1,15 +1,6 @@
 @use '../../../css/_config/_mixins';
 @use '../../../css/_config/_vars';
 
-.group {
-  margin-top: 32px;
-  font-size: 14px;
-
-  &:first-child {
-    margin-top: 0;
-  }
-}
-
 .title {
   margin: 0 0 15px;
   font-size: 14px;

@@ -145,3 +145,18 @@
 .filterIconWrap {
   line-height: 1;
 }
+
+.settingsGroup {
+  max-width: 800px;
+  padding: 0 30px 40px;
+  font-size: 14px;
+  text-wrap: balance;
+
+  .cq-800 & {
+    padding: 0 40px 40px;
+  }
+
+  &:last-child {
+    padding-bottom: 50px;
+  }
+}
