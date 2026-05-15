@@ -69,12 +69,12 @@
     height: 1px;
     background: var(--color-opacity-015);
 
-    .scrollableOuterVirtual & {
-      :global(html[data-env='local']) & {
-        background: var(--color-core);
-        opacity: 0.6;
-      }
-    }
+    // .scrollableOuterVirtual & {
+    //   :global(html[data-env='local']) & {
+    //     background: var(--color-core);
+    //     opacity: 0.6;
+    //   }
+    // }
   }
 }
 

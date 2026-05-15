@@ -41,11 +41,11 @@
 .measure {
   height: 0;
 
-  :global(html[data-env='local']) & {
-    height: 1px;
-    background: var(--color-core);
-    opacity: 0.15;
-  }
+  // :global(html[data-env='local']) & {
+  //   height: 1px;
+  //   background: var(--color-core);
+  //   opacity: 0.15;
+  // }
 }
 
 .virtualRow {
@@ -173,7 +173,7 @@
   box-shadow: var(--shadow-sm);
   transition: all ease-in-out 0.25s;
   cursor: pointer;
-  color: var(--color-secondary-background);
+  color: var(--color-primary-background);
 
   .card:hover &:hover,
   .card.cardCurrent &:hover {
