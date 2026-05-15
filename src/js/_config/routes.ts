@@ -386,6 +386,11 @@ export const authRoutes = [
           exact: true,
           component: 'DevModals',
         },
+        {
+          path: '/dev/settings',
+          exact: true,
+          component: 'DevSettings',
+        },
       ]
     : []),
 
