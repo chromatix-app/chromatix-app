@@ -45,6 +45,32 @@ const SettingsList = ({ title, description, menuItems }) => {
                 </label>
               </div>
             );
+          } else if (type === 'radio') {
+            return (
+              <div key={index} className={style.listEntry}>
+                <div>
+                  {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
+                  {description && (
+                    <div className={clsx(style.description, disabled && style.disabled)}>{description}</div>
+                  )}
+
+                  <div className={style.radioGroup}>
+                    {options?.map(({ label: optionLabel, value }) => (
+                      <label key={value} className={style.radioOption}>
+                        <input
+                          type="radio"
+                          name={key}
+                          checked={state === value}
+                          onChange={() => dispatch.sessionModel.setSessionState({ [key]: value })}
+                          disabled={disabled}
+                        />
+                        <span className={clsx(style.label, disabled && style.disabled)}>{optionLabel}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
           } else if (type === 'range') {
             return (
               <div key={index} className={style.listEntry}>
@@ -56,6 +82,15 @@ const SettingsList = ({ title, description, menuItems }) => {
                     </div>
                   </div>
                 </label>
+              </div>
+            );
+          } else if (type === 'label') {
+            return (
+              <div key={index} className={style.listEntry}>
+                {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
+                {description && (
+                  <div className={clsx(style.description, disabled && style.disabled)}>{description}</div>
+                )}
               </div>
             );
           } else {

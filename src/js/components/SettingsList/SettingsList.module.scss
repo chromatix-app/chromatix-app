@@ -8,6 +8,13 @@
   color: var(--color-opacity-05);
 }
 
+.topDescription {
+  display: block;
+  margin: -10px 0 15px;
+  font-size: 13px;
+  color: var(--color-opacity-06);
+}
+
 .list {
 }
 
@@ -15,7 +22,7 @@
   @include mixins.focus-parent-outline;
 
   + .listEntry {
-    margin-top: 6px;
+    margin-top: 7px;
   }
 
   label {
@@ -25,6 +32,10 @@
   }
 
   input[type='checkbox'] {
+    margin: 0 10px 0 0;
+  }
+
+  input[type='radio'] {
     margin: 0 10px 0 0;
   }
 }
@@ -42,6 +53,8 @@
 .description {
   display: block;
   font-size: 12px;
+  line-height: 1.3;
+  padding: 1px 0 4px;
   color: var(--color-opacity-06);
 
   &.disabled {
@@ -52,4 +65,14 @@
 .range {
   display: block;
   width: 160px;
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.radioOption {
+  display: block;
 }
