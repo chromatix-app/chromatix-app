@@ -4,7 +4,7 @@
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Button, Icon } from 'js/components';
+import { FormTabButtons, Icon } from 'js/components';
 import platformFeatures from 'js/_config/platformFeatures';
 
 import style from './SettingsBrowse.module.scss';
@@ -172,48 +172,30 @@ const ViewModeSettings = () => {
             <br />
             Note that you can independently toggle the view mode within each individual section of your library.
           </div>
-          <div className={style.buttons}>
-            <Button
-              size="tiny"
-              inline
-              wrap={false}
-              onClick={toggleGridView}
-              icon={<Icon icon="GridIcon" cover strokeAndFill />}
-              color={allSame && firstValue === 'grid' ? 'primary' : 'secondary'}
-              style={{
-                zIndex: allSame && firstValue === 'grid' ? 2 : 'initial',
-              }}
-            >
-              Grid view
-            </Button>
-            <Button
-              size="tiny"
-              inline
-              wrap={false}
-              onClick={toggleListView}
-              icon={<Icon icon="ListIcon" cover stroke />}
-              color={allSame && firstValue === 'list' ? 'primary' : 'secondary'}
-              style={{
-                zIndex: allSame && firstValue === 'list' ? 2 : 'initial',
-              }}
-            >
-              List view
-            </Button>
-            <Button
-              size="tiny"
-              inline
-              wrap={false}
-              icon={<Icon icon="VanishedCircleIcon" cover stroke />}
-              color={!allSame ? 'primary' : 'secondary'}
-              disabled={true}
-              renderDisabled={false}
-              style={{
-                zIndex: !allSame ? 2 : 'initial',
-              }}
-            >
-              Mixed
-            </Button>
-          </div>
+          <div className="mt-15"></div>
+          <FormTabButtons
+            tabs={[
+              {
+                label: 'Grid view',
+                icon: <Icon icon="GridIcon" cover strokeAndFill />,
+                onClick: toggleGridView,
+                active: allSame && firstValue === 'grid',
+              },
+              {
+                label: 'List view',
+                icon: <Icon icon="ListIcon" cover stroke />,
+                onClick: toggleListView,
+                active: allSame && firstValue === 'list',
+              },
+              {
+                label: 'Mixed',
+                icon: <Icon icon="VanishedCircleIcon" cover stroke />,
+                active: !allSame,
+                disabled: true,
+                renderDisabled: false,
+              },
+            ]}
+          />
         </div>
       </div>
     </div>
@@ -340,48 +322,30 @@ const FavouriteSettings = () => {
             Note that you can independently toggle the visibility of favourites within each individual section of your
             library.
           </div>
-          <div className={style.buttons}>
-            <Button
-              size="tiny"
-              inline
-              wrap={false}
-              onClick={toggleShowFavourites}
-              icon={<Icon icon="HeartIcon" cover strokeAndFill />}
-              color={allSame && firstValue === true ? 'primary' : 'secondary'}
-              style={{
-                zIndex: allSame && firstValue === true ? 2 : 'initial',
-              }}
-            >
-              Visible
-            </Button>
-            <Button
-              size="tiny"
-              inline
-              wrap={false}
-              onClick={toggleHideFavourites}
-              icon={<Icon icon="HeartIcon" cover stroke />}
-              color={allSame && firstValue === false ? 'primary' : 'secondary'}
-              style={{
-                zIndex: allSame && firstValue === false ? 2 : 'initial',
-              }}
-            >
-              Hidden
-            </Button>
-            <Button
-              size="tiny"
-              inline
-              wrap={false}
-              icon={<Icon icon="VanishedCircleIcon" cover stroke />}
-              color={!allSame ? 'primary' : 'secondary'}
-              disabled={true}
-              renderDisabled={false}
-              style={{
-                zIndex: !allSame ? 2 : 'initial',
-              }}
-            >
-              Mixed
-            </Button>
-          </div>
+          <div className="mt-15"></div>
+          <FormTabButtons
+            tabs={[
+              {
+                label: 'Visible',
+                icon: <Icon icon="HeartIcon" cover strokeAndFill />,
+                onClick: toggleShowFavourites,
+                active: allSame && firstValue === true,
+              },
+              {
+                label: 'Hidden',
+                icon: <Icon icon="HeartIcon" cover stroke />,
+                onClick: toggleHideFavourites,
+                active: allSame && firstValue === false,
+              },
+              {
+                label: 'Mixed',
+                icon: <Icon icon="VanishedCircleIcon" cover stroke />,
+                active: !allSame,
+                disabled: true,
+                renderDisabled: false,
+              },
+            ]}
+          />
         </div>
       </div>
     </div>
@@ -514,48 +478,30 @@ const StarRatingSettings = () => {
             Note that you can independently toggle the visibility of star ratings within each individual section of your
             library.
           </div>
-          <div className={style.buttons}>
-            <Button
-              size="tiny"
-              inline
-              wrap={false}
-              onClick={toggleShowUserRating}
-              icon={<Icon icon="StarFullIcon" cover strokeAndFill />}
-              color={allSame && firstValue === true ? 'primary' : 'secondary'}
-              style={{
-                zIndex: allSame && firstValue === true ? 2 : 'initial',
-              }}
-            >
-              Visible
-            </Button>
-            <Button
-              size="tiny"
-              inline
-              wrap={false}
-              onClick={toggleHideUserRating}
-              icon={<Icon icon="StarFullIcon" cover stroke />}
-              color={allSame && firstValue === false ? 'primary' : 'secondary'}
-              style={{
-                zIndex: allSame && firstValue === false ? 2 : 'initial',
-              }}
-            >
-              Hidden
-            </Button>
-            <Button
-              size="tiny"
-              inline
-              wrap={false}
-              icon={<Icon icon="VanishedCircleIcon" cover stroke />}
-              color={!allSame ? 'primary' : 'secondary'}
-              disabled={true}
-              renderDisabled={false}
-              style={{
-                zIndex: !allSame ? 2 : 'initial',
-              }}
-            >
-              Mixed
-            </Button>
-          </div>
+          <div className="mt-15"></div>
+          <FormTabButtons
+            tabs={[
+              {
+                label: 'Visible',
+                icon: <Icon icon="StarFullIcon" cover strokeAndFill />,
+                onClick: toggleShowUserRating,
+                active: allSame && firstValue === true,
+              },
+              {
+                label: 'Hidden',
+                icon: <Icon icon="StarFullIcon" cover stroke />,
+                onClick: toggleHideUserRating,
+                active: allSame && firstValue === false,
+              },
+              {
+                label: 'Mixed',
+                icon: <Icon icon="VanishedCircleIcon" cover stroke />,
+                active: !allSame,
+                disabled: true,
+                renderDisabled: false,
+              },
+            ]}
+          />
         </div>
       </div>
     </div>

@@ -175,7 +175,8 @@
   }
 }
 
-.sizeTiny {
+.sizeTiny,
+.sizeTab {
   min-width: 90px;
   max-width: 210px;
   padding: 8px 16px;
@@ -188,5 +189,15 @@
     width: 14px;
     height: 14px;
     margin: -1px 10px -1px 0;
+  }
+}
+
+.sizeTab {
+  min-width: 114px;
+  padding: 7px 10px;
+  font-weight: 400;
+
+  .icon {
+    margin: -1px 10px -1px -3px;
   }
 }
