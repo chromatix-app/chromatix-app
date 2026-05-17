@@ -4,9 +4,8 @@
 
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { OTPInput } from 'input-otp';
 
-import { Button, Icon } from 'js/components';
+import { Button, FormOTP, Icon } from 'js/components';
 
 import style from './ViewUsers.module.scss';
 
@@ -111,22 +110,7 @@ const UserForm = ({ pinUser, setRenderPinEntry }) => {
     <div className={style.wrap}>
       <div className={style.form}>
         <div className={style.otpWrapper}>
-          <OTPInput
-            maxLength={4}
-            value={pin}
-            onChange={setPin}
-            autoFocus
-            render={({ slots }) => (
-              <div className={style.otpContainer}>
-                {slots.map((slot, idx) => (
-                  <div key={idx} className={style.otpSlot} data-active={slot.isActive}>
-                    {slot.char !== null ? '*' : null}
-                    {slot.hasFakeCaret && <div className={style.otpCaret} />}
-                  </div>
-                ))}
-              </div>
-            )}
-          />
+          <FormOTP value={pin} onChange={setPin} autoFocus />
         </div>
         <div className={style.cancel}>
           <Button size="tiny" color="secondary" onClick={() => setRenderPinEntry(false)}>

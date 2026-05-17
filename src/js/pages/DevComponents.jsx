@@ -9,6 +9,7 @@ import {
   FilterMenu,
   FilterSelect,
   FilterToggle,
+  FormOTP,
   FormTabButtons,
   FormTabGroup,
   FormTheme,
@@ -25,6 +26,7 @@ const Component = () => {
   const [view, setView] = useState('grid');
   const [tabView, setTabView] = useState('grid');
   const [tabGroup, setTabGroup] = useState('grid');
+  const [otp, setOtp] = useState('');
   const [sort, setSort] = useState('title');
   const [order, setOrder] = useState('asc');
   const [colOptions, setColOptions] = useState({
@@ -190,6 +192,14 @@ const Component = () => {
               { value: 'mixed', label: 'Mixed' },
             ]}
           />
+        </div>
+
+        {/* FORM - OTP */}
+
+        <div>
+          <h2>Form - OTP</h2>
+          <br />
+          <FormOTP value={otp} onChange={setOtp} />
         </div>
 
         {/* BUTTONS */}
