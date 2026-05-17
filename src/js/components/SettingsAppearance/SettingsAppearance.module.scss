@@ -1,23 +1,6 @@
 @use '../../../css/_config/_mixins';
 @use '../../../css/_config/_vars';
 
-.wrap {
-  padding: 0 30px 50px;
-
-  :global(.cq-800) & {
-    padding: 0 40px 50px;
-  }
-}
-
-.group {
-  margin-top: 32px;
-  margin-bottom: -10px;
-
-  &:first-child {
-    margin-top: 0;
-  }
-}
-
 .title {
   margin: 0 0 15px;
   font-size: 14px;
@@ -25,92 +8,59 @@
   color: var(--color-opacity-05);
 }
 
-.themes {
+.colorWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.colorField {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-}
+  margin-right: 30px;
 
-.theme {
-  display: block;
-  position: relative;
-  overflow: hidden;
-  width: 36px;
-  height: 36px;
-  margin: 0 15px 15px 0;
-  border-radius: 5px;
-  outline: 1px solid var(--color-opacity-02);
+  &:last-child {
+    margin-top: 4px;
+  }
 
-  @include mixins.focus-self-outline;
-
-  &Current {
-    outline: 4px solid var(--color-opacity-04);
+  button {
+    display: inline-block;
+    width: auto !important;
+    min-width: 90px !important;
   }
 }
 
-.themeBackground {
-  position: absolute;
-  overflow: hidden;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 5px;
-}
-
-.themeText {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 0;
-  height: 0;
-  border-width: 0 0 26px 26px;
-  border-style: solid;
-}
-
-.icon {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 20px;
-  height: 20px;
-}
-
-.custom {
-  display: flex;
-  flex: 1 1 auto;
-  flex-wrap: wrap;
-  align-items: center;
-  margin: 0 0 15px 10px;
-}
-
-.customField {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  margin-right: 25px;
-}
-
-.customLabel {
+.colorLabel {
   display: inline-block;
-  margin-right: 5px;
+  min-width: 120px;
+  margin-right: 8px;
   font-size: 14px;
 }
 
-.customInput {
-  width: 60px;
+.colorInput {
+  width: 54px;
   height: 30px;
-  border-radius: 2px;
+  padding: 0;
+  margin: 0;
+  background: var(--color-secondary-bg);
+  border: 1px solid var(--color-secondary-border);
+  border-radius: 6px;
 
   @include mixins.focus-self-outline;
-}
 
-.button {
-  display: inline-block;
-  padding: 5px 25px;
-  background: var(--color-opacity-02);
-  border-radius: 50px;
-  font-size: 14px;
+  &::-webkit-color-swatch-wrapper {
+    padding: 3px;
+    border: none;
+  }
 
-  @include mixins.focus-self-outline;
+  &::-webkit-color-swatch {
+    border: 1px solid var(--color-secondary-border);
+    border-radius: 3px;
+  }
+
+  &::-moz-color-swatch {
+    border: 1px solid var(--color-secondary-border);
+    border-radius: 3px;
+  }
 }

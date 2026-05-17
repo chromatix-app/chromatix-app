@@ -183,10 +183,10 @@
   z-index: 2;
   width: 38px;
   height: 38px;
-  background: var(--color-button-secondary);
+  background: var(--color-button-mono-bg);
   border: 1px solid var(--color-text);
   border-radius: 50%;
-  color: var(--color-primary-background);
+  color: var(--color-primary-bg);
 
   @include mixins.focus-self-outline;
 

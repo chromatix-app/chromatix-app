@@ -32,6 +32,7 @@ export { default as SettingsSidebar } from './SettingsSidebar/SettingsSidebar';
 export { default as SideBar } from './SideBar/SideBar';
 export { default as StarRating } from './StarRating/StarRating';
 export { default as FormTabButtons } from './FormTabButtons/FormTabButtons';
+export { default as FormTheme } from './FormTheme/FormTheme';
 export { default as TitleBasic } from './TitleBasic/TitleBasic';
 export { default as TitleHeading } from './TitleHeading/TitleHeading';
 export { default as ToastNotification } from './ToastNotification/ToastNotification';

@@ -17,7 +17,7 @@
   max-width: 300px;
   padding: 10px 20px;
   margin: 0 auto 6px;
-  background: var(--color-secondary-background);
+  background: var(--color-secondary-bg);
   border: 1px solid var(--color-secondary-border);
   border-radius: 8px;
   box-shadow: var(--shadow-sm);
@@ -27,7 +27,7 @@
 
   &:hover,
   &:focus {
-    background: var(--color-tertiary-background);
+    background: var(--color-tertiary-bg);
     border: 1px solid var(--color-tertiary-border);
   }
 }

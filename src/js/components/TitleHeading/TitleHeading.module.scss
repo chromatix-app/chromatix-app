@@ -96,9 +96,9 @@
   }
 
   background: var(--color-core);
-  background: linear-gradient(to bottom, var(--color-core) 0%, var(--color-primary-background) 400%);
+  background: linear-gradient(to bottom, var(--color-core) 0%, var(--color-primary-bg) 400%);
   outline: none;
-  color: var(--color-primary-background);
+  color: var(--color-primary-bg);
 }
 
 .thumbIcon {
@@ -262,7 +262,7 @@
   font-size: 12px;
   line-height: 16px;
   font-weight: bold;
-  color: var(--color-primary-background);
+  color: var(--color-primary-bg);
 
   @include mixins.focus-self-outline;
 }
@@ -315,7 +315,7 @@
   width: 100%;
   height: 91px;
   padding: 20px 10px;
-  background: var(--color-primary-background);
+  background: var(--color-primary-bg);
 
   :global(.cq-800) & {
     padding: 20px 10px;

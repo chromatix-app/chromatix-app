@@ -48,14 +48,16 @@ const sessionState = {
 
   // APPEARANCE OPTIONS
 
+  // themeMode: 'system',
+  themeContrast: 'default',
+  themeUiTinting: 'auto',
+  themeKeyFocus: false,
+
   currentTheme: isProduction ? 'chromatix-magenta' : isPreview ? 'chromatix-yellow' : 'chromatix-teal',
   currentColorBackground: '#021C27',
   currentColorText: '#ffffff',
   currentColorPrimary: '#f7277a',
   isLightTheme: false,
-
-  accessibilityFocus: false,
-  accessibilityContrast: false,
 
   winCustomScrollbars: true,
   winAutoHideScrollbars: false,
@@ -509,6 +511,18 @@ const effects = (dispatch) => ({
       const sessionKey = config.storageSessionKey + '-' + userHash;
       try {
         localStorageState = localStorage.getItem(sessionKey) ? JSON.parse(localStorage.getItem(sessionKey)) : {};
+
+        // [NOTE] migrate old accessibilityContrast setting to themeContrast
+        if (typeof localStorageState.accessiblityContrast === 'boolean') {
+          localStorageState.themeContrast = localStorageState.accessiblityContrast ? 'medium' : 'default';
+          delete localStorageState.accessiblityContrast;
+        }
+
+        // [NOTE] migrate old accessibilityFocus setting to themeKeyFocus
+        if (typeof localStorageState.accessibilityFocus === 'boolean') {
+          localStorageState.themeKeyFocus = localStorageState.accessibilityFocus;
+          delete localStorageState.accessibilityFocus;
+        }
 
         // [NOTE] migrate old optionLogPlexPlayback setting to optionLogPlaybackToServer
         if (typeof localStorageState.optionLogPlexPlayback !== 'undefined') {

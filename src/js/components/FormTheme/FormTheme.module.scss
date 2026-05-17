@@ -1,0 +1,159 @@
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
+
+// ======================================================================
+// TRIGGER
+// ======================================================================
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 260px;
+  padding: 8px 10px 8px 8px;
+  background: var(--color-button-on-primary-bg);
+  border: 1px solid var(--color-button-on-primary-border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: left;
+
+  @include mixins.focus-self-outline;
+}
+
+.triggerSwatch {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 3px;
+  outline: 1px solid var(--color-button-on-primary-border);
+}
+
+.swatchBg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.swatchTriangle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-width: 0 0 21px 21px;
+  border-style: solid;
+
+  .triggerSwatch & {
+    border-width: 0 0 27px 27px;
+  }
+}
+
+.swatchIcon {
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 3px;
+  background: var(--color-primary-bg);
+  color: var(--color-text);
+}
+
+.triggerLabel {
+  flex: 1;
+  color: var(--color-text);
+}
+
+.triggerChevron {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  transition: transform 0.15s ease;
+  color: var(--color-opacity-05);
+
+  [data-state='open'] & {
+    transform: rotate(180deg);
+  }
+}
+
+// ======================================================================
+// DROPDOWN CONTENT
+// ======================================================================
+
+.content {
+  overflow-y: auto;
+  z-index: 99;
+  min-width: 260px;
+  max-height: 455px;
+  max-height: calc(var(--radix-select-content-available-height) - 100px);
+  padding: 0 4px 4px;
+  background: var(--color-secondary-bg);
+  border: 1px solid var(--color-secondary-border);
+  border-radius: 6px;
+  box-shadow: var(--shadow-lg);
+  font-size: 13px;
+}
+
+.groupLabel {
+  padding: 10px 4px 4px;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-opacity-04);
+}
+
+// ======================================================================
+// ITEMS
+// ======================================================================
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 4px;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+
+  @include mixins.focus-self-fill;
+
+  &[data-highlighted] {
+    background: var(--color-secondary-hover);
+  }
+
+  &[data-state='checked'] {
+    color: var(--color-core);
+  }
+}
+
+.itemSwatch {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 3px;
+  outline: 1px solid var(--color-button-on-primary-border);
+}
+
+.itemIndicator {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  margin-left: auto;
+  margin-right: 4px;
+  color: var(--color-core);
+}
+
+.itemLabelPrefix {
+  color: var(--color-opacity-04);
+}

@@ -22,7 +22,7 @@
   font-weight: 500;
   text-align: center;
   text-decoration: none;
-  color: vars.$color-primary-background;
+  color: vars.$color-primary-bg;
 
   @include mixins.focus-self-outline;
 
@@ -37,7 +37,7 @@
 
   &.disabled:disabled {
     background-color: var(--color-opacity-005) !important;
-    border: 1px solid var(--color-opacity-01) !important;
+    border: 1px solid var(--color-opacity-005) !important;
     color: var(--color-opacity-03) !important;
   }
 
@@ -48,7 +48,7 @@
   :global(html[data-logged-in='true']) & {
     background-color: var(--color-core);
     border: 1px solid var(--color-opacity-015);
-    color: var(--color-primary-background);
+    color: var(--color-primary-bg);
   }
 
   // inline
@@ -109,9 +109,9 @@
 
 .colorMono {
   :global(html[data-logged-in='true']) & {
-    background-color: var(--color-button-secondary);
+    background-color: var(--color-button-mono-bg);
     border: 1px solid var(--color-text);
-    color: var(--color-primary-background);
+    color: var(--color-primary-bg);
   }
 }
 
@@ -121,8 +121,8 @@
   color: vars.$color-text;
 
   :global(html[data-logged-in='true']) & {
-    background-color: var(--color-secondary-background);
-    border: 1px solid var(--color-secondary-border);
+    background-color: var(--color-button-on-primary-bg);
+    border: 1px solid var(--color-button-on-primary-border);
     color: var(--color-text);
   }
 }
@@ -133,8 +133,8 @@
   color: vars.$color-text;
 
   :global(html[data-logged-in='true']) & {
-    background-color: var(--color-tertiary-background);
-    border: 1px solid var(--color-tertiary-border);
+    background-color: var(--color-button-on-secondary-bg);
+    border: 1px solid var(--color-button-on-secondary-border);
     color: var(--color-text);
   }
 }

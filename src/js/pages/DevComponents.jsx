@@ -182,6 +182,8 @@ const Component = () => {
           <br />
           <Button size="tiny">Tiny</Button>
           <br />
+          <Button size="tab">Tab</Button>
+          <br />
           <Button size="tiny" loading>
             Loading
           </Button>

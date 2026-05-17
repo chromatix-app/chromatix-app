@@ -11,7 +11,7 @@
   z-index: 2;
   height: 54px;
   padding: 4px 0 0;
-  background: var(--color-secondary-background);
+  background: var(--color-secondary-bg);
   border-right: 1px solid var(--color-secondary-border);
 
   @include mixins.electron-no-drag;
@@ -46,7 +46,7 @@
   min-height: 100%;
   min-height: calc(100% - 54px);
   padding: 5px 12px 20px;
-  background: var(--color-secondary-background);
+  background: var(--color-secondary-bg);
   border-right: 1px solid var(--color-secondary-border);
 }
 
@@ -74,7 +74,7 @@
     width: 100%;
     padding: 7px 30px 7px 30px;
     margin: 0 0 1px;
-    background: var(--color-tertiary-background);
+    background: var(--color-tertiary-bg);
     border: 1px solid var(--color-tertiary-border);
     border-radius: 6px;
     font-size: 13px;
@@ -86,18 +86,31 @@
       padding: 7px 35px 7px 35px;
     }
 
+    :global(html[data-theme='light']) & {
+      background: var(--color-primary-bg);
+      border-color: var(--color-secondary-border);
+    }
+
     &::placeholder {
       color: var(--color-opacity-05);
     }
 
     &:focus {
       border-color: var(--color-opacity-03);
+
+      :global(html[data-theme='light']) & {
+        border-color: var(--color-tertiary-border);
+      }
     }
   }
 
   &:focus-within {
     input {
       border-color: var(--color-opacity-03);
+
+      :global(html[data-theme='light']) & {
+        border-color: var(--color-tertiary-border);
+      }
     }
   }
 }
@@ -136,7 +149,7 @@
     display: block;
     background: var(--color-opacity-025);
     border-radius: 50%;
-    color: var(--color-primary-background);
+    color: var(--color-primary-bg);
   }
 
   &:focus,
@@ -155,7 +168,7 @@
   max-height: calc(100vh - 42px - 24px - 100px);
   max-height: calc(100svh - 42px - 24px - 100px);
   padding: 6px;
-  background: var(--color-secondary-background);
+  background: var(--color-secondary-bg);
   border: 1px solid var(--color-secondary-border);
   border-radius: 11px;
   box-shadow: var(--shadow-md);
@@ -184,8 +197,8 @@
 
   &:hover,
   &:focus {
-    background: var(--color-tertiary-background);
-    border: 1px solid var(--color-tertiary-border);
+    background: var(--color-card-on-secondary-bg);
+    border: 1px solid var(--color-card-on-secondary-border);
   }
 }
 

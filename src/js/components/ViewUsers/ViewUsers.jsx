@@ -129,7 +129,7 @@ const UserForm = ({ pinUser, setRenderPinEntry }) => {
           />
         </div>
         <div className={style.cancel}>
-          <Button size="tiny" color="tertiary" onClick={() => setRenderPinEntry(false)}>
+          <Button size="tiny" color="secondary" onClick={() => setRenderPinEntry(false)}>
             Cancel
           </Button>
         </div>

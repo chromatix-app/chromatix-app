@@ -12,7 +12,7 @@
   width: 100%;
   height: 100%;
   padding: 0 20px 30px;
-  background: var(--color-primary-background);
+  background: var(--color-primary-bg);
 
   :global(.cq-800) & {
     padding: 0 30px 30px;
@@ -24,7 +24,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 0 10px;
-  background: var(--color-primary-background);
+  background: var(--color-primary-bg);
 
   :global(.cq-620) & {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -80,8 +80,8 @@
   @include mixins.focus-self-outline;
 
   &:hover {
-    background: var(--color-secondary-card);
-    border: 1px solid var(--color-secondary-border);
+    background: var(--color-card-on-primary-bg);
+    border: 1px solid var(--color-card-on-primary-border);
   }
 
   .virtualRow & {
@@ -117,8 +117,8 @@
   }
   &.thumbWithIcon {
     background: var(--color-core);
-    background: linear-gradient(to bottom, var(--color-core) 0%, var(--color-primary-background) 400%);
-    color: var(--color-primary-background);
+    background: linear-gradient(to bottom, var(--color-core) 0%, var(--color-primary-bg) 400%);
+    color: var(--color-primary-bg);
   }
 
   img {
@@ -173,7 +173,7 @@
   box-shadow: var(--shadow-sm);
   transition: all ease-in-out 0.25s;
   cursor: pointer;
-  color: var(--color-primary-background);
+  color: var(--color-primary-bg);
 
   .card:hover &:hover,
   .card.cardCurrent &:hover {
