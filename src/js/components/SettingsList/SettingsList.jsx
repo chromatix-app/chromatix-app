@@ -5,7 +5,7 @@
 import { useDispatch } from 'react-redux';
 import clsx from 'clsx';
 
-import { RangeSlider } from 'js/components';
+import { FormTabGroup, RangeSlider } from 'js/components';
 
 import style from './SettingsList.module.scss';
 
@@ -54,7 +54,15 @@ const SettingsList = ({ title, description, menuItems }) => {
                     <div className={clsx(style.description, disabled && style.disabled)}>{description}</div>
                   )}
 
-                  <div className={style.radioGroup}>
+                  <FormTabGroup
+                    name={key}
+                    value={state}
+                    onChange={(val) => dispatch.sessionModel.setSessionState({ [key]: val })}
+                    options={options}
+                    disabled={disabled}
+                  />
+
+                  {/* <div className={style.radioGroup}>
                     {options?.map(({ label: optionLabel, value }) => (
                       <label key={value} className={style.radioOption}>
                         <input
@@ -67,7 +75,7 @@ const SettingsList = ({ title, description, menuItems }) => {
                         <span className={clsx(style.label, disabled && style.disabled)}>{optionLabel}</span>
                       </label>
                     ))}
-                  </div>
+                  </div> */}
                 </div>
               </div>
             );

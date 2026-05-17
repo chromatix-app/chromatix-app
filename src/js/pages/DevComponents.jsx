@@ -10,6 +10,8 @@ import {
   FilterSelect,
   FilterToggle,
   FormTabButtons,
+  FormTabGroup,
+  FormTheme,
   Icon,
   PageText,
   TitleHeading,
@@ -22,6 +24,7 @@ import {
 const Component = () => {
   const [view, setView] = useState('grid');
   const [tabView, setTabView] = useState('grid');
+  const [tabGroup, setTabGroup] = useState('grid');
   const [sort, setSort] = useState('title');
   const [order, setOrder] = useState('asc');
   const [colOptions, setColOptions] = useState({
@@ -43,7 +46,6 @@ const Component = () => {
 
         <div>
           <h2>Filters - Standard</h2>
-          <br />
           <div>
             <FilterToggle
               value={view}
@@ -91,7 +93,6 @@ const Component = () => {
 
         <div>
           <h2>Filters - Icon</h2>
-          <br />
           <div>
             <FilterToggle
               variant="Large"
@@ -139,11 +140,17 @@ const Component = () => {
           </div>
         </div>
 
-        {/* FORM TABS */}
+        {/* FORM - THEME SELECTOR */}
 
         <div>
-          <h2>Form Tabs</h2>
-          <br />
+          <h2>Form - Theme Selector</h2>
+          <FormTheme />
+        </div>
+
+        {/* FORM - TAB BUTTONS */}
+
+        <div>
+          <h2>Form - Tab Buttons</h2>
           <FormTabButtons
             tabs={[
               {
@@ -169,11 +176,26 @@ const Component = () => {
           />
         </div>
 
+        {/* FORM - TAB GROUP */}
+
+        <div>
+          <h2>Form - Tab Group</h2>
+          <FormTabGroup
+            name="tabGroup"
+            value={tabGroup}
+            onChange={setTabGroup}
+            options={[
+              { value: 'grid', label: 'Grid view', icon: <Icon icon="GridIcon" cover strokeAndFill /> },
+              { value: 'list', label: 'List view', icon: <Icon icon="ListIcon" cover stroke /> },
+              { value: 'mixed', label: 'Mixed' },
+            ]}
+          />
+        </div>
+
         {/* BUTTONS */}
 
         <div>
           <h2>Buttons</h2>
-          <br />
           <Button size="large">Large (Default)</Button>
           <br />
           <Button size="medium">Medium</Button>

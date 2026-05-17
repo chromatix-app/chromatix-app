@@ -1,0 +1,80 @@
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
+
+// ======================================================================
+// BUTTONS
+// ======================================================================
+
+.buttons {
+  display: flex;
+  gap: 0;
+
+  > * {
+    margin-right: -1px !important;
+    border-radius: 0 !important;
+
+    &:first-child {
+      border-top-left-radius: 6px !important;
+      border-bottom-left-radius: 6px !important;
+    }
+
+    &:last-child {
+      border-top-right-radius: 6px !important;
+      border-bottom-right-radius: 6px !important;
+    }
+  }
+}
+
+// ======================================================================
+// ITEM
+// ======================================================================
+
+.item {
+  display: inline-flex;
+  appearance: none;
+  justify-content: center;
+  align-items: center;
+  min-width: 114px;
+  padding: 7px 10px;
+  background-color: vars.$color-secondary-border;
+  border: 1px solid vars.$color-opacity-01;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 400;
+  color: vars.$color-text;
+
+  :global(html[data-logged-in='true']) & {
+    background-color: var(--color-button-on-primary-bg);
+    border: 1px solid var(--color-button-on-primary-border);
+    color: var(--color-text);
+  }
+
+  &Active {
+    :global(html[data-logged-in='true']) & {
+      background-color: var(--color-button-mono-bg);
+      border: 1px solid var(--color-text);
+      color: var(--color-primary-bg);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  @include mixins.focus-self-outline;
+}
+
+// ======================================================================
+// ICON
+// ======================================================================
+
+.icon {
+  display: inline-block;
+  position: relative;
+  top: 1px;
+  width: 14px;
+  height: 14px;
+  margin: -1px 10px -1px -3px;
+}
