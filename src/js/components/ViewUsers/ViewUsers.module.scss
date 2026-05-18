@@ -52,7 +52,7 @@
   background: var(--color-secondary-bg);
   border: 1px solid var(--color-secondary-border);
   border-radius: 13px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
   font-size: 12px;
   line-height: 1.6;
   text-align: center;
@@ -103,7 +103,7 @@
   padding: 7px;
   background: var(--color-text);
   border-radius: 50%;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
   text-align: center;
   color: var(--color-primary-bg);
 

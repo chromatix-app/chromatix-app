@@ -49,8 +49,9 @@ function useColorTheme(): void {
 
     const contrastLevel = themeContrast === 'high' ? 'high' : themeContrast === 'medium' ? 'medium' : 'default';
 
-    const chromaMultiplier = contrastLevel === 'high' ? 1.7 : contrastLevel === 'medium' ? 1.4 : 1.1;
-    const opacityMultiplier = contrastLevel === 'high' ? 2 : contrastLevel === 'medium' ? 1.6 : 1;
+    const chromaMultiplierLow = contrastLevel === 'high' ? 1.5 : contrastLevel === 'medium' ? 1.3 : 1.1;
+    const chromaMultiplierHigh = contrastLevel === 'high' ? 1.7 : contrastLevel === 'medium' ? 1.4 : 1.1;
+    const opacityMultiplier = contrastLevel === 'high' ? 2 : contrastLevel === 'medium' ? 1.5 : 1;
 
     const primaryBackgroundChroma = chroma(colorPrimaryBg);
 
@@ -109,48 +110,48 @@ function useColorTheme(): void {
     if (isActualLightTheme) {
       colorBlackout =
         chroma(colorPrimaryBg)
-          .darken(0.2 * chromaMultiplier)
+          .darken(0.2 * chromaMultiplierHigh)
           .hex() + decimalToHex(decimalMultiplier(opacityMultiplier, 0.9));
 
       colorSecondaryBg = chroma(colorPrimaryBg)
-        .darken(0.2 * chromaMultiplier)
+        .darken(0.2 * chromaMultiplierLow)
         .hex();
       colorSecondaryBorder = chroma(colorPrimaryBg)
-        .darken(0.6 * chromaMultiplier)
+        .darken(0.6 * chromaMultiplierHigh)
         .hex();
       colorSecondaryHover = chroma(colorPrimaryBg)
-        .darken(0.4 * chromaMultiplier)
+        .darken(0.4 * chromaMultiplierHigh)
         .hex();
       colorSecondaryActive = chroma(colorPrimaryBg)
-        .darken(0.6 * chromaMultiplier)
+        .darken(0.6 * chromaMultiplierHigh)
         .hex();
 
       colorTertiaryBg = chroma(colorPrimaryBg)
-        .darken(0.6 * chromaMultiplier)
+        .darken(0.6 * chromaMultiplierLow)
         .hex();
       colorTertiaryBorder = chroma(colorPrimaryBg)
-        .darken(0.9 * chromaMultiplier)
+        .darken(0.9 * chromaMultiplierHigh)
         .hex();
       colorTertiaryHover = chroma(colorPrimaryBg)
-        .darken(0.9 * chromaMultiplier)
+        .darken(0.9 * chromaMultiplierHigh)
         .hex();
 
       colorCardOnPrimaryBg = chroma(colorPrimaryBg)
-        .darken(0.2 * chromaMultiplier)
+        .darken(0.2 * chromaMultiplierLow)
         .hex();
       colorCardOnPrimaryBorder = chroma(colorPrimaryBg)
-        .darken(0.6 * chromaMultiplier)
+        .darken(0.6 * chromaMultiplierHigh)
         .hex();
 
       colorCardOnSecondaryBg = chroma(colorPrimaryBg)
-        .darken(0.6 * chromaMultiplier)
+        .darken(0.6 * chromaMultiplierLow)
         .hex();
       colorCardOnSecondaryBorder = chroma(colorPrimaryBg)
-        .darken(0.6 * chromaMultiplier) // [NOTE] invisible border
+        .darken(0.6 * chromaMultiplierHigh) // [NOTE] invisible border
         .hex();
 
       colorButtonMonoBg = chroma(colorText)
-        .brighten(0.3 * chromaMultiplier)
+        .brighten(0.3 * chromaMultiplierHigh)
         .hex();
     }
 
@@ -158,49 +159,49 @@ function useColorTheme(): void {
     else {
       colorBlackout =
         chroma(colorPrimaryBg)
-          .darken(0.5 * chromaMultiplier)
+          .darken(0.5 * chromaMultiplierHigh)
           .desaturate(0.35)
           .hex() + decimalToHex(decimalMultiplier(opacityMultiplier, 0.8));
 
       colorSecondaryBg = chroma(colorPrimaryBg)
-        .brighten(0.4 * chromaMultiplier)
+        .brighten(0.4 * chromaMultiplierHigh)
         .hex();
       colorSecondaryBorder = chroma(colorPrimaryBg)
-        .brighten(0.8 * chromaMultiplier)
+        .brighten(0.8 * chromaMultiplierHigh)
         .hex();
       colorSecondaryHover = chroma(colorPrimaryBg)
-        .brighten(0.6 * chromaMultiplier)
+        .brighten(0.6 * chromaMultiplierHigh)
         .hex();
       colorSecondaryActive = chroma(colorPrimaryBg)
-        .brighten(0.75 * chromaMultiplier)
+        .brighten(0.75 * chromaMultiplierHigh)
         .hex();
 
       colorTertiaryBg = chroma(colorPrimaryBg)
-        .brighten(0.9 * chromaMultiplier)
+        .brighten(0.9 * chromaMultiplierHigh)
         .hex();
       colorTertiaryBorder = chroma(colorPrimaryBg)
-        .brighten(1.2 * chromaMultiplier)
+        .brighten(1.2 * chromaMultiplierHigh)
         .hex();
       colorTertiaryHover = chroma(colorPrimaryBg)
-        .brighten(1.25 * chromaMultiplier)
+        .brighten(1.25 * chromaMultiplierHigh)
         .hex();
 
       colorCardOnPrimaryBg = chroma(colorPrimaryBg)
-        .brighten(0.55 * chromaMultiplier)
+        .brighten(0.55 * chromaMultiplierHigh)
         .hex();
       colorCardOnPrimaryBorder = chroma(colorPrimaryBg)
-        .brighten(0.85 * chromaMultiplier)
+        .brighten(0.85 * chromaMultiplierHigh)
         .hex();
 
       colorCardOnSecondaryBg = chroma(colorPrimaryBg)
-        .brighten(0.9 * chromaMultiplier)
+        .brighten(0.9 * chromaMultiplierHigh)
         .hex();
       colorCardOnSecondaryBorder = chroma(colorPrimaryBg)
-        .brighten(1.2 * chromaMultiplier)
+        .brighten(1.2 * chromaMultiplierHigh)
         .hex();
 
       colorButtonMonoBg = chroma(colorText)
-        .darken(0.3 * chromaMultiplier)
+        .darken(0.3 * chromaMultiplierHigh)
         .hex();
     }
 
@@ -227,10 +228,9 @@ function useColorTheme(): void {
     const opacity07 = decimalMultiplier(opacityMultiplier, 0.7);
     const opacity08 = decimalMultiplier(opacityMultiplier, 0.8);
 
-    const shadowLg = isActualLightTheme ? '0 4px 20px rgba(0, 0, 0, 0.1)' : '0 2px 20px rgba(0, 0, 0, 0.4)';
-    const shadowMd = isActualLightTheme ? '0 4px 6px rgba(0, 0, 0, 0.05)' : '0 2px 10px rgba(0, 0, 0, 0.4)';
-    const shadowSm = isActualLightTheme ? '0 4px 6px rgba(0, 0, 0, 0.05)' : '0 2px 8px rgba(0, 0, 0, 0.35)';
-    const shadowXs = isActualLightTheme ? '0 2px 4px rgba(0, 0, 0, 0.05)' : '0 2px 6px rgba(0, 0, 0, 0.2)';
+    const shadowLg = isActualLightTheme ? '0 4px 20px rgba(0, 0, 0, 0.1)' : '0 2px 20px rgba(0, 0, 0, 0.35)';
+    const shadowMd = isActualLightTheme ? '0 4px 8px rgba(0, 0, 0, 0.1)' : '0 2px 10px rgba(0, 0, 0, 0.35)';
+    const shadowSm = isActualLightTheme ? '0 2px 4px rgba(0, 0, 0, 0.05)' : '0 2px 6px rgba(0, 0, 0, 0.2)';
 
     const colors: Record<string, string | number> = {
       '--color-core': colorCore,
@@ -288,7 +288,6 @@ function useColorTheme(): void {
       '--shadow-lg': shadowLg,
       '--shadow-md': shadowMd,
       '--shadow-sm': shadowSm,
-      '--shadow-xs': shadowXs,
     };
 
     // Get or create the style element for dynamic theme variables
