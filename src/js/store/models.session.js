@@ -58,6 +58,7 @@ const sessionState = {
   currentColorText: '#ffffff',
   currentColorPrimary: '#f7277a',
   isLightTheme: false,
+  isLightText: true,
 
   winCustomScrollbars: true,
   winAutoHideScrollbars: false,

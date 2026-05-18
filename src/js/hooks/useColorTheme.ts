@@ -61,6 +61,9 @@ function useColorTheme(): void {
       chroma.contrast(primaryBackgroundChroma.hex(), '#000000') >=
       chroma.contrast(primaryBackgroundChroma.hex(), '#ffffff');
 
+    const isLightText =
+      chroma.contrast(chroma(colorText).hex(), '#000000') >= chroma.contrast(chroma(colorText).hex(), '#ffffff');
+
     const isActualLightTheme =
       currentTheme === 'custom'
         ? themeUiTinting === 'darken' || (themeUiTinting === 'auto' && isLightTheme)
@@ -314,6 +317,7 @@ function useColorTheme(): void {
     // Save whether the theme is light or dark in the session state
     dispatch.sessionModel.setSessionState({
       isLightTheme: isActualLightTheme,
+      isLightText: isLightText,
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

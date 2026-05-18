@@ -133,14 +133,14 @@
     width: 100%;
     height: auto;
 
-    filter: grayscale(0.9) contrast(1.1) brightness(1.2);
-    mix-blend-mode: screen;
+    filter: grayscale(0.9);
+    mix-blend-mode: multiply;
   }
 
   &Light {
     img {
-      filter: grayscale(0.9);
-      mix-blend-mode: multiply;
+      filter: grayscale(0.9) contrast(1.1) brightness(1.2);
+      mix-blend-mode: screen;
     }
   }
 }
