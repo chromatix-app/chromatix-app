@@ -115,7 +115,7 @@ const DefaultCustomSettings = () => {
 
   return (
     <div className="settingsGroup">
-      <div className={style.title}>Custom theme</div>
+      <div className={style.title}>Custom Theme</div>
       <div className={style.colorWrap}>
         <div className={style.colorField}>
           <div className={style.colorLabel}>Background:</div>
