@@ -146,7 +146,7 @@ const Component = () => {
 
         <div>
           <h2>Form - Theme Selector</h2>
-          <FormTheme />
+          <FormTheme themeKey="currentTheme" />
         </div>
 
         {/* FORM - TAB BUTTONS */}

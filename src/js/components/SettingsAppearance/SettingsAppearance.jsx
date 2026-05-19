@@ -25,6 +25,7 @@ export const SettingsAppearance = ({ debug }) => {
   return (
     <>
       {/* <ThemeModeSettings /> */}
+
       <DefaultThemeSettings />
       {currentTheme === 'custom' && (
         <>
@@ -33,6 +34,7 @@ export const SettingsAppearance = ({ debug }) => {
         </>
       )}
       <ContrastSettings />
+
       <AccessibilitySettings />
       {(isLinuxOS || isWindowsOS || debug) && <ScrollbarSettings />}
     </>
@@ -53,11 +55,11 @@ export const SettingsAppearance = ({ debug }) => {
 //       state: themeMode,
 //       options: [
 //         {
-//           label: 'Follow system theme (light & dark)',
+//           label: 'Auto',
 //           value: 'system',
 //         },
 //         {
-//           label: 'Single theme',
+//           label: 'Manual',
 //           value: 'single',
 //         },
 //       ],
@@ -66,27 +68,22 @@ export const SettingsAppearance = ({ debug }) => {
 
 //   return (
 //     <SettingsList
-//       title="Theme mode"
-//       description="Choose between a single theme or separate light and dark themes that follow your system settings (if available)."
+//       title="Theme Switching"
+//       description="Choose whether to automatically switch between light and dark themes based on your system settings (if available) or manually select a single theme."
 //       menuItems={menuItems}
 //     />
 //   );
 // };
 
 //
-// DEFAULT THEME SETTINGS
+// THEME SETTINGS
 //
 
 const DefaultThemeSettings = () => {
-  // const themeMode = useSelector(({ sessionModel }) => sessionModel.themeMode);
-
   return (
     <div className="settingsGroup">
-      <div className={style.title}>
-        Theme
-        {/* {themeMode === 'system' ? 'Light Theme' : 'Theme'} */}
-      </div>
-      <FormTheme />
+      <div className={style.title}>Theme</div>
+      <FormTheme themeKey="currentTheme" />
     </div>
   );
 };
@@ -165,13 +162,13 @@ const DefaultCustomSettings = () => {
 //
 
 const TintSettings = () => {
-  const themeUiTinting = useSelector(({ sessionModel }) => sessionModel.themeUiTinting);
+  const currentUiTinting = useSelector(({ sessionModel }) => sessionModel.currentUiTinting);
 
   const menuItems = [
     {
       type: 'radio',
-      key: 'themeUiTinting',
-      state: themeUiTinting,
+      key: 'currentUiTinting',
+      state: currentUiTinting,
       options: [
         {
           label: 'Auto',
@@ -197,13 +194,13 @@ const TintSettings = () => {
 //
 
 const ContrastSettings = () => {
-  const themeContrast = useSelector(({ sessionModel }) => sessionModel.themeContrast);
+  const currentContrast = useSelector(({ sessionModel }) => sessionModel.currentContrast);
 
   const menuItems = [
     {
       type: 'radio',
-      key: 'themeContrast',
-      state: themeContrast,
+      key: 'currentContrast',
+      state: currentContrast,
       options: [
         {
           label: 'Default',

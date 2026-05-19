@@ -25,13 +25,12 @@ function useColorTheme(): void {
   const hasSelectedLibrary = currentServer && currentLibrary;
   const hasQueueVisible = queueIsVisible && hasSelectedLibrary;
 
-  const themeContrast = useSelector(({ sessionModel }: any) => sessionModel.themeContrast);
-  const themeUiTinting = useSelector(({ sessionModel }: any) => sessionModel.themeUiTinting);
-
   const currentTheme = useSelector(({ sessionModel }: any) => sessionModel.currentTheme);
   const currentColorBackground = useSelector(({ sessionModel }: any) => sessionModel.currentColorBackground);
   const currentColorPrimary = useSelector(({ sessionModel }: any) => sessionModel.currentColorPrimary);
   const currentColorText = useSelector(({ sessionModel }: any) => sessionModel.currentColorText);
+  const currentUiTinting = useSelector(({ sessionModel }: any) => sessionModel.currentUiTinting);
+  const currentContrast = useSelector(({ sessionModel }: any) => sessionModel.currentContrast);
 
   useEffect(() => {
     const actualTheme =
@@ -47,7 +46,7 @@ function useColorTheme(): void {
     const colorPrimaryBg =
       currentTheme === 'custom' ? currentColorBackground : themes[actualTheme as keyof typeof themes].background;
 
-    const contrastLevel = themeContrast === 'high' ? 'high' : themeContrast === 'medium' ? 'medium' : 'default';
+    const contrastLevel = currentContrast === 'high' ? 'high' : currentContrast === 'medium' ? 'medium' : 'default';
 
     const chromaMultiplierLow = contrastLevel === 'high' ? 1.5 : contrastLevel === 'medium' ? 1.3 : 1.1;
     const chromaMultiplierHigh = contrastLevel === 'high' ? 1.7 : contrastLevel === 'medium' ? 1.4 : 1.1;
@@ -66,7 +65,7 @@ function useColorTheme(): void {
 
     const isActualLightTheme =
       currentTheme === 'custom'
-        ? themeUiTinting === 'darken' || (themeUiTinting === 'auto' && isLightTheme)
+        ? currentUiTinting === 'darken' || (currentUiTinting === 'auto' && isLightTheme)
         : isLightTheme;
 
     let colorBlackout: string;
@@ -322,8 +321,8 @@ function useColorTheme(): void {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    themeContrast,
-    themeUiTinting,
+    currentContrast,
+    currentUiTinting,
     hasQueueVisible,
     currentTheme,
     currentColorBackground,

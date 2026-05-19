@@ -159,4 +159,29 @@
   &:last-child {
     padding-bottom: 50px;
   }
+
+  // > .settingsGroup {
+  //   padding-inline: 0;
+
+  //   &:last-child {
+  //     padding-bottom: 0;
+  //   }
+  // }
 }
+
+// .settingsGroupFlex {
+//   display: flex;
+//   flex-wrap: wrap;
+//   justify-content: space-between;
+//   row-gap: 40px;
+//   column-gap: 30px;
+//   max-width: 900px;
+//   // padding-bottom: 0 !important;
+
+//   > .settingsGroup {
+//     padding: 20px;
+//     padding-bottom: 20px !important;
+//     background: var(--color-opacity-005);
+//     border-radius: 6px;
+//   }
+// }

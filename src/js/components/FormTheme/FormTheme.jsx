@@ -15,15 +15,23 @@ import style from './FormTheme.module.scss';
 // COMPONENT
 // ======================================================================
 
-const FormTheme = () => {
+const FormTheme = ({ themeKey = 'currentTheme', groups }) => {
   const dispatch = useDispatch();
-  const currentTheme = useSelector(({ sessionModel }) => sessionModel.currentTheme);
+  const currentTheme = useSelector(({ sessionModel }) => sessionModel[themeKey]);
 
   const activeTheme = themes[currentTheme];
   const displayName = activeTheme ? activeTheme.label : 'Custom theme';
 
+  const handleChange = (value) => {
+    dispatch.sessionModel.setTheme(value);
+  };
+
+  const visibleGroups = groups
+    ? Object.entries(groupedThemes).filter(([groupName]) => groups.includes(groupName))
+    : Object.entries(groupedThemes);
+
   return (
-    <RadixSelect.Root value={currentTheme} onValueChange={(value) => dispatch.sessionModel.setTheme(value)}>
+    <RadixSelect.Root value={currentTheme} onValueChange={handleChange}>
       <RadixSelect.Trigger className={style.trigger} aria-label="Select theme">
         <span className={style.triggerSwatch}>
           <ThemeSwatch themeDetails={activeTheme} />
@@ -37,7 +45,7 @@ const FormTheme = () => {
       <RadixSelect.Portal>
         <RadixSelect.Content position="popper" sideOffset={4} className={style.content}>
           <RadixSelect.Viewport className={style.viewport}>
-            {Object.entries(groupedThemes).map(([groupName, groupThemes], groupIndex) => (
+            {visibleGroups.map(([groupName, groupThemes], groupIndex) => (
               <RadixSelect.Group key={groupIndex}>
                 <RadixSelect.Label className={style.groupLabel}>{groupName}</RadixSelect.Label>
                 {groupThemes.map(({ themeName, themeDetails }) => (

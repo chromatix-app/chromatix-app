@@ -49,14 +49,15 @@ const sessionState = {
   // APPEARANCE OPTIONS
 
   // themeMode: 'system',
-  themeContrast: 'default',
-  themeUiTinting: 'auto',
   themeKeyFocus: false,
 
   currentTheme: isProduction ? 'chromatix-magenta' : isPreview ? 'chromatix-yellow' : 'chromatix-teal',
   currentColorBackground: '#021C27',
   currentColorText: '#ffffff',
   currentColorPrimary: '#f7277a',
+  currentUiTinting: 'auto',
+  currentContrast: 'default',
+
   isLightTheme: false,
   isLightText: true,
 
@@ -513,9 +514,9 @@ const effects = (dispatch) => ({
       try {
         localStorageState = localStorage.getItem(sessionKey) ? JSON.parse(localStorage.getItem(sessionKey)) : {};
 
-        // [NOTE] migrate old accessibilityContrast setting to themeContrast
+        // [NOTE] migrate old accessibilityContrast setting to currentContrast
         if (typeof localStorageState.accessiblityContrast === 'boolean') {
-          localStorageState.themeContrast = localStorageState.accessiblityContrast ? 'medium' : 'default';
+          localStorageState.currentContrast = localStorageState.accessiblityContrast ? 'medium' : 'default';
           delete localStorageState.accessiblityContrast;
         }
 
