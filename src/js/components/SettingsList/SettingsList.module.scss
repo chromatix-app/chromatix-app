@@ -19,7 +19,10 @@
 }
 
 .listEntry {
-  @include mixins.focus-parent-outline;
+  &[data-focus-outline] {
+    border-radius: 2px;
+    @include mixins.focus-parent-outline;
+  }
 
   + .listEntry {
     margin-top: 7px;

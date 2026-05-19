@@ -28,7 +28,7 @@ const SettingsList = ({ title, description, menuItems }) => {
             return <div key={index} className={style.spacer} />;
           } else if (type === 'checkbox') {
             return (
-              <div key={index} className={style.listEntry}>
+              <div key={index} className={style.listEntry} data-focus-outline>
                 <label>
                   <input
                     type="checkbox"
