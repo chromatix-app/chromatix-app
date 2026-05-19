@@ -99,6 +99,10 @@
   background: linear-gradient(to bottom, var(--color-core) 0%, var(--color-primary-bg) 400%);
   outline: none;
   color: var(--color-primary-bg);
+
+  :global(html[data-theme='light']) & {
+    background: linear-gradient(to top, var(--color-core) 0%, var(--color-primary-bg) 400%);
+  }
 }
 
 .thumbIcon {
