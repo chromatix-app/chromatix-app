@@ -41,6 +41,10 @@
     color: var(--color-opacity-03) !important;
   }
 
+  &.disabledText:disabled {
+    color: var(--color-opacity-03) !important;
+  }
+
   :global(.text-center) & {
     margin: 0 auto;
   }
