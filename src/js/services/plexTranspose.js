@@ -449,6 +449,7 @@ const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
     libraryId: libraryId,
     trackId: track.ratingKey,
     trackKey: track.key,
+    playlistItemID: track.playlistItemID,
     title: track.title,
     // addedAt: track.addedAt,
     artist: artistTitle,

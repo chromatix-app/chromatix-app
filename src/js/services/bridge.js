@@ -1053,6 +1053,92 @@ export const getPlaylistTracks = (libraryId, playlistId) => {
 };
 
 // ======================================================================
+// CREATE PLAYLIST
+// ======================================================================
+
+export const createPlaylist = ({ title }) => {
+  if (!isStoreReady()) return;
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const serverId = store.getState().sessionModel.currentServer.serverId;
+  const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  const { libraryId } = store.getState().sessionModel.currentLibrary;
+  return plexTools
+    .createPlaylist({ accessToken, libraryId, serverId, serverBaseUrl, title })
+    .then(() => {
+      getAllPlaylists();
+      analyticsEvent('Plex / Create Playlist');
+    })
+    .catch((error) => {
+      console.error(error);
+      analyticsEvent('Plex / Error / Create Playlist');
+    });
+};
+
+// ======================================================================
+// EDIT PLAYLIST
+// ======================================================================
+
+export const editPlaylist = ({ playlistId, title, summary }) => {
+  if (!isStoreReady()) return;
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  return plexTools
+    .editPlaylist({ accessToken, serverBaseUrl, playlistId, title, summary })
+    .then(() => {
+      getAllPlaylists();
+      analyticsEvent('Plex / Edit Playlist');
+    })
+    .catch((error) => {
+      console.error(error);
+      analyticsEvent('Plex / Error / Edit Playlist');
+    });
+};
+
+// ======================================================================
+// DELETE PLAYLIST
+// ======================================================================
+
+export const deletePlaylist = ({ playlistId }) => {
+  if (!isStoreReady()) return;
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  return plexTools
+    .deletePlaylist({ accessToken, serverBaseUrl, playlistId })
+    .then(() => {
+      getAllPlaylists();
+      analyticsEvent('Plex / Delete Playlist');
+    })
+    .catch((error) => {
+      console.error(error);
+      analyticsEvent('Plex / Error / Delete Playlist');
+    });
+};
+
+// ======================================================================
+// MOVE PLAYLIST ITEM
+// ======================================================================
+
+export const movePlaylistItem = ({ playlistId, playlistItemId, afterPlaylistItemId }) => {
+  if (!isStoreReady()) return;
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  return plexTools
+    .movePlaylistItem({ accessToken, serverBaseUrl, playlistId, playlistItemId, afterPlaylistItemId })
+    .then(() => {
+      analyticsEvent('Plex / Move Playlist Item');
+    })
+    .catch((error) => {
+      console.error(error);
+      analyticsEvent('Plex / Error / Move Playlist Item');
+    });
+};
+
+// window.bridge.createPlaylist({ title: 'AAA Test' })
+// window.bridge.editPlaylist({ playlistId: '168468', title: 'Renamed' })
+// window.bridge.deletePlaylist({ playlistId: '168468' })
+// window.bridge.movePlaylistItem({ playlistId: '168468', playlistItemId: '9872', afterPlaylistItemId: '9869' })
+
+// ======================================================================
 // GET ALL COLLECTIONS
 // ======================================================================
 
@@ -1551,3 +1637,56 @@ export const logPlaybackQuit = (currentTrack, currentTime) => {
 const toUpperFirst = (string) => {
   return string?.charAt(0).toUpperCase() + string?.slice(1);
 };
+
+// ======================================================================
+// DEBUGGING - BROWSER CONSOLE ACCESS
+// ======================================================================
+
+const isLocal = import.meta.env.VITE_ENV === 'local';
+
+if (isLocal) {
+  window.bridge = {
+    abortAllRequests,
+    createPlaylist,
+    deletePlaylist,
+    editPlaylist,
+    getAllAlbumArtists,
+    getAllAlbums,
+    getAllArtistAlbums,
+    getAllArtistAppearanceAlbums,
+    getAllArtistRelatedAlbums,
+    getAllArtistTracks,
+    getAllArtists,
+    getAllCollections,
+    getAllLibraries,
+    getAllPlaylists,
+    getAllServers,
+    getAllTags,
+    getAllUsers,
+    getAlbumArtistDetails,
+    getAlbumDetails,
+    getAlbumTracks,
+    getArtistDetails,
+    getCollectionItems,
+    getFolderItems,
+    getPlaylistDetails,
+    getPlaylistTracks,
+    getTagItems,
+    getUserInfo,
+    init,
+    jellyLogin,
+    logPlaybackPause,
+    logPlaybackPlay,
+    logPlaybackProgress,
+    logPlaybackQuit,
+    logPlaybackStatus,
+    logPlaybackStop,
+    logout,
+    movePlaylistItem,
+    plexLogin,
+    searchLibrary,
+    setStarRating,
+    switchUser,
+    toggleFavourite,
+  };
+}
