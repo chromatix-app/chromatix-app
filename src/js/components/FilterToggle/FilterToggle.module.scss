@@ -25,8 +25,8 @@
 
   .wrapLarge & {
     padding: 5px 12px;
-    background: var(--color-secondary-card);
-    border: 1px solid var(--color-tertiary-background);
+    background: var(--color-button-on-primary-bg);
+    border: 1px solid var(--color-button-on-primary-border);
   }
   .wrapLarge:not(:first-child) & {
     border-top-left-radius: 0;
@@ -70,7 +70,7 @@
   left: 8px;
   z-index: 99;
   padding: 6px 0;
-  background: var(--color-secondary-background);
+  background: var(--color-secondary-bg);
   border: 1px solid var(--color-secondary-border);
   border-radius: 5px;
   box-shadow: var(--shadow-md);

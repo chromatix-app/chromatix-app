@@ -60,10 +60,9 @@
   align-items: center;
   padding: 6px;
   margin: 0 0 0 auto;
-  background: var(--color-secondary-background);
+  background: var(--color-secondary-bg);
   border: 1px solid var(--color-secondary-border);
   border-radius: 9px;
-  box-shadow: var(--shadow-md);
 
   :global(.layout-content.cq-800) & {
     padding: 6px 6px 6px 15px;
@@ -78,10 +77,9 @@
   .wrapInline & {
     flex-direction: row-reverse;
     width: 100%;
-    background: var(--color-tertiary-background);
+    background: var(--color-tertiary-bg);
     border: 1px solid var(--color-tertiary-border);
     border-radius: 6px;
-    box-shadow: none;
   }
 
   .wrapWithoutLibrary & {
@@ -109,6 +107,10 @@
     width: 36px;
     height: 36px;
     margin-right: 12px;
+  }
+
+  &:after {
+    @include mixins.artwork-border(4px);
   }
 
   img {
@@ -176,7 +178,7 @@
   max-height: calc(100svh - 95px);
   padding: 6px;
   margin: 5px 0 0 auto;
-  background: var(--color-secondary-background);
+  background: var(--color-secondary-bg);
   border: 1px solid var(--color-secondary-border);
   border-radius: 9px;
   box-shadow: var(--shadow-md);
@@ -225,7 +227,7 @@
   min-width: 186px;
   // min-width: 206px;
   padding: 6px 40px 6px 8px;
-  background: var(--color-secondary-background);
+  background: var(--color-secondary-bg);
   border-radius: 4px;
   text-align: left;
 

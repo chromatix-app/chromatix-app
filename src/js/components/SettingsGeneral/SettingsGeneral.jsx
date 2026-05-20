@@ -7,25 +7,23 @@ import { useSelector } from 'react-redux';
 import { SettingsList } from 'js/components';
 import platformFeatures from 'js/_config/platformFeatures';
 
-import style from './SettingsGeneral.module.scss';
-
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-export const SettingsGeneral = () => {
+export const SettingsGeneral = ({ debug }) => {
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
 
   return (
-    <div className={style.wrap}>
+    <>
       <GeneralSettings />
-      {currentService === 'plex' && <PlexHomeSettings />}
+      {(currentService === 'plex' || debug) && <PlexHomeSettings />}
       <SortSettings />
-      {platformOpts.enableUserRating && <RatingSettings />}
+      {(platformOpts.enableUserRating || debug) && <RatingSettings />}
       <PlaybackSettings />
       <ServerSettings />
-    </div>
+    </>
   );
 };
 

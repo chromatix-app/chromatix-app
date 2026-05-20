@@ -3,10 +3,9 @@
 // ======================================================================
 
 import { useDispatch, useSelector } from 'react-redux';
-import clsx from 'clsx';
 
 import { themes } from 'js/_config/themes';
-import { Icon, SettingsList } from 'js/components';
+import { Button, FormTheme, SettingsList } from 'js/components';
 import { getEnvironment } from 'js/utils';
 
 import style from './SettingsAppearance.module.scss';
@@ -17,153 +16,229 @@ const envData = getEnvironment();
 // COMPONENT
 // ======================================================================
 
-export const SettingsAppearance = () => {
+export const SettingsAppearance = ({ debug }) => {
   const isLinuxOS = envData.osName === 'Linux';
   const isWindowsOS = envData.osName === 'Windows';
 
+  const currentTheme = useSelector(({ sessionModel }) => sessionModel.currentTheme);
+
   return (
-    <div className={style.wrap}>
-      <PresetThemeSettings />
-      <CustomThemeSettings />
-      <DisplaySettings />
-      {(isLinuxOS || isWindowsOS) && <ScrollbarSettings />}
-    </div>
+    <>
+      {/* <ThemeModeSettings /> */}
+
+      <DefaultThemeSettings />
+      {currentTheme === 'custom' && (
+        <>
+          <DefaultCustomSettings />
+          <TintSettings />
+        </>
+      )}
+      <ContrastSettings />
+
+      <AccessibilitySettings />
+      {(isLinuxOS || isWindowsOS || debug) && <ScrollbarSettings />}
+    </>
   );
 };
 
 //
-// PRESET THEMES
+// THEME MODE SETTINGS
 //
 
-const PresetThemeSettings = () => {
-  const dispatch = useDispatch();
+// const ThemeModeSettings = () => {
+//   const themeMode = useSelector(({ sessionModel }) => sessionModel.themeMode);
 
-  const currentTheme = useSelector(({ sessionModel }) => sessionModel.currentTheme);
+//   const menuItems = [
+//     {
+//       type: 'radio',
+//       key: 'themeMode',
+//       state: themeMode,
+//       options: [
+//         {
+//           label: 'Auto',
+//           value: 'system',
+//         },
+//         {
+//           label: 'Manual',
+//           value: 'single',
+//         },
+//       ],
+//     },
+//   ];
 
-  const groupedThemes = Object.entries(themes).reduce((groups, [themeName, themeDetails]) => {
-    const group = themeDetails.group;
-    if (group) {
-      if (!groups[group]) {
-        groups[group] = [];
-      }
-      groups[group].push([themeName, themeDetails]);
-    }
-    return groups;
-  }, {});
+//   return (
+//     <SettingsList
+//       title="Theme Switching"
+//       description="Choose whether to automatically switch between light and dark themes based on your system settings (if available) or manually select a single theme."
+//       menuItems={menuItems}
+//     />
+//   );
+// };
 
-  return Object.entries(groupedThemes).map(([groupName, groupThemes], groupIndex) => (
-    <div key={groupIndex} className={style.group}>
-      <div className={style.title}>{groupName}</div>
-      <div className={style.themes}>
-        {groupThemes.map(([themeName, themeDetails], themeIndex) => (
-          <button
-            key={themeIndex}
-            className={clsx(style.theme, {
-              [style.themeCurrent]: currentTheme === themeName,
-            })}
-            onClick={() => {
-              dispatch.sessionModel.setTheme(themeName);
-            }}
-          >
-            <div className={style.themeBackground} style={{ background: themeDetails.background }}>
-              <div
-                className={style.themeText}
-                style={{ borderColor: `transparent transparent ${themeDetails.primary} transparent` }}
-              ></div>
-            </div>
-          </button>
-        ))}
-      </div>
+//
+// THEME SETTINGS
+//
+
+const DefaultThemeSettings = () => {
+  return (
+    <div className="settingsGroup">
+      <div className={style.title}>Theme</div>
+      <FormTheme themeKey="currentTheme" />
     </div>
-  ));
+  );
 };
 
 //
 // CUSTOM THEME
 //
 
-const CustomThemeSettings = () => {
+const DefaultCustomSettings = () => {
   const dispatch = useDispatch();
 
-  const currentTheme = useSelector(({ sessionModel }) => sessionModel.currentTheme);
   const currentColorBackground = useSelector(({ sessionModel }) => sessionModel.currentColorBackground);
   const currentColorText = useSelector(({ sessionModel }) => sessionModel.currentColorText);
   const currentColorPrimary = useSelector(({ sessionModel }) => sessionModel.currentColorPrimary);
 
   const resetCustomTheme = () => {
-    dispatch.sessionModel.setColorBackground(themes.chromatix.background);
-    dispatch.sessionModel.setColorText(themes.chromatix.text);
-    dispatch.sessionModel.setColorPrimary(themes.chromatix.primary);
+    dispatch.sessionModel.setColorBackground(themes['chromatix-magenta'].background);
+    dispatch.sessionModel.setColorText(themes['chromatix-magenta'].text);
+    dispatch.sessionModel.setColorPrimary(themes['chromatix-magenta'].primary);
   };
 
-  return (
-    <div className={style.group}>
-      <div className={style.title}>Custom theme</div>
-      <div className={style.themes}>
-        <button
-          className={clsx(style.theme, {
-            [style.themeCurrent]: currentTheme === 'custom',
-          })}
-          onClick={() => {
-            dispatch.sessionModel.setTheme('custom');
-          }}
-        >
-          <div className={style.themeBackground}>
-            <div className={style.icon}>
-              <Icon icon="PencilIcon" cover stroke />
-            </div>
-          </div>
-        </button>
+  const resetIsDisabled =
+    currentColorBackground === themes['chromatix-magenta'].background &&
+    currentColorText === themes['chromatix-magenta'].text &&
+    currentColorPrimary === themes['chromatix-magenta'].primary;
 
-        {currentTheme === 'custom' && (
-          <div className={style.custom}>
-            <div className={style.customField}>
-              <div className={style.customLabel}>Background:</div>
-              <input
-                type="color"
-                className={style.customInput}
-                value={currentColorBackground}
-                onChange={(event) => {
-                  dispatch.sessionModel.setColorBackground(event.target.value);
-                }}
-              />
-            </div>
-            <div className={style.customField}>
-              <div className={style.customLabel}>Text:</div>
-              <input
-                type="color"
-                className={style.customInput}
-                value={currentColorText}
-                onChange={(event) => {
-                  dispatch.sessionModel.setColorText(event.target.value);
-                }}
-              />
-            </div>
-            <div className={style.customField}>
-              <div className={style.customLabel}>Highlight:</div>
-              <input
-                type="color"
-                className={style.customInput}
-                value={currentColorPrimary}
-                onChange={(event) => {
-                  dispatch.sessionModel.setColorPrimary(event.target.value);
-                }}
-              />
-            </div>
-            {(currentColorBackground !== themes.chromatix.background ||
-              currentColorText !== themes.chromatix.text ||
-              currentColorPrimary !== themes.chromatix.primary) && (
-              <div className={style.customField}>
-                <button className={style.button} onClick={resetCustomTheme}>
-                  Reset
-                </button>
-              </div>
-            )}
-          </div>
-        )}
+  return (
+    <div className="settingsGroup">
+      <div className={style.title}>Custom Theme</div>
+      <div className={style.colorWrap}>
+        <div className={style.colorField}>
+          <div className={style.colorLabel}>Background:</div>
+          <input
+            type="color"
+            className={style.colorInput}
+            value={currentColorBackground}
+            onChange={(event) => {
+              dispatch.sessionModel.setColorBackground(event.target.value);
+            }}
+          />
+        </div>
+        <div className={style.colorField}>
+          <div className={style.colorLabel}>Text:</div>
+          <input
+            type="color"
+            className={style.colorInput}
+            value={currentColorText}
+            onChange={(event) => {
+              dispatch.sessionModel.setColorText(event.target.value);
+            }}
+          />
+        </div>
+        <div className={style.colorField}>
+          <div className={style.colorLabel}>Highlight:</div>
+          <input
+            type="color"
+            className={style.colorInput}
+            value={currentColorPrimary}
+            onChange={(event) => {
+              dispatch.sessionModel.setColorPrimary(event.target.value);
+            }}
+          />
+        </div>
+        <div className={style.colorField}>
+          <Button size="tab" color="secondary" wrap={false} onClick={resetCustomTheme} disabled={resetIsDisabled}>
+            Reset
+          </Button>
+        </div>
       </div>
     </div>
   );
+};
+
+//
+// TINT SETTINGS
+//
+
+const TintSettings = () => {
+  const currentUiTinting = useSelector(({ sessionModel }) => sessionModel.currentUiTinting);
+
+  const menuItems = [
+    {
+      type: 'radio',
+      key: 'currentUiTinting',
+      state: currentUiTinting,
+      options: [
+        {
+          label: 'Auto',
+          value: 'auto',
+        },
+        {
+          label: 'Darken',
+          value: 'darken',
+        },
+        {
+          label: 'Lighten',
+          value: 'lighten',
+        },
+      ],
+    },
+  ];
+
+  return <SettingsList title="Sidebar Tint" menuItems={menuItems} />;
+};
+
+//
+// CONTRAST SETTINGS
+//
+
+const ContrastSettings = () => {
+  const currentContrast = useSelector(({ sessionModel }) => sessionModel.currentContrast);
+
+  const menuItems = [
+    {
+      type: 'radio',
+      key: 'currentContrast',
+      state: currentContrast,
+      options: [
+        {
+          label: 'Default',
+          value: 'default',
+        },
+        {
+          label: 'Medium',
+          value: 'medium',
+        },
+        {
+          label: 'High',
+          value: 'high',
+        },
+      ],
+    },
+  ];
+
+  return <SettingsList title="Contrast" menuItems={menuItems} />;
+};
+
+//
+// ACCESSIBILITY SETTINGS
+//
+
+const AccessibilitySettings = () => {
+  const themeKeyFocus = useSelector(({ sessionModel }) => sessionModel.themeKeyFocus);
+
+  const menuItems = [
+    {
+      key: 'themeKeyFocus',
+      label: 'Highlight focused elements.',
+      description:
+        'When enabled, elements such as buttons, links, and form controls are highlighted when focused. For example, when using the keyboard to navigate the interface.',
+      state: themeKeyFocus,
+    },
+  ];
+
+  return <SettingsList title="Accessibility" menuItems={menuItems} />;
 };
 
 //
@@ -211,35 +286,7 @@ const ScrollbarSettings = () => {
     },
   ];
 
-  return <SettingsList title="Scrollbars (Windows only)" menuItems={menuItems} />;
-};
-
-//
-// DISPLAY SETTINGS
-//
-
-const DisplaySettings = () => {
-  const accessibilityContrast = useSelector(({ sessionModel }) => sessionModel.accessibilityContrast);
-  const accessibilityFocus = useSelector(({ sessionModel }) => sessionModel.accessibilityFocus);
-
-  const menuItems = [
-    {
-      key: 'accessibilityContrast',
-      label: 'Increase contrast',
-      // description:
-      //   'This will increase the contrast of the interface, making it easier to read and interact with. This is particularly useful for users with visual impairments.',
-      state: accessibilityContrast,
-    },
-    {
-      key: 'accessibilityFocus',
-      label: 'Highlight focused elements.',
-      description:
-        'When enabled, elements such as buttons, links, and form controls are highlighted when focused. For example, when using the keyboard to navigate the interface.',
-      state: accessibilityFocus,
-    },
-  ];
-
-  return <SettingsList title="Display Options" menuItems={menuItems} />;
+  return <SettingsList title="Scrollbars (Windows and Linux only)" menuItems={menuItems} />;
 };
 
 // ======================================================================

@@ -18,7 +18,7 @@
   width: 100%;
   height: 100%;
   padding: 17px 10px 20px;
-  background: var(--color-secondary-background);
+  background: var(--color-secondary-bg);
   font-size: 12px;
 
   :global(html[data-electron-platform='lin']) &,
@@ -29,7 +29,7 @@
 }
 
 .scrollableInner {
-  background: var(--color-secondary-background);
+  background: var(--color-secondary-bg);
 }
 
 //
@@ -55,15 +55,18 @@
   overflow: hidden;
   aspect-ratio: 1 / 1;
   margin: 15px 1px 0;
-  background: var(--color-primary-background);
+  background: var(--color-opacity-01);
   background-image: vars.$thumbnail;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 6px;
-  outline: 1px solid var(--color-opacity-01);
 
   @include mixins.electron-no-drag;
+
+  &:after {
+    @include mixins.artwork-border(6px);
+  }
 
   img {
     aspect-ratio: 1 / 1;
@@ -110,8 +113,8 @@
     background: var(--color-core);
     border: 1px solid var(--color-opacity-01);
     border-radius: 50%;
-    box-shadow: var(--shadow-sm);
-    color: var(--color-secondary-background);
+    box-shadow: var(--shadow-md);
+    color: var(--color-secondary-bg);
 
     > span {
       display: block;
@@ -218,11 +221,11 @@
   font-weight: bold;
   text-align: left;
 
-  .scrollableOuterVirtual & {
-    :global(html[data-env='local']) & {
-      color: var(--color-core);
-    }
-  }
+  // .scrollableOuterVirtual & {
+  //   :global(html[data-env='local']) & {
+  //     color: var(--color-core);
+  //   }
+  // }
 }
 
 button.label {
@@ -296,8 +299,8 @@ button.label {
   @include mixins.focus-self-outline();
 
   &:hover {
-    background: var(--color-tertiary-background);
-    border: 1px solid var(--color-tertiary-border);
+    background: var(--color-card-on-secondary-bg);
+    border: 1px solid var(--color-card-on-secondary-border);
   }
 
   a {
@@ -322,6 +325,10 @@ button.label {
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 3px;
+
+  &:after {
+    @include mixins.artwork-border(3px);
+  }
 
   img {
     position: absolute;
