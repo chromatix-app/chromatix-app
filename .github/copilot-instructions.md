@@ -160,7 +160,7 @@ Tests use **Vitest** with `globals: true` — no need to import `describe`, `tes
 
 ## Key Scripts
 
-- `npm start` / `npm run dev` — Start dev server (port 3000)
+- `npm start` / `npm run dev` — Start dev server (port 4000)
 - `npm run build` — Production build (output to `build/`)
 - `npm run lint` — Run ESLint
 - `npm run lint:fix` — Run ESLint with auto-fix

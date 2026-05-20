@@ -515,9 +515,9 @@ const effects = (dispatch) => ({
         localStorageState = localStorage.getItem(sessionKey) ? JSON.parse(localStorage.getItem(sessionKey)) : {};
 
         // [NOTE] migrate old accessibilityContrast setting to currentContrast
-        if (typeof localStorageState.accessiblityContrast === 'boolean') {
-          localStorageState.currentContrast = localStorageState.accessiblityContrast ? 'medium' : 'default';
-          delete localStorageState.accessiblityContrast;
+        if (typeof localStorageState.accessibilityContrast === 'boolean') {
+          localStorageState.currentContrast = localStorageState.accessibilityContrast ? 'medium' : 'default';
+          delete localStorageState.accessibilityContrast;
         }
 
         // [NOTE] migrate old accessibilityFocus setting to themeKeyFocus

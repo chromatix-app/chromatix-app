@@ -23,7 +23,9 @@ const FormTheme = ({ themeKey = 'currentTheme', groups }) => {
   const displayName = activeTheme ? activeTheme.label : 'Custom theme';
 
   const handleChange = (value) => {
-    dispatch.sessionModel.setTheme(value);
+    dispatch.sessionModel.setSessionState({
+      [themeKey]: value,
+    });
   };
 
   const visibleGroups = groups
