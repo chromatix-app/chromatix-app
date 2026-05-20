@@ -55,15 +55,18 @@
   overflow: hidden;
   aspect-ratio: 1 / 1;
   margin: 15px 1px 0;
-  background: var(--color-primary-bg);
+  background: var(--color-opacity-01);
   background-image: vars.$thumbnail;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 6px;
-  outline: 1px solid var(--color-opacity-01);
 
   @include mixins.electron-no-drag;
+
+  &:after {
+    @include mixins.artwork-border(6px);
+  }
 
   img {
     aspect-ratio: 1 / 1;
@@ -322,6 +325,10 @@ button.label {
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 3px;
+
+  &:after {
+    @include mixins.artwork-border(3px);
+  }
 
   img {
     position: absolute;

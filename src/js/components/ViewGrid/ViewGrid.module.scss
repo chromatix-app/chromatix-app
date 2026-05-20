@@ -125,6 +125,10 @@
     }
   }
 
+  &:after {
+    @include mixins.artwork-border(6px);
+  }
+
   img {
     position: absolute;
     top: 0;

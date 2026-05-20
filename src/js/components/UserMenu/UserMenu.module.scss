@@ -109,6 +109,10 @@
     margin-right: 12px;
   }
 
+  &:after {
+    @include mixins.artwork-border(4px);
+  }
+
   img {
     position: absolute;
     top: 0;

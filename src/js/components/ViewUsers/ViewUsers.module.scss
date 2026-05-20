@@ -76,6 +76,10 @@
   aspect-ratio: 1 / 1;
   background: var(--color-opacity-01);
   border-radius: 6px;
+
+  &:after {
+    @include mixins.artwork-border(6px);
+  }
 }
 
 .thumbIcon {

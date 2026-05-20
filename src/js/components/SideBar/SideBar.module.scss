@@ -224,6 +224,10 @@
   background-repeat: no-repeat;
   border-radius: 3px;
 
+  &:after {
+    @include mixins.artwork-border(3px);
+  }
+
   img {
     position: absolute;
     top: 0;

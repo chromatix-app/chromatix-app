@@ -247,6 +247,10 @@
     }
   }
 
+  &:after {
+    @include mixins.artwork-border(3px);
+  }
+
   img {
     position: absolute;
     top: 0;
