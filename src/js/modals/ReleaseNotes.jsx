@@ -19,10 +19,10 @@ import style from './modals.module.scss';
 const ReleaseNotes = () => {
   const dispatch = useDispatch();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const isLightTheme = useSelector((state) => state.sessionModel.isLightTheme);
-  const currentSlide = whatsNew[currentIndex];
+  const isLightText = useSelector((state) => state.sessionModel.isLightText);
 
-  const currentImage = isLightTheme ? currentSlide.imageLight : currentSlide.imageDark;
+  const currentSlide = whatsNew[currentIndex];
+  const currentImage = isLightText ? currentSlide.imageDark : currentSlide.imageLight;
 
   const handleNext = () => {
     if (currentIndex < whatsNew.length - 1) {
@@ -68,7 +68,7 @@ const ReleaseNotes = () => {
         </div>
       </div>
 
-      <div className={clsx(style.releaseRight, { [style.releaseRightLight]: isLightTheme })}>
+      <div className={clsx(style.releaseRight, { [style.releaseRightLight]: isLightText })}>
         <picture>
           <source srcSet={`/images/webp/${currentImage}.webp`} type="image/webp" />
           <img key={currentImage} src={`/images/compressed/${currentImage}.png`} alt="" draggable="false" />

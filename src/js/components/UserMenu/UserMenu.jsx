@@ -12,6 +12,8 @@ import { Icon } from 'js/components';
 
 import style from './UserMenu.module.scss';
 
+const isLocal = import.meta.env.VITE_ENV === 'local';
+
 // ======================================================================
 // COMPONENT
 // ======================================================================
@@ -163,6 +165,20 @@ const UserMenu = ({ variant = 'default', withoutLibrary = false }) => {
                         <Icon icon="CogIcon" cover stroke />
                       </span>
                       Settings
+                      <span className={clsx(style.iconArrow, style.iconHover)}>
+                        <Icon icon="NextIcon" cover stroke />
+                      </span>
+                    </NavLink>
+                  </RadixMenu.Item>
+                )}
+
+                {isLocal && (
+                  <RadixMenu.Item asChild>
+                    <NavLink className={style.button} to={'/dev'} draggable="false">
+                      <span className={style.iconBefore}>
+                        <Icon icon="EyeIcon" cover stroke />
+                      </span>
+                      Dev
                       <span className={clsx(style.iconArrow, style.iconHover)}>
                         <Icon icon="NextIcon" cover stroke />
                       </span>

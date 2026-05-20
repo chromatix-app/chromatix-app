@@ -4,15 +4,13 @@
 
 import changelog from '../../../CHANGELOG.md?raw';
 
-import style from './SettingsChangelog.module.scss';
-
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
 const SettingsChangelog = () => {
   return (
-    <div className={style.wrap}>
+    <div className="settingsGroup">
       <div className="font-markdown">
         {changelog.split(/<!--[\s\S]*?-->/g).map((item, key) => {
           if (item) {

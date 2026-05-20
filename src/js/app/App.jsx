@@ -44,10 +44,11 @@ const App = () => {
   const errorSwitchUser = useSelector(({ appModel }) => appModel.errorSwitchUser);
   const errorUser = useSelector(({ appModel }) => appModel.errorUser);
 
-  const accessibilityFocus = useSelector(({ sessionModel }) => sessionModel.accessibilityFocus);
+  const themeKeyFocus = useSelector(({ sessionModel }) => sessionModel.themeKeyFocus);
   const currentUser = useSelector(({ sessionModel }) => sessionModel.currentUser);
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
+  const isLightTheme = useSelector(({ sessionModel }) => sessionModel.isLightTheme);
   const winCustomScrollbars = useSelector(({ sessionModel }) => sessionModel.winCustomScrollbars);
   const winAutoHideScrollbars = useSelector(({ sessionModel }) => sessionModel.winAutoHideScrollbars);
 
@@ -116,12 +117,17 @@ const App = () => {
     document.documentElement.setAttribute('data-logged-in', loggedIn);
   }, [loggedIn]);
 
+  // toggle light mode data attribute on html
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', isLightTheme ? 'light' : 'dark');
+  }, [isLightTheme]);
+
   // toggle accessibility focus data attribute on html
   useEffect(() => {
-    document.documentElement.setAttribute('data-access-focus', accessibilityFocus);
-  }, [accessibilityFocus]);
+    document.documentElement.setAttribute('data-access-focus', themeKeyFocus);
+  }, [themeKeyFocus]);
 
-  // toggle scrollbar preference data attributes on html (Linux and Windows only)
+  // toggle scrollbar preference data attributes on html (Windows and Linux only)
   useEffect(() => {
     if (envData.osName !== 'Linux' && envData.osName !== 'Windows') return;
     document.documentElement.setAttribute('data-scrollbars-custom', winCustomScrollbars);

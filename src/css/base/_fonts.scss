@@ -90,17 +90,9 @@ strong {
 
 .font-markdown,
 .font-wysiwyg {
-  font-size: 15px;
+  font-size: 14px;
 
-  // pre {
-  //   font: inherit;
-  // }
-  // pre + pre {
-  //   padding-top: 30px;
-  //   margin-top: 30px;
-  // }
-
-  div + div {
+  > div + div {
     padding-top: 30px;
     margin-top: 30px;
     border-top: 1px solid var(--color-opacity-015);
@@ -177,7 +169,7 @@ strong {
 
   code {
     padding: 0.2em 0.4em;
-    background: var(--color-opacity-015);
+    background: var(--color-opacity-01);
     border-radius: 4px;
     font-family:
       'SF Mono',
@@ -189,6 +181,14 @@ strong {
       monospace;
     font-size: 0.95em;
   }
+
+  // pre {
+  //   font: inherit;
+  // }
+  // pre + pre {
+  //   padding-top: 30px;
+  //   margin-top: 30px;
+  // }
 }
 
 .font-wysiwyg {

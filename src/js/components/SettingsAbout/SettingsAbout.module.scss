@@ -1,20 +1,6 @@
 @use '../../../css/_config/_mixins';
 @use '../../../css/_config/_vars';
 
-.wrap {
-  padding: 0 30px 50px;
-
-  :global(.cq-800) & {
-    padding: 0 40px 50px;
-  }
-}
-
-.group {
-  + .group {
-    margin-top: 30px;
-  }
-}
-
 .title {
   margin: 0 0 15px;
   font-size: 14px;
@@ -35,7 +21,6 @@
 }
 
 .legal {
-  margin: 35px 0 0;
   font-size: 12px;
   font-weight: 500;
   color: var(--color-opacity-03);

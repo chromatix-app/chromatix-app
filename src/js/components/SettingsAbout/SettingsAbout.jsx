@@ -14,9 +14,9 @@ const envData = getEnvironment();
 
 export const SettingsAbout = () => {
   return (
-    <div className={style.wrap}>
+    <>
       {envData.isElectron && (envData.electronVersion || envData.electronPlatformName || envData.electronBuildDate) && (
-        <div className={style.group}>
+        <div className="settingsGroup">
           <div className={style.title}>Chromatix Desktop</div>
           <div className={style.body}>
             {envData.electronVersion && (
@@ -38,7 +38,7 @@ export const SettingsAbout = () => {
         </div>
       )}
 
-      <div className={style.group}>
+      <div className="settingsGroup">
         <div className={style.title}>Chromatix Web App</div>
         <div className={style.body}>
           <p>
@@ -53,8 +53,10 @@ export const SettingsAbout = () => {
         </div>
       </div>
 
-      <div className={style.legal}>Copyright &copy; {new Date().getFullYear()}</div>
-    </div>
+      <div className="settingsGroup">
+        <div className={style.legal}>Copyright &copy; {new Date().getFullYear()}</div>
+      </div>
+    </>
   );
 };
 

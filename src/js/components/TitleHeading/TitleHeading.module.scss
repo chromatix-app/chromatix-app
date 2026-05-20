@@ -37,7 +37,6 @@
   margin-right: 20px;
   background: var(--color-secondary-hover);
   border-radius: 6px;
-  outline: 1px solid var(--color-opacity-005);
 
   :global(.cq-800) & {
     width: 160px;
@@ -63,6 +62,10 @@
     width: 200px;
     height: 200px;
     margin-right: 30px;
+  }
+
+  &:after {
+    @include mixins.artwork-border(6px);
   }
 
   img {
@@ -96,9 +99,13 @@
   }
 
   background: var(--color-core);
-  background: linear-gradient(to bottom, var(--color-core) 0%, var(--color-primary-background) 400%);
+  background: linear-gradient(to bottom, var(--color-core) 0%, var(--color-primary-bg) 400%);
   outline: none;
-  color: var(--color-primary-background);
+  color: var(--color-primary-bg);
+
+  :global(html[data-theme='light']) & {
+    background: linear-gradient(to top, var(--color-core) 0%, var(--color-primary-bg) 400%);
+  }
 }
 
 .thumbIcon {
@@ -262,7 +269,7 @@
   font-size: 12px;
   line-height: 16px;
   font-weight: bold;
-  color: var(--color-primary-background);
+  color: var(--color-primary-bg);
 
   @include mixins.focus-self-outline;
 }
@@ -296,7 +303,7 @@
   position: sticky;
   grid-column: 1 / -1; // this is here to make the element full widht when within a grid
   top: 0;
-  z-index: 2;
+  z-index: 5;
   opacity: 0;
   pointer-events: none;
 
@@ -315,7 +322,7 @@
   width: 100%;
   height: 91px;
   padding: 20px 10px;
-  background: var(--color-primary-background);
+  background: var(--color-primary-bg);
 
   :global(.cq-800) & {
     padding: 20px 10px;

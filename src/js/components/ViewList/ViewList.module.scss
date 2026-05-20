@@ -12,7 +12,7 @@
   width: 100%;
   height: 100%;
   padding: 0 20px 50px;
-  background: var(--color-primary-background);
+  background: var(--color-primary-bg);
 
   :global(.cq-800) & {
     padding: 0 30px 50px;
@@ -20,7 +20,7 @@
 }
 
 .scrollableInner {
-  background: var(--color-primary-background);
+  background: var(--color-primary-bg);
 }
 
 .measure {
@@ -45,7 +45,7 @@
   z-index: 3;
   padding: 0 20px 8px;
   margin: 0 -5px 20px;
-  background: var(--color-primary-background);
+  background: var(--color-primary-bg);
   font-weight: bold;
 
   :global(.cq-800) & {
@@ -69,12 +69,12 @@
     height: 1px;
     background: var(--color-opacity-015);
 
-    .scrollableOuterVirtual & {
-      :global(html[data-env='local']) & {
-        background: var(--color-core);
-        opacity: 0.6;
-      }
-    }
+    // .scrollableOuterVirtual & {
+    //   :global(html[data-env='local']) & {
+    //     background: var(--color-core);
+    //     opacity: 0.6;
+    //   }
+    // }
   }
 }
 
@@ -100,8 +100,8 @@
   }
 
   &:hover {
-    background: var(--color-secondary-card);
-    border: 1px solid var(--color-secondary-border);
+    background: var(--color-card-on-primary-bg);
+    border: 1px solid var(--color-card-on-primary-border);
   }
 
   a {
@@ -239,8 +239,16 @@
 
   &.thumbFolder {
     background: var(--color-core);
-    background: linear-gradient(to bottom, var(--color-core) 0%, var(--color-primary-background) 400%);
-    color: var(--color-primary-background);
+    background: linear-gradient(to bottom, var(--color-core) 0%, var(--color-primary-bg) 400%);
+    color: var(--color-primary-bg);
+
+    :global(html[data-theme='light']) & {
+      background: linear-gradient(to top, var(--color-core) 0%, var(--color-primary-bg) 400%);
+    }
+  }
+
+  &:after {
+    @include mixins.artwork-border(3px);
   }
 
   img {

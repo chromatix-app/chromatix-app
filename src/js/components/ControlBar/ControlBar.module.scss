@@ -7,7 +7,7 @@
   grid-template-columns: minmax(0, 1fr) auto 1fr;
   height: 100px;
   padding: 9px 22px 10px;
-  background: var(--color-secondary-background);
+  background: var(--color-secondary-bg);
   border-top: 1px solid var(--color-secondary-border);
   text-align: center;
 
@@ -40,7 +40,7 @@
   width: 50px;
   height: 50px;
   margin-right: 10px;
-  border-radius: 6px;
+  border-radius: 5px;
 
   @media (min-width: 880px) {
     width: 56px;
@@ -61,11 +61,6 @@
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  outline: 1px solid var(--color-opacity-01);
-
-  &Placeholder {
-    outline: 1px solid var(--color-opacity-015);
-  }
 }
 
 .coverArtwork,
@@ -90,9 +85,9 @@
   }
 }
 
-.coverLink {
-  &:hover {
-    outline: 1px solid var(--color-opacity-02);
+.coverArtwork {
+  &:after {
+    @include mixins.artwork-border(5px);
   }
 }
 
@@ -204,7 +199,7 @@ span.settings,
     background: var(--color-secondary-hover);
 
     .fullPageMode & {
-      background: var(--color-secondary-background);
+      background: var(--color-secondary-bg);
     }
   }
 }
@@ -214,10 +209,10 @@ button.pause {
   margin: 0 6px;
   background: var(--color-core) !important;
   border: 1px solid var(--color-opacity-01);
-  color: var(--color-secondary-background);
+  color: var(--color-secondary-bg);
 
   .fullPageMode & {
-    color: var(--color-primary-background);
+    color: var(--color-primary-bg);
   }
 
   &:disabled {
@@ -291,7 +286,7 @@ button.active {
   margin-left: 4px;
   background: var(--color-text) !important;
   cursor: default;
-  color: var(--color-secondary-background) !important;
+  color: var(--color-secondary-bg) !important;
 }
 
 .loading {

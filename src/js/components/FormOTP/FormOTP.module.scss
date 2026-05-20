@@ -1,0 +1,59 @@
+// ======================================================================
+// CONTAINER
+// ======================================================================
+
+.container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+// ======================================================================
+// SLOT
+// ======================================================================
+
+.slot {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  width: 56px;
+  height: 72px;
+  padding: 10px 0;
+  background: var(--color-secondary-bg);
+  border: 2px solid var(--color-secondary-border);
+  border-radius: 8px;
+  transition: border-color 0.2s;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 40px;
+  line-height: 48px;
+  font-weight: 600;
+  color: var(--color-text);
+
+  &[data-active='true'] {
+    border-color: var(--color-text);
+  }
+}
+
+// ======================================================================
+// CARET
+// ======================================================================
+
+.caret {
+  position: absolute;
+  width: 2px;
+  height: 32px;
+  background-color: var(--color-text);
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}

@@ -1,3 +1,15 @@
+# 0.61.0 (2026-05-20)
+
+Features:
+
+- Improved light theme design with updated colours, shadows, gradients, and artwork outlines throughout.
+- New theme selector added.
+- Colour themes have been renamed and given label descriptions for clarity.
+- Release notes now adapt their colour mode to match the active theme text colour.
+- Various settings pages updated with improved controls and layout.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.60.0 (2026-05-09)
 
 Features:

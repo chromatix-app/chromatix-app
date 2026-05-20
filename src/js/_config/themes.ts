@@ -13,212 +13,245 @@ export const themes = {
   // CHROMATIX
   //
 
-  chromatix: {
+  'chromatix-magenta': {
+    label: 'Chromatix / Magenta',
+    group: 'Chromatix themes',
     background: '#021C27',
     text: '#ffffff',
     primary: '#f7277a',
-    group: 'Chromatix themes',
   },
   'chromatix-red': {
+    label: 'Chromatix / Red',
+    group: 'Chromatix themes',
     background: '#021C27',
     text: '#ffffff',
     primary: '#ff1111',
-    group: 'Chromatix themes',
   },
   'chromatix-orange': {
+    label: 'Chromatix / Orange',
+    group: 'Chromatix themes',
     background: '#021C27',
     text: '#ffffff',
     primary: '#ff6f10',
-    group: 'Chromatix themes',
   },
-  plex: {
+  'chromatix-yellow': {
+    label: 'Chromatix / Yellow',
+    group: 'Chromatix themes',
     background: '#021C27',
     text: '#ffffff',
     primary: '#e5a00d',
-    group: 'Chromatix themes',
   },
-  'chromatix-green-1': {
+  'chromatix-green': {
+    label: 'Chromatix / Green',
+    group: 'Chromatix themes',
     background: '#021C27',
     text: '#ffffff',
     primary: '#9de50d',
-    group: 'Chromatix themes',
   },
-  'chromatix-green-2': {
+  'chromatix-mint': {
+    label: 'Chromatix / Mint',
+    group: 'Chromatix themes',
     background: '#021C27',
     text: '#ffffff',
     primary: '#1ed760',
-    group: 'Chromatix themes',
   },
   'chromatix-teal': {
+    label: 'Chromatix / Teal',
+    group: 'Chromatix themes',
     background: '#021C27',
     text: '#ffffff',
     primary: '#18a7b7',
-    group: 'Chromatix themes',
   },
-  'chromatix-blue-1': {
+  'chromatix-blue': {
+    label: 'Chromatix / Blue',
+    group: 'Chromatix themes',
     background: '#021C27',
     text: '#ffffff',
     primary: '#169cfc',
-    group: 'Chromatix themes',
   },
-  'chromatix-blue-2': {
+  'chromatix-indigo-2': {
+    label: 'Chromatix / Indigo',
+    group: 'Chromatix themes',
     background: '#021C27',
     text: '#ffffff',
     primary: '#4b7bff',
-    group: 'Chromatix themes',
   },
-  'chromatix-indigo': {
+  'chromatix-violet': {
+    label: 'Chromatix / Violet',
+    group: 'Chromatix themes',
     background: '#021C27',
     text: '#ffffff',
     primary: '#8e6fff',
-    group: 'Chromatix themes',
   },
   'chromatix-purple': {
+    label: 'Chromatix / Purple',
+    group: 'Chromatix themes',
     background: '#021C27',
     text: '#ffffff',
     primary: '#b963ff',
-    group: 'Chromatix themes',
   },
 
   //
   // DARK
   //
 
-  'black-pink': {
+  'black-magenta': {
+    label: 'Dark / Magenta',
+    group: 'Dark themes',
     background: '#111111',
     text: '#ffffff',
     primary: '#f7277a',
-    group: 'Dark themes',
   },
   'black-red': {
+    label: 'Dark / Red',
+    group: 'Dark themes',
     background: '#111111',
     text: '#ffffff',
     primary: '#ff1111',
-    group: 'Dark themes',
   },
   'black-orange': {
+    label: 'Dark / Orange',
+    group: 'Dark themes',
     background: '#111111',
     text: '#ffffff',
     primary: '#ff6f10',
-    group: 'Dark themes',
   },
   'black-yellow': {
+    label: 'Dark / Yellow',
+    group: 'Dark themes',
     background: '#111111',
     text: '#ffffff',
     primary: '#e5a00d',
-    group: 'Dark themes',
   },
-  'black-green-1': {
+  'black-green': {
+    label: 'Dark / Green',
+    group: 'Dark themes',
     background: '#111111',
     text: '#ffffff',
     primary: '#9de50d',
-    group: 'Dark themes',
   },
-  'black-green-2': {
+  'black-mint': {
+    label: 'Dark / Mint',
+    group: 'Dark themes',
     background: '#111111',
     text: '#ffffff',
     primary: '#1ed760',
-    group: 'Dark themes',
   },
   'black-teal': {
+    label: 'Dark / Teal',
+    group: 'Dark themes',
     background: '#111111',
     text: '#ffffff',
     primary: '#18a7b7',
-    group: 'Dark themes',
   },
-  'black-blue-1': {
+  'black-blue': {
+    label: 'Dark / Blue',
+    group: 'Dark themes',
     background: '#111111',
     text: '#ffffff',
     primary: '#169cfc',
-    group: 'Dark themes',
   },
-  'black-blue-2': {
+  'black-indigo-2': {
+    label: 'Dark / Indigo',
+    group: 'Dark themes',
     background: '#111111',
     text: '#ffffff',
     primary: '#4b7bff',
-    group: 'Dark themes',
   },
-  'black-indigo': {
+  'black-violet': {
+    label: 'Dark / Violet',
+    group: 'Dark themes',
     background: '#111111',
     text: '#ffffff',
     primary: '#8e6fff',
-    group: 'Dark themes',
   },
   'black-purple': {
+    label: 'Dark / Purple',
+    group: 'Dark themes',
     background: '#111111',
     text: '#ffffff',
     primary: '#b963ff',
-    group: 'Dark themes',
   },
 
   //
   // LIGHT
   //
 
-  'white-pink': {
+  'white-magenta': {
+    label: 'Light / Magenta',
+    group: 'Light themes',
     background: '#ffffff',
     text: '#111111',
     primary: '#f7277a',
-    group: 'Light themes',
   },
   'white-red': {
+    label: 'Light / Red',
+    group: 'Light themes',
     background: '#ffffff',
     text: '#111111',
     primary: '#e50000',
-    group: 'Light themes',
   },
   'white-orange': {
+    label: 'Light / Orange',
+    group: 'Light themes',
     background: '#ffffff',
     text: '#111111',
     primary: '#ed670d',
-    group: 'Light themes',
   },
   'white-yellow': {
+    label: 'Light / Yellow',
+    group: 'Light themes',
     background: '#ffffff',
     text: '#111111',
     primary: '#aa9000',
-    group: 'Light themes',
   },
-  'white-green-1': {
+  'white-green': {
+    label: 'Light / Green',
+    group: 'Light themes',
     background: '#ffffff',
     text: '#111111',
     primary: '#7fbb09',
-    group: 'Light themes',
   },
-  'white-green-2': {
+  'white-mint': {
+    label: 'Light / Mint',
+    group: 'Light themes',
     background: '#ffffff',
     text: '#111111',
     primary: '#10993e',
-    group: 'Light themes',
   },
   'white-teal': {
+    label: 'Light / Teal',
+    group: 'Light themes',
     background: '#ffffff',
     text: '#111111',
     primary: '#0b7b87',
-    group: 'Light themes',
   },
-  'white-blue-1': {
+  'white-blue': {
+    label: 'Light / Blue',
+    group: 'Light themes',
     background: '#ffffff',
     text: '#111111',
     primary: '#127fce',
-    group: 'Light themes',
   },
-  'white-blue-2': {
+  'white-indigo-2': {
+    label: 'Light / Indigo',
+    group: 'Light themes',
     background: '#ffffff',
     text: '#111111',
     primary: '#345ed0',
-    group: 'Light themes',
   },
-  'white-indigo': {
+  'white-violet': {
+    label: 'Light / Violet',
+    group: 'Light themes',
     background: '#ffffff',
     text: '#111111',
     primary: '#6b4cda',
-    group: 'Light themes',
   },
   'white-purple': {
+    label: 'Light / Purple',
+    group: 'Light themes',
     background: '#ffffff',
     text: '#111111',
     primary: '#8748ca',
-    group: 'Light themes',
   },
 };

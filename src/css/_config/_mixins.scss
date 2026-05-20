@@ -51,6 +51,15 @@
 //   }
 // }
 
+@mixin artwork-border($radius) {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--color-opacity-01);
+  border-radius: $radius;
+  pointer-events: none;
+}
+
 @mixin focus-self-outline() {
   &:focus-visible:not(:active):not(:disabled) {
     :global(html[data-access-focus='true']) & {

@@ -48,14 +48,18 @@ const sessionState = {
 
   // APPEARANCE OPTIONS
 
-  currentTheme: isProduction ? 'chromatix' : isPreview ? 'plex' : 'chromatix-teal',
+  // themeMode: 'system',
+  themeKeyFocus: false,
+
+  currentTheme: isProduction ? 'chromatix-magenta' : isPreview ? 'chromatix-yellow' : 'chromatix-teal',
   currentColorBackground: '#021C27',
   currentColorText: '#ffffff',
   currentColorPrimary: '#f7277a',
-  isLightTheme: false,
+  currentUiTinting: 'auto',
+  currentContrast: 'default',
 
-  accessibilityFocus: false,
-  accessibilityContrast: false,
+  isLightTheme: false,
+  isLightText: true,
 
   winCustomScrollbars: true,
   winAutoHideScrollbars: false,
@@ -510,14 +514,26 @@ const effects = (dispatch) => ({
       try {
         localStorageState = localStorage.getItem(sessionKey) ? JSON.parse(localStorage.getItem(sessionKey)) : {};
 
-        // [NOTE] this is here for backwards compatibility
+        // [NOTE] migrate old accessibilityContrast setting to currentContrast
+        if (typeof localStorageState.accessibilityContrast === 'boolean') {
+          localStorageState.currentContrast = localStorageState.accessibilityContrast ? 'medium' : 'default';
+          delete localStorageState.accessibilityContrast;
+        }
+
+        // [NOTE] migrate old accessibilityFocus setting to themeKeyFocus
+        if (typeof localStorageState.accessibilityFocus === 'boolean') {
+          localStorageState.themeKeyFocus = localStorageState.accessibilityFocus;
+          delete localStorageState.accessibilityFocus;
+        }
+
+        // [NOTE] migrate old optionLogPlexPlayback setting to optionLogPlaybackToServer
         if (typeof localStorageState.optionLogPlexPlayback !== 'undefined') {
           console.log('%c--- migrating optionLogPlexPlayback to optionLogPlaybackToServer ---', 'color:#0f60b7');
           localStorageState.optionLogPlaybackToServer = localStorageState.optionLogPlexPlayback;
           delete localStorageState.optionLogPlexPlayback;
         }
 
-        // [NOTE] this is here to clean up some old data that should never have been saved here
+        // [NOTE] clean up some old data that was once accidentally saved to local storage
         if (localStorageState.appModel) {
           console.log('%c--- removing appModel from localStorageState ---', 'color:#0f60b7');
           delete localStorageState.appModel;
@@ -531,6 +547,32 @@ const effects = (dispatch) => ({
           if (localStorageState.sessionModel) {
             delete localStorageState.sessionModel;
           }
+        }
+
+        // [NOTE] migrate renamed theme keys
+        const renamedThemes = {
+          chromatix: 'chromatix-magenta',
+          plex: 'chromatix-yellow',
+          'black-blue-1': 'black-blue',
+          'black-blue-2': 'black-indigo-2',
+          'black-green-1': 'black-green',
+          'black-green-2': 'black-mint',
+          'black-indigo': 'black-violet',
+          'black-pink': 'black-magenta',
+          'chromatix-blue-1': 'chromatix-blue',
+          'chromatix-blue-2': 'chromatix-indigo-2',
+          'chromatix-green-1': 'chromatix-green',
+          'chromatix-green-2': 'chromatix-mint',
+          'chromatix-indigo': 'chromatix-violet',
+          'white-blue-1': 'white-blue',
+          'white-blue-2': 'white-indigo-2',
+          'white-green-1': 'white-green',
+          'white-green-2': 'white-mint',
+          'white-indigo': 'white-violet',
+          'white-pink': 'white-magenta',
+        };
+        if (localStorageState.currentTheme && renamedThemes[localStorageState.currentTheme]) {
+          localStorageState.currentTheme = renamedThemes[localStorageState.currentTheme];
         }
       } catch (error) {
         // browser does not support local storage, or local storage item does not exist

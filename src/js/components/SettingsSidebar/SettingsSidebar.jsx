@@ -7,8 +7,6 @@ import { useSelector } from 'react-redux';
 import { SettingsList } from 'js/components';
 import platformFeatures from 'js/_config/platformFeatures';
 
-import style from './SettingsSidebar.module.scss';
-
 // ======================================================================
 // COMPONENT
 // ======================================================================
@@ -22,12 +20,12 @@ export const SettingsSidebar = () => {
       {/* <PageText fontSize="small">
         <p>Some sections may be unavailable, depending on whether you are logged in with Plex or Jellyfin.</p>
       </PageText> */}
-      <div className={style.wrap}>
+      <>
         <GeneralSettings platformOpts={platformOpts} />
         <LibrarySettings platformOpts={platformOpts} />
         <BrowseSettings platformOpts={platformOpts} />
         <PlaylistSettings platformOpts={platformOpts} />
-      </div>
+      </>
     </>
   );
 };

@@ -7,8 +7,6 @@ import { useSelector } from 'react-redux';
 import { SettingsList } from 'js/components';
 import platformFeatures from 'js/_config/platformFeatures';
 
-import style from './SettingsControls.module.scss';
-
 // ======================================================================
 // COMPONENT
 // ======================================================================
@@ -18,10 +16,10 @@ export const SettingsControls = () => {
   const platformOpts = platformFeatures[currentService] || {};
 
   return (
-    <div className={style.wrap}>
+    <>
       <NowPlayingSettings platformOpts={platformOpts} />
       <SecondarySettings platformOpts={platformOpts} />
-    </div>
+    </>
   );
 };
 
@@ -68,7 +66,7 @@ const NowPlayingSettings = ({ platformOpts }) => {
       : []),
   ];
 
-  return <SettingsList title="Now playing" menuItems={menuItems} />;
+  return <SettingsList title="Now Playing" menuItems={menuItems} />;
 };
 
 //
@@ -104,7 +102,7 @@ const SecondarySettings = ({ platformOpts }) => {
     },
   ];
 
-  return <SettingsList title="Secondary controls" menuItems={menuItems} />;
+  return <SettingsList title="Secondary Controls" menuItems={menuItems} />;
 };
 
 // ======================================================================

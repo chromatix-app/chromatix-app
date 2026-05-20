@@ -51,6 +51,7 @@ export const Button = forwardRef(
           [style.loading]: loading,
           [style.inline]: inline,
           [style.disabled]: renderDisabled && props.disabled,
+          [style.disabledText]: !renderDisabled && props.disabled,
         })}
         type={type}
         {...props}

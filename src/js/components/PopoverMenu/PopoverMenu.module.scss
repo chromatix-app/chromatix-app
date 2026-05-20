@@ -34,7 +34,7 @@
 //   .wrapLarge & {
 //     margin: 0 !important;
 //     opacity: 1;
-//     color: var(--color-primary-background);
+//     color: var(--color-primary-bg);
 //   }
 // }
 
@@ -45,7 +45,7 @@
 .content {
   z-index: 99;
   padding: 4px;
-  background: var(--color-secondary-background);
+  background: var(--color-secondary-bg);
   border: 1px solid var(--color-secondary-border);
   border-radius: 5px;
   box-shadow: var(--shadow-md);
@@ -57,7 +57,7 @@
   }
 
   &Tertiary {
-    background: var(--color-tertiary-background);
+    background: var(--color-tertiary-bg);
     border: 1px solid var(--color-tertiary-border);
   }
 
