@@ -172,7 +172,7 @@ Tests use **Vitest** with `globals: true` — no need to import `describe`, `tes
 - `npm run test` / `npm run test:all` — Run tests (watch / once)
 - `npm run images:convert:new` — Convert new images to WebP
 - `npm run images:tinify:new` — Compress new images via Tinify
-- `npm run svg:compress` — Compress new SVGs
+- `npm run svg:compress:new` — Compress new SVGs
 
 ## Environment Variables
 
@@ -200,6 +200,7 @@ Set via `import.meta.env` (Vite convention, prefixed `VITE_`):
   // ======================================================================
   ```
 - SVG components use the Vite-native `?react` import suffix: `import FooIcon from './foo.svg?react'`
+- New icons are added to `src/js/components/Icon/icons/general-original/` (or `site-original/` for service logos). Match the SVG format of existing icons in that folder. After adding, run `npm run svg:compress:new` — this produces the compressed version in `general-compressed/`. Always import from `general-compressed/`. Register the component in the `generalIcons` (or `siteIcons`) object in `Icon.jsx`, alphabetically.
 - Do **not** use Prettier as an ESLint plugin — run `npm run prettier` separately; `eslint-config-prettier` disables conflicting formatting rules
 
 ## Response Style

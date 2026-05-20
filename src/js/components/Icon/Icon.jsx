@@ -80,6 +80,7 @@ import PlayCircleIcon from './icons/general-compressed/play-circle.svg?react';
 import PlayFilledIcon from './icons/general-compressed/play-filled.svg?react';
 import PlayIcon from './icons/general-compressed/play.svg?react';
 import PlaylistIcon from './icons/general-compressed/playlist.svg?react';
+import PlusCircleIcon from './icons/general-compressed/plus-circle.svg?react';
 import PreviousIcon from './icons/general-compressed/previous.svg?react';
 import QueueIcon from './icons/general-compressed/queue.svg?react';
 import RedditIcon from './icons/general-compressed/reddit.svg?react';
@@ -192,6 +193,7 @@ export const generalIcons = {
   PlayFilledIcon,
   PlayIcon,
   PlaylistIcon,
+  PlusCircleIcon,
   PreviousIcon,
   QueueIcon,
   RedditIcon,
