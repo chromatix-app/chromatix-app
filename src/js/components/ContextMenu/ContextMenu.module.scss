@@ -28,9 +28,9 @@
 .actionItem,
 .actionItemNull {
   display: flex;
+  position: relative;
   align-items: center;
   gap: 8px;
-  position: relative;
   padding: 6px 16px 6px 8px;
   border-radius: 2px;
 }
@@ -55,10 +55,10 @@
 
 .subTrigger {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
   position: relative;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
   padding: 6px 4px 6px 8px;
   border-radius: 2px;
 
@@ -77,9 +77,9 @@
 }
 
 .subTriggerArrow {
+  flex-shrink: 0;
   width: 14px;
   height: 14px;
-  flex-shrink: 0;
   opacity: 0.5;
 }
 
@@ -90,8 +90,8 @@
 }
 
 .entryIcon {
+  flex-shrink: 0;
   width: 14px;
   height: 14px;
-  flex-shrink: 0;
   opacity: var(--opacity-05);
 }
