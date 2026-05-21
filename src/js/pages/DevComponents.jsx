@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 import {
   Button,
+  FilterButton,
   FilterMenu,
   FilterSelect,
   FilterToggle,
@@ -88,6 +89,7 @@ const Component = () => {
                 { label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
               ]}
             />
+            <FilterButton label="New playlist" icon="PlusIcon" onClick={() => {}} />
           </div>
         </div>
 
@@ -139,6 +141,7 @@ const Component = () => {
                 { label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
               ]}
             />
+            <FilterButton variant="Large" label="New playlist" icon="PlusIcon" onClick={() => {}} />
           </div>
         </div>
 

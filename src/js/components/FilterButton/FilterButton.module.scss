@@ -65,39 +65,3 @@
     display: none;
   }
 }
-
-.content {
-  left: 8px;
-  z-index: 99;
-  padding: 6px 0;
-  background: var(--color-secondary-bg);
-  border: 1px solid var(--color-secondary-border);
-  border-radius: 5px;
-  box-shadow: var(--shadow-md);
-  font-size: 13px;
-  line-height: 1;
-}
-
-.viewport {
-}
-
-.item {
-  padding: 5px 14px;
-  cursor: pointer;
-
-  &[data-state='checked'] {
-    color: var(--color-core);
-  }
-}
-
-.indicator {
-  margin: 0 0 0 8px;
-}
-
-.indicatorIcon {
-  display: inline-block;
-  position: relative;
-  top: 1px;
-  width: 10px;
-  height: 10px;
-}

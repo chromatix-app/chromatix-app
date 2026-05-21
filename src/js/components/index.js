@@ -2,6 +2,7 @@ export { default as Button } from './Button/Button';
 export { default as ControlBar } from './ControlBar/ControlBar';
 export { default as ElectronUI } from './ElectronUI/ElectronUI';
 export { default as Favourite } from './Favourite/Favourite';
+export { default as FilterButton } from './FilterButton/FilterButton';
 export { default as FilterMenu } from './FilterMenu/FilterMenu';
 export { default as FilterSelect } from './FilterSelect/FilterSelect';
 export { default as FilterToggle } from './FilterToggle/FilterToggle';
