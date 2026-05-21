@@ -928,6 +928,7 @@ export const getAllPlaylists = () => {
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const timeStamp = store.getState().appModel.timeStamp;
+      const allPlaylistEdits = store.getState().appModel.allPlaylistEdits;
       const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
@@ -937,6 +938,7 @@ export const getAllPlaylists = () => {
           libraryId,
           serverBaseUrl,
           timeStamp,
+          allPlaylistEdits,
           userId,
         })
         .then((response) => {
@@ -972,7 +974,8 @@ export const getPlaylistDetails = (libraryId, playlistId) => {
       const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
-      const timeStamp = store.getState().appModel.timeStamp;
+      const playlistEditCount = store.getState().appModel.allPlaylistEdits[playlistId] || 0;
+      const timeStamp = store.getState().appModel.timeStamp + playlistEditCount;
       const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
 
       serviceTools[currentService]
@@ -1064,9 +1067,12 @@ export const createPlaylist = ({ title }) => {
   const { libraryId } = store.getState().sessionModel.currentLibrary;
   return plexTools
     .createPlaylist({ accessToken, libraryId, serverId, serverBaseUrl, title })
-    .then(() => {
+    .then((response) => {
       getAllPlaylists();
       analyticsEvent('Plex / Create Playlist');
+      // navigate to the new playlist details page
+      const newPlaylistId = response.ratingKey;
+      store.getState().appModel.history.push(`/playlists/${libraryId}/${newPlaylistId}`);
     })
     .catch((error) => {
       console.error(error);
@@ -1082,11 +1088,14 @@ export const editPlaylist = ({ playlistId, title, summary }) => {
   if (!isStoreReady()) return;
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  const { libraryId } = store.getState().sessionModel.currentLibrary;
   return plexTools
     .editPlaylist({ accessToken, serverBaseUrl, playlistId, title, summary })
     .then(() => {
       getAllPlaylists();
       analyticsEvent('Plex / Edit Playlist');
+      // refresh the playlist
+      getPlaylistDetails(libraryId, playlistId);
     })
     .catch((error) => {
       console.error(error);
@@ -1107,10 +1116,61 @@ export const deletePlaylist = ({ playlistId }) => {
     .then(() => {
       getAllPlaylists();
       analyticsEvent('Plex / Delete Playlist');
+      // navigate to playlists page
+      store.getState().appModel.history.push('/playlists');
     })
     .catch((error) => {
       console.error(error);
       analyticsEvent('Plex / Error / Delete Playlist');
+    });
+};
+
+// ======================================================================
+// ADD TRACK TO PLAYLIST
+// ======================================================================
+
+export const addTrackToPlaylist = ({ playlistId, trackId }) => {
+  if (!isStoreReady()) return;
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const serverId = store.getState().sessionModel.currentServer.serverId;
+  const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  const { libraryId } = store.getState().sessionModel.currentLibrary;
+  return plexTools
+    .addTrackToPlaylist({ accessToken, serverBaseUrl, playlistId, serverId, trackId })
+    .then(() => {
+      analyticsEvent('Plex / Add Track To Playlist');
+      // refresh the playlist
+      store.dispatch.appModel.incrementPlaylistEditCount(playlistId);
+      getPlaylistDetails(libraryId, playlistId);
+      getPlaylistTracks(libraryId, playlistId);
+    })
+    .catch((error) => {
+      console.error(error);
+      analyticsEvent('Plex / Error / Add Track To Playlist');
+    });
+};
+
+// ======================================================================
+// REMOVE TRACK FROM PLAYLIST
+// ======================================================================
+
+export const removeTrackFromPlaylist = ({ playlistId, playlistItemId }) => {
+  if (!isStoreReady()) return;
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  const { libraryId } = store.getState().sessionModel.currentLibrary;
+  return plexTools
+    .removeTrackFromPlaylist({ accessToken, serverBaseUrl, playlistId, playlistItemId })
+    .then(() => {
+      analyticsEvent('Plex / Remove Track From Playlist');
+      // refresh the playlist
+      store.dispatch.appModel.incrementPlaylistEditCount(playlistId);
+      getPlaylistDetails(libraryId, playlistId);
+      getPlaylistTracks(libraryId, playlistId);
+    })
+    .catch((error) => {
+      console.error(error);
+      analyticsEvent('Plex / Error / Remove Track From Playlist');
     });
 };
 
@@ -1136,6 +1196,8 @@ export const movePlaylistItem = ({ playlistId, playlistItemId, afterPlaylistItem
 // window.bridge.createPlaylist({ title: 'AAA Test' })
 // window.bridge.editPlaylist({ playlistId: '168468', title: 'Renamed' })
 // window.bridge.deletePlaylist({ playlistId: '168468' })
+// window.bridge.addTrackToPlaylist({ playlistId: '168468', trackId: '12345' })
+// window.bridge.removeTrackFromPlaylist({ playlistId: '168468', playlistItemId: '9872' })
 // window.bridge.movePlaylistItem({ playlistId: '168468', playlistItemId: '9872', afterPlaylistItemId: '9869' })
 
 // ======================================================================

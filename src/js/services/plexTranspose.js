@@ -260,10 +260,16 @@ const transposeFolderData = (folder, libraryId, serverBaseUrl, accessToken) => {
 // PLAYLISTS
 // ======================================================================
 
-export const transposePlaylistArray = (array, libraryId, serverBaseUrl, accessToken, timeStamp) => {
+export const transposePlaylistArray = (array, libraryId, serverBaseUrl, accessToken, timeStamp, allPlaylistEdits) => {
   const data =
     array?.data?.MediaContainer?.Metadata?.map((playlist) =>
-      transposePlaylistData(playlist, libraryId, serverBaseUrl, accessToken, timeStamp)
+      transposePlaylistData(
+        playlist,
+        libraryId,
+        serverBaseUrl,
+        accessToken,
+        timeStamp + (allPlaylistEdits[playlist.ratingKey] || 0)
+      )
     ) || [];
   return data;
 };

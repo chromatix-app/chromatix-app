@@ -84,6 +84,9 @@ const endpointConfig = {
     createPlaylist: (serverBaseUrl) => `${serverBaseUrl}/playlists`,
     editPlaylist: (serverBaseUrl, playlistId) => `${serverBaseUrl}/playlists/${playlistId}`,
     deletePlaylist: (serverBaseUrl, playlistId) => `${serverBaseUrl}/playlists/${playlistId}`,
+    addTrackToPlaylist: (serverBaseUrl, playlistId) => `${serverBaseUrl}/playlists/${playlistId}/items`,
+    removeTrackFromPlaylist: (serverBaseUrl, playlistId, playlistItemId) =>
+      `${serverBaseUrl}/playlists/${playlistId}/items/${playlistItemId}`,
     movePlaylistItem: (serverBaseUrl, playlistId, playlistItemId) =>
       `${serverBaseUrl}/playlists/${playlistId}/items/${playlistItemId}/move`,
   },
@@ -1121,7 +1124,7 @@ export const getFolderItems = ({ accessToken, folderId, libraryId, serverBaseUrl
 // GET ALL PLAYLISTS
 // ======================================================================
 
-export const getAllPlaylists = ({ accessToken, libraryId, serverBaseUrl, timeStamp, userId }) => {
+export const getAllPlaylists = ({ accessToken, libraryId, serverBaseUrl, timeStamp, allPlaylistEdits, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.playlist.getAllPlaylists(serverBaseUrl, libraryId);
@@ -1139,7 +1142,16 @@ export const getAllPlaylists = ({ accessToken, libraryId, serverBaseUrl, timeSta
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposePlaylistArray(response, libraryId, serverBaseUrl, accessToken, timeStamp));
+          resolve(
+            plexTranspose.transposePlaylistArray(
+              response,
+              libraryId,
+              serverBaseUrl,
+              accessToken,
+              timeStamp,
+              allPlaylistEdits
+            )
+          );
         })
         .catch((error) => {
           reject({
@@ -1344,6 +1356,73 @@ export const deletePlaylist = ({ accessToken, serverBaseUrl, playlistId }) => {
       reject({
         code: 'plex.deletePlaylist.2',
         message: 'Failed to delete playlist: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// ADD TRACK TO PLAYLIST
+// ======================================================================
+
+export const addTrackToPlaylist = ({ accessToken, serverBaseUrl, playlistId, serverId, trackId }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.playlist.addTrackToPlaylist(serverBaseUrl, playlistId);
+      axios
+        .put(endpoint, null, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            uri: `server://${serverId}/com.plexapp.plugins.library/library/metadata/${trackId}`,
+          },
+        })
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject({
+            code: 'plex.addTrackToPlaylist.1',
+            message: 'Failed to add track to playlist: ' + error?.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'plex.addTrackToPlaylist.2',
+        message: 'Failed to add track to playlist: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// REMOVE TRACK FROM PLAYLIST
+// ======================================================================
+
+export const removeTrackFromPlaylist = ({ accessToken, serverBaseUrl, playlistId, playlistItemId }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.playlist.removeTrackFromPlaylist(serverBaseUrl, playlistId, playlistItemId);
+      axios
+        .delete(endpoint, {
+          headers: getRequestHeaders(accessToken),
+        })
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject({
+            code: 'plex.removeTrackFromPlaylist.1',
+            message: 'Failed to remove track from playlist: ' + error?.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'plex.removeTrackFromPlaylist.2',
+        message: 'Failed to remove track from playlist: ' + error?.message,
         error: error,
       });
     }
