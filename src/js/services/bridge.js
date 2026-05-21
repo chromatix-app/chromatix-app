@@ -1182,10 +1182,13 @@ export const movePlaylistItem = ({ playlistId, playlistItemId, afterPlaylistItem
   if (!isStoreReady()) return;
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  const { libraryId } = store.getState().sessionModel.currentLibrary;
   return plexTools
     .movePlaylistItem({ accessToken, serverBaseUrl, playlistId, playlistItemId, afterPlaylistItemId })
     .then(() => {
       analyticsEvent('Plex / Move Playlist Item');
+      // refresh the playlist
+      getPlaylistTracks(libraryId, playlistId);
     })
     .catch((error) => {
       console.error(error);
