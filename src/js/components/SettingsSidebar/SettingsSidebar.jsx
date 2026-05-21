@@ -215,12 +215,19 @@ const BrowseSettings = ({ platformOpts }) => {
 
 const PlaylistSettings = ({ platformOpts }) => {
   const menuShowAllPlaylists = useSelector(({ sessionModel }) => sessionModel.menuShowAllPlaylists);
+  const menuShowAddPlaylist = useSelector(({ sessionModel }) => sessionModel.menuShowAddPlaylist);
 
   const menuItems = [
     {
       key: 'menuShowAllPlaylists',
       label: 'Show playlists',
       state: menuShowAllPlaylists,
+    },
+    {
+      key: 'menuShowAddPlaylist',
+      label: 'Show "New Playlist" button',
+      state: menuShowAddPlaylist,
+      disabled: !menuShowAllPlaylists,
     },
   ];
 

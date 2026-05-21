@@ -2,9 +2,10 @@
 // IMPORTS
 // ======================================================================
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
+  FilterButton,
   FilterMenu,
   FilterSelect,
   FilterToggle,
@@ -133,6 +134,8 @@ const Title = ({
   sortPlaylists,
   viewPlaylists,
 }) => {
+  const dispatch = useDispatch();
+
   return (
     <>
       <TitleHeading
@@ -208,6 +211,11 @@ const Title = ({
             />
           </>
         )}
+        <FilterButton
+          label="New playlist"
+          icon="PlusIcon"
+          onClick={() => dispatch.dialogModel.showModal('PlaylistAdd')}
+        />
         {viewPlaylists === 'list' && (
           <FilterMenu
             label="Options"

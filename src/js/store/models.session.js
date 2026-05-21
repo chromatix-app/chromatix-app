@@ -80,6 +80,7 @@ const sessionState = {
   menuShowAlbums: true,
   menuShowFolders: true,
   menuShowPlaylists: true,
+  menuShowAddPlaylist: true,
 
   menuShowArtistCollections: true,
   menuShowAlbumCollections: true,

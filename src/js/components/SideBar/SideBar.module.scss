@@ -318,10 +318,12 @@
 .link {
   display: block;
   overflow: hidden;
+  width: 100%;
   padding: 6px 8px;
   margin: 0 0 1px;
   border-radius: 6px;
   font-size: 13px;
+  text-align: left;
 
   // prevent text wrapping and display an ellipsis
   text-overflow: ellipsis;

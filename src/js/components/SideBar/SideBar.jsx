@@ -33,6 +33,7 @@ const SideBar = () => {
   const menuShowIcons = useSelector(({ sessionModel }) => sessionModel.menuShowIcons);
   const menuShowSearch = useSelector(({ sessionModel }) => sessionModel.menuShowSearch);
   const menuShowAllPlaylists = useSelector(({ sessionModel }) => sessionModel.menuShowAllPlaylists);
+  const menuShowAddPlaylist = useSelector(({ sessionModel }) => sessionModel.menuShowAddPlaylist);
   const menuShowSeparateBrowseSection = useSelector(({ sessionModel }) => sessionModel.menuShowSeparateBrowseSection);
 
   const menuOpenLibrary = useSelector(({ sessionModel }) => sessionModel.menuOpenLibrary);
@@ -376,6 +377,20 @@ const SideBar = () => {
             </button>
             {menuOpenPlaylists && (
               <>
+                {menuShowAddPlaylist && (
+                  <button
+                    className={style.link}
+                    draggable="false"
+                    onClick={() => dispatch.dialogModel.showModal('PlaylistAdd')}
+                  >
+                    {menuShowIcons && (
+                      <span className={style.icon}>
+                        <Icon icon="PlusCircleIcon" cover stroke />
+                      </span>
+                    )}
+                    New Playlist
+                  </button>
+                )}
                 {sortedPlaylists.map((playlist) => (
                   <NavLink
                     key={playlist.playlistId}

@@ -5,7 +5,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { Favourite, FilterMenu, ViewList, Loading, StarRating, TitleHeading } from 'js/components';
+import { Favourite, FilterButton, FilterMenu, ViewList, Loading, StarRating, TitleHeading } from 'js/components';
 import { useGetPlaylistDetail } from 'js/hooks';
 import platformFeatures from 'js/_config/platformFeatures';
 
@@ -145,6 +145,8 @@ const Title = ({
   playlistTracks,
   setColumnVisibility,
 }) => {
+  const dispatch = useDispatch();
+
   return (
     <TitleHeading
       key={libraryId + '-' + playlistId}
@@ -209,70 +211,85 @@ const Title = ({
         )
       }
       optionsMenu={
-        <div className="filterIconWrap">
-          <FilterMenu
-            variant="Large"
-            label="Options"
-            icon="CogIcon"
-            iconStrokeWidth={1.2}
-            setter={setColumnVisibility}
-            entries={[
-              {
-                label: 'Artwork',
-                attr: 'colPlaylistArtwork',
-                checked: colOptions.artwork,
-              },
-              {
-                label: 'Title',
-                disabled: true,
-                checked: true,
-              },
-              {
-                label: 'Artist',
-                attr: 'colPlaylistArtist',
-                checked: colOptions.artist,
-              },
-              {
-                label: 'Album',
-                attr: 'colPlaylistAlbum',
-                checked: colOptions.album,
-              },
-              {
-                label: 'Audio codec',
-                attr: 'colPlaylistCodec',
-                checked: colOptions.codec,
-              },
-              {
-                label: 'Bitrate',
-                attr: 'colPlaylistBitrate',
-                checked: colOptions.bitrate,
-              },
-              {
-                label: 'Duration',
-                attr: 'colPlaylistDuration',
-                checked: colOptions.duration,
-              },
-              ...(platformOpts?.enableIsFavourite
-                ? [
-                    {
-                      label: 'Favourite',
-                      attr: 'colPlaylistIsFavourite',
-                      checked: colOptions.isFavourite,
-                    },
-                  ]
-                : []),
-              ...(platformOpts?.enableUserRating
-                ? [
-                    {
-                      label: 'Rating',
-                      attr: 'colPlaylistUserRating',
-                      checked: colOptions.userRating,
-                    },
-                  ]
-                : []),
-            ]}
-          />
-        </div>
+        <>
+          <div className="filterIconWrap">
+            <FilterMenu
+              variant="Large"
+              label="Options"
+              icon="CogIcon"
+              iconStrokeWidth={1.2}
+              setter={setColumnVisibility}
+              entries={[
+                {
+                  label: 'Artwork',
+                  attr: 'colPlaylistArtwork',
+                  checked: colOptions.artwork,
+                },
+                {
+                  label: 'Title',
+                  disabled: true,
+                  checked: true,
+                },
+                {
+                  label: 'Artist',
+                  attr: 'colPlaylistArtist',
+                  checked: colOptions.artist,
+                },
+                {
+                  label: 'Album',
+                  attr: 'colPlaylistAlbum',
+                  checked: colOptions.album,
+                },
+                {
+                  label: 'Audio codec',
+                  attr: 'colPlaylistCodec',
+                  checked: colOptions.codec,
+                },
+                {
+                  label: 'Bitrate',
+                  attr: 'colPlaylistBitrate',
+                  checked: colOptions.bitrate,
+                },
+                {
+                  label: 'Duration',
+                  attr: 'colPlaylistDuration',
+                  checked: colOptions.duration,
+                },
+                ...(platformOpts?.enableIsFavourite
+                  ? [
+                      {
+                        label: 'Favourite',
+                        attr: 'colPlaylistIsFavourite',
+                        checked: colOptions.isFavourite,
+                      },
+                    ]
+                  : []),
+                ...(platformOpts?.enableUserRating
+                  ? [
+                      {
+                        label: 'Rating',
+                        attr: 'colPlaylistUserRating',
+                        checked: colOptions.userRating,
+                      },
+                    ]
+                  : []),
+              ]}
+            />
+          </div>
+          <div className="filterIconWrap">
+            <FilterButton
+              variant="Large"
+              label="Edit playlist"
+              icon="PencilIcon"
+              onClick={() =>
+                dispatch.dialogModel.showModal({
+                  modal: 'PlaylistEdit',
+                  data: { playlistId, playlistTitle },
+                })
+              }
+            />
+          </div>
+        </>
       }
       showPlay={true}
       isLoaded={isLoaded}
