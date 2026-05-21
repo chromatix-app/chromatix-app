@@ -1129,14 +1129,14 @@ export const deletePlaylist = ({ playlistId }) => {
 // ADD TRACK TO PLAYLIST
 // ======================================================================
 
-export const addTrackToPlaylist = ({ playlistId, trackId }) => {
+export const addTracksToPlaylist = ({ playlistId, trackIds }) => {
   if (!isStoreReady()) return;
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const serverId = store.getState().sessionModel.currentServer.serverId;
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
   const { libraryId } = store.getState().sessionModel.currentLibrary;
   return plexTools
-    .addTrackToPlaylist({ accessToken, serverBaseUrl, playlistId, serverId, trackId })
+    .addTracksToPlaylist({ accessToken, serverBaseUrl, playlistId, serverId, trackIds })
     .then(() => {
       analyticsEvent('Plex / Add Track To Playlist');
       // refresh the playlist
@@ -1175,6 +1175,33 @@ export const removeTrackFromPlaylist = ({ playlistId, playlistItemId }) => {
 };
 
 // ======================================================================
+// REMOVE TRACKS FROM PLAYLIST
+// ======================================================================
+
+export const removeTracksFromPlaylist = ({ playlistId, playlistItemIds }) => {
+  if (!isStoreReady()) return;
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  const { libraryId } = store.getState().sessionModel.currentLibrary;
+  return Promise.all(
+    playlistItemIds.map((playlistItemId) =>
+      plexTools.removeTrackFromPlaylist({ accessToken, serverBaseUrl, playlistId, playlistItemId })
+    )
+  )
+    .then(() => {
+      analyticsEvent('Plex / Remove Tracks From Playlist');
+      // refresh the playlist
+      store.dispatch.appModel.incrementPlaylistEditCount(playlistId);
+      getPlaylistDetails(libraryId, playlistId);
+      getPlaylistTracks(libraryId, playlistId);
+    })
+    .catch((error) => {
+      console.error(error);
+      analyticsEvent('Plex / Error / Remove Tracks From Playlist');
+    });
+};
+
+// ======================================================================
 // MOVE PLAYLIST ITEM
 // ======================================================================
 
@@ -1199,8 +1226,10 @@ export const movePlaylistItem = ({ playlistId, playlistItemId, afterPlaylistItem
 // window.bridge.createPlaylist({ title: 'AAA Test' })
 // window.bridge.editPlaylist({ playlistId: '168468', title: 'Renamed' })
 // window.bridge.deletePlaylist({ playlistId: '168468' })
-// window.bridge.addTrackToPlaylist({ playlistId: '168468', trackId: '12345' })
+// window.bridge.addTracksToPlaylist({ playlistId: '168468', trackIds: ['163222'] });
+// window.bridge.addTracksToPlaylist({ playlistId: '168468', trackIds: ['163222', '163223', '163224'] });
 // window.bridge.removeTrackFromPlaylist({ playlistId: '168468', playlistItemId: '9872' })
+// window.bridge.removeTracksFromPlaylist({ playlistId: '168468', playlistItemIds: ['9956', '9957', '9958'] })
 // window.bridge.movePlaylistItem({ playlistId: '168468', playlistItemId: '9872', afterPlaylistItemId: '9869' })
 
 // ======================================================================
@@ -1712,25 +1741,26 @@ const isLocal = import.meta.env.VITE_ENV === 'local';
 if (isLocal) {
   window.bridge = {
     abortAllRequests,
+    addTracksToPlaylist,
     createPlaylist,
     deletePlaylist,
     editPlaylist,
+    getAlbumArtistDetails,
+    getAlbumDetails,
+    getAlbumTracks,
     getAllAlbumArtists,
     getAllAlbums,
     getAllArtistAlbums,
     getAllArtistAppearanceAlbums,
     getAllArtistRelatedAlbums,
-    getAllArtistTracks,
     getAllArtists,
+    getAllArtistTracks,
     getAllCollections,
     getAllLibraries,
     getAllPlaylists,
     getAllServers,
     getAllTags,
     getAllUsers,
-    getAlbumArtistDetails,
-    getAlbumDetails,
-    getAlbumTracks,
     getArtistDetails,
     getCollectionItems,
     getFolderItems,
@@ -1740,15 +1770,17 @@ if (isLocal) {
     getUserInfo,
     init,
     jellyLogin,
+    logout,
     logPlaybackPause,
     logPlaybackPlay,
     logPlaybackProgress,
     logPlaybackQuit,
     logPlaybackStatus,
     logPlaybackStop,
-    logout,
     movePlaylistItem,
     plexLogin,
+    removeTrackFromPlaylist,
+    removeTracksFromPlaylist,
     searchLibrary,
     setStarRating,
     switchUser,

@@ -900,7 +900,7 @@ const TrackRow = ({
         const playlists = store.getState().appModel.allPlaylists || [];
         return playlists.map((playlist) => ({
           label: playlist.title,
-          onSelect: () => bridge.addTrackToPlaylist({ playlistId: playlist.playlistId, trackId: entry.trackId }),
+          onSelect: () => bridge.addTracksToPlaylist({ playlistId: playlist.playlistId, trackIds: [entry.trackId] }),
         }));
       },
     },

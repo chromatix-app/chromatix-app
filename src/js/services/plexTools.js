@@ -84,7 +84,7 @@ const endpointConfig = {
     createPlaylist: (serverBaseUrl) => `${serverBaseUrl}/playlists`,
     editPlaylist: (serverBaseUrl, playlistId) => `${serverBaseUrl}/playlists/${playlistId}`,
     deletePlaylist: (serverBaseUrl, playlistId) => `${serverBaseUrl}/playlists/${playlistId}`,
-    addTrackToPlaylist: (serverBaseUrl, playlistId) => `${serverBaseUrl}/playlists/${playlistId}/items`,
+    addTracksToPlaylist: (serverBaseUrl, playlistId) => `${serverBaseUrl}/playlists/${playlistId}/items`,
     removeTrackFromPlaylist: (serverBaseUrl, playlistId, playlistItemId) =>
       `${serverBaseUrl}/playlists/${playlistId}/items/${playlistItemId}`,
     movePlaylistItem: (serverBaseUrl, playlistId, playlistItemId) =>
@@ -1368,15 +1368,15 @@ export const deletePlaylist = ({ accessToken, serverBaseUrl, playlistId }) => {
 // ADD TRACK TO PLAYLIST
 // ======================================================================
 
-export const addTrackToPlaylist = ({ accessToken, serverBaseUrl, playlistId, serverId, trackId }) => {
+export const addTracksToPlaylist = ({ accessToken, serverBaseUrl, playlistId, serverId, trackIds }) => {
   return new Promise((resolve, reject) => {
     try {
-      const endpoint = endpointConfig.playlist.addTrackToPlaylist(serverBaseUrl, playlistId);
+      const endpoint = endpointConfig.playlist.addTracksToPlaylist(serverBaseUrl, playlistId);
       axios
         .put(endpoint, null, {
           headers: getRequestHeaders(accessToken),
           params: {
-            uri: `server://${serverId}/com.plexapp.plugins.library/library/metadata/${trackId}`,
+            uri: `server://${serverId}/com.plexapp.plugins.library/library/metadata/${trackIds.join(',')}`,
           },
         })
         .then(() => {
@@ -1384,14 +1384,14 @@ export const addTrackToPlaylist = ({ accessToken, serverBaseUrl, playlistId, ser
         })
         .catch((error) => {
           reject({
-            code: 'plex.addTrackToPlaylist.1',
+            code: 'plex.addTracksToPlaylist.1',
             message: 'Failed to add track to playlist: ' + error?.message,
             error: error,
           });
         });
     } catch (error) {
       reject({
-        code: 'plex.addTrackToPlaylist.2',
+        code: 'plex.addTracksToPlaylist.2',
         message: 'Failed to add track to playlist: ' + error?.message,
         error: error,
       });
