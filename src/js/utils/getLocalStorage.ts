@@ -18,10 +18,11 @@ const getLocalStorage = (key: string): string | null => {
 
   try {
     const bytes = CryptoJS.AES.decrypt(encryptedValue, encryptionKey);
+    if (!bytes.sigBytes) return '';
     const decryptedValue: string = bytes.toString(CryptoJS.enc.Utf8);
     return decryptedValue;
   } catch {
-    return null;
+    return '';
   }
 };
 
