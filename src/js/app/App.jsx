@@ -374,7 +374,7 @@ const AppMain = () => {
   }, [contentWidth]);
 
   return (
-    <div className="wrap">
+    <div className="wrap" onContextMenu={(e) => e.preventDefault()}>
       {envData.isElectron && <ElectronUI />}
 
       {fullPageMode && <FullPagePlayer />}

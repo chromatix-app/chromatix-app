@@ -1,4 +1,5 @@
 export { default as Button } from './Button/Button';
+export { default as ContextMenu } from './ContextMenu/ContextMenu';
 export { default as ControlBar } from './ControlBar/ControlBar';
 export { default as ElectronUI } from './ElectronUI/ElectronUI';
 export { default as Favourite } from './Favourite/Favourite';
