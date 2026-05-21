@@ -7,8 +7,6 @@ consistent between music services, and also doing some additional processing and
 // IMPORTS
 // ======================================================================
 
-import { XMLParser } from 'fast-xml-parser';
-
 // ======================================================================
 // OPTIONS
 // ======================================================================
@@ -57,13 +55,12 @@ const transposeAllUserData = (user) => {
 // ======================================================================
 
 export const transposeUserData = (user) => {
-  const parser = new XMLParser({ ignoreAttributes: false });
-  const data = parser.parse(user.data).user;
+  const data = user.data;
   return {
-    displayName: data['@_title'] || data['@_username'],
-    email: data['email'],
-    thumbSm: data['@_thumb'],
-    userId: data['@_id'],
+    displayName: data.title || data.username,
+    email: data.email,
+    thumbSm: data.thumb,
+    userId: data.id,
   };
 };
 

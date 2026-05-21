@@ -50,7 +50,7 @@ const endpointConfig = {
   user: {
     getAllUsers: () => 'https://plex.tv/api/v2/home/users',
     switchUser: (uuid) => `https://plex.tv/api/v2/home/users/${uuid}/switch`,
-    getUserInfo: () => 'https://plex.tv/users/account',
+    getUserInfo: () => 'https://plex.tv/api/v2/user',
   },
   server: {
     getAllServers: () => 'https://plex.tv/api/v2/resources',
@@ -336,7 +336,9 @@ export const getUserInfo = () => {
       axios
         .get(endpoint, {
           headers: {
+            Accept: 'application/json',
             'X-Plex-Token': accessToken,
+            'X-Plex-Client-Identifier': clientId,
           },
         })
         .then((response) => {
