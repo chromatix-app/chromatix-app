@@ -143,6 +143,22 @@
   }
 }
 
+.colorOutlineSecondary {
+  :global(html[data-logged-in='true']) & {
+    background-color: transparent;
+    border: 1px solid var(--color-button-on-primary-border);
+    color: var(--color-text);
+  }
+}
+
+.colorOutlineTertiary {
+  :global(html[data-logged-in='true']) & {
+    background-color: transparent;
+    border: 1px solid var(--color-button-on-secondary-border);
+    color: var(--color-text);
+  }
+}
+
 //
 // SIZES
 //

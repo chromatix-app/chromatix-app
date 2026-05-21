@@ -235,6 +235,14 @@ const Component = () => {
             Tertiary
           </Button>
           <br />
+          <Button size="tiny" color="outlineSecondary">
+            Outline Secondary
+          </Button>
+          <br />
+          <Button size="tiny" color="outlineTertiary">
+            Outline Tertiary
+          </Button>
+          <br />
           <Button size="tiny" disabled>
             Disabled
           </Button>
