@@ -65,6 +65,7 @@ import MailIcon from './icons/general-compressed/mail.svg?react';
 // import MailPlaneIcon from './icons/general-compressed/mail-plane.svg?react';
 import MegaphoneIcon from './icons/general-compressed/megaphone.svg?react';
 import MicrophoneIcon from './icons/general-compressed/microphone.svg?react';
+import MinusCircleIcon from './icons/general-compressed/minus-circle.svg?react';
 import MusicNoteDoubleIcon from './icons/general-compressed/music-note-double.svg?react';
 import MusicNoteSingleIcon from './icons/general-compressed/music-note-single.svg?react';
 import NextIcon from './icons/general-compressed/next.svg?react';
@@ -81,6 +82,7 @@ import PlayFilledIcon from './icons/general-compressed/play-filled.svg?react';
 import PlayIcon from './icons/general-compressed/play.svg?react';
 import PlaylistIcon from './icons/general-compressed/playlist.svg?react';
 import PlusCircleIcon from './icons/general-compressed/plus-circle.svg?react';
+import PlusIcon from './icons/general-compressed/plus.svg?react';
 import PreviousIcon from './icons/general-compressed/previous.svg?react';
 import QueueIcon from './icons/general-compressed/queue.svg?react';
 import RedditIcon from './icons/general-compressed/reddit.svg?react';
@@ -104,6 +106,7 @@ import VolLowIcon from './icons/general-compressed/vol-low.svg?react';
 // import VolOffIcon from './icons/general-compressed/vol-off.svg?react';
 // import VolUpIcon from './icons/general-compressed/vol-up.svg?react';
 import VolXIcon from './icons/general-compressed/vol-x.svg?react';
+import WarningTriangleIcon from './icons/general-compressed/warning-triangle.svg?react';
 
 // Site Custom Icons
 import AppleSiteIcon from './icons/site-compressed/apple.svg?react';
@@ -178,6 +181,7 @@ export const generalIcons = {
   // MailPlaneIcon,
   MegaphoneIcon,
   MicrophoneIcon,
+  MinusCircleIcon,
   MusicNoteDoubleIcon,
   MusicNoteSingleIcon,
   NextIcon,
@@ -194,6 +198,7 @@ export const generalIcons = {
   PlayIcon,
   PlaylistIcon,
   PlusCircleIcon,
+  PlusIcon,
   PreviousIcon,
   QueueIcon,
   RedditIcon,
@@ -217,6 +222,7 @@ export const generalIcons = {
   // VolOffIcon,
   // VolUpIcon,
   VolXIcon,
+  WarningTriangleIcon,
 };
 
 export const siteIcons = {
