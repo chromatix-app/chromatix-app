@@ -211,11 +211,13 @@ const Title = ({
             />
           </>
         )}
-        <FilterButton
-          label="New playlist"
-          icon="PlusIcon"
-          onClick={() => dispatch.dialogModel.showModal('PlaylistAdd')}
-        />
+        {platformOpts.playlistManagement && (
+          <FilterButton
+            label="New playlist"
+            icon="PlusIcon"
+            onClick={() => dispatch.dialogModel.showModal('PlaylistAdd')}
+          />
+        )}
         {viewPlaylists === 'list' && (
           <FilterMenu
             label="Options"

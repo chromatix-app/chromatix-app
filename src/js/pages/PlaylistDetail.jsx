@@ -276,19 +276,21 @@ const Title = ({
               ]}
             />
           </div>
-          <div className="filterIconWrap">
-            <FilterButton
-              variant="Large"
-              label="Edit playlist"
-              icon="PencilIcon"
-              onClick={() =>
-                dispatch.dialogModel.showModal({
-                  modal: 'PlaylistEdit',
-                  data: { playlistId, playlistTitle },
-                })
-              }
-            />
-          </div>
+          {platformOpts.playlistManagement && (
+            <div className="filterIconWrap">
+              <FilterButton
+                variant="Large"
+                label="Edit playlist"
+                icon="PencilIcon"
+                onClick={() =>
+                  dispatch.dialogModel.showModal({
+                    modal: 'PlaylistEdit',
+                    data: { playlistId, playlistTitle },
+                  })
+                }
+              />
+            </div>
+          )}
         </>
       }
       showPlay={true}

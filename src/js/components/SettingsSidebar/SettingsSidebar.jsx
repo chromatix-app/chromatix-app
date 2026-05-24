@@ -223,12 +223,16 @@ const PlaylistSettings = ({ platformOpts }) => {
       label: 'Show playlists',
       state: menuShowAllPlaylists,
     },
-    {
-      key: 'menuShowAddPlaylist',
-      label: 'Show "New Playlist" button',
-      state: menuShowAddPlaylist,
-      disabled: !menuShowAllPlaylists,
-    },
+    ...(platformOpts.playlistManagement
+      ? [
+          {
+            key: 'menuShowAddPlaylist',
+            label: 'Show "New Playlist" button',
+            state: menuShowAddPlaylist,
+            disabled: !menuShowAllPlaylists,
+          },
+        ]
+      : []),
   ];
 
   return <SettingsList title="Playlists" menuItems={menuItems} />;

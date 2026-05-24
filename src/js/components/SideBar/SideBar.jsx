@@ -377,7 +377,7 @@ const SideBar = () => {
             </button>
             {menuOpenPlaylists && (
               <>
-                {menuShowAddPlaylist && (
+                {menuShowAddPlaylist && platformOpts.playlistManagement && (
                   <button
                     className={style.link}
                     draggable="false"
