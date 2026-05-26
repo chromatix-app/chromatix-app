@@ -348,6 +348,7 @@ const TableBodyStatic = ({
   tableVariant,
   tableOptions,
   gridTemplateColumns,
+  noArtworkVisible,
   // disc related props
   showDiscNumbers,
   // track related props
@@ -363,7 +364,7 @@ const TableBodyStatic = ({
 
   const scrollContainerRef = useRef(null);
 
-  const rowHeight = rowHeightDefault;
+  const rowHeight = noArtworkVisible ? rowHeightSmall : rowHeightDefault;
 
   const { draggingItemId, dropIndex, headerHeightRef, handlePointerDown } = usePlaylistDrag({
     entries,

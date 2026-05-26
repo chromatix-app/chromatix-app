@@ -1,6 +1,4 @@
-// Generated using GitHub Copilot
-
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import * as bridge from 'js/services/bridge';
@@ -30,6 +28,12 @@ interface UsePlaylistDragReturn {
   handlePointerDown: (entry: PlaylistEntry) => (e: React.PointerEvent) => void;
 }
 
+interface PointerListeners {
+  move: (e: PointerEvent) => void;
+  up: () => void;
+  cancel: () => void;
+}
+
 // ======================================================================
 // CONSTANTS
 // ======================================================================
@@ -51,46 +55,45 @@ const usePlaylistDrag = ({
 }: UsePlaylistDragOptions): UsePlaylistDragReturn => {
   const [draggingItemId, setDraggingItemId] = useState<string | null>(null);
   const [dropIndex, setDropIndex] = useState<number | null>(null);
+
   const dispatch = useDispatch();
   const dispatchRef = useRef(dispatch);
   dispatchRef.current = dispatch;
 
-  // Keep refs in sync with latest prop values so stable callbacks can read current values
+  // Keep latest values available inside stable callbacks.
   const entriesRef = useRef(entries);
   entriesRef.current = entries;
+
   const rowHeightRef = useRef(rowHeight);
   rowHeightRef.current = rowHeight;
+
   const playlistIdRef = useRef(playlistId);
   playlistIdRef.current = playlistId;
 
-  // Drag state refs
+  // Active drag session state.
   const draggingEntryRef = useRef<PlaylistEntry | null>(null);
   const draggingSourceIndexRef = useRef<number>(-1);
   const dropIndexRef = useRef<number | null>(null);
   const headerHeightRef = useRef<number>(0);
+
   const rafRef = useRef<number | null>(null);
   const pointerYRef = useRef<number>(0);
   const startXRef = useRef<number>(0);
   const startYRef = useRef<number>(0);
   const isDragActiveRef = useRef<boolean>(false);
 
-  // Store the currently-registered window listener fns so we can remove the exact same refs
-  const activeListenersRef = useRef<{
-    move: (e: PointerEvent) => void;
-    up: () => void;
-    cancel: () => void;
-  } | null>(null);
-
-  // ----------------------------------------------------------------
-  // STABLE HELPERS (read from refs, safe to call from any callback)
-  // ----------------------------------------------------------------
+  // Keep exact listener references for reliable removeEventListener calls.
+  const activeListenersRef = useRef<PointerListeners | null>(null);
 
   const computeDropIndex = useCallback(
     (clientY: number): number => {
       const container = scrollContainerRef.current;
+
       if (!container) return 0;
+
       const posInContainer = clientY - container.getBoundingClientRect().top + container.scrollTop;
       const relY = posInContainer - headerHeightRef.current;
+
       return Math.max(0, Math.min(entriesRef.current.length, Math.round(relY / rowHeightRef.current)));
     },
     [scrollContainerRef]
@@ -98,19 +101,20 @@ const usePlaylistDrag = ({
 
   const measureHeaderHeight = useCallback(() => {
     const container = scrollContainerRef.current;
+
     if (!container) return;
+
     const anyTrackEl = container.querySelector('[data-row]') as HTMLElement | null;
+
     if (anyTrackEl) {
+      // Derive header height from the first rendered track and its logical index.
       const rowIndex = parseInt(anyTrackEl.getAttribute('data-row-index') ?? '0', 10);
       const containerTop = container.getBoundingClientRect().top;
       const rowAbsoluteY = anyTrackEl.getBoundingClientRect().top - containerTop + container.scrollTop;
+
       headerHeightRef.current = rowAbsoluteY - rowIndex * rowHeightRef.current;
     }
   }, [scrollContainerRef]);
-
-  // ----------------------------------------------------------------
-  // AUTO-SCROLL
-  // ----------------------------------------------------------------
 
   const stopAutoScroll = useCallback(() => {
     if (rafRef.current !== null) {
@@ -130,6 +134,7 @@ const usePlaylistDrag = ({
       const distFromBottom = bottom - py;
 
       let speed = 0;
+
       if (distFromTop < AUTO_SCROLL_ZONE && distFromTop > 0) {
         speed = -AUTO_SCROLL_MAX_SPEED * (1 - distFromTop / AUTO_SCROLL_ZONE);
       } else if (distFromBottom < AUTO_SCROLL_ZONE && distFromBottom > 0) {
@@ -138,7 +143,9 @@ const usePlaylistDrag = ({
 
       if (speed !== 0) {
         container.scrollTop += speed;
+
         const newDropIndex = computeDropIndex(pointerYRef.current);
+
         if (newDropIndex !== dropIndexRef.current) {
           dropIndexRef.current = newDropIndex;
           setDropIndex(newDropIndex);
@@ -151,9 +158,9 @@ const usePlaylistDrag = ({
     rafRef.current = requestAnimationFrame(tick);
   }, [scrollContainerRef, computeDropIndex]);
 
-  // ----------------------------------------------------------------
-  // DETACH WINDOW LISTENERS
-  // ----------------------------------------------------------------
+  // ======================================================================
+  // LISTENER CLEANUP
+  // ======================================================================
 
   const detachListeners = useCallback(() => {
     const listeners = activeListenersRef.current;
@@ -164,32 +171,36 @@ const usePlaylistDrag = ({
     activeListenersRef.current = null;
   }, []);
 
-  // ----------------------------------------------------------------
-  // CLEANUP
-  // ----------------------------------------------------------------
-
   const cleanupDrag = useCallback(() => {
     detachListeners();
     stopAutoScroll();
+
     draggingEntryRef.current = null;
     draggingSourceIndexRef.current = -1;
     dropIndexRef.current = null;
     isDragActiveRef.current = false;
+
     setDraggingItemId(null);
     setDropIndex(null);
   }, [detachListeners, stopAutoScroll]);
 
-  // ----------------------------------------------------------------
-  // COMMIT DROP
-  // ----------------------------------------------------------------
+  // Unmount safety for active drags.
+  useEffect(() => {
+    return () => {
+      detachListeners();
+      stopAutoScroll();
+    };
+  }, [detachListeners, stopAutoScroll]);
 
   const commitDrop = useCallback(async () => {
     const draggingEntry = draggingEntryRef.current;
     const finalDropIndex = dropIndexRef.current;
+
     if (!draggingEntry || finalDropIndex === null) return;
 
     const currentEntries = entriesRef.current;
     const sourceIndex = currentEntries.findIndex((e) => e.playlistItemID === draggingEntry.playlistItemID);
+
     if (sourceIndex === -1) return;
 
     // No-op: drop line is immediately above or below the item's current position
@@ -200,27 +211,24 @@ const usePlaylistDrag = ({
     const afterPlaylistItemId = afterEntry?.playlistItemID ?? null;
 
     dispatchRef.current.appModel.showBlocker();
+
     try {
       await bridge.movePlaylistItem({
         playlistId: playlistIdRef.current,
         playlistItemId: draggingEntry.playlistItemID,
         afterPlaylistItemId,
       });
-    } catch (error) {
+    } catch (_error) {
       // [TODO] add error handling
     }
+
     dispatchRef.current.appModel.hideBlocker();
   }, []);
-
-  // ----------------------------------------------------------------
-  // POINTER DOWN HANDLER (returned to caller per-row)
-  // ----------------------------------------------------------------
 
   const handlePointerDown = useCallback(
     (entry: PlaylistEntry) => (e: React.PointerEvent) => {
       if (!isDraggable || e.button !== 0) return;
-      // No e.preventDefault() here — clicks and icon interactions pass through normally.
-      // Drag only activates once the pointer moves past DRAG_THRESHOLD pixels.
+      // Keep normal click behavior; only begin dragging after threshold is crossed.
 
       startXRef.current = e.clientX;
       startYRef.current = e.clientY;
@@ -228,19 +236,16 @@ const usePlaylistDrag = ({
       isDragActiveRef.current = false;
       draggingEntryRef.current = entry;
 
-      // Attach listeners synchronously so movement anywhere on the window is detected,
-      // even before the drag threshold is crossed. Stored in activeListenersRef so
-      // detachListeners() can remove the exact same references.
       const moveHandler = (me: PointerEvent) => {
         pointerYRef.current = me.clientY;
 
         if (!isDragActiveRef.current) {
-          // Check if pointer has moved past the drag threshold
           const dx = me.clientX - startXRef.current;
           const dy = me.clientY - startYRef.current;
+
           if (Math.sqrt(dx * dx + dy * dy) < DRAG_THRESHOLD) return;
 
-          // Threshold crossed — activate drag visuals
+          // Threshold crossed: activate drag visuals and drop indicator.
           me.preventDefault();
           isDragActiveRef.current = true;
           draggingSourceIndexRef.current = entriesRef.current.findIndex(
@@ -257,8 +262,8 @@ const usePlaylistDrag = ({
           return;
         }
 
-        // Drag is active — update drop index
         const newDropIndex = computeDropIndex(me.clientY);
+
         if (newDropIndex !== dropIndexRef.current) {
           dropIndexRef.current = newDropIndex;
           setDropIndex(newDropIndex);
@@ -285,10 +290,6 @@ const usePlaylistDrag = ({
     [isDraggable, measureHeaderHeight, computeDropIndex, startAutoScroll, commitDrop, cleanupDrag]
   );
 
-  // ----------------------------------------------------------------
-  // RETURN
-  // ----------------------------------------------------------------
-
   if (!isDraggable) {
     return {
       draggingItemId: null,
@@ -298,12 +299,12 @@ const usePlaylistDrag = ({
     };
   }
 
+  const resolvedDropIndex =
+    dropIndex === draggingSourceIndexRef.current || dropIndex === draggingSourceIndexRef.current + 1 ? null : dropIndex;
+
   return {
     draggingItemId,
-    dropIndex:
-      dropIndex === draggingSourceIndexRef.current || dropIndex === draggingSourceIndexRef.current + 1
-        ? null
-        : dropIndex,
+    dropIndex: resolvedDropIndex,
     headerHeightRef,
     handlePointerDown,
   };
