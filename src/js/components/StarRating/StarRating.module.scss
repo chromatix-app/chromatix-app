@@ -47,8 +47,17 @@
     // :global(a:focus-within) &,
     // :global([data-row]:focus-within) &,
     :global(a:hover) &,
-    :global([data-row]:hover) & {
+    :global([data-row]:hover) &,
+    [data-state='open'] & {
       opacity: var(--opacity-06);
+    }
+
+    :global([data-dragging-parent]) & {
+      opacity: 0 !important;
+    }
+
+    [data-dragging] & {
+      opacity: var(--opacity-06) !important;
     }
   }
 }

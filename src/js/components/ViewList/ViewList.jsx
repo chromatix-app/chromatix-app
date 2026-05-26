@@ -10,10 +10,11 @@ import clsx from 'clsx';
 import moment from 'moment';
 
 import { ContextMenu, Favourite, Icon, StarRating } from 'js/components';
-import { useScrollToTrack, useScrollToVirtualTrack, useTableOptions, useWindowSize } from 'js/hooks';
+import platformFeatures from 'js/_config/platformFeatures';
+import { useScrollToTrack, useScrollToVirtualTrack, useTableOptions, useWindowSize, usePlaylistDrag } from 'js/hooks';
+import { durationToStringMed, durationToStringShort, formatRecentDate } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 import store from 'js/store/store';
-import { durationToStringMed, durationToStringShort, formatRecentDate } from 'js/utils';
 
 import style from './ViewList.module.scss';
 
@@ -23,7 +24,7 @@ import style from './ViewList.module.scss';
 
 const isLocal = import.meta.env.VITE_ENV === 'local';
 
-const virtualThreshold = !isLocal ? 200 : 1;
+const virtualThreshold = !isLocal ? 200 : 50;
 
 // ======================================================================
 // COMPONENT
@@ -212,12 +213,18 @@ const ViewListTracks = ({
     );
   };
 
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
+
   if (entries) {
     const TableBodyComponent = entries.length <= virtualThreshold ? TableBodyStatic : TableBodyVirtual;
 
     // Determine whether to show disc numbers
     const isSorted = sortKey && !sortKey.startsWith('sortOrder');
     const showDiscNumbers = !isSorted && discCount > 1;
+
+    // Drag is only available for playlist tracks in default sort order on services that support playlist management
+    const isDraggable = platformOpts.playlistManagement && tableVariant === 'playlistTracks' && !isSorted;
 
     // If disc numbers are shown, add them into our entries array
     let currentDisc = 0;
@@ -261,6 +268,8 @@ const ViewListTracks = ({
           playTrack={playTrack}
           pauseTrack={pauseTrack}
           isTrackLoaded={isTrackLoaded}
+          isDraggable={isDraggable}
+          playlistManagement={platformOpts.playlistManagement}
         />
       </div>
     );
@@ -347,11 +356,34 @@ const TableBodyStatic = ({
   playTrack,
   pauseTrack,
   isTrackLoaded,
+  isDraggable,
+  playlistManagement,
 }) => {
   useScrollToTrack();
 
+  const scrollContainerRef = useRef(null);
+
+  const rowHeight = rowHeightDefault;
+
+  const { draggingItemId, dropIndex, headerHeightRef, handlePointerDown } = usePlaylistDrag({
+    entries,
+    scrollContainerRef,
+    playlistId,
+    rowHeight,
+    isDraggable,
+  });
+
   return (
-    <div id="scrollable" className={clsx(style.scrollableOuter, style.scrollableOuterStatic)}>
+    <div
+      ref={scrollContainerRef}
+      id="scrollable"
+      className={clsx(style.scrollableOuter, style.scrollableOuterStatic, {
+        [style.scrollableDragging]: draggingItemId !== null,
+      })}
+      {...(draggingItemId !== null && {
+        'data-dragging-parent': true,
+      })}
+    >
       <div id="scrollable-inner" className={style.scrollableInner}>
         {titleBlock}
 
@@ -391,6 +423,11 @@ const TableBodyStatic = ({
                 playTrack={playTrack}
                 pauseTrack={pauseTrack}
                 isTrackLoaded={isTrackLoaded}
+                playlistManagement={playlistManagement}
+                // drag related props
+                isDraggable={isDraggable}
+                isDragging={draggingItemId === entry.playlistItemID}
+                onPointerDown={handlePointerDown(entry)}
               />
             );
           }
@@ -408,6 +445,13 @@ const TableBodyStatic = ({
             );
           }
         })}
+
+        {dropIndex !== null && (
+          <div
+            className={style.dropIndicator}
+            style={{ top: `${headerHeightRef.current + dropIndex * rowHeight}px` }}
+          />
+        )}
       </div>
     </div>
   );
@@ -448,10 +492,22 @@ const TableBodyVirtual = ({
   playTrack,
   pauseTrack,
   isTrackLoaded,
+  isDraggable,
+  playlistManagement,
 }) => {
   // Element refs
   innerRef = useRef(null);
   const outerRef = useRef(null);
+
+  const rowHeightActualForDrag = noArtworkVisible ? rowHeightSmall : rowHeightDefault;
+
+  const { draggingItemId, dropIndex, headerHeightRef, handlePointerDown } = usePlaylistDrag({
+    entries,
+    scrollContainerRef: outerRef,
+    playlistId,
+    rowHeight: rowHeightActualForDrag,
+    isDraggable,
+  });
 
   // Used when scrolling to a specific track
   const { windowHeight } = useWindowSize();
@@ -538,7 +594,16 @@ const TableBodyVirtual = ({
   useScrollToVirtualTrack(entries, scrollToVirtualTrack);
 
   return (
-    <div ref={outerRef} id="scrollable" className={clsx(style.scrollableOuter, style.scrollableOuterVirtual)}>
+    <div
+      ref={outerRef}
+      id="scrollable"
+      className={clsx(style.scrollableOuter, style.scrollableOuterVirtual, {
+        [style.scrollableDragging]: draggingItemId !== null,
+      })}
+      {...(draggingItemId !== null && {
+        'data-dragging-parent': true,
+      })}
+    >
       <div
         ref={innerRef}
         id="scrollable-inner"
@@ -585,6 +650,7 @@ const TableBodyVirtual = ({
               return (
                 <TrackRow
                   key={virtualEntry.index}
+                  index={virtualEntry.index - fixedElementCount}
                   entry={entry}
                   virtualEntry={virtualEntry}
                   tableVariant={tableVariant}
@@ -598,6 +664,11 @@ const TableBodyVirtual = ({
                   playTrack={playTrack}
                   pauseTrack={pauseTrack}
                   isTrackLoaded={isTrackLoaded}
+                  playlistManagement={playlistManagement}
+                  // drag related props
+                  isDraggable={isDraggable}
+                  isDragging={draggingItemId === entry.playlistItemID}
+                  onPointerDown={handlePointerDown(entry)}
                 />
               );
             }
@@ -617,6 +688,15 @@ const TableBodyVirtual = ({
             }
           }
         })}
+        {dropIndex !== null && (
+          <div
+            className={style.dropIndicator}
+            style={{
+              top: 0,
+              transform: `translateY(${headerHeightRef.current + dropIndex * rowHeightActualForDrag}px)`,
+            }}
+          />
+        )}
       </div>
     </div>
   );
@@ -866,6 +946,11 @@ const TrackRow = ({
   playerPlaying,
   pauseTrack,
   isTrackLoaded,
+  playlistManagement,
+  // drag related props
+  isDraggable,
+  isDragging,
+  onPointerDown,
 }) => {
   const { ratingType, ratingKey } = lookupVariantFields[tableVariant] || {};
   const rowKey = entry.albumId || entry.artistId || entry.playlistId || entry.collectionId;
@@ -891,20 +976,31 @@ const TrackRow = ({
     }
   };
 
+  const hasContextAdd = playlistManagement;
+  const hasContextRemove = playlistManagement && tableVariant === 'playlistTracks';
+  const hasContextArtist = !!entry.artistLink;
+  const hasContextAlbum = !!entry.albumLink && tableVariant !== 'albumTracks';
+  const hasContextDivider = (hasContextAdd || hasContextRemove) && (hasContextArtist || hasContextAlbum);
+
   const contextEntries = [
-    {
-      variant: 'submenu',
-      label: 'Add to Playlist',
-      icon: 'PlusCircleIcon',
-      getEntries: () => {
-        const playlists = store.getState().appModel.allPlaylists || [];
-        return playlists.map((playlist) => ({
-          label: playlist.title,
-          onSelect: () => bridge.addTracksToPlaylist({ playlistId: playlist.playlistId, trackIds: [entry.trackId] }),
-        }));
-      },
-    },
-    ...(tableVariant === 'playlistTracks'
+    ...(hasContextAdd
+      ? [
+          {
+            variant: 'submenu',
+            label: 'Add to Playlist',
+            icon: 'PlusCircleIcon',
+            getEntries: () => {
+              const playlists = store.getState().appModel.allPlaylists || [];
+              return playlists.map((playlist) => ({
+                label: playlist.title,
+                onSelect: () =>
+                  bridge.addTracksToPlaylist({ playlistId: playlist.playlistId, trackIds: [entry.trackId] }),
+              }));
+            },
+          },
+        ]
+      : []),
+    ...(hasContextRemove
       ? [
           {
             label: 'Remove from Playlist',
@@ -913,11 +1009,9 @@ const TrackRow = ({
           },
         ]
       : []),
-    ...(entry.artistLink || entry.albumLink ? [{ variant: 'divider' }] : []),
-    ...(entry.artistLink ? [{ label: 'Go to Artist', icon: 'PeopleIcon', to: entry.artistLink }] : []),
-    ...(entry.albumLink && tableVariant !== 'albumTracks'
-      ? [{ label: 'Go to Album', icon: 'PlayCircleIcon', to: entry.albumLink }]
-      : []),
+    ...(hasContextDivider ? [{ variant: 'divider' }] : []),
+    ...(hasContextArtist ? [{ label: 'Go to Artist', icon: 'PeopleIcon', to: entry.artistLink }] : []),
+    ...(hasContextAlbum ? [{ label: 'Go to Album', icon: 'PlayCircleIcon', to: entry.albumLink }] : []),
   ];
 
   return (
@@ -926,10 +1020,13 @@ const TrackRow = ({
         id={entry.trackId}
         className={clsx(style.entry, {
           [style.entryPlaying]: trackIsLoaded,
+          [style.entryDragging]: isDragging,
         })}
         data-row
+        data-row-index={index}
         onDoubleClick={handleDoubleClick}
         onKeyDown={handleKeyDown}
+        onPointerDown={onPointerDown}
         tabIndex={0}
         style={{
           ...(virtualEntry && {
@@ -941,6 +1038,9 @@ const TrackRow = ({
           }),
           gridTemplateColumns,
         }}
+        {...(isDragging && {
+          'data-dragging': true,
+        })}
       >
         {tableOptions
           .filter((columnOptions) => columnOptions.visible !== false)
@@ -1029,31 +1129,28 @@ const TrackRow = ({
               case 'sortOrder':
                 return (
                   <React.Fragment key={rowKey + '-' + index}>
+                    {/* STATUS - NOT PLAYING */}
                     {!trackIsLoaded && (
                       <div className={clsx(style.trackNumber, style.colCenter)}>
                         <span>{trackNumber}</span>
-                        {/* <span>{entry.trackSortOrder}</span> */}
                       </div>
                     )}
 
+                    {/* STATUS - PLAYING */}
                     {trackIsLoaded && playerPlaying && (
                       <div className={style.playingIcon}>
                         <Icon icon="VolHighIcon" cover stroke />
                       </div>
                     )}
 
+                    {/* STATUS - PAUSED */}
                     {trackIsLoaded && !playerPlaying && (
                       <div className={style.playingPausedIcon}>
                         <Icon icon="PauseIcon" cover stroke />
                       </div>
-                      // <div className={style.playingPausedIcon}>
-                      //   <Icon icon="VolOffIcon" cover stroke />
-                      // </div>
-                      // <div className={clsx(style.trackNumber, style.colCenter, style.colorPrimary)}>
-                      //   <span>{trackNumber}</span>
-                      // </div>
                     )}
 
+                    {/* PLAY ON HOVER */}
                     {!(trackIsLoaded && playerPlaying) && (
                       <div
                         className={style.playIcon}
@@ -1064,9 +1161,18 @@ const TrackRow = ({
                         <Icon icon="PlayFilledIcon" cover />
                       </div>
                     )}
+
+                    {/* PAUSE ON HOVER */}
                     {trackIsLoaded && playerPlaying && (
                       <div className={style.pauseIcon} onClick={pauseTrack}>
                         <Icon icon="PauseFilledIcon" cover />
+                      </div>
+                    )}
+
+                    {/* DRAG HANDLE */}
+                    {isDraggable && (
+                      <div className={style.dragIcon}>
+                        <Icon icon="ArrowsVerticalIcon" cover stroke />
                       </div>
                     )}
                   </React.Fragment>

@@ -8,7 +8,16 @@ import { useHistory, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 
 import Modals from 'js/app/Modals';
-import { ControlBar, ElectronUI, FullPagePlayer, Queue, SideBar, ToastNotification, UserMenu } from 'js/components';
+import {
+  Blocker,
+  ControlBar,
+  ElectronUI,
+  FullPagePlayer,
+  Queue,
+  SideBar,
+  ToastNotification,
+  UserMenu,
+} from 'js/components';
 import {
   useColorTheme,
   useElectronStatus,
@@ -401,6 +410,7 @@ const AppMain = () => {
 
       <Modals />
       <ToastNotification />
+      <Blocker />
     </div>
   );
 };

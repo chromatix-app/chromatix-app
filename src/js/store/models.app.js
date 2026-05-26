@@ -35,6 +35,8 @@ const appState = {
   errorSwitchUser: false,
   errorUser: false,
 
+  blockerVisible: false,
+
   scrollToPlaying: false,
   scrollToTrack: false,
 
@@ -140,6 +142,16 @@ const reducers = {
   setAppState(rootState, payload) {
     // console.log('%c--- setAppState ---', 'color:#07a098');
     return { ...rootState, ...payload };
+  },
+
+  showBlocker(rootState) {
+    // console.log('%c--- showBlocker ---', 'color:#07a098');
+    return { ...rootState, blockerVisible: true };
+  },
+
+  hideBlocker(rootState) {
+    // console.log('%c--- hideBlocker ---', 'color:#07a098');
+    return { ...rootState, blockerVisible: false };
   },
 
   fullPageOn(rootState) {

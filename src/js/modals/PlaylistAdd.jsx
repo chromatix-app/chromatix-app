@@ -22,9 +22,14 @@ const PlaylistAdd = () => {
   const handleSubmit = async () => {
     if (!title.trim()) return;
     setLoading(true);
-    // [TODO] add error handling
-    await bridge.createPlaylist({ title: title.trim() });
-    dispatch.dialogModel.closeModal();
+    dispatch.appModel.showBlocker();
+    try {
+      await bridge.createPlaylist({ title: title.trim() });
+      dispatch.dialogModel.closeModal();
+    } catch (_error) {
+      // [TODO] add error handling
+    }
+    dispatch.appModel.hideBlocker();
   };
 
   return (

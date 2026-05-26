@@ -932,7 +932,7 @@ export const getAllPlaylists = () => {
       const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
       const { libraryId } = store.getState().sessionModel.currentLibrary;
 
-      serviceTools[currentService]
+      return serviceTools[currentService]
         .getAllPlaylists({
           accessToken,
           libraryId,
@@ -978,7 +978,7 @@ export const getPlaylistDetails = (libraryId, playlistId) => {
       const timeStamp = store.getState().appModel.timeStamp + playlistEditCount;
       const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
 
-      serviceTools[currentService]
+      return serviceTools[currentService]
         .getPlaylistDetails({
           accessToken,
           libraryId,
@@ -1067,9 +1067,10 @@ export const createPlaylist = ({ title }) => {
   const { libraryId } = store.getState().sessionModel.currentLibrary;
   return plexTools
     .createPlaylist({ accessToken, libraryId, serverId, serverBaseUrl, title })
-    .then((response) => {
-      getAllPlaylists();
+    .then(async (response) => {
       analyticsEvent('Plex / Create Playlist');
+      // refresh data
+      await getAllPlaylists();
       // navigate to the new playlist details page
       const newPlaylistId = response.ratingKey;
       store.getState().appModel.history.push(`/playlists/${libraryId}/${newPlaylistId}`);
@@ -1091,11 +1092,10 @@ export const editPlaylist = ({ playlistId, title, summary }) => {
   const { libraryId } = store.getState().sessionModel.currentLibrary;
   return plexTools
     .editPlaylist({ accessToken, serverBaseUrl, playlistId, title, summary })
-    .then(() => {
-      getAllPlaylists();
+    .then(async () => {
       analyticsEvent('Plex / Edit Playlist');
-      // refresh the playlist
-      getPlaylistDetails(libraryId, playlistId);
+      // refresh data
+      await Promise.all([getAllPlaylists(), getPlaylistDetails(libraryId, playlistId)]);
     })
     .catch((error) => {
       console.error(error);
@@ -1113,9 +1113,10 @@ export const deletePlaylist = ({ playlistId }) => {
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
   return plexTools
     .deletePlaylist({ accessToken, serverBaseUrl, playlistId })
-    .then(() => {
-      getAllPlaylists();
+    .then(async () => {
       analyticsEvent('Plex / Delete Playlist');
+      // refresh data
+      await getAllPlaylists();
       // navigate to playlists page
       store.getState().appModel.history.push('/playlists');
     })
@@ -1212,10 +1213,10 @@ export const movePlaylistItem = ({ playlistId, playlistItemId, afterPlaylistItem
   const { libraryId } = store.getState().sessionModel.currentLibrary;
   return plexTools
     .movePlaylistItem({ accessToken, serverBaseUrl, playlistId, playlistItemId, afterPlaylistItemId })
-    .then(() => {
+    .then(async () => {
       analyticsEvent('Plex / Move Playlist Item');
       // refresh the playlist
-      getPlaylistTracks(libraryId, playlistId);
+      await getPlaylistTracks(libraryId, playlistId);
     })
     .catch((error) => {
       console.error(error);

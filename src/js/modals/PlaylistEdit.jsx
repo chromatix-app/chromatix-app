@@ -30,9 +30,14 @@ const PlaylistEdit = () => {
   const handleSubmit = async () => {
     if (!title.trim()) return;
     setLoading(true);
-    // [TODO] add error handling
-    await bridge.editPlaylist({ playlistId: currentModalData.playlistId, title: title.trim() });
-    dispatch.dialogModel.closeModal();
+    dispatch.appModel.showBlocker();
+    try {
+      await bridge.editPlaylist({ playlistId: currentModalData.playlistId, title: title.trim() });
+      dispatch.dialogModel.closeModal();
+    } catch (_error) {
+      // [TODO] add error handling
+    }
+    dispatch.appModel.hideBlocker();
   };
 
   const handleDelete = () => {
@@ -45,9 +50,14 @@ const PlaylistEdit = () => {
       yesCallback: async () => {
         dispatch.dialogModel.closeConfirm();
         setLoading(true);
-        // [TODO] add error handling
-        await bridge.deletePlaylist({ playlistId: currentModalData.playlistId });
-        dispatch.dialogModel.closeModal();
+        dispatch.appModel.showBlocker();
+        try {
+          await bridge.deletePlaylist({ playlistId: currentModalData.playlistId });
+          dispatch.dialogModel.closeModal();
+        } catch (_error) {
+          // [TODO] add error handling
+        }
+        dispatch.appModel.hideBlocker();
       },
     });
   };
