@@ -44,14 +44,10 @@
   position: sticky;
   top: 90px;
   z-index: 3;
-  padding: 0 20px 8px;
+  padding: 0 16px 8px;
   margin: 0 -5px 20px;
   background: var(--color-primary-bg);
   font-weight: bold;
-
-  :global(.cq-800) & {
-    padding: 0 25px 8px;
-  }
 
   > * {
     border-radius: 2px;
@@ -65,8 +61,8 @@
     display: block;
     position: absolute;
     bottom: 0;
-    left: 15px;
-    right: 15px;
+    left: 16px;
+    right: 16px;
     height: 1px;
     background: var(--color-opacity-015);
 
@@ -80,24 +76,16 @@
 }
 
 .entry {
-  padding: 6px 14px;
+  padding: 5px 11px;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 8px;
 
   @include mixins.focus-self-outline;
 
-  :global(.cq-800) & {
-    padding: 6px 19px;
-  }
-
   .wrap.wrapNoArtwork &,
   .wrap.wrapAlbumTracks & {
-    padding: 10px 14px;
-
-    :global(.cq-800) & {
-      padding: 10px 19px;
-    }
+    padding: 10px 11px;
   }
 
   .scrollableOuter:not(.scrollableDragging) & {
@@ -129,14 +117,10 @@
 //
 
 .groupRow {
-  padding: 60px 15px 18px;
+  padding: 60px 11px 18px;
   font-size: 16px;
   line-height: 16px;
   font-weight: bold;
-
-  :global(.cq-800) & {
-    padding: 60px 20px 18px;
-  }
 
   .header + &,
   .measure + & {
@@ -151,14 +135,10 @@
 .discRow {
   display: flex;
   align-items: center;
-  padding: 40px 15px 11px;
+  padding: 40px 12px 11px;
   opacity: var(--opacity-05);
   font-size: 12px;
   font-weight: bold;
-
-  :global(.cq-800) & {
-    padding: 40px 20px 11px;
-  }
 
   .header + &,
   .measure + & {
@@ -170,11 +150,7 @@
   width: 18px;
   height: 14px;
   padding: 0 2px;
-  margin-right: 24px;
-
-  :global(.cq-800) & {
-    margin-right: 26px;
-  }
+  margin-right: 26px;
 }
 
 //
@@ -251,8 +227,8 @@
 
 .thumb {
   overflow: hidden;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   background: var(--color-opacity-01);
   background-image: vars.$thumbnail;
   background-size: contain;
