@@ -227,12 +227,24 @@ const Component = () => {
             Mono
           </Button>
           <br />
+          <Button size="tiny" color="mono" loading>
+            Mono Loading
+          </Button>
+          <br />
           <Button size="tiny" color="secondary">
             Secondary
           </Button>
           <br />
+          <Button size="tiny" color="secondary" loading>
+            Secondary Loading
+          </Button>
+          <br />
           <Button size="tiny" color="tertiary">
             Tertiary
+          </Button>
+          <br />
+          <Button size="tiny" color="tertiary" loading>
+            Tertiary Loading
           </Button>
           <br />
           <Button size="tiny" color="outlineSecondary">

@@ -48,7 +48,6 @@ const PlaylistEdit = () => {
       yesButton: 'Delete',
       noButton: 'Cancel',
       yesCallback: async () => {
-        dispatch.dialogModel.closeConfirm();
         setLoading(true);
         dispatch.appModel.showBlocker();
         try {
