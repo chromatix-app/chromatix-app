@@ -1234,6 +1234,27 @@ export const movePlaylistItem = ({ playlistId, playlistItemId, afterPlaylistItem
 // window.bridge.movePlaylistItem({ playlistId: '168468', playlistItemId: '9872', afterPlaylistItemId: '9869' })
 
 // ======================================================================
+// GET SHARED MEDIA
+// ======================================================================
+
+export const getSharedMedia = () => {
+  if (!isStoreReady()) return;
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  return plexTools
+    .getSharedMedia({ accessToken, serverBaseUrl })
+    .then((response) => {
+      console.log(response);
+      return response;
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+};
+
+// window.bridge.getSharedMedia()
+
+// ======================================================================
 // GET ALL COLLECTIONS
 // ======================================================================
 
@@ -1760,6 +1781,7 @@ if (isLocal) {
     getAllLibraries,
     getAllPlaylists,
     getAllServers,
+    getSharedMedia,
     getAllTags,
     getAllUsers,
     getArtistDetails,

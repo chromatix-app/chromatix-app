@@ -90,6 +90,9 @@ const endpointConfig = {
     movePlaylistItem: (serverBaseUrl, playlistId, playlistItemId) =>
       `${serverBaseUrl}/playlists/${playlistId}/items/${playlistItemId}/move`,
   },
+  shared: {
+    getSharedMedia: (serverBaseUrl) => `${serverBaseUrl}/library/shared/all`,
+  },
   collection: {
     getAllCollections: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/collections`,
     getCollectionItems: (serverBaseUrl, collectionId) =>
@@ -1462,6 +1465,52 @@ export const movePlaylistItem = ({ accessToken, serverBaseUrl, playlistId, playl
       reject({
         code: 'plex.movePlaylistItem.2',
         message: 'Failed to move playlist item: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET SHARED MEDIA
+// ======================================================================
+
+export const getSharedMedia = ({ accessToken, serverBaseUrl }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.shared.getSharedMedia(serverBaseUrl);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            includeCollections: 1,
+            includeExternalMedia: 1,
+            includeAdvanced: 1,
+            includeMeta: 1,
+            type: '8,9,10,15', // artists, albums, tracks, playlists
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(response.data.MediaContainer.Metadata);
+        })
+        .catch((error) => {
+          reject({
+            code: 'plex.getSharedMedia.1',
+            message: 'Failed to get shared media: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'plex.getSharedMedia.2',
+        message: 'Failed to get shared media: ' + error?.message,
         error: error,
       });
     }
