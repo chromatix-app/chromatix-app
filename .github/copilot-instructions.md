@@ -200,7 +200,7 @@ Set via `import.meta.env` (Vite convention, prefixed `VITE_`):
   // ======================================================================
   ```
 - SVG components use the Vite-native `?react` import suffix: `import FooIcon from './foo.svg?react'`
-- New icons are added to `src/js/components/Icon/icons/general-original/` (or `site-original/` for service logos). Match the SVG format of existing icons in that folder. After adding, run `npm run svg:compress:new` — this produces the compressed version in `general-compressed/`. Always import from `general-compressed/`. Register the component in the `generalIcons` (or `siteIcons`) object in `Icon.jsx`, alphabetically.
+- New icons are added to `src/js/components/Icon/icons/general-original/` (or `site-original/` for service logos). Before compressing, ensure the SVG conforms to the project format: `fill="none"` on the root `<svg>`, no hardcoded `stroke` colour or inline `style` attributes on paths, `stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"` on every path. After fixing the source file, run `npm run svg:compress:new` — this produces the compressed version in `general-compressed/`. Always import from `general-compressed/`. Register the component in the `generalIcons` (or `siteIcons`) object in `Icon.jsx`, alphabetically.
 - Do **not** use Prettier as an ESLint plugin — run `npm run prettier` separately; `eslint-config-prettier` disables conflicting formatting rules
 
 ## Response Style

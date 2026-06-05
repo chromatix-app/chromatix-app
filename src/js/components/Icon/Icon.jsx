@@ -47,6 +47,7 @@ import CrownIcon from './icons/general-compressed/crown.svg?react';
 import DiscIcon from './icons/general-compressed/disc.svg?react';
 import DownloadIcon from './icons/general-compressed/download.svg?react';
 import EllipsisCircleIcon from './icons/general-compressed/ellipsis-circle.svg?react';
+import EllipsisIcon from './icons/general-compressed/ellipsis.svg?react';
 // import ExpandIcon from './icons/general-compressed/expand.svg?react';
 import ExpandSplitIcon from './icons/general-compressed/expand-split.svg?react';
 import ExternalLinkIcon from './icons/general-compressed/external-link.svg?react';
@@ -163,6 +164,7 @@ export const generalIcons = {
   DiscIcon,
   DownloadIcon,
   EllipsisCircleIcon,
+  EllipsisIcon,
   // ExpandIcon,
   ExpandSplitIcon,
   ExternalLinkIcon,
