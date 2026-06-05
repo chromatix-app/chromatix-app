@@ -364,3 +364,46 @@
   pointer-events: none;
   translate: 0 -1px;
 }
+
+//
+// CONTEXT MENU BUTTON
+//
+
+.contextMenuCell {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.contextButton {
+  display: none;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  width: 18px;
+  height: 18px;
+  margin: -2px 0;
+  cursor: pointer;
+  color: var(--color-opacity-05);
+
+  .scrollableOuter:not(.scrollableDragging) .entry:hover &,
+  .scrollableOuter:not(.scrollableDragging) .entry[data-state='open'] &,
+  .entryDragging & {
+    display: flex;
+  }
+
+  &:hover {
+    color: var(--color-text);
+  }
+
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 34px;
+    height: 34px;
+    transform: translate(-50%, -50%);
+  }
+}

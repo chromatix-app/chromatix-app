@@ -22,7 +22,12 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
   let tableVariant;
   let tableOptions;
 
-  // HELPERS FOR SORTING WHEN CLICKING ON TABLE HEADERS
+  // [NOTE] the types of track listing variants are:
+  // albumTracks
+  // artistTracks
+  // playlistTracks
+
+  // HELPER FOR SORTING ITEMS (WHEN CLICKING ON TABLE HEADERS)
   const handleSortList = (event) => {
     const sortKey = event.currentTarget.dataset.sort;
     dispatch.sessionModel.setSortList({
@@ -31,6 +36,7 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
     });
   };
 
+  // HELPER FOR SORTING TRACKS (WHEN CLICKING ON TABLE HEADERS)
   const sortId =
     (variant === 'artistTracks' && artistId) ||
     (variant === 'albumTracks' && albumId) ||
@@ -45,6 +51,7 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
     });
   };
 
+  // DETERMINE WHICH SORT FUNCTION TO USE BASED ON VARIANT
   const handleSortFunction =
     variant === 'albumTracks' || variant === 'playlistTracks' ? handleSortTracks : handleSortList;
 
@@ -230,6 +237,12 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
         isDesc: sortKey === 'isFavourite' && orderKey === 'desc',
         visible: colOptions?.isFavourite !== false,
       },
+      {
+        colKey: 'contextMenu',
+        label: '',
+        colWidth: '30px',
+        visible: true,
+      },
     ];
   }
 
@@ -394,6 +407,12 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
         isAsc: sortKey === 'isFavourite' && orderKey === 'asc',
         isDesc: sortKey === 'isFavourite' && orderKey === 'desc',
         visible: colOptions?.isFavourite !== false,
+      },
+      {
+        colKey: 'contextMenu',
+        label: '',
+        colWidth: '30px',
+        visible: true,
       },
     ];
   }
@@ -609,6 +628,12 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
         isAsc: sortKey === 'isFavourite' && orderKey === 'asc',
         isDesc: sortKey === 'isFavourite' && orderKey === 'desc',
         visible: colOptions?.isFavourite !== false,
+      },
+      {
+        colKey: 'contextMenu',
+        label: '',
+        colWidth: '30px',
+        visible: true,
       },
     ];
   }

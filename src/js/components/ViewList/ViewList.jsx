@@ -977,9 +977,14 @@ const TrackRow = ({
     }
   };
 
+  // [NOTE] the types of track listing variants are:
+  // albumTracks
+  // artistTracks
+  // playlistTracks
+
   const hasContextAdd = playlistManagement;
   const hasContextRemove = playlistManagement && tableVariant === 'playlistTracks';
-  const hasContextArtist = !!entry.artistLink;
+  const hasContextArtist = !!entry.artistLink && tableVariant !== 'artistTracks';
   const hasContextAlbum = !!entry.albumLink && tableVariant !== 'albumTracks';
   const hasContextDivider = (hasContextAdd || hasContextRemove) && (hasContextArtist || hasContextAlbum);
 
@@ -1220,6 +1225,33 @@ const TrackRow = ({
                       editable
                       onlyShowOnHover
                     />
+                  </div>
+                );
+
+              case 'contextMenu':
+                return (
+                  <div key={rowKey + '-' + index} className={style.contextMenuCell}>
+                    {!!contextEntries.length && (
+                      <button
+                        className={style.contextButton}
+                        onDoubleClick={(e) => e.stopPropagation()}
+                        onPointerDown={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          e.currentTarget.dispatchEvent(
+                            new MouseEvent('contextmenu', {
+                              bubbles: true,
+                              cancelable: true,
+                              clientX: rect.left,
+                              clientY: rect.bottom,
+                            })
+                          );
+                        }}
+                      >
+                        <Icon icon="EllipsisIcon" cover />
+                      </button>
+                    )}
                   </div>
                 );
 
