@@ -16,7 +16,7 @@ const isPreview = import.meta.env.VITE_ENV === 'preview';
 const isProduction = import.meta.env.VITE_ENV === 'production';
 
 const sessionState = {
-  sessionId: crypto.randomUUID().replace(/-/g, ''),
+  sessionId: Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, '0')).join(''),
 
   savedAppVersion: '0.0.0',
 
