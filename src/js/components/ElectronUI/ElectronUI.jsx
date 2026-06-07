@@ -74,6 +74,22 @@ const ElectronMenu = ({ electronMenu }) => {
 const AllMenuItems = ({ filteredMenu, handleClick }) => {
   const allItems = [];
 
+  // Static version entry at the top
+  allItems.push(
+    <>
+      <RadixMenu.Label key="chromatix" className={style.sectionHeading}>
+        Chromatix
+      </RadixMenu.Label>
+      <RadixMenu.Label key="version" className={style.label}>
+        Version {envData.electronVersion}
+      </RadixMenu.Label>
+      <RadixMenu.Label key="version" className={style.label}>
+        Web App Version {envData.webVersion}
+      </RadixMenu.Label>
+      <RadixMenu.Separator key={`separator-0`} className={style.separator} />
+    </>
+  );
+
   filteredMenu.forEach((topItem, topIndex) => {
     // Top menu items
     allItems.push(
