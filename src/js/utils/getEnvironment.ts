@@ -1,4 +1,7 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+
+dayjs.extend(advancedFormat);
 
 import getBrowserName from './getBrowserName';
 import getElectronDetails from './getElectronDetails';
@@ -46,9 +49,9 @@ const getEnvironment = (): EnvironmentData => {
   const { isElectron } = electronDetails;
 
   const webBuildUnix = import.meta.env.VITE_DATE || null;
-  const webBuildMoment = webBuildUnix ? moment(parseInt(webBuildUnix, 10) * 1000) : null;
-  const webBuildDate = webBuildMoment ? webBuildMoment.format('dddd Do MMMM YYYY') : null;
-  const webBuildTime = webBuildMoment ? webBuildMoment.format('HH:mm:ss') : null;
+  const webBuildDayjs = webBuildUnix ? dayjs(parseInt(webBuildUnix, 10) * 1000) : null;
+  const webBuildDate = webBuildDayjs ? webBuildDayjs.format('dddd Do MMMM YYYY') : null;
+  const webBuildTime = webBuildDayjs ? webBuildDayjs.format('HH:mm:ss') : null;
 
   const envData: EnvironmentData = {
     appName: 'Chromatix',

@@ -1,5 +1,3 @@
-import moment from 'moment';
-
 /**
  * Converts a duration in milliseconds to a medium-length abbreviated format.
  * Rounds to appropriate precision (seconds when < 1h, minutes when < 1d, hours when >= 1d).
@@ -13,11 +11,11 @@ const durationToStringMed = (durationMillisecs: number): string => {
     return '';
   }
 
-  const duration = moment.duration(durationMillisecs, 'milliseconds');
-  const days = Math.floor(duration.asDays());
-  let hours = Math.floor(duration.asHours()) - days * 24;
-  let minutes = Math.floor(duration.asMinutes()) - (days * 24 * 60 + hours * 60);
-  let seconds = Math.floor(duration.asSeconds()) - (days * 24 * 60 * 60 + hours * 60 * 60 + minutes * 60);
+  const totalSeconds = Math.floor(durationMillisecs / 1000);
+  const days = Math.floor(totalSeconds / 86400);
+  let hours = Math.floor(totalSeconds / 3600) - days * 24;
+  let minutes = Math.floor(totalSeconds / 60) - (days * 24 * 60 + hours * 60);
+  let seconds = totalSeconds - (days * 86400 + hours * 3600 + minutes * 60);
 
   if (hours > 0) {
     // If there are any seconds, round to the closest minute

@@ -1,5 +1,3 @@
-import moment from 'moment';
-
 /**
  * Extracts the 4-digit release year from a date string.
  * Accepts ISO 8601 strings (e.g. "2001-01-01" or "2011-01-01T00:00:00.0000000Z").
@@ -12,13 +10,13 @@ const formatReleaseYear = (releaseDate: string | null | undefined): string | nul
     return null;
   }
 
-  const parsed = moment(releaseDate);
+  const year = new Date(releaseDate).getFullYear();
 
-  if (!parsed.isValid()) {
+  if (isNaN(year)) {
     return null;
   }
 
-  return parsed.format('YYYY');
+  return String(year);
 };
 
 export default formatReleaseYear;

@@ -1,11 +1,8 @@
 // Generated using GitHub Copilot
 
-import moment from 'moment';
-
 import formatRecentDate from './formatRecentDate';
 
-const now = moment();
-const nowInSeconds = now.unix();
+const nowInSeconds = Math.floor(Date.now() / 1000);
 
 describe('Testing "formatRecentDate" function', () => {
   test('Test simple duration results', () => {
