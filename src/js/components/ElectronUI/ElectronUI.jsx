@@ -52,82 +52,6 @@ const ElectronMenu = ({ electronMenu }) => {
     sendToElectron('any', buttonAction, null);
   };
 
-  const renderAllMenuItems = () => {
-    const allItems = [];
-
-    filteredMenu.forEach((topItem, topIndex) => {
-      // Top menu items
-      allItems.push(
-        <RadixMenu.Label key={`header-${topIndex}`} className={style.sectionHeading}>
-          {topItem.label ? topItem.label : topItem.role}
-        </RadixMenu.Label>
-      );
-
-      // Submenu items
-      if (topItem.submenu) {
-        topItem.submenu
-          .filter(
-            (subItem) =>
-              subItem?.type !== 'separator' &&
-              !ignoredNestedItems.includes(subItem.label) &&
-              !ignoredNestedItems.includes(subItem.role)
-          )
-          .forEach((subItem, subIndex) => {
-            const isLabel = subItem.label && !subItem.role && !subItem.type;
-            const isCheckbox = subItem.type === 'checkbox';
-
-            // Label items
-            if (isLabel) {
-              allItems.push(
-                <RadixMenu.Label key={`${topIndex}-${subIndex}`} className={style.label}>
-                  {subItem.label ? subItem.label : subItem.role}
-                </RadixMenu.Label>
-              );
-            }
-
-            // Checkbox items
-            else if (isCheckbox) {
-              allItems.push(
-                <RadixMenu.CheckboxItem
-                  key={`${topIndex}-${subIndex}`}
-                  className={style.checkboxItem}
-                  checked={subItem.checked}
-                  onCheckedChange={(event) => handleClick(event, subItem)}
-                >
-                  <div>{stringToLabel(subItem.label ? subItem.label : subItem.role)}</div>
-                  <RadixMenu.ItemIndicator>
-                    <span className={style.checkboxIcon}>
-                      <Icon icon="CheckSquareFilledIcon" cover />
-                    </span>
-                  </RadixMenu.ItemIndicator>
-                </RadixMenu.CheckboxItem>
-              );
-            }
-
-            // Button items
-            else {
-              allItems.push(
-                <RadixMenu.Item
-                  key={`${topIndex}-${subIndex}`}
-                  className={style.item}
-                  onSelect={(event) => handleClick(event, subItem)}
-                >
-                  {stringToLabel(subItem.label ? subItem.label : subItem.role)}
-                </RadixMenu.Item>
-              );
-            }
-          });
-      }
-
-      // Separator between sections (except for the last one)
-      if (topIndex < filteredMenu.length - 1) {
-        allItems.push(<RadixMenu.Separator key={`separator-${topIndex}`} className={style.separator} />);
-      }
-    });
-
-    return allItems;
-  };
-
   return (
     <div className={style.menu}>
       <RadixMenu.Root>
@@ -139,12 +63,88 @@ const ElectronMenu = ({ electronMenu }) => {
         </RadixMenu.Trigger>
         <RadixMenu.Portal>
           <RadixMenu.Content side="bottom" align="start" className={style.content}>
-            {renderAllMenuItems()}
+            <AllMenuItems filteredMenu={filteredMenu} handleClick={handleClick} />
           </RadixMenu.Content>
         </RadixMenu.Portal>
       </RadixMenu.Root>
     </div>
   );
+};
+
+const AllMenuItems = ({ filteredMenu, handleClick }) => {
+  const allItems = [];
+
+  filteredMenu.forEach((topItem, topIndex) => {
+    // Top menu items
+    allItems.push(
+      <RadixMenu.Label key={`header-${topIndex}`} className={style.sectionHeading}>
+        {topItem.label ? topItem.label : topItem.role}
+      </RadixMenu.Label>
+    );
+
+    // Submenu items
+    if (topItem.submenu) {
+      topItem.submenu
+        .filter(
+          (subItem) =>
+            subItem?.type !== 'separator' &&
+            !ignoredNestedItems.includes(subItem.label) &&
+            !ignoredNestedItems.includes(subItem.role)
+        )
+        .forEach((subItem, subIndex) => {
+          const isLabel = subItem.label && !subItem.role && !subItem.type;
+          const isCheckbox = subItem.type === 'checkbox';
+
+          // Label items
+          if (isLabel) {
+            allItems.push(
+              <RadixMenu.Label key={`${topIndex}-${subIndex}`} className={style.label}>
+                {subItem.label ? subItem.label : subItem.role}
+              </RadixMenu.Label>
+            );
+          }
+
+          // Checkbox items
+          else if (isCheckbox) {
+            allItems.push(
+              <RadixMenu.CheckboxItem
+                key={`${topIndex}-${subIndex}`}
+                className={style.checkboxItem}
+                checked={subItem.checked}
+                onCheckedChange={(event) => handleClick(event, subItem)}
+              >
+                <div>{stringToLabel(subItem.label ? subItem.label : subItem.role)}</div>
+                <RadixMenu.ItemIndicator>
+                  <span className={style.checkboxIcon}>
+                    <Icon icon="CheckSquareFilledIcon" cover />
+                  </span>
+                </RadixMenu.ItemIndicator>
+              </RadixMenu.CheckboxItem>
+            );
+          }
+
+          // Button items
+          else {
+            allItems.push(
+              <RadixMenu.Item
+                key={`${topIndex}-${subIndex}`}
+                className={style.item}
+                onSelect={(event) => handleClick(event, subItem)}
+              >
+                {stringToLabel(subItem.label ? subItem.label : subItem.role)}
+              </RadixMenu.Item>
+            );
+          }
+        });
+    }
+
+    // Separator between sections (except for the last one)
+    if (topIndex < filteredMenu.length - 1) {
+      allItems.push(<RadixMenu.Separator key={`separator-${topIndex}`} className={style.separator} />);
+    }
+  });
+
+  return allItems;
 };
 
 // HELPERS

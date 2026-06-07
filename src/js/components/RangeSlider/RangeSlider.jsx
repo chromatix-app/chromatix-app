@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 import clsx from 'clsx';
 
 import style from './RangeSlider.module.scss';
