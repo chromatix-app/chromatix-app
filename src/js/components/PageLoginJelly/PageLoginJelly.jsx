@@ -5,7 +5,7 @@
 import { NavLink } from 'react-router-dom';
 // import { useDispatch } from 'react-redux';
 import { Formik, Form, Field } from 'formik';
-import * as yup from 'yup';
+import { object, string } from 'yup';
 import clsx from 'clsx';
 
 import { Button } from 'js/components';
@@ -34,9 +34,8 @@ export const PageLoginJelly = () => {
     general: '',
   };
 
-  const validationSchema = yup.object({
-    server: yup
-      .string()
+  const validationSchema = object({
+    server: string()
       .url('Invalid URL')
       .test('is-https', 'Server address must use HTTPS', (value) => {
         if (!value) return false;
@@ -46,8 +45,8 @@ export const PageLoginJelly = () => {
         return true;
       })
       .required('Server address is required'),
-    username: yup.string().required('Username is required'),
-    password: yup.string().required('Password is required'),
+    username: string().required('Username is required'),
+    password: string().required('Password is required'),
   });
 
   const onSubmit = (values, { setFieldTouched, setFieldValue, setFieldError, setSubmitting }) => {

@@ -1,4 +1,4 @@
-import CryptoJS from 'crypto-js';
+import AES from 'crypto-js/aes';
 
 import config from 'js/_config/config';
 
@@ -12,7 +12,7 @@ const encryptionKey = config.encryptionKey;
 
 const setLocalStorage = (key: string, value: string | number | boolean | object): void => {
   const stringValue: string = typeof value === 'object' ? JSON.stringify(value) : String(value);
-  const encryptedValue: string = CryptoJS.AES.encrypt(stringValue, encryptionKey).toString();
+  const encryptedValue: string = AES.encrypt(stringValue, encryptionKey).toString();
   window.localStorage.setItem(key, encryptedValue);
 };
 

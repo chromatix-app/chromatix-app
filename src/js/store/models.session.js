@@ -2,7 +2,6 @@
 // IMPORTS
 // ======================================================================
 
-import CryptoJS from 'crypto-js';
 import sha3 from 'crypto-js/sha3';
 
 import config from 'js/_config/config';
@@ -17,7 +16,7 @@ const isPreview = import.meta.env.VITE_ENV === 'preview';
 const isProduction = import.meta.env.VITE_ENV === 'production';
 
 const sessionState = {
-  sessionId: CryptoJS.lib.WordArray.random(16).toString(),
+  sessionId: crypto.randomUUID().replace(/-/g, ''),
 
   savedAppVersion: '0.0.0',
 
