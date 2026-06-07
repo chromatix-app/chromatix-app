@@ -62,12 +62,12 @@ describe('Testing "formatRecentDate" function', () => {
     expect(formatRecentDate(nowInSeconds - 315569520)).toBe('10 years ago');
 
     expect(formatRecentDate(nowInSeconds - 3155695200)).toBe('100 years ago');
+  });
 
-    // expect(formatRecentDate(1734450079)).toBe('17 Dec 2024');
-    // expect(formatRecentDate(1733450079)).toBe('6 Dec 2024');
-    // expect(formatRecentDate(1723450079)).toBe('12 Aug 2024');
-    // expect(formatRecentDate(1623450079)).toBe('11 Jun 2021');
-
-    // expect(formatRecentDate(0)).toBe('1 Jan 1970');
+  test('Test invalid and falsy inputs', () => {
+    expect(formatRecentDate(0)).toBeNull();
+    expect(formatRecentDate(null as unknown as number)).toBeNull();
+    expect(formatRecentDate(undefined as unknown as number)).toBeNull();
+    expect(formatRecentDate(NaN)).toBeNull();
   });
 });

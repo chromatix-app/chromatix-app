@@ -7,12 +7,11 @@ import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import clsx from 'clsx';
-import moment from 'moment';
 
 import { ContextMenu, Favourite, Icon, StarRating } from 'js/components';
 import platformFeatures from 'js/_config/platformFeatures';
 import { useScrollToTrack, useScrollToVirtualTrack, useTableOptions, useWindowSize, usePlaylistDrag } from 'js/hooks';
-import { durationToStringMed, durationToStringShort, formatRecentDate } from 'js/utils';
+import { durationToStringMed, durationToStringShort, formatRecentDate, formatReleaseYear } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 import store from 'js/store/store';
 
@@ -863,7 +862,7 @@ const StandardRow = ({ virtualEntry, entry, tableVariant, tableOptions, gridTemp
             case 'releaseDate':
               return (
                 <div key={rowKey + '-' + index} className={clsx(style.releaseDate, 'text-trim')}>
-                  {entry.releaseDate ? moment(entry.releaseDate).format('YYYY') : null}
+                  {formatReleaseYear(entry.releaseDate)}
                 </div>
               );
 
@@ -1128,7 +1127,7 @@ const TrackRow = ({
               case 'releaseDate':
                 return (
                   <div key={rowKey + '-' + index} className={clsx(style.releaseDate, 'text-trim')}>
-                    {entry.releaseDate ? moment(entry.releaseDate).format('YYYY') : null}
+                    {formatReleaseYear(entry.releaseDate)}
                   </div>
                 );
 
