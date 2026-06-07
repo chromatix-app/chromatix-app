@@ -597,7 +597,7 @@ const SearchResults = ({ setSearchResultsVisible }) => {
   const searchResults = useSelector(({ appModel }) => appModel.searchResults);
 
   if (!searchResults) {
-    return <div className={style.searchLoading}>Loading...</div>;
+    return <div className={style.searchLoading}>Loading…</div>;
   }
 
   if (searchResults.length === 0) {

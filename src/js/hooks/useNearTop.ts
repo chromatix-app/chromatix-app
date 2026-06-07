@@ -22,7 +22,7 @@ const useNearTop = (ref: RefObject<HTMLElement>, offset: number): boolean => {
     const actualElement = scrollableElement || contentElement;
 
     if (actualElement) {
-      actualElement.addEventListener('scroll', checkIfNearTop);
+      actualElement.addEventListener('scroll', checkIfNearTop, { passive: true });
       checkIfNearTop();
 
       return () => {

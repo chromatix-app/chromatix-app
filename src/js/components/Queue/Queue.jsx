@@ -99,7 +99,7 @@ const Queue = () => {
       const handleScroll = () => {
         scrollPositionRef.current = currentOuterRef.scrollTop;
       };
-      currentOuterRef.addEventListener('scroll', handleScroll);
+      currentOuterRef.addEventListener('scroll', handleScroll, { passive: true });
       return () => {
         currentOuterRef.removeEventListener('scroll', handleScroll);
       };

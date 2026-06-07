@@ -26,14 +26,14 @@ const devPassword = import.meta.env.VITE_JELLY_PASSWORD || '';
 
 const envData = getEnvironment();
 
-export const PageLoginJelly = () => {
-  const initialValues = {
-    server: isLocal ? devServer : '',
-    username: isLocal ? devUsername : '',
-    password: isLocal ? devPassword : '',
-    general: '',
-  };
+const initialValues = {
+  server: isLocal ? devServer : '',
+  username: isLocal ? devUsername : '',
+  password: isLocal ? devPassword : '',
+  general: '',
+};
 
+export const PageLoginJelly = () => {
   const validationSchema = object({
     server: string()
       .url('Invalid URL')

@@ -26,7 +26,7 @@ const ReleaseNotes = () => {
 
   const handleNext = () => {
     if (currentIndex < whatsNew.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+      setCurrentIndex((prev) => prev + 1);
     } else {
       dispatch.dialogModel.closeModal();
     }

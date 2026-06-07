@@ -35,8 +35,8 @@
     "test:all": "vitest run --silent",
     "test:all:verbose": "vitest run",
     "doctor": "npx react-doctor@latest",
-    "doctor:json": "npx react-doctor@latest --json",
-    "doctor:verbose": "npx react-doctor@latest --verbose",
+    "doctor:json": "npx react-doctor@latest --yes --json",
+    "doctor:verbose": "npx react-doctor@latest --yes --verbose",
     "prepare": "husky"
   },
   "lint-staged": {
