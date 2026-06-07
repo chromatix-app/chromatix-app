@@ -2,7 +2,9 @@
 @use '../../../css/_config/_vars';
 
 .content {
+  overflow-y: auto;
   z-index: 99;
+  max-height: 90svh;
   padding: 4px;
   background: var(--color-secondary-bg);
   border: 1px solid var(--color-secondary-border);
