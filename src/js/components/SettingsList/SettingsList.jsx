@@ -83,11 +83,11 @@ const SettingsList = ({ title, description, menuItems }) => {
             return (
               <div key={index} className={style.listEntry}>
                 <div>
-                  <label htmlFor="setting-scrollbar-width" className={clsx(style.label, disabled && style.disabled)}>
-                    Scrollbar width
+                  <label htmlFor={`setting-${key}`} className={clsx(style.label, disabled && style.disabled)}>
+                    {label}
                   </label>
                   <div className={style.range}>
-                    <RangeSlider id="setting-scrollbar-width" value={state} isDisabled={disabled} {...props} />
+                    <RangeSlider id={`setting-${key}`} value={state} isDisabled={disabled} {...props} />
                   </div>
                 </div>
               </div>

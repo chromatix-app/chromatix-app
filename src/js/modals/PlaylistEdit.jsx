@@ -36,8 +36,10 @@ const PlaylistEdit = () => {
       dispatch.dialogModel.closeModal();
     } catch (_error) {
       // [TODO] add error handling
+    } finally {
+      setLoading(false);
+      dispatch.appModel.hideBlocker();
     }
-    dispatch.appModel.hideBlocker();
   };
 
   const handleDelete = () => {
@@ -55,8 +57,10 @@ const PlaylistEdit = () => {
           dispatch.dialogModel.closeModal();
         } catch (_error) {
           // [TODO] add error handling
+        } finally {
+          setLoading(false);
+          dispatch.appModel.hideBlocker();
         }
-        dispatch.appModel.hideBlocker();
       },
     });
   };

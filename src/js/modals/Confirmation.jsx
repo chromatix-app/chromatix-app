@@ -26,8 +26,11 @@ const Confirmation = () => {
   const doYes = async () => {
     if (yesCallback) {
       setYesLoading(true);
-      await Promise.resolve(yesCallback(callbackData));
-      setYesLoading(false);
+      try {
+        await Promise.resolve(yesCallback(callbackData));
+      } finally {
+        setYesLoading(false);
+      }
     }
     dispatch.dialogModel.closeConfirm();
   };
@@ -35,8 +38,11 @@ const Confirmation = () => {
   const doNo = async () => {
     if (noCallback) {
       setNoLoading(true);
-      await Promise.resolve(noCallback(callbackData));
-      setNoLoading(false);
+      try {
+        await Promise.resolve(noCallback(callbackData));
+      } finally {
+        setNoLoading(false);
+      }
     }
     dispatch.dialogModel.closeConfirm();
   };

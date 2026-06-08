@@ -385,7 +385,14 @@ const AppMain = () => {
   }, [contentWidth]);
 
   return (
-    <div className="wrap" onContextMenu={(e) => e.preventDefault()}>
+    <div
+      className="wrap"
+      onContextMenu={(e) => {
+        if (!e.target.closest('input, textarea, select')) {
+          e.preventDefault();
+        }
+      }}
+    >
       {envData.isElectron && <ElectronUI />}
 
       {fullPageMode && <FullPagePlayer />}

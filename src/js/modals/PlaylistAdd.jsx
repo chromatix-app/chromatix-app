@@ -28,8 +28,10 @@ const PlaylistAdd = () => {
       dispatch.dialogModel.closeModal();
     } catch (_error) {
       // [TODO] add error handling
+    } finally {
+      setLoading(false);
+      dispatch.appModel.hideBlocker();
     }
-    dispatch.appModel.hideBlocker();
   };
 
   return (
