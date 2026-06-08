@@ -64,7 +64,7 @@ export const ReleaseBanner = () => {
   if (showBanner) {
     return (
       <div className={style.wrap}>
-        <button className={style.banner} onClick={handleOpen}>
+        <button type="button" className={style.banner} onClick={handleOpen}>
           <div className={style.title}>What&rsquo;s new</div>
           <div className={style.body}>{whatsNew[0]?.bannerTitle}</div>
           <div className={style.cta}>
@@ -74,7 +74,7 @@ export const ReleaseBanner = () => {
             </span>
           </div>
         </button>
-        <button className={style.close} onClick={handleClose}>
+        <button type="button" className={style.close} onClick={handleClose}>
           Close
         </button>
       </div>

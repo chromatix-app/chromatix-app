@@ -15,7 +15,7 @@ import style from './FilterButton.module.scss';
 export const FilterButton = ({ variant, label, onClick, icon = 'ArrowsVerticalIcon' }) => {
   return (
     <div className={clsx(style.wrap, style['wrap' + variant])}>
-      <button className={style.trigger} onClick={onClick} aria-label={label}>
+      <button type="button" className={style.trigger} onClick={onClick} aria-label={label}>
         <span className={style.icon}>
           <Icon icon={icon} cover stroke />
         </span>

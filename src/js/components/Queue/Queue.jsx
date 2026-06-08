@@ -403,7 +403,7 @@ const NowPlayingLarge = ({ entry, virtualEntry }) => {
             tabIndex={-1}
           ></NavLink>
         )}
-        <button className={style.expandedCollapse} onClick={collapseArtwork}>
+        <button type="button" className={style.expandedCollapse} onClick={collapseArtwork}>
           <span>
             <span>
               <Icon icon="CollapseIcon" cover stroke strokeWidth={1.5} />
@@ -584,7 +584,7 @@ const NowPlayingSmall = ({ entry, virtualEntry }) => {
         }),
       }}
     >
-      <button className={style.label} onClick={expandArtwork}>
+      <button type="button" className={style.label} onClick={expandArtwork}>
         Now playing
         <span className={style.expandIcon}>
           <Icon icon="ExpandSplitIcon" cover stroke strokeWidth={1.4} />

@@ -84,10 +84,10 @@ const SideBar = () => {
   return (
     <>
       <div className={style.nav}>
-        <button className={style.prev} disabled={!canGoBack} onClick={goBack}>
+        <button type="button" className={style.prev} disabled={!canGoBack} onClick={goBack}>
           <Icon icon="PreviousIcon" cover stroke />
         </button>
-        <button className={style.next} disabled={!canGoForward} onClick={goForward}>
+        <button type="button" className={style.next} disabled={!canGoForward} onClick={goForward}>
           <Icon icon="NextIcon" cover stroke />
         </button>
       </div>
@@ -105,6 +105,7 @@ const SideBar = () => {
         {(libraryIsVisible || (browseIsVisible && !menuShowSeparateBrowseSection)) && (
           <>
             <button
+              type="button"
               className={style.label}
               onClick={() => {
                 dispatch.sessionModel.setSessionState({ menuOpenLibrary: !menuOpenLibrary });
@@ -191,6 +192,7 @@ const SideBar = () => {
           <>
             {menuShowSeparateBrowseSection && (
               <button
+                type="button"
                 className={style.label}
                 onClick={() => {
                   dispatch.sessionModel.setSessionState({ menuOpenBrowse: !menuOpenBrowse });
@@ -361,6 +363,7 @@ const SideBar = () => {
         {playlistsIsVisible && (
           <>
             <button
+              type="button"
               className={style.label}
               onClick={() => {
                 dispatch.sessionModel.setSessionState({ menuOpenPlaylists: !menuOpenPlaylists });
@@ -379,6 +382,7 @@ const SideBar = () => {
               <>
                 {menuShowAddPlaylist && platformOpts.playlistManagement && (
                   <button
+                    type="button"
                     className={style.link}
                     draggable="false"
                     onClick={() => dispatch.dialogModel.showModal('PlaylistAdd')}
@@ -521,6 +525,7 @@ const SearchField = () => {
             </div>
             {searchValue && (
               <button
+                type="button"
                 ref={clearButtonRef}
                 className={style.crossIcon}
                 // onFocus={() => {

@@ -84,7 +84,9 @@ const ToastNotification = () => {
       {/* Test button for adding notifications */}
       {devMode && (
         <div className={style.dev}>
-          <button onClick={addTestNotification}>Show Notification</button>
+          <button type="button" onClick={addTestNotification}>
+            Show Notification
+          </button>
         </div>
       )}
     </>

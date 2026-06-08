@@ -1232,6 +1232,7 @@ const TrackRow = ({
                   <div key={rowKey + '-' + index} className={style.contextMenuCell}>
                     {!!contextEntries.length && (
                       <button
+                        type="button"
                         className={style.contextButton}
                         onDoubleClick={(e) => e.stopPropagation()}
                         onPointerDown={(e) => e.stopPropagation()}

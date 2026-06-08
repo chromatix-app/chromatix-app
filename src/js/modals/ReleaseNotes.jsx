@@ -75,7 +75,7 @@ const ReleaseNotes = () => {
         </picture>
       </div>
 
-      <button className={style.closeButton} onClick={() => dispatch.dialogModel.closeModal()}>
+      <button type="button" className={style.closeButton} onClick={() => dispatch.dialogModel.closeModal()}>
         <span className="u-hidden">Close</span>
       </button>
     </ModalWindow>
