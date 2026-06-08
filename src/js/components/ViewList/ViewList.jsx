@@ -1229,7 +1229,7 @@ const TrackRow = ({
 
               case 'contextMenu':
                 return (
-                  <div key={rowKey + '-' + index} className={style.contextMenuCell}>
+                  <div key={rowKey + '-' + index} className={style.contextMenu}>
                     {!!contextEntries.length && (
                       <button
                         type="button"

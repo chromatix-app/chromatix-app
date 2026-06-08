@@ -328,7 +328,8 @@
 .duration,
 .userRating,
 .isFavourite {
-  &:last-child {
+  &:last-child,
+  &:has(+ .contextMenu:last-child) {
     text-align: right;
   }
 }
