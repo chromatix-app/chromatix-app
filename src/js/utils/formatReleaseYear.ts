@@ -10,8 +10,15 @@ const formatReleaseYear = (releaseDate: string | null | undefined): string | nul
     return null;
   }
 
-  const year = new Date(releaseDate).getFullYear();
+  // Extract the leading YYYY directly — avoids timezone issues with date-only strings
+  // (new Date("2001-01-01") is UTC midnight, but getFullYear() uses local time)
+  const match = releaseDate.match(/^(\d{4})/);
+  if (match) {
+    return match[1];
+  }
 
+  // Fallback for non-ISO formats
+  const year = new Date(releaseDate).getFullYear();
   if (isNaN(year)) {
     return null;
   }

@@ -25,4 +25,10 @@ describe('Testing "formatReleaseYear" function', () => {
     expect(formatReleaseYear('not-a-date')).toBeNull();
     expect(formatReleaseYear('abcd-ef-gh')).toBeNull();
   });
+
+  test('Is timezone-safe for date-only strings', () => {
+    // "2001-01-01" parses as UTC midnight; getFullYear() would return 2000 in UTC-1 or earlier
+    expect(formatReleaseYear('2001-01-01')).toBe('2001');
+    expect(formatReleaseYear('1969-12-31')).toBe('1969');
+  });
 });
