@@ -12,6 +12,7 @@ import style from './RangeSlider.module.scss';
 // ======================================================================
 
 export const RangeSlider = ({
+  id,
   min = 0,
   max = 100,
   step = 1,
@@ -41,6 +42,7 @@ export const RangeSlider = ({
         {!isDisabled && (
           <input
             type="range"
+            id={id}
             min={min}
             max={max}
             step={step}
