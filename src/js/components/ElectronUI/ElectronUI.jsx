@@ -48,7 +48,8 @@ const ElectronMenu = ({ electronMenu }) => {
     // if (event.preventDefault) {
     //   event.preventDefault();
     // }
-    const buttonAction = stringToButtonAction(item.label ? item.label : item.role);
+    const buttonAction = stringToButtonAction(item.webAction ?? item.label ?? item.role);
+    // console.log('SEND:', buttonAction);
     sendToElectron('any', buttonAction, null);
   };
 
@@ -76,18 +77,16 @@ const AllMenuItems = ({ filteredMenu, handleClick }) => {
 
   // Static version entry at the top
   allItems.push(
-    <>
-      <RadixMenu.Label key="chromatix" className={style.sectionHeading}>
-        Chromatix
-      </RadixMenu.Label>
-      <RadixMenu.Label key="version" className={style.label}>
-        Version {envData.electronVersion}
-      </RadixMenu.Label>
-      <RadixMenu.Label key="version" className={style.label}>
-        Web App Version {envData.webVersion}
-      </RadixMenu.Label>
-      <RadixMenu.Separator key={`separator-0`} className={style.separator} />
-    </>
+    <RadixMenu.Label key="chromatix" className={style.sectionHeading}>
+      Chromatix
+    </RadixMenu.Label>,
+    <RadixMenu.Label key="version1" className={style.label}>
+      Version {envData.electronVersion}
+    </RadixMenu.Label>,
+    <RadixMenu.Label key="version2" className={style.label}>
+      Web App Version {envData.webVersion}
+    </RadixMenu.Label>,
+    <RadixMenu.Separator key="separator-static" className={style.separator} />
   );
 
   filteredMenu.forEach((topItem, topIndex) => {
@@ -108,7 +107,7 @@ const AllMenuItems = ({ filteredMenu, handleClick }) => {
             !ignoredNestedItems.includes(subItem.role)
         )
         .forEach((subItem, subIndex) => {
-          const isLabel = subItem.label && !subItem.role && !subItem.type;
+          const isLabel = subItem.label && !subItem.role && !subItem.type && !subItem.webAction;
           const isCheckbox = subItem.type === 'checkbox';
 
           // Label items
