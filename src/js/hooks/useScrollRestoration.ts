@@ -68,6 +68,7 @@ const useScrollRestoration = (): null => {
     previousPathname.current = location.pathname;
   }, []);
 
+  // react-doctor-disable-next-line react-doctor/effect-needs-cleanup
   useEffect(() => {
     const pageAccessedByReload =
       window.performance?.navigation?.type === 1 ||

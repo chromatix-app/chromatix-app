@@ -52,6 +52,7 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
   };
 
   // DETERMINE WHICH SORT FUNCTION TO USE BASED ON VARIANT
+  // [NOTE] artistTracks doesn't use the handleSortTracks function, and I can't remember why, but it seems to work.
   const handleSortFunction =
     variant === 'albumTracks' || variant === 'playlistTracks' ? handleSortTracks : handleSortList;
 

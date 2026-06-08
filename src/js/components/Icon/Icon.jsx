@@ -123,6 +123,7 @@ import WindowsSiteIcon from './icons/site-compressed/windows.svg?react';
 // COMPONENT
 // ======================================================================
 
+// react-doctor-disable-next-line react-doctor/only-export-components
 export const generalIcons = {
   AccessibilityIcon,
   AlbumCollectionsIcon,
@@ -227,6 +228,7 @@ export const generalIcons = {
   WarningTriangleIcon,
 };
 
+// react-doctor-disable-next-line react-doctor/only-export-components
 export const siteIcons = {
   AppleSiteIcon,
   FeaturebaseSiteIcon,
