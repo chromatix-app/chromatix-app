@@ -18,10 +18,6 @@ import style from './SettingsDownloads.module.scss';
 export const SettingsDownloads = () => {
   const downloadLinks = useGetDownloadLinks();
 
-  const logDownload = (label) => {
-    analyticsEvent(`Download / Settings / ${label}`);
-  };
-
   return (
     <>
       <div className={clsx('settingsGroup', style.group)}>
@@ -62,6 +58,14 @@ export const SettingsDownloads = () => {
       </div>
     </>
   );
+};
+
+// ======================================================================
+// HELPERS
+// ======================================================================
+
+const logDownload = (label) => {
+  analyticsEvent(`Download / Settings / ${label}`);
 };
 
 // ======================================================================
