@@ -53,47 +53,59 @@ const useElectronStatus = (): void => {
 
   // Listen for incoming messages from Electron
   useEffect(() => {
+    const messageHandler = (_event: any, message: string) => {
+      if (isWindowsApp) {
+        console.log('%c--- from electron - ' + message + ' ---', 'font-weight:bold;');
+        try {
+          switch (message) {
+            case 'action-media-play':
+              !isDisabledRef.current && dispatch.playerModel.playerResume();
+              break;
+            case 'action-media-pause':
+              !isDisabledRef.current && dispatch.playerModel.playerPause();
+              break;
+            case 'action-media-previous':
+              !isDisabledRef.current && dispatch.playerModel.playerPrev();
+              break;
+            case 'action-media-next':
+              !isDisabledRef.current && dispatch.playerModel.playerNext();
+              break;
+            default:
+              break;
+          }
+        } catch (error) {
+          // Handle error
+          console.error(error);
+        }
+      } else {
+        console.log('%c--- from electron (ignored) - ' + message + ' ---', 'font-weight:bold;');
+      }
+    };
+
+    const updateMenuHandler = (_event: any, message: any) => {
+      if (isLinuxApp || isWindowsApp) {
+        dispatch.appModel.setAppState({ electronMenu: JSON.parse(message) });
+      }
+    };
+
     try {
       if (!inited.current && window.ipcRenderer) {
-        window.ipcRenderer.on('message', function (_event: any, message: string) {
-          if (isWindowsApp) {
-            console.log('%c--- from electron - ' + message + ' ---', 'font-weight:bold;');
-            try {
-              switch (message) {
-                case 'action-media-play':
-                  !isDisabledRef.current && dispatch.playerModel.playerResume();
-                  break;
-                case 'action-media-pause':
-                  !isDisabledRef.current && dispatch.playerModel.playerPause();
-                  break;
-                case 'action-media-previous':
-                  !isDisabledRef.current && dispatch.playerModel.playerPrev();
-                  break;
-                case 'action-media-next':
-                  !isDisabledRef.current && dispatch.playerModel.playerNext();
-                  break;
-                default:
-                  break;
-              }
-            } catch (error) {
-              // Handle error
-              console.error(error);
-            }
-          } else {
-            console.log('%c--- from electron (ignored) - ' + message + ' ---', 'font-weight:bold;');
-          }
-        });
-        window.ipcRenderer.on('updateMenu', function (_event: any, message: any) {
-          if (isLinuxApp || isWindowsApp) {
-            dispatch.appModel.setAppState({ electronMenu: JSON.parse(message) });
-          }
-        });
+        window.ipcRenderer.on('message', messageHandler);
+        window.ipcRenderer.on('updateMenu', updateMenuHandler);
         inited.current = true;
       }
     } catch (error) {
       // Handle error
       console.error(error);
     }
+
+    return () => {
+      if (window.ipcRenderer) {
+        window.ipcRenderer.removeListener('message', messageHandler);
+        window.ipcRenderer.removeListener('updateMenu', updateMenuHandler);
+      }
+      inited.current = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };

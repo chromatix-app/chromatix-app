@@ -44,15 +44,6 @@ const ElectronMenu = ({ electronMenu }) => {
     (item) => !ignoredTopItems.includes(item.label) && !ignoredTopItems.includes(item.role)
   );
 
-  const handleClick = (_event, item) => {
-    // if (event.preventDefault) {
-    //   event.preventDefault();
-    // }
-    const buttonAction = stringToButtonAction(item.webAction ?? item.label ?? item.role);
-    // console.log('SEND:', buttonAction);
-    sendToElectron('any', buttonAction, null);
-  };
-
   return (
     <div className={style.menu}>
       <RadixMenu.Root>
@@ -162,7 +153,18 @@ const AllMenuItems = ({ filteredMenu, handleClick }) => {
   return allItems;
 };
 
+// ======================================================================
 // HELPERS
+// ======================================================================
+
+const handleClick = (_event, item) => {
+  // if (event.preventDefault) {
+  //   event.preventDefault();
+  // }
+  const buttonAction = stringToButtonAction(item.webAction ?? item.label ?? item.role);
+  // console.log('SEND:', buttonAction);
+  sendToElectron('any', buttonAction, null);
+};
 
 const manuallyReplaceLabels = {
   togglefullscreen: 'Toggle Full Screen',

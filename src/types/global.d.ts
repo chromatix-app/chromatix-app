@@ -9,6 +9,7 @@ declare global {
     ipcRenderer?: {
       send: (key: string, data: any) => void;
       on: (channel: string, callback: (event: any, ...args: any[]) => void) => void;
+      removeListener: (channel: string, callback: (event: any, ...args: any[]) => void) => void;
     };
     // umami: {
     //   track: (event: string, props: object) => void;
