@@ -1,0 +1,15 @@
+{
+  "$schema": "https://react.doctor/schema/config.json",
+  "respectInlineDisables": true,
+  "ignore": {
+    "rules": [
+      "deslop/circular-dependency",
+      "deslop/unused-export",
+      "react-doctor/anchor-ambiguous-text",
+      "react-doctor/no-autofocus",
+      "react-doctor/no-fetch-in-effect",
+      "react-doctor/no-giant-component",
+      "react-doctor/no-many-boolean-props"
+    ]
+  }
+}

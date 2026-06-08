@@ -34,9 +34,10 @@
     "test:verbose": "vitest",
     "test:all": "vitest run --silent",
     "test:all:verbose": "vitest run",
-    "doctor": "npx react-doctor@latest",
-    "doctor:json": "npx react-doctor@latest --yes --json",
-    "doctor:verbose": "npx react-doctor@latest --yes --verbose",
+    "doctor": "react-doctor",
+    "doctor:all": "react-doctor --yes",
+    "doctor:json": "react-doctor --yes --json",
+    "doctor:verbose": "react-doctor --yes --verbose",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -105,6 +106,7 @@
     "postcss-scss": "^4.0.9",
     "postcss-sorting": "^10.0.0",
     "prettier": "^3.8.3",
+    "react-doctor": "^0.2.16",
     "release-it": "^20.2.0",
     "sharp": "^0.34.5",
     "svgo": "^4.0.1",
