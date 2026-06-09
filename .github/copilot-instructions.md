@@ -139,7 +139,7 @@ The codebase is partially migrated to TypeScript. New utilities and hooks should
 
 ## Testing
 
-Tests are colocated with the file they cover using the `.test.ts` suffix (e.g. `sortList.ts` / `sortList.test.ts`). All utility functions should have thorough tests. Follow the existing naming convention:
+Tests are colocated with the file they cover using the `.test.ts` suffix (e.g. `sortList.ts` / `sortList.test.ts`). This applies to all modules — utilities, services, hooks, etc. All utility functions should have thorough tests. Follow the existing naming convention:
 
 ```ts
 // Generated using GitHub Copilot
@@ -150,6 +150,8 @@ describe('Testing "functionName" function', () => {
   test('Test description', () => { ... });
 });
 ```
+
+Shared test fixtures live in `__fixtures__/` folders colocated with the tests that use them (e.g. `js/utils/__fixtures__/`).
 
 Vitest manual mocks for browser APIs unavailable in jsdom (e.g. `HTMLAudioElement`) live in `__mocks__/` at the root. The setup file is `vitest.setup.ts` at the project root.
 
@@ -162,6 +164,7 @@ Tests use **Vitest** with `globals: true` — no need to import `describe`, `tes
 
 - `npm start` / `npm run dev` — Start dev server (port 4000)
 - `npm run build` — Production build (output to `build/`)
+- `npm run build:analyze` — Production build with bundle visualiser
 - `npm run lint` — Run ESLint
 - `npm run lint:fix` — Run ESLint with auto-fix
 - `npm run prettier` — Check formatting
@@ -170,9 +173,11 @@ Tests use **Vitest** with `globals: true` — no need to import `describe`, `tes
 - `npm run knip` — Dead code detection
 - `npm run check` — Run knip, lint, prettier, and typecheck in sequence
 - `npm run test` / `npm run test:all` — Run tests (watch / once)
+- `npm run test:verbose` / `npm run test:all:verbose` — Same, with full output
 - `npm run images:convert:new` — Convert new images to WebP
 - `npm run images:tinify:new` — Compress new images via Tinify
 - `npm run svg:compress:new` — Compress new SVGs
+- `npm run css:sort` — Sort CSS/SCSS property order via PostCSS
 
 ## Environment Variables
 
