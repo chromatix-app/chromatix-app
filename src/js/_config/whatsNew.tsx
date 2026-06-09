@@ -19,7 +19,7 @@ export const whatsNew: WhatsNewEntry[] = [
     date: 'June 2026',
     body: (
       <>
-        <p>You can now create, edit, and delete playlists directly within Chromatix.</p>
+        <p>Plex users can now create, edit, and delete playlists directly within Chromatix.</p>
         <p>
           Tracks can be added and removed from any playlist, and you can drag and drop playlist tracks to reorder them
           however you like.
@@ -36,9 +36,7 @@ export const whatsNew: WhatsNewEntry[] = [
     date: 'June 2026',
     body: (
       <>
-        <p>
-          Chromatix is now available as a native desktop app for Linux, joining the existing macOS and Windows apps.
-        </p>
+        <p>Chromatix is now available as a desktop app for Linux, joining the existing macOS and Windows apps.</p>
         <p>
           Head to the <NavLink to="/settings/downloads">downloads</NavLink> page to grab the latest build for your
           platform.

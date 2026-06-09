@@ -1,3 +1,19 @@
+# 0.62.0 (2026-06-09)
+
+Features:
+
+- Playlist management — create, edit, and delete playlists directly within Chromatix.
+- Tracks can be added and removed from any playlist via the new context menu.
+- Drag and drop playlist tracks to reorder them.
+- Chromatix is now available as a native desktop app for Linux.
+- Improvements to the app menu on Windows and Linux.
+
+Code changes:
+
+- Removed `fast-xml-parser` and replaced `moment` with `dayjs` for a smaller bundle size.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.61.0 (2026-05-20)
 
 Features:
