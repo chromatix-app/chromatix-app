@@ -318,6 +318,9 @@ const sessionState = {
 };
 
 const playingState = {
+  // Increment to bust the playing state cache in the event of breaking changes to the playing state structure
+  playingVersion: 1,
+
   playingVariant: null,
   playingServerId: null,
   playingLibraryId: null,
@@ -547,6 +550,11 @@ const effects = (dispatch) => ({
           if (localStorageState.sessionModel) {
             delete localStorageState.sessionModel;
           }
+        }
+
+        // [NOTE] bust the playing state cache if the version is outdated
+        if (!localStorageState.playingVersion || localStorageState.playingVersion < playingState.playingVersion) {
+          Object.assign(localStorageState, playingState);
         }
 
         // [NOTE] migrate renamed theme keys
