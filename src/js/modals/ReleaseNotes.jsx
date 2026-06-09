@@ -43,7 +43,9 @@ const ReleaseNotes = () => {
           </Dialog.Title>
 
           <Dialog.Description asChild>
-            <div className={style.body} dangerouslySetInnerHTML={{ __html: currentSlide.body }}></div>
+            <div className={style.body} onClick={(e) => e.target.closest('a') && dispatch.dialogModel.closeModal()}>
+              {currentSlide.body}
+            </div>
           </Dialog.Description>
         </div>
 

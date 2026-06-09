@@ -152,6 +152,17 @@
       font-size: 14px;
       line-height: 19px;
     }
+
+    a {
+      color: var(--color-text);
+      text-decoration: underline;
+
+      @media (hover: hover) {
+        &:hover {
+          color: var(--color-core);
+        }
+      }
+    }
   }
 }
 

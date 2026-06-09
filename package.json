@@ -16,6 +16,8 @@
     "release:staging": "npm run release:stage",
     "release:prod": "release-it --config .release-production.json",
     "release:production": "npm run release:prod",
+    "images:new": "npm run images:convert:new && npm run images:tinify:new",
+    "images:all": "npm run images:convert:all && npm run images:tinify:all",
     "images:convert:new": "node lib/image-to-webp.mjs --skip-existing",
     "images:convert:all": "node lib/image-to-webp.mjs",
     "images:tinify:new": "node lib/image-tinify.mjs --skip-existing",
