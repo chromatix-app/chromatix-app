@@ -16,7 +16,7 @@ const maxDataLength = 5;
 // ======================================================================
 
 const appState = {
-  timeStamp: Date.now().toString().slice(0, -3), // seconds only
+  timeStamp: parseInt(Date.now().toString().slice(0, -3), 10), // seconds only
 
   inited: false,
   isOnline: true,
@@ -34,6 +34,8 @@ const appState = {
   errorServers: false,
   errorSwitchUser: false,
   errorUser: false,
+
+  blockerVisible: false,
 
   scrollToPlaying: false,
   scrollToTrack: false,
@@ -99,6 +101,7 @@ const libraryState = {
   // playlists
   allPlaylists: null,
   allPlaylistTracks: {},
+  allPlaylistEdits: {},
   // collections
   allArtistCollections: null,
   allArtistCollectionItems: {},
@@ -141,6 +144,16 @@ const reducers = {
     return { ...rootState, ...payload };
   },
 
+  showBlocker(rootState) {
+    // console.log('%c--- showBlocker ---', 'color:#07a098');
+    return { ...rootState, blockerVisible: true };
+  },
+
+  hideBlocker(rootState) {
+    // console.log('%c--- hideBlocker ---', 'color:#07a098');
+    return { ...rootState, blockerVisible: false };
+  },
+
   fullPageOn(rootState) {
     // console.log('%c--- fullPageOn ---', 'color:#07a098');
     analyticsEvent('Full Page / Show');
@@ -151,6 +164,13 @@ const reducers = {
     // console.log('%c--- fullPageOff ---', 'color:#07a098');
     analyticsEvent('Full Page / Hide');
     return { ...rootState, fullPageMode: false };
+  },
+
+  incrementPlaylistEditCount(rootState, payload) {
+    const playlistId = payload;
+    const allPlaylistEdits = { ...rootState.allPlaylistEdits };
+    allPlaylistEdits[playlistId] = (allPlaylistEdits[playlistId] || 0) + 1;
+    return { ...rootState, allPlaylistEdits };
   },
 
   // showLoader(rootState) {

@@ -91,7 +91,7 @@ const saveSessionData = (): void => {
 };
 
 // ======================================================================
-// DEBUGGING - GLOBAL STORE ACCESS
+// DEBUGGING - BROWSER CONSOLE ACCESS
 // ======================================================================
 
 const isLocal = import.meta.env.VITE_ENV === 'local';

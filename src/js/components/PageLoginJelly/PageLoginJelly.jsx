@@ -5,7 +5,7 @@
 import { NavLink } from 'react-router-dom';
 // import { useDispatch } from 'react-redux';
 import { Formik, Form, Field } from 'formik';
-import * as yup from 'yup';
+import { object, string } from 'yup';
 import clsx from 'clsx';
 
 import { Button } from 'js/components';
@@ -26,17 +26,16 @@ const devPassword = import.meta.env.VITE_JELLY_PASSWORD || '';
 
 const envData = getEnvironment();
 
-export const PageLoginJelly = () => {
-  const initialValues = {
-    server: isLocal ? devServer : '',
-    username: isLocal ? devUsername : '',
-    password: isLocal ? devPassword : '',
-    general: '',
-  };
+const initialValues = {
+  server: isLocal ? devServer : '',
+  username: isLocal ? devUsername : '',
+  password: isLocal ? devPassword : '',
+  general: '',
+};
 
-  const validationSchema = yup.object({
-    server: yup
-      .string()
+export const PageLoginJelly = () => {
+  const validationSchema = object({
+    server: string()
       .url('Invalid URL')
       .test('is-https', 'Server address must use HTTPS', (value) => {
         if (!value) return false;
@@ -46,8 +45,8 @@ export const PageLoginJelly = () => {
         return true;
       })
       .required('Server address is required'),
-    username: yup.string().required('Username is required'),
-    password: yup.string().required('Password is required'),
+    username: string().required('Username is required'),
+    password: string().required('Password is required'),
   });
 
   const onSubmit = (values, { setFieldTouched, setFieldValue, setFieldError, setSubmitting }) => {

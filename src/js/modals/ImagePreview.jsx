@@ -34,6 +34,7 @@ const ImagePreview = () => {
       </div>
 
       <button
+        type="button"
         className={clsx(style.closeButton, style.closeButtonImagePreview)}
         onClick={() => dispatch.dialogModel.closeModal()}
       >

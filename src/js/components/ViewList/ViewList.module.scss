@@ -20,6 +20,7 @@
 }
 
 .scrollableInner {
+  position: relative;
   background: var(--color-primary-bg);
 }
 
@@ -43,14 +44,10 @@
   position: sticky;
   top: 90px;
   z-index: 3;
-  padding: 0 20px 8px;
+  padding: 0 16px 8px;
   margin: 0 -5px 20px;
   background: var(--color-primary-bg);
   font-weight: bold;
-
-  :global(.cq-800) & {
-    padding: 0 25px 8px;
-  }
 
   > * {
     border-radius: 2px;
@@ -64,44 +61,39 @@
     display: block;
     position: absolute;
     bottom: 0;
-    left: 15px;
-    right: 15px;
+    left: 16px;
+    right: 16px;
     height: 1px;
     background: var(--color-opacity-015);
 
-    // .scrollableOuterVirtual & {
-    //   :global(html[data-env='local']) & {
-    //     background: var(--color-core);
-    //     opacity: 0.6;
-    //   }
-    // }
+    .scrollableOuterVirtual & {
+      :global(html[data-env='local']) & {
+        background: var(--color-core);
+        opacity: 0.6;
+      }
+    }
   }
 }
 
 .entry {
-  padding: 6px 14px;
+  padding: 5px 11px;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 8px;
 
   @include mixins.focus-self-outline;
 
-  :global(.cq-800) & {
-    padding: 6px 19px;
-  }
-
   .wrap.wrapNoArtwork &,
   .wrap.wrapAlbumTracks & {
-    padding: 10px 14px;
-
-    :global(.cq-800) & {
-      padding: 10px 19px;
-    }
+    padding: 10px 11px;
   }
 
-  &:hover {
-    background: var(--color-card-on-primary-bg);
-    border: 1px solid var(--color-card-on-primary-border);
+  .scrollableOuter:not(.scrollableDragging) & {
+    &:hover,
+    &[data-state='open'] {
+      background: var(--color-card-on-primary-bg);
+      border: 1px solid var(--color-card-on-primary-border);
+    }
   }
 
   a {
@@ -125,14 +117,10 @@
 //
 
 .groupRow {
-  padding: 60px 15px 18px;
+  padding: 60px 11px 18px;
   font-size: 16px;
   line-height: 16px;
   font-weight: bold;
-
-  :global(.cq-800) & {
-    padding: 60px 20px 18px;
-  }
 
   .header + &,
   .measure + & {
@@ -147,14 +135,10 @@
 .discRow {
   display: flex;
   align-items: center;
-  padding: 40px 15px 11px;
+  padding: 40px 12px 11px;
   opacity: var(--opacity-05);
   font-size: 12px;
   font-weight: bold;
-
-  :global(.cq-800) & {
-    padding: 40px 20px 11px;
-  }
 
   .header + &,
   .measure + & {
@@ -166,11 +150,7 @@
   width: 18px;
   height: 14px;
   padding: 0 2px;
-  margin-right: 24px;
-
-  :global(.cq-800) & {
-    margin-right: 26px;
-  }
+  margin-right: 26px;
 }
 
 //
@@ -193,7 +173,9 @@
   color: var(--color-opacity-05);
 }
 .trackNumber {
-  .entry:hover & {
+  .scrollableOuter:not(.scrollableDragging) .entry:hover &,
+  .scrollableOuter:not(.scrollableDragging) .entry[data-state='open'] &,
+  .entryDragging & {
     display: none;
   }
 }
@@ -205,7 +187,9 @@
   padding: 0 1px;
   color: var(--color-core);
 
-  .entry:hover & {
+  .scrollableOuter:not(.scrollableDragging) .entry:hover &,
+  .scrollableOuter:not(.scrollableDragging) .entry[data-state='open'] &,
+  .entryDragging & {
     display: none;
   }
 }
@@ -221,15 +205,30 @@
   padding: 3px 4px;
   // color: var(--color-core);
 
-  .entry:hover & {
+  .scrollableOuter:not(.scrollableDragging) .entry:hover &,
+  .scrollableOuter:not(.scrollableDragging) .entry[data-state='open'] & {
+    display: block;
+  }
+  .entryDragging & {
+    display: none !important;
+  }
+}
+
+.dragIcon {
+  display: none;
+  width: 18px;
+  height: 16px;
+  padding: 1px 0px;
+
+  .entryDragging & {
     display: block;
   }
 }
 
 .thumb {
   overflow: hidden;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   background: var(--color-opacity-01);
   background-image: vars.$thumbnail;
   background-size: contain;
@@ -297,7 +296,9 @@
     color: var(--color-opacity-05);
   }
 
-  .entry:hover & {
+  .scrollableOuter:not(.scrollableDragging) .entry:hover &,
+  .scrollableOuter:not(.scrollableDragging) .entry[data-state='open'] &,
+  .entryDragging & {
     color: var(--color-text);
   }
 }
@@ -315,7 +316,9 @@
     line-height: 0;
     color: var(--color-opacity-04);
   }
-  .entry:hover & {
+  .scrollableOuter:not(.scrollableDragging) .entry:hover &,
+  .scrollableOuter:not(.scrollableDragging) .entry[data-state='open'] &,
+  .entryDragging & {
     color: var(--color-text);
   }
 }
@@ -325,7 +328,83 @@
 .duration,
 .userRating,
 .isFavourite {
-  &:last-child {
+  &:last-child,
+  &:has(+ .contextMenu:last-child) {
     text-align: right;
+  }
+}
+
+//
+// DRAG AND DROP
+//
+
+.scrollableDragging {
+  cursor: grabbing;
+
+  // .entry:hover,
+  // .entry[data-state='open'] {
+  //   background: transparent;
+  //   border-color: transparent;
+  // }
+}
+
+.entry.entryDragging {
+  background: var(--color-card-on-primary-bg) !important;
+  border: 1px solid var(--color-card-on-primary-border) !important;
+  cursor: grabbing;
+}
+
+.dropIndicator {
+  position: absolute;
+  left: 0;
+  z-index: 5;
+  width: 100%;
+  height: 2px;
+  background: var(--color-core);
+  border-radius: 1px;
+  pointer-events: none;
+  translate: 0 -1px;
+}
+
+//
+// CONTEXT MENU BUTTON
+//
+
+.contextMenu {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.contextButton {
+  display: none;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  width: 18px;
+  height: 18px;
+  margin: -2px 0;
+  cursor: pointer;
+  color: var(--color-opacity-05);
+
+  .scrollableOuter:not(.scrollableDragging) .entry:hover &,
+  .scrollableOuter:not(.scrollableDragging) .entry[data-state='open'] &,
+  .entryDragging & {
+    display: flex;
+  }
+
+  &:hover {
+    color: var(--color-text);
+  }
+
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 34px;
+    height: 34px;
+    transform: translate(-50%, -50%);
   }
 }

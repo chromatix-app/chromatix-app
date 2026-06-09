@@ -33,6 +33,7 @@ const SideBar = () => {
   const menuShowIcons = useSelector(({ sessionModel }) => sessionModel.menuShowIcons);
   const menuShowSearch = useSelector(({ sessionModel }) => sessionModel.menuShowSearch);
   const menuShowAllPlaylists = useSelector(({ sessionModel }) => sessionModel.menuShowAllPlaylists);
+  const menuShowAddPlaylist = useSelector(({ sessionModel }) => sessionModel.menuShowAddPlaylist);
   const menuShowSeparateBrowseSection = useSelector(({ sessionModel }) => sessionModel.menuShowSeparateBrowseSection);
 
   const menuOpenLibrary = useSelector(({ sessionModel }) => sessionModel.menuOpenLibrary);
@@ -83,17 +84,17 @@ const SideBar = () => {
   return (
     <>
       <div className={style.nav}>
-        <button className={style.prev} disabled={!canGoBack} onClick={goBack}>
+        <button type="button" className={style.prev} disabled={!canGoBack} onClick={goBack}>
           <Icon icon="PreviousIcon" cover stroke />
         </button>
-        <button className={style.next} disabled={!canGoForward} onClick={goForward}>
+        <button type="button" className={style.next} disabled={!canGoForward} onClick={goForward}>
           <Icon icon="NextIcon" cover stroke />
         </button>
       </div>
       <div className={style.wrap}>
         {(envData.electronPlatformId === 'lin' || envData.electronPlatformId === 'win') && (
           <div className={style.userMenu}>
-            <UserMenu variant="Inline" />
+            <UserMenu variant="SideBar" />
           </div>
         )}
 
@@ -104,6 +105,7 @@ const SideBar = () => {
         {(libraryIsVisible || (browseIsVisible && !menuShowSeparateBrowseSection)) && (
           <>
             <button
+              type="button"
               className={style.label}
               onClick={() => {
                 dispatch.sessionModel.setSessionState({ menuOpenLibrary: !menuOpenLibrary });
@@ -190,6 +192,7 @@ const SideBar = () => {
           <>
             {menuShowSeparateBrowseSection && (
               <button
+                type="button"
                 className={style.label}
                 onClick={() => {
                   dispatch.sessionModel.setSessionState({ menuOpenBrowse: !menuOpenBrowse });
@@ -360,6 +363,7 @@ const SideBar = () => {
         {playlistsIsVisible && (
           <>
             <button
+              type="button"
               className={style.label}
               onClick={() => {
                 dispatch.sessionModel.setSessionState({ menuOpenPlaylists: !menuOpenPlaylists });
@@ -376,6 +380,21 @@ const SideBar = () => {
             </button>
             {menuOpenPlaylists && (
               <>
+                {menuShowAddPlaylist && platformOpts.playlistManagement && (
+                  <button
+                    type="button"
+                    className={style.link}
+                    draggable="false"
+                    onClick={() => dispatch.dialogModel.showModal('PlaylistAdd')}
+                  >
+                    {menuShowIcons && (
+                      <span className={style.icon}>
+                        <Icon icon="PlusCircleIcon" cover stroke />
+                      </span>
+                    )}
+                    New Playlist
+                  </button>
+                )}
                 {sortedPlaylists.map((playlist) => (
                   <NavLink
                     key={playlist.playlistId}
@@ -506,6 +525,7 @@ const SearchField = () => {
             </div>
             {searchValue && (
               <button
+                type="button"
                 ref={clearButtonRef}
                 className={style.crossIcon}
                 // onFocus={() => {
@@ -582,7 +602,7 @@ const SearchResults = ({ setSearchResultsVisible }) => {
   const searchResults = useSelector(({ appModel }) => appModel.searchResults);
 
   if (!searchResults) {
-    return <div className={style.searchLoading}>Loading...</div>;
+    return <div className={style.searchLoading}>Loading…</div>;
   }
 
   if (searchResults.length === 0) {

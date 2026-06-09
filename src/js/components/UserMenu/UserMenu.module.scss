@@ -10,7 +10,7 @@
 
   @include mixins.electron-no-drag;
 
-  &Inline {
+  &SideBar {
     position: relative;
     top: 0;
     left: 0;
@@ -45,7 +45,7 @@
   right: 0;
   z-index: 554;
 
-  .wrapInline & {
+  .wrapSideBar & {
     z-index: auto;
   }
 }
@@ -74,12 +74,25 @@
     background: var(--color-secondary-hover);
   }
 
-  .wrapInline & {
+  .wrapSideBar & {
     flex-direction: row-reverse;
     width: 100%;
     background: var(--color-tertiary-bg);
     border: 1px solid var(--color-tertiary-border);
     border-radius: 6px;
+
+    :global(html[data-theme='light']) & {
+      background: var(--color-secondary-bg);
+      border-color: var(--color-secondary-border);
+
+      &:hover {
+        background: var(--color-secondary-hover);
+
+        :global(html[data-theme='light']) & {
+          background: var(--color-secondary-hover);
+        }
+      }
+    }
   }
 
   .wrapWithoutLibrary & {
@@ -103,7 +116,7 @@
     margin-left: 12px;
   }
 
-  .wrapInline & {
+  .wrapSideBar & {
     width: 36px;
     height: 36px;
     margin-right: 12px;
@@ -144,7 +157,7 @@
     display: block;
   }
 
-  .wrapInline & {
+  .wrapSideBar & {
     flex: 0 0 auto;
     width: calc(100% - 48px);
     text-align: left;
@@ -186,7 +199,7 @@
   line-height: 16px;
   text-align: left;
 
-  &Inline {
+  &SideBar {
     margin: 0 auto 0 6px;
     border-radius: 6px;
   }
@@ -237,7 +250,7 @@
   //   border-top-left-radius: 9px;
   //   border-top-right-radius: 9px;
 
-  //   .wrapInline & {
+  //   .wrapSideBar & {
   //     border-top-left-radius: 6px;
   //     border-top-right-radius: 6px;
   //   }
@@ -246,7 +259,7 @@
   //   border-bottom-left-radius: 9px;
   //   border-bottom-right-radius: 9px;
 
-  //   .wrapInline & {
+  //   .wrapSideBar & {
   //     border-bottom-left-radius: 6px;
   //     border-bottom-right-radius: 6px;
   //   }
@@ -265,7 +278,7 @@
     background: var(--color-secondary-hover);
   }
 
-  .wrapInline & {
+  .wrapSideBar & {
     padding-right: 36px;
     background: var(--color-opacity-0025);
     border-color: var(--color-opacity-01);

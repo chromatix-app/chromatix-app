@@ -169,16 +169,19 @@
   }
 }
 
-.downloadsLink {
+.downloadsDivider {
+  height: 15px;
+}
+
+.downloadsLink,
+.downloadsNote {
   display: inline-block;
   padding: 5px;
   border-radius: 4px;
-  color: var(--color-opacity-05);
+  color: vars.$color-core;
 }
 
-a.downloadsLink {
-  color: vars.$color-core;
-
+.downloadsLink {
   &:hover {
     text-decoration: underline;
   }
@@ -186,12 +189,16 @@ a.downloadsLink {
   @include mixins.focus-self-outline;
 }
 
+.downloadsNote {
+  color: var(--color-opacity-05);
+}
+
 .downloadsIcon {
   display: inline-block;
   position: relative;
   width: 20px;
   height: 20px;
-  margin-right: 5px;
+  margin-right: 6px;
 }
 
 //

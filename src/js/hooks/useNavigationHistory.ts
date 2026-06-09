@@ -42,6 +42,7 @@ const useNavigationHistory = (): NavigationHistory => {
     }
   };
 
+  // react-doctor-disable-next-line react-doctor/effect-needs-cleanup
   useEffect(() => {
     return history.listen((location, action) => {
       // if action is PUSH we are going forwards

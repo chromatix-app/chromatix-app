@@ -2,6 +2,7 @@
 // IMPORTS
 // ======================================================================
 
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Dialog from '@radix-ui/react-dialog';
 // import clsx from 'clsx';
@@ -17,18 +18,31 @@ const Confirmation = () => {
   const dispatch = useDispatch();
   const currentConfirmData = useSelector(({ dialogModel }) => dialogModel.currentConfirmData);
 
+  const [yesLoading, setYesLoading] = useState(false);
+  const [noLoading, setNoLoading] = useState(false);
+
   const { icon, title, body, yesButton, yesCallback, noButton, noCallback, callbackData } = currentConfirmData;
 
-  const doYes = () => {
+  const doYes = async () => {
     if (yesCallback) {
-      yesCallback(callbackData);
+      setYesLoading(true);
+      try {
+        await Promise.resolve(yesCallback(callbackData));
+      } finally {
+        setYesLoading(false);
+      }
     }
     dispatch.dialogModel.closeConfirm();
   };
 
-  const doNo = () => {
+  const doNo = async () => {
     if (noCallback) {
-      noCallback(callbackData);
+      setNoLoading(true);
+      try {
+        await Promise.resolve(noCallback(callbackData));
+      } finally {
+        setNoLoading(false);
+      }
     }
     dispatch.dialogModel.closeConfirm();
   };
@@ -50,13 +64,13 @@ const Confirmation = () => {
       {(yesButton || noButton) && (
         <div className={style.buttons}>
           {yesButton && (
-            <Button onClick={doYes} size="small" color="mono">
+            <Button onClick={doYes} size="small" color="mono" loading={yesLoading}>
               {yesButton}
             </Button>
           )}
 
           {noButton && (
-            <Button onClick={doNo} size="small" color="tertiary">
+            <Button onClick={doNo} size="small" color="tertiary" loading={noLoading}>
               {noButton}
             </Button>
           )}

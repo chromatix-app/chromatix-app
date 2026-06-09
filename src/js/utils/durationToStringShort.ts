@@ -1,5 +1,3 @@
-import moment from 'moment';
-
 /**
  * Converts a duration in milliseconds to a short time string format.
  * @param durationMillisecs - Duration in milliseconds
@@ -12,10 +10,10 @@ const durationToStringShort = (durationMillisecs: number): string => {
     return '0:00';
   }
 
-  const duration = moment.duration(durationMillisecs, 'milliseconds');
-  const hours = Math.floor(duration.asHours());
-  const minutes = Math.floor(duration.asMinutes()) % 60;
-  const seconds = Math.floor(duration.asSeconds()) % 60;
+  const totalSeconds = Math.floor(durationMillisecs / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor(totalSeconds / 60) % 60;
+  const seconds = totalSeconds % 60;
 
   let durationString = `${minutes}:${String(seconds).padStart(2, '0')}`;
   if (hours > 0) {

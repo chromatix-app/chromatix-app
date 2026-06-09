@@ -99,6 +99,7 @@ const useGetCollectionArray = (collectionKey) => {
     colOptions: {
       addedAt: platformOpts.enableAddedAt && colCollectionAddedAt,
       userRating: colCollectionUserRating,
+      isFavourite: false,
     },
 
     setViewCollections,

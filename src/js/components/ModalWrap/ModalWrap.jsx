@@ -24,7 +24,7 @@ export const ModalWrap = ({ children, close, open = true }) => {
       setHasOverflow(modalRef.current.scrollHeight > modalRef.current.clientHeight);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [windowWidth, windowHeight, modalRef.current]);
+  }, [windowWidth, windowHeight]);
 
   return (
     <Dialog.Root open={open} onOpenChange={(isOpen) => !isOpen && close()}>

@@ -71,7 +71,8 @@ describe('Testing "setLocalStorage" and "getLocalStorage" functions', () => {
   // CORRUPTION / TAMPERING
 
   test('Returns an empty string when the stored value is not valid ciphertext', () => {
-    localStorage.setItem('test-key', 'not-valid-ciphertext');
+    // Use only non-base64 characters so CryptoJS deterministically produces zero bytes
+    localStorage.setItem('test-key', '!@#$%^&*()');
     expect(getLocalStorage('test-key')).toBe('');
   });
 });

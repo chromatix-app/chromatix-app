@@ -47,6 +47,7 @@ const TitleHeading = ({
       <div className={clsx(style.wrap, { [style.wrapPadding]: padding })}>
         {thumb && (
           <button
+            type="button"
             className={style.thumb}
             onClick={() => {
               dispatch.dialogModel.showModal({
@@ -75,6 +76,7 @@ const TitleHeading = ({
               {showPlay && (
                 <>
                   <button
+                    type="button"
                     className={style.playButton}
                     onClick={() =>
                       isPlaying
@@ -96,6 +98,7 @@ const TitleHeading = ({
                     <span className={style.playText}>{isPlaying ? 'Pause' : isLoaded ? 'Resume' : 'Play'}</span>
                   </button>
                   <button
+                    type="button"
                     className={style.shuffleButton}
                     onClick={() => handlePlay && handlePlay(true)}
                     aria-label="Shuffle"

@@ -760,7 +760,7 @@ export const getFolderItems = () => {
 // GET ALL PLAYLISTS
 // ======================================================================
 
-export const getAllPlaylists = ({ accessToken, libraryId, serverBaseUrl, timeStamp, userId }) => {
+export const getAllPlaylists = ({ accessToken, libraryId, serverBaseUrl, timeStamp, allPlaylistEdits, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.playlist.getAllPlaylists(serverBaseUrl, userId);

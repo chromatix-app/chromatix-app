@@ -23,7 +23,11 @@ interface DownloadLinkNote {
   label: string;
 }
 
-type DownloadLink = DownloadLinkAsset | DownloadLinkNote;
+interface DownloadLinkDivider {
+  kind: 'divider';
+}
+
+type DownloadLink = DownloadLinkAsset | DownloadLinkNote | DownloadLinkDivider;
 
 const FALLBACK_URL = 'https://github.com/chromatix-app/chromatix-release/releases/latest';
 
@@ -41,7 +45,11 @@ interface DownloadLinkConfigNote extends DownloadLinkConfigBase {
   kind: 'note';
 }
 
-type DownloadLinkConfig = DownloadLinkConfigAsset | DownloadLinkConfigNote;
+interface DownloadLinkConfigDivider {
+  kind: 'divider';
+}
+
+type DownloadLinkConfig = DownloadLinkConfigAsset | DownloadLinkConfigNote | DownloadLinkConfigDivider;
 
 const DOWNLOAD_CONFIGS: DownloadLinkConfig[] = [
   // macOS
@@ -49,65 +57,84 @@ const DOWNLOAD_CONFIGS: DownloadLinkConfig[] = [
     kind: 'link',
     icon: 'AppleSiteIcon',
     label: 'Download for macOS (Apple Silicon)',
-    assetMatcher: (name) => name.endsWith('arm64.dmg'),
+    assetMatcher: (name) => name.endsWith('-mac-arm64.dmg'),
   },
   {
     kind: 'link',
     icon: 'AppleSiteIcon',
     label: 'Download for macOS (Universal)',
-    assetMatcher: (name) => name.endsWith('universal.dmg'),
+    assetMatcher: (name) => name.endsWith('-mac-universal.dmg'),
   },
+
   // Windows
+  {
+    kind: 'divider',
+  },
   {
     kind: 'link',
     icon: 'WindowsSiteIcon',
     label: 'Download for Windows',
-    assetMatcher: (name) => name.endsWith('.exe'),
+    assetMatcher: (name) => name.endsWith('-windows.exe'),
   },
+
   // Linux
   {
-    kind: 'note',
+    kind: 'divider',
+  },
+  {
+    kind: 'link',
     icon: 'LinuxSiteIcon',
-    label: 'Linux coming soon',
+    label: 'Download for Linux (AppImage, arm64)',
+    assetMatcher: (name) => name.endsWith('-linux-arm64.AppImage'),
+  },
+  {
+    kind: 'link',
+    icon: 'LinuxSiteIcon',
+    label: 'Download for Linux (AppImage, x86_64)',
+    assetMatcher: (name) => name.endsWith('-linux-x86_64.AppImage'),
   },
 
-  // [NOTE] The following Linux downloaded options will be uncommented, tested and added in a future release.
+  // Linux — .deb (Debian, Ubuntu, etc.)
+  {
+    kind: 'link',
+    icon: 'LinuxSiteIcon',
+    label: 'Download for Linux (.deb, arm64)',
+    assetMatcher: (name) => name.endsWith('-linux-arm64.deb'),
+  },
+  {
+    kind: 'link',
+    icon: 'LinuxSiteIcon',
+    label: 'Download for Linux (.deb, amd64)',
+    assetMatcher: (name) => name.endsWith('-linux-amd64.deb'),
+  },
 
+  // Linux — .rpm (Fedora, RHEL, etc.)
+  {
+    kind: 'link',
+    icon: 'LinuxSiteIcon',
+    label: 'Download for Linux (.rpm, aarch64)',
+    assetMatcher: (name) => name.endsWith('-linux-aarch64.rpm'),
+  },
+  {
+    kind: 'link',
+    icon: 'LinuxSiteIcon',
+    label: 'Download for Linux (.rpm, x86_64)',
+    assetMatcher: (name) => name.endsWith('-linux-x86_64.rpm'),
+  },
+
+  // Coming Soon
   // {
+  //   kind: 'note',
   //   icon: 'LinuxSiteIcon',
-  //   label: 'Download for Linux (AppImage, ARM64)',
-  //   assetMatcher: (name) => name.endsWith('arm64.AppImage'),
-  // },
-  // {
-  //   icon: 'LinuxSiteIcon',
-  //   label: 'Download for Linux (AppImage, x64)',
-  //   assetMatcher: (name) => name.endsWith('x86_64.AppImage'),
-  // },
-  // // Linux — .deb (Debian, Ubuntu, etc.)
-  // {
-  //   icon: 'LinuxSiteIcon',
-  //   label: 'Download for Linux (.deb, ARM64)',
-  //   assetMatcher: (name) => name.endsWith('arm64.deb'),
-  // },
-  // {
-  //   icon: 'LinuxSiteIcon',
-  //   label: 'Download for Linux (.deb, x64)',
-  //   assetMatcher: (name) => name.endsWith('amd64.deb'),
-  // },
-  // // Linux — .rpm (Fedora, RHEL, etc.)
-  // {
-  //   icon: 'LinuxSiteIcon',
-  //   label: 'Download for Linux (.rpm, ARM64)',
-  //   assetMatcher: (name) => name.endsWith('aarch64.rpm'),
-  // },
-  // {
-  //   icon: 'LinuxSiteIcon',
-  //   label: 'Download for Linux (.rpm, x64)',
-  //   assetMatcher: (name) => name.endsWith('x86_64.rpm'),
+  //   label: 'Linux coming soon',
   // },
 ];
 
 const getDownloadLink = (config: DownloadLinkConfig, assets?: GitHubAsset[]): DownloadLink => {
+  if (config.kind === 'divider') {
+    return { kind: 'divider' };
+  }
+
   if (config.kind === 'note') {
     return {
       kind: 'note',

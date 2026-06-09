@@ -18,34 +18,34 @@ import style from './SettingsDownloads.module.scss';
 export const SettingsDownloads = () => {
   const downloadLinks = useGetDownloadLinks();
 
-  const logDownload = (label) => {
-    analyticsEvent(`Download / Settings / ${label}`);
-  };
-
   return (
     <>
       <div className={clsx('settingsGroup', style.group)}>
         <div>Get the Chromatix app for desktop platforms here:</div>
 
-        <div className={style.downloads}>
+        <div className={style.downloadsWrap}>
           {downloadLinks.map((downloadLink, index) => (
-            <React.Fragment key={downloadLink.label}>
-              {index > 0 && <br />}
-              {downloadLink.kind === 'link' ? (
-                <a
-                  href={downloadLink.url}
-                  target="_blank"
-                  rel="noreferrer nofollow"
-                  draggable="false"
-                  onClick={() => logDownload(downloadLink.label)}
-                >
-                  <span className={style.downloadsIcon}>
-                    <Icon icon={downloadLink.icon} cover />
-                  </span>
-                  {downloadLink.label}
-                </a>
+            <React.Fragment key={index}>
+              {downloadLink.kind === 'divider' ? (
+                <div className={style.downloadsDivider}></div>
+              ) : downloadLink.kind === 'link' ? (
+                <div>
+                  <a
+                    className={style.downloadsLink}
+                    href={downloadLink.url}
+                    target="_blank"
+                    rel="noreferrer nofollow"
+                    draggable="false"
+                    onClick={() => logDownload(downloadLink.label)}
+                  >
+                    <span className={style.downloadsIcon}>
+                      <Icon icon={downloadLink.icon} cover />
+                    </span>
+                    {downloadLink.label}
+                  </a>
+                </div>
               ) : (
-                <div className={style.note}>
+                <div className={style.downloadsNote}>
                   <span className={style.downloadsIcon}>
                     <Icon icon={downloadLink.icon} cover />
                   </span>
@@ -58,6 +58,14 @@ export const SettingsDownloads = () => {
       </div>
     </>
   );
+};
+
+// ======================================================================
+// HELPERS
+// ======================================================================
+
+const logDownload = (label) => {
+  analyticsEvent(`Download / Settings / ${label}`);
 };
 
 // ======================================================================

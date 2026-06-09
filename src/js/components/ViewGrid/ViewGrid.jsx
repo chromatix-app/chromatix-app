@@ -601,12 +601,12 @@ const ListEntry = React.memo(
             (variant === 'folders' && trackId)) && (
             <div className={style.controlButtonWrap}>
               {isCurrentlyLoaded && isCurrentlyPlaying && (
-                <button className={style.pauseButton} onClick={handlePause} tabIndex={-1}>
+                <button type="button" className={style.pauseButton} onClick={handlePause} tabIndex={-1}>
                   <Icon icon="PauseFilledIcon" cover />
                 </button>
               )}
               {!(isCurrentlyLoaded && isCurrentlyPlaying) && (
-                <button className={style.playButton} onClick={handlePlay} tabIndex={-1}>
+                <button type="button" className={style.playButton} onClick={handlePlay} tabIndex={-1}>
                   <Icon icon="PlayFilledIcon" cover />
                 </button>
               )}

@@ -47,6 +47,7 @@ import CrownIcon from './icons/general-compressed/crown.svg?react';
 import DiscIcon from './icons/general-compressed/disc.svg?react';
 import DownloadIcon from './icons/general-compressed/download.svg?react';
 import EllipsisCircleIcon from './icons/general-compressed/ellipsis-circle.svg?react';
+import EllipsisIcon from './icons/general-compressed/ellipsis.svg?react';
 // import ExpandIcon from './icons/general-compressed/expand.svg?react';
 import ExpandSplitIcon from './icons/general-compressed/expand-split.svg?react';
 import ExternalLinkIcon from './icons/general-compressed/external-link.svg?react';
@@ -65,6 +66,7 @@ import MailIcon from './icons/general-compressed/mail.svg?react';
 // import MailPlaneIcon from './icons/general-compressed/mail-plane.svg?react';
 import MegaphoneIcon from './icons/general-compressed/megaphone.svg?react';
 import MicrophoneIcon from './icons/general-compressed/microphone.svg?react';
+import MinusCircleIcon from './icons/general-compressed/minus-circle.svg?react';
 import MusicNoteDoubleIcon from './icons/general-compressed/music-note-double.svg?react';
 import MusicNoteSingleIcon from './icons/general-compressed/music-note-single.svg?react';
 import NextIcon from './icons/general-compressed/next.svg?react';
@@ -80,6 +82,8 @@ import PlayCircleIcon from './icons/general-compressed/play-circle.svg?react';
 import PlayFilledIcon from './icons/general-compressed/play-filled.svg?react';
 import PlayIcon from './icons/general-compressed/play.svg?react';
 import PlaylistIcon from './icons/general-compressed/playlist.svg?react';
+import PlusCircleIcon from './icons/general-compressed/plus-circle.svg?react';
+import PlusIcon from './icons/general-compressed/plus.svg?react';
 import PreviousIcon from './icons/general-compressed/previous.svg?react';
 import QueueIcon from './icons/general-compressed/queue.svg?react';
 import RedditIcon from './icons/general-compressed/reddit.svg?react';
@@ -103,6 +107,7 @@ import VolLowIcon from './icons/general-compressed/vol-low.svg?react';
 // import VolOffIcon from './icons/general-compressed/vol-off.svg?react';
 // import VolUpIcon from './icons/general-compressed/vol-up.svg?react';
 import VolXIcon from './icons/general-compressed/vol-x.svg?react';
+import WarningTriangleIcon from './icons/general-compressed/warning-triangle.svg?react';
 
 // Site Custom Icons
 import AppleSiteIcon from './icons/site-compressed/apple.svg?react';
@@ -118,6 +123,7 @@ import WindowsSiteIcon from './icons/site-compressed/windows.svg?react';
 // COMPONENT
 // ======================================================================
 
+// react-doctor-disable-next-line react-doctor/only-export-components
 export const generalIcons = {
   AccessibilityIcon,
   AlbumCollectionsIcon,
@@ -159,6 +165,7 @@ export const generalIcons = {
   DiscIcon,
   DownloadIcon,
   EllipsisCircleIcon,
+  EllipsisIcon,
   // ExpandIcon,
   ExpandSplitIcon,
   ExternalLinkIcon,
@@ -177,6 +184,7 @@ export const generalIcons = {
   // MailPlaneIcon,
   MegaphoneIcon,
   MicrophoneIcon,
+  MinusCircleIcon,
   MusicNoteDoubleIcon,
   MusicNoteSingleIcon,
   NextIcon,
@@ -192,6 +200,8 @@ export const generalIcons = {
   PlayFilledIcon,
   PlayIcon,
   PlaylistIcon,
+  PlusCircleIcon,
+  PlusIcon,
   PreviousIcon,
   QueueIcon,
   RedditIcon,
@@ -215,8 +225,10 @@ export const generalIcons = {
   // VolOffIcon,
   // VolUpIcon,
   VolXIcon,
+  WarningTriangleIcon,
 };
 
+// react-doctor-disable-next-line react-doctor/only-export-components
 export const siteIcons = {
   AppleSiteIcon,
   FeaturebaseSiteIcon,

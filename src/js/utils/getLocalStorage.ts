@@ -1,4 +1,5 @@
-import CryptoJS from 'crypto-js';
+import AES from 'crypto-js/aes';
+import Utf8 from 'crypto-js/enc-utf8';
 
 import config from 'js/_config/config';
 
@@ -17,11 +18,12 @@ const getLocalStorage = (key: string): string | null => {
   }
 
   try {
-    const bytes = CryptoJS.AES.decrypt(encryptedValue, encryptionKey);
-    const decryptedValue: string = bytes.toString(CryptoJS.enc.Utf8);
+    const bytes = AES.decrypt(encryptedValue, encryptionKey);
+    if (!bytes.sigBytes) return '';
+    const decryptedValue: string = bytes.toString(Utf8);
     return decryptedValue;
   } catch {
-    return null;
+    return '';
   }
 };
 

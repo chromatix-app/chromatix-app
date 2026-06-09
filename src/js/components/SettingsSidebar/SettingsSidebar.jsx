@@ -215,6 +215,7 @@ const BrowseSettings = ({ platformOpts }) => {
 
 const PlaylistSettings = ({ platformOpts }) => {
   const menuShowAllPlaylists = useSelector(({ sessionModel }) => sessionModel.menuShowAllPlaylists);
+  const menuShowAddPlaylist = useSelector(({ sessionModel }) => sessionModel.menuShowAddPlaylist);
 
   const menuItems = [
     {
@@ -222,6 +223,16 @@ const PlaylistSettings = ({ platformOpts }) => {
       label: 'Show playlists',
       state: menuShowAllPlaylists,
     },
+    ...(platformOpts.playlistManagement
+      ? [
+          {
+            key: 'menuShowAddPlaylist',
+            label: 'Show "New Playlist" button',
+            state: menuShowAddPlaylist,
+            disabled: !menuShowAllPlaylists,
+          },
+        ]
+      : []),
   ];
 
   return <SettingsList title="Playlists" menuItems={menuItems} />;

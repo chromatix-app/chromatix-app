@@ -35,6 +35,7 @@ const UserList = ({ entries, setPinUser, setRenderPinEntry }) => {
         {entries.map((entry, index) => {
           return (
             <button
+              type="button"
               key={index}
               className={style.entry}
               onClick={() => {

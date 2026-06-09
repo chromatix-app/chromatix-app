@@ -25,6 +25,7 @@ export const platformFeatures = {
     enableLastPlayed: false,
     enableUserRating: false,
     enableIsFavourite: true,
+    playlistManagement: false,
   },
 
   plex: {
@@ -53,6 +54,7 @@ export const platformFeatures = {
     enableLastPlayed: true,
     enableUserRating: true,
     enableIsFavourite: false,
+    playlistManagement: true,
   },
 };
 

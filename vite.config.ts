@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 /**
  * Forces a full page reload when a hook file is saved, instead of hot-swapping it.
@@ -21,7 +22,12 @@ const fullReloadOnHooksChange = {
 
 export default defineConfig({
   appType: 'spa',
-  plugins: [react(), svgr(), fullReloadOnHooksChange],
+  plugins: [
+    react(),
+    svgr(),
+    fullReloadOnHooksChange,
+    process.env.ANALYZE && visualizer({ open: true, filename: 'build/stats.html', gzipSize: true, brotliSize: true }),
+  ],
   resolve: {
     tsconfigPaths: true,
   },
