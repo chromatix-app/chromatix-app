@@ -2,7 +2,7 @@
 
 Features:
 
-- Playlist management — create, edit, and delete playlists directly within Chromatix.
+- Plex playlist management — create, edit, and delete playlists directly within Chromatix.
 - Tracks can be added and removed from any playlist via the new context menu.
 - Drag and drop playlist tracks to reorder them.
 - Chromatix is now available as a native desktop app for Linux.
