@@ -50,7 +50,7 @@ const endpointConfig = {
   user: {
     getAllUsers: () => 'https://plex.tv/api/v2/home/users',
     switchUser: (uuid) => `https://plex.tv/api/v2/home/users/${uuid}/switch`,
-    getUserInfo: () => 'https://plex.tv/users/account',
+    getUserInfo: () => 'https://plex.tv/api/v2/user',
   },
   server: {
     getAllServers: () => 'https://plex.tv/api/v2/resources',
@@ -81,6 +81,17 @@ const endpointConfig = {
     getAllPlaylists: (serverBaseUrl) => `${serverBaseUrl}/playlists`,
     getPlaylistDetails: (serverBaseUrl, playlistId) => `${serverBaseUrl}/playlists/${playlistId}`,
     getPlaylistTracks: (serverBaseUrl, playlistId) => `${serverBaseUrl}/playlists/${playlistId}/items`,
+    createPlaylist: (serverBaseUrl) => `${serverBaseUrl}/playlists`,
+    editPlaylist: (serverBaseUrl, playlistId) => `${serverBaseUrl}/playlists/${playlistId}`,
+    deletePlaylist: (serverBaseUrl, playlistId) => `${serverBaseUrl}/playlists/${playlistId}`,
+    addTracksToPlaylist: (serverBaseUrl, playlistId) => `${serverBaseUrl}/playlists/${playlistId}/items`,
+    removeTrackFromPlaylist: (serverBaseUrl, playlistId, playlistItemId) =>
+      `${serverBaseUrl}/playlists/${playlistId}/items/${playlistItemId}`,
+    movePlaylistItem: (serverBaseUrl, playlistId, playlistItemId) =>
+      `${serverBaseUrl}/playlists/${playlistId}/items/${playlistItemId}/move`,
+  },
+  shared: {
+    getSharedMedia: (serverBaseUrl) => `${serverBaseUrl}/library/shared/all`,
   },
   collection: {
     getAllCollections: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/collections`,
@@ -328,7 +339,9 @@ export const getUserInfo = () => {
       axios
         .get(endpoint, {
           headers: {
+            Accept: 'application/json',
             'X-Plex-Token': accessToken,
+            'X-Plex-Client-Identifier': clientId,
           },
         })
         .then((response) => {
@@ -1116,7 +1129,7 @@ export const getFolderItems = ({ accessToken, folderId, libraryId, serverBaseUrl
 // GET ALL PLAYLISTS
 // ======================================================================
 
-export const getAllPlaylists = ({ accessToken, libraryId, serverBaseUrl, timeStamp, userId }) => {
+export const getAllPlaylists = ({ accessToken, libraryId, serverBaseUrl, timeStamp, allPlaylistEdits, userId }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.playlist.getAllPlaylists(serverBaseUrl, libraryId);
@@ -1134,7 +1147,16 @@ export const getAllPlaylists = ({ accessToken, libraryId, serverBaseUrl, timeSta
           signal: controller.signal,
         })
         .then((response) => {
-          resolve(plexTranspose.transposePlaylistArray(response, libraryId, serverBaseUrl, accessToken, timeStamp));
+          resolve(
+            plexTranspose.transposePlaylistArray(
+              response,
+              libraryId,
+              serverBaseUrl,
+              accessToken,
+              timeStamp,
+              allPlaylistEdits
+            )
+          );
         })
         .catch((error) => {
           reject({
@@ -1232,6 +1254,263 @@ export const getPlaylistTracks = ({ accessToken, libraryId, playlistId, serverBa
       reject({
         code: 'plex.getPlaylistTracks.2',
         message: 'Failed to get playlist tracks: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// CREATE PLAYLIST
+// ======================================================================
+
+export const createPlaylist = ({ accessToken, libraryId, serverId, serverBaseUrl, title }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.playlist.createPlaylist(serverBaseUrl);
+      axios
+        .post(endpoint, null, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            title,
+            type: 'audio',
+            smart: 0,
+            sectionID: libraryId,
+            uri: `server://${serverId}/com.plexapp.plugins.library/library/sections/${libraryId}`,
+          },
+        })
+        .then((response) => {
+          resolve(response.data?.MediaContainer?.Metadata?.[0]);
+        })
+        .catch((error) => {
+          reject({
+            code: 'plex.createPlaylist.1',
+            message: 'Failed to create playlist: ' + error?.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'plex.createPlaylist.2',
+        message: 'Failed to create playlist: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// EDIT PLAYLIST
+// ======================================================================
+
+export const editPlaylist = ({ accessToken, serverBaseUrl, playlistId, title, summary }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.playlist.editPlaylist(serverBaseUrl, playlistId);
+      axios
+        .put(endpoint, null, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            ...(title !== undefined && { title }),
+            ...(summary !== undefined && { summary }),
+          },
+        })
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject({
+            code: 'plex.editPlaylist.1',
+            message: 'Failed to edit playlist: ' + error?.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'plex.editPlaylist.2',
+        message: 'Failed to edit playlist: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// DELETE PLAYLIST
+// ======================================================================
+
+export const deletePlaylist = ({ accessToken, serverBaseUrl, playlistId }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.playlist.deletePlaylist(serverBaseUrl, playlistId);
+      axios
+        .delete(endpoint, {
+          headers: getRequestHeaders(accessToken),
+        })
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject({
+            code: 'plex.deletePlaylist.1',
+            message: 'Failed to delete playlist: ' + error?.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'plex.deletePlaylist.2',
+        message: 'Failed to delete playlist: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// ADD TRACK TO PLAYLIST
+// ======================================================================
+
+export const addTracksToPlaylist = ({ accessToken, serverBaseUrl, playlistId, serverId, trackIds }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.playlist.addTracksToPlaylist(serverBaseUrl, playlistId);
+      axios
+        .put(endpoint, null, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            uri: `server://${serverId}/com.plexapp.plugins.library/library/metadata/${trackIds.join(',')}`,
+          },
+        })
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject({
+            code: 'plex.addTracksToPlaylist.1',
+            message: 'Failed to add track to playlist: ' + error?.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'plex.addTracksToPlaylist.2',
+        message: 'Failed to add track to playlist: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// REMOVE TRACK FROM PLAYLIST
+// ======================================================================
+
+export const removeTrackFromPlaylist = ({ accessToken, serverBaseUrl, playlistId, playlistItemId }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.playlist.removeTrackFromPlaylist(serverBaseUrl, playlistId, playlistItemId);
+      axios
+        .delete(endpoint, {
+          headers: getRequestHeaders(accessToken),
+        })
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject({
+            code: 'plex.removeTrackFromPlaylist.1',
+            message: 'Failed to remove track from playlist: ' + error?.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'plex.removeTrackFromPlaylist.2',
+        message: 'Failed to remove track from playlist: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// MOVE PLAYLIST ITEM
+// ======================================================================
+
+export const movePlaylistItem = ({ accessToken, serverBaseUrl, playlistId, playlistItemId, afterPlaylistItemId }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.playlist.movePlaylistItem(serverBaseUrl, playlistId, playlistItemId);
+      axios
+        .put(endpoint, null, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            ...(afterPlaylistItemId != null && {
+              after: afterPlaylistItemId,
+            }),
+          },
+        })
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject({
+            code: 'plex.movePlaylistItem.1',
+            message: 'Failed to move playlist item: ' + error?.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'plex.movePlaylistItem.2',
+        message: 'Failed to move playlist item: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// GET SHARED MEDIA
+// ======================================================================
+
+export const getSharedMedia = ({ accessToken, serverBaseUrl }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.shared.getSharedMedia(serverBaseUrl);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .get(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            includeCollections: 1,
+            includeExternalMedia: 1,
+            includeAdvanced: 1,
+            includeMeta: 1,
+            type: '8,9,10,15', // artists, albums, tracks, playlists
+          },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          resolve(response.data.MediaContainer.Metadata);
+        })
+        .catch((error) => {
+          reject({
+            code: 'plex.getSharedMedia.1',
+            message: 'Failed to get shared media: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'plex.getSharedMedia.2',
+        message: 'Failed to get shared media: ' + error?.message,
         error: error,
       });
     }

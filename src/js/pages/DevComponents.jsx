@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 import {
   Button,
+  FilterButton,
   FilterMenu,
   FilterSelect,
   FilterToggle,
@@ -88,6 +89,7 @@ const Component = () => {
                 { label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
               ]}
             />
+            <FilterButton label="New playlist" icon="PlusIcon" onClick={() => {}} />
           </div>
         </div>
 
@@ -139,6 +141,7 @@ const Component = () => {
                 { label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
               ]}
             />
+            <FilterButton variant="Large" label="New playlist" icon="PlusIcon" onClick={() => {}} />
           </div>
         </div>
 
@@ -224,12 +227,32 @@ const Component = () => {
             Mono
           </Button>
           <br />
+          <Button size="tiny" color="mono" loading>
+            Mono Loading
+          </Button>
+          <br />
           <Button size="tiny" color="secondary">
             Secondary
           </Button>
           <br />
+          <Button size="tiny" color="secondary" loading>
+            Secondary Loading
+          </Button>
+          <br />
           <Button size="tiny" color="tertiary">
             Tertiary
+          </Button>
+          <br />
+          <Button size="tiny" color="tertiary" loading>
+            Tertiary Loading
+          </Button>
+          <br />
+          <Button size="tiny" color="outlineSecondary">
+            Outline Secondary
+          </Button>
+          <br />
+          <Button size="tiny" color="outlineTertiary">
+            Outline Tertiary
           </Button>
           <br />
           <Button size="tiny" disabled>

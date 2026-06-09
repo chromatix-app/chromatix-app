@@ -33,8 +33,8 @@ const UserMenu = ({ variant = 'default', withoutLibrary = false }) => {
   const hasSelectedLibrary = currentUser && currentServer && currentLibrary && withoutLibrary === false;
   const hasQueueVisible = queueIsVisible && hasSelectedLibrary;
 
-  const anchorSide = variant === 'Inline' ? 'right' : 'bottom';
-  const anchorAlign = variant === 'Inline' ? 'start' : 'end';
+  const anchorSide = variant === 'SideBar' ? 'right' : 'bottom';
+  const anchorAlign = variant === 'SideBar' ? 'start' : 'end';
 
   return (
     <>
@@ -82,6 +82,7 @@ const UserMenu = ({ variant = 'default', withoutLibrary = false }) => {
                       <React.Fragment key={server.serverId}>
                         <RadixMenu.Item asChild>
                           <button
+                            type="button"
                             className={clsx(style.button, style.buttonServer)}
                             onClick={() => {
                               dispatch.sessionModel.switchCurrentServer(server.serverId);
@@ -104,6 +105,7 @@ const UserMenu = ({ variant = 'default', withoutLibrary = false }) => {
                             return (
                               <RadixMenu.Item key={library.libraryId} asChild>
                                 <button
+                                  type="button"
                                   className={clsx(style.button, style.buttonLibrary, {
                                     [style.buttonCurrent]: isCurrentLibrary,
                                   })}
@@ -141,7 +143,7 @@ const UserMenu = ({ variant = 'default', withoutLibrary = false }) => {
                 <>
                   <RadixMenu.Group className={style.group}>
                     <RadixMenu.Item asChild>
-                      <button className={style.button} onClick={dispatch.sessionModel.unsetCurrentUser}>
+                      <button type="button" className={style.button} onClick={dispatch.sessionModel.unsetCurrentUser}>
                         <span className={style.iconBefore}>
                           <Icon icon="PeopleIcon" cover stroke />
                         </span>
@@ -188,6 +190,7 @@ const UserMenu = ({ variant = 'default', withoutLibrary = false }) => {
 
                 <RadixMenu.Item asChild>
                   <button
+                    type="button"
                     className={style.button}
                     onClick={() => {
                       dispatch.appModel.doLogout();

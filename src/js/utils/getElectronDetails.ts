@@ -1,4 +1,7 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+
+dayjs.extend(advancedFormat);
 
 type PlatformId = 'lin' | 'mac' | 'win' | 'web';
 type RawPlatform = 'darwin' | 'linux' | 'win32';
@@ -39,7 +42,6 @@ const getElectronDetails = (): ElectronDetails => {
   let appPlatformId: PlatformId = 'web';
   let appPlatformName: string = 'Web';
   let electronBuildUnix: number | null = null;
-  let electronBuildMoment: moment.Moment | null = null;
   let electronBuildDate: string | null = null;
   let electronBuildTime: string | null = null;
   let electronPlatformId: PlatformId | null = null;
@@ -51,9 +53,9 @@ const getElectronDetails = (): ElectronDetails => {
     if (window?.electronProcess?.buildDate) {
       const buildDateValue = window.electronProcess.buildDate;
       electronBuildUnix = buildDateValue ? parseInt(buildDateValue, 10) : null;
-      electronBuildMoment = electronBuildUnix ? moment(electronBuildUnix * 1000) : null;
-      electronBuildDate = electronBuildMoment ? electronBuildMoment.format('dddd Do MMMM YYYY') : null;
-      electronBuildTime = electronBuildMoment ? electronBuildMoment.format('HH:mm:ss') : null;
+      const electronBuildDayjs = electronBuildUnix ? dayjs(electronBuildUnix * 1000) : null;
+      electronBuildDate = electronBuildDayjs ? electronBuildDayjs.format('dddd Do MMMM YYYY') : null;
+      electronBuildTime = electronBuildDayjs ? electronBuildDayjs.format('HH:mm:ss') : null;
     }
 
     // Detect Electron platform

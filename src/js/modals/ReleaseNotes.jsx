@@ -26,7 +26,7 @@ const ReleaseNotes = () => {
 
   const handleNext = () => {
     if (currentIndex < whatsNew.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+      setCurrentIndex((prev) => prev + 1);
     } else {
       dispatch.dialogModel.closeModal();
     }
@@ -43,7 +43,9 @@ const ReleaseNotes = () => {
           </Dialog.Title>
 
           <Dialog.Description asChild>
-            <div className={style.body} dangerouslySetInnerHTML={{ __html: currentSlide.body }}></div>
+            <div className={style.body} onClick={(e) => e.target.closest('a') && dispatch.dialogModel.closeModal()}>
+              {currentSlide.body}
+            </div>
           </Dialog.Description>
         </div>
 
@@ -75,7 +77,7 @@ const ReleaseNotes = () => {
         </picture>
       </div>
 
-      <button className={style.closeButton} onClick={() => dispatch.dialogModel.closeModal()}>
+      <button type="button" className={style.closeButton} onClick={() => dispatch.dialogModel.closeModal()}>
         <span className="u-hidden">Close</span>
       </button>
     </ModalWindow>

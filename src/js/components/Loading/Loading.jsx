@@ -20,7 +20,7 @@ export const Loading = ({ forceVisible, inline, route, showOffline }) => {
   if (loaderVisible || forceVisible) {
     // Standard loader
     if (isOnline || !showOffline) {
-      return <div className={clsx(style.loader, { [style.inline]: inline, [style.route]: route })}>Loading...</div>;
+      return <div className={clsx(style.loader, { [style.inline]: inline, [style.route]: route })}>Loading…</div>;
     }
 
     // Offline messaging

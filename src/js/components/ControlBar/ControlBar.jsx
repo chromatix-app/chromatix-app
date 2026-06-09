@@ -173,30 +173,32 @@ export const PrimaryControls = ({ fullPageMode }) => {
   return (
     <div className={clsx(style.primaryControls, { [style.fullPageMode]: fullPageMode })}>
       <button
+        type="button"
         className={clsx(style.shuffle, { [style.active]: playingShuffle })}
         onClick={dispatch.playerModel.playerShuffleToggle}
         disabled={isDisabled}
       >
         <Icon icon="ShuffleIcon" cover stroke />
       </button>
-      <button className={style.rewind} onClick={dispatch.playerModel.playerPrev} disabled={isDisabled}>
+      <button type="button" className={style.rewind} onClick={dispatch.playerModel.playerPrev} disabled={isDisabled}>
         <Icon icon="RewindIcon" cover stroke />
       </button>
       {!playerPlaying && (
-        <button className={style.play} onClick={dispatch.playerModel.playerResume} disabled={isDisabled}>
+        <button type="button" className={style.play} onClick={dispatch.playerModel.playerResume} disabled={isDisabled}>
           <Icon icon="PlayFilledIcon" cover />
         </button>
       )}
       {playerPlaying && (
-        <button className={style.pause} onClick={dispatch.playerModel.playerPause}>
+        <button type="button" className={style.pause} onClick={dispatch.playerModel.playerPause}>
           {!playerLoading && <Icon icon="PauseFilledIcon" cover />}
           {playerLoading && <div className={style.loading}></div>}
         </button>
       )}
-      <button className={style.forward} onClick={dispatch.playerModel.playerNext} disabled={isDisabled}>
+      <button type="button" className={style.forward} onClick={dispatch.playerModel.playerNext} disabled={isDisabled}>
         <Icon icon="FastForwardIcon" cover stroke />
       </button>
       <button
+        type="button"
         className={clsx(style.repeat, { [style.active]: playingRepeatAll || playingRepeatOnce })}
         onClick={dispatch.playerModel.playerRepeatToggle}
         disabled={isDisabled}
@@ -235,7 +237,7 @@ export const SecondaryControls = ({ fullPageMode }) => {
     <div className={clsx(style.secondaryControls, { [style.fullPageMode]: fullPageMode })}>
       <div className={style.secondaryButtons}>
         {fullPageMode && (
-          <button className={style.expand} onClick={dispatch.appModel.fullPageOff}>
+          <button type="button" className={style.expand} onClick={dispatch.appModel.fullPageOff}>
             <Icon icon="CollapseIcon" cover stroke />
           </button>
         )}
@@ -243,13 +245,19 @@ export const SecondaryControls = ({ fullPageMode }) => {
         {fullPageMode && <FullPageMenu />}
 
         {!fullPageMode && controlBarFullPageToggle && (
-          <button className={style.expand} onClick={dispatch.appModel.fullPageOn} disabled={expandDisabled}>
+          <button
+            type="button"
+            className={style.expand}
+            onClick={dispatch.appModel.fullPageOn}
+            disabled={expandDisabled}
+          >
             <Icon icon="ExpandSplitIcon" cover stroke />
           </button>
         )}
 
         {!fullPageMode && controlBarQueueToggle && (
           <button
+            type="button"
             className={clsx(style.queue, { [style.active]: queueIsVisible })}
             onClick={dispatch.sessionModel.queueVisibleToggle}
             disabled={queueDisabled}
@@ -259,7 +267,7 @@ export const SecondaryControls = ({ fullPageMode }) => {
         )}
 
         {controlBarVolumeToggle && (
-          <button className={style.volume} onClick={dispatch.playerModel.volumeMuteToggle}>
+          <button type="button" className={style.volume} onClick={dispatch.playerModel.volumeMuteToggle}>
             <Icon icon={volIcon} cover stroke />
           </button>
         )}

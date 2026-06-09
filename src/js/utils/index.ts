@@ -5,6 +5,7 @@ export { default as durationToStringLong } from './durationToStringLong';
 export { default as durationToStringMed } from './durationToStringMed';
 export { default as durationToStringShort } from './durationToStringShort';
 export { default as formatRecentDate } from './formatRecentDate';
+export { default as formatReleaseYear } from './formatReleaseYear';
 export { default as getEnvironment } from './getEnvironment';
 export { default as getLocalStorage } from './getLocalStorage';
 export { default as getTrackKeys } from './getTrackKeys';

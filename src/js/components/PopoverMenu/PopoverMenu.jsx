@@ -26,11 +26,6 @@ export const PopoverMenu = ({
 }) => {
   const hasGroups = entries.find((entry) => entry.variant === 'sectionHeading');
 
-  // Prevent custom escape handling from running
-  const handleEscapeKeyDown = (event) => {
-    event.stopPropagation();
-  };
-
   const appearanceClass = appearance ? 'content' + appearance.charAt(0).toUpperCase() + appearance.slice(1) : '';
   const variantClass = variant ? 'content' + variant.charAt(0).toUpperCase() + variant.slice(1) : '';
 
@@ -119,6 +114,15 @@ const CheckboxEntry = ({ label, setter, totalEntries, ...entry }) => {
       <span>{label}</span>
     </RadixMenu.CheckboxItem>
   );
+};
+
+// ======================================================================
+// HELPERS
+// ======================================================================
+
+// Prevent custom escape handling from running
+const handleEscapeKeyDown = (event) => {
+  event.stopPropagation();
 };
 
 // ======================================================================

@@ -90,6 +90,7 @@ const StarRating = ({
             const editorValues = useHalfStars ? Array.from({ length: 11 }, (_, i) => i) : [0, 2, 4, 6, 8, 10];
             return editorValues.map((value) => (
               <button
+                type="button"
                 key={value}
                 className={style.edit}
                 onClick={handleEdit}

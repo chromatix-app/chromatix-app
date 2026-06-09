@@ -82,14 +82,14 @@ const SettingsList = ({ title, description, menuItems }) => {
           } else if (type === 'range') {
             return (
               <div key={index} className={style.listEntry}>
-                <label>
-                  <div>
-                    <div className={clsx(style.label, disabled && style.disabled)}>Scrollbar width</div>
-                    <div className={style.range}>
-                      <RangeSlider value={state} isDisabled={disabled} {...props} />
-                    </div>
+                <div>
+                  <label htmlFor={`setting-${key}`} className={clsx(style.label, disabled && style.disabled)}>
+                    {label}
+                  </label>
+                  <div className={style.range}>
+                    <RangeSlider id={`setting-${key}`} value={state} isDisabled={disabled} {...props} />
                   </div>
-                </label>
+                </div>
               </div>
             );
           } else if (type === 'label') {

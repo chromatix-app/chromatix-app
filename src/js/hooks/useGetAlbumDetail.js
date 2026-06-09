@@ -1,9 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import moment from 'moment';
-
 import platformFeatures from 'js/_config/platformFeatures';
-import { durationToStringLong, sortList } from 'js/utils';
+import { durationToStringLong, formatReleaseYear, sortList } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 
 const useGetAlbumDetail = ({ libraryId, albumId }) => {
@@ -50,7 +48,7 @@ const useGetAlbumDetail = ({ libraryId, albumId }) => {
   const albumThumbMedium = albumInfo?.thumbMd;
   const albumTitle = albumInfo?.title;
   const albumArtist = albumInfo?.artist;
-  const albumReleaseDate = albumInfo?.releaseDate ? moment(albumInfo?.releaseDate).format('YYYY') : null;
+  const albumReleaseDate = formatReleaseYear(albumInfo?.releaseDate);
   const albumDiscCount = useMemo(() => {
     return (
       albumTracks?.reduce((acc, entry) => {

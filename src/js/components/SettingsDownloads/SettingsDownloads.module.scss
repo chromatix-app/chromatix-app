@@ -5,28 +5,32 @@
   font-size: 14px;
 }
 
-.downloads {
+.downloadsWrap {
   margin-top: 30px;
+}
 
-  a,
-  .note {
-    display: inline-block;
-    padding: 6px 10px 6px 0;
-    border-radius: 4px;
-    color: var(--color-core);
+.downloadsDivider {
+  height: 12px;
+}
+
+.downloadsLink,
+.downloadsNote {
+  display: inline-block;
+  padding: 6px 10px 6px 0;
+  border-radius: 4px;
+  color: var(--color-core);
+}
+
+.downloadsLink {
+  &:hover {
+    text-decoration: underline;
   }
 
-  a {
-    &:hover {
-      text-decoration: underline;
-    }
+  @include mixins.focus-self-outline;
+}
 
-    @include mixins.focus-self-outline;
-  }
-
-  .note {
-    color: var(--color-opacity-05);
-  }
+.downloadsNote {
+  color: var(--color-opacity-05);
 }
 
 .downloadsIcon {
@@ -35,5 +39,5 @@
   top: -2px;
   width: 20px;
   height: 20px;
-  margin-right: 8px;
+  margin-right: 6px;
 }

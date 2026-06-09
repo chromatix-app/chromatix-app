@@ -8,7 +8,16 @@ import { useHistory, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 
 import Modals from 'js/app/Modals';
-import { ControlBar, ElectronUI, FullPagePlayer, Queue, SideBar, ToastNotification, UserMenu } from 'js/components';
+import {
+  Blocker,
+  ControlBar,
+  ElectronUI,
+  FullPagePlayer,
+  Queue,
+  SideBar,
+  ToastNotification,
+  UserMenu,
+} from 'js/components';
 import {
   useColorTheme,
   useElectronStatus,
@@ -49,6 +58,7 @@ const App = () => {
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const isLightTheme = useSelector(({ sessionModel }) => sessionModel.isLightTheme);
+  const isLightText = useSelector(({ sessionModel }) => sessionModel.isLightText);
   const winCustomScrollbars = useSelector(({ sessionModel }) => sessionModel.winCustomScrollbars);
   const winAutoHideScrollbars = useSelector(({ sessionModel }) => sessionModel.winAutoHideScrollbars);
 
@@ -120,7 +130,8 @@ const App = () => {
   // toggle light mode data attribute on html
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', isLightTheme ? 'light' : 'dark');
-  }, [isLightTheme]);
+    document.documentElement.setAttribute('data-text-theme', isLightText ? 'light' : 'dark');
+  }, [isLightTheme, isLightText]);
 
   // toggle accessibility focus data attribute on html
   useEffect(() => {
@@ -374,7 +385,14 @@ const AppMain = () => {
   }, [contentWidth]);
 
   return (
-    <div className="wrap">
+    <div
+      className="wrap"
+      onContextMenu={(e) => {
+        if (!e.target?.closest?.('input, textarea, select')) {
+          e.preventDefault();
+        }
+      }}
+    >
       {envData.isElectron && <ElectronUI />}
 
       {fullPageMode && <FullPagePlayer />}
@@ -401,6 +419,7 @@ const AppMain = () => {
 
       <Modals />
       <ToastNotification />
+      <Blocker />
     </div>
   );
 };

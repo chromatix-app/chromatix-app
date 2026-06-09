@@ -7,8 +7,6 @@ consistent between music services, and also doing some additional processing and
 // IMPORTS
 // ======================================================================
 
-import { XMLParser } from 'fast-xml-parser';
-
 // ======================================================================
 // OPTIONS
 // ======================================================================
@@ -57,13 +55,12 @@ const transposeAllUserData = (user) => {
 // ======================================================================
 
 export const transposeUserData = (user) => {
-  const parser = new XMLParser({ ignoreAttributes: false });
-  const data = parser.parse(user.data).user;
+  const data = user.data;
   return {
-    displayName: data['@_title'] || data['@_username'],
-    email: data['email'],
-    thumbSm: data['@_thumb'],
-    userId: data['@_id'],
+    displayName: data.title || data.username,
+    email: data.email,
+    thumbSm: data.thumb,
+    userId: data.id,
   };
 };
 
@@ -260,10 +257,16 @@ const transposeFolderData = (folder, libraryId, serverBaseUrl, accessToken) => {
 // PLAYLISTS
 // ======================================================================
 
-export const transposePlaylistArray = (array, libraryId, serverBaseUrl, accessToken, timeStamp) => {
+export const transposePlaylistArray = (array, libraryId, serverBaseUrl, accessToken, timeStamp, allPlaylistEdits) => {
   const data =
     array?.data?.MediaContainer?.Metadata?.map((playlist) =>
-      transposePlaylistData(playlist, libraryId, serverBaseUrl, accessToken, timeStamp)
+      transposePlaylistData(
+        playlist,
+        libraryId,
+        serverBaseUrl,
+        accessToken,
+        timeStamp + (allPlaylistEdits[playlist.ratingKey] || 0)
+      )
     ) || [];
   return data;
 };
@@ -449,6 +452,7 @@ const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
     libraryId: libraryId,
     trackId: track.ratingKey,
     trackKey: track.key,
+    playlistItemID: track.playlistItemID,
     title: track.title,
     // addedAt: track.addedAt,
     artist: artistTitle,

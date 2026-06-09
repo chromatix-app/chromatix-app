@@ -7,11 +7,13 @@ import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import clsx from 'clsx';
-import moment from 'moment';
 
-import { Favourite, Icon, StarRating } from 'js/components';
-import { useScrollToTrack, useScrollToVirtualTrack, useTableOptions, useWindowSize } from 'js/hooks';
-import { durationToStringMed, durationToStringShort, formatRecentDate } from 'js/utils';
+import { ContextMenu, Favourite, Icon, StarRating } from 'js/components';
+import platformFeatures from 'js/_config/platformFeatures';
+import { useScrollToTrack, useScrollToVirtualTrack, useTableOptions, useWindowSize, usePlaylistDrag } from 'js/hooks';
+import { durationToStringMed, durationToStringShort, formatRecentDate, formatReleaseYear } from 'js/utils';
+import * as bridge from 'js/services/bridge';
+import store from 'js/store/store';
 
 import style from './ViewList.module.scss';
 
@@ -21,7 +23,7 @@ import style from './ViewList.module.scss';
 
 const isLocal = import.meta.env.VITE_ENV === 'local';
 
-const virtualThreshold = !isLocal ? 200 : 1;
+const virtualThreshold = !isLocal ? 200 : 50;
 
 // ======================================================================
 // COMPONENT
@@ -210,12 +212,18 @@ const ViewListTracks = ({
     );
   };
 
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
+
   if (entries) {
     const TableBodyComponent = entries.length <= virtualThreshold ? TableBodyStatic : TableBodyVirtual;
 
     // Determine whether to show disc numbers
     const isSorted = sortKey && !sortKey.startsWith('sortOrder');
     const showDiscNumbers = !isSorted && discCount > 1;
+
+    // Drag is only available for playlist tracks in default sort order on services that support playlist management
+    const isDraggable = platformOpts.playlistManagement && tableVariant === 'playlistTracks' && !isSorted;
 
     // If disc numbers are shown, add them into our entries array
     let currentDisc = 0;
@@ -254,10 +262,13 @@ const ViewListTracks = ({
           showDiscNumbers={showDiscNumbers}
           orderKey={orderKey}
           // track related props
+          playlistId={playlistId}
           playerPlaying={playerPlaying}
           playTrack={playTrack}
           pauseTrack={pauseTrack}
           isTrackLoaded={isTrackLoaded}
+          isDraggable={isDraggable}
+          playlistManagement={platformOpts.playlistManagement}
         />
       </div>
     );
@@ -336,18 +347,43 @@ const TableBodyStatic = ({
   tableVariant,
   tableOptions,
   gridTemplateColumns,
+  noArtworkVisible,
   // disc related props
   showDiscNumbers,
   // track related props
+  playlistId,
   playerPlaying,
   playTrack,
   pauseTrack,
   isTrackLoaded,
+  isDraggable,
+  playlistManagement,
 }) => {
   useScrollToTrack();
 
+  const scrollContainerRef = useRef(null);
+
+  const rowHeight = noArtworkVisible ? rowHeightSmall : rowHeightDefault;
+
+  const { draggingItemId, dropIndex, headerHeightRef, handlePointerDown } = usePlaylistDrag({
+    entries,
+    scrollContainerRef,
+    playlistId,
+    rowHeight,
+    isDraggable,
+  });
+
   return (
-    <div id="scrollable" className={clsx(style.scrollableOuter, style.scrollableOuterStatic)}>
+    <div
+      ref={scrollContainerRef}
+      id="scrollable"
+      className={clsx(style.scrollableOuter, style.scrollableOuterStatic, {
+        [style.scrollableDragging]: draggingItemId !== null,
+      })}
+      {...(draggingItemId !== null && {
+        'data-dragging-parent': true,
+      })}
+    >
       <div id="scrollable-inner" className={style.scrollableInner}>
         {titleBlock}
 
@@ -382,10 +418,16 @@ const TableBodyStatic = ({
                 // disc related props
                 showDiscNumbers={showDiscNumbers}
                 // track related props
+                playlistId={playlistId}
                 playerPlaying={playerPlaying}
                 playTrack={playTrack}
                 pauseTrack={pauseTrack}
                 isTrackLoaded={isTrackLoaded}
+                playlistManagement={playlistManagement}
+                // drag related props
+                isDraggable={isDraggable}
+                isDragging={draggingItemId === entry.playlistItemID}
+                onPointerDown={handlePointerDown(entry)}
               />
             );
           }
@@ -403,6 +445,13 @@ const TableBodyStatic = ({
             );
           }
         })}
+
+        {dropIndex !== null && (
+          <div
+            className={style.dropIndicator}
+            style={{ top: `${headerHeightRef.current + dropIndex * rowHeight}px` }}
+          />
+        )}
       </div>
     </div>
   );
@@ -438,14 +487,27 @@ const TableBodyVirtual = ({
   showDiscNumbers,
   orderKey,
   // track related props
+  playlistId,
   playerPlaying,
   playTrack,
   pauseTrack,
   isTrackLoaded,
+  isDraggable,
+  playlistManagement,
 }) => {
   // Element refs
   innerRef = useRef(null);
   const outerRef = useRef(null);
+
+  const rowHeightActualForDrag = noArtworkVisible ? rowHeightSmall : rowHeightDefault;
+
+  const { draggingItemId, dropIndex, headerHeightRef, handlePointerDown } = usePlaylistDrag({
+    entries,
+    scrollContainerRef: outerRef,
+    playlistId,
+    rowHeight: rowHeightActualForDrag,
+    isDraggable,
+  });
 
   // Used when scrolling to a specific track
   const { windowHeight } = useWindowSize();
@@ -532,7 +594,16 @@ const TableBodyVirtual = ({
   useScrollToVirtualTrack(entries, scrollToVirtualTrack);
 
   return (
-    <div ref={outerRef} id="scrollable" className={clsx(style.scrollableOuter, style.scrollableOuterVirtual)}>
+    <div
+      ref={outerRef}
+      id="scrollable"
+      className={clsx(style.scrollableOuter, style.scrollableOuterVirtual, {
+        [style.scrollableDragging]: draggingItemId !== null,
+      })}
+      {...(draggingItemId !== null && {
+        'data-dragging-parent': true,
+      })}
+    >
       <div
         ref={innerRef}
         id="scrollable-inner"
@@ -579,6 +650,7 @@ const TableBodyVirtual = ({
               return (
                 <TrackRow
                   key={virtualEntry.index}
+                  index={virtualEntry.index - fixedElementCount}
                   entry={entry}
                   virtualEntry={virtualEntry}
                   tableVariant={tableVariant}
@@ -587,10 +659,16 @@ const TableBodyVirtual = ({
                   // disc related props
                   showDiscNumbers={showDiscNumbers}
                   // track related props
+                  playlistId={playlistId}
                   playerPlaying={playerPlaying}
                   playTrack={playTrack}
                   pauseTrack={pauseTrack}
                   isTrackLoaded={isTrackLoaded}
+                  playlistManagement={playlistManagement}
+                  // drag related props
+                  isDraggable={isDraggable}
+                  isDragging={draggingItemId === entry.playlistItemID}
+                  onPointerDown={handlePointerDown(entry)}
                 />
               );
             }
@@ -610,6 +688,15 @@ const TableBodyVirtual = ({
             }
           }
         })}
+        {dropIndex !== null && (
+          <div
+            className={style.dropIndicator}
+            style={{
+              top: 0,
+              transform: `translateY(${headerHeightRef.current + dropIndex * rowHeightActualForDrag}px)`,
+            }}
+          />
+        )}
       </div>
     </div>
   );
@@ -775,7 +862,7 @@ const StandardRow = ({ virtualEntry, entry, tableVariant, tableOptions, gridTemp
             case 'releaseDate':
               return (
                 <div key={rowKey + '-' + index} className={clsx(style.releaseDate, 'text-trim')}>
-                  {entry.releaseDate ? moment(entry.releaseDate).format('YYYY') : null}
+                  {formatReleaseYear(entry.releaseDate)}
                 </div>
               );
 
@@ -854,10 +941,16 @@ const TrackRow = ({
   // disc related props
   showDiscNumbers,
   // track related props
+  playlistId,
   playTrack,
   playerPlaying,
   pauseTrack,
   isTrackLoaded,
+  playlistManagement,
+  // drag related props
+  isDraggable,
+  isDragging,
+  onPointerDown,
 }) => {
   const { ratingType, ratingKey } = lookupVariantFields[tableVariant] || {};
   const rowKey = entry.albumId || entry.artistId || entry.playlistId || entry.collectionId;
@@ -883,206 +976,291 @@ const TrackRow = ({
     }
   };
 
+  // [NOTE] the types of track listing variants are:
+  // albumTracks
+  // artistTracks
+  // playlistTracks
+
+  const hasContextAdd = playlistManagement;
+  const hasContextRemove = playlistManagement && tableVariant === 'playlistTracks';
+  const hasContextArtist = !!entry.artistLink && tableVariant !== 'artistTracks';
+  const hasContextAlbum = !!entry.albumLink && tableVariant !== 'albumTracks';
+  const hasContextDivider = (hasContextAdd || hasContextRemove) && (hasContextArtist || hasContextAlbum);
+
+  const contextEntries = [
+    ...(hasContextAdd
+      ? [
+          {
+            variant: 'submenu',
+            label: 'Add to Playlist',
+            icon: 'PlusCircleIcon',
+            getEntries: () => {
+              const playlists = store.getState().appModel.allPlaylists || [];
+              return playlists.map((playlist) => ({
+                label: playlist.title,
+                onSelect: () =>
+                  bridge.addTracksToPlaylist({ playlistId: playlist.playlistId, trackIds: [entry.trackId] }),
+              }));
+            },
+          },
+        ]
+      : []),
+    ...(hasContextRemove
+      ? [
+          {
+            label: 'Remove from Playlist',
+            icon: 'MinusCircleIcon',
+            onSelect: () => bridge.removeTrackFromPlaylist({ playlistId, playlistItemId: entry.playlistItemID }),
+          },
+        ]
+      : []),
+    ...(hasContextDivider ? [{ variant: 'divider' }] : []),
+    ...(hasContextArtist ? [{ label: 'Go to Artist', icon: 'PeopleIcon', to: entry.artistLink }] : []),
+    ...(hasContextAlbum ? [{ label: 'Go to Album', icon: 'PlayCircleIcon', to: entry.albumLink }] : []),
+  ];
+
   return (
-    <div
-      id={entry.trackId}
-      className={clsx(style.entry, {
-        [style.entryPlaying]: trackIsLoaded,
-      })}
-      data-row
-      onDoubleClick={handleDoubleClick}
-      onKeyDown={handleKeyDown}
-      tabIndex={0}
-      style={{
-        ...(virtualEntry && {
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          transform: `translateY(${virtualEntry.start}px)`,
-        }),
-        gridTemplateColumns,
-      }}
-    >
-      {tableOptions
-        .filter((columnOptions) => columnOptions.visible !== false)
-        .map((columnOptions, index) => {
-          switch (columnOptions.colKey) {
-            case 'album':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.album, 'text-trim')}>
-                  {entry.albumLink && (
-                    <NavLink to={entry.albumLink} tabIndex={-1} draggable="false">
-                      {entry.album}{' '}
-                    </NavLink>
-                  )}
-                  {!entry.albumLink && entry.album}
-                </div>
-              );
-
-            case 'artist':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.artist, 'text-trim')}>
-                  {entry.artistLink && (
-                    <NavLink to={entry.artistLink} tabIndex={-1} draggable="false">
-                      {entry.artist}
-                    </NavLink>
-                  )}
-                  {!entry.artistLink && entry.artist}
-                </div>
-              );
-
-            // // Debugging
-            // case 'artist':
-            //   return (
-            //     <div key={rowKey + '-' + index} className={clsx(style.artist, 'text-trim')}>
-            //       {discIndex} - {virtualEntry.index} - {trackIndex}
-            //     </div>
-            //   );
-
-            case 'bitrate':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.bitrate, 'text-trim')}>
-                  {entry.bitrate}
-                </div>
-              );
-
-            case 'codec':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.codec, 'text-trim')}>
-                  {entry.codec?.toUpperCase()}
-                </div>
-              );
-
-            case 'duration':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.duration, 'text-trim')}>
-                  {durationToStringShort(entry.duration)}
-                </div>
-              );
-
-            case 'isFavourite':
-              return (
-                <div key={rowKey + '-' + index} className={style.isFavourite}>
-                  <Favourite
-                    variant="table"
-                    type={ratingType}
-                    itemId={entry[ratingKey]}
-                    isFavourite={entry.isFavourite}
-                    editable
-                  />
-                </div>
-              );
-
-            case 'kind':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.kind, 'text-trim')}>
-                  {entry.kind?.replace('aaa', '')}
-                </div>
-              );
-
-            case 'releaseDate':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.releaseDate, 'text-trim')}>
-                  {entry.releaseDate ? moment(entry.releaseDate).format('YYYY') : null}
-                </div>
-              );
-
-            case 'sortOrder':
-              return (
-                <React.Fragment key={rowKey + '-' + index}>
-                  {!trackIsLoaded && (
-                    <div className={clsx(style.trackNumber, style.colCenter)}>
-                      <span>{trackNumber}</span>
-                      {/* <span>{entry.trackSortOrder}</span> */}
-                    </div>
-                  )}
-
-                  {trackIsLoaded && playerPlaying && (
-                    <div className={style.playingIcon}>
-                      <Icon icon="VolHighIcon" cover stroke />
-                    </div>
-                  )}
-
-                  {trackIsLoaded && !playerPlaying && (
-                    <div className={style.playingPausedIcon}>
-                      <Icon icon="PauseIcon" cover stroke />
-                    </div>
-                    // <div className={style.playingPausedIcon}>
-                    //   <Icon icon="VolOffIcon" cover stroke />
-                    // </div>
-                    // <div className={clsx(style.trackNumber, style.colCenter, style.colorPrimary)}>
-                    //   <span>{trackNumber}</span>
-                    // </div>
-                  )}
-
-                  {!(trackIsLoaded && playerPlaying) && (
-                    <div
-                      className={style.playIcon}
-                      onClick={() => {
-                        playTrack(tableVariant, trackIndex, !trackIsLoaded);
-                      }}
-                    >
-                      <Icon icon="PlayFilledIcon" cover />
-                    </div>
-                  )}
-                  {trackIsLoaded && playerPlaying && (
-                    <div className={style.pauseIcon} onClick={pauseTrack}>
-                      <Icon icon="PauseFilledIcon" cover />
-                    </div>
-                  )}
-                </React.Fragment>
-              );
-
-            case 'thumb':
-              return (
-                <div key={rowKey + '-' + index} className={style.thumb}>
-                  {entry.thumbSm && <img src={entry.thumbSm} alt={entry.title} draggable="false" loading="lazy" />}
-                </div>
-              );
-
-            case 'title':
-              if (tableVariant === 'folders') {
-                return (
-                  <div key={rowKey + '-' + index} className={'text-trim'}>
-                    <div className={clsx(style.title, 'text-trim')}>{entry.title}</div>
-                    <div className={clsx(style.artist, style.smallText, 'text-trim')}>
-                      {entry.artistLink && (
-                        <NavLink to={entry.artistLink} tabIndex={-1} draggable="false">
-                          {entry.artist}
-                        </NavLink>
-                      )}
-                      {!entry.artistLink && entry.artist}
-                    </div>
-                  </div>
-                );
-              } else {
-                return (
-                  <div key={rowKey + '-' + index} className={clsx(style.title, 'text-trim')}>
-                    {entry.title}
-                  </div>
-                );
-              }
-
-            case 'userRating':
-              return (
-                <div key={rowKey + '-' + index} className={style.userRating}>
-                  <StarRating
-                    variant="list"
-                    type={ratingType}
-                    ratingKey={entry[ratingKey]}
-                    rating={entry.userRating}
-                    editable
-                    onlyShowOnHover
-                  />
-                </div>
-              );
-
-            default:
-              return null;
-          }
+    <ContextMenu entries={contextEntries}>
+      <div
+        id={entry.trackId}
+        className={clsx(style.entry, {
+          [style.entryPlaying]: trackIsLoaded,
+          [style.entryDragging]: isDragging,
         })}
-    </div>
+        data-row
+        data-row-index={index}
+        onDoubleClick={handleDoubleClick}
+        onKeyDown={handleKeyDown}
+        onPointerDown={onPointerDown}
+        tabIndex={0}
+        style={{
+          ...(virtualEntry && {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            transform: `translateY(${virtualEntry.start}px)`,
+          }),
+          gridTemplateColumns,
+        }}
+        {...(isDragging && {
+          'data-dragging': true,
+        })}
+      >
+        {tableOptions
+          .filter((columnOptions) => columnOptions.visible !== false)
+          .map((columnOptions, index) => {
+            switch (columnOptions.colKey) {
+              case 'album':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.album, 'text-trim')}>
+                    {entry.albumLink && (
+                      <NavLink to={entry.albumLink} tabIndex={-1} draggable="false">
+                        {entry.album}{' '}
+                      </NavLink>
+                    )}
+                    {!entry.albumLink && entry.album}
+                  </div>
+                );
+
+              case 'artist':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.artist, 'text-trim')}>
+                    {entry.artistLink && (
+                      <NavLink to={entry.artistLink} tabIndex={-1} draggable="false">
+                        {entry.artist}
+                      </NavLink>
+                    )}
+                    {!entry.artistLink && entry.artist}
+                  </div>
+                );
+
+              // // Debugging
+              // case 'artist':
+              //   return (
+              //     <div key={rowKey + '-' + index} className={clsx(style.artist, 'text-trim')}>
+              //       {discIndex} - {virtualEntry.index} - {trackIndex}
+              //     </div>
+              //   );
+
+              case 'bitrate':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.bitrate, 'text-trim')}>
+                    {entry.bitrate}
+                  </div>
+                );
+
+              case 'codec':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.codec, 'text-trim')}>
+                    {entry.codec?.toUpperCase()}
+                  </div>
+                );
+
+              case 'duration':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.duration, 'text-trim')}>
+                    {durationToStringShort(entry.duration)}
+                  </div>
+                );
+
+              case 'isFavourite':
+                return (
+                  <div key={rowKey + '-' + index} className={style.isFavourite}>
+                    <Favourite
+                      variant="table"
+                      type={ratingType}
+                      itemId={entry[ratingKey]}
+                      isFavourite={entry.isFavourite}
+                      editable
+                    />
+                  </div>
+                );
+
+              case 'kind':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.kind, 'text-trim')}>
+                    {entry.kind?.replace('aaa', '')}
+                  </div>
+                );
+
+              case 'releaseDate':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.releaseDate, 'text-trim')}>
+                    {formatReleaseYear(entry.releaseDate)}
+                  </div>
+                );
+
+              case 'sortOrder':
+                return (
+                  <React.Fragment key={rowKey + '-' + index}>
+                    {/* STATUS - NOT PLAYING */}
+                    {!trackIsLoaded && (
+                      <div className={clsx(style.trackNumber, style.colCenter)}>
+                        <span>{trackNumber}</span>
+                      </div>
+                    )}
+
+                    {/* STATUS - PLAYING */}
+                    {trackIsLoaded && playerPlaying && (
+                      <div className={style.playingIcon}>
+                        <Icon icon="VolHighIcon" cover stroke />
+                      </div>
+                    )}
+
+                    {/* STATUS - PAUSED */}
+                    {trackIsLoaded && !playerPlaying && (
+                      <div className={style.playingPausedIcon}>
+                        <Icon icon="PauseIcon" cover stroke />
+                      </div>
+                    )}
+
+                    {/* PLAY ON HOVER */}
+                    {!(trackIsLoaded && playerPlaying) && (
+                      <div
+                        className={style.playIcon}
+                        onClick={() => {
+                          playTrack(tableVariant, trackIndex, !trackIsLoaded);
+                        }}
+                      >
+                        <Icon icon="PlayFilledIcon" cover />
+                      </div>
+                    )}
+
+                    {/* PAUSE ON HOVER */}
+                    {trackIsLoaded && playerPlaying && (
+                      <div className={style.pauseIcon} onClick={pauseTrack}>
+                        <Icon icon="PauseFilledIcon" cover />
+                      </div>
+                    )}
+
+                    {/* DRAG HANDLE */}
+                    {isDraggable && (
+                      <div className={style.dragIcon}>
+                        <Icon icon="ArrowsVerticalIcon" cover stroke />
+                      </div>
+                    )}
+                  </React.Fragment>
+                );
+
+              case 'thumb':
+                return (
+                  <div key={rowKey + '-' + index} className={style.thumb}>
+                    {entry.thumbSm && <img src={entry.thumbSm} alt={entry.title} draggable="false" loading="lazy" />}
+                  </div>
+                );
+
+              case 'title':
+                if (tableVariant === 'folders') {
+                  return (
+                    <div key={rowKey + '-' + index} className={'text-trim'}>
+                      <div className={clsx(style.title, 'text-trim')}>{entry.title}</div>
+                      <div className={clsx(style.artist, style.smallText, 'text-trim')}>
+                        {entry.artistLink && (
+                          <NavLink to={entry.artistLink} tabIndex={-1} draggable="false">
+                            {entry.artist}
+                          </NavLink>
+                        )}
+                        {!entry.artistLink && entry.artist}
+                      </div>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div key={rowKey + '-' + index} className={clsx(style.title, 'text-trim')}>
+                      {entry.title}
+                    </div>
+                  );
+                }
+
+              case 'userRating':
+                return (
+                  <div key={rowKey + '-' + index} className={style.userRating}>
+                    <StarRating
+                      variant="list"
+                      type={ratingType}
+                      ratingKey={entry[ratingKey]}
+                      rating={entry.userRating}
+                      editable
+                      onlyShowOnHover
+                    />
+                  </div>
+                );
+
+              case 'contextMenu':
+                return (
+                  <div key={rowKey + '-' + index} className={style.contextMenu}>
+                    {!!contextEntries.length && (
+                      <button
+                        type="button"
+                        className={style.contextButton}
+                        onDoubleClick={(e) => e.stopPropagation()}
+                        onPointerDown={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          e.currentTarget.dispatchEvent(
+                            new MouseEvent('contextmenu', {
+                              bubbles: true,
+                              cancelable: true,
+                              clientX: rect.left,
+                              clientY: rect.bottom,
+                            })
+                          );
+                        }}
+                      >
+                        <Icon icon="EllipsisIcon" cover />
+                      </button>
+                    )}
+                  </div>
+                );
+
+              default:
+                return null;
+            }
+          })}
+      </div>
+    </ContextMenu>
   );
 };
 

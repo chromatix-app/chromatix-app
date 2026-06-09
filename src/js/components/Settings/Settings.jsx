@@ -254,6 +254,7 @@ export const Settings = () => {
         </NavLink>
 
         <button
+          type="button"
           className={style.entry}
           draggable="false"
           onClick={() => {
