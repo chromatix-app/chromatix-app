@@ -324,201 +324,207 @@ export const authRoutes = [
     : []),
 
   // legacy path redirects — handled by BrowserRouteSwitch
+  // [NOTE] not used locally to avoid masking potential issues with legacy paths during development,
+  // but included in production to avoid breaking existing links and user habits
   // [NOTE] to be removed in future
-  {
-    path: '/artists',
-    xRedirect: '/libraries/:currentLibraryId/artists',
-  },
-  {
-    path: '/artists/:libraryId',
-    xRedirect: '/libraries/:libraryId/artists',
-  },
-  {
-    path: '/artists/:libraryId/:artistId',
-    xRedirect: '/libraries/:libraryId/artists/:artistId',
-  },
+  ...(!isLocal
+    ? [
+        {
+          path: '/artists',
+          xRedirect: '/libraries/:currentLibraryId/artists',
+        },
+        {
+          path: '/artists/:libraryId',
+          xRedirect: '/libraries/:libraryId/artists',
+        },
+        {
+          path: '/artists/:libraryId/:artistId',
+          xRedirect: '/libraries/:libraryId/artists/:artistId',
+        },
 
-  {
-    path: '/album-artists',
-    xRedirect: '/libraries/:currentLibraryId/album-artists',
-  },
-  {
-    path: '/album-artists/:libraryId',
-    xRedirect: '/libraries/:libraryId/album-artists',
-  },
-  {
-    path: '/album-artists/:libraryId/:artistId',
-    xRedirect: '/libraries/:libraryId/album-artists/:artistId',
-  },
+        {
+          path: '/album-artists',
+          xRedirect: '/libraries/:currentLibraryId/album-artists',
+        },
+        {
+          path: '/album-artists/:libraryId',
+          xRedirect: '/libraries/:libraryId/album-artists',
+        },
+        {
+          path: '/album-artists/:libraryId/:artistId',
+          xRedirect: '/libraries/:libraryId/album-artists/:artistId',
+        },
 
-  {
-    path: '/albums',
-    xRedirect: '/libraries/:currentLibraryId/albums',
-  },
-  {
-    path: '/albums/:libraryId',
-    xRedirect: '/libraries/:libraryId/albums',
-  },
-  {
-    path: '/albums/:libraryId/:albumId',
-    xRedirect: '/libraries/:libraryId/albums/:albumId',
-  },
+        {
+          path: '/albums',
+          xRedirect: '/libraries/:currentLibraryId/albums',
+        },
+        {
+          path: '/albums/:libraryId',
+          xRedirect: '/libraries/:libraryId/albums',
+        },
+        {
+          path: '/albums/:libraryId/:albumId',
+          xRedirect: '/libraries/:libraryId/albums/:albumId',
+        },
 
-  {
-    path: '/folders',
-    xRedirect: '/libraries/:currentLibraryId/folders',
-  },
-  {
-    path: '/folders/:libraryId',
-    xRedirect: '/libraries/:libraryId/folders',
-  },
-  {
-    path: '/folders/:libraryId/:folderId',
-    xRedirect: '/libraries/:libraryId/folders/:folderId',
-  },
+        {
+          path: '/folders',
+          xRedirect: '/libraries/:currentLibraryId/folders',
+        },
+        {
+          path: '/folders/:libraryId',
+          xRedirect: '/libraries/:libraryId/folders',
+        },
+        {
+          path: '/folders/:libraryId/:folderId',
+          xRedirect: '/libraries/:libraryId/folders/:folderId',
+        },
 
-  {
-    path: '/playlists',
-    xRedirect: '/libraries/:currentLibraryId/playlists',
-  },
-  {
-    path: '/playlists/:libraryId',
-    xRedirect: '/libraries/:libraryId/playlists',
-  },
-  {
-    path: '/playlists/:libraryId/:playlistId',
-    xRedirect: '/libraries/:libraryId/playlists/:playlistId',
-  },
+        {
+          path: '/playlists',
+          xRedirect: '/libraries/:currentLibraryId/playlists',
+        },
+        {
+          path: '/playlists/:libraryId',
+          xRedirect: '/libraries/:libraryId/playlists',
+        },
+        {
+          path: '/playlists/:libraryId/:playlistId',
+          xRedirect: '/libraries/:libraryId/playlists/:playlistId',
+        },
 
-  {
-    path: '/artist-collections',
-    xRedirect: '/libraries/:currentLibraryId/artist-collections',
-  },
-  {
-    path: '/artist-collections/:libraryId',
-    xRedirect: '/libraries/:libraryId/artist-collections',
-  },
-  {
-    path: '/artist-collections/:libraryId/:collectionId',
-    xRedirect: '/libraries/:libraryId/artist-collections/:collectionId',
-  },
+        {
+          path: '/artist-collections',
+          xRedirect: '/libraries/:currentLibraryId/artist-collections',
+        },
+        {
+          path: '/artist-collections/:libraryId',
+          xRedirect: '/libraries/:libraryId/artist-collections',
+        },
+        {
+          path: '/artist-collections/:libraryId/:collectionId',
+          xRedirect: '/libraries/:libraryId/artist-collections/:collectionId',
+        },
 
-  {
-    path: '/album-collections',
-    xRedirect: '/libraries/:currentLibraryId/album-collections',
-  },
-  {
-    path: '/album-collections/:libraryId',
-    xRedirect: '/libraries/:libraryId/album-collections',
-  },
-  {
-    path: '/album-collections/:libraryId/:collectionId',
-    xRedirect: '/libraries/:libraryId/album-collections/:collectionId',
-  },
+        {
+          path: '/album-collections',
+          xRedirect: '/libraries/:currentLibraryId/album-collections',
+        },
+        {
+          path: '/album-collections/:libraryId',
+          xRedirect: '/libraries/:libraryId/album-collections',
+        },
+        {
+          path: '/album-collections/:libraryId/:collectionId',
+          xRedirect: '/libraries/:libraryId/album-collections/:collectionId',
+        },
 
-  {
-    path: '/artist-genres',
-    xRedirect: '/libraries/:currentLibraryId/artist-genres',
-  },
-  {
-    path: '/artist-genres/:libraryId',
-    xRedirect: '/libraries/:libraryId/artist-genres',
-  },
-  {
-    path: '/artist-genres/:libraryId/:genreId',
-    xRedirect: '/libraries/:libraryId/artist-genres/:genreId',
-  },
+        {
+          path: '/artist-genres',
+          xRedirect: '/libraries/:currentLibraryId/artist-genres',
+        },
+        {
+          path: '/artist-genres/:libraryId',
+          xRedirect: '/libraries/:libraryId/artist-genres',
+        },
+        {
+          path: '/artist-genres/:libraryId/:genreId',
+          xRedirect: '/libraries/:libraryId/artist-genres/:genreId',
+        },
 
-  {
-    path: '/album-genres',
-    xRedirect: '/libraries/:currentLibraryId/album-genres',
-  },
-  {
-    path: '/album-genres/:libraryId',
-    xRedirect: '/libraries/:libraryId/album-genres',
-  },
-  {
-    path: '/album-genres/:libraryId/:genreId',
-    xRedirect: '/libraries/:libraryId/album-genres/:genreId',
-  },
+        {
+          path: '/album-genres',
+          xRedirect: '/libraries/:currentLibraryId/album-genres',
+        },
+        {
+          path: '/album-genres/:libraryId',
+          xRedirect: '/libraries/:libraryId/album-genres',
+        },
+        {
+          path: '/album-genres/:libraryId/:genreId',
+          xRedirect: '/libraries/:libraryId/album-genres/:genreId',
+        },
 
-  {
-    path: '/artist-moods',
-    xRedirect: '/libraries/:currentLibraryId/artist-moods',
-  },
-  {
-    path: '/artist-moods/:libraryId',
-    xRedirect: '/libraries/:libraryId/artist-moods',
-  },
-  {
-    path: '/artist-moods/:libraryId/:moodId',
-    xRedirect: '/libraries/:libraryId/artist-moods/:moodId',
-  },
+        {
+          path: '/artist-moods',
+          xRedirect: '/libraries/:currentLibraryId/artist-moods',
+        },
+        {
+          path: '/artist-moods/:libraryId',
+          xRedirect: '/libraries/:libraryId/artist-moods',
+        },
+        {
+          path: '/artist-moods/:libraryId/:moodId',
+          xRedirect: '/libraries/:libraryId/artist-moods/:moodId',
+        },
 
-  {
-    path: '/album-moods',
-    xRedirect: '/libraries/:currentLibraryId/album-moods',
-  },
-  {
-    path: '/album-moods/:libraryId',
-    xRedirect: '/libraries/:libraryId/album-moods',
-  },
-  {
-    path: '/album-moods/:libraryId/:moodId',
-    xRedirect: '/libraries/:libraryId/album-moods/:moodId',
-  },
+        {
+          path: '/album-moods',
+          xRedirect: '/libraries/:currentLibraryId/album-moods',
+        },
+        {
+          path: '/album-moods/:libraryId',
+          xRedirect: '/libraries/:libraryId/album-moods',
+        },
+        {
+          path: '/album-moods/:libraryId/:moodId',
+          xRedirect: '/libraries/:libraryId/album-moods/:moodId',
+        },
 
-  {
-    path: '/artist-styles',
-    xRedirect: '/libraries/:currentLibraryId/artist-styles',
-  },
-  {
-    path: '/artist-styles/:libraryId',
-    xRedirect: '/libraries/:libraryId/artist-styles',
-  },
-  {
-    path: '/artist-styles/:libraryId/:styleId',
-    xRedirect: '/libraries/:libraryId/artist-styles/:styleId',
-  },
+        {
+          path: '/artist-styles',
+          xRedirect: '/libraries/:currentLibraryId/artist-styles',
+        },
+        {
+          path: '/artist-styles/:libraryId',
+          xRedirect: '/libraries/:libraryId/artist-styles',
+        },
+        {
+          path: '/artist-styles/:libraryId/:styleId',
+          xRedirect: '/libraries/:libraryId/artist-styles/:styleId',
+        },
 
-  {
-    path: '/album-styles',
-    xRedirect: '/libraries/:currentLibraryId/album-styles',
-  },
-  {
-    path: '/album-styles/:libraryId',
-    xRedirect: '/libraries/:libraryId/album-styles',
-  },
-  {
-    path: '/album-styles/:libraryId/:styleId',
-    xRedirect: '/libraries/:libraryId/album-styles/:styleId',
-  },
+        {
+          path: '/album-styles',
+          xRedirect: '/libraries/:currentLibraryId/album-styles',
+        },
+        {
+          path: '/album-styles/:libraryId',
+          xRedirect: '/libraries/:libraryId/album-styles',
+        },
+        {
+          path: '/album-styles/:libraryId/:styleId',
+          xRedirect: '/libraries/:libraryId/album-styles/:styleId',
+        },
 
-  {
-    path: '/artist-tags',
-    xRedirect: '/libraries/:currentLibraryId/artist-tags',
-  },
-  {
-    path: '/artist-tags/:libraryId',
-    xRedirect: '/libraries/:libraryId/artist-tags',
-  },
-  {
-    path: '/artist-tags/:libraryId/:tagId',
-    xRedirect: '/libraries/:libraryId/artist-tags/:tagId',
-  },
+        {
+          path: '/artist-tags',
+          xRedirect: '/libraries/:currentLibraryId/artist-tags',
+        },
+        {
+          path: '/artist-tags/:libraryId',
+          xRedirect: '/libraries/:libraryId/artist-tags',
+        },
+        {
+          path: '/artist-tags/:libraryId/:tagId',
+          xRedirect: '/libraries/:libraryId/artist-tags/:tagId',
+        },
 
-  {
-    path: '/album-tags',
-    xRedirect: '/libraries/:currentLibraryId/album-tags',
-  },
-  {
-    path: '/album-tags/:libraryId',
-    xRedirect: '/libraries/:libraryId/album-tags',
-  },
-  {
-    path: '/album-tags/:libraryId/:tagId',
-    xRedirect: '/libraries/:libraryId/album-tags/:tagId',
-  },
+        {
+          path: '/album-tags',
+          xRedirect: '/libraries/:currentLibraryId/album-tags',
+        },
+        {
+          path: '/album-tags/:libraryId',
+          xRedirect: '/libraries/:libraryId/album-tags',
+        },
+        {
+          path: '/album-tags/:libraryId/:tagId',
+          xRedirect: '/libraries/:libraryId/album-tags/:tagId',
+        },
+      ]
+    : []),
 
   // error
   {
