@@ -189,10 +189,10 @@ function useColorTheme(): void {
         .hex();
 
       colorCardOnPrimaryBg = chroma(colorPrimaryBg)
-        .brighten(0.55 * chromaMultiplierHigh)
+        .brighten(0.4 * chromaMultiplierHigh)
         .hex();
       colorCardOnPrimaryBorder = chroma(colorPrimaryBg)
-        .brighten(0.85 * chromaMultiplierHigh)
+        .brighten(0.8 * chromaMultiplierHigh)
         .hex();
 
       colorCardOnSecondaryBg = chroma(colorPrimaryBg)

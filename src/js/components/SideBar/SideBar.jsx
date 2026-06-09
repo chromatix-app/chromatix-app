@@ -94,7 +94,7 @@ const SideBar = () => {
       <div className={style.wrap}>
         {(envData.electronPlatformId === 'lin' || envData.electronPlatformId === 'win') && (
           <div className={style.userMenu}>
-            <UserMenu variant="Inline" />
+            <UserMenu variant="SideBar" />
           </div>
         )}
 

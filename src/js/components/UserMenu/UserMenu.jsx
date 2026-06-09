@@ -33,8 +33,8 @@ const UserMenu = ({ variant = 'default', withoutLibrary = false }) => {
   const hasSelectedLibrary = currentUser && currentServer && currentLibrary && withoutLibrary === false;
   const hasQueueVisible = queueIsVisible && hasSelectedLibrary;
 
-  const anchorSide = variant === 'Inline' ? 'right' : 'bottom';
-  const anchorAlign = variant === 'Inline' ? 'start' : 'end';
+  const anchorSide = variant === 'SideBar' ? 'right' : 'bottom';
+  const anchorAlign = variant === 'SideBar' ? 'start' : 'end';
 
   return (
     <>
