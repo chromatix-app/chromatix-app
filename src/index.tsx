@@ -48,7 +48,14 @@ root.render(
   <Provider store={store}>
     <BrowserRouter>
       <App />
-      <Analytics debug={false} />
+      <Analytics
+        debug={false}
+        beforeSend={(event) => ({
+          ...event,
+          // Normalise dynamic library IDs so analytics groups all library routes together
+          url: event.url.replace(/\/libraries\/[^/]+/g, '/libraries/x'),
+        })}
+      />
     </BrowserRouter>
   </Provider>
 );

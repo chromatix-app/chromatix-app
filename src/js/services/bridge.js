@@ -1073,7 +1073,7 @@ export const createPlaylist = ({ title }) => {
       await getAllPlaylists();
       // navigate to the new playlist details page
       const newPlaylistId = response.ratingKey;
-      store.getState().appModel.history.push(`/playlists/${libraryId}/${newPlaylistId}`);
+      store.getState().appModel.history.push(`/libraries/${libraryId}/playlists/${newPlaylistId}`);
     })
     .catch((error) => {
       console.error(error);
@@ -1111,6 +1111,7 @@ export const deletePlaylist = ({ playlistId }) => {
   if (!isStoreReady()) return;
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  const { libraryId } = store.getState().sessionModel.currentLibrary;
   return plexTools
     .deletePlaylist({ accessToken, serverBaseUrl, playlistId })
     .then(async () => {
@@ -1118,7 +1119,7 @@ export const deletePlaylist = ({ playlistId }) => {
       // refresh data
       await getAllPlaylists();
       // navigate to playlists page
-      store.getState().appModel.history.push('/playlists');
+      store.getState().appModel.history.push(`/libraries/${libraryId}/playlists`);
     })
     .catch((error) => {
       console.error(error);

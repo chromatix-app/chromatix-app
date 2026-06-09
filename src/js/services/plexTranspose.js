@@ -154,7 +154,7 @@ const transposeArtistData = (artist, libraryId, serverBaseUrl, accessToken) => {
     lastPlayed: artist.lastViewedAt,
     userRating: artist.userRating,
     isFavourite: false,
-    link: '/artists/' + libraryId + '/' + artist.ratingKey,
+    link: '/libraries/' + libraryId + '/artists/' + artist.ratingKey,
     thumbSm: getThumb(artist.thumb, serverBaseUrl, accessToken, thumbSizeSmall),
     thumbMd: getThumb(artist.thumb, serverBaseUrl, accessToken, thumbSizeMedium),
   };
@@ -186,14 +186,14 @@ const transposeAlbumData = (album, libraryId, serverBaseUrl, accessToken) => {
     title: album.title,
     artist: album.parentTitle,
     artistId: album.parentRatingKey,
-    artistLink: '/artists/' + libraryId + '/' + album.parentRatingKey,
+    artistLink: '/libraries/' + libraryId + '/artists/' + album.parentRatingKey,
     genre: album?.Genre?.[0]?.tag,
     addedAt: album.addedAt,
     lastPlayed: album.lastViewedAt,
     userRating: album.userRating,
     isFavourite: false,
     releaseDate: album.originallyAvailableAt,
-    link: '/albums/' + libraryId + '/' + album.ratingKey,
+    link: '/libraries/' + libraryId + '/albums/' + album.ratingKey,
     thumbSm: getThumb(album.thumb, serverBaseUrl, accessToken, thumbSizeSmall),
     thumbMd: getThumb(album.thumb, serverBaseUrl, accessToken, thumbSizeMedium),
   };
@@ -249,7 +249,7 @@ const transposeFolderData = (folder, libraryId, serverBaseUrl, accessToken) => {
     libraryId: libraryId,
     folderId: folderId,
     title: folder.title,
-    link: '/folders/' + libraryId + '/' + folderId,
+    link: '/libraries/' + libraryId + '/folders/' + folderId,
   };
 };
 
@@ -303,7 +303,7 @@ const transposePlaylistData = (playlist, libraryId, serverBaseUrl, accessToken, 
     lastPlayed: playlist.lastViewedAt,
     userRating: playlist.userRating,
     isFavourite: false,
-    link: '/playlists/' + libraryId + '/' + playlist.ratingKey,
+    link: '/libraries/' + libraryId + '/playlists/' + playlist.ratingKey,
     totalTracks: playlist.leafCount,
     duration: playlist.duration,
     thumbSm: getThumb(playlistThumb, serverBaseUrl, accessToken, thumbSizeSmall),
@@ -347,9 +347,9 @@ const transposeCollectionData = (collection, libraryId, serverBaseUrl, accessTok
     userRating: collection.userRating,
     type: collection.subtype,
     link:
-      (collection.subtype === 'artist' ? '/artist-collections/' : '/album-collections/') +
+      '/libraries/' +
       libraryId +
-      '/' +
+      (collection.subtype === 'artist' ? '/artist-collections/' : '/album-collections/') +
       collection.ratingKey,
     thumbSm: getThumb(collectionThumb, serverBaseUrl, accessToken, thumbSizeSmall),
     thumbMd: getThumb(collectionThumb, serverBaseUrl, accessToken, thumbSizeMedium),
@@ -402,7 +402,7 @@ const transposeGenreData = (type, genre, libraryId) => {
     libraryId: libraryId,
     genreId: genre.key,
     title: genre.title.replace(/\//g, ' & '),
-    link: '/' + type + '-genres/' + libraryId + '/' + genre.key,
+    link: '/libraries/' + libraryId + '/' + type + '-genres/' + genre.key,
   };
 };
 
@@ -412,7 +412,7 @@ const transposeMoodData = (type, mood, libraryId) => {
     libraryId: libraryId,
     moodId: mood.key,
     title: mood.title.replace(/\//g, ' & '),
-    link: '/' + type + '-moods/' + libraryId + '/' + mood.key,
+    link: '/libraries/' + libraryId + '/' + type + '-moods/' + mood.key,
   };
 };
 
@@ -422,7 +422,7 @@ const transposeStyleData = (type, style, libraryId) => {
     libraryId: libraryId,
     styleId: style.key,
     title: style.title.replace(/\//g, ' & '),
-    link: '/' + type + '-styles/' + libraryId + '/' + style.key,
+    link: '/libraries/' + libraryId + '/' + type + '-styles/' + style.key,
   };
 };
 
@@ -443,7 +443,7 @@ const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
   const isLikelyAppearance = track.originalTitle && track.originalTitle !== track.grandparentTitle;
 
   const artistTitle = isLikelyAppearance ? track.originalTitle : track.grandparentTitle;
-  const artistLink = isLikelyAppearance ? null : '/artists/' + libraryId + '/' + track.grandparentRatingKey;
+  const artistLink = isLikelyAppearance ? null : '/libraries/' + libraryId + '/artists/' + track.grandparentRatingKey;
 
   const originalSrc = `${serverBaseUrl}${track.Media[0].Part[0].key}?X-Plex-Token=${accessToken}`;
 
@@ -459,7 +459,7 @@ const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
     artistLink: artistLink,
     album: track.parentTitle,
     albumId: track.parentRatingKey,
-    albumLink: '/albums/' + libraryId + '/' + track.parentRatingKey,
+    albumLink: '/libraries/' + libraryId + '/albums/' + track.parentRatingKey,
     trackNumber: track.index,
     discNumber: track.parentIndex,
     codec: track.Media[0].audioCodec,
@@ -512,7 +512,7 @@ const transposeSearchResultData = (result, libraryId, serverBaseUrl, accessToken
         type: 'artist',
         icon: 'PeopleIcon',
         title: result.title,
-        link: '/artists/' + libraryId + '/' + result.ratingKey,
+        link: '/libraries/' + libraryId + '/artists/' + result.ratingKey,
         thumbSm: getThumb(result.thumb, serverBaseUrl, accessToken, thumbSizeSmall),
       };
     } else if (result.type === 'album') {
@@ -522,7 +522,7 @@ const transposeSearchResultData = (result, libraryId, serverBaseUrl, accessToken
         type: 'album',
         icon: 'PlayCircleIcon',
         title: result.title,
-        link: '/albums/' + libraryId + '/' + result.ratingKey,
+        link: '/libraries/' + libraryId + '/albums/' + result.ratingKey,
         thumbSm: getThumb(result.thumb, serverBaseUrl, accessToken, thumbSizeSmall),
       };
     } else if (result.type === 'playlist') {
@@ -533,7 +533,7 @@ const transposeSearchResultData = (result, libraryId, serverBaseUrl, accessToken
         type: 'playlist',
         icon: 'PlaylistIcon',
         title: result.title,
-        link: '/playlists/' + libraryId + '/' + result.ratingKey,
+        link: '/libraries/' + libraryId + '/playlists/' + result.ratingKey,
         thumbSm: getThumb(playlistThumb, serverBaseUrl, accessToken, thumbSizeSmall),
       };
     } else if (result.type === 'collection') {
@@ -545,9 +545,9 @@ const transposeSearchResultData = (result, libraryId, serverBaseUrl, accessToken
         icon: result.subtype === 'artist' ? 'ArtistCollectionsIcon' : 'AlbumCollectionsIcon',
         title: result.title,
         link:
-          (result.subtype === 'artist' ? '/artist-collections/' : '/album-collections/') +
+          '/libraries/' +
           libraryId +
-          '/' +
+          (result.subtype === 'artist' ? '/artist-collections/' : '/album-collections/') +
           result.ratingKey,
         thumbSm: getThumb(collectionThumb, serverBaseUrl, accessToken, thumbSizeSmall),
       };
@@ -558,7 +558,7 @@ const transposeSearchResultData = (result, libraryId, serverBaseUrl, accessToken
         type: 'track',
         icon: 'MusicNoteSingleIcon',
         title: result.title,
-        link: '/albums/' + libraryId + '/' + result.parentRatingKey,
+        link: '/libraries/' + libraryId + '/albums/' + result.parentRatingKey,
         thumbSm: getThumb(result.thumb, serverBaseUrl, accessToken, thumbSizeSmall),
       };
     }
