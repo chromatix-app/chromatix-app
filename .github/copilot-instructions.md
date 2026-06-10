@@ -205,8 +205,22 @@ Set via `import.meta.env` (Vite convention, prefixed `VITE_`):
   // ======================================================================
   ```
 - SVG components use the Vite-native `?react` import suffix: `import FooIcon from './foo.svg?react'`
-- New icons are added to `src/js/components/Icon/icons/general-original/` (or `site-original/` for service logos). Before compressing, ensure the SVG conforms to the project format: `fill="none"` on the root `<svg>`, no hardcoded `stroke` colour or inline `style` attributes on paths, `stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"` on every path. After fixing the source file, run `npm run svg:compress:new` — this produces the compressed version in `general-compressed/`. Always import from `general-compressed/`. Register the component in the `generalIcons` (or `siteIcons`) object in `Icon.jsx`, alphabetically.
+- See **Adding Icons** below for the full icon workflow
 - Do **not** use Prettier as an ESLint plugin — run `npm run prettier` separately; `eslint-config-prettier` disables conflicting formatting rules
+
+## Adding Icons
+
+1. Place the raw SVG in `src/js/components/Icon/icons/general-original/` (or `site-original/` for service logos)
+2. Conform the SVG to the project format before compressing:
+   - Root `<svg>` must have `fill="none"`
+   - Remove all hardcoded `stroke` colour attributes (e.g. `stroke="white"`)
+   - Remove all inline `style` attributes from paths
+   - Remove `stroke-width` attributes from paths
+   - Remove `<g clip-path>` wrappers and `<defs>` / `<clipPath>` blocks
+   - Every path must have `stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"`
+3. Run `npm run svg:compress:new` — this writes the optimised file to `general-compressed/` (skipping already-compressed files; delete the compressed copy first if you need to re-compress)
+4. Add the import to `Icon.jsx`, importing from `general-compressed/`, in alphabetical order
+5. Register the component in the `generalIcons` object (or `siteIcons` for site logos) in alphabetical order
 
 ## Response Style
 

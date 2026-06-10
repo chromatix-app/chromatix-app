@@ -59,6 +59,7 @@ import GithubIcon from './icons/general-compressed/github.svg?react';
 import GridIcon from './icons/general-compressed/grid-small.svg?react';
 import HeartIcon from './icons/general-compressed/heart.svg?react';
 import InfoIcon from './icons/general-compressed/info.svg?react';
+import KeyboardIcon from './icons/general-original/keyboard.svg?react'; // [NOTE] use original due to small details
 import LastFMIcon from './icons/general-compressed/lastfm.svg?react';
 import ListIcon from './icons/general-compressed/list-small.svg?react';
 import LogoutIcon from './icons/general-compressed/logout.svg?react';
@@ -85,6 +86,8 @@ import PlaylistIcon from './icons/general-compressed/playlist.svg?react';
 import PlusCircleIcon from './icons/general-compressed/plus-circle.svg?react';
 import PlusIcon from './icons/general-compressed/plus.svg?react';
 import PreviousIcon from './icons/general-compressed/previous.svg?react';
+import QueueAfterIcon from './icons/general-compressed/queue-after.svg?react';
+import QueueBeforeIcon from './icons/general-compressed/queue-before.svg?react';
 import QueueIcon from './icons/general-compressed/queue.svg?react';
 import RedditIcon from './icons/general-compressed/reddit.svg?react';
 import RepeatAllIcon from './icons/general-compressed/repeat-all.svg?react';
@@ -177,6 +180,7 @@ export const generalIcons = {
   GridIcon,
   HeartIcon,
   InfoIcon,
+  KeyboardIcon,
   LastFMIcon,
   ListIcon,
   LogoutIcon,
@@ -203,6 +207,8 @@ export const generalIcons = {
   PlusCircleIcon,
   PlusIcon,
   PreviousIcon,
+  QueueAfterIcon,
+  QueueBeforeIcon,
   QueueIcon,
   RedditIcon,
   RepeatAllIcon,
