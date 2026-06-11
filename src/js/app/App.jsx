@@ -387,9 +387,9 @@ const AppMain = () => {
   return (
     <div
       className="wrap"
-      onContextMenu={(e) => {
-        if (!e.target?.closest?.('input, textarea, select')) {
-          e.preventDefault();
+      onContextMenu={(event) => {
+        if (!event.target?.closest?.('input, textarea, select')) {
+          event.preventDefault();
         }
       }}
     >

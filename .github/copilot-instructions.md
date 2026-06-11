@@ -198,6 +198,7 @@ Set via `import.meta.env` (Vite convention, prefixed `VITE_`):
 - Use `getEnvironment()` from `js/utils` as the single source of truth for environment, browser, OS, and Electron info — do not access `import.meta.env` or `navigator` directly for these
 - Use `getLocalStorage` / `setLocalStorage` from `js/utils` for all localStorage access
 - Use `safeEncodeURIComponent` / `safeDecodeURIComponent` from `js/utils` rather than the native globals
+- All top-level exports in `js/hooks/` and `js/utils/` must have a clear, succinct JSDoc comment. Keep descriptions brief and factual — one sentence for simple functions, a few lines for complex ones. Include `@param` and `@returns` tags only when they add meaningful clarity beyond what the types convey
 - Section comments use a consistent three-line banner style — a divider, a title, then a closing divider:
   ```
   // ======================================================================
