@@ -62,13 +62,18 @@ const useKeyMediaControls = (handlers: KeyMediaControlHandlers): null => {
 
       // Skip space shortcut when focus is on an element that uses space for its own activation
       const activeRole = activeElement?.getAttribute('role');
+      const allowKeyControls = activeElement?.closest('[data-allow-key-controls]');
       const isSpaceActivatable =
-        activeElement?.tagName === 'BUTTON' ||
-        activeElement?.tagName === 'A' ||
-        (activeRole && SPACE_ACTIVATABLE_ROLES.includes(activeRole));
+        !allowKeyControls &&
+        (activeElement?.tagName === 'BUTTON' ||
+          activeElement?.tagName === 'A' ||
+          (activeRole && SPACE_ACTIVATABLE_ROLES.includes(activeRole)));
 
       // Skip arrow key shortcuts when focus is on an element that uses arrow keys for its own navigation
-      const isArrowNavigable = activeRole && ARROW_NAVIGABLE_ROLES.includes(activeRole);
+      const isArrowNavigable =
+        !allowKeyControls &&
+        ((activeElement?.tagName === 'INPUT' && (activeElement as HTMLInputElement).type === 'range') ||
+          (activeRole && ARROW_NAVIGABLE_ROLES.includes(activeRole)));
 
       switch (event.key) {
         case 'MediaPlayPause':

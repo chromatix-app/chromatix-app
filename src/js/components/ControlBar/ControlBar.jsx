@@ -20,7 +20,7 @@ import style from './ControlBar.module.scss';
 
 const ControlBar = () => {
   return (
-    <div className={style.wrap}>
+    <div className={style.wrap} data-allow-key-controls>
       <div className={style.leftSection}>
         <NowPlaying />
       </div>
@@ -275,7 +275,11 @@ export const SecondaryControls = ({ fullPageMode }) => {
 
       {controlBarVolumeSlider && (
         <div className={style.volSlider}>
-          <RangeSlider value={volumeMuted ? 0 : volumeLevel} handleChange={dispatch.playerModel.volumeLevelSet} />
+          <RangeSlider
+            value={volumeMuted ? 0 : volumeLevel}
+            handleChange={dispatch.playerModel.volumeLevelSet}
+            allowAccess={false}
+          />
         </div>
       )}
 
@@ -405,6 +409,7 @@ export const ControlProgress = () => {
           handleMouseDown={handleProgressMouseDown}
           handleMouseUp={handleProgressMouseUp}
           isDisabled={isDisabled}
+          allowAccess={false}
         />
       </div>
       <div className={style.scrubRight}>{!isDisabled && durationToStringShort(trackCurrent?.duration)}</div>

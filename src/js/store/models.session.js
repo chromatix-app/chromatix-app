@@ -29,7 +29,10 @@ const sessionState = {
 
   // DEV OPTIONS
 
-  devSettingsCheck: true,
+  devSettingsCheck1: true,
+  devSettingsCheck2: true,
+  devSettingsCheck3: true,
+  devSettingsCheck4: true,
   devSettingsRadio: 'option1',
   devSettingsRange: 5,
   devSettingsTabGroup: 'option1',
