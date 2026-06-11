@@ -5,7 +5,7 @@
 import { useDispatch } from 'react-redux';
 import clsx from 'clsx';
 
-import { FormTabGroup, RangeSlider } from 'js/components';
+import { FormTabGroup, Icon, RangeSlider } from 'js/components';
 
 import style from './SettingsList.module.scss';
 
@@ -38,13 +38,16 @@ const SettingsList = ({ title, description, menuItems, padded }) => {
           } else if (type === 'checkbox') {
             return (
               <div key={index} className={style.listEntry} data-focus-outline>
-                <label>
+                <label className={style.checkboxLabel}>
                   <input
                     type="checkbox"
                     checked={state}
                     onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
                     disabled={disabled}
                   />
+                  <span aria-hidden="true" className={style.checkboxIndicator}>
+                    {state && <Icon icon="CheckIcon" cover stroke strokeWidth={2} />}
+                  </span>
                   <div>
                     {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
                     {description && (

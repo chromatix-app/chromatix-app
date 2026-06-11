@@ -32,7 +32,7 @@ import CheckCircleCheckedIcon from './icons/general-compressed/check-circle-chec
 import CheckCircleEmptyIcon from './icons/general-compressed/check-circle-empty.svg?react';
 import CheckCircleFilledIcon from './icons/general-compressed/check-circle-filled.svg?react';
 import CheckCircleMiddleIcon from './icons/general-compressed/check-circle-middle.svg?react';
-// import CheckIcon from './icons/general-compressed/check.svg?react';
+import CheckIcon from './icons/general-compressed/check.svg?react';
 // import CheckSquareCheckedIcon from './icons/general-compressed/check-square-checked.svg?react';
 import CheckSquareEmptyIcon from './icons/general-compressed/check-square-empty.svg?react';
 import CheckSquareFilledIcon from './icons/general-compressed/check-square-filled.svg?react';
@@ -153,7 +153,7 @@ export const generalIcons = {
   CheckCircleEmptyIcon,
   CheckCircleFilledIcon,
   CheckCircleMiddleIcon,
-  // CheckIcon,
+  CheckIcon,
   // CheckSquareCheckedIcon,
   CheckSquareEmptyIcon,
   CheckSquareFilledIcon,

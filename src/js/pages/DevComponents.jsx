@@ -27,7 +27,10 @@ import {
 
 const Component = () => {
   const dispatch = useDispatch();
-  const devSettingsCheck = useSelector(({ sessionModel }) => sessionModel.devSettingsCheck);
+  const devSettingsCheck1 = useSelector(({ sessionModel }) => sessionModel.devSettingsCheck1);
+  const devSettingsCheck2 = useSelector(({ sessionModel }) => sessionModel.devSettingsCheck2);
+  const devSettingsCheck3 = useSelector(({ sessionModel }) => sessionModel.devSettingsCheck3);
+  const devSettingsCheck4 = useSelector(({ sessionModel }) => sessionModel.devSettingsCheck4);
   const devSettingsTabGroup = useSelector(({ sessionModel }) => sessionModel.devSettingsTabGroup);
   const devSettingsRadio = useSelector(({ sessionModel }) => sessionModel.devSettingsRadio);
   const devSettingsRange = useSelector(({ sessionModel }) => sessionModel.devSettingsRange);
@@ -240,37 +243,45 @@ const Component = () => {
               },
               {
                 type: 'checkbox',
-                key: 'devSettingsCheck',
+                key: 'devSettingsCheck1',
                 label: 'Checkbox item',
-                state: devSettingsCheck,
+                state: devSettingsCheck1,
               },
               {
                 type: 'checkbox',
-                key: 'devSettingsCheck',
+                key: 'devSettingsCheck2',
                 label: 'Checkbox item lorem ipsum dolor sit amet consectetur adipiscing elit',
-                state: devSettingsCheck,
+                state: devSettingsCheck2,
               },
               {
                 type: 'checkbox',
-                key: 'devSettingsCheck',
+                key: 'devSettingsCheck3',
                 label: 'Checkbox item lorem ipsum dolor sit amet consectetur adipiscing elit',
                 description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit.',
-                state: devSettingsCheck,
+                state: devSettingsCheck3,
               },
               {
                 type: 'checkbox',
-                key: 'devSettingsCheck',
+                key: 'devSettingsCheck4',
                 label: 'Checkbox item lorem ipsum dolor sit amet consectetur adipiscing elit',
                 description:
                   'Lorem ipsum dolor sit amet consectetur adipiscing elit. Sed sed ligula non elit facilisis pretium eu ut mi. Aenean blandit enim sit amet velit lacinia, eget luctus nisi semper. Nam ut rhoncus eros, ac iaculis purus. Morbi ornare vestibulum neque vel sodales. Maecenas mattis id lacus ut finibus.',
-                state: devSettingsCheck,
+                state: devSettingsCheck4,
               },
               {
                 type: 'checkbox',
-                key: 'devSettingsCheckDisabled',
+                key: 'devSettingsCheck1Disabled',
                 label: 'Checkbox item (disabled)',
                 description: 'This option is currently unavailable.',
                 state: false,
+                disabled: true,
+              },
+              {
+                type: 'checkbox',
+                key: 'devSettingsCheck1Disabled',
+                label: 'Checkbox item (disabled)',
+                description: 'This option is currently unavailable.',
+                state: true,
                 disabled: true,
               },
               {

@@ -34,17 +34,17 @@
     margin: 0 auto 0 0;
   }
 
-  input[type='checkbox'] {
-    margin: 0 10px 0 0;
-  }
-
+  // Visually hide native inputs while keeping them accessible and focusable
+  input[type='checkbox'],
   input[type='radio'] {
-    margin: 0 10px 0 0;
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+    cursor: pointer;
   }
-}
-
-.spacer {
-  height: 20px;
 }
 
 .label {
@@ -65,24 +65,69 @@
   }
 }
 
-.range {
-  display: block;
-  width: 160px;
+.spacer {
+  height: 20px;
 }
+
+//
+// CHECKBOX
+//
+
+.checkboxLabel {
+  // Custom checkbox indicator span
+  input[type='checkbox'] + span + div {
+    position: relative;
+  }
+
+  .checkboxIndicator {
+    display: block;
+    position: relative;
+    flex: 0 0 auto;
+    width: 14px;
+    height: 14px;
+    margin: 0 10px 0 0;
+    border: 1px solid var(--color-opacity-05);
+    border-radius: 2px;
+    font-size: 0;
+    color: var(--color-primary-bg);
+
+    > span {
+      display: block;
+      position: absolute;
+      top: 1px;
+      left: 1px;
+      width: 10px;
+      height: 10px;
+    }
+  }
+
+  input[type='checkbox']:checked + .checkboxIndicator {
+    background: var(--color-core);
+    border-color: var(--color-core);
+  }
+
+  input[type='checkbox']:disabled + .checkboxIndicator {
+    opacity: var(--opacity-04);
+  }
+}
+
+//
+// RADIO
+//
 
 .radioGroup {
   display: flex;
+  clear: both;
   flex-direction: column;
   gap: 7px;
   margin-top: 7px;
-  clear: both;
 }
 
 .radioFieldset {
-  border: none;
-  margin: 0;
-  padding: 0;
   min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
 
   legend {
     float: left;
@@ -101,4 +146,42 @@
     align-items: center;
     margin: 0 auto 0 0;
   }
+
+  // Custom radio: ::before on the sibling span
+  input[type='radio'] + span {
+    position: relative;
+    padding-left: 24px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      box-sizing: border-box;
+      top: 2px;
+      left: 0;
+      width: 14px;
+      height: 14px;
+      border: 1px solid var(--color-opacity-05);
+      border-radius: 50%;
+    }
+  }
+
+  input[type='radio']:checked + span::before {
+    background: var(--color-core);
+    border-color: var(--color-core);
+    box-shadow: inset 0 0 0 2px var(--color-primary-bg);
+  }
+
+  input[type='radio']:disabled + span::before {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+
+//
+// RANGE
+//
+
+.range {
+  display: block;
+  width: 160px;
 }
