@@ -44,8 +44,11 @@
     "prepare": "husky"
   },
   "lint-staged": {
+    "ignore": [
+      "**/_archived/**"
+    ],
     "src/**/*.{js,jsx,ts,tsx}": [
-      "eslint --max-warnings=0",
+      "eslint --max-warnings=0 --no-warn-ignored",
       "prettier --check"
     ],
     "**/*.{json,css,scss,md}": [
