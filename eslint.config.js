@@ -7,7 +7,7 @@ import prettierConfig from 'eslint-config-prettier';
 import globals from 'globals';
 
 export default tseslint.config(
-  { ignores: ['build/**', 'public/**', 'eslint.config.js'] },
+  { ignores: ['build/**', 'public/**', 'eslint.config.js', '**/_archived/**'] },
 
   // Base
   js.configs.recommended,
