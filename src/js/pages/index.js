@@ -50,6 +50,7 @@ export { default as SettingsChangelog } from './SettingsChangelog';
 export { default as SettingsControls } from './SettingsControls';
 export { default as SettingsDownloads } from './SettingsDownloads';
 export { default as SettingsGeneral } from './SettingsGeneral';
+export { default as SettingsKeyboard } from './SettingsKeyboard';
 export { default as SettingsLastFM } from './SettingsLastFM';
 export { default as SettingsSidebar } from './SettingsSidebar';
 

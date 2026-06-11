@@ -282,6 +282,11 @@ export const authRoutes = [
     component: 'SettingsGeneral',
   },
   {
+    path: '/settings/keyboard',
+    exact: true,
+    component: 'SettingsKeyboard',
+  },
+  {
     path: '/settings/lastfm',
     exact: true,
     component: 'SettingsLastFM',

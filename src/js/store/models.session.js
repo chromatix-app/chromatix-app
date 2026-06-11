@@ -64,6 +64,12 @@ const sessionState = {
   winAutoHideScrollbars: false,
   winScrollbarWidth: 12,
 
+  // KEYBOARD OPTIONS
+
+  keyboardMediaKeys: true,
+  keyboardSpace: true,
+  keyboardArrows: true,
+
   // MENU / SIDEBAR OPTIONS
 
   menuShowBanners: true,
