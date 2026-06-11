@@ -10,6 +10,7 @@ import {
   SettingsControls,
   SettingsDownloads,
   SettingsGeneral,
+  SettingsKeyboard,
   SettingsSidebar,
   TitleHeading,
 } from 'js/components';
@@ -25,6 +26,7 @@ const Component = () => {
       <SettingsGeneral debug={true} />
       <SettingsBrowse debug={true} />
       <SettingsAppearance debug={true} />
+      <SettingsKeyboard />
       <SettingsSidebar />
       <SettingsControls />
       <SettingsDownloads />

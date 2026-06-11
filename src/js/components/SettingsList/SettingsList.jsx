@@ -13,11 +13,11 @@ import style from './SettingsList.module.scss';
 // COMPONENT
 // ======================================================================
 
-const SettingsList = ({ title, description, menuItems }) => {
+const SettingsList = ({ title, description, menuItems, padded }) => {
   const dispatch = useDispatch();
 
   return (
-    <div className="settingsGroup">
+    <div className={clsx('settingsGroup', padded === false && 'settingsGroupNoPadding')}>
       {title && <div className={style.title}>{title}</div>}
 
       {description && <div className={style.topDescription}>{description}</div>}
@@ -26,6 +26,15 @@ const SettingsList = ({ title, description, menuItems }) => {
         {menuItems.map(({ type = 'checkbox', key, label, description, state, disabled, props, options }, index) => {
           if (type === 'spacer') {
             return <div key={index} className={style.spacer} />;
+          } else if (type === 'label') {
+            return (
+              <div key={index} className={style.listEntry}>
+                {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
+                {description && (
+                  <div className={clsx(style.description, disabled && style.disabled)}>{description}</div>
+                )}
+              </div>
+            );
           } else if (type === 'checkbox') {
             return (
               <div key={index} className={style.listEntry} data-focus-outline>
@@ -45,40 +54,6 @@ const SettingsList = ({ title, description, menuItems }) => {
                 </label>
               </div>
             );
-          } else if (type === 'radio') {
-            return (
-              <div key={index} className={style.listEntry}>
-                <div>
-                  {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
-                  {description && (
-                    <div className={clsx(style.description, disabled && style.disabled)}>{description}</div>
-                  )}
-
-                  <FormTabGroup
-                    name={key}
-                    value={state}
-                    onChange={(val) => dispatch.sessionModel.setSessionState({ [key]: val })}
-                    options={options}
-                    disabled={disabled}
-                  />
-
-                  {/* <div className={style.radioGroup}>
-                    {options?.map(({ label: optionLabel, value }) => (
-                      <label key={value} className={style.radioOption}>
-                        <input
-                          type="radio"
-                          name={key}
-                          checked={state === value}
-                          onChange={() => dispatch.sessionModel.setSessionState({ [key]: value })}
-                          disabled={disabled}
-                        />
-                        <span className={clsx(style.label, disabled && style.disabled)}>{optionLabel}</span>
-                      </label>
-                    ))}
-                  </div> */}
-                </div>
-              </div>
-            );
           } else if (type === 'range') {
             return (
               <div key={index} className={style.listEntry}>
@@ -86,19 +61,56 @@ const SettingsList = ({ title, description, menuItems }) => {
                   <label htmlFor={`setting-${key}`} className={clsx(style.label, disabled && style.disabled)}>
                     {label}
                   </label>
+                  {description && (
+                    <div className={clsx(style.description, disabled && style.disabled)}>{description}</div>
+                  )}
                   <div className={style.range}>
                     <RangeSlider id={`setting-${key}`} value={state} isDisabled={disabled} {...props} />
                   </div>
                 </div>
               </div>
             );
-          } else if (type === 'label') {
+          } else if (type === 'radio') {
             return (
-              <div key={index} className={style.listEntry}>
-                {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
+              <fieldset key={index} className={clsx(style.listEntry, style.radioFieldset)}>
+                {label && <legend className={clsx(style.label, disabled && style.disabled)}>{label}</legend>}
                 {description && (
                   <div className={clsx(style.description, disabled && style.disabled)}>{description}</div>
                 )}
+                <div className={style.radioGroup}>
+                  {options?.map(({ label: optionLabel, value: optionValue }) => (
+                    <div key={optionValue} className={style.radioOption} data-focus-outline>
+                      <label>
+                        <input
+                          type="radio"
+                          name={key}
+                          checked={state === optionValue}
+                          onChange={() => dispatch.sessionModel.setSessionState({ [key]: optionValue })}
+                          disabled={disabled}
+                        />
+                        <span className={clsx(style.label, disabled && style.disabled)}>{optionLabel}</span>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </fieldset>
+            );
+          } else if (type === 'tabGroup') {
+            return (
+              <div key={index} className={style.listEntry}>
+                <div>
+                  {label && <div className={clsx(style.label, disabled && style.disabled)}>{label}</div>}
+                  {description && (
+                    <div className={clsx(style.description, disabled && style.disabled)}>{description}</div>
+                  )}
+                  <FormTabGroup
+                    name={label}
+                    value={state}
+                    onChange={(val) => dispatch.sessionModel.setSessionState({ [key]: val })}
+                    options={options}
+                    disabled={disabled}
+                  />
+                </div>
               </div>
             );
           } else {

@@ -3,6 +3,7 @@
 // ======================================================================
 
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   Button,
@@ -16,6 +17,7 @@ import {
   FormTheme,
   Icon,
   PageText,
+  SettingsList,
   TitleHeading,
 } from 'js/components';
 
@@ -24,6 +26,12 @@ import {
 // ======================================================================
 
 const Component = () => {
+  const dispatch = useDispatch();
+  const devSettingsCheck = useSelector(({ sessionModel }) => sessionModel.devSettingsCheck);
+  const devSettingsTabGroup = useSelector(({ sessionModel }) => sessionModel.devSettingsTabGroup);
+  const devSettingsRadio = useSelector(({ sessionModel }) => sessionModel.devSettingsRadio);
+  const devSettingsRange = useSelector(({ sessionModel }) => sessionModel.devSettingsRange);
+
   const [view, setView] = useState('grid');
   const [tabView, setTabView] = useState('grid');
   const [tabGroup, setTabGroup] = useState('grid');
@@ -192,7 +200,7 @@ const Component = () => {
             options={[
               { value: 'grid', label: 'Grid view', icon: <Icon icon="GridIcon" cover strokeAndFill /> },
               { value: 'list', label: 'List view', icon: <Icon icon="ListIcon" cover stroke /> },
-              { value: 'mixed', label: 'Mixed' },
+              { value: 'mixed', label: 'Mixed', disabled: true, icon: <Icon icon="VanishedCircleIcon" cover stroke /> },
             ]}
           />
         </div>
@@ -203,6 +211,142 @@ const Component = () => {
           <h2>Form - OTP</h2>
           <br />
           <FormOTP value={otp} onChange={setOtp} />
+        </div>
+        {/* SETTINGS LIST */}
+
+        <div>
+          <h2>Settings List</h2>
+          <SettingsList
+            title="Section Title"
+            description="Optional section description shown below the title. Lorem ipsum dolor sit amet consectetur adipiscing elit. Sed sed ligula non elit facilisis pretium eu ut mi. Aenean blandit enim sit amet velit lacinia."
+            padded={false}
+            menuItems={[
+              {
+                type: 'label',
+                label: 'Label item',
+              },
+              {
+                type: 'label',
+                label: 'Label item lorem ipsum dolor sit amet consectetur adipiscing elit',
+              },
+              {
+                type: 'label',
+                label: 'Label item lorem ipsum dolor sit amet consectetur adipiscing elit',
+                description:
+                  'Lorem ipsum dolor sit amet consectetur adipiscing elit. Sed sed ligula non elit facilisis pretium eu ut mi. Aenean blandit enim sit amet velit lacinia, eget luctus nisi semper. Nam ut rhoncus eros, ac iaculis purus. Morbi ornare vestibulum neque vel sodales. Maecenas mattis id lacus ut finibus.',
+              },
+              {
+                type: 'spacer',
+              },
+              {
+                type: 'checkbox',
+                key: 'devSettingsCheck',
+                label: 'Checkbox item',
+                state: devSettingsCheck,
+              },
+              {
+                type: 'checkbox',
+                key: 'devSettingsCheck',
+                label: 'Checkbox item lorem ipsum dolor sit amet consectetur adipiscing elit',
+                state: devSettingsCheck,
+              },
+              {
+                type: 'checkbox',
+                key: 'devSettingsCheck',
+                label: 'Checkbox item lorem ipsum dolor sit amet consectetur adipiscing elit',
+                description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit.',
+                state: devSettingsCheck,
+              },
+              {
+                type: 'checkbox',
+                key: 'devSettingsCheck',
+                label: 'Checkbox item lorem ipsum dolor sit amet consectetur adipiscing elit',
+                description:
+                  'Lorem ipsum dolor sit amet consectetur adipiscing elit. Sed sed ligula non elit facilisis pretium eu ut mi. Aenean blandit enim sit amet velit lacinia, eget luctus nisi semper. Nam ut rhoncus eros, ac iaculis purus. Morbi ornare vestibulum neque vel sodales. Maecenas mattis id lacus ut finibus.',
+                state: devSettingsCheck,
+              },
+              {
+                type: 'checkbox',
+                key: 'devSettingsCheckDisabled',
+                label: 'Checkbox item (disabled)',
+                description: 'This option is currently unavailable.',
+                state: false,
+                disabled: true,
+              },
+              {
+                type: 'spacer',
+              },
+              {
+                type: 'radio',
+                key: 'devSettingsRadio',
+                label: 'Radio item',
+                description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit.',
+                state: devSettingsRadio,
+                options: [
+                  { value: 'option1', label: 'Option 1' },
+                  { value: 'option2', label: 'Option 2 lorem ipsum dolor sit amet consectetur adipiscing elit' },
+                  {
+                    value: 'option3',
+                    label:
+                      'Option 3 lorem ipsum dolor sit amet consectetur adipiscing elit. Sed sed ligula non elit facilisis pretium eu ut mi. Aenean blandit enim sit amet velit lacinia, eget luctus nisi semper. Nam ut rhoncus eros, ac iaculis purus. Morbi ornare vestibulum neque vel sodales. Maecenas mattis id lacus ut finibus.',
+                  },
+                ],
+              },
+              {
+                type: 'spacer',
+              },
+              {
+                type: 'range',
+                key: 'devSettingsRange',
+                label: 'Range slider item',
+                state: devSettingsRange,
+                props: {
+                  min: 1,
+                  max: 5,
+                  handleChange: (val) => dispatch.sessionModel.setSessionState({ devSettingsRange: val }),
+                },
+              },
+              {
+                type: 'range',
+                key: 'devSettingsRange',
+                label: 'Range slider item lorem ipsum dolor sit amet consectetur adipiscing elit',
+                state: devSettingsRange,
+                props: {
+                  min: 1,
+                  max: 5,
+                  handleChange: (val) => dispatch.sessionModel.setSessionState({ devSettingsRange: val }),
+                },
+              },
+              {
+                type: 'range',
+                key: 'devSettingsRange',
+                label: 'Range slider item lorem ipsum dolor sit amet consectetur adipiscing elit',
+                description:
+                  'Lorem ipsum dolor sit amet consectetur adipiscing elit. Sed sed ligula non elit facilisis pretium eu ut mi. Aenean blandit enim sit amet velit lacinia, eget luctus nisi semper. Nam ut rhoncus eros, ac iaculis purus. Morbi ornare vestibulum neque vel sodales. Maecenas mattis id lacus ut finibus.',
+                state: devSettingsRange,
+                props: {
+                  min: 1,
+                  max: 5,
+                  handleChange: (val) => dispatch.sessionModel.setSessionState({ devSettingsRange: val }),
+                },
+              },
+              {
+                type: 'spacer',
+              },
+              {
+                type: 'tabGroup',
+                key: 'devSettingsTabGroup',
+                label: 'Tab group item',
+                description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit.',
+                state: devSettingsTabGroup,
+                options: [
+                  { value: 'option1', label: 'Option 1' },
+                  { value: 'option2', label: 'Option 2' },
+                  { value: 'option3', label: 'Option 3' },
+                ],
+              },
+            ]}
+          />
         </div>
 
         {/* BUTTONS */}

@@ -27,6 +27,13 @@ const sessionState = {
   volumeLevel: 100,
   volumeMuted: false,
 
+  // DEV OPTIONS
+
+  devSettingsCheck: true,
+  devSettingsRadio: 'option1',
+  devSettingsRange: 5,
+  devSettingsTabGroup: 'option1',
+
   // GENERAL OPTIONS
 
   optionKeepHomeUsersLoggedIn: true,
