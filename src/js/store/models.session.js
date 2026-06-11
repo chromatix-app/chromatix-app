@@ -47,6 +47,7 @@ const sessionState = {
 
   optionUseHalfStars: true,
 
+  switchToTrackViewOnArtistPlay: false,
   disableRepeatOnceOnTrackChange: true,
   disableRepeatOnceOnSourceChange: true,
   revertRepeatOnceToRepeatAll: true,
