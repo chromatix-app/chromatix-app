@@ -13,11 +13,18 @@ import style from './SettingsList.module.scss';
 // COMPONENT
 // ======================================================================
 
-const SettingsList = ({ title, description, menuItems, padded }) => {
+const SettingsList = ({ title, description, menuItems, padded, variant }) => {
   const dispatch = useDispatch();
 
   return (
-    <div className={clsx('settingsGroup', padded === false && 'settingsGroupNoPadding')}>
+    <div
+      className={clsx(
+        style.group,
+        variant && style[variant],
+        'settingsGroup',
+        padded === false && 'settingsGroupNoPadding'
+      )}
+    >
       {title && <div className={style.title}>{title}</div>}
 
       {description && <div className={style.topDescription}>{description}</div>}

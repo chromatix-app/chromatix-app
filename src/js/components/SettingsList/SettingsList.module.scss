@@ -1,9 +1,13 @@
 @use '../../../css/_config/_mixins';
 @use '../../../css/_config/_vars';
 
+.group {
+}
+
 .title {
   margin: 0 0 15px;
   font-size: 14px;
+  line-height: 20px;
   font-weight: bold;
   color: var(--color-opacity-05);
 }
@@ -12,6 +16,7 @@
   display: block;
   margin: -10px 0 15px;
   font-size: 13px;
+  line-height: 18px;
   color: var(--color-opacity-06);
 }
 
@@ -25,7 +30,11 @@
   }
 
   + .listEntry {
-    margin-top: 7px;
+    margin-top: 10px;
+
+    .group.compact & {
+      margin-top: 4px;
+    }
   }
 
   label {
@@ -55,9 +64,9 @@
 
 .description {
   display: block;
-  padding: 1px 0 4px;
+  padding: 1px 0 1px;
   font-size: 12px;
-  line-height: 1.3;
+  line-height: 16px;
   color: var(--color-opacity-06);
 
   &.disabled {
@@ -66,7 +75,7 @@
 }
 
 .spacer {
-  height: 20px;
+  height: 22px;
 }
 
 //
@@ -89,6 +98,7 @@
     border: 1px solid var(--color-opacity-05);
     border-radius: 2px;
     font-size: 0;
+    line-height: 0;
     color: var(--color-primary-bg);
 
     > span {

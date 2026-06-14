@@ -66,7 +66,7 @@ const NowPlayingSettings = ({ platformOpts }) => {
       : []),
   ];
 
-  return <SettingsList title="Now Playing" menuItems={menuItems} />;
+  return <SettingsList title="Now Playing" menuItems={menuItems} variant="compact" />;
 };
 
 //
@@ -102,7 +102,7 @@ const SecondarySettings = ({ platformOpts }) => {
     },
   ];
 
-  return <SettingsList title="Secondary Controls" menuItems={menuItems} />;
+  return <SettingsList title="Secondary Controls" menuItems={menuItems} variant="compact" />;
 };
 
 // ======================================================================
