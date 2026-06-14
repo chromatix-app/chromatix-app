@@ -126,6 +126,16 @@
   .inputAccessible & {
     background: var(--color-core);
   }
+
+  .inputDisabled & {
+    background: var(--color-text);
+    opacity: var(--opacity-05);
+  }
+}
+
+.inputDisabled {
+  opacity: var(--opacity-04);
+  pointer-events: none;
 }
 
 .inputAccessible {

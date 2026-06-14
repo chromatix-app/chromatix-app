@@ -12,6 +12,7 @@ import { analyticsEvent } from 'js/utils';
 // STATE
 // ======================================================================
 
+const isLocal = import.meta.env.VITE_ENV === 'local';
 const isPreview = import.meta.env.VITE_ENV === 'preview';
 const isProduction = import.meta.env.VITE_ENV === 'production';
 
@@ -29,13 +30,18 @@ const sessionState = {
 
   // DEV OPTIONS
 
-  devSettingsCheck1: true,
-  devSettingsCheck2: true,
-  devSettingsCheck3: true,
-  devSettingsCheck4: true,
-  devSettingsRadio: 'option1',
-  devSettingsRange: 5,
-  devSettingsTabGroup: 'option1',
+  ...(isLocal
+    ? {
+        devSettingsCheck1: true,
+        devSettingsCheck2: true,
+        devSettingsCheck3: true,
+        devSettingsRadio: 'option1',
+        devSettingsRange: 3,
+        devSettingsTabGroup1: 'option1',
+        devSettingsTabGroup2: 'option1',
+        devSettingsTabGroup3: 'option1',
+      }
+    : {}),
 
   // GENERAL OPTIONS
 

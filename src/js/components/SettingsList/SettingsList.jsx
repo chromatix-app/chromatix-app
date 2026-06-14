@@ -88,7 +88,7 @@ const SettingsList = ({ title, description, menuItems, padded, variant }) => {
                   <div className={clsx(style.description, disabled && style.disabled)}>{description}</div>
                 )}
                 <div className={style.radioGroup}>
-                  {options?.map(({ label: optionLabel, value: optionValue }) => (
+                  {options?.map(({ label: optionLabel, value: optionValue, disabled: optionDisabled }) => (
                     <div key={optionValue} className={style.radioOption} data-focus-outline>
                       <label>
                         <input
@@ -96,9 +96,11 @@ const SettingsList = ({ title, description, menuItems, padded, variant }) => {
                           name={key}
                           checked={state === optionValue}
                           onChange={() => dispatch.sessionModel.setSessionState({ [key]: optionValue })}
-                          disabled={disabled}
+                          disabled={disabled || optionDisabled}
                         />
-                        <span className={clsx(style.label, disabled && style.disabled)}>{optionLabel}</span>
+                        <span className={clsx(style.label, (disabled || optionDisabled) && style.disabled)}>
+                          {optionLabel}
+                        </span>
                       </label>
                     </div>
                   ))}

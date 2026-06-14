@@ -409,6 +409,7 @@ export const ControlProgress = () => {
           handleMouseDown={handleProgressMouseDown}
           handleMouseUp={handleProgressMouseUp}
           isDisabled={isDisabled}
+          hideBar={isDisabled}
           allowAccess={false}
         />
       </div>

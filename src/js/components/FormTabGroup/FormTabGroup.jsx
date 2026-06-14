@@ -23,11 +23,11 @@ const FormTabGroup = ({ name, value, onChange, options, disabled }) => {
       }}
       className={style.buttons}
     >
-      {options?.map(({ label, value: optionValue, icon }) => (
+      {options?.map(({ label, value: optionValue, disabled: optionDisabled, icon }) => (
         <ToggleGroup.Item
           key={optionValue}
           value={optionValue}
-          disabled={disabled}
+          disabled={disabled || optionDisabled}
           className={clsx(style.item, {
             [style.itemActive]: value === optionValue,
           })}

@@ -27,13 +27,17 @@ import {
 
 const Component = () => {
   const dispatch = useDispatch();
+
   const devSettingsCheck1 = useSelector(({ sessionModel }) => sessionModel.devSettingsCheck1);
   const devSettingsCheck2 = useSelector(({ sessionModel }) => sessionModel.devSettingsCheck2);
   const devSettingsCheck3 = useSelector(({ sessionModel }) => sessionModel.devSettingsCheck3);
-  const devSettingsCheck4 = useSelector(({ sessionModel }) => sessionModel.devSettingsCheck4);
-  const devSettingsTabGroup = useSelector(({ sessionModel }) => sessionModel.devSettingsTabGroup);
+  const devSettingsTabGroup1 = useSelector(({ sessionModel }) => sessionModel.devSettingsTabGroup1);
+  const devSettingsTabGroup2 = useSelector(({ sessionModel }) => sessionModel.devSettingsTabGroup2);
+  const devSettingsTabGroup3 = useSelector(({ sessionModel }) => sessionModel.devSettingsTabGroup3);
   const devSettingsRadio = useSelector(({ sessionModel }) => sessionModel.devSettingsRadio);
   const devSettingsRange = useSelector(({ sessionModel }) => sessionModel.devSettingsRange);
+
+  const themeKeyFocus = useSelector(({ sessionModel }) => sessionModel.themeKeyFocus);
 
   const [view, setView] = useState('grid');
   const [tabView, setTabView] = useState('grid');
@@ -182,7 +186,13 @@ const Component = () => {
                 active: tabView === 'list',
               },
               {
-                label: 'Mixed',
+                label: 'Track view',
+                icon: <Icon icon="MusicNoteSingleIcon" cover stroke />,
+                onClick: () => setTabView('track'),
+                active: tabView === 'track',
+              },
+              {
+                label: 'Disabled',
                 icon: <Icon icon="VanishedCircleIcon" cover stroke />,
                 active: false,
                 disabled: true,
@@ -203,6 +213,7 @@ const Component = () => {
             options={[
               { value: 'grid', label: 'Grid view', icon: <Icon icon="GridIcon" cover strokeAndFill /> },
               { value: 'list', label: 'List view', icon: <Icon icon="ListIcon" cover stroke /> },
+              { value: 'track', label: 'Track view', icon: <Icon icon="MusicNoteSingleIcon" cover stroke /> },
               { value: 'mixed', label: 'Mixed', disabled: true, icon: <Icon icon="VanishedCircleIcon" cover stroke /> },
             ]}
           />
@@ -235,6 +246,11 @@ const Component = () => {
               {
                 type: 'label',
                 label: 'Label item lorem ipsum dolor sit amet consectetur adipiscing elit',
+                description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit.',
+              },
+              {
+                type: 'label',
+                label: 'Label item lorem ipsum dolor sit amet consectetur adipiscing elit',
                 description:
                   'Lorem ipsum dolor sit amet consectetur adipiscing elit. Sed sed ligula non elit facilisis pretium eu ut mi. Aenean blandit enim sit amet velit lacinia, eget luctus nisi semper. Nam ut rhoncus eros, ac iaculis purus. Morbi ornare vestibulum neque vel sodales. Maecenas mattis id lacus ut finibus.',
               },
@@ -243,30 +259,30 @@ const Component = () => {
               },
               {
                 type: 'checkbox',
+                key: 'themeKeyFocus',
+                label: 'Highlight focused elements',
+                state: themeKeyFocus,
+              },
+              {
+                type: 'checkbox',
                 key: 'devSettingsCheck1',
-                label: 'Checkbox item',
+                label: 'Checkbox item lorem ipsum dolor sit amet consectetur adipiscing elit',
                 state: devSettingsCheck1,
               },
               {
                 type: 'checkbox',
                 key: 'devSettingsCheck2',
                 label: 'Checkbox item lorem ipsum dolor sit amet consectetur adipiscing elit',
+                description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit.',
                 state: devSettingsCheck2,
               },
               {
                 type: 'checkbox',
                 key: 'devSettingsCheck3',
                 label: 'Checkbox item lorem ipsum dolor sit amet consectetur adipiscing elit',
-                description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit.',
-                state: devSettingsCheck3,
-              },
-              {
-                type: 'checkbox',
-                key: 'devSettingsCheck4',
-                label: 'Checkbox item lorem ipsum dolor sit amet consectetur adipiscing elit',
                 description:
                   'Lorem ipsum dolor sit amet consectetur adipiscing elit. Sed sed ligula non elit facilisis pretium eu ut mi. Aenean blandit enim sit amet velit lacinia, eget luctus nisi semper. Nam ut rhoncus eros, ac iaculis purus. Morbi ornare vestibulum neque vel sodales. Maecenas mattis id lacus ut finibus.',
-                state: devSettingsCheck4,
+                state: devSettingsCheck3,
               },
               {
                 type: 'checkbox',
@@ -300,6 +316,11 @@ const Component = () => {
                     value: 'option3',
                     label:
                       'Option 3 lorem ipsum dolor sit amet consectetur adipiscing elit. Sed sed ligula non elit facilisis pretium eu ut mi. Aenean blandit enim sit amet velit lacinia, eget luctus nisi semper. Nam ut rhoncus eros, ac iaculis purus. Morbi ornare vestibulum neque vel sodales. Maecenas mattis id lacus ut finibus.',
+                  },
+                  {
+                    value: 'option4',
+                    label: 'Option 4 lorem ipsum dolor sit amet consectetur adipiscing elit',
+                    disabled: true,
                   },
                 ],
               },
@@ -342,14 +363,52 @@ const Component = () => {
                 },
               },
               {
+                type: 'range',
+                key: 'devSettingsRange',
+                label: 'Range slider item lorem ipsum dolor sit amet consectetur adipiscing elit',
+                description: 'This option is currently unavailable.',
+                state: devSettingsRange,
+                disabled: true,
+                props: {
+                  min: 1,
+                  max: 5,
+                  handleChange: (val) => dispatch.sessionModel.setSessionState({ devSettingsRange: val }),
+                },
+              },
+              {
                 type: 'spacer',
               },
               {
                 type: 'tabGroup',
-                key: 'devSettingsTabGroup',
+                key: 'devSettingsTabGroup1',
                 label: 'Tab group item',
                 description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit.',
-                state: devSettingsTabGroup,
+                state: devSettingsTabGroup1,
+                options: [
+                  { value: 'option1', label: 'Option 1' },
+                  { value: 'option2', label: 'Option 2' },
+                  { value: 'option3', label: 'Option 3' },
+                ],
+              },
+              {
+                type: 'tabGroup',
+                key: 'devSettingsTabGroup2',
+                label: 'Tab group item',
+                description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit.',
+                state: devSettingsTabGroup2,
+                options: [
+                  { value: 'option1', label: 'Option 1' },
+                  { value: 'option2', label: 'Option 2' },
+                  { value: 'option3', label: 'Option 3', disabled: true },
+                ],
+              },
+              {
+                type: 'tabGroup',
+                key: 'devSettingsTabGroup3',
+                label: 'Tab group item',
+                description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit.',
+                state: devSettingsTabGroup3,
+                disabled: true,
                 options: [
                   { value: 'option1', label: 'Option 1' },
                   { value: 'option2', label: 'Option 2' },
