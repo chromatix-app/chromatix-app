@@ -59,6 +59,7 @@ const TitleHeading = ({
             <img src={thumb} alt={title} draggable="false" />
           </button>
         )}
+
         {icon && (
           <div className={style.thumbBg}>
             <div className={style.thumbIcon}>
@@ -66,11 +67,16 @@ const TitleHeading = ({
             </div>
           </div>
         )}
+
         {!icon && thumb === null && <div className={style.thumb}></div>}
+
         <div className={style.content}>
           {title && <h1 className={clsx(style.title, style[titleSize])}>{title}</h1>}
+
           {subtitle && <h2 className={style.subtitle}>{subtitle}</h2>}
+
           {detail && <div className={style.detail}>{detail}</div>}
+
           {(showPlay || optionsMenu) && (
             <div className={style.buttons}>
               {showPlay && (
@@ -97,6 +103,7 @@ const TitleHeading = ({
                     )}
                     <span className={style.playText}>{isPlaying ? 'Pause' : isLoaded ? 'Resume' : 'Play'}</span>
                   </button>
+
                   <button
                     type="button"
                     className={style.shuffleButton}
@@ -110,11 +117,13 @@ const TitleHeading = ({
                   </button>
                 </>
               )}
+
               {optionsMenu && optionsMenu}
             </div>
           )}
           {filters && <div className={style.filters}>{filters}</div>}
         </div>
+
         <div ref={triggerRef} className={style.stickyTrigger}></div>
       </div>
     </>

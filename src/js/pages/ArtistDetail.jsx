@@ -412,15 +412,6 @@ const Title = ({
       }
       optionsMenu={
         <div className="filterIconWrap">
-          {/* <FilterToggle
-            value={viewArtistAlbums}
-            options={[
-              { value: 'grid', label: 'Grid view' },
-              { value: 'list', label: 'List view' },
-            ]}
-            setter={setViewArtistAlbums}
-            icon={viewArtistAlbums === 'grid' ? 'GridIcon' : 'ListIcon'}
-          /> */}
           <FilterSelect
             variant="Large"
             value={viewArtistAlbums}

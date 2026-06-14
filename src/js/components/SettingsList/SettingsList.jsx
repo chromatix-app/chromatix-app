@@ -13,7 +13,7 @@ import style from './SettingsList.module.scss';
 // COMPONENT
 // ======================================================================
 
-const SettingsList = ({ title, description, menuItems, padded, variant }) => {
+const SettingsList = ({ title, description, menuItems, padding, variant }) => {
   const dispatch = useDispatch();
 
   return (
@@ -22,7 +22,7 @@ const SettingsList = ({ title, description, menuItems, padded, variant }) => {
         style.group,
         variant && style[variant],
         'settingsGroup',
-        padded === false && 'settingsGroupNoPadding'
+        padding === false && 'settingsGroupNoPadding'
       )}
     >
       {title && <div className={style.title}>{title}</div>}

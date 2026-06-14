@@ -11,6 +11,7 @@ import {
   FilterMenu,
   FilterSelect,
   FilterToggle,
+  FilterWrap,
   FormOTP,
   FormTabButtons,
   FormTabGroup,
@@ -64,7 +65,7 @@ const Component = () => {
 
         <div>
           <h2>Filters - Standard</h2>
-          <div>
+          <FilterWrap>
             <FilterToggle
               value={view}
               options={[
@@ -105,7 +106,7 @@ const Component = () => {
               ]}
             />
             <FilterButton label="New playlist" icon="PlusIcon" onClick={() => {}} />
-          </div>
+          </FilterWrap>
         </div>
 
         {/* FILTERS - ICON */}
@@ -233,7 +234,7 @@ const Component = () => {
           <SettingsList
             title="Section Title"
             description="Optional section description shown below the title. Lorem ipsum dolor sit amet consectetur adipiscing elit. Sed sed ligula non elit facilisis pretium eu ut mi. Aenean blandit enim sit amet velit lacinia."
-            padded={false}
+            padding={false}
             menuItems={[
               {
                 type: 'label',

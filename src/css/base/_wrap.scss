@@ -56,10 +56,19 @@
 .layout-sidebar {
   overflow: auto;
   grid-area: sidebar;
-  width: 200px;
+  width: 180px;
   background: var(--color-primary-bg);
 
+  @media (min-width: 880px) {
+    width: 190px;
+  }
+  @media (min-width: 960px) {
+    width: 200px;
+  }
   @media (min-width: 1024px) {
+    width: 210px;
+  }
+  @media (min-width: 1140px) {
     width: 220px;
   }
 
@@ -88,10 +97,19 @@
 .layout-rightbar {
   overflow: auto;
   grid-area: rightbar;
-  width: 280px;
+  width: 240px;
   background: var(--color-secondary-bg);
 
+  @media (min-width: 880px) {
+    width: 260px;
+  }
+  @media (min-width: 960px) {
+    width: 280px;
+  }
   @media (min-width: 1024px) {
+    width: 300px;
+  }
+  @media (min-width: 1140px) {
     width: 320px;
   }
 
@@ -143,6 +161,7 @@
 }
 
 .filterIconWrap {
+  flex-wrap: wrap;
   line-height: 1;
 }
 

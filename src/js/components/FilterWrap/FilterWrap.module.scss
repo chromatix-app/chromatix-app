@@ -2,15 +2,23 @@
 @use '../../../css/_config/_vars';
 
 .wrap {
-  grid-column: 1 / -1; // this is here to make the element full widht when within a grid
-  padding: 0 10px 40px;
-  margin-top: -33px;
+  display: flex;
+  flex-wrap: wrap;
+  grid-column: 1 / -1; // this is here to make the element full width when within a grid
+  gap: 5px 10px;
+  margin-left: -6px;
+  // background: rgba(255, 255, 255, 0.1);
 
-  :global(.cq-800) & {
+  &.padding {
     padding: 0 10px 40px;
+    margin-top: -33px;
+
+    :global(.cq-800) & {
+      padding: 0 10px 40px;
+    }
   }
 
-  &Padding {
+  &.padding.nested {
     padding: 0 30px 40px;
 
     :global(.cq-800) & {
