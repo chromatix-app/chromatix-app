@@ -10,19 +10,13 @@
   // background: rgba(255, 255, 255, 0.1);
 
   &.padding {
-    padding: 0 10px 40px;
-    margin-top: -33px;
+    padding-bottom: 40px;
 
-    :global(.cq-800) & {
-      padding: 0 10px 40px;
-    }
+    @include mixins.content-padding-regular;
   }
 
-  &.padding.nested {
-    padding: 0 30px 40px;
-
-    :global(.cq-800) & {
-      padding: 0 40px 40px;
-    }
+  &.padding.inset {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
   }
 }

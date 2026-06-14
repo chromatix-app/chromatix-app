@@ -150,7 +150,7 @@ const Title = ({
         }
         padding={!isListView && !isGridView}
       />
-      <FilterWrap padding={true} nested={!isListView && !isGridView}>
+      <FilterWrap padding={true} inset={isListView || isGridView}>
         <FilterToggle
           value={viewPlaylists}
           options={[

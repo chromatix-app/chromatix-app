@@ -11,12 +11,10 @@
   overflow: auto;
   width: 100%;
   height: 100%;
-  padding: 0 20px 30px;
+  padding-bottom: 30px;
   background: var(--color-primary-bg);
 
-  :global(.cq-800) & {
-    padding: 0 30px 30px;
-  }
+  @include mixins.content-padding-inset;
 }
 
 .scrollableInner {

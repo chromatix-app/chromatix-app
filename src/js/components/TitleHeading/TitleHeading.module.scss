@@ -7,10 +7,6 @@
   grid-column: 1 / -1; // this is here to make the element full width when within a grid
   padding: 55px 10px 40px;
 
-  :global(.cq-800) & {
-    padding: 55px 10px 40px;
-  }
-
   a {
     &:hover {
       text-decoration: underline;
@@ -18,11 +14,10 @@
   }
 
   &Padding {
-    padding: 55px 30px 40px;
+    padding-top: 55px;
+    padding-bottom: 40px;
 
-    :global(.cq-800) & {
-      padding: 55px 40px 40px;
-    }
+    @include mixins.content-padding-regular;
   }
 }
 
@@ -326,16 +321,8 @@
   padding: 20px 10px;
   background: var(--color-primary-bg);
 
-  :global(.cq-800) & {
-    padding: 20px 10px;
-  }
-
   .stickyWrapPadding & {
-    padding: 20px 30px;
-
-    :global(.cq-800) & {
-      padding: 20px 40px;
-    }
+    @include mixins.content-padding-regular;
   }
 }
 

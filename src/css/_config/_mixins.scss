@@ -60,6 +60,70 @@
   pointer-events: none;
 }
 
+@mixin content-padding-regular {
+  padding-left: 20px;
+  padding-right: 20px;
+
+  .cq-480 & {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  :global(.cq-480) & {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  .cq-800 & {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+  :global(.cq-800) & {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  // EXTREME EXAMPLE FOR TESTING
+  // .cq-1220 & {
+  //   padding-left: 100px;
+  //   padding-right: 100px;
+  // }
+  // :global(.cq-1220) & {
+  //   padding-left: 100px;
+  //   padding-right: 100px;
+  // }
+}
+
+@mixin content-padding-inset {
+  padding-left: 10px;
+  padding-right: 10px;
+
+  .cq-480 & {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  :global(.cq-480) & {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .cq-800 & {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  :global(.cq-800) & {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
+  // EXTREME EXAMPLE FOR TESTING
+  // .cq-1220 & {
+  //   padding-left: 90px;
+  //   padding-right: 90px;
+  // }
+  // :global(.cq-1220) & {
+  //   padding-left: 90px;
+  //   padding-right: 90px;
+  // }
+}
+
 @mixin focus-self-outline() {
   &:focus-visible:not(:active):not(:disabled) {
     :global(html[data-access-focus='true']) & {

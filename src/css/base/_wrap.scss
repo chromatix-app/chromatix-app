@@ -1,4 +1,5 @@
 @use '../_config/vars';
+@use '../_config/mixins';
 
 // ======================================================================
 // WRAPPER
@@ -167,18 +168,16 @@
 
 .settingsGroup {
   max-width: 800px;
-  padding: 0 30px 40px;
+  padding-bottom: 40px;
   font-size: 14px;
   line-height: 20px;
   text-wrap: balance;
 
+  @include mixins.content-padding-regular;
+
   &NoPadding {
     padding: 0 !important;
     padding-bottom: 0 !important;
-  }
-
-  .cq-800 & {
-    padding: 0 40px 40px;
   }
 
   &:last-child {

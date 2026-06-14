@@ -324,7 +324,7 @@ const App = () => {
   }
 };
 
-const breakPoints = [620, 680, 800, 860, 920, 980, 1100, 1220];
+const breakPoints = [480, 620, 680, 800, 860, 920, 980, 1100, 1220];
 
 const AppMain = () => {
   const dispatch = useDispatch();
