@@ -160,20 +160,24 @@ Tests use **Vitest** with `globals: true` — no need to import `describe`, `tes
 - Run tests in watch mode with `npm run test`
 - Run all tests once with `npm run test:all`
 
+## E2E Testing
+
+Visual regression tests use **Playwright** with Chromium. Snapshots are stored in `tests/snapshots/`. Auth session files live in `tests/.auth/` (gitignored).
+
+Test files live in `tests/pages/`. Shared helpers (`waitForContent`, `checkForRateLimit`) are in `tests/utils.ts`. Config is in `playwright.config.ts`.
+
+Each test navigates once then loops over viewports with `page.setViewportSize()` for full-page screenshots — no separate browser context per breakpoint.
+
+Run `npm run test:e2e:login` once to authenticate before running auth tests. The setup test must run before library tests to generate `tests/.auth/library-id.json`.
+
 ## Key Scripts
 
 - `npm start` / `npm run dev` — Start dev server (port 4000)
 - `npm run build` — Production build (output to `build/`)
-- `npm run build:analyze` — Production build with bundle visualiser
-- `npm run lint` — Run ESLint
-- `npm run lint:fix` — Run ESLint with auto-fix
-- `npm run prettier` — Check formatting
-- `npm run prettier:fix` — Auto-format all files
-- `npm run typecheck` — Run TypeScript type check without emitting
-- `npm run knip` — Dead code detection
 - `npm run check` — Run knip, lint, prettier, and typecheck in sequence
-- `npm run test` / `npm run test:all` — Run tests (watch / once)
-- `npm run test:verbose` / `npm run test:all:verbose` — Same, with full output
+- `npm run test` / `npm run test:all` — Run Vitest tests (watch / once)
+- `npm run test:e2e:login` — Manual Plex login; run once before auth tests
+- `npm run test:e2e:*` — E2E snapshot tests; `:update` variants regenerate snapshots
 - `npm run images:convert:new` — Convert new images to WebP
 - `npm run images:tinify:new` — Compress new images via Tinify
 - `npm run svg:compress:new` — Compress new SVGs
