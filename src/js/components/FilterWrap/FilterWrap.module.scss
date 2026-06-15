@@ -10,6 +10,7 @@
   // background: rgba(255, 255, 255, 0.1);
 
   &.padding {
+    margin-top: -33px;
     padding-bottom: 40px;
 
     @include mixins.content-padding-regular;
