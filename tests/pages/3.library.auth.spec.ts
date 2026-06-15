@@ -42,38 +42,42 @@ test.describe('library pages match snapshots', () => {
   });
 
   // test('playlists page matches snapshot', async ({ page }) => {
-  //   await snapshotPage(page, `/libraries/${libraryId}/playlists`, '006-playlists');
+  //   await snapshotPage(page, `/libraries/${libraryId}/playlists`, '007-playlists');
+  // });
+
+  // test('playlist detail page matches snapshot', async ({ page }) => {
+  //   await snapshotPage(page, `/libraries/${libraryId}/playlists/165857`, '008-playlist-detail');
   // });
 
   test('artist collections page matches snapshot', async ({ page }) => {
-    await snapshotPage(page, `/libraries/${libraryId}/artist-collections`, '007-artist-collections');
+    await snapshotPage(page, `/libraries/${libraryId}/artist-collections`, '009-artist-collections');
   });
 
   test('artist collection detail page matches snapshot', async ({ page }) => {
-    await snapshotPage(page, `/libraries/${libraryId}/artist-collections/165431`, '008-artist-collection-detail');
+    await snapshotPage(page, `/libraries/${libraryId}/artist-collections/165431`, '010-artist-collection-detail');
   });
 
   test('album collections page matches snapshot', async ({ page }) => {
-    await snapshotPage(page, `/libraries/${libraryId}/album-collections`, '009-album-collections');
+    await snapshotPage(page, `/libraries/${libraryId}/album-collections`, '011-album-collections');
   });
 
   test('album collection detail page matches snapshot', async ({ page }) => {
-    await snapshotPage(page, `/libraries/${libraryId}/album-collections/165459`, '010-album-collection-detail');
+    await snapshotPage(page, `/libraries/${libraryId}/album-collections/165459`, '012-album-collection-detail');
   });
 
   test('artist genres page matches snapshot', async ({ page }) => {
-    await snapshotPage(page, `/libraries/${libraryId}/artist-genres`, '011-artist-genres');
+    await snapshotPage(page, `/libraries/${libraryId}/artist-genres`, '013-artist-genres');
   });
 
   test('artist genre detail page matches snapshot', async ({ page }) => {
-    await snapshotPage(page, `/libraries/${libraryId}/artist-genres/69533`, '012-artist-genre-detail');
+    await snapshotPage(page, `/libraries/${libraryId}/artist-genres/69533`, '014-artist-genre-detail');
   });
 
   test('album genres page matches snapshot', async ({ page }) => {
-    await snapshotPage(page, `/libraries/${libraryId}/album-genres`, '013-album-genres');
+    await snapshotPage(page, `/libraries/${libraryId}/album-genres`, '015-album-genres');
   });
 
   test('album genre detail page matches snapshot', async ({ page }) => {
-    await snapshotPage(page, `/libraries/${libraryId}/album-genres/69533`, '014-album-genre-detail');
+    await snapshotPage(page, `/libraries/${libraryId}/album-genres/69533`, '016-album-genre-detail');
   });
 });
