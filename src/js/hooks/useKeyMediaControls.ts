@@ -64,16 +64,17 @@ const useKeyMediaControls = (handlers: KeyMediaControlHandlers): null => {
       const activeRole = activeElement?.getAttribute('role');
       const allowKeyControls = activeElement?.closest('[data-allow-key-controls]');
       const isSpaceActivatable =
-        !allowKeyControls &&
-        (activeElement?.tagName === 'BUTTON' ||
-          activeElement?.tagName === 'A' ||
-          (activeRole && SPACE_ACTIVATABLE_ROLES.includes(activeRole)));
+        activeElement?.tagName === 'BUTTON' ||
+        activeElement?.tagName === 'A' ||
+        (activeRole && SPACE_ACTIVATABLE_ROLES.includes(activeRole))
+          ? !allowKeyControls
+          : false;
 
-      // Skip arrow key shortcuts when focus is on an element that uses arrow keys for its own navigation
+      // Skip arrow key shortcuts when focus is on an element that uses arrow keys for its own navigation.
+      // Element-level navigability always wins — data-allow-key-controls must not override it.
       const isArrowNavigable =
-        !allowKeyControls &&
-        ((activeElement?.tagName === 'INPUT' && (activeElement as HTMLInputElement).type === 'range') ||
-          (activeRole && ARROW_NAVIGABLE_ROLES.includes(activeRole)));
+        (activeElement?.tagName === 'INPUT' && (activeElement as HTMLInputElement).type === 'range') ||
+        (activeRole && ARROW_NAVIGABLE_ROLES.includes(activeRole));
 
       switch (event.key) {
         case 'MediaPlayPause':

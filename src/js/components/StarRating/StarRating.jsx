@@ -33,7 +33,7 @@ const StarRating = ({
     (event) => {
       event.preventDefault();
       event.stopPropagation();
-      bridge.setStarRating(type, ratingKey, parseInt(event.target.dataset.value));
+      bridge.setStarRating(type, ratingKey, parseInt(event.target.dataset.value, 10));
     },
     [type, ratingKey]
   );
