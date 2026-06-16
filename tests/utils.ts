@@ -5,6 +5,12 @@ import { expect, Page } from '@playwright/test';
 /** Viewport widths used for snapshot tests. */
 export const SNAPSHOT_VIEWPORTS = [768, 1024, 1440];
 
+/** Viewport height used for snapshot tests. */
+export const SNAPSHOT_HEIGHT = 1100;
+
+/** Default snapshot options applied to all toHaveScreenshot calls. */
+export const SNAPSHOT_OPTIONS = { fullPage: true, maxDiffPixelRatio: 0 } as const;
+
 /** Milliseconds to wait after a viewport resize to allow JS resize hooks to settle. */
 export const VIEWPORT_SETTLE_MS = 200;
 
@@ -17,17 +23,22 @@ export async function setViewport(page: Page, width: number, height: number) {
   await page.waitForTimeout(VIEWPORT_SETTLE_MS);
 }
 
+/** Moves the mouse away, then takes a snapshot at each viewport width. */
+export async function snapshotAtViewports(page: Page, name: string, viewports = SNAPSHOT_VIEWPORTS) {
+  await page.mouse.move(0, 0);
+  for (const width of viewports) {
+    await setViewport(page, width, SNAPSHOT_HEIGHT);
+    await expect(page).toHaveScreenshot(`${name}-${width}.png`, SNAPSHOT_OPTIONS);
+  }
+}
+
 /** Navigates to a URL, waits for content, and takes snapshots at each viewport width. */
 export async function snapshotPage(page: Page, url: string, name: string, viewports = SNAPSHOT_VIEWPORTS) {
   await page.waitForTimeout(PAGE_NAV_DELAY_MS);
   await page.goto(url);
   await page.waitForURL(new RegExp(url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), { timeout: 15000 });
   await waitForContent(page);
-  await page.mouse.move(0, 0);
-  for (const width of viewports) {
-    await setViewport(page, width, 1100);
-    await expect(page).toHaveScreenshot(`${name}-${width}.png`, { fullPage: true, maxDiffPixelRatio: 0 });
-  }
+  await snapshotAtViewports(page, name, viewports);
 }
 
 /** Waits for loading indicators to clear, network to idle, and all images to load. Also checks for rate limiting. */

@@ -58,5 +58,23 @@ export default defineConfig({
       },
       testMatch: '**/4.settings.auth.spec.ts',
     },
+
+    // UI interactions
+    {
+      name: 'ui',
+      use: {
+        storageState: 'tests/.auth/session-grid.json',
+      },
+      testMatch: '**/5.ui.auth.spec.ts',
+    },
+
+    // Windows (Electron simulation)
+    {
+      name: 'windows',
+      use: {
+        storageState: 'tests/.auth/session-grid.json',
+      },
+      testMatch: '**/6.windows.auth.spec.ts',
+    },
   ],
 });

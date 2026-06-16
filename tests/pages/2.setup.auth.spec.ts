@@ -1,13 +1,12 @@
 // Generated using GitHub Copilot
 
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 import { mkdirSync, writeFileSync } from 'fs';
-import { waitForContent, setViewport } from '../utils';
+import { waitForContent, snapshotAtViewports } from '../utils';
 
 const GRID_STATE_FILE = 'tests/.auth/session-grid.json';
 const LIST_STATE_FILE = 'tests/.auth/session-list.json';
 const LIBRARY_ID_FILE = 'tests/.auth/library-id.json';
-const viewports = [768, 1024, 1440];
 
 test.describe.serial('setup pages match snapshots', () => {
   test('setup pages match snapshots', async ({ page, context }) => {
@@ -27,39 +26,32 @@ test.describe.serial('setup pages match snapshots', () => {
     await page.waitForURL(/\/users$/, { timeout: 15000 });
     await page.waitForSelector('main button[type="button"]', { state: 'visible' });
     await waitForContent(page);
-    for (const width of viewports) {
-      await setViewport(page, width, 1100);
-      await expect(page).toHaveScreenshot(`001-users-${width}.png`, { fullPage: true, maxDiffPixelRatio: 0 });
-    }
+    await snapshotAtViewports(page, '001-users');
     await page.locator('main button[type="button"]').first().click();
 
     // Servers page
     await page.waitForURL(/\/servers$/, { timeout: 15000 });
     await page.waitForSelector('main button[type="button"]', { state: 'visible' });
     await waitForContent(page);
-    for (const width of viewports) {
-      await setViewport(page, width, 1100);
-      await expect(page).toHaveScreenshot(`002-servers-${width}.png`, { fullPage: true, maxDiffPixelRatio: 0 });
-    }
+    await snapshotAtViewports(page, '002-servers');
     await page.locator('main button[type="button"]').first().click();
 
     // Libraries page
     await page.waitForURL(/\/libraries$/, { timeout: 15000 });
     await page.waitForSelector('main button[type="button"]', { state: 'visible' });
     await waitForContent(page);
-    for (const width of viewports) {
-      await setViewport(page, width, 1100);
-      await expect(page).toHaveScreenshot(`003-libraries-${width}.png`, { fullPage: true, maxDiffPixelRatio: 0 });
-    }
+    await snapshotAtViewports(page, '003-libraries');
     await page.locator('main button[type="button"]').first().click();
 
     // Wait for redirect to artists — confirms a library is selected and session is complete
     await page.waitForURL('**/libraries/*/artists', { timeout: 15000 });
     await waitForContent(page);
-    for (const width of viewports) {
-      await setViewport(page, width, 1100);
-      await expect(page).toHaveScreenshot(`004-artists-${width}.png`, { fullPage: true, maxDiffPixelRatio: 0 });
-    }
+    await snapshotAtViewports(page, '004-artists');
+
+    // Logged-in 404 page
+    await page.goto('/this-page-does-not-exist');
+    await waitForContent(page);
+    await snapshotAtViewports(page, '005-error-404');
 
     // Save libraryId for 3.library.auth.spec.ts to use when navigating directly
     const libraryId = await page.evaluate(() => (window as any).store.getState().sessionModel.currentLibrary.libraryId);
