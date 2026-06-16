@@ -51,13 +51,14 @@ const renderRoutes = (routes, storeParams = {}) => {
 
                   // Replace every :token in the xRedirect string with its resolved value from params
                   // e.g. '/libraries/:currentLibraryId/artists' → '/libraries/abc123/artists'
-                  const resolved = route.xRedirect.replace(/:(\w+)/g, (_, key) => params[key] || '');
+                  const resolved = route.xRedirect.replace(/:(\w+)/g, (_, key) => params[key] ?? '');
 
                   // If any param was missing the replacement leaves an empty segment ("//"); fall back to /libraries
                   // This should never happen.
                   const target = resolved.includes('//') ? '/libraries' : resolved;
 
-                  console.log('Redirecting from', props.location.pathname, 'to', target);
+                  // console.log('Redirecting from', props.location.pathname, 'to', target);
+
                   return <Redirect to={target} />;
                 }
 

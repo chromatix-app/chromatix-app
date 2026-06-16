@@ -116,7 +116,7 @@ const SettingsList = ({ title, description, menuItems, padding, variant }) => {
                     <div className={clsx(style.description, disabled && style.disabled)}>{description}</div>
                   )}
                   <FormTabGroup
-                    name={label}
+                    name={label || key}
                     value={state}
                     onChange={(val) => dispatch.sessionModel.setSessionState({ [key]: val })}
                     options={options}
