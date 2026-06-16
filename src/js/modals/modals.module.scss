@@ -154,8 +154,8 @@
     }
 
     a {
-      color: var(--color-text);
       text-decoration: underline;
+      color: var(--color-text);
 
       @media (hover: hover) {
         &:hover {

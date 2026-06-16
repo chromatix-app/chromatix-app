@@ -324,7 +324,7 @@ const App = () => {
   }
 };
 
-const breakPoints = [620, 680, 800, 860, 920, 980, 1100, 1220];
+const breakPoints = [540, 620, 680, 800, 860, 920, 980, 1100, 1220];
 
 const AppMain = () => {
   const dispatch = useDispatch();
@@ -387,9 +387,9 @@ const AppMain = () => {
   return (
     <div
       className="wrap"
-      onContextMenu={(e) => {
-        if (!e.target?.closest?.('input, textarea, select')) {
-          e.preventDefault();
+      onContextMenu={(event) => {
+        if (!event.target?.closest?.('input, textarea, select')) {
+          event.preventDefault();
         }
       }}
     >

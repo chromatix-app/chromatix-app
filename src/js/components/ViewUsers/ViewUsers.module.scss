@@ -31,11 +31,17 @@
     grid-template-columns: repeat(4, 1fr);
     width: 660px;
   }
+
   &[data-total='5'],
   &[data-total='9'],
   &[data-total='10'] {
-    grid-template-columns: repeat(5, 1fr);
-    width: 830px;
+    grid-template-columns: repeat(4, 1fr);
+    width: 660px;
+
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(5, 1fr);
+      width: 830px;
+    }
   }
 
   // @media (max-width: 1059px) {

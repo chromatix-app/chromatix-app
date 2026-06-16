@@ -11,5 +11,11 @@ node_modules/
 *.scssc
 *.env
 
+# Playwright
+test-report/
+test-results/
+tests/.auth/
+
+# Builds
 build/
 dist/

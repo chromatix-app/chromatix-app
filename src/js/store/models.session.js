@@ -12,6 +12,7 @@ import { analyticsEvent } from 'js/utils';
 // STATE
 // ======================================================================
 
+const isLocal = import.meta.env.VITE_ENV === 'local';
 const isPreview = import.meta.env.VITE_ENV === 'preview';
 const isProduction = import.meta.env.VITE_ENV === 'production';
 
@@ -27,6 +28,21 @@ const sessionState = {
   volumeLevel: 100,
   volumeMuted: false,
 
+  // DEV OPTIONS
+
+  ...(isLocal
+    ? {
+        devSettingsCheck1: true,
+        devSettingsCheck2: true,
+        devSettingsCheck3: true,
+        devSettingsRadio: 'option1',
+        devSettingsRange: 3,
+        devSettingsTabGroup1: 'option1',
+        devSettingsTabGroup2: 'option1',
+        devSettingsTabGroup3: 'option1',
+      }
+    : {}),
+
   // GENERAL OPTIONS
 
   optionKeepHomeUsersLoggedIn: true,
@@ -37,6 +53,7 @@ const sessionState = {
 
   optionUseHalfStars: true,
 
+  switchToTrackViewOnArtistPlay: false,
   disableRepeatOnceOnTrackChange: true,
   disableRepeatOnceOnSourceChange: true,
   revertRepeatOnceToRepeatAll: true,
@@ -63,6 +80,12 @@ const sessionState = {
   winCustomScrollbars: true,
   winAutoHideScrollbars: false,
   winScrollbarWidth: 12,
+
+  // KEYBOARD OPTIONS
+
+  keyboardMediaKeys: true,
+  keyboardSpace: true,
+  keyboardArrows: true,
 
   // MENU / SIDEBAR OPTIONS
 
@@ -318,6 +341,9 @@ const sessionState = {
 };
 
 const playingState = {
+  // Increment to bust the playing state cache in the event of breaking changes to the playing state structure
+  playingVersion: 1,
+
   playingVariant: null,
   playingServerId: null,
   playingLibraryId: null,
@@ -547,6 +573,11 @@ const effects = (dispatch) => ({
           if (localStorageState.sessionModel) {
             delete localStorageState.sessionModel;
           }
+        }
+
+        // [NOTE] bust the playing state cache if the version is outdated
+        if (!localStorageState.playingVersion || localStorageState.playingVersion < playingState.playingVersion) {
+          Object.assign(localStorageState, playingState);
         }
 
         // [NOTE] migrate renamed theme keys

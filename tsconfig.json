@@ -32,5 +32,6 @@
     // "noUncheckedIndexedAccess": true,   // array/index access returns T | undefined — catches real bugs but requires fixes
     // "noImplicitReturns": true           // all code paths must explicitly return
   },
-  "include": ["src", "vite.config.ts", "vitest.setup.ts"]
+  "include": ["src", "vite.config.ts", "vitest.setup.ts", "playwright.config.ts", "tests"],
+  "exclude": ["**/_archived/**"]
 }

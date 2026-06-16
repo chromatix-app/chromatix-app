@@ -3,6 +3,7 @@
   "entry": ["**/*.test.ts"],
   "ignoreDependencies": ["tslib", "postcss-scss"],
   "project": ["src/**/*.{ts,tsx,js,jsx}"],
+  "ignore": ["**/_archived/**"],
   "rules": {
     "duplicates": "off",
     "exports": "off",

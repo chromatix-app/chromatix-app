@@ -27,7 +27,7 @@ export const FullPagePlayer = () => {
   });
 
   return (
-    <div className={style.wrap}>
+    <div className={style.wrap} data-allow-key-controls>
       <div className={style.topSpacer}></div>
       <div>
         <NowPlaying />

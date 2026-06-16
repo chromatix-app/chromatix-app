@@ -30,10 +30,10 @@ const StarRating = ({
   }, []);
 
   const handleEdit = useCallback(
-    (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      bridge.setStarRating(type, ratingKey, parseInt(e.target.dataset.value));
+    (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      bridge.setStarRating(type, ratingKey, parseInt(event.target.dataset.value, 10));
     },
     [type, ratingKey]
   );

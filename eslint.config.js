@@ -7,7 +7,7 @@ import prettierConfig from 'eslint-config-prettier';
 import globals from 'globals';
 
 export default tseslint.config(
-  { ignores: ['build/**', 'public/**', 'eslint.config.js'] },
+  { ignores: ['build/**', 'public/**', 'eslint.config.js', '**/_archived/**'] },
 
   // Base
   js.configs.recommended,
@@ -33,7 +33,7 @@ export default tseslint.config(
     languageOptions: {
       globals: { ...globals.browser, ...globals.es2020 },
       parserOptions: {
-        projectService: { allowDefaultProject: ['lib/*.mjs', 'postcss.config.js'] },
+        projectService: { allowDefaultProject: ['lib/*.mjs', 'lib/*.js', 'postcss.config.js'] },
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -63,6 +63,14 @@ export default tseslint.config(
   // lib/ — Node.js scripts
   {
     files: ['lib/**'],
+    languageOptions: {
+      globals: { ...globals.node },
+    },
+  },
+
+  // tests/setup — Node.js scripts
+  {
+    files: ['tests/setup/**'],
     languageOptions: {
       globals: { ...globals.node },
     },

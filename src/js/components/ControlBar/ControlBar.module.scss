@@ -371,9 +371,18 @@ button.active {
 }
 
 .volSlider {
-  width: 100px;
+  width: 80px;
 
+  @media (min-width: 880px) {
+    width: 90px;
+  }
+  @media (min-width: 960px) {
+    width: 100px;
+  }
   @media (min-width: 1024px) {
+    width: 110px;
+  }
+  @media (min-width: 1140px) {
     width: 120px;
   }
 }

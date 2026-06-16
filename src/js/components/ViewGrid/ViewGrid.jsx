@@ -20,7 +20,7 @@ import style from './ViewGrid.module.scss';
 
 const isLocal = import.meta.env.VITE_ENV === 'local';
 
-const virtualThreshold = !isLocal ? 200 : 1;
+const virtualThreshold = !isLocal ? 200 : 20;
 
 // ======================================================================
 // COMPONENT
@@ -209,7 +209,7 @@ const ListBodyVirtual = ({
   const initialDimensions = useMemo(
     () => {
       const innerWidth = contentWidth >= 800 ? contentWidth - 60 : contentWidth - 40;
-      return calculateDimensions(variant, iconImage, showRatings, contentWidth, innerWidth);
+      return calculateDimensions(variant, iconImage, showRatings, contentWidth, innerWidth, contentBreakpoint);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -228,7 +228,14 @@ const ListBodyVirtual = ({
     if (innerRef.current) {
       const outerWidth = outerRef.current.clientWidth;
       const innerWidth = innerRef.current.clientWidth;
-      const dimensions = calculateDimensions(variant, iconImage, showRatings, outerWidth, innerWidth);
+      const dimensions = calculateDimensions(
+        variant,
+        iconImage,
+        showRatings,
+        outerWidth,
+        innerWidth,
+        contentBreakpoint
+      );
       const columnCount = dimensions.columnCount;
       const columnHeight = dimensions.columnHeight;
 
@@ -240,7 +247,7 @@ const ListBodyVirtual = ({
         setToggleColumnHeight((prev) => !prev);
       }
     }
-  }, [variant, iconImage, showRatings, numColumns, rowHeight, queueIsVisible, windowWidth]);
+  }, [variant, iconImage, showRatings, numColumns, rowHeight, queueIsVisible, windowWidth, contentBreakpoint]);
 
   // Calculate number of rows needed given total items and columns
   const numRows = numColumns ? Math.ceil(totalItems / numColumns) : 0;
@@ -389,15 +396,15 @@ const measureElement = (element) => {
 
 // Helper to determine the number of columns based on container width
 // Note: This function must match the grid layout defined in the CSS.
-const calculateDimensions = (variant, iconImage, showRatings, outerWidth, innerWidth) => {
+const calculateDimensions = (variant, iconImage, showRatings, outerWidth, innerWidth, contentBreakpoint) => {
   let minColumnWidth = 140;
   if (outerWidth >= 860) {
     minColumnWidth = 180;
   } else if (outerWidth >= 620) {
     minColumnWidth = 160;
   }
-  const colGap = 10;
-  const rowGap = 20;
+  const colGap = contentBreakpoint >= 540 ? 10 : 0;
+  const rowGap = contentBreakpoint >= 540 ? 20 : 10;
 
   // This is how auto-fill with minmax() calculates columns:
   // Find how many minimum-width columns (plus gaps) fit

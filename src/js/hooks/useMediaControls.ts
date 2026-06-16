@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 interface MediaControlHandlers {
   play: () => void;
@@ -14,14 +15,22 @@ interface MediaControlHandlers {
  */
 
 const useMediaControls = (handlers: MediaControlHandlers): null => {
+  const keyboardMediaKeys = useSelector(
+    ({ sessionModel }: { sessionModel: { keyboardMediaKeys: boolean } }) => sessionModel.keyboardMediaKeys
+  );
+
+  const noop = (): void => {};
+
   useEffect(() => {
     if ('mediaSession' in navigator) {
-      navigator.mediaSession.setActionHandler('play', handlers.play);
-      navigator.mediaSession.setActionHandler('pause', handlers.pause);
-      navigator.mediaSession.setActionHandler('seekbackward', handlers.prev);
-      navigator.mediaSession.setActionHandler('seekforward', handlers.next);
-      navigator.mediaSession.setActionHandler('previoustrack', handlers.prev);
-      navigator.mediaSession.setActionHandler('nexttrack', handlers.next);
+      // When disabled, register no-ops instead of null — passing null removes the custom handler
+      // and falls back to the browser's default behaviour (directly controlling the audio element)
+      navigator.mediaSession.setActionHandler('play', keyboardMediaKeys ? handlers.play : noop);
+      navigator.mediaSession.setActionHandler('pause', keyboardMediaKeys ? handlers.pause : noop);
+      navigator.mediaSession.setActionHandler('seekbackward', keyboardMediaKeys ? handlers.prev : noop);
+      navigator.mediaSession.setActionHandler('seekforward', keyboardMediaKeys ? handlers.next : noop);
+      navigator.mediaSession.setActionHandler('previoustrack', keyboardMediaKeys ? handlers.prev : noop);
+      navigator.mediaSession.setActionHandler('nexttrack', keyboardMediaKeys ? handlers.next : noop);
     }
 
     // cleanup
@@ -35,7 +44,7 @@ const useMediaControls = (handlers: MediaControlHandlers): null => {
         navigator.mediaSession.setActionHandler('nexttrack', null);
       }
     };
-  }, [handlers]);
+  }, [handlers, keyboardMediaKeys]);
 
   return null;
 };

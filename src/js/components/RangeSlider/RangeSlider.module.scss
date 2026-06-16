@@ -9,6 +9,11 @@
   z-index: 2;
   width: 100%;
   height: 20px;
+  border-radius: 2px;
+
+  &.inputAccessible {
+    @include mixins.focus-parent-outline;
+  }
 
   input[type='range'] {
     display: block;
@@ -116,5 +121,33 @@
   .input:hover &,
   .input:focus & {
     background: var(--color-core);
+  }
+
+  .inputAccessible & {
+    background: var(--color-core);
+  }
+
+  .inputDisabled & {
+    background: var(--color-text);
+    opacity: var(--opacity-05);
+  }
+}
+
+.inputDisabled {
+  opacity: var(--opacity-04);
+  pointer-events: none;
+}
+
+.inputAccessible {
+  input[type='range'] {
+    &::-webkit-slider-thumb {
+      display: block;
+    }
+    &::-moz-range-thumb {
+      display: block;
+    }
+    &::-ms-thumb {
+      display: block;
+    }
   }
 }

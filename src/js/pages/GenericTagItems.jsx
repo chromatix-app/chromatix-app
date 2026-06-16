@@ -5,7 +5,16 @@
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { FilterMenu, FilterSelect, FilterToggle, ViewGrid, ViewList, Loading, TitleHeading } from 'js/components';
+import {
+  FilterMenu,
+  FilterSelect,
+  FilterToggle,
+  FilterWrap,
+  ViewGrid,
+  ViewList,
+  Loading,
+  TitleHeading,
+} from 'js/components';
 import { useGetCollectionItems } from 'js/hooks';
 import platformFeatures from 'js/_config/platformFeatures';
 
@@ -223,7 +232,7 @@ const Title = ({
       icon={icon}
       padding={!isListView && !isGridView}
       filters={
-        <>
+        <FilterWrap>
           <FilterToggle
             value={viewCollectionItems}
             options={[
@@ -331,7 +340,7 @@ const Title = ({
               ]}
             />
           )}
-        </>
+        </FilterWrap>
       }
     />
   );
