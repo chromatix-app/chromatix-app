@@ -1,3 +1,18 @@
+# 0.63.0 (2026-06-16)
+
+Features:
+
+- New keyboard settings page — control whether media keys, the space bar, and left/right arrow keys are used to control playback.
+- New option in general settings: when playing from an artist page, the app can now automatically switch to track view and highlight the currently playing track.
+- Range sliders now support touch events, improving usability on touch screens.
+- Various responsive layout improvements throughout, with better spacing and padding across different window sizes.
+
+Code changes:
+
+- Added Playwright end-to-end tests with visual regression screenshot comparisons across multiple viewports.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.62.0 (2026-06-09)
 
 Features:

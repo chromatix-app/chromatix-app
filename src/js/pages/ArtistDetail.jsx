@@ -31,6 +31,8 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
 
+  const switchToTrackViewOnArtistPlay = useSelector(({ sessionModel }) => sessionModel.switchToTrackViewOnArtistPlay);
+
   const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
   const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
   const playingArtistId = useSelector(({ sessionModel }) => sessionModel.playingArtistId);
@@ -96,11 +98,15 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
       trackIndex: sortedArtistTracksOrder ? sortedArtistTracksOrder[0] : 0,
     });
 
-    // [NOTE] The commented snippet below could be used to switch to the track
-    // view when pressing play. Maybe this should be an optional setting.
+    // Optionally switch to track view when playing
+    if (switchToTrackViewOnArtistPlay && viewArtistAlbums !== 'track') {
+      dispatch.appModel.setAppState({ scrollToPlaying: true });
+      setViewArtistAlbums('track');
+    }
 
-    // if (viewArtistAlbums !== 'track') {
-    //   setViewArtistAlbums('track');
+    // // Scroll to playing track, if possible
+    // else if (viewArtistAlbums === 'track') {
+    //   dispatch.appModel.setAppState({ scrollToPlaying: true });
     // }
   };
 
@@ -406,15 +412,6 @@ const Title = ({
       }
       optionsMenu={
         <div className="filterIconWrap">
-          {/* <FilterToggle
-            value={viewArtistAlbums}
-            options={[
-              { value: 'grid', label: 'Grid view' },
-              { value: 'list', label: 'List view' },
-            ]}
-            setter={setViewArtistAlbums}
-            icon={viewArtistAlbums === 'grid' ? 'GridIcon' : 'ListIcon'}
-          /> */}
           <FilterSelect
             variant="Large"
             value={viewArtistAlbums}

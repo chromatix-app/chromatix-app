@@ -30,6 +30,7 @@ export { default as SettingsChangelog } from './SettingsChangelog/SettingsChange
 export { default as SettingsControls } from './SettingsControls/SettingsControls';
 export { default as SettingsDownloads } from './SettingsDownloads/SettingsDownloads';
 export { default as SettingsGeneral } from './SettingsGeneral/SettingsGeneral';
+export { default as SettingsKeyboard } from './SettingsKeyboard/SettingsKeyboard';
 export { default as SettingsList } from './SettingsList/SettingsList';
 export { default as SettingsSidebar } from './SettingsSidebar/SettingsSidebar';
 export { default as SideBar } from './SideBar/SideBar';

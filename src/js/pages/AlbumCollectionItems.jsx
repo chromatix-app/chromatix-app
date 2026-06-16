@@ -9,6 +9,7 @@ import {
   FilterMenu,
   FilterSelect,
   FilterToggle,
+  FilterWrap,
   ViewGrid,
   ViewList,
   Loading,
@@ -197,7 +198,7 @@ const Title = ({
       }
       padding={!isListView && !isGridView}
       filters={
-        <>
+        <FilterWrap>
           <FilterToggle
             value={viewCollectionItems}
             options={[
@@ -306,7 +307,7 @@ const Title = ({
               ]}
             />
           )}
-        </>
+        </FilterWrap>
       }
     />
   );

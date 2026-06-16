@@ -29,9 +29,18 @@
   }
 
   &WithQueue {
-    right: 300px;
+    right: 260px;
 
+    @media (min-width: 880px) {
+      right: 280px;
+    }
+    @media (min-width: 960px) {
+      right: 300px;
+    }
     @media (min-width: 1024px) {
+      right: 320px;
+    }
+    @media (min-width: 1140px) {
       right: 340px;
     }
   }

@@ -2,11 +2,9 @@
 @use '../../../css/_config/_vars';
 
 .wrap {
-  padding: 0 30px 50px;
+  padding-bottom: 50px;
 
-  :global(.cq-800) & {
-    padding: 0 40px 50px;
-  }
+  @include mixins.content-padding-regular;
 
   &.small {
     font-size: 14px;

@@ -11,21 +11,22 @@
   overflow: auto;
   width: 100%;
   height: 100%;
-  padding: 0 20px 30px;
+  padding-bottom: 30px;
   background: var(--color-primary-bg);
 
-  :global(.cq-800) & {
-    padding: 0 30px 30px;
-  }
+  @include mixins.content-padding-inset;
 }
 
 .scrollableInner {
   // Note: This grid layout MUST match the logic in the calculateDimensions js function.
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 0 10px;
+  gap: 0;
   background: var(--color-primary-bg);
 
+  :global(.cq-540) & {
+    gap: 0 10px;
+  }
   :global(.cq-620) & {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   }
@@ -50,7 +51,11 @@
 
 .virtualRow {
   display: grid;
-  gap: 0 10px;
+  gap: 0;
+
+  :global(.cq-540) & {
+    gap: 0 10px;
+  }
 
   // :global(html[data-env="local"]) & {
   //   background: rgba(255, 255, 255, 0.05);
@@ -72,12 +77,16 @@
 
 .card {
   padding: 9px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 13px;
 
   @include mixins.focus-self-outline;
+
+  :global(.cq-540) & {
+    margin-bottom: 20px;
+  }
 
   &:hover {
     background: var(--color-card-on-primary-bg);

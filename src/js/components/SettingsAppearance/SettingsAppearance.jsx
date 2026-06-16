@@ -50,7 +50,7 @@ export const SettingsAppearance = ({ debug }) => {
 
 //   const menuItems = [
 //     {
-//       type: 'radio',
+//       type: 'tabGroup',
 //       key: 'themeMode',
 //       state: themeMode,
 //       options: [
@@ -166,7 +166,7 @@ const TintSettings = () => {
 
   const menuItems = [
     {
-      type: 'radio',
+      type: 'tabGroup',
       key: 'currentUiTinting',
       state: currentUiTinting,
       options: [
@@ -198,7 +198,7 @@ const ContrastSettings = () => {
 
   const menuItems = [
     {
-      type: 'radio',
+      type: 'tabGroup',
       key: 'currentContrast',
       state: currentContrast,
       options: [

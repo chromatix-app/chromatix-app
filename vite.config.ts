@@ -64,6 +64,8 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./vitest.setup.ts'],
+    include: ['src/**/*.test.ts'],
+    exclude: ['**/node_modules/**', '**/_archived/**'],
     env: {
       VITE_ENV: 'local',
     },

@@ -28,6 +28,7 @@ const SideBar = () => {
   const { hasPlaylists, sortedPlaylists } = useGetPlaylistSidebar();
 
   const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const currentLibraryId = useSelector(({ sessionModel }) => sessionModel.currentLibrary?.libraryId);
 
   const menuShowBanners = useSelector(({ sessionModel }) => sessionModel.menuShowBanners);
   const menuShowIcons = useSelector(({ sessionModel }) => sessionModel.menuShowIcons);
@@ -123,7 +124,12 @@ const SideBar = () => {
             {libraryIsVisible && menuOpenLibrary && (
               <>
                 {menuShowArtists && platformOpts.menuArtists && (
-                  <NavLink className={style.link} activeClassName={style.linkActive} to="/artists" draggable="false">
+                  <NavLink
+                    className={style.link}
+                    activeClassName={style.linkActive}
+                    to={`/libraries/${currentLibraryId}/artists`}
+                    draggable="false"
+                  >
                     {menuShowIcons && (
                       <span className={style.icon}>
                         <Icon icon="PeopleIcon" cover stroke />
@@ -136,7 +142,7 @@ const SideBar = () => {
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
-                    to="/album-artists"
+                    to={`/libraries/${currentLibraryId}/album-artists`}
                     draggable="false"
                   >
                     {menuShowIcons && (
@@ -148,7 +154,12 @@ const SideBar = () => {
                   </NavLink>
                 )}
                 {menuShowAlbums && platformOpts.menuAlbums && (
-                  <NavLink className={style.link} activeClassName={style.linkActive} to="/albums" draggable="false">
+                  <NavLink
+                    className={style.link}
+                    activeClassName={style.linkActive}
+                    to={`/libraries/${currentLibraryId}/albums`}
+                    draggable="false"
+                  >
                     {menuShowIcons && (
                       <span className={style.icon}>
                         <Icon icon="PlayCircleIcon" cover stroke />
@@ -158,7 +169,12 @@ const SideBar = () => {
                   </NavLink>
                 )}
                 {menuShowFolders && platformOpts.menuFolders && (
-                  <NavLink className={style.link} activeClassName={style.linkActive} to="/folders" draggable="false">
+                  <NavLink
+                    className={style.link}
+                    activeClassName={style.linkActive}
+                    to={`/libraries/${currentLibraryId}/folders`}
+                    draggable="false"
+                  >
                     {menuShowIcons && (
                       <span className={style.icon}>
                         <Icon icon="FolderIcon" cover stroke />
@@ -171,7 +187,7 @@ const SideBar = () => {
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
-                    to="/playlists"
+                    to={`/libraries/${currentLibraryId}/playlists`}
                     exact={menuOpenPlaylists}
                     draggable="false"
                   >
@@ -214,7 +230,7 @@ const SideBar = () => {
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
-                    to="/artist-collections"
+                    to={`/libraries/${currentLibraryId}/artist-collections`}
                     draggable="false"
                   >
                     {menuShowIcons && (
@@ -229,7 +245,7 @@ const SideBar = () => {
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
-                    to="/album-collections"
+                    to={`/libraries/${currentLibraryId}/album-collections`}
                     draggable="false"
                   >
                     {menuShowIcons && (
@@ -244,7 +260,7 @@ const SideBar = () => {
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
-                    to="/artist-genres"
+                    to={`/libraries/${currentLibraryId}/artist-genres`}
                     draggable="false"
                   >
                     {menuShowIcons && (
@@ -259,7 +275,7 @@ const SideBar = () => {
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
-                    to="/album-genres"
+                    to={`/libraries/${currentLibraryId}/album-genres`}
                     draggable="false"
                   >
                     {menuShowIcons && (
@@ -274,7 +290,7 @@ const SideBar = () => {
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
-                    to="/artist-moods"
+                    to={`/libraries/${currentLibraryId}/artist-moods`}
                     draggable="false"
                   >
                     {menuShowIcons && (
@@ -289,7 +305,7 @@ const SideBar = () => {
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
-                    to="/album-moods"
+                    to={`/libraries/${currentLibraryId}/album-moods`}
                     draggable="false"
                   >
                     {menuShowIcons && (
@@ -304,7 +320,7 @@ const SideBar = () => {
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
-                    to="/artist-styles"
+                    to={`/libraries/${currentLibraryId}/artist-styles`}
                     draggable="false"
                   >
                     {menuShowIcons && (
@@ -319,7 +335,7 @@ const SideBar = () => {
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
-                    to="/album-styles"
+                    to={`/libraries/${currentLibraryId}/album-styles`}
                     draggable="false"
                   >
                     {menuShowIcons && (
@@ -334,7 +350,7 @@ const SideBar = () => {
                   <NavLink
                     className={style.link}
                     activeClassName={style.linkActive}
-                    to="/artist-tags"
+                    to={`/libraries/${currentLibraryId}/artist-tags`}
                     draggable="false"
                   >
                     {menuShowIcons && (
@@ -346,7 +362,12 @@ const SideBar = () => {
                   </NavLink>
                 )}
                 {menuShowAlbumTags && platformOpts.menuAlbumTags && (
-                  <NavLink className={style.link} activeClassName={style.linkActive} to="/album-tags" draggable="false">
+                  <NavLink
+                    className={style.link}
+                    activeClassName={style.linkActive}
+                    to={`/libraries/${currentLibraryId}/album-tags`}
+                    draggable="false"
+                  >
                     {menuShowIcons && (
                       <span className={style.icon}>
                         <Icon icon="AlbumTagsIcon" cover stroke />

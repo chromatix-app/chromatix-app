@@ -37,7 +37,7 @@ const GeneralSettings = () => {
   const menuItems = [
     {
       key: 'menuShowBanners',
-      label: 'Show "what’s new" banners',
+      label: 'Show "what’s new" banners.',
       description:
         'When major new features are added, we’ll display a small notification banner at the top of the sidebar menu to let you know.',
       state: menuShowBanners,
@@ -124,6 +124,7 @@ const RatingSettings = () => {
 //
 
 const PlaybackSettings = () => {
+  const switchToTrackViewOnArtistPlay = useSelector(({ sessionModel }) => sessionModel.switchToTrackViewOnArtistPlay);
   const disableRepeatOnceOnTrackChange = useSelector(({ sessionModel }) => sessionModel.disableRepeatOnceOnTrackChange);
   const disableRepeatOnceOnSourceChange = useSelector(
     ({ sessionModel }) => sessionModel.disableRepeatOnceOnSourceChange
@@ -131,6 +132,13 @@ const PlaybackSettings = () => {
   const revertRepeatOnceToRepeatAll = useSelector(({ sessionModel }) => sessionModel.revertRepeatOnceToRepeatAll);
 
   const menuItems = [
+    {
+      key: 'switchToTrackViewOnArtistPlay',
+      label: 'Switch to track view when playing from artist page.',
+      description:
+        'When enabled, if you start playback from an artist page while in grid or list view, the app will switch to track view and highlight the currently playing track. When disabled, it will keep you in grid or list view instead.',
+      state: switchToTrackViewOnArtistPlay,
+    },
     {
       key: 'disableRepeatOnceOnTrackChange',
       label: 'Disable "repeat 1" mode when changing tracks.',

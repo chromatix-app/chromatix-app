@@ -38,8 +38,6 @@ const ElectronUI = () => {
 };
 
 const ElectronMenu = ({ electronMenu }) => {
-  // console.log(electronMenu);
-
   const filteredMenu = electronMenu.filter(
     (item) => !ignoredTopItems.includes(item.label) && !ignoredTopItems.includes(item.role)
   );

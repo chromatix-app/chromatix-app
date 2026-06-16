@@ -37,6 +37,23 @@
     "test:verbose": "vitest",
     "test:all": "vitest run --silent",
     "test:all:verbose": "vitest run",
+    "test:e2e": "node lib/run-timed.js playwright test",
+    "test:e2e:login": "node tests/setup/auth.login.mjs",
+    "test:e2e:home": "node lib/run-timed.js playwright test tests/pages/1.home.spec.ts",
+    "test:e2e:setup": "node lib/run-timed.js playwright test tests/pages/2.setup.auth.spec.ts",
+    "test:e2e:library": "node lib/run-timed.js playwright test tests/pages/3.library.auth.spec.ts",
+    "test:e2e:settings": "node lib/run-timed.js playwright test tests/pages/4.settings.auth.spec.ts",
+    "test:e2e:ui": "node lib/run-timed.js playwright test tests/pages/5.ui.auth.spec.ts",
+    "test:e2e:windows": "node lib/run-timed.js playwright test tests/pages/6.windows.auth.spec.ts",
+    "test:e2e:update": "node lib/run-timed.js playwright test --update-snapshots",
+    "test:e2e:update:home": "node lib/run-timed.js playwright test tests/pages/1.home.spec.ts --update-snapshots",
+    "test:e2e:update:setup": "node lib/run-timed.js playwright test tests/pages/2.setup.auth.spec.ts --update-snapshots",
+    "test:e2e:update:library": "node lib/run-timed.js playwright test tests/pages/3.library.auth.spec.ts --update-snapshots",
+    "test:e2e:update:settings": "node lib/run-timed.js playwright test tests/pages/4.settings.auth.spec.ts --update-snapshots",
+    "test:e2e:update:ui": "node lib/run-timed.js playwright test tests/pages/5.ui.auth.spec.ts --update-snapshots",
+    "test:e2e:update:windows": "node lib/run-timed.js playwright test tests/pages/6.windows.auth.spec.ts --update-snapshots",
+    "test:e2e:gui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report test-report",
     "doctor": "react-doctor",
     "doctor:all": "react-doctor --yes",
     "doctor:json": "react-doctor --yes --json",
@@ -44,8 +61,11 @@
     "prepare": "husky"
   },
   "lint-staged": {
+    "ignore": [
+      "**/_archived/**"
+    ],
     "src/**/*.{js,jsx,ts,tsx}": [
-      "eslint --max-warnings=0",
+      "eslint --max-warnings=0 --no-warn-ignored",
       "prettier --check"
     ],
     "**/*.{json,css,scss,md}": [
@@ -86,6 +106,7 @@
   "devDependencies": {
     "@eslint-react/eslint-plugin": "^5.8.9",
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.60.0",
     "@types/chroma-js": "^3.1.2",
     "@types/crypto-js": "^4.2.2",
     "@types/lodash": "^4.17.24",

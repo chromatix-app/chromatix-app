@@ -17,10 +17,12 @@ export const RangeSlider = ({
   max = 100,
   step = 1,
   value,
+  allowAccess = true,
+  isDisabled = false,
+  hideBar = false,
   handleChange,
   handleMouseDown,
   handleMouseUp,
-  isDisabled,
 }) => {
   const widthPercent = ((value - min) / (max - min)) * 100;
 
@@ -28,9 +30,15 @@ export const RangeSlider = ({
 
   return (
     <div className={style.wrap}>
-      <div className={clsx(style.input)}>
+      <div
+        className={clsx(
+          style.input,
+          allowAccess && !isDisabled && style.inputAccessible,
+          isDisabled && !hideBar && style.inputDisabled
+        )}
+      >
         <div className={style.track}>
-          {!isDisabled && (
+          {!hideBar && (
             <div
               className={style.fill}
               style={{
@@ -39,22 +47,22 @@ export const RangeSlider = ({
             ></div>
           )}
         </div>
-        {!isDisabled && (
-          <input
-            type="range"
-            id={id}
-            min={min}
-            max={max}
-            step={step}
-            value={value}
-            onChange={(event) => debouncedHandleChange(parseFloat(event.target.value))}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onTouchStart={handleMouseDown}
-            onTouchEnd={handleMouseUp}
-            tabIndex={-1}
-          />
-        )}
+
+        <input
+          type="range"
+          id={id}
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          onChange={(event) => !isDisabled && debouncedHandleChange(parseFloat(event.target.value))}
+          onMouseDown={!isDisabled ? handleMouseDown : undefined}
+          onMouseUp={!isDisabled ? handleMouseUp : undefined}
+          onTouchStart={!isDisabled ? handleMouseDown : undefined}
+          onTouchEnd={!isDisabled ? handleMouseUp : undefined}
+          disabled={isDisabled}
+          tabIndex={allowAccess && !isDisabled ? 0 : -1}
+        />
       </div>
     </div>
   );

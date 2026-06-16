@@ -43,7 +43,7 @@ const GeneralSettings = ({ platformOpts }) => {
     { key: 'menuShowIcons', label: 'Show icons', state: menuShowIcons },
   ];
 
-  return <SettingsList title="General" menuItems={menuItems} />;
+  return <SettingsList title="General" menuItems={menuItems} variant="compact" />;
 };
 
 //
@@ -98,7 +98,7 @@ const LibrarySettings = ({ platformOpts }) => {
     },
   ];
 
-  return <SettingsList title="Library" menuItems={menuItems} />;
+  return <SettingsList title="Library" menuItems={menuItems} variant="compact" />;
 };
 
 //
@@ -206,7 +206,7 @@ const BrowseSettings = ({ platformOpts }) => {
       : []),
   ];
 
-  return <SettingsList title="Browse" menuItems={menuItems} />;
+  return <SettingsList title="Browse" menuItems={menuItems} variant="compact" />;
 };
 
 //
@@ -235,7 +235,7 @@ const PlaylistSettings = ({ platformOpts }) => {
       : []),
   ];
 
-  return <SettingsList title="Playlists" menuItems={menuItems} />;
+  return <SettingsList title="Playlists" menuItems={menuItems} variant="compact" />;
 };
 
 // ======================================================================
