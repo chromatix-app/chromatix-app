@@ -21,18 +21,6 @@ let isResetting = false;
 let needsReinit = true;
 
 // ======================================================================
-// HELPERS
-// ======================================================================
-
-const generateSessionId = (): string => {
-  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-    return crypto.randomUUID();
-  }
-  // Fallback for environments without crypto.randomUUID
-  return Math.random().toString(36).slice(2) + Date.now().toString(36);
-};
-
-// ======================================================================
 // INITIALISE
 // ======================================================================
 
@@ -109,8 +97,6 @@ export const unload = (): void => {
 export const loadTrack = (dashSrc: string, progress: number = 0, play: boolean = true): void => {
   if (!mediaPlayer || !audioElement || !supported) return;
 
-  const sessionId = generateSessionId();
-  const manifestUrl = `${dashSrc}&X-Plex-Session-Identifier=${encodeURIComponent(sessionId)}`;
   const startTime = progress > 0 ? progress / 1000 : undefined;
 
   isResetting = true;
@@ -119,12 +105,12 @@ export const loadTrack = (dashSrc: string, progress: number = 0, play: boolean =
 
   if (needsReinit) {
     // First load (or after reset) — initialize() re-attaches the audio element.
-    mediaPlayer.initialize(audioElement, manifestUrl, false, startTime);
+    mediaPlayer.initialize(audioElement, dashSrc, false, startTime);
     needsReinit = false;
   } else {
     // Subsequent loads — attachSource() is safer than reset()+initialize() in the
     // same call stack, which can silently fail in dash.js 5.x.
-    mediaPlayer.attachSource(manifestUrl, startTime);
+    mediaPlayer.attachSource(dashSrc, startTime);
   }
 
   // Call play() synchronously — dash.js's autoPlay invokes it after async manifest

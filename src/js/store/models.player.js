@@ -468,14 +468,15 @@ const effects = (dispatch) => ({
     const currentService = rootState.appModel.currentService;
     const serverBaseUrl = rootState.appModel.serverBaseUrl;
     const userToken = rootState.appModel.userToken;
+    const sessionId = rootState.sessionModel.sessionId;
     const currentTrack = payload.playingTrackList[payload.playingTrackKeys[payload.playingTrackIndex]];
-    playerX.loadTrack(withDashSrc(currentTrack, currentService, serverBaseUrl, userToken));
+    playerX.loadTrack(withDashSrc(currentTrack, currentService, serverBaseUrl, userToken, sessionId));
 
     // Set next track for preloading
     const nextIndex = payload.playingTrackIndex + 1;
     if (nextIndex < payload.playingTrackCount) {
       const nextTrack = payload.playingTrackList[payload.playingTrackKeys[nextIndex]];
-      playerX.setNextTrack(withDashSrc(nextTrack, currentService, serverBaseUrl, userToken));
+      playerX.setNextTrack(withDashSrc(nextTrack, currentService, serverBaseUrl, userToken, sessionId));
     } else {
       playerX.clearNextTrack();
     }
@@ -505,7 +506,8 @@ const effects = (dispatch) => ({
         const currentTrack = playingTrackList[playingTrackKeys[index]];
         const serverBaseUrl = rootState.appModel.serverBaseUrl;
         const userToken = rootState.appModel.userToken;
-        const trackWithDash = withDashSrc(currentTrack, currentService, serverBaseUrl, userToken);
+        const sessionId = rootState.sessionModel.sessionId;
+        const trackWithDash = withDashSrc(currentTrack, currentService, serverBaseUrl, userToken, sessionId);
         // If the track needs DASH transcoding but credentials weren't available
         // yet (e.g. playerRefresh fires before login completes), dashSrc will be
         // null. Mark playerTrackError so Resume re-calls playerLoadIndex with
@@ -525,7 +527,7 @@ const effects = (dispatch) => ({
         const nextIndex = index + 1;
         if (nextIndex < playingTrackKeys.length) {
           const nextTrack = playingTrackList[playingTrackKeys[nextIndex]];
-          playerX.setNextTrack(withDashSrc(nextTrack, currentService, serverBaseUrl, userToken));
+          playerX.setNextTrack(withDashSrc(nextTrack, currentService, serverBaseUrl, userToken, sessionId));
         } else {
           playerX.clearNextTrack();
         }
@@ -768,6 +770,7 @@ const effects = (dispatch) => ({
     const currentService = rootState.appModel.currentService;
     const serverBaseUrl = rootState.appModel.serverBaseUrl;
     const userToken = rootState.appModel.userToken;
+    const sessionId = rootState.sessionModel.sessionId;
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
     const playingTrackList = rootState.sessionModel.playingTrackList;
     const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
@@ -775,7 +778,7 @@ const effects = (dispatch) => ({
     const nextIndex = playingTrackIndex + 1;
     if (nextIndex < playingTrackKeys.length) {
       const nextTrack = playingTrackList[playingTrackKeys[nextIndex]];
-      playerX.setNextTrack(withDashSrc(nextTrack, currentService, serverBaseUrl, userToken));
+      playerX.setNextTrack(withDashSrc(nextTrack, currentService, serverBaseUrl, userToken, sessionId));
     } else {
       playerX.clearNextTrack();
     }
@@ -867,9 +870,9 @@ const toUpperFirst = (string) => {
 
 // Adds a freshly computed dashSrc to a track if the current service is Plex
 // and the necessary connection details are available.
-const withDashSrc = (track, currentService, serverBaseUrl, accessToken) => {
-  if (currentService !== 'plex' || !track?.trackKey || !serverBaseUrl || !accessToken) {
+const withDashSrc = (track, currentService, serverBaseUrl, accessToken, sessionId) => {
+  if (currentService !== 'plex' || !track?.trackKey || !serverBaseUrl || !accessToken || !sessionId) {
     return track;
   }
-  return { ...track, dashSrc: getDashSrc(track.trackKey, serverBaseUrl, accessToken) };
+  return { ...track, dashSrc: getDashSrc(track.trackKey, serverBaseUrl, accessToken, sessionId) };
 };

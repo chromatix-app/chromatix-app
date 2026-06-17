@@ -23,14 +23,12 @@ const CLIENT_PROFILE_EXTRA =
  * The URL targets Plex's universal transcoder, which converts any codec
  * to AAC in an MP4/DASH container for universal browser playback.
  *
- * A unique `X-Plex-Session-Identifier` must be appended by the caller
- * (e.g. `player.dash.ts`) before passing the URL to dash.js.
- *
  * @param trackKey - The Plex track metadata key (e.g. `"/library/metadata/163407"`).
  * @param serverBaseUrl - The active Plex server base URL (e.g. `"https://192-168-1-201.plex.direct:32400"`).
  * @param accessToken - The Plex access token for the current user.
+ * @param sessionId - The Plex session identifier from `sessionModel.sessionId`.
  */
-const getDashSrc = (trackKey: string, serverBaseUrl: string, accessToken: string): string => {
+const getDashSrc = (trackKey: string, serverBaseUrl: string, accessToken: string, sessionId: string): string => {
   const envData = getEnvironment();
 
   const params = new URLSearchParams({
@@ -46,10 +44,13 @@ const getDashSrc = (trackKey: string, serverBaseUrl: string, accessToken: string
     directStream: '0',
     'X-Plex-Client-Profile-Extra': CLIENT_PROFILE_EXTRA,
     'X-Plex-Product': envData.appName,
-    'X-Plex-Platform': envData.appPlatformName,
+    // Plex's transcoder rejects DASH requests from non-web platform identifiers
+    // (e.g. macOS, Windows). Always identify as Web here.
+    'X-Plex-Platform': 'Web', //envData.appPlatformName,
     'X-Plex-Device-Name': envData.deviceName,
     'X-Plex-Client-Identifier': 'chromatix.app',
     'X-Plex-Token': accessToken,
+    'X-Plex-Session-Identifier': sessionId,
   });
 
   return `${serverBaseUrl}/music/:/transcode/universal/start.mpd?${params.toString()}`;

@@ -188,12 +188,6 @@ describe('Testing "player.dash" module', () => {
       expect(url).toContain('http://example.com/manifest.mpd');
     });
 
-    test('loadTrack() appends a session identifier to the manifest URL', () => {
-      player.loadTrack('http://example.com/manifest.mpd');
-      const [, url] = mockMediaPlayer.initialize.mock.calls[0];
-      expect(url).toContain('X-Plex-Session-Identifier=');
-    });
-
     test('subsequent loadTrack() calls attachSource() instead of initialize()', () => {
       player.loadTrack('http://example.com/manifest.mpd');
       (elementA() as any).mockTriggerEvent('loadstart'); // clear isResetting
