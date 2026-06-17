@@ -49,12 +49,34 @@ root.render(
     <BrowserRouter>
       <App />
       <Analytics
-        debug={false}
-        beforeSend={(event) => ({
-          ...event,
-          // Normalise dynamic library IDs so analytics groups all library routes together
-          url: event.url.replace(/\/libraries\/[^/]+/g, '/libraries/x'),
-        })}
+        debug={true}
+        beforeSend={(event) => {
+          // Route sections that have a dynamic ID as their final path segment
+          const dynamicRouteSections = [
+            'artists',
+            'album-artists',
+            'albums',
+            'folders',
+            'playlists',
+            'artist-collections',
+            'album-collections',
+            'artist-genres',
+            'album-genres',
+            'artist-moods',
+            'album-moods',
+            'artist-styles',
+            'album-styles',
+            'artist-tags',
+            'album-tags',
+          ];
+          const dynamicSectionPattern = new RegExp(`/(${dynamicRouteSections.join('|')})/[^/?#]+`, 'g');
+          const url = event.url
+            // Normalise dynamic library IDs
+            .replace(/\/libraries\/[^/]+/g, '/libraries/x')
+            // Normalise dynamic item IDs within each library section
+            .replace(dynamicSectionPattern, '/$1/x');
+          return { ...event, url };
+        }}
       />
     </BrowserRouter>
   </Provider>

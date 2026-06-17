@@ -84,7 +84,7 @@ const SideBar = () => {
 
   return (
     <>
-      <div className={style.nav}>
+      <div className={style.nav} data-allow-key-controls>
         <button type="button" className={style.prev} disabled={!canGoBack} onClick={goBack}>
           <Icon icon="PreviousIcon" cover stroke />
         </button>
@@ -92,7 +92,7 @@ const SideBar = () => {
           <Icon icon="NextIcon" cover stroke />
         </button>
       </div>
-      <div className={style.wrap}>
+      <div className={style.wrap} data-allow-key-controls>
         {(envData.electronPlatformId === 'lin' || envData.electronPlatformId === 'win') && (
           <div className={style.userMenu}>
             <UserMenu variant="SideBar" />
