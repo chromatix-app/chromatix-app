@@ -1,21 +1,24 @@
 // ======================================================================
-// TYPES
+// IMPORTS
 // ======================================================================
 
-interface PlayerInitParams {
-  volumeLevel: number;
-  volumeMuted: boolean;
-  onLoadStart: () => void;
-  onCanPlay: () => void;
-  onEnded: () => void;
-  onError: (params: { event: Event; playerElement: HTMLAudioElement }) => void;
-}
+import type { PlayerInitParams } from 'types/player';
+
+// ======================================================================
+// STATE
+// ======================================================================
+
+let playerElement: HTMLAudioElement | null = null;
+// True from unload() or loadTrack() until loadstart fires for the new source.
+// Suppresses stale error events that fire during source transitions.
+let isResetting = false;
+// True before the first loadTrack() and after unload().
+// Guards unload() from doing unnecessary work when the player is already idle.
+let needsReinit = true;
 
 // ======================================================================
 // INITIALISE
 // ======================================================================
-
-let playerElement: HTMLAudioElement | null = null;
 
 export const init = ({
   volumeLevel,
@@ -25,36 +28,59 @@ export const init = ({
   onEnded,
   onError,
 }: PlayerInitParams): void => {
-  console.log('%c--- player - init ---', 'color:#a18507');
+  console.log('%c--- .native - init ---', 'color:#4c3ad4');
   if (!playerElement) {
     playerElement = document.createElement('audio');
     playerElement.pause();
     playerElement.volume = volumeMuted ? 0 : volumeLevel / 100;
-    playerElement.addEventListener('loadstart', onLoadStart);
+    playerElement.addEventListener('loadstart', () => {
+      // New source is loading — clear the flag so subsequent errors are real.
+      isResetting = false;
+      onLoadStart();
+    });
     playerElement.addEventListener('canplay', onCanPlay);
     playerElement.addEventListener('ended', onEnded);
-    playerElement.addEventListener('error', (event: Event) => onError({ event, playerElement: playerElement! }));
+    playerElement.addEventListener('error', (event: Event) => {
+      if (isResetting) return;
+      // Suppress MEDIA_ERR_SRC_NOT_SUPPORTED (code 4) when src is empty — fired
+      // after unload() clears the src. Not a genuine playback error.
+      const el = playerElement!;
+      if (el.error?.code === 4 /* MEDIA_ERR_SRC_NOT_SUPPORTED */ && !el.src) return;
+      onError({ event, playerElement: el });
+    });
   }
 };
 
 // ======================================================================
-// VARIOUS PLAYER FUNCTIONS
+// UNLOAD
 // ======================================================================
 
 export const unload = (): void => {
-  console.log('%c--- player - unload ---', 'color:#a18507');
-  if (playerElement) {
-    playerElement.pause();
-    playerElement.src = '';
-    playerElement.load();
-  }
+  if (!playerElement || needsReinit) return;
+  console.log('%c--- .native - unload ---', 'color:#4c3ad4');
+  playerElement.pause();
+  // Set before clearing src — suppresses any stale error from the previous
+  // track's pending requests arriving mid-transition.
+  isResetting = true;
+  playerElement.src = '';
+  playerElement.currentTime = 0;
+  needsReinit = true;
+  // Do NOT call load() — it fires loadstart then MEDIA_ERR_SRC_NOT_SUPPORTED
+  // for the empty src, which would incorrectly trigger the error handler.
 };
 
+// ======================================================================
+// LOAD TRACK
+// ======================================================================
+
 export const loadTrack = (trackSrc: string, progress: number = 0, play: boolean = true): void => {
-  // console.log('%c--- player - loadTrack ---', 'color:#a18507');
   if (playerElement) {
+    console.log('%c--- .native - loadTrack ---', 'color:#4c3ad4');
+    isResetting = true;
+    needsReinit = false;
     playerElement.src = trackSrc;
     playerElement.load();
+    // isResetting cleared when loadstart fires
     if (progress) {
       playerElement.currentTime = progress / 1000;
     }
@@ -63,6 +89,10 @@ export const loadTrack = (trackSrc: string, progress: number = 0, play: boolean 
     }
   }
 };
+
+// ======================================================================
+// PLAYBACK CONTROLS
+// ======================================================================
 
 export const pause = (): void => {
   if (playerElement) {
@@ -83,11 +113,19 @@ export const restart = (): void => {
   }
 };
 
+// ======================================================================
+// VOLUME
+// ======================================================================
+
 export const setVolume = (volumeLevel: number): void => {
   if (playerElement) {
     playerElement.volume = volumeLevel / 100;
   }
 };
+
+// ======================================================================
+// PROGRESS
+// ======================================================================
 
 export const setProgress = (progress: number): void => {
   if (playerElement) {
@@ -101,15 +139,14 @@ export const getCurrentProgress = (): number => {
 
 // ======================================================================
 // PRELOADING STUBS
+// Not currently used, but may be in future
 // ======================================================================
 
-export const preloadNextTrack = (_trackSrc: string): void => {
+export const updateProgress = (_currentProgress: number): void => {
   return;
 };
 
-// Listen to track progress and preload the next track when we're within 45 seconds
-// of the end, or at 60% progress, whichever comes first
-export const updateProgress = (_currentProgress: number): void => {
+export const preloadNextTrack = (_trackSrc: string): void => {
   return;
 };
 

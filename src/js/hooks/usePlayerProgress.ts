@@ -4,7 +4,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import * as playerX from 'js/services/player.native';
+import * as playerX from 'js/services/player';
 
 // ======================================================================
 // TYPES

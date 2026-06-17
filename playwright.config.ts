@@ -76,5 +76,17 @@ export default defineConfig({
       },
       testMatch: '**/6.windows.auth.spec.ts',
     },
+
+    // Player testing
+    {
+      name: 'player',
+      use: {
+        storageState: 'tests/.auth/session-grid.json',
+        launchOptions: {
+          args: ['--autoplay-policy=no-user-gesture-required'],
+        },
+      },
+      testMatch: '**/7.player.auth.spec.ts',
+    },
   ],
 });

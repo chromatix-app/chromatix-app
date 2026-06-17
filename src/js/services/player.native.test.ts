@@ -185,8 +185,18 @@ describe('Player Service', () => {
       expect(() => player.unload()).not.toThrow();
     });
 
+    test('is a no-op before loadTrack() — does not clear src or pause', () => {
+      // needsReinit=true until the first loadTrack(); unload() skips idle players.
+      defaultInit();
+      player.unload();
+      // Element was never given a src, so it should remain at its initial state.
+      expect(elementA().src).toBe('');
+      expect(elementA().paused).toBe(true);
+    });
+
     test('can be called multiple times without throwing', () => {
       defaultInit();
+      player.loadTrack('http://example.com/track1.mp3');
       player.unload();
       expect(() => player.unload()).not.toThrow();
     });
@@ -295,11 +305,40 @@ describe('Player Service', () => {
 
     test('onError fires with the correct playerElement when the active element errors', () => {
       player.loadTrack('http://example.com/track1.mp3');
+      // loadstart must fire first — it clears isResetting so subsequent errors
+      // are treated as genuine playback errors.
+      (elementA() as any).mockTriggerEvent('loadstart');
       (elementA() as any).mockTriggerError({});
       expect(mockCallbacks.onError).toHaveBeenCalledTimes(1);
       const callArg = mockCallbacks.onError.mock.calls[0][0];
       expect(callArg).toHaveProperty('event');
       expect(callArg).toHaveProperty('playerElement');
+    });
+
+    test('onError is suppressed when isResetting (error fires before loadstart)', () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      // isResetting=true until loadstart fires — error should be swallowed.
+      (elementA() as any).mockTriggerError({});
+      expect(mockCallbacks.onError).not.toHaveBeenCalled();
+    });
+
+    test('onError is suppressed for MEDIA_ERR_SRC_NOT_SUPPORTED with empty src', () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      (elementA() as any).mockTriggerEvent('loadstart'); // clear isResetting
+      // Simulate the empty-src artifact that fires when src is cleared.
+      (elementA() as any).src = '';
+      (elementA() as any).error = { code: 4 };
+      (elementA() as any).mockTriggerError({});
+      expect(mockCallbacks.onError).not.toHaveBeenCalled();
+    });
+
+    test('onError fires for MEDIA_ERR_SRC_NOT_SUPPORTED when src is not empty', () => {
+      player.loadTrack('http://example.com/track1.mp3');
+      (elementA() as any).mockTriggerEvent('loadstart'); // clear isResetting
+      // code=4 with a real src is a genuine unsupported-format error.
+      (elementA() as any).error = { code: 4 };
+      (elementA() as any).mockTriggerError({});
+      expect(mockCallbacks.onError).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -326,7 +365,7 @@ describe('Player Service', () => {
       player.setProgress(30000);
       expect(player.getCurrentProgress()).toBe(30); // confirm position was set
       player.unload();
-      // unload() calls element.load(), which resets currentTime to 0 (matching real browser behaviour)
+      // unload() explicitly sets currentTime to 0 (without calling load()).
       expect(player.getCurrentProgress()).toBe(0);
     });
   });
@@ -342,9 +381,6 @@ describe('Player Service', () => {
       expect(() => player.restart()).not.toThrow();
       expect(() => player.setVolume(50)).not.toThrow();
       expect(() => player.setProgress(30000)).not.toThrow();
-      expect(() => player.updateProgress(60000)).not.toThrow();
-      expect(() => player.setNextTrack('http://example.com/track.mp3')).not.toThrow();
-      expect(() => player.clearNextTrack()).not.toThrow();
       expect(player.getCurrentProgress()).toBe(0);
     });
 
