@@ -7,16 +7,17 @@
 // A single audio element used for canPlayType checks — created once at module load.
 const _audioEl = typeof document !== 'undefined' ? document.createElement('audio') : null;
 
-// Maps Plex audioCodec values to the MIME type string used for canPlayType
-// testing. Presence in this map does NOT mean the codec is universally
-// supported — it means we have a MIME type to probe. canPlayType returns ''
-// when the browser can't play it (transcoding required) and 'maybe'/'probably'
-// when it can (native playback). Codecs absent from this map are assumed to
-// always require transcoding.
+// Maps normalised codec display names (and common raw API values) to MIME type
+// strings used for canPlayType testing. Presence in this map does NOT mean the
+// codec is universally supported — it means we have a MIME type to probe.
+// canPlayType returns '' when the browser can't play it (transcoding required)
+// and 'maybe'/'probably' when it can (native playback). Codecs absent from
+// this map are assumed to always require transcoding.
 const CODEC_MIME_MAP: Readonly<Record<string, string>> = {
   mp3: 'audio/mpeg',
   aac: 'audio/aac',
   flac: 'audio/flac',
+  aiff: 'audio/x-aiff',
   alac: 'audio/mp4; codecs="alac"',
   vorbis: 'audio/ogg; codecs="vorbis"',
   opus: 'audio/ogg; codecs="opus"',
@@ -39,11 +40,13 @@ const CODEC_MIME_MAP: Readonly<Record<string, string>> = {
 const _cache = new Map<string, boolean>();
 
 /**
- * Returns `true` if the given Plex audioCodec value cannot be played natively
- * by the current browser and requires DASH transcoding via Plex's universal
- * transcoder. Falls back to `true` (transcode) for any unknown codec.
+ * Returns `true` if the given codec cannot be played natively by the current
+ * browser. Used by Jellyfin to choose the universal transcoding endpoint, and
+ * by Plex to decide whether to load via DASH. Falls back to `true` (transcode)
+ * for any unknown codec. Accepts both normalised display names (`"wav"`, `"wma"`)
+ * and raw API values (`"pcm_s16le"`, `"wmav2"`).
  *
- * @param codec - The `audioCodec` value from the Plex API (e.g. `"alac"`, `"mp3"`).
+ * @param codec - A normalised or raw codec string (e.g. `"alac"`, `"mp3"`).
  */
 export const requiresTranscoding = (codec: string | null | undefined): boolean => {
   if (!codec || !_audioEl) return false;

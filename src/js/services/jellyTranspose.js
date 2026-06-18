@@ -8,7 +8,7 @@ consistent between music services, and also doing some additional processing and
 // ======================================================================
 
 import { safeEncodeURIComponent } from 'js/utils/';
-import requiresTranscoding from 'js/utils/playerCodec';
+import requiresTranscoding from 'js/utils/requiresTranscoding';
 
 // ======================================================================
 // OPTIONS
@@ -451,7 +451,8 @@ const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
     track.AlbumArtists?.filter((artist) => artist.Name === artistName)[0]?.Id || track.AlbumArtists?.[0]?.Id || null;
   const bitrate = track?.MediaStreams?.find((track) => track.Type.toLowerCase() === 'audio')?.BitRate;
 
-  const codec = track?.MediaStreams?.find((track) => track.Type.toLowerCase() === 'audio')?.Codec;
+  const rawCodec = track?.MediaStreams?.find((track) => track.Type.toLowerCase() === 'audio')?.Codec;
+  const codec = displayCodec(rawCodec);
 
   // Use the universal endpoint for codecs the browser can't play natively.
   // It auto-transcodes to AAC/MP3; static=true direct-streams supported codecs.
@@ -485,9 +486,19 @@ const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
   };
 };
 
-// const streamUrl = `${serverBaseUrl}/Audio/${trackId}/stream?static=true&api_key=${accessToken}`;
+// Maps raw FFmpeg codec identifiers to user-friendly display names,
+// consistent with Plex's codec display conventions.
+const CODEC_DISPLAY_MAP = {
+  pcm_s16le: 'wav',
+  pcm_s24le: 'wav',
+  pcm_s32le: 'wav',
+  pcm_f32le: 'wav',
+  pcm_s16be: 'aiff',
+  pcm_s24be: 'aiff',
+  wmav2: 'wma',
+};
 
-// http://192.168.1.201:8096/Audio/5bdcac4a524f7e26db698c28a08831d2/stream?static=true&api_key=d4ebbfe4fc4a4732a3a45a30ae399ede
+const displayCodec = (codec) => (codec ? (CODEC_DISPLAY_MAP[codec] ?? codec) : codec);
 
 // ======================================================================
 // SEARCH RESULTS

@@ -462,12 +462,7 @@ const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
     albumLink: '/libraries/' + libraryId + '/albums/' + track.parentRatingKey,
     trackNumber: track.index,
     discNumber: track.parentIndex,
-    codec:
-      track.Media[0].audioCodec === 'pcm'
-        ? track.Media[0].container
-        : track.Media[0].audioCodec === 'wmav2'
-          ? 'wma'
-          : track.Media[0].audioCodec,
+    codec: displayCodec(track.Media[0].audioCodec, track.Media[0].container),
     bitrate: track.Media[0].bitrate,
     duration: track.Media[0].duration,
     userRating: track.userRating,
@@ -477,6 +472,16 @@ const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
     src: originalSrc,
   };
 };
+
+// Maps raw Plex audioCodec values to user-friendly display names.
+// PCM tracks use the container name (e.g. 'aiff', 'wav') instead — handled
+// separately below since it requires the container field, not a static lookup.
+const CODEC_DISPLAY_MAP = {
+  wmav2: 'wma',
+};
+
+const displayCodec = (audioCodec, container) =>
+  audioCodec === 'pcm' ? container : (CODEC_DISPLAY_MAP[audioCodec] ?? audioCodec);
 
 // ======================================================================
 // SEARCH RESULTS

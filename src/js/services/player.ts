@@ -5,7 +5,7 @@
 import * as dashX from './player.dash';
 import * as nativeX from './player.native';
 import type { PlayerInitParams } from 'types/player';
-import requiresTranscoding from 'js/utils/playerCodec';
+import requiresTranscoding from 'js/utils/requiresTranscoding';
 
 // ======================================================================
 // TYPES

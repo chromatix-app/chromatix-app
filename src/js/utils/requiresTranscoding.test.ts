@@ -1,8 +1,8 @@
 // Generated using GitHub Copilot
 
-import requiresTranscoding, { _clearCache } from './playerCodec';
+import requiresTranscoding, { _clearCache } from './requiresTranscoding';
 
-// playerCodec.ts creates its audio element via document.createElement('audio'),
+// requiresTranscoding.ts creates its audio element via document.createElement('audio'),
 // which in jsdom gives a native element distinct from our MockHTMLAudioElement.
 // We must spy on that element's actual prototype to affect the module's singleton.
 const nativeAudioProto = Object.getPrototypeOf(document.createElement('audio')) as HTMLAudioElement;
