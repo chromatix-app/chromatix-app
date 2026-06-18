@@ -16,6 +16,7 @@ interface PlayerTrack {
   src: string;
   dashSrc?: string | null;
   codec?: string | null;
+  trackKey?: string | null;
 }
 
 // ======================================================================
@@ -67,16 +68,15 @@ export const loadTrack = (track: PlayerTrack, progress: number = 0, play: boolea
     nativeX.unload();
     dashX.loadTrack(track.dashSrc, progress, play);
     activePlayer = 'dash';
-  } else if (transcoding && dashX.isSupported()) {
-    // Track needs DASH transcoding but dashSrc is unavailable — this happens
-    // when playerRefresh fires before server credentials have loaded (the token
-    // is needed to build the manifest URL). Attempting native playback would
-    // fail immediately with MEDIA_ERR_SRC_NOT_SUPPORTED. Leave both players
-    // idle; the user can resume once credentials are available.
+  } else if (transcoding && !track.dashSrc && track.trackKey && dashX.isSupported()) {
+    // Plex track that needs DASH but dashSrc is unavailable — credentials not
+    // ready yet. Leave both players idle; Resume will retry with a fresh URL.
     dashX.unload();
     nativeX.unload();
     activePlayer = 'native';
   } else {
+    // Native path: either codec is supported, or the src URL already embeds
+    // server-side transcoding (e.g. Jellyfin universal endpoint).
     dashX.unload();
     nativeX.loadTrack(track.src, progress, play);
     activePlayer = 'native';
