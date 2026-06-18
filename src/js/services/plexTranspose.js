@@ -462,7 +462,12 @@ const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
     albumLink: '/libraries/' + libraryId + '/albums/' + track.parentRatingKey,
     trackNumber: track.index,
     discNumber: track.parentIndex,
-    codec: track.Media[0].audioCodec,
+    codec:
+      track.Media[0].audioCodec === 'pcm'
+        ? track.Media[0].container
+        : track.Media[0].audioCodec === 'wmav2'
+          ? 'wma'
+          : track.Media[0].audioCodec,
     bitrate: track.Media[0].bitrate,
     duration: track.Media[0].duration,
     userRating: track.userRating,

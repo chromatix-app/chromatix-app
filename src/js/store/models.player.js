@@ -102,15 +102,17 @@ const effects = (dispatch) => ({
   },
 
   playerRefreshTrack(payload, rootState) {
-    // For Plex, serverBaseUrl and userToken are needed to build the DASH
-    // manifest URL; they load asynchronously after login so we retry until
-    // both are available. For Jellyfin the token is already embedded in the
-    // stored src URLs, so no waiting is required.
+    // For Plex DASH tracks, serverBaseUrl and userToken are needed to build the
+    // manifest URL and load asynchronously after login, so retry until both are
+    // available. Native-codec Plex tracks and all Jellyfin tracks embed their
+    // credentials in the stored src URL and need no waiting.
     const currentService = rootState.appModel.currentService;
     const serverBaseUrl = rootState.appModel.serverBaseUrl;
     const userToken = rootState.appModel.userToken;
-    const plexCredentialsMissing = currentService === 'plex' && (!serverBaseUrl || !userToken);
-    if (plexCredentialsMissing) {
+    const track = rootState.sessionModel.playingTrackList?.[rootState.sessionModel.playingTrackKeys?.[payload.index]];
+    const plexDashCredentialsMissing =
+      currentService === 'plex' && requiresTranscoding(track?.codec) && (!serverBaseUrl || !userToken);
+    if (plexDashCredentialsMissing) {
       setTimeout(() => dispatch.playerModel.playerRefreshTrack(payload), 100);
       return;
     }
@@ -765,22 +767,21 @@ const effects = (dispatch) => ({
   },
 
   updateNextTrack(payload, rootState) {
-    // Helper function to update the next track for preloading
-    const currentService = rootState.appModel.currentService;
-    const serverBaseUrl = rootState.appModel.serverBaseUrl;
-    const userToken = rootState.appModel.userToken;
-    const sessionId = rootState.sessionModel.sessionId;
-    const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
-    const playingTrackList = rootState.sessionModel.playingTrackList;
-    const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
-
-    const nextIndex = playingTrackIndex + 1;
-    if (nextIndex < playingTrackKeys.length) {
-      const nextTrack = playingTrackList[playingTrackKeys[nextIndex]];
-      playerX.setNextTrack(withDashSrc(nextTrack, currentService, serverBaseUrl, userToken, sessionId));
-    } else {
-      playerX.clearNextTrack();
-    }
+    // // Helper function to update the next track for preloading
+    // const currentService = rootState.appModel.currentService;
+    // const serverBaseUrl = rootState.appModel.serverBaseUrl;
+    // const userToken = rootState.appModel.userToken;
+    // const sessionId = rootState.sessionModel.sessionId;
+    // const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+    // const playingTrackList = rootState.sessionModel.playingTrackList;
+    // const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
+    // const nextIndex = playingTrackIndex + 1;
+    // if (nextIndex < playingTrackKeys.length) {
+    //   const nextTrack = playingTrackList[playingTrackKeys[nextIndex]];
+    //   playerX.setNextTrack(withDashSrc(nextTrack, currentService, serverBaseUrl, userToken, sessionId));
+    // } else {
+    //   playerX.clearNextTrack();
+    // }
   },
 
   //
