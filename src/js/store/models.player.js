@@ -102,11 +102,15 @@ const effects = (dispatch) => ({
   },
 
   playerRefreshTrack(payload, rootState) {
-    // serverBaseUrl and userToken are needed to build DASH manifest URLs.
-    // They load asynchronously after login; retry until both are available.
+    // For Plex, serverBaseUrl and userToken are needed to build the DASH
+    // manifest URL; they load asynchronously after login so we retry until
+    // both are available. For Jellyfin the token is already embedded in the
+    // stored src URLs, so no waiting is required.
+    const currentService = rootState.appModel.currentService;
     const serverBaseUrl = rootState.appModel.serverBaseUrl;
     const userToken = rootState.appModel.userToken;
-    if (!serverBaseUrl || !userToken) {
+    const plexCredentialsMissing = currentService === 'plex' && (!serverBaseUrl || !userToken);
+    if (plexCredentialsMissing) {
       setTimeout(() => dispatch.playerModel.playerRefreshTrack(payload), 100);
       return;
     }
@@ -508,20 +512,15 @@ const effects = (dispatch) => ({
         const userToken = rootState.appModel.userToken;
         const sessionId = rootState.sessionModel.sessionId;
         const trackWithDash = withDashSrc(currentTrack, currentService, serverBaseUrl, userToken, sessionId);
-        // If the track needs DASH transcoding but credentials weren't available
-        // yet (e.g. playerRefresh fires before login completes), dashSrc will be
-        // null. Mark playerTrackError so Resume re-calls playerLoadIndex with
-        // fresh credentials rather than calling resume() on an idle player.
-        const dashCredentialsMissing = requiresTranscoding(currentTrack.codec) && !trackWithDash.dashSrc;
+        const trackLoaded = playerX.loadTrack(trackWithDash, progress, play);
         dispatch.playerModel.setPlayerState({
           playerPlaying: play,
           playerTrackLoaded: true,
-          playerTrackError: dashCredentialsMissing,
+          playerTrackError: !trackLoaded,
         });
         dispatch.sessionModel.setSessionState({
           playingTrackIndex: index,
         });
-        playerX.loadTrack(trackWithDash, progress, play);
 
         // Set next track for preloading
         const nextIndex = index + 1;

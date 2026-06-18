@@ -62,7 +62,13 @@ export const unload = (): void => {
 // LOAD TRACK
 // ======================================================================
 
-export const loadTrack = (track: PlayerTrack, progress: number = 0, play: boolean = true): void => {
+/**
+ * Load a track and start playback. Returns `false` if the player could not
+ * load the track (e.g. a Plex DASH track whose credentials are not yet
+ * available), so callers can surface an error state without needing to
+ * replicate the routing logic.
+ */
+export const loadTrack = (track: PlayerTrack, progress: number = 0, play: boolean = true): boolean => {
   const transcoding = requiresTranscoding(track.codec);
   if (transcoding && track.dashSrc && dashX.isSupported()) {
     nativeX.unload();
@@ -74,6 +80,7 @@ export const loadTrack = (track: PlayerTrack, progress: number = 0, play: boolea
     dashX.unload();
     nativeX.unload();
     activePlayer = 'native';
+    return false;
   } else {
     // Native path: either codec is supported, or the src URL already embeds
     // server-side transcoding (e.g. Jellyfin universal endpoint).
@@ -81,6 +88,7 @@ export const loadTrack = (track: PlayerTrack, progress: number = 0, play: boolea
     nativeX.loadTrack(track.src, progress, play);
     activePlayer = 'native';
   }
+  return true;
 };
 
 // ======================================================================
