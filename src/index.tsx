@@ -49,7 +49,7 @@ root.render(
     <BrowserRouter>
       <App />
       <Analytics
-        debug={true}
+        debug={false}
         beforeSend={(event) => {
           // Route sections that have a dynamic ID as their final path segment
           const dynamicRouteSections = [
