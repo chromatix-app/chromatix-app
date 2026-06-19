@@ -32,12 +32,21 @@ let activePlayer: ActivePlayer = 'native';
 // ======================================================================
 
 export const init = (params: PlayerInitParams): void => {
-  // Each sub-player gets its own onError wrapper that only forwards the error
+  // Each sub-player gets its own callback wrappers that only forward events
   // if that player is currently active. This prevents the inactive player's
-  // stale events (e.g. a spurious empty-src error from nativeX.unload() while
-  // the DASH player is active) from triggering playback error handling.
+  // stale events from affecting playback state (e.g. a spurious loadstart from
+  // nativeX while the DASH player is active setting playerLoading unexpectedly).
   nativeX.init({
     ...params,
+    onLoadStart: () => {
+      if (activePlayer === 'native') params.onLoadStart();
+    },
+    onCanPlay: () => {
+      if (activePlayer === 'native') params.onCanPlay();
+    },
+    onEnded: () => {
+      if (activePlayer === 'native') params.onEnded();
+    },
     onError: (e) => {
       if (activePlayer === 'native') params.onError(e);
       // else console.log('%c--- player - native error suppressed (dash is active) ---', 'color:#4c25b9', e);
@@ -45,6 +54,15 @@ export const init = (params: PlayerInitParams): void => {
   });
   dashX.init({
     ...params,
+    onLoadStart: () => {
+      if (activePlayer === 'dash') params.onLoadStart();
+    },
+    onCanPlay: () => {
+      if (activePlayer === 'dash') params.onCanPlay();
+    },
+    onEnded: () => {
+      if (activePlayer === 'dash') params.onEnded();
+    },
     onError: (e) => {
       if (activePlayer === 'dash') params.onError(e);
       // else console.log('%c--- player - dash error suppressed (native is active) ---', 'color:#4c25b9', e);
@@ -147,7 +165,7 @@ export const setVolume = (volumeLevel: number): void => {
 
 // ======================================================================
 // PRELOADING STUBS
-// Not currently used, but may be in future
+// [NOTE] Not currently used, but may be in future
 // ======================================================================
 
 // Listen to track progress and preload the next track when we're within 45 seconds

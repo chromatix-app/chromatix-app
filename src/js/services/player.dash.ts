@@ -66,8 +66,15 @@ export const init = ({
       logLevel: dashjs.Debug.LOG_LEVEL_NONE as dashjs.LogLevel,
     },
   });
-  mediaPlayer.on(dashjs.MediaPlayer.events.ERROR, (e) => {
+  mediaPlayer.on(dashjs.MediaPlayer.events.ERROR, (e: dashjs.ErrorEvent) => {
     console.error('%c--- .dash - dash.js error ---', 'color:#f00', e);
+    // Caption errors are non-fatal for audio playback — ignore them.
+    if (e.error === 'cc') return;
+    // Suppress errors during source transitions (same guard as the audio element error handler).
+    if (isResetting) return;
+    // Forward to the shared error handler so the user gets a toast notification
+    // and playback auto-advances to the next track, consistent with native player errors.
+    onError({ event: e as unknown as Event, playerElement: audioElement! });
   });
   // Do not call initialize() here — deferred to the first loadTrack() so the
   // audio element and source are attached in a single operation.
@@ -172,7 +179,7 @@ export const getCurrentProgress = (): number => {
 
 // ======================================================================
 // PRELOADING STUBS
-// Not currently used, but may be in future
+// [NOTE] Not currently used, but may be in future
 // ======================================================================
 
 export const updateProgress = (_currentProgress: number): void => {

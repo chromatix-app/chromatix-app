@@ -139,7 +139,7 @@ export const getCurrentProgress = (): number => {
 
 // ======================================================================
 // PRELOADING STUBS
-// Not currently used, but may be in future
+// [NOTE] Not currently used, but may be in future
 // ======================================================================
 
 export const updateProgress = (_currentProgress: number): void => {

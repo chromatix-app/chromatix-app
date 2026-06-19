@@ -89,11 +89,7 @@ const effects = (dispatch) => ({
 
   playerRefresh(payload, rootState) {
     console.log('%c--- playerRefresh ---', 'color:#5c16b1');
-
-    const volumeLevel = rootState.sessionModel.volumeLevel;
-    const volumeMuted = rootState.sessionModel.volumeMuted;
-    dispatch.playerModel.volumeRefresh({ volumeLevel, volumeMuted });
-
+    dispatch.playerModel.volumeRefresh();
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
     const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
     if (playingTrackIndex || playingTrackIndex === 0) {
@@ -113,7 +109,18 @@ const effects = (dispatch) => ({
     const plexDashCredentialsMissing =
       currentService === 'plex' && requiresTranscoding(track?.codec) && (!serverBaseUrl || !userToken);
     if (plexDashCredentialsMissing) {
-      setTimeout(() => dispatch.playerModel.playerRefreshTrack(payload), 100);
+      const retryCount = (payload.retryCount || 0) + 1;
+      // Give up after ~30 seconds (300 retries × 100 ms). Set playerTrackError so
+      // the user can still manually trigger a retry via the play button.
+      if (retryCount > 300) {
+        console.warn('%c--- playerRefreshTrack - credentials not available after 30s, giving up ---', 'color:#f00');
+        dispatch.playerModel.setPlayerState({
+          playerTrackLoaded: true,
+          playerTrackError: true,
+        });
+        return;
+      }
+      setTimeout(() => dispatch.playerModel.playerRefreshTrack({ ...payload, retryCount }), 100);
       return;
     }
     console.log('%c--- playerRefreshTrack ---', 'color:#5c16b1');
@@ -768,6 +775,7 @@ const effects = (dispatch) => ({
 
   updateNextTrack(payload, rootState) {
     // // Helper function to update the next track for preloading
+    // [NOTE] Not currently used, but may be in future
     // const currentService = rootState.appModel.currentService;
     // const serverBaseUrl = rootState.appModel.serverBaseUrl;
     // const userToken = rootState.appModel.userToken;
@@ -790,11 +798,8 @@ const effects = (dispatch) => ({
 
   volumeRefresh(payload, rootState) {
     // console.log('%c--- volumeRefresh ---', 'color:#5c16b1');
-    const { volumeLevel, volumeMuted } = payload;
-    dispatch.sessionModel.setSessionState({
-      volumeLevel,
-      volumeMuted,
-    });
+    const volumeLevel = rootState.sessionModel.volumeLevel;
+    const volumeMuted = rootState.sessionModel.volumeMuted;
     const actualVolume = volumeMuted ? 0 : volumeLevel;
     playerX.setVolume(actualVolume);
   },
