@@ -17,9 +17,9 @@ describe('Testing "requiresTranscoding" function', () => {
     _clearCache();
   });
 
-  test('Returns false for null or undefined codec', () => {
-    expect(requiresTranscoding(null)).toBe(false);
-    expect(requiresTranscoding(undefined)).toBe(false);
+  test('Returns true for null or undefined codec', () => {
+    expect(requiresTranscoding(null)).toBe(true);
+    expect(requiresTranscoding(undefined)).toBe(true);
   });
 
   test('Returns true for completely unknown codecs not in the MIME map', () => {

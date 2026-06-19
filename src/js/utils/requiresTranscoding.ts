@@ -49,7 +49,8 @@ const _cache = new Map<string, boolean>();
  * @param codec - A normalised or raw codec string (e.g. `"alac"`, `"mp3"`).
  */
 export const requiresTranscoding = (codec: string | null | undefined): boolean => {
-  if (!codec || !_audioEl) return false;
+  if (!codec) return true;
+  if (!_audioEl) return false;
   const key = codec.toLowerCase();
   if (_cache.has(key)) return _cache.get(key)!;
   const mime = CODEC_MIME_MAP[key];

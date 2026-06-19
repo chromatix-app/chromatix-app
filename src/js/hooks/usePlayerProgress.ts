@@ -83,8 +83,9 @@ const usePlayerProgress = (options: UsePlayerProgressOptions = {}): UsePlayerPro
       setTrackProgress(newTrackProgress);
 
       if (updateStore) {
-        // Call the player.native updateProgress function for preloading
-        playerX.updateProgress(newTrackProgress);
+        // // Call the player.native updateProgress function for preloading
+        // // [NOTE] Not currently used, but may be in future
+        // playerX.updateProgress(newTrackProgress);
 
         // Only update redux every 5 seconds
         counterRef.current += 1;

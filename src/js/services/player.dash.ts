@@ -182,21 +182,21 @@ export const getCurrentProgress = (): number => {
 // [NOTE] Not currently used, but may be in future
 // ======================================================================
 
-export const updateProgress = (_currentProgress: number): void => {
-  return;
-};
+// export const updateProgress = (): void => {
+//   return;
+// };
 
-export const preloadNextTrack = (_trackSrc: string): void => {
-  return;
-};
+// export const preloadNextTrack = (): void => {
+//   return;
+// };
 
-export const setNextTrack = (_trackSrc: string | null): void => {
-  return;
-};
+// export const setNextTrack = (): void => {
+//   return;
+// };
 
-export const clearNextTrack = (): void => {
-  return;
-};
+// export const clearNextTrack = (): void => {
+//   return;
+// };
 
 // ======================================================================
 // HELPERS

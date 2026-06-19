@@ -168,23 +168,23 @@ export const setVolume = (volumeLevel: number): void => {
 // [NOTE] Not currently used, but may be in future
 // ======================================================================
 
-// Listen to track progress and preload the next track when we're within 45 seconds
-// of the end, or at 60% progress, whichever comes first
-export const updateProgress = (_currentProgress: number): void => {
-  return;
-};
+// // Listen to track progress and preload the next track when we're within 45 seconds
+// // of the end, or at 60% progress, whichever comes first
+// export const updateProgress = (_currentProgress: number): void => {
+//   return;
+// };
 
-export const preloadNextTrack = (_trackSrc: string): void => {
-  return;
-};
+// export const preloadNextTrack = (_trackSrc: string): void => {
+//   return;
+// };
 
-export const setNextTrack = (_trackSrc: string | null): void => {
-  return;
-};
+// export const setNextTrack = (_track: PlayerTrack | null): void => {
+//   return;
+// };
 
-export const clearNextTrack = (): void => {
-  return;
-};
+// export const clearNextTrack = (): void => {
+//   return;
+// };
 
 // ======================================================================
 // DEBUGGING - BROWSER CONSOLE ACCESS

@@ -11,6 +11,8 @@ import * as bridge from 'js/services/bridge';
 // STATE
 // ======================================================================
 
+const isLocal = import.meta.env.VITE_ENV === 'local';
+
 const playerState = {
   playerInited: false,
   playerLoading: false,
@@ -190,7 +192,7 @@ const effects = (dispatch) => ({
       errorMessage,
       playerTrackLoaded,
       mediaError,
-      sourceURL: playerElement.src,
+      sourceURL: isLocal ? playerElement.src : redactUrl(playerElement.src),
       originalEvent: event,
     });
 
@@ -485,14 +487,15 @@ const effects = (dispatch) => ({
     const currentTrack = payload.playingTrackList[payload.playingTrackKeys[payload.playingTrackIndex]];
     playerX.loadTrack(withDashSrc(currentTrack, currentService, serverBaseUrl, userToken, sessionId));
 
-    // Set next track for preloading
-    const nextIndex = payload.playingTrackIndex + 1;
-    if (nextIndex < payload.playingTrackCount) {
-      const nextTrack = payload.playingTrackList[payload.playingTrackKeys[nextIndex]];
-      playerX.setNextTrack(withDashSrc(nextTrack, currentService, serverBaseUrl, userToken, sessionId));
-    } else {
-      playerX.clearNextTrack();
-    }
+    // // Set next track for preloading
+    // // [NOTE] Not currently used, but may be in future
+    // const nextIndex = payload.playingTrackIndex + 1;
+    // if (nextIndex < payload.playingTrackCount) {
+    //   const nextTrack = payload.playingTrackList[payload.playingTrackKeys[nextIndex]];
+    //   playerX.setNextTrack(withDashSrc(nextTrack, currentService, serverBaseUrl, userToken, sessionId));
+    // } else {
+    //   playerX.clearNextTrack();
+    // }
 
     dispatch.playerModel.setPlayerState({
       playerInteractionCount: rootState.playerModel.playerInteractionCount + 1,
@@ -523,7 +526,7 @@ const effects = (dispatch) => ({
         const trackWithDash = withDashSrc(currentTrack, currentService, serverBaseUrl, userToken, sessionId);
         const trackLoaded = playerX.loadTrack(trackWithDash, progress, play);
         dispatch.playerModel.setPlayerState({
-          playerPlaying: play,
+          playerPlaying: trackLoaded ? play : false,
           playerTrackLoaded: true,
           playerTrackError: !trackLoaded,
         });
@@ -531,14 +534,15 @@ const effects = (dispatch) => ({
           playingTrackIndex: index,
         });
 
-        // Set next track for preloading
-        const nextIndex = index + 1;
-        if (nextIndex < playingTrackKeys.length) {
-          const nextTrack = playingTrackList[playingTrackKeys[nextIndex]];
-          playerX.setNextTrack(withDashSrc(nextTrack, currentService, serverBaseUrl, userToken, sessionId));
-        } else {
-          playerX.clearNextTrack();
-        }
+        // // Set next track for preloading
+        // // [NOTE] Not currently used, but may be in future
+        // const nextIndex = index + 1;
+        // if (nextIndex < playingTrackKeys.length) {
+        //   const nextTrack = playingTrackList[playingTrackKeys[nextIndex]];
+        //   playerX.setNextTrack(withDashSrc(nextTrack, currentService, serverBaseUrl, userToken, sessionId));
+        // } else {
+        //   playerX.clearNextTrack();
+        // }
 
         // log playback state to server
         if (play) {
@@ -592,8 +596,9 @@ const effects = (dispatch) => ({
     if (playerPlaying) {
       dispatch.sessionModel.setPlayingTrackProgress(payload);
 
-      // Update player with current progress (handles auto-preloading internally)
-      playerX.updateProgress(payload);
+      // // Update player with current progress (handles auto-preloading internally)
+      // // [NOTE] Not currently used, but may be in future
+      // playerX.updateProgress(payload);
 
       // log playback state to server
       const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
@@ -775,7 +780,7 @@ const effects = (dispatch) => ({
 
   updateNextTrack(payload, rootState) {
     // // Helper function to update the next track for preloading
-    // [NOTE] Not currently used, but may be in future
+    // // [NOTE] Not currently used, but may be in future
     // const currentService = rootState.appModel.currentService;
     // const serverBaseUrl = rootState.appModel.serverBaseUrl;
     // const userToken = rootState.appModel.userToken;
@@ -880,4 +885,20 @@ const withDashSrc = (track, currentService, serverBaseUrl, accessToken, sessionI
     return track;
   }
   return { ...track, dashSrc: getDashSrc(track.trackKey, serverBaseUrl, accessToken, sessionId) };
+};
+
+// Redacts sensitive query params from a URL string before logging.
+const REDACTED_PARAMS = ['X-Plex-Token', 'X-Emby-Token', 'api_key', 'token'];
+const redactUrl = (url) => {
+  try {
+    const parsed = new URL(url);
+    REDACTED_PARAMS.forEach((param) => {
+      if (parsed.searchParams.has(param)) {
+        parsed.searchParams.set(param, '[REDACTED]');
+      }
+    });
+    return parsed.toString();
+  } catch {
+    return '[invalid URL]';
+  }
 };
