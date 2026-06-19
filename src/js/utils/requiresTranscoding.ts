@@ -46,6 +46,10 @@ const _cache = new Map<string, boolean>();
  * for any unknown codec. Accepts both normalised display names (`"wav"`, `"wma"`)
  * and raw API values (`"pcm_s16le"`, `"wmav2"`).
  *
+ * Returns `true` for a missing/null codec (unknown format — transcode to be safe).
+ * Returns `false` when no audio element is available (non-DOM environment — unreachable
+ * in production; assuming native avoids transcoding every codec in that state).
+ *
  * @param codec - A normalised or raw codec string (e.g. `"alac"`, `"mp3"`).
  */
 export const requiresTranscoding = (codec: string | null | undefined): boolean => {

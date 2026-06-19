@@ -7,7 +7,7 @@
  * cover the router logic, state management, and error suppression in
  * player.dash.ts without requiring a real browser or MediaSource API.
  *
- * Playwright tests (7.dash.auth.spec.ts) cover real DASH playback end-to-end.
+ * Playwright tests (7.player.auth.spec.ts) cover real DASH playback end-to-end.
  *
  * Each test reimports the module fresh so module-level state is fully zeroed.
  */
