@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { PageText, TitleHeading } from 'js/components';
+import { Icon, PageText, TitleHeading } from 'js/components';
 
 // ======================================================================
 // COMPONENT
@@ -11,7 +11,17 @@ import { PageText, TitleHeading } from 'js/components';
 const Component = () => {
   return (
     <>
-      <TitleHeading title="Last.fm" />
+      <TitleHeading
+        title={
+          <>
+            Settings{' '}
+            <span className="u-gt">
+              <Icon icon="ArrowRightIcon" cover stroke strokeWidth={3} />
+            </span>{' '}
+            Last.fm
+          </>
+        }
+      />
       <PageText fontSize="small">
         <p>
           Linking your account to{' '}

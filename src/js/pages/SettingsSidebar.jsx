@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { SettingsSidebar, TitleHeading } from 'js/components';
+import { Icon, SettingsSidebar, TitleHeading } from 'js/components';
 
 // ======================================================================
 // COMPONENT
@@ -11,7 +11,17 @@ import { SettingsSidebar, TitleHeading } from 'js/components';
 const Component = () => {
   return (
     <>
-      <TitleHeading title="Sidebar Settings" />
+      <TitleHeading
+        title={
+          <>
+            Settings{' '}
+            <span className="u-gt">
+              <Icon icon="ArrowRightIcon" cover stroke strokeWidth={3} />
+            </span>{' '}
+            Sidebar
+          </>
+        }
+      />
       <SettingsSidebar />
     </>
   );

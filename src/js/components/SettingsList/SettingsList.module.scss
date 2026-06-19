@@ -74,6 +74,18 @@
   }
 }
 
+.footnote {
+  display: block;
+  padding: 1px 0 1px;
+  font-size: 11px;
+  line-height: 15px;
+  color: var(--color-opacity-04);
+
+  &.disabled {
+    color: var(--color-opacity-04);
+  }
+}
+
 .spacer {
   height: 22px;
 }

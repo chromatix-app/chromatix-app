@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
 import { Icon } from 'js/components';
@@ -15,6 +15,8 @@ import style from './Settings.module.scss';
 // ======================================================================
 
 export const Settings = () => {
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+
   const dispatch = useDispatch();
 
   return (
@@ -24,11 +26,23 @@ export const Settings = () => {
       <div className={style.group}>
         <div className={style.title}>General</div>
 
-        <NavLink className={style.entry} to={'/settings/general'} draggable="false">
-          <div className={style.entryIconMed}>
-            <Icon icon="CogIcon" cover stroke strokeWidth={1.5} />
+        {currentService === 'plex' && (
+          <NavLink className={style.entry} to={'/settings/accounts'} draggable="false">
+            <div className={style.entryIconSmall}>
+              <Icon icon="LockIcon" cover stroke strokeWidth={1.5} />
+            </div>
+            <div>Accounts</div>
+            <div className={style.entryArrow}>
+              <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
+            </div>
+          </NavLink>
+        )}
+
+        <NavLink className={style.entry} to={'/settings/appearance'} draggable="false">
+          <div className={style.entryIconSmall}>
+            <Icon icon="PaintPaletteIcon" cover stroke strokeWidth={1.5} />
           </div>
-          <div>General</div>
+          <div>Appearance</div>
           <div className={style.entryArrow}>
             <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
           </div>
@@ -44,11 +58,11 @@ export const Settings = () => {
           </div>
         </NavLink>
 
-        <NavLink className={style.entry} to={'/settings/appearance'} draggable="false">
+        <NavLink className={style.entry} to={'/settings/playback'} draggable="false">
           <div className={style.entryIconSmall}>
-            <Icon icon="PaintPaletteIcon" cover stroke strokeWidth={1.5} />
+            <Icon icon="MusicNoteDoubleIcon" cover stroke strokeWidth={1.5} />
           </div>
-          <div>Appearance</div>
+          <div>Playback</div>
           <div className={style.entryArrow}>
             <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
           </div>

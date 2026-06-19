@@ -4,7 +4,7 @@
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { FormTabButtons, Icon } from 'js/components';
+import { FormTabButtons, Icon, SettingsList } from 'js/components';
 import platformFeatures from 'js/_config/platformFeatures';
 
 import style from './SettingsBrowse.module.scss';
@@ -19,6 +19,7 @@ export const SettingsBrowse = ({ debug }) => {
 
   return (
     <>
+      <SortSettings />
       <div className="settingsGroup">
         <div className={style.title}>View Modes</div>
         <ViewModeSettings />
@@ -35,8 +36,38 @@ export const SettingsBrowse = ({ debug }) => {
           <StarRatingSettings />
         </div>
       )}
+      {(platformOpts.enableUserRating || debug) && <RatingSettings />}
     </>
   );
+};
+
+//
+// SORTING
+//
+
+const SortSettings = () => {
+  const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
+  const optionSortIgnoreLeadingArticles = useSelector(
+    ({ sessionModel }) => sessionModel.optionSortIgnoreLeadingArticles
+  );
+
+  const menuItems = [
+    {
+      key: 'optionSortNumbersFirst',
+      label: 'Sort with numbers on top.',
+      description: 'When sorting alphabetically, put entries that start with a number at the top of the list.',
+      state: optionSortNumbersFirst,
+    },
+    {
+      key: 'optionSortIgnoreLeadingArticles',
+      label: 'Ignore "a", "an" and "the" when sorting.',
+      description:
+        'When sorting alphabetically, ignore leading prefixes like "A", "An", and "The" at the start of titles.',
+      state: optionSortIgnoreLeadingArticles,
+    },
+  ];
+
+  return <SettingsList title="Sorting" menuItems={menuItems} />;
 };
 
 //
@@ -169,7 +200,8 @@ const ViewModeSettings = () => {
         <div>
           <div className={style.label}>
             Quickly toggle between grid view and list view for all sections of your library.
-            <br />
+          </div>
+          <div className={style.description}>
             Note that you can independently toggle the view mode within each individual section of your library.
           </div>
           <div className="mt-15"></div>
@@ -318,7 +350,8 @@ const FavouriteSettings = () => {
         <div>
           <div className={style.label}>
             Quickly toggle the visibility of favourites for all sections of your library.
-            <br />
+          </div>
+          <div className={style.description}>
             Note that you can independently toggle the visibility of favourites within each individual section of your
             library.
           </div>
@@ -474,7 +507,8 @@ const StarRatingSettings = () => {
         <div>
           <div className={style.label}>
             Quickly toggle the visibility of star ratings for all sections of your library.
-            <br />
+          </div>
+          <div className={style.description}>
             Note that you can independently toggle the visibility of star ratings within each individual section of your
             library.
           </div>
@@ -506,6 +540,25 @@ const StarRatingSettings = () => {
       </div>
     </div>
   );
+};
+
+//
+// RATINGS
+//
+
+const RatingSettings = () => {
+  const optionUseHalfStars = useSelector(({ sessionModel }) => sessionModel.optionUseHalfStars);
+
+  const menuItems = [
+    {
+      key: 'optionUseHalfStars',
+      label: 'Use half stars in ratings.',
+      description: 'Enable to allow setting half-star ratings. Disable to set whole stars only.',
+      state: optionUseHalfStars,
+    },
+  ];
+
+  return <SettingsList title="Rating System" menuItems={menuItems} />;
 };
 
 // ======================================================================

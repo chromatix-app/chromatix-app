@@ -21,6 +21,7 @@ export const SettingsSidebar = () => {
         <p>Some sections may be unavailable, depending on whether you are logged in with Plex or Jellyfin.</p>
       </PageText> */}
       <>
+        <AnnouncementSettings />
         <GeneralSettings platformOpts={platformOpts} />
         <LibrarySettings platformOpts={platformOpts} />
         <BrowseSettings platformOpts={platformOpts} />
@@ -28,6 +29,26 @@ export const SettingsSidebar = () => {
       </>
     </>
   );
+};
+
+//
+// ANNOUNCEMENTS
+//
+
+const AnnouncementSettings = () => {
+  const menuShowBanners = useSelector(({ sessionModel }) => sessionModel.menuShowBanners);
+
+  const menuItems = [
+    {
+      key: 'menuShowBanners',
+      label: 'Show "what’s new" banners',
+      description:
+        'When major new features are added, we’ll display a small notification banner at the top of the sidebar menu to let you know. These can be dismissed by clicking the "X" in the corner of the banner.',
+      state: menuShowBanners,
+    },
+  ];
+
+  return <SettingsList title="Announcements" menuItems={menuItems} />;
 };
 
 //

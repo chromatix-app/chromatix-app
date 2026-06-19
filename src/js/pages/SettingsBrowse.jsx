@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { SettingsBrowse, TitleHeading } from 'js/components';
+import { Icon, SettingsBrowse, TitleHeading } from 'js/components';
 
 // ======================================================================
 // COMPONENT
@@ -11,7 +11,17 @@ import { SettingsBrowse, TitleHeading } from 'js/components';
 const Component = () => {
   return (
     <>
-      <TitleHeading title="Browse Settings" />
+      <TitleHeading
+        title={
+          <>
+            Settings{' '}
+            <span className="u-gt">
+              <Icon icon="ArrowRightIcon" cover stroke strokeWidth={3} />
+            </span>{' '}
+            Browsing
+          </>
+        }
+      />
       <SettingsBrowse />
     </>
   );

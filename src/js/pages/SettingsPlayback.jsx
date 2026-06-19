@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { Icon, SettingsControls, TitleHeading } from 'js/components';
+import { Icon, SettingsPlayback, TitleHeading } from 'js/components';
 
 // ======================================================================
 // COMPONENT
@@ -18,11 +18,11 @@ const Component = () => {
             <span className="u-gt">
               <Icon icon="ArrowRightIcon" cover stroke strokeWidth={3} />
             </span>{' '}
-            Controls
+            Playback
           </>
         }
       />
-      <SettingsControls />
+      <SettingsPlayback />
     </>
   );
 };

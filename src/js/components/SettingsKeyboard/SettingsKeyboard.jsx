@@ -15,6 +15,7 @@ export const SettingsKeyboard = () => {
     <>
       <MediaKeySettings />
       <KeyboardShortcutSettings />
+      <AccessibilitySettings />
     </>
   );
 };
@@ -31,7 +32,7 @@ const MediaKeySettings = () => {
       key: 'keyboardMediaKeys',
       label: 'Allow keyboard/system media keys (play/pause, next, prev, etc.) to control playback.',
       description:
-        'Note that this option may also affect system-wide media controls, including built in OS media controls, bluetooth devices, and other connected peripherals. We don’t recommend unchecking this option unless you have a specific reason to do so.',
+        'This option may also affect system-wide media controls, including built in OS media controls, bluetooth devices, and other connected peripherals. We don’t recommend unchecking this option unless you have a specific reason to do so.',
       state: keyboardMediaKeys,
     },
   ];
@@ -61,6 +62,27 @@ const KeyboardShortcutSettings = () => {
   ];
 
   return <SettingsList title="Keyboard Shortcuts" menuItems={menuItems} />;
+};
+
+//
+// ACCESSIBILITY SETTINGS
+//
+
+const AccessibilitySettings = () => {
+  const themeKeyFocus = useSelector(({ sessionModel }) => sessionModel.themeKeyFocus);
+
+  const menuItems = [
+    {
+      key: 'themeKeyFocus',
+      label: 'Highlight focused elements.',
+      description:
+        'When enabled, elements such as buttons, links, and form controls are highlighted when focused. For example, when using the keyboard to navigate the interface.',
+      footnote: 'Note: this option is also displayed in the appearance settings section.',
+      state: themeKeyFocus,
+    },
+  ];
+
+  return <SettingsList title="Accessibility" menuItems={menuItems} />;
 };
 
 // ======================================================================
