@@ -1,130 +1,50 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-interface KeyMediaControlHandlers {
-  playPause: () => void;
+interface MediaControlHandlers {
+  play: () => void;
+  pause: () => void;
   prev: () => void;
   next: () => void;
 }
 
-// Roles (and elements) that use space for activation
-const SPACE_ACTIVATABLE_ROLES = [
-  'checkbox',
-  'combobox',
-  'listbox',
-  'menuitem',
-  'menuitemcheckbox',
-  'menuitemradio',
-  'option',
-  'radio',
-  'switch',
-  'tab',
-];
-
-// Roles that use arrow keys for internal navigation
-const ARROW_NAVIGABLE_ROLES = [
-  //
-  'menuitem',
-  'menuitemcheckbox',
-  'menuitemradio',
-  'option',
-  'radio',
-  'slider',
-  'tab',
-];
-
 /**
- * Custom hook that sets up keyboard shortcuts for media controls.
- * Handles both media keys and standard keyboard shortcuts while avoiding conflicts with active inputs.
- * Space bar and arrow key shortcuts are controlled by the keyboardSpace and keyboardArrows session settings.
+ * Custom hook that sets up media control handlers for the browser's Media Session API.
+ * Enables media controls in notifications, lock screens, and media control centers.
  * @param handlers - Object containing media control handler functions
  */
 
-const useKeyMediaControls = (handlers: KeyMediaControlHandlers): null => {
+const useKeyMediaControls = (handlers: MediaControlHandlers): null => {
   const keyboardMediaKeys = useSelector(
     ({ sessionModel }: { sessionModel: { keyboardMediaKeys: boolean } }) => sessionModel.keyboardMediaKeys
   );
-  const keyboardSpace = useSelector(
-    ({ sessionModel }: { sessionModel: { keyboardSpace: boolean } }) => sessionModel.keyboardSpace
-  );
-  const keyboardArrows = useSelector(
-    ({ sessionModel }: { sessionModel: { keyboardArrows: boolean } }) => sessionModel.keyboardArrows
-  );
+
+  const noop = (): void => {};
 
   useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent): void {
-      const activeElement = document.activeElement;
-      const isActiveInput =
-        activeElement &&
-        ((activeElement.tagName === 'INPUT' && (activeElement as HTMLInputElement).type !== 'range') ||
-          activeElement.tagName === 'TEXTAREA' ||
-          (activeElement as HTMLElement).isContentEditable);
-
-      // Skip space shortcut when focus is on an element that uses space for its own activation
-      const activeRole = activeElement?.getAttribute('role');
-      const allowKeyControls = activeElement?.closest('[data-allow-key-controls]');
-      const isSpaceActivatable =
-        activeElement?.tagName === 'BUTTON' ||
-        activeElement?.tagName === 'A' ||
-        (activeRole && SPACE_ACTIVATABLE_ROLES.includes(activeRole))
-          ? !allowKeyControls
-          : false;
-
-      // Skip arrow key shortcuts when focus is on an element that uses arrow keys for its own navigation.
-      // Element-level navigability always wins — data-allow-key-controls must not override it.
-      const isArrowNavigable =
-        (activeElement?.tagName === 'INPUT' && (activeElement as HTMLInputElement).type === 'range') ||
-        (activeRole && ARROW_NAVIGABLE_ROLES.includes(activeRole));
-
-      switch (event.key) {
-        case 'MediaPlayPause':
-          if (keyboardMediaKeys) {
-            event.preventDefault();
-            handlers.playPause();
-          }
-          break;
-        case 'MediaTrackPrevious':
-          if (keyboardMediaKeys) {
-            event.preventDefault();
-            handlers.prev();
-          }
-          break;
-        case 'MediaTrackNext':
-          if (keyboardMediaKeys) {
-            event.preventDefault();
-            handlers.next();
-          }
-          break;
-        case ' ':
-          if (keyboardSpace && !isActiveInput && !isSpaceActivatable) {
-            event.preventDefault();
-            handlers.playPause();
-          }
-          break;
-        case 'ArrowLeft':
-          if (keyboardArrows && !isActiveInput && !isArrowNavigable) {
-            event.preventDefault();
-            handlers.prev();
-          }
-          break;
-        case 'ArrowRight':
-          if (keyboardArrows && !isActiveInput && !isArrowNavigable) {
-            event.preventDefault();
-            handlers.next();
-          }
-          break;
-        default:
-          break;
-      }
+    if ('mediaSession' in navigator) {
+      // When disabled, register no-ops instead of null — passing null removes the custom handler
+      // and falls back to the browser's default behaviour (directly controlling the audio element)
+      navigator.mediaSession.setActionHandler('play', keyboardMediaKeys ? handlers.play : noop);
+      navigator.mediaSession.setActionHandler('pause', keyboardMediaKeys ? handlers.pause : noop);
+      navigator.mediaSession.setActionHandler('seekbackward', keyboardMediaKeys ? handlers.prev : noop);
+      navigator.mediaSession.setActionHandler('seekforward', keyboardMediaKeys ? handlers.next : noop);
+      navigator.mediaSession.setActionHandler('previoustrack', keyboardMediaKeys ? handlers.prev : noop);
+      navigator.mediaSession.setActionHandler('nexttrack', keyboardMediaKeys ? handlers.next : noop);
     }
-
-    window.addEventListener('keydown', handleKeyDown);
 
     // cleanup
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.setActionHandler('play', null);
+        navigator.mediaSession.setActionHandler('pause', null);
+        navigator.mediaSession.setActionHandler('seekbackward', null);
+        navigator.mediaSession.setActionHandler('seekforward', null);
+        navigator.mediaSession.setActionHandler('previoustrack', null);
+        navigator.mediaSession.setActionHandler('nexttrack', null);
+      }
     };
-  }, [handlers, keyboardMediaKeys, keyboardSpace, keyboardArrows]);
+  }, [handlers, keyboardMediaKeys]);
 
   return null;
 };
