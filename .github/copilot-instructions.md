@@ -17,6 +17,7 @@ Chromatix is a desktop music player for Plex and Jellyfin, built as a React web 
 - **Sonner** — Toast notifications
 - **clsx** — Conditional class name composition
 - **Vercel Analytics** — Usage and error tracking
+- **dash.js** — DASH manifest playback for Plex transcoded tracks
 
 ## Project Structure
 
@@ -50,7 +51,9 @@ src/
       plexTranspose.js   # Plex API response normalisation
       jellyTools.js      # Jellyfin API calls
       jellyTranspose.js  # Jellyfin API response normalisation
-      player.native.ts   # Audio playback (HTMLAudioElement)
+      player.ts          # Player router — dispatches to native or DASH player
+      player.native.ts   # Native audio playback (HTMLAudioElement)
+      player.dash.ts     # DASH playback via dash.js (Plex transcoded tracks)
     store/               # Rematch global state models
       store.ts           # Store initialisation
       models.app.js      # App state (init, login, errors)
@@ -105,7 +108,7 @@ dispatch.playerModel.playerPlay();
 
 All API calls go through `bridge.js`, which delegates to either `plexTools.js` or `jellyTools.js` based on the active service. Raw API responses are normalised into a consistent internal format by `plexTranspose.js` / `jellyTranspose.js` respectively.
 
-The audio player is implemented in `player.native.ts` (using `HTMLAudioElement`). Playback management logic lives in `models.player.js` in the store.
+The audio player has three layers: `player.ts` is the router that selects the active backend; `player.native.ts` handles native `HTMLAudioElement` playback (MP3, FLAC, AAC, Ogg, and Jellyfin transcoded streams); `player.dash.ts` handles DASH playback via dash.js (used for Plex tracks whose codec requires transcoding, e.g. WMA, FLAC on unsupported browsers). Playback management logic (queue, skip, shuffle, repeat) lives in `models.player.js` in the store.
 
 The Plex API is entirely undocumented and reverse engineered. Plex API fields are explicitly excluded where not needed to reduce payload size.
 

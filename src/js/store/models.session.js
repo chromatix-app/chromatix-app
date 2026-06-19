@@ -373,7 +373,7 @@ const state = Object.assign({}, sessionState, playingState);
 
 const reducers = {
   setSessionState(rootState, payload) {
-    // console.log('%c--- setSessionState ---', 'color:#0f60b7');
+    // console.log('%c--- setSessionState ---', 'color:#439c08');
     // console.log(payload);
     return { ...rootState, ...payload };
   },
@@ -415,7 +415,7 @@ const reducers = {
   //
 
   setPlayingTrackProgress(rootState, payload) {
-    // console.log('%c--- setPlayingTrackProgress ---', 'color:#0f60b7');
+    // console.log('%c--- setPlayingTrackProgress ---', 'color:#439c08');
     return {
       ...rootState,
       playingTrackProgress: payload,
@@ -423,7 +423,7 @@ const reducers = {
   },
 
   unloadTrack(rootState, payload) {
-    console.log('%c--- unloadTrack ---', 'color:#0f60b7');
+    console.log('%c--- unloadTrack ---', 'color:#439c08');
     return {
       ...rootState,
       ...Object.assign({}, playingState),
@@ -431,7 +431,7 @@ const reducers = {
   },
 
   queueVisibleToggle(rootState, payload) {
-    // console.log('%c--- queueVisibleToggle ---', 'color:#0f60b7');
+    // console.log('%c--- queueVisibleToggle ---', 'color:#439c08');
     analyticsEvent('Queue / ' + (rootState.queueIsVisible ? 'Hide' : 'Show'));
     return {
       ...rootState,
@@ -529,7 +529,7 @@ const reducers = {
 
 const effects = (dispatch) => ({
   loadLocalStorage(payload, rootState) {
-    console.log('%c--- loadLocalStorage ---', 'color:#0f60b7');
+    console.log('%c--- loadLocalStorage ---', 'color:#439c08');
     let localStorageState = { ...sessionState };
     // attempt to retrieve the current user's session state from local storage
     const loggedIn = rootState.appModel.loggedIn;
@@ -554,14 +554,14 @@ const effects = (dispatch) => ({
 
         // [NOTE] migrate old optionLogPlexPlayback setting to optionLogPlaybackToServer
         if (typeof localStorageState.optionLogPlexPlayback !== 'undefined') {
-          console.log('%c--- migrating optionLogPlexPlayback to optionLogPlaybackToServer ---', 'color:#0f60b7');
+          console.log('%c--- migrating optionLogPlexPlayback to optionLogPlaybackToServer ---', 'color:#439c08');
           localStorageState.optionLogPlaybackToServer = localStorageState.optionLogPlexPlayback;
           delete localStorageState.optionLogPlexPlayback;
         }
 
         // [NOTE] clean up some old data that was once accidentally saved to local storage
         if (localStorageState.appModel) {
-          console.log('%c--- removing appModel from localStorageState ---', 'color:#0f60b7');
+          console.log('%c--- removing appModel from localStorageState ---', 'color:#439c08');
           delete localStorageState.appModel;
 
           if (localStorageState.persistentModel) {
@@ -615,7 +615,7 @@ const effects = (dispatch) => ({
   },
 
   setLoggedOut(payload, rootState) {
-    console.log('%c--- setLoggedOut ---', 'color:#0f60b7');
+    console.log('%c--- setLoggedOut ---', 'color:#439c08');
     dispatch.sessionModel.setSessionState({
       ...Object.assign({}, sessionState),
       ...Object.assign({}, playingState),
@@ -627,7 +627,7 @@ const effects = (dispatch) => ({
   //
 
   setCurrentUser(payload, rootState) {
-    console.log('%c--- setCurrentUser ---', 'color:#0f60b7');
+    console.log('%c--- setCurrentUser ---', 'color:#439c08');
     dispatch.sessionModel.setSessionState({
       currentUser: payload.user,
     });
@@ -635,7 +635,7 @@ const effects = (dispatch) => ({
   },
 
   validateCurrentUser(payload, rootState) {
-    console.log('%c--- validateCurrentUser ---', 'color:#0f60b7');
+    console.log('%c--- validateCurrentUser ---', 'color:#439c08');
     const optionKeepHomeUsersLoggedIn = rootState.sessionModel.optionKeepHomeUsersLoggedIn;
     const optionRememberLastLibrary = rootState.sessionModel.optionRememberLastLibrary;
     const currentUserId = rootState.sessionModel.currentUser ? rootState.sessionModel.currentUser.userId : null;
@@ -672,7 +672,7 @@ const effects = (dispatch) => ({
   },
 
   switchUser(payload, rootState) {
-    console.log('%c--- switchUser ---', 'color:#0f60b7');
+    console.log('%c--- switchUser ---', 'color:#439c08');
     const currentService = rootState.appModel.currentService;
     const { user, pin } = payload;
     if (currentService === 'plex' && user?.uuid) {
@@ -686,7 +686,7 @@ const effects = (dispatch) => ({
   },
 
   unsetCurrentUser(payload, rootState) {
-    console.log('%c--- unsetCurrentUser ---', 'color:#0f60b7');
+    console.log('%c--- unsetCurrentUser ---', 'color:#439c08');
     bridge.abortAllRequests();
     const optionRememberLastLibrary = rootState.sessionModel.optionRememberLastLibrary;
     dispatch.playerModel.playerPause();
@@ -705,7 +705,7 @@ const effects = (dispatch) => ({
   //
 
   setCurrentServer(payload, rootState) {
-    console.log('%c--- setCurrentServer ---', 'color:#0f60b7');
+    console.log('%c--- setCurrentServer ---', 'color:#439c08');
     dispatch.sessionModel.setSessionState({
       currentServer: payload,
     });
@@ -713,7 +713,7 @@ const effects = (dispatch) => ({
   },
 
   switchCurrentServer(payload, rootState) {
-    console.log('%c--- switchCurrentServer ---', 'color:#0f60b7');
+    console.log('%c--- switchCurrentServer ---', 'color:#439c08');
     const currentServerId = rootState.sessionModel.currentServer ? rootState.sessionModel.currentServer.serverId : null;
     if (currentServerId !== payload) {
       bridge.abortAllRequests();
@@ -732,7 +732,7 @@ const effects = (dispatch) => ({
   },
 
   validateCurrentServer(payload, rootState) {
-    console.log('%c--- validateCurrentServer ---', 'color:#0f60b7');
+    console.log('%c--- validateCurrentServer ---', 'color:#439c08');
     const currentServerId = rootState.sessionModel.currentServer ? rootState.sessionModel.currentServer.serverId : null;
     const refreshedServer = payload?.find((server) => server.serverId === currentServerId);
     // Select cached session server
@@ -765,7 +765,7 @@ const effects = (dispatch) => ({
   },
 
   unsetCurrentServer(payload, rootState) {
-    console.log('%c--- unsetCurrentServer ---', 'color:#0f60b7');
+    console.log('%c--- unsetCurrentServer ---', 'color:#439c08');
     dispatch.sessionModel.setSessionState({
       currentServer: null,
       currentLibrary: null,
@@ -780,14 +780,14 @@ const effects = (dispatch) => ({
   //
 
   setCurrentLibrary(payload, rootState) {
-    console.log('%c--- setCurrentLibrary ---', 'color:#0f60b7');
+    console.log('%c--- setCurrentLibrary ---', 'color:#439c08');
     dispatch.sessionModel.setSessionState({
       currentLibrary: payload,
     });
   },
 
   validateCurrentLibrary(payload, rootState) {
-    console.log('%c--- validateCurrentLibrary ---', 'color:#0f60b7');
+    console.log('%c--- validateCurrentLibrary ---', 'color:#439c08');
     const currentLibraryId = rootState.sessionModel.currentLibrary
       ? rootState.sessionModel.currentLibrary.libraryId
       : null;
@@ -820,7 +820,7 @@ const effects = (dispatch) => ({
   },
 
   switchCurrentLibrary(payload, rootState) {
-    console.log('%c--- switchCurrentLibrary ---', 'color:#0f60b7');
+    console.log('%c--- switchCurrentLibrary ---', 'color:#439c08');
     const currentLibrary = rootState.sessionModel.currentLibrary;
     const currentLibraryId = currentLibrary ? currentLibrary.libraryId : null;
     if (currentLibraryId !== payload) {

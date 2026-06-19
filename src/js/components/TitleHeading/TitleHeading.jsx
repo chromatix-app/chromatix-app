@@ -35,7 +35,8 @@ const TitleHeading = ({
   const triggerRef = useRef(null);
   const isNearTop = useNearTop(triggerRef, 90);
 
-  const titleSize = title.length <= 10 ? 'xl' : title.length <= 30 ? 'lg' : title.length <= 40 ? 'md' : 'sm';
+  const titleLength = typeof title === 'string' ? title.replace(/<[^>]*>/g, '').length : 0;
+  const titleSize = titleLength <= 10 ? 'xl' : titleLength <= 30 ? 'lg' : titleLength <= 40 ? 'md' : 'sm';
 
   return (
     <>

@@ -25,7 +25,8 @@
 
     // Path aliases
     "paths": {
-      "js/*": ["./src/js/*"]
+      "js/*": ["./src/js/*"],
+      "types/*": ["./src/types/*"]
     }
 
     // Worth considering

@@ -59,7 +59,10 @@ test.describe.serial('setup pages match snapshots', () => {
 
     // Set some state
     await page.evaluate(async () => {
-      await (window as any).store.dispatch.sessionModel.setSessionState({ savedAppVersion: '999.0.0' });
+      await (window as any).store.dispatch.sessionModel.setSessionState({
+        savedAppVersion: '999.0.0',
+        menuOpenPlaylists: false,
+      });
     });
     await page.waitForTimeout(1000);
 

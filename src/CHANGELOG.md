@@ -1,7 +1,20 @@
+# 0.64.0 (2026-06-19)
+
+Features:
+
+- Tracks that couldn't be played due to codec incompatibility are now automatically transcoded.
+  - Plex: unsupported formats (e.g. WMA, certain FLAC variants) are streamed via DASH and transcoded on the fly.
+  - Jellyfin: unsupported formats are routed through Jellyfin's universal endpoint for server-side transcoding.
+- Settings pages have been tweaked (again) for clarity and consistency.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.63.0 (2026-06-16)
 
 Features:
 
+- Changed URLs to be more consistent and (hopefully) future-proof.
+  - (Sorry for breaking any bookmarks - temporary redirects have been added!)
 - New keyboard settings page — control whether media keys, the space bar, and left/right arrow keys are used to control playback.
 - New option in general settings: when playing from an artist page, the app can now automatically switch to track view and highlight the currently playing track.
 - Range sliders now support touch events, improving usability on touch screens.
@@ -179,7 +192,7 @@ Features:
 Features:
 
 - Added option to only allow setting whole star ratings.
-- Tweaked some of the settings pages for consistency and clarity.
+- Tweaked some of the settings pages for clarity and consistency.
 - Improved handling when browsing non-existent items via the URL.
 
 <!-- CHANGELOG SPLIT MARKER -->

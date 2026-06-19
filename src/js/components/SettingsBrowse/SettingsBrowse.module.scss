@@ -35,8 +35,10 @@
 
 .description {
   display: block;
+  padding: 1px 0 1px;
   font-size: 12px;
-  color: var(--color-opacity-07);
+  line-height: 16px;
+  color: var(--color-opacity-06);
 
   &.disabled {
     color: var(--color-opacity-04);
