@@ -12,28 +12,28 @@ test.describe('settings pages match snapshots', () => {
     await snapshotPage(page, `/settings/about`, '002-about');
   });
 
+  test('accounts page matches snapshot', async ({ page }) => {
+    await snapshotPage(page, `/settings/accounts`, '003-accounts');
+  });
+
   test('appearance page matches snapshot', async ({ page }) => {
-    await snapshotPage(page, `/settings/appearance`, '003-appearance');
+    await snapshotPage(page, `/settings/appearance`, '004-appearance');
   });
 
   test('browse page matches snapshot', async ({ page }) => {
-    await snapshotPage(page, `/settings/browse`, '004-browse');
+    await snapshotPage(page, `/settings/browse`, '005-browse');
   });
 
   test('changelog page matches snapshot', async ({ page }) => {
-    await snapshotPage(page, `/settings/changelog`, '005-changelog');
+    await snapshotPage(page, `/settings/changelog`, '006-changelog');
   });
 
   test('controls page matches snapshot', async ({ page }) => {
-    await snapshotPage(page, `/settings/controls`, '006-controls');
+    await snapshotPage(page, `/settings/controls`, '007-controls');
   });
 
   test('downloads page matches snapshot', async ({ page }) => {
-    await snapshotPage(page, `/settings/downloads`, '007-downloads');
-  });
-
-  test('general page matches snapshot', async ({ page }) => {
-    await snapshotPage(page, `/settings/general`, '008-general');
+    await snapshotPage(page, `/settings/downloads`, '008-downloads');
   });
 
   test('keyboard page matches snapshot', async ({ page }) => {
@@ -44,7 +44,11 @@ test.describe('settings pages match snapshots', () => {
     await snapshotPage(page, `/settings/lastfm`, '010-lastfm');
   });
 
+  test('playback page matches snapshot', async ({ page }) => {
+    await snapshotPage(page, `/settings/playback`, '011-playback');
+  });
+
   test('sidebar page matches snapshot', async ({ page }) => {
-    await snapshotPage(page, `/settings/sidebar`, '011-sidebar');
+    await snapshotPage(page, `/settings/sidebar`, '012-sidebar');
   });
 });
