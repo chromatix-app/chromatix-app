@@ -40,7 +40,7 @@ const state = Object.assign({}, historyState, localStorageState);
 
 const reducers = {
   setPersistentState(rootState, payload) {
-    console.log('%c--- setPersistentState ---', 'color:#439c08');
+    console.log('%c--- setPersistentState ---', 'color:#0ca02a');
     return { ...rootState, ...payload };
   },
 
@@ -79,7 +79,7 @@ const reducers = {
 
 const effects = (dispatch) => ({
   init(payload, rootState) {
-    console.log('%c--- init ---', 'color:#439c08');
+    console.log('%c--- init ---', 'color:#0ca02a');
 
     if (!pageWasReloaded()) {
       dispatch.persistentModel.clearHistoryState();

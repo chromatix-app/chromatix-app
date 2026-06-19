@@ -252,6 +252,11 @@ export const authRoutes = [
     component: 'SettingsAbout',
   },
   {
+    path: '/settings/accounts',
+    exact: true,
+    component: 'SettingsAccounts',
+  },
+  {
     path: '/settings/appearance',
     exact: true,
     component: 'SettingsAppearance',
@@ -277,11 +282,6 @@ export const authRoutes = [
     component: 'SettingsDownloads',
   },
   {
-    path: '/settings/general',
-    exact: true,
-    component: 'SettingsGeneral',
-  },
-  {
     path: '/settings/keyboard',
     exact: true,
     component: 'SettingsKeyboard',
@@ -290,6 +290,11 @@ export const authRoutes = [
     path: '/settings/lastfm',
     exact: true,
     component: 'SettingsLastFM',
+  },
+  {
+    path: '/settings/playback',
+    exact: true,
+    component: 'SettingsPlayback',
   },
   {
     path: '/settings/sidebar',

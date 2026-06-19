@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { SettingsAppearance, TitleHeading } from 'js/components';
+import { Icon, SettingsAppearance, TitleHeading } from 'js/components';
 
 // ======================================================================
 // COMPONENT
@@ -11,7 +11,17 @@ import { SettingsAppearance, TitleHeading } from 'js/components';
 const Component = () => {
   return (
     <>
-      <TitleHeading title="Appearance" />
+      <TitleHeading
+        title={
+          <>
+            Settings{' '}
+            <span className="u-gt">
+              <Icon icon="ArrowRightIcon" cover stroke strokeWidth={3} />
+            </span>{' '}
+            Appearance
+          </>
+        }
+      />
       <SettingsAppearance />
     </>
   );

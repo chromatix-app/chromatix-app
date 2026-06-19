@@ -44,14 +44,15 @@ export { default as GenericTagItems } from './GenericTagItems';
 
 export { default as Settings } from './Settings';
 export { default as SettingsAbout } from './SettingsAbout';
+export { default as SettingsAccounts } from './SettingsAccounts';
 export { default as SettingsAppearance } from './SettingsAppearance';
 export { default as SettingsBrowse } from './SettingsBrowse';
 export { default as SettingsChangelog } from './SettingsChangelog';
 export { default as SettingsControls } from './SettingsControls';
 export { default as SettingsDownloads } from './SettingsDownloads';
-export { default as SettingsGeneral } from './SettingsGeneral';
 export { default as SettingsKeyboard } from './SettingsKeyboard';
 export { default as SettingsLastFM } from './SettingsLastFM';
+export { default as SettingsPlayback } from './SettingsPlayback';
 export { default as SettingsSidebar } from './SettingsSidebar';
 
 export { default as DevComponents } from './DevComponents';

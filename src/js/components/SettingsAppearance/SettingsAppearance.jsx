@@ -234,6 +234,7 @@ const AccessibilitySettings = () => {
       label: 'Highlight focused elements.',
       description:
         'When enabled, elements such as buttons, links, and form controls are highlighted when focused. For example, when using the keyboard to navigate the interface.',
+      footnote: 'Note: this option is also displayed in the keyboard settings section.',
       state: themeKeyFocus,
     },
   ];

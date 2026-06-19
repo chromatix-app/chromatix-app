@@ -9,7 +9,7 @@ import {
   SettingsChangelog,
   SettingsControls,
   SettingsDownloads,
-  SettingsGeneral,
+  SettingsAccounts,
   SettingsKeyboard,
   SettingsSidebar,
   TitleHeading,
@@ -23,7 +23,7 @@ const Component = () => {
   return (
     <>
       <TitleHeading title="All Settings" />
-      <SettingsGeneral debug={true} />
+      <SettingsAccounts debug={true} />
       <SettingsBrowse debug={true} />
       <SettingsAppearance debug={true} />
       <SettingsKeyboard />

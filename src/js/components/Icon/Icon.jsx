@@ -62,6 +62,7 @@ import InfoIcon from './icons/general-compressed/info.svg?react';
 import KeyboardIcon from './icons/general-original/keyboard.svg?react'; // [NOTE] use original due to small details
 import LastFMIcon from './icons/general-compressed/lastfm.svg?react';
 import ListIcon from './icons/general-compressed/list-small.svg?react';
+import LockIcon from './icons/general-compressed/lock.svg?react';
 import LogoutIcon from './icons/general-compressed/logout.svg?react';
 import MailIcon from './icons/general-compressed/mail.svg?react';
 // import MailPlaneIcon from './icons/general-compressed/mail-plane.svg?react';
@@ -183,6 +184,7 @@ export const generalIcons = {
   KeyboardIcon,
   LastFMIcon,
   ListIcon,
+  LockIcon,
   LogoutIcon,
   MailIcon,
   // MailPlaneIcon,
