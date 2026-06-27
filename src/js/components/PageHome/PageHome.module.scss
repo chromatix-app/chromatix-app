@@ -223,13 +223,32 @@
   @include mixins.focus-self-outline;
 }
 
+//
+// SUPPORT
+//
+
+.support {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  max-width: 300px;
+  margin: 50px auto 0;
+
+  @media (min-width: 768px) {
+    max-width: none;
+  }
+}
+
+.github,
 .kofi {
   display: block;
-  width: 240px;
+  flex: 0 0 auto;
+  width: 220px;
   height: 38px;
-  margin: 40px auto 0;
-  background: #0067fc;
-  background-image: url(../../../images/kofi.png);
+  background: #fff;
+  background-image: url(../../../images/support-github.png);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -239,12 +258,22 @@
   line-height: 0;
   text-indent: -9999px;
 
-  @media (min-width: 390px) {
-    width: 280px;
-    height: 44px;
+  @media (min-width: 768px) {
+    width: 240px;
+    height: 42px;
   }
 
+  // @media (min-width: 1280px) {
+  //   width: 260px;
+  //   height: 45px;
+  // }
+
   @include mixins.focus-self-outline;
+}
+
+.kofi {
+  background-color: #0067fc;
+  background-image: url(../../../images/support-kofi.png);
 }
 
 //

@@ -296,10 +296,22 @@ export const Settings = () => {
         </button>
       </div>
 
-      {/* KO-FI */}
+      {/* SUPPORT */}
 
       <div className={style.group}>
-        <div className={style.kofiWrap}>
+        <div className={style.support}>
+          <a
+            className={style.github}
+            href="https://github.com/sponsors/alexb148"
+            target="_blank"
+            rel="noreferrer nofollow"
+            draggable="false"
+            onClick={() => {
+              analyticsEvent('Link / GitHub Sponsors');
+            }}
+          >
+            Sponsor me on GitHub
+          </a>
           <a
             className={style.kofi}
             href="https://ko-fi.com/chromaticnova"
@@ -313,7 +325,11 @@ export const Settings = () => {
             Support me on Ko-fi
           </a>
         </div>
+      </div>
 
+      {/* LEGAL */}
+
+      <div className={style.group}>
         <div className={style.legal}>Copyright &copy; {new Date().getFullYear()}</div>
       </div>
     </div>
