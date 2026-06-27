@@ -215,7 +215,12 @@ const Component = () => {
               { value: 'grid', label: 'Grid view', icon: <Icon icon="GridIcon" cover strokeAndFill /> },
               { value: 'list', label: 'List view', icon: <Icon icon="ListIcon" cover stroke /> },
               { value: 'track', label: 'Track view', icon: <Icon icon="MusicNoteSingleIcon" cover stroke /> },
-              { value: 'mixed', label: 'Mixed', disabled: true, icon: <Icon icon="VanishedCircleIcon" cover stroke /> },
+              {
+                value: 'disabled',
+                label: 'Disabled',
+                disabled: true,
+                icon: <Icon icon="VanishedCircleIcon" cover stroke />,
+              },
             ]}
           />
         </div>
@@ -424,55 +429,115 @@ const Component = () => {
 
         <div>
           <h2>Buttons</h2>
-          <Button size="large">Large (Default)</Button>
-          <br />
-          <Button size="medium">Medium</Button>
-          <br />
-          <Button size="small">Small</Button>
-          <br />
-          <Button size="tiny">Tiny</Button>
-          <br />
-          <Button size="tab">Tab</Button>
-          <br />
-          <Button size="tiny" loading>
-            Loading
-          </Button>
-          <br />
-          <Button size="tiny" color="mono">
-            Mono
-          </Button>
-          <br />
-          <Button size="tiny" color="mono" loading>
-            Mono Loading
-          </Button>
-          <br />
-          <Button size="tiny" color="secondary">
-            Secondary
-          </Button>
-          <br />
-          <Button size="tiny" color="secondary" loading>
-            Secondary Loading
-          </Button>
-          <br />
-          <Button size="tiny" color="tertiary">
-            Tertiary
-          </Button>
-          <br />
-          <Button size="tiny" color="tertiary" loading>
-            Tertiary Loading
-          </Button>
-          <br />
-          <Button size="tiny" color="outlineSecondary">
-            Outline Secondary
-          </Button>
-          <br />
-          <Button size="tiny" color="outlineTertiary">
-            Outline Tertiary
-          </Button>
-          <br />
-          <Button size="tiny" disabled>
-            Disabled
-          </Button>
+
+          <div className="devButtons">
+            <Button wrap={false} size="large">
+              Large (Default)
+            </Button>
+          </div>
+
+          <div className="devButtons">
+            <Button wrap={false} size="medium">
+              Medium
+            </Button>
+          </div>
+
+          <div className="devButtons">
+            <Button wrap={false} size="small">
+              Small
+            </Button>
+          </div>
+
+          <div className="devButtons">
+            <Button wrap={false} size="tiny">
+              Tiny
+            </Button>
+          </div>
+
+          <div className="devButtons">
+            <Button wrap={false} size="tab">
+              Tab
+            </Button>
+            <Button
+              wrap={false}
+              size="tab"
+              onClick={() =>
+                // toggle the data-logged-in attribute on the html element between true and false
+                document.documentElement.setAttribute(
+                  'data-logged-in',
+                  document.documentElement.getAttribute('data-logged-in') === 'true' ? 'false' : 'true'
+                )
+              }
+            >
+              Toggle Logged In
+            </Button>
+          </div>
+
+          <div className="devButtons">
+            <Button wrap={false} size="tiny">
+              Primary
+            </Button>
+            <Button wrap={false} size="tiny" loading>
+              Primary Loading
+            </Button>
+            <Button wrap={false} size="tiny" disabled renderDisabled={false}>
+              Disabled Text
+            </Button>
+            <Button wrap={false} size="tiny" disabled>
+              Disabled All
+            </Button>
+          </div>
+
+          <div className="devButtons">
+            <Button wrap={false} size="tiny" color="mono">
+              Mono
+            </Button>
+            <Button wrap={false} size="tiny" color="mono" loading>
+              Mono Loading
+            </Button>
+            <Button wrap={false} size="tiny" color="mono" disabled renderDisabled={false}>
+              Disabled Text
+            </Button>
+            <Button wrap={false} size="tiny" color="mono" disabled>
+              Disabled All
+            </Button>
+          </div>
+
+          <div className="devButtons">
+            <Button wrap={false} size="tiny" color="secondary">
+              Secondary
+            </Button>
+            <Button wrap={false} size="tiny" color="secondary" loading>
+              Secondary Loading
+            </Button>
+            <Button wrap={false} size="tiny" color="secondary" disabled renderDisabled={false}>
+              Disabled Text
+            </Button>
+            <Button wrap={false} size="tiny" color="secondary" disabled>
+              Disabled All
+            </Button>
+            <Button wrap={false} size="tiny" color="outlineSecondary">
+              Secondary Outline
+            </Button>
+          </div>
+
+          <div className="devButtons">
+            <Button wrap={false} size="tiny" color="tertiary">
+              Tertiary
+            </Button>
+            <Button wrap={false} size="tiny" color="tertiary" loading>
+              Tertiary Loading
+            </Button>
+            <Button wrap={false} size="tiny" color="tertiary" disabled renderDisabled={false}>
+              Disabled Text
+            </Button>
+            <Button wrap={false} size="tiny" color="tertiary" disabled>
+              Disabled All
+            </Button>
+            <Button wrap={false} size="tiny" color="outlineTertiary">
+              Tertiary Outline
+            </Button>
+          </div>
         </div>
       </PageText>
     </>

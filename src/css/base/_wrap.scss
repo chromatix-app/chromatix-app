@@ -209,3 +209,17 @@
 //     border-radius: 6px;
 //   }
 // }
+
+.devButtons {
+  display: flex;
+  // flex-wrap: wrap;
+  gap: 12px;
+
+  > * {
+    flex: 1 0 auto;
+  }
+
+  & + .devButtons {
+    margin-top: 24px;
+  }
+}

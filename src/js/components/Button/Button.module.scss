@@ -13,8 +13,6 @@
   max-width: 230px;
   padding: 17px 16px;
   margin: 0;
-  background: vars.$color-core;
-  border: 1px solid vars.$color-opacity-02;
   border-radius: 10px;
 
   font-size: 18px;
@@ -22,7 +20,6 @@
   font-weight: 500;
   text-align: center;
   text-decoration: none;
-  color: vars.$color-primary-bg;
 
   @include mixins.focus-self-outline;
 
@@ -35,24 +32,8 @@
     // cursor: not-allowed;
   }
 
-  &.disabled:disabled {
-    background-color: var(--color-opacity-005) !important;
-    border: 1px solid var(--color-opacity-005) !important;
-    color: var(--color-opacity-03) !important;
-  }
-
-  &.disabledText:disabled {
-    color: var(--color-opacity-03) !important;
-  }
-
   :global(.text-center) & {
     margin: 0 auto;
-  }
-
-  :global(html[data-logged-in='true']) & {
-    background-color: var(--color-core);
-    border: 1px solid var(--color-opacity-015);
-    color: var(--color-primary-bg);
   }
 
   // inline
@@ -65,32 +46,11 @@
 
   // loading / submitting
 
-  &.loading:not(.colorPrimary) {
-    background-image: url(../../../images/loading-black.gif);
-    background-image: url(../../../images/loading-black.png);
+  &.loading {
     background-size: 24px 24px;
     background-position: 50% 50%;
     background-repeat: no-repeat;
     color: rgba(0, 0, 0, 0) !important;
-
-    :global(html[data-text-theme='light']) & {
-      background-image: url(../../../images/loading-white.gif);
-      background-image: url(../../../images/loading-white.png);
-    }
-  }
-
-  &.loading.colorPrimary {
-    background-image: url(../../../images/loading-black.gif);
-    background-image: url(../../../images/loading-black.png);
-    background-size: 24px 24px;
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
-    color: rgba(0, 0, 0, 0) !important;
-
-    :global(html[data-theme='light']) & {
-      background-image: url(../../../images/loading-white.gif);
-      background-image: url(../../../images/loading-white.png);
-    }
   }
 
   // centering
@@ -129,7 +89,43 @@
 // COLORS
 //
 
+.colorPrimary {
+  background: vars.$color-core;
+  border: 1px solid vars.$color-opacity-015;
+  color: vars.$color-primary-bg;
+
+  :global(html[data-logged-in='true']) & {
+    background-color: var(--color-core);
+    border: 1px solid var(--color-opacity-015);
+    color: var(--color-primary-bg);
+  }
+
+  &.disabledText:disabled {
+    > * {
+      opacity: var(--opacity-04);
+    }
+  }
+
+  &.disabledAll:disabled {
+    opacity: var(--opacity-04);
+  }
+
+  &.loading {
+    background-image: url(../../../images/loading-black.gif);
+    background-image: url(../../../images/loading-black.png);
+
+    :global(html[data-theme='light']) & {
+      background-image: url(../../../images/loading-white.gif);
+      background-image: url(../../../images/loading-white.png);
+    }
+  }
+}
+
 .colorMono {
+  background-color: vars.$color-button-mono-border;
+  border: 1px solid vars.$color-button-mono-bg;
+  color: vars.$color-button-mono-text;
+
   :global(html[data-logged-in='true']) & {
     background-color: var(--color-button-mono-bg);
     border: 1px solid var(--color-text);
@@ -137,28 +133,30 @@
   }
 
   &.disabledText:disabled {
-    :global(html[data-logged-in='true']) & {
-      background-color: var(--color-button-mono-bg) !important;
-      border: 1px solid var(--color-text) !important;
-      color: var(--color-primary-bg) !important;
+    > * {
+      opacity: var(--opacity-04);
     }
   }
 
+  &.disabledAll:disabled {
+    opacity: var(--opacity-04);
+  }
+
   &.loading {
-    background-image: url(../../../images/loading-white.gif) !important;
-    background-image: url(../../../images/loading-white.png) !important;
+    background-image: url(../../../images/loading-white.gif);
+    background-image: url(../../../images/loading-white.png);
 
     :global(html[data-text-theme='light']) & {
-      background-image: url(../../../images/loading-black.gif) !important;
-      background-image: url(../../../images/loading-black.png) !important;
+      background-image: url(../../../images/loading-black.gif);
+      background-image: url(../../../images/loading-black.png);
     }
   }
 }
 
 .colorSecondary {
-  background-color: vars.$color-secondary-border;
-  border: 1px solid vars.$color-opacity-01;
-  color: vars.$color-text;
+  background-color: vars.$color-button-secondary-bg;
+  border: 1px solid vars.$color-button-secondary-border;
+  color: vars.$color-button-secondary-text;
 
   :global(html[data-logged-in='true']) & {
     background-color: var(--color-button-on-primary-bg);
@@ -166,35 +164,25 @@
     color: var(--color-text);
   }
 
-  &.loading {
-    background-image: url(../../../images/loading-black.gif) !important;
-    background-image: url(../../../images/loading-black.png) !important;
-
-    :global(html[data-text-theme='light']) & {
-      background-image: url(../../../images/loading-white.gif) !important;
-      background-image: url(../../../images/loading-white.png) !important;
+  &.disabledText:disabled {
+    > * {
+      color: var(--color-opacity-03);
     }
   }
-}
 
-.colorTertiary {
-  background-color: vars.$color-secondary-border;
-  border: 1px solid vars.$color-opacity-01;
-  color: vars.$color-text;
-
-  :global(html[data-logged-in='true']) & {
-    background-color: var(--color-button-on-secondary-bg);
-    border: 1px solid var(--color-button-on-secondary-border);
-    color: var(--color-text);
+  &.disabledAll:disabled {
+    background-color: var(--color-opacity-005);
+    border: 1px solid var(--color-opacity-005);
+    color: var(--color-opacity-03);
   }
 
   &.loading {
-    background-image: url(../../../images/loading-black.gif) !important;
-    background-image: url(../../../images/loading-black.png) !important;
+    background-image: url(../../../images/loading-black.gif);
+    background-image: url(../../../images/loading-black.png);
 
     :global(html[data-text-theme='light']) & {
-      background-image: url(../../../images/loading-white.gif) !important;
-      background-image: url(../../../images/loading-white.png) !important;
+      background-image: url(../../../images/loading-white.gif);
+      background-image: url(../../../images/loading-white.png);
     }
   }
 }
@@ -204,6 +192,40 @@
     background-color: transparent;
     border: 1px solid var(--color-button-on-primary-border);
     color: var(--color-text);
+  }
+}
+
+.colorTertiary {
+  background-color: vars.$color-button-secondary-bg;
+  border: 1px solid vars.$color-button-secondary-border;
+  color: vars.$color-button-secondary-text;
+
+  :global(html[data-logged-in='true']) & {
+    background-color: var(--color-button-on-secondary-bg);
+    border: 1px solid var(--color-button-on-secondary-border);
+    color: var(--color-text);
+  }
+
+  &.disabledText:disabled {
+    > * {
+      color: var(--color-opacity-03);
+    }
+  }
+
+  &.disabledAll:disabled {
+    background-color: var(--color-opacity-005);
+    border: 1px solid var(--color-opacity-005);
+    color: var(--color-opacity-03);
+  }
+
+  &.loading {
+    background-image: url(../../../images/loading-black.gif);
+    background-image: url(../../../images/loading-black.png);
+
+    :global(html[data-text-theme='light']) & {
+      background-image: url(../../../images/loading-white.gif);
+      background-image: url(../../../images/loading-white.png);
+    }
   }
 }
 

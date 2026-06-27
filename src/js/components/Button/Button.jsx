@@ -50,14 +50,14 @@ export const Button = forwardRef(
         className={clsx(className, style.btn, style[colorClass], style[sizeClass], {
           [style.loading]: loading,
           [style.inline]: inline,
-          [style.disabled]: renderDisabled && props.disabled,
-          [style.disabledText]: !renderDisabled && props.disabled,
+          [style.disabledAll]: props.disabled && renderDisabled,
+          [style.disabledText]: props.disabled && !renderDisabled,
         })}
         type={type}
         {...props}
       >
         {icon && <span className={style.icon}>{icon}</span>}
-        {children}
+        {children && <span className={style.label}>{children}</span>}
       </Component>
     );
 

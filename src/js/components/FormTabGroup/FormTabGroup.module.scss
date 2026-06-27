@@ -36,31 +36,26 @@
   align-items: center;
   min-width: 114px;
   padding: 7px 10px;
-  background-color: vars.$color-secondary-border;
-  border: 1px solid vars.$color-opacity-01;
+  background-color: var(--color-button-on-primary-bg);
+  border: 1px solid var(--color-button-on-primary-border);
   cursor: pointer;
   font-size: 14px;
   line-height: 16px;
   font-weight: 400;
-  color: vars.$color-text;
-
-  :global(html[data-logged-in='true']) & {
-    background-color: var(--color-button-on-primary-bg);
-    border: 1px solid var(--color-button-on-primary-border);
-    color: var(--color-text);
-  }
+  color: var(--color-text);
 
   &Active {
-    :global(html[data-logged-in='true']) & {
-      background-color: var(--color-button-mono-bg);
-      border: 1px solid var(--color-text);
-      color: var(--color-primary-bg);
-    }
+    background-color: var(--color-button-mono-bg);
+    border: 1px solid var(--color-text);
+    color: var(--color-primary-bg);
   }
 
   &:disabled {
-    opacity: 0.4;
     cursor: default;
+
+    > * {
+      opacity: var(--opacity-025);
+    }
   }
 
   @include mixins.focus-self-outline;
