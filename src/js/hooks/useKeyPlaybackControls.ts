@@ -60,21 +60,22 @@ const useKeyPlaybackControls = (handlers: KeyMediaControlHandlers): null => {
           activeElement.tagName === 'TEXTAREA' ||
           (activeElement as HTMLElement).isContentEditable);
 
-      // Skip space shortcut when focus is on an element that uses space for its own activation
+      // Shared checks used across multiple shortcut guards below
       const activeRole = activeElement?.getAttribute('role');
       const allowKeyControls = activeElement?.closest('[data-allow-key-controls]');
-      const isSpaceActivatable =
-        activeElement?.tagName === 'BUTTON' ||
-        activeElement?.tagName === 'A' ||
-        (activeRole && SPACE_ACTIVATABLE_ROLES.includes(activeRole))
-          ? !allowKeyControls
-          : false;
 
-      // Skip arrow key shortcuts when focus is on an element that uses arrow keys for its own navigation.
-      // Element-level navigability always wins — data-allow-key-controls must not override it.
+      // Skip space shortcut when focus is on an element that uses space for its own activation
+      const isSpaceActivatable =
+        !allowKeyControls &&
+        (activeElement?.tagName === 'BUTTON' ||
+          activeElement?.tagName === 'A' ||
+          !!(activeRole && SPACE_ACTIVATABLE_ROLES.includes(activeRole)));
+
+      // Skip arrow key shortcuts when focus is on an element that uses arrow keys for its own navigation
       const isArrowNavigable =
-        (activeElement?.tagName === 'INPUT' && (activeElement as HTMLInputElement).type === 'range') ||
-        (activeRole && ARROW_NAVIGABLE_ROLES.includes(activeRole));
+        !allowKeyControls &&
+        ((activeElement?.tagName === 'INPUT' && (activeElement as HTMLInputElement).type === 'range') ||
+          (activeRole && ARROW_NAVIGABLE_ROLES.includes(activeRole)));
 
       switch (event.key) {
         case 'MediaPlayPause':
