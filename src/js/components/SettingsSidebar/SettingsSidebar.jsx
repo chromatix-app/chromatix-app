@@ -2,7 +2,8 @@
 // IMPORTS
 // ======================================================================
 
-import { useSelector } from 'react-redux';
+import { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { SettingsList } from 'js/components';
 import platformFeatures from 'js/_config/platformFeatures';
@@ -37,6 +38,19 @@ export const SettingsSidebar = () => {
 
 const AnnouncementSettings = () => {
   const menuShowBanners = useSelector(({ sessionModel }) => sessionModel.menuShowBanners);
+  const prevMenuShowBanners = useRef(menuShowBanners);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!prevMenuShowBanners.current && menuShowBanners) {
+      console.log('reset');
+      dispatch.sessionModel.setSessionState({
+        savedAppVersion: '0.0.0',
+      });
+    }
+    prevMenuShowBanners.current = menuShowBanners;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [menuShowBanners]);
 
   const menuItems = [
     {
