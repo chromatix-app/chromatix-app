@@ -3,7 +3,7 @@
 // ======================================================================
 
 import { PlaybackErrorMessage } from 'js/components';
-import { analyticsEvent, getDashSrc, getTrackKeys, requiresTranscoding } from 'js/utils';
+import { analyticsEvent, getDashSrc, getTrackKeys, requiresTranscoding, sortList } from 'js/utils';
 import * as playerX from 'js/services/player';
 import * as bridge from 'js/services/bridge';
 
@@ -311,7 +311,15 @@ const effects = (dispatch) => ({
 
   async playerLoadArtist(payload, rootState) {
     console.log('%c--- playerLoadArtist ---', 'color:#5c16b1');
-    const { artistId, artistName, playingOrder = null, trackIndex = 0, isShuffle = false, isTrack = false } = payload;
+    const {
+      artistId,
+      artistName,
+      playingOrder: playingOrderParam = null,
+      trackIndex = 0,
+      isShuffle = false,
+      isTrack = false,
+    } = payload;
+    let playingOrder = playingOrderParam;
 
     const currentService = rootState.appModel.currentService;
     const libraryId = rootState.sessionModel.currentLibrary?.libraryId;
@@ -323,6 +331,17 @@ const effects = (dispatch) => ({
       await bridge.getAllArtistTracks(libraryId, artistId, artistName);
       dispatch.playerModel.playerLoadArtist(payload);
       return;
+    }
+
+    // When no explicit order is given, sort by release date then disc/track number
+    if (!playingOrder) {
+      const indexed = currentArtistTracks.map((entry, index) => ({ ...entry, originalIndex: index }));
+      const sorted = sortList({
+        entries: indexed,
+        options: 'releaseDate-asc-album-asc-discNumber-asc-trackNumber-asc',
+        direction: 'asc',
+      });
+      playingOrder = sorted.map((entry) => entry.originalIndex);
     }
 
     const trackKeys = getTrackKeys(currentArtistTracks.length, playingOrder, isShuffle, isTrack ? trackIndex : null);
