@@ -65,33 +65,20 @@ $grid-padding: (
 );
 $grid-breakpoints: (xxs, xs, sm, md, lg, xl);
 
-// FONTS
-
-// $font-title: -apple-system, 'SF Pro', 'Inter', Helvetica, Arial, sans-serif;
-// $font-body: -apple-system, 'SF Pro', 'Inter', Helvetica, Arial, sans-serif;
-
-// $font-slash: Helvetica, Arial, sans-serif;
-
-// $font-weight-sidebar: 500;
-// $font-weight-title: 700;
-// $letter-spacing-general: 0.01em;
-// $letter-spacing-label: 0.02em;
-
-// $border-radius-xs: 2px;
-// $border-radius-sm: 4px;
-// $border-radius-md: 6px;
-// $border-radius-lg: 8px;
-// $border-radius-donut: 12px;
-
 // COLORS
-
-// $gradient-home: linear-gradient(180deg, #08131f 0%, #142941 50%, #08131f 100%);
-// $gradient-home: radial-gradient(100% 50% at 50% 50%, #142941 0%, #08131f 100%);
 
 $color-core: #f7277a;
 $color-text: #fff;
 $color-primary-bg: #021c27;
-$color-secondary-bg: #142c38;
+// $color-secondary-bg: #142c38;
 $color-secondary-border: #263e4a;
-$color-opacity-02: rgba(255, 255, 255, 0.2);
-$color-opacity-01: rgba(255, 255, 255, 0.1);
+
+$color-button-mono-bg: #eeeeee;
+$color-button-mono-border: #fff;
+$color-button-mono-text: #021c27;
+
+$color-button-secondary-bg: #263e4a;
+$color-button-secondary-border: rgba(255, 255, 255, 0.1);
+$color-button-secondary-text: #fff;
+
+$color-opacity-015: rgba(255, 255, 255, 0.15);

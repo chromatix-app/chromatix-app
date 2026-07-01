@@ -34,7 +34,7 @@ const FormTabGroup = ({ name, value, onChange, options, disabled }) => {
           style={{ zIndex: value === optionValue ? 2 : 'initial' }}
         >
           {icon && <span className={style.icon}>{icon}</span>}
-          {label}
+          {label && <span className={style.label}>{label}</span>}
         </ToggleGroup.Item>
       ))}
     </ToggleGroup.Root>

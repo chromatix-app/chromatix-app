@@ -4,13 +4,14 @@
 
 import {
   SettingsAbout,
+  SettingsAccounts,
   SettingsAppearance,
   SettingsBrowse,
   SettingsChangelog,
   SettingsControls,
   SettingsDownloads,
-  SettingsAccounts,
   SettingsKeyboard,
+  SettingsPlayback,
   SettingsSidebar,
   TitleHeading,
 } from 'js/components';
@@ -24,8 +25,9 @@ const Component = () => {
     <>
       <TitleHeading title="All Settings" />
       <SettingsAccounts debug={true} />
-      <SettingsBrowse debug={true} />
       <SettingsAppearance debug={true} />
+      <SettingsBrowse debug={true} />
+      <SettingsPlayback />
       <SettingsKeyboard />
       <SettingsSidebar />
       <SettingsControls />

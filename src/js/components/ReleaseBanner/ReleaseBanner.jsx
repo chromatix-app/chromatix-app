@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import semver from 'semver';
 
@@ -44,6 +44,13 @@ export const ReleaseBanner = () => {
 
   // state ensures banner is immediately hidden on close, rather than awaiting the amplify refresh
   const [showBanner, setShowBanner] = useState(savedVersionIsOutdated);
+
+  // handle if savedAppVersion is modified
+  useEffect(() => {
+    if (savedVersionIsOutdated) {
+      setShowBanner((prev) => (!prev ? true : prev));
+    }
+  }, [savedVersionIsOutdated]);
 
   // on click, show the release notes modal
   const handleOpen = () => {

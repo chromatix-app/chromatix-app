@@ -10,7 +10,7 @@ import { SettingsList } from 'js/components';
 // COMPONENT
 // ======================================================================
 
-export const SettingsPlayback = ({ debug }) => {
+export const SettingsPlayback = () => {
   return (
     <>
       <GeneralSettings />

@@ -214,15 +214,32 @@ export const PageHome = () => {
             <span className="u-hide-text">Roadmap, feature requests and bug reports on Featurebase</span>
           </a>
         </div>
-        <a
-          className={style.kofi}
-          href="https://ko-fi.com/chromaticnova"
-          target="_blank"
-          rel="noreferrer nofollow"
-          draggable="false"
-        >
-          Support me on Ko-fi
-        </a>
+        <div className={style.support}>
+          <a
+            className={style.github}
+            href="https://github.com/sponsors/alexb148"
+            target="_blank"
+            rel="noreferrer nofollow"
+            draggable="false"
+            onClick={() => {
+              analyticsEvent('Link / GitHub Sponsors');
+            }}
+          >
+            Sponsor me on GitHub
+          </a>
+          <a
+            className={style.kofi}
+            href="https://ko-fi.com/chromaticnova"
+            target="_blank"
+            rel="noreferrer nofollow"
+            draggable="false"
+            onClick={() => {
+              analyticsEvent('Link / Ko-fi');
+            }}
+          >
+            Support me on Ko-fi
+          </a>
+        </div>
       </div>
 
       <div className={style.border}></div>

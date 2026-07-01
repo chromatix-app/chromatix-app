@@ -49,6 +49,7 @@ const ViewGrid = ({
   const playerPlaying = useSelector(({ playerModel }) => playerModel.playerPlaying);
 
   const playingVariant = useSelector(({ sessionModel }) => sessionModel.playingVariant);
+  const playingArtistId = useSelector(({ sessionModel }) => sessionModel.playingArtistId);
   const playingAlbumId = useSelector(({ sessionModel }) => sessionModel.playingAlbumId);
   const playingPlaylistId = useSelector(({ sessionModel }) => sessionModel.playingPlaylistId);
   const playingFolderId = useSelector(({ sessionModel }) => sessionModel.playingFolderId);
@@ -66,12 +67,13 @@ const ViewGrid = ({
       entryVariant = lookupType[entryVariant] || entryVariant;
       return (
         playingVariant === entryVariant &&
-        ((entryVariant === 'albums' && playingAlbumId === entryId) ||
+        ((entryVariant === 'artists' && playingArtistId === entryId) ||
+          (entryVariant === 'albums' && playingAlbumId === entryId) ||
           (entryVariant === 'playlists' && playingPlaylistId === entryId) ||
           (entryVariant === 'folders' && playingFolderId === folderId && trackDetail.trackId === entryId))
       );
     },
-    [folderId, playingAlbumId, playingFolderId, playingPlaylistId, playingVariant, trackDetail]
+    [folderId, playingArtistId, playingAlbumId, playingFolderId, playingPlaylistId, playingVariant, trackDetail]
   );
 
   if (entries) {
@@ -501,7 +503,9 @@ const ListEntry = React.memo(
         if (isCurrentlyLoaded) {
           dispatch.playerModel.playerResume();
         } else {
-          if (variant === 'albums' || variant === 'artistAlbums') {
+          if (variant === 'artists') {
+            dispatch.playerModel.playerLoadArtist({ artistId, artistName: artist });
+          } else if (variant === 'albums' || variant === 'artistAlbums') {
             dispatch.playerModel.playerLoadAlbum({ albumId });
           } else if (variant === 'playlists') {
             dispatch.playerModel.playerLoadPlaylist({ playlistId });
@@ -516,7 +520,19 @@ const ListEntry = React.memo(
           }
         }
       },
-      [variant, trackNumber, albumId, folderId, playlistId, playingOrder, sortKey, isCurrentlyLoaded, dispatch]
+      [
+        variant,
+        trackNumber,
+        artistId,
+        artist,
+        albumId,
+        folderId,
+        playlistId,
+        playingOrder,
+        sortKey,
+        isCurrentlyLoaded,
+        dispatch,
+      ]
     );
 
     // Handle card click
@@ -602,7 +618,8 @@ const ListEntry = React.memo(
           )}
 
           {/* Play / Pause Button */}
-          {(variant === 'albums' ||
+          {(variant === 'artists' ||
+            variant === 'albums' ||
             variant === 'artistAlbums' ||
             variant === 'playlists' ||
             (variant === 'folders' && trackId)) && (

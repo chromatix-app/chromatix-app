@@ -1,3 +1,13 @@
+# 0.65.0 (2026-07-01)
+
+Features:
+
+- Artist thumbnail cards now have a play button, matching the behaviour of album and playlist cards.
+- Added a GitHub Sponsors link.
+- Minor tweaks and fixes throughout.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.64.0 (2026-06-19)
 
 Features:
