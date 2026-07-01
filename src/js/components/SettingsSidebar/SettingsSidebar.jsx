@@ -43,7 +43,6 @@ const AnnouncementSettings = () => {
 
   useEffect(() => {
     if (!prevMenuShowBanners.current && menuShowBanners) {
-      console.log('reset');
       dispatch.sessionModel.setSessionState({
         savedAppVersion: '0.0.0',
       });
