@@ -465,6 +465,7 @@ const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
     libraryId: libraryId,
     trackId: track.Id,
     trackKey: null, // I think in Plex this is used for playback logs
+    playlistItemID: track.PlaylistItemId,
     title: track.Name,
     // addedAt: track.addedAt,
     artist: artistName,

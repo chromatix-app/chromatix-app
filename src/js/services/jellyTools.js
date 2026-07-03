@@ -65,6 +65,13 @@ const endpointConfig = {
     getAllPlaylists: (serverBaseUrl, userId) => `${serverBaseUrl}/Users/${userId}/Items`,
     getPlaylistDetails: (serverBaseUrl, userId, playlistId) => `${serverBaseUrl}/Users/${userId}/Items/${playlistId}`,
     getPlaylistTracks: (serverBaseUrl, playlistId) => `${serverBaseUrl}/Playlists/${playlistId}/Items`,
+    createPlaylist: (serverBaseUrl) => `${serverBaseUrl}/Playlists`,
+    editPlaylist: (serverBaseUrl, playlistId) => `${serverBaseUrl}/Playlists/${playlistId}`,
+    deletePlaylist: (serverBaseUrl, playlistId) => `${serverBaseUrl}/Items/${playlistId}`,
+    addTracksToPlaylist: (serverBaseUrl, playlistId) => `${serverBaseUrl}/Playlists/${playlistId}/Items`,
+    removeTracksFromPlaylist: (serverBaseUrl, playlistId) => `${serverBaseUrl}/Playlists/${playlistId}/Items`,
+    movePlaylistItem: (serverBaseUrl, playlistId, playlistItemId, newIndex) =>
+      `${serverBaseUrl}/Playlists/${playlistId}/Items/${playlistItemId}/Move/${newIndex}`,
   },
   collection: {
     getAllCollections: null,
@@ -882,6 +889,303 @@ export const getPlaylistTracks = ({ accessToken, libraryId, playlistId, serverBa
       reject({
         code: 'jellyfin.getPlaylistTracks.2',
         message: 'Failed to get playlist tracks: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// CREATE PLAYLIST
+// ======================================================================
+
+export const createPlaylist = ({ accessToken, serverBaseUrl, title, userId }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.playlist.createPlaylist(serverBaseUrl);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .post(
+          endpoint,
+          {
+            Name: title,
+            Ids: [],
+            UserId: userId,
+            MediaType: 'Audio',
+          },
+          {
+            headers: getRequestHeaders(accessToken),
+            signal: controller.signal,
+          }
+        )
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch((error) => {
+          reject({
+            code: 'jellyfin.createPlaylist.1',
+            message: 'Failed to create playlist: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'jellyfin.createPlaylist.2',
+        message: 'Failed to create playlist: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// EDIT PLAYLIST
+// ======================================================================
+
+export const editPlaylist = ({ accessToken, serverBaseUrl, playlistId, title }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.playlist.editPlaylist(serverBaseUrl, playlistId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .post(
+          endpoint,
+          {
+            // [NOTE] fields left undefined here are left untouched by Jellyfin -
+            // omitting Ids ensures the playlist's tracks are not affected by a rename
+            Name: title,
+          },
+          {
+            headers: getRequestHeaders(accessToken),
+            signal: controller.signal,
+          }
+        )
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject({
+            code: 'jellyfin.editPlaylist.1',
+            message: 'Failed to edit playlist: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'jellyfin.editPlaylist.2',
+        message: 'Failed to edit playlist: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// DELETE PLAYLIST
+// ======================================================================
+
+export const deletePlaylist = ({ accessToken, serverBaseUrl, playlistId }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.playlist.deletePlaylist(serverBaseUrl, playlistId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .delete(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+        })
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject({
+            code: 'jellyfin.deletePlaylist.1',
+            message: 'Failed to delete playlist: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'jellyfin.deletePlaylist.2',
+        message: 'Failed to delete playlist: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// ADD TRACKS TO PLAYLIST
+// ======================================================================
+
+export const addTracksToPlaylist = ({ accessToken, serverBaseUrl, playlistId, trackIds, userId }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.playlist.addTracksToPlaylist(serverBaseUrl, playlistId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .post(endpoint, null, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+          params: {
+            ids: trackIds.join(','),
+            userId,
+          },
+        })
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject({
+            code: 'jellyfin.addTracksToPlaylist.1',
+            message: 'Failed to add tracks to playlist: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'jellyfin.addTracksToPlaylist.2',
+        message: 'Failed to add tracks to playlist: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// REMOVE TRACKS FROM PLAYLIST
+// ======================================================================
+
+// [NOTE] Jellyfin's remove endpoint is natively bulk-capable, unlike Plex's -
+// removeTrackFromPlaylist below wraps this one, rather than the other way around
+
+export const removeTracksFromPlaylist = ({ accessToken, serverBaseUrl, playlistId, playlistItemIds }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.playlist.removeTracksFromPlaylist(serverBaseUrl, playlistId);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .delete(endpoint, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+          params: {
+            entryIds: playlistItemIds.join(','),
+          },
+        })
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject({
+            code: 'jellyfin.removeTracksFromPlaylist.1',
+            message: 'Failed to remove tracks from playlist: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'jellyfin.removeTracksFromPlaylist.2',
+        message: 'Failed to remove tracks from playlist: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// REMOVE TRACK FROM PLAYLIST
+// ======================================================================
+
+export const removeTrackFromPlaylist = ({ accessToken, serverBaseUrl, playlistId, playlistItemId }) => {
+  return removeTracksFromPlaylist({ accessToken, serverBaseUrl, playlistId, playlistItemIds: [playlistItemId] });
+};
+
+// ======================================================================
+// MOVE PLAYLIST ITEM
+// ======================================================================
+
+export const movePlaylistItem = ({
+  accessToken,
+  serverBaseUrl,
+  playlistId,
+  playlistItemId,
+  afterPlaylistItemId,
+  orderedPlaylistItemIds,
+}) => {
+  return new Promise((resolve, reject) => {
+    try {
+      // Jellyfin's move endpoint takes a 0-based target index rather than an "after" id,
+      // so we compute it from the currently known playlist order rather than making an
+      // extra request - this list is the same one the drag UI used to derive afterPlaylistItemId,
+      // so it's guaranteed to be current at the moment of the move
+      const idsWithoutDragged = (orderedPlaylistItemIds || []).filter((id) => id !== playlistItemId);
+      let newIndex;
+      if (afterPlaylistItemId == null) {
+        newIndex = 0;
+      } else {
+        const afterIndex = idsWithoutDragged.indexOf(afterPlaylistItemId);
+        if (afterIndex === -1) {
+          reject({
+            code: 'jellyfin.movePlaylistItem.1',
+            message: 'Failed to move playlist item: afterPlaylistItemId not found in known playlist order',
+            error: null,
+          });
+          return;
+        }
+        newIndex = afterIndex + 1;
+      }
+
+      const endpoint = endpointConfig.playlist.movePlaylistItem(serverBaseUrl, playlistId, playlistItemId, newIndex);
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      axios
+        .post(endpoint, null, {
+          headers: getRequestHeaders(accessToken),
+          signal: controller.signal,
+        })
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject({
+            code: 'jellyfin.movePlaylistItem.2',
+            message: 'Failed to move playlist item: ' + error?.message,
+            error: error,
+          });
+        })
+        .finally(() => {
+          abortControllers = abortControllers.filter((ctrl) => ctrl !== controller);
+        });
+    } catch (error) {
+      reject({
+        code: 'jellyfin.movePlaylistItem.3',
+        message: 'Failed to move playlist item: ' + error?.message,
         error: error,
       });
     }
