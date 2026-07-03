@@ -1087,14 +1087,14 @@ export const createPlaylist = ({ title }) => {
 // EDIT PLAYLIST
 // ======================================================================
 
-export const editPlaylist = ({ playlistId, title, summary }) => {
+export const editPlaylist = ({ playlistId, title }) => {
   if (!isStoreReady()) return;
   const currentService = store.getState().appModel.currentService;
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
   const { libraryId } = store.getState().sessionModel.currentLibrary;
   return serviceTools[currentService]
-    .editPlaylist({ accessToken, serverBaseUrl, playlistId, title, summary })
+    .editPlaylist({ accessToken, serverBaseUrl, playlistId, title })
     .then(async () => {
       analyticsEvent(toUpperFirst(currentService) + ' / Edit Playlist');
       // refresh data

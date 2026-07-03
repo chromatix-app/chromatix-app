@@ -1303,7 +1303,7 @@ export const createPlaylist = ({ accessToken, libraryId, serverId, serverBaseUrl
 // EDIT PLAYLIST
 // ======================================================================
 
-export const editPlaylist = ({ accessToken, serverBaseUrl, playlistId, title, summary }) => {
+export const editPlaylist = ({ accessToken, serverBaseUrl, playlistId, title }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.playlist.editPlaylist(serverBaseUrl, playlistId);
@@ -1312,7 +1312,6 @@ export const editPlaylist = ({ accessToken, serverBaseUrl, playlistId, title, su
           headers: getRequestHeaders(accessToken),
           params: {
             ...(title !== undefined && { title }),
-            ...(summary !== undefined && { summary }),
           },
         })
         .then(() => {
