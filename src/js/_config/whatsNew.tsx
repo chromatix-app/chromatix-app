@@ -19,7 +19,7 @@ export const whatsNew: WhatsNewEntry[] = [
     date: 'June 2026',
     body: (
       <>
-        <p>Plex users can now create, edit, and delete playlists directly within Chromatix.</p>
+        <p>You can now create, edit, and delete playlists directly within Chromatix.</p>
         <p>
           Tracks can be added and removed from any playlist, and you can drag and drop playlist tracks to reorder them
           however you like.
