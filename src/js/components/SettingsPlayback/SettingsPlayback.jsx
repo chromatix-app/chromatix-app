@@ -15,6 +15,7 @@ export const SettingsPlayback = () => {
     <>
       <GeneralSettings />
       <RepeatSettings />
+      <GaplessSettings />
       <ServerSettings />
     </>
   );
@@ -94,6 +95,25 @@ const ServerSettings = () => {
   ];
 
   return <SettingsList title="Server" menuItems={menuItems} />;
+};
+
+//
+// GAPLESS
+//
+
+const GaplessSettings = () => {
+  return (
+    <SettingsList
+      title="Gapless Playback"
+      menuItems={[
+        {
+          type: 'label',
+          label:
+            'Gapless playback is not currently supported in this app. Chromatix is built using web technologies, where gapless playback is very challenging to successfully achieve. Existing solutions are complex and have a lot of trade-offs. We hope to be able to add this in the future, but cannot currently make any promises about if or when it will be available.',
+        },
+      ]}
+    />
+  );
 };
 
 // ======================================================================

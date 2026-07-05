@@ -1303,7 +1303,7 @@ export const createPlaylist = ({ accessToken, libraryId, serverId, serverBaseUrl
 // EDIT PLAYLIST
 // ======================================================================
 
-export const editPlaylist = ({ accessToken, serverBaseUrl, playlistId, title, summary }) => {
+export const editPlaylist = ({ accessToken, serverBaseUrl, playlistId, title }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.playlist.editPlaylist(serverBaseUrl, playlistId);
@@ -1312,7 +1312,6 @@ export const editPlaylist = ({ accessToken, serverBaseUrl, playlistId, title, su
           headers: getRequestHeaders(accessToken),
           params: {
             ...(title !== undefined && { title }),
-            ...(summary !== undefined && { summary }),
           },
         })
         .then(() => {
@@ -1432,6 +1431,21 @@ export const removeTrackFromPlaylist = ({ accessToken, serverBaseUrl, playlistId
       });
     }
   });
+};
+
+// ======================================================================
+// REMOVE TRACKS FROM PLAYLIST
+// ======================================================================
+
+// [NOTE] Plex has no bulk-remove endpoint, so this just loops removeTrackFromPlaylist -
+// exists purely so bridge.js can call the same function name across both services
+
+export const removeTracksFromPlaylist = ({ accessToken, serverBaseUrl, playlistId, playlistItemIds }) => {
+  return Promise.all(
+    playlistItemIds.map((playlistItemId) =>
+      removeTrackFromPlaylist({ accessToken, serverBaseUrl, playlistId, playlistItemId })
+    )
+  );
 };
 
 // ======================================================================

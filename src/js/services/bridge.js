@@ -1061,23 +1061,25 @@ export const getPlaylistTracks = (libraryId, playlistId) => {
 
 export const createPlaylist = ({ title }) => {
   if (!isStoreReady()) return;
+  const currentService = store.getState().appModel.currentService;
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const serverId = store.getState().sessionModel.currentServer.serverId;
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
   const { libraryId } = store.getState().sessionModel.currentLibrary;
-  return plexTools
-    .createPlaylist({ accessToken, libraryId, serverId, serverBaseUrl, title })
+  return serviceTools[currentService]
+    .createPlaylist({ accessToken, libraryId, serverId, serverBaseUrl, title, userId })
     .then(async (response) => {
-      analyticsEvent('Plex / Create Playlist');
+      analyticsEvent(toUpperFirst(currentService) + ' / Create Playlist');
       // refresh data
       await getAllPlaylists();
       // navigate to the new playlist details page
-      const newPlaylistId = response.ratingKey;
+      const newPlaylistId = currentService === 'jellyfin' ? response.Id : response.ratingKey;
       store.getState().appModel.history.push(`/libraries/${libraryId}/playlists/${newPlaylistId}`);
     })
     .catch((error) => {
       console.error(error);
-      analyticsEvent('Plex / Error / Create Playlist');
+      analyticsEvent(toUpperFirst(currentService) + ' / Error / Create Playlist');
     });
 };
 
@@ -1085,21 +1087,22 @@ export const createPlaylist = ({ title }) => {
 // EDIT PLAYLIST
 // ======================================================================
 
-export const editPlaylist = ({ playlistId, title, summary }) => {
+export const editPlaylist = ({ playlistId, title }) => {
   if (!isStoreReady()) return;
+  const currentService = store.getState().appModel.currentService;
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
   const { libraryId } = store.getState().sessionModel.currentLibrary;
-  return plexTools
-    .editPlaylist({ accessToken, serverBaseUrl, playlistId, title, summary })
+  return serviceTools[currentService]
+    .editPlaylist({ accessToken, serverBaseUrl, playlistId, title })
     .then(async () => {
-      analyticsEvent('Plex / Edit Playlist');
+      analyticsEvent(toUpperFirst(currentService) + ' / Edit Playlist');
       // refresh data
       await Promise.all([getAllPlaylists(), getPlaylistDetails(libraryId, playlistId)]);
     })
     .catch((error) => {
       console.error(error);
-      analyticsEvent('Plex / Error / Edit Playlist');
+      analyticsEvent(toUpperFirst(currentService) + ' / Error / Edit Playlist');
     });
 };
 
@@ -1109,13 +1112,14 @@ export const editPlaylist = ({ playlistId, title, summary }) => {
 
 export const deletePlaylist = ({ playlistId }) => {
   if (!isStoreReady()) return;
+  const currentService = store.getState().appModel.currentService;
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
   const { libraryId } = store.getState().sessionModel.currentLibrary;
-  return plexTools
+  return serviceTools[currentService]
     .deletePlaylist({ accessToken, serverBaseUrl, playlistId })
     .then(async () => {
-      analyticsEvent('Plex / Delete Playlist');
+      analyticsEvent(toUpperFirst(currentService) + ' / Delete Playlist');
       // refresh data
       await getAllPlaylists();
       // navigate to playlists page
@@ -1123,7 +1127,7 @@ export const deletePlaylist = ({ playlistId }) => {
     })
     .catch((error) => {
       console.error(error);
-      analyticsEvent('Plex / Error / Delete Playlist');
+      analyticsEvent(toUpperFirst(currentService) + ' / Error / Delete Playlist');
     });
 };
 
@@ -1133,14 +1137,16 @@ export const deletePlaylist = ({ playlistId }) => {
 
 export const addTracksToPlaylist = ({ playlistId, trackIds }) => {
   if (!isStoreReady()) return;
+  const currentService = store.getState().appModel.currentService;
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const serverId = store.getState().sessionModel.currentServer.serverId;
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
   const { libraryId } = store.getState().sessionModel.currentLibrary;
-  return plexTools
-    .addTracksToPlaylist({ accessToken, serverBaseUrl, playlistId, serverId, trackIds })
+  return serviceTools[currentService]
+    .addTracksToPlaylist({ accessToken, serverBaseUrl, playlistId, serverId, trackIds, userId })
     .then(() => {
-      analyticsEvent('Plex / Add Track To Playlist');
+      analyticsEvent(toUpperFirst(currentService) + ' / Add Track To Playlist');
       // refresh the playlist
       store.dispatch.appModel.incrementPlaylistEditCount(playlistId);
       getPlaylistDetails(libraryId, playlistId);
@@ -1148,7 +1154,7 @@ export const addTracksToPlaylist = ({ playlistId, trackIds }) => {
     })
     .catch((error) => {
       console.error(error);
-      analyticsEvent('Plex / Error / Add Track To Playlist');
+      analyticsEvent(toUpperFirst(currentService) + ' / Error / Add Track To Playlist');
     });
 };
 
@@ -1158,13 +1164,14 @@ export const addTracksToPlaylist = ({ playlistId, trackIds }) => {
 
 export const removeTrackFromPlaylist = ({ playlistId, playlistItemId }) => {
   if (!isStoreReady()) return;
+  const currentService = store.getState().appModel.currentService;
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
   const { libraryId } = store.getState().sessionModel.currentLibrary;
-  return plexTools
+  return serviceTools[currentService]
     .removeTrackFromPlaylist({ accessToken, serverBaseUrl, playlistId, playlistItemId })
     .then(() => {
-      analyticsEvent('Plex / Remove Track From Playlist');
+      analyticsEvent(toUpperFirst(currentService) + ' / Remove Track From Playlist');
       // refresh the playlist
       store.dispatch.appModel.incrementPlaylistEditCount(playlistId);
       getPlaylistDetails(libraryId, playlistId);
@@ -1172,7 +1179,7 @@ export const removeTrackFromPlaylist = ({ playlistId, playlistItemId }) => {
     })
     .catch((error) => {
       console.error(error);
-      analyticsEvent('Plex / Error / Remove Track From Playlist');
+      analyticsEvent(toUpperFirst(currentService) + ' / Error / Remove Track From Playlist');
     });
 };
 
@@ -1182,16 +1189,14 @@ export const removeTrackFromPlaylist = ({ playlistId, playlistItemId }) => {
 
 export const removeTracksFromPlaylist = ({ playlistId, playlistItemIds }) => {
   if (!isStoreReady()) return;
+  const currentService = store.getState().appModel.currentService;
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
   const { libraryId } = store.getState().sessionModel.currentLibrary;
-  return Promise.all(
-    playlistItemIds.map((playlistItemId) =>
-      plexTools.removeTrackFromPlaylist({ accessToken, serverBaseUrl, playlistId, playlistItemId })
-    )
-  )
+  return serviceTools[currentService]
+    .removeTracksFromPlaylist({ accessToken, serverBaseUrl, playlistId, playlistItemIds })
     .then(() => {
-      analyticsEvent('Plex / Remove Tracks From Playlist');
+      analyticsEvent(toUpperFirst(currentService) + ' / Remove Tracks From Playlist');
       // refresh the playlist
       store.dispatch.appModel.incrementPlaylistEditCount(playlistId);
       getPlaylistDetails(libraryId, playlistId);
@@ -1199,7 +1204,7 @@ export const removeTracksFromPlaylist = ({ playlistId, playlistItemIds }) => {
     })
     .catch((error) => {
       console.error(error);
-      analyticsEvent('Plex / Error / Remove Tracks From Playlist');
+      analyticsEvent(toUpperFirst(currentService) + ' / Error / Remove Tracks From Playlist');
     });
 };
 
@@ -1209,19 +1214,32 @@ export const removeTracksFromPlaylist = ({ playlistId, playlistItemIds }) => {
 
 export const movePlaylistItem = ({ playlistId, playlistItemId, afterPlaylistItemId }) => {
   if (!isStoreReady()) return;
+  const currentService = store.getState().appModel.currentService;
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
   const { libraryId } = store.getState().sessionModel.currentLibrary;
-  return plexTools
-    .movePlaylistItem({ accessToken, serverBaseUrl, playlistId, playlistItemId, afterPlaylistItemId })
+  // Jellyfin's move endpoint needs a target index rather than an "after" id - pass through
+  // the currently known playlist order so jellyTools can compute it without an extra request
+  const orderedPlaylistItemIds = (store.getState().appModel.allPlaylistTracks[libraryId + '-' + playlistId] || []).map(
+    (track) => track.playlistItemID
+  );
+  return serviceTools[currentService]
+    .movePlaylistItem({
+      accessToken,
+      serverBaseUrl,
+      playlistId,
+      playlistItemId,
+      afterPlaylistItemId,
+      orderedPlaylistItemIds,
+    })
     .then(async () => {
-      analyticsEvent('Plex / Move Playlist Item');
+      analyticsEvent(toUpperFirst(currentService) + ' / Move Playlist Item');
       // refresh the playlist
       await getPlaylistTracks(libraryId, playlistId);
     })
     .catch((error) => {
       console.error(error);
-      analyticsEvent('Plex / Error / Move Playlist Item');
+      analyticsEvent(toUpperFirst(currentService) + ' / Error / Move Playlist Item');
     });
 };
 

@@ -1,3 +1,12 @@
+# 0.66.0 (2026-07-05)
+
+Features:
+
+- Jellyfin playlist management — create, edit, and delete playlists directly within Chromatix, matching the existing Plex functionality.
+- Added a note to playback settings explaining the current status of gapless playback support.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.65.0 (2026-07-01)
 
 Features:
