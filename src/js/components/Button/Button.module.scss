@@ -187,14 +187,6 @@
   }
 }
 
-.colorOutlineSecondary {
-  :global(html[data-logged-in='true']) & {
-    background-color: transparent;
-    border: 1px solid var(--color-button-on-primary-border);
-    color: var(--color-text);
-  }
-}
-
 .colorTertiary {
   background-color: vars.$color-button-secondary-bg;
   border: 1px solid vars.$color-button-secondary-border;
@@ -229,11 +221,28 @@
   }
 }
 
+.colorOutlineSecondary,
 .colorOutlineTertiary {
   :global(html[data-logged-in='true']) & {
     background-color: transparent;
-    border: 1px solid var(--color-button-on-secondary-border);
+    border: 1px solid var(--color-button-on-primary-border);
     color: var(--color-text);
+  }
+
+  &.loading {
+    background-image: url(../../../images/loading-black.gif);
+    background-image: url(../../../images/loading-black.png);
+
+    :global(html[data-text-theme='light']) & {
+      background-image: url(../../../images/loading-white.gif);
+      background-image: url(../../../images/loading-white.png);
+    }
+  }
+}
+
+.colorOutlineTertiary {
+  :global(html[data-logged-in='true']) & {
+    border: 1px solid var(--color-button-on-secondary-border);
   }
 }
 

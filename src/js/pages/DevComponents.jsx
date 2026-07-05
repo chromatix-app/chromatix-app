@@ -516,9 +516,6 @@ const Component = () => {
             <Button wrap={false} size="tiny" color="secondary" disabled>
               Disabled All
             </Button>
-            <Button wrap={false} size="tiny" color="outlineSecondary">
-              Secondary Outline
-            </Button>
           </div>
 
           <div className="devButtons">
@@ -534,8 +531,23 @@ const Component = () => {
             <Button wrap={false} size="tiny" color="tertiary" disabled>
               Disabled All
             </Button>
+          </div>
+
+          <div className="devButtons">
+            <Button wrap={false} size="tiny" color="outlineSecondary">
+              Secondary Outline
+            </Button>
+            <Button wrap={false} size="tiny" color="outlineSecondary" loading>
+              Secondary Loading
+            </Button>
+          </div>
+
+          <div className="devButtons">
             <Button wrap={false} size="tiny" color="outlineTertiary">
               Tertiary Outline
+            </Button>
+            <Button wrap={false} size="tiny" color="outlineTertiary" loading>
+              Tertiary Loading
             </Button>
           </div>
         </div>
