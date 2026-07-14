@@ -241,5 +241,6 @@ if (import.meta.env.VITE_ENV === 'local') {
   (window as any).__playerX = {
     getCurrentProgress,
     getActivePlayer: () => activePlayer,
+    getGaplessState: () => gaplessX.getDebugState(),
   };
 }

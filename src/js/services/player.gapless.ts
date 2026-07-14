@@ -363,3 +363,22 @@ export const setProgress = (progress: number): void => {
 export const getCurrentProgress = (): number => {
   return queue?.currentTrack?.currentTime || 0;
 };
+
+// ======================================================================
+// DEBUGGING
+// ======================================================================
+
+/**
+ * Snapshot of the engine's internals, for the local-env debug hook and for
+ * diagnosing gapless issue reports. playbackType 'WEBAUDIO' means the track
+ * has crossed over to the sample-accurate engine; 'HTML5' means it is still
+ * (or permanently, e.g. CORS-blocked decode) on the streaming element.
+ */
+export const getDebugState = () => ({
+  enabled,
+  supported: isSupported(),
+  playbackType: queue?.currentTrack?.playbackType || null,
+  webAudioLoadingState: queue?.currentTrack?.webAudioLoadingState || null,
+  engineIndex: expectedEngineIndex,
+  engineWindow: [...engineToQueueIndex],
+});
