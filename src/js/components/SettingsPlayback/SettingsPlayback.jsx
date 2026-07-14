@@ -2,9 +2,10 @@
 // IMPORTS
 // ======================================================================
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { SettingsList } from 'js/components';
+import * as playerX from 'js/services/player';
 
 // ======================================================================
 // COMPONENT
@@ -102,18 +103,38 @@ const ServerSettings = () => {
 //
 
 const GaplessSettings = () => {
-  return (
-    <SettingsList
-      title="Gapless Playback"
-      menuItems={[
-        {
-          type: 'label',
-          label:
-            'Gapless playback is not currently supported in this app. Chromatix is built using web technologies, where gapless playback is very challenging to successfully achieve. Existing solutions are complex and have a lot of trade-offs. We hope to be able to add this in the future, but cannot currently make any promises about if or when it will be available.',
-        },
-      ]}
-    />
-  );
+  const dispatch = useDispatch();
+
+  const gaplessPlayback = useSelector(({ sessionModel }) => sessionModel.gaplessPlayback);
+
+  const gaplessSupported = playerX.isGaplessSupported();
+
+  const menuItems = [
+    ...(gaplessSupported
+      ? [
+          {
+            key: 'gaplessPlayback',
+            label: 'Enable gapless playback (beta).',
+            description:
+              'Plays consecutive tracks with no gap between them, using sample-accurate transitions. ' +
+              'Applies to tracks your browser can play directly (e.g. FLAC, MP3, AAC, OGG); tracks that ' +
+              'need server transcoding still play through the standard player, with a normal gap. ' +
+              'Uses more memory while playing, as upcoming audio is decoded ahead of time.',
+            state: gaplessPlayback,
+            onChange: () => dispatch.playerModel.playerGaplessToggle(),
+          },
+        ]
+      : [
+          {
+            type: 'label',
+            label:
+              'Gapless playback is not available on this device. It requires the Web Audio API on a platform ' +
+              'where background audio is reliable, which excludes iOS browsers.',
+          },
+        ]),
+  ];
+
+  return <SettingsList title="Gapless Playback" menuItems={menuItems} />;
 };
 
 // ======================================================================

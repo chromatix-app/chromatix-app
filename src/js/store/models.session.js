@@ -58,6 +58,8 @@ const sessionState = {
   disableRepeatOnceOnSourceChange: true,
   revertRepeatOnceToRepeatAll: true,
 
+  gaplessPlayback: false,
+
   optionLogPlaybackToServer: true,
 
   optionShowFullTitles_Deprecated: false,
