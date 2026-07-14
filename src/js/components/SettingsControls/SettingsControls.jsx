@@ -74,6 +74,7 @@ const NowPlayingSettings = ({ platformOpts }) => {
 //
 
 const SecondarySettings = ({ platformOpts }) => {
+  const controlBarCastToggle = useSelector(({ sessionModel }) => sessionModel.controlBarCastToggle);
   const controlBarFullPageToggle = useSelector(({ sessionModel }) => sessionModel.controlBarFullPageToggle);
   const controlBarQueueToggle = useSelector(({ sessionModel }) => sessionModel.controlBarQueueToggle);
   const controlBarVolumeToggle = useSelector(({ sessionModel }) => sessionModel.controlBarVolumeToggle);
@@ -89,6 +90,11 @@ const SecondarySettings = ({ platformOpts }) => {
       key: 'controlBarQueueToggle',
       label: 'Queue toggle',
       state: controlBarQueueToggle,
+    },
+    {
+      key: 'controlBarCastToggle',
+      label: 'Cast button (when devices are found)',
+      state: controlBarCastToggle,
     },
     {
       key: 'controlBarVolumeToggle',

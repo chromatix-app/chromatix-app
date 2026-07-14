@@ -76,6 +76,8 @@ Connections to the Plex API can be found in `/src/js/services`.
 
 The audio player is at `/src/js/services/player.native.ts` but playback management is handled in the store, in the `models.player.js` file.
 
+Chromecast playback is handled by `/src/js/services/player.cast.ts` — see [docs/CHROMECAST.md](docs/CHROMECAST.md) for a full overview of how casting works.
+
 # 7. Husky + Git Commit Hooks
 
 This repo uses [Husky](https://typicode.github.io/husky/) to ensure that certain tasks are run before committing code.

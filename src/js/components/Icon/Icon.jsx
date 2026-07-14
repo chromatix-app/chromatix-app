@@ -28,6 +28,7 @@ import ArtistMoodsIcon from './icons/general-compressed/artist-moods.svg?react';
 import ArtistStylesIcon from './icons/general-compressed/artist-styles.svg?react';
 import ArtistTagsIcon from './icons/general-compressed/artist-tags.svg?react';
 import BlueskyIcon from './icons/general-compressed/bluesky.svg?react';
+import CastIcon from './icons/general-compressed/cast.svg?react';
 import CheckCircleCheckedIcon from './icons/general-compressed/check-circle-checked.svg?react';
 import CheckCircleEmptyIcon from './icons/general-compressed/check-circle-empty.svg?react';
 import CheckCircleFilledIcon from './icons/general-compressed/check-circle-filled.svg?react';
@@ -150,6 +151,7 @@ export const generalIcons = {
   ArtistStylesIcon,
   ArtistTagsIcon,
   BlueskyIcon,
+  CastIcon,
   CheckCircleCheckedIcon,
   CheckCircleEmptyIcon,
   CheckCircleFilledIcon,

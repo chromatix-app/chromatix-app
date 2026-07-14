@@ -51,9 +51,10 @@ src/
       plexTranspose.js   # Plex API response normalisation
       jellyTools.js      # Jellyfin API calls
       jellyTranspose.js  # Jellyfin API response normalisation
-      player.ts          # Player router — dispatches to native or DASH player
+      player.ts          # Player router — dispatches to native, DASH or cast player
       player.native.ts   # Native audio playback (HTMLAudioElement)
       player.dash.ts     # DASH playback via dash.js (Plex transcoded tracks)
+      player.cast.ts     # Chromecast playback via the Google Cast Web Sender SDK
     store/               # Rematch global state models
       store.ts           # Store initialisation
       models.app.js      # App state (init, login, errors)
@@ -108,7 +109,7 @@ dispatch.playerModel.playerPlay();
 
 All API calls go through `bridge.js`, which delegates to either `plexTools.js` or `jellyTools.js` based on the active service. Raw API responses are normalised into a consistent internal format by `plexTranspose.js` / `jellyTranspose.js` respectively.
 
-The audio player has three layers: `player.ts` is the router that selects the active backend; `player.native.ts` handles native `HTMLAudioElement` playback (MP3, FLAC, AAC, Ogg, and Jellyfin transcoded streams); `player.dash.ts` handles DASH playback via dash.js (used for Plex tracks whose codec requires transcoding, e.g. WMA, FLAC on unsupported browsers). Playback management logic (queue, skip, shuffle, repeat) lives in `models.player.js` in the store.
+The audio player has four layers: `player.ts` is the router that selects the active backend; `player.native.ts` handles native `HTMLAudioElement` playback (MP3, FLAC, AAC, Ogg, and Jellyfin transcoded streams); `player.dash.ts` handles DASH playback via dash.js (used for Plex tracks whose codec requires transcoding, e.g. WMA, FLAC on unsupported browsers); `player.cast.ts` handles playback on Google Cast devices via the Cast Web Sender SDK (all playback routes to it while a cast session is connected — see `docs/CHROMECAST.md`). Playback management logic (queue, skip, shuffle, repeat) lives in `models.player.js` in the store.
 
 The Plex API is entirely undocumented and reverse engineered. Plex API fields are explicitly excluded where not needed to reduce payload size.
 

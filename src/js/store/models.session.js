@@ -126,6 +126,7 @@ const sessionState = {
   controlBarIsFavourite: true,
   controlBarUserRating: true,
 
+  controlBarCastToggle: true,
   controlBarFullPageToggle: true,
   controlBarQueueToggle: true,
   controlBarVolumeToggle: true,
