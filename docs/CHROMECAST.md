@@ -86,7 +86,8 @@ While casting, the volume slider controls the **device's own volume** (like the 
 
 ## 5. Troubleshooting
 
-- **No cast button**: the button only renders when the Cast SDK reports devices on your network. Check you're in Chrome/Edge, the device is on the same network/VLAN as the computer, and mDNS isn't blocked between them.
+- **No cast button**: the button only renders when the Cast SDK reports devices on your network. Check you're in Chrome/Edge, the device is on the same network/VLAN as the computer, and mDNS isn't blocked between them. A quick way to isolate the cause: open Chrome's own **⋮ → Cast, save and share → Cast…** dialog — whatever it can see is exactly what Chromatix can see, so if it's empty the problem is between Chrome and your network, not the app.
+- **No cast button on macOS 15+**: macOS gates device discovery per-app — make sure **System Settings → Privacy & Security → Local Network** has Google Chrome enabled. (Other apps casting fine proves nothing: e.g. Spotify has its own permission and also discovers devices via the cloud.)
 - **Connects but errors on every track (Plex, secure connections)**: the device likely can't resolve your `*.plex.direct` URL. Cast devices use Google DNS (8.8.8.8) directly, which normally sidesteps router DNS-rebinding protection — but if your router intercepts outbound DNS (port 53), whitelist `plex.direct` in the router's resolver (e.g. dnsmasq: `rebind-domain-ok=/plex.direct/`).
 - **Connects but errors on every track (Jellyfin / insecure Plex)**: check the server base URL Chromatix is using is one the device can reach (a LAN IP, not `localhost` or a hostname only your computer knows). Self-signed HTTPS certificates are rejected by Cast devices — use plain `http://` on the LAN or a real certificate.
 - **Track plays but artwork/titles missing in Google Home**: harmless — some receivers only surface metadata on displays, not speakers.
