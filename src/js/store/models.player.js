@@ -3,7 +3,16 @@
 // ======================================================================
 
 import { PlaybackErrorMessage } from 'js/components';
-import { analyticsEvent, getDashSrc, getTrackKeys, requiresTranscoding, sortList } from 'js/utils';
+import {
+  analyticsEvent,
+  getCastSrc,
+  getDashSrc,
+  getJellyCastSrc,
+  getTrackKeys,
+  requiresCastTranscoding,
+  requiresTranscoding,
+  sortList,
+} from 'js/utils';
 import * as playerX from 'js/services/player';
 import * as bridge from 'js/services/bridge';
 
@@ -20,6 +29,10 @@ const playerState = {
   playerTrackLoaded: false,
   playerTrackError: false,
   playerInteractionCount: 0,
+
+  castAvailable: false,
+  castConnected: false,
+  castDeviceName: null,
 };
 
 const state = Object.assign({}, playerState);
@@ -78,6 +91,13 @@ const effects = (dispatch) => ({
       onCanPlay,
       onEnded,
       onError: dispatch.playerModel.playerError,
+      // casting events
+      onCastAvailability: (available) => dispatch.playerModel.setPlayerState({ castAvailable: available }),
+      onCastConnect: dispatch.playerModel.playerCastConnected,
+      onCastDisconnect: dispatch.playerModel.playerCastDisconnected,
+      onCastRemotePause: dispatch.playerModel.playerCastRemotePause,
+      onCastVolumeChange: dispatch.playerModel.playerCastVolumeChange,
+      onCastError: dispatch.playerModel.playerCastError,
     });
     dispatch.playerModel.setPlayerState({
       playerInited: true,
@@ -144,6 +164,9 @@ const effects = (dispatch) => ({
       playerPlaying: false,
       playerTrackLoaded: false,
     });
+    // Disconnect from any cast device — playerUnload only fires on logout,
+    // and a logged-out app should not keep control of the receiver.
+    playerX.endCastSession();
     playerX.unload();
   },
 
@@ -239,6 +262,141 @@ const effects = (dispatch) => ({
     if (rootState.playerModel.playerPlaying) {
       dispatch.playerModel.playerNext(true);
     }
+  },
+
+  //
+  // CASTING
+  //
+
+  playerCastToggle(payload, rootState) {
+    // console.log('%c--- playerCastToggle ---', 'color:#5c16b1');
+    // Opens the browser's cast dialog: a device picker when disconnected, or
+    // the "Stop casting" dialog when a session is active.
+    const currentService = rootState.appModel.currentService;
+    playerX.requestCastSession();
+    analyticsEvent(toUpperFirst(currentService) + ' / Music / Cast Dialog');
+  },
+
+  playerCastConnected(payload, rootState) {
+    console.log('%c--- playerCastConnected ---', 'color:#5c16b1');
+    const { deviceName, deviceVolume, wasResumed, remoteIsPaused, remoteMediaLoaded } = payload;
+    const currentService = rootState.appModel.currentService;
+
+    // Capture the local playback state BEFORE routing switches to the cast
+    // device, so playback can continue seamlessly on the receiver.
+    const wasPlaying = rootState.playerModel.playerPlaying;
+    const playerTrackLoaded = rootState.playerModel.playerTrackLoaded;
+    const localProgress = playerX.getCurrentProgress() * 1000;
+    const progress = localProgress > 0 ? localProgress : rootState.sessionModel.playingTrackProgress || 0;
+
+    // Silence the local players and route all commands to the cast device.
+    playerX.syncCastRouting();
+
+    dispatch.playerModel.setPlayerState({
+      castAvailable: true,
+      castConnected: true,
+      castDeviceName: deviceName,
+    });
+
+    // Adopt the receiver's current volume so connecting doesn't blast the
+    // speakers with the app's local volume level.
+    if (deviceVolume !== null && deviceVolume !== undefined) {
+      dispatch.sessionModel.setSessionState({
+        volumeLevel: deviceVolume,
+        volumeMuted: false,
+      });
+    }
+
+    if (wasResumed && remoteMediaLoaded) {
+      // Rejoined a session that is already playing (e.g. after a page reload
+      // while casting) — adopt the receiver's state rather than interrupting.
+      dispatch.playerModel.setPlayerState({
+        playerPlaying: !remoteIsPaused,
+        playerTrackLoaded: true,
+        playerTrackError: false,
+      });
+    } else if (playerTrackLoaded) {
+      // Hand the current track off to the cast device from the same position.
+      const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+      if (playingTrackIndex || playingTrackIndex === 0) {
+        dispatch.playerModel.playerLoadIndex({ index: playingTrackIndex, play: wasPlaying, progress });
+      }
+    }
+
+    analyticsEvent(toUpperFirst(currentService) + ' / Music / Cast Connected');
+  },
+
+  playerCastDisconnected(payload, rootState) {
+    console.log('%c--- playerCastDisconnected ---', 'color:#5c16b1');
+    const { progress } = payload;
+    const currentService = rootState.appModel.currentService;
+
+    dispatch.playerModel.setPlayerState({
+      castConnected: false,
+      castDeviceName: null,
+    });
+
+    // Route commands back to the local players.
+    playerX.syncCastRouting();
+
+    // Reload the current track locally from where the receiver left off, but
+    // paused — resuming audio on this device unprompted would be a surprise.
+    const playerTrackLoaded = rootState.playerModel.playerTrackLoaded;
+    const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+    if (playerTrackLoaded && (playingTrackIndex || playingTrackIndex === 0)) {
+      dispatch.playerModel.playerLoadIndex({ index: playingTrackIndex, play: false, progress });
+      dispatch.sessionModel.setPlayingTrackProgress(progress);
+    }
+
+    // Re-align the local players' volume with the app volume, which may have
+    // been changed while it was controlling the cast device.
+    dispatch.playerModel.volumeRefresh();
+
+    analyticsEvent(toUpperFirst(currentService) + ' / Music / Cast Disconnected');
+  },
+
+  playerCastRemotePause(payload, rootState) {
+    // Playback was paused/resumed remotely (receiver, Google Home app or
+    // another sender) — mirror it in the app state. Pauses initiated by this
+    // app arrive here too, but find the state already in sync and no-op.
+    if (!rootState.playerModel.castConnected) {
+      return;
+    }
+    const isPaused = payload;
+    const playerPlaying = rootState.playerModel.playerPlaying;
+    if (isPaused && playerPlaying) {
+      dispatch.playerModel.setPlayerState({ playerPlaying: false });
+    } else if (!isPaused && !playerPlaying && rootState.playerModel.playerTrackLoaded) {
+      dispatch.playerModel.setPlayerState({ playerPlaying: true });
+    }
+  },
+
+  playerCastVolumeChange(payload, rootState) {
+    // Receiver volume changed (device buttons, Google Home app or another
+    // sender) — mirror it in the app's volume slider. Changes initiated by
+    // this app arrive here too, but find the state already in sync and no-op.
+    if (!rootState.playerModel.castConnected) {
+      return;
+    }
+    const volumeLevel = rootState.sessionModel.volumeLevel;
+    const volumeMuted = rootState.sessionModel.volumeMuted;
+    const currentVolume = volumeMuted ? 0 : volumeLevel;
+    if (payload !== currentVolume) {
+      dispatch.sessionModel.setSessionState({
+        volumeLevel: payload,
+        volumeMuted: payload === 0,
+      });
+    }
+  },
+
+  playerCastError(payload, rootState) {
+    console.error('%c--- playerCastError ---', 'color:#f00', payload);
+    // Mirror the local playback error flow: mark the track as errored, notify
+    // the user, and try the next track.
+    dispatch.playerModel.setPlayerState({
+      playerTrackError: true,
+    });
+    dispatch.playerModel.playerErrorPlayback(true);
   },
 
   playerLogQuit(payload, rootState) {
@@ -504,7 +662,7 @@ const effects = (dispatch) => ({
     const userToken = rootState.appModel.userToken;
     const sessionId = rootState.sessionModel.sessionId;
     const currentTrack = payload.playingTrackList[payload.playingTrackKeys[payload.playingTrackIndex]];
-    playerX.loadTrack(withDashSrc(currentTrack, currentService, serverBaseUrl, userToken, sessionId));
+    playerX.loadTrack(withStreamSrcs(currentTrack, currentService, serverBaseUrl, userToken, sessionId));
 
     // // Set next track for preloading
     // // [NOTE] Not currently used, but may be in future
@@ -542,8 +700,8 @@ const effects = (dispatch) => ({
         const serverBaseUrl = rootState.appModel.serverBaseUrl;
         const userToken = rootState.appModel.userToken;
         const sessionId = rootState.sessionModel.sessionId;
-        const trackWithDash = withDashSrc(currentTrack, currentService, serverBaseUrl, userToken, sessionId);
-        const trackLoaded = playerX.loadTrack(trackWithDash, progress, play);
+        const trackWithSrcs = withStreamSrcs(currentTrack, currentService, serverBaseUrl, userToken, sessionId);
+        const trackLoaded = playerX.loadTrack(trackWithSrcs, progress, play);
         dispatch.playerModel.setPlayerState({
           playerPlaying: trackLoaded ? play : false,
           playerTrackLoaded: true,
@@ -897,6 +1055,19 @@ const toUpperFirst = (string) => {
   return string?.charAt(0).toUpperCase() + string?.slice(1);
 };
 
+// Adds freshly computed streaming URLs (dashSrc for in-browser transcoding,
+// castSrc for Chromecast transcoding) to a track before it is handed to the
+// player router.
+const withStreamSrcs = (track, currentService, serverBaseUrl, accessToken, sessionId) => {
+  return withCastSrc(
+    withDashSrc(track, currentService, serverBaseUrl, accessToken, sessionId),
+    currentService,
+    serverBaseUrl,
+    accessToken,
+    sessionId
+  );
+};
+
 // Adds a freshly computed dashSrc to a track if the current service is Plex
 // and the necessary connection details are available.
 const withDashSrc = (track, currentService, serverBaseUrl, accessToken, sessionId) => {
@@ -904,6 +1075,22 @@ const withDashSrc = (track, currentService, serverBaseUrl, accessToken, sessionI
     return track;
   }
   return { ...track, dashSrc: getDashSrc(track.trackKey, serverBaseUrl, accessToken, sessionId) };
+};
+
+// Adds a castSrc (a server-side transcode URL a Chromecast can play) to a
+// track whose codec the receiver cannot direct play. Chromecast-compatible
+// codecs cast the original file URL (track.src) instead and need no castSrc.
+const withCastSrc = (track, currentService, serverBaseUrl, accessToken, sessionId) => {
+  if (!track || !requiresCastTranscoding(track.codec)) {
+    return track;
+  }
+  if (currentService === 'plex' && track.trackKey && serverBaseUrl && accessToken && sessionId) {
+    return { ...track, castSrc: getCastSrc(track.trackKey, serverBaseUrl, accessToken, sessionId) };
+  }
+  if (currentService === 'jellyfin' && track.trackId && serverBaseUrl && accessToken) {
+    return { ...track, castSrc: getJellyCastSrc(track.trackId, serverBaseUrl, accessToken) };
+  }
+  return track;
 };
 
 // Redacts sensitive query params from a URL string before logging.

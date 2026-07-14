@@ -214,6 +214,10 @@ export const SecondaryControls = ({ fullPageMode }) => {
 
   const isOnline = useSelector(({ appModel }) => appModel.isOnline);
 
+  const castAvailable = useSelector(({ playerModel }) => playerModel.castAvailable);
+  const castConnected = useSelector(({ playerModel }) => playerModel.castConnected);
+  const castDeviceName = useSelector(({ playerModel }) => playerModel.castDeviceName);
+
   const volumeLevel = useSelector(({ sessionModel }) => sessionModel.volumeLevel);
   const volumeMuted = useSelector(({ sessionModel }) => sessionModel.volumeMuted);
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
@@ -222,6 +226,7 @@ export const SecondaryControls = ({ fullPageMode }) => {
   const playingTrackIndex = useSelector(({ sessionModel }) => sessionModel.playingTrackIndex);
   const playingTrackKeys = useSelector(({ sessionModel }) => sessionModel.playingTrackKeys);
 
+  const controlBarCastToggle = useSelector(({ sessionModel }) => sessionModel.controlBarCastToggle);
   const controlBarFullPageToggle = useSelector(({ sessionModel }) => sessionModel.controlBarFullPageToggle);
   const controlBarQueueToggle = useSelector(({ sessionModel }) => sessionModel.controlBarQueueToggle);
   const controlBarVolumeToggle = useSelector(({ sessionModel }) => sessionModel.controlBarVolumeToggle);
@@ -263,6 +268,17 @@ export const SecondaryControls = ({ fullPageMode }) => {
             disabled={queueDisabled}
           >
             <Icon icon="QueueIcon" cover stroke />
+          </button>
+        )}
+
+        {castAvailable && controlBarCastToggle && (
+          <button
+            type="button"
+            className={clsx(style.cast, { [style.active]: castConnected })}
+            onClick={dispatch.playerModel.playerCastToggle}
+            title={castConnected ? `Casting to ${castDeviceName || 'device'}` : 'Cast to a device'}
+          >
+            <Icon icon="CastIcon" cover stroke />
           </button>
         )}
 

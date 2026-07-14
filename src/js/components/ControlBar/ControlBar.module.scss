@@ -165,6 +165,7 @@
   }
 }
 
+button.cast,
 button.expand,
 button.forward,
 button.pause,
@@ -253,6 +254,16 @@ button.expand {
 }
 
 button.queue {
+  padding: 11px;
+
+  div:not(:last-child) > & {
+    &:last-child {
+      margin-right: 8px;
+    }
+  }
+}
+
+button.cast {
   padding: 11px;
 
   div:not(:last-child) > & {
