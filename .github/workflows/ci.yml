@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [develop, staging, production]
+  pull_request:
+
+jobs:
+  checks:
+    name: Checks (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # Oldest supported (engines >= 20), current LTS, and latest — the test
+        # environment is Node-version sensitive (see vitest.setup.ts).
+        node-version: [20.x, 22.x, 24.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Knip (unused code)
+        run: npm run knip
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Prettier
+        run: npm run prettier
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test:all
+
+      - name: Build
+        run: npm run build
