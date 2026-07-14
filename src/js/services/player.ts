@@ -232,6 +232,16 @@ export const isCastConnected = (): boolean => {
   return castX.isConnected();
 };
 
+/** True when a connected cast receiver already has media loaded. */
+export const isCastMediaLoaded = (): boolean => {
+  return castX.isMediaLoaded();
+};
+
+/** The cast receiver's current volume (0-100), or null when not casting. */
+export const getCastVolume = (): number | null => {
+  return castX.getVolume();
+};
+
 // ======================================================================
 // PRELOADING STUBS
 // [NOTE] Not currently used, but may be in future

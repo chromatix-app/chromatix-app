@@ -268,13 +268,19 @@ export const loadTrack = (track: PlayerTrack, progress: number = 0, play: boolea
 
   loadCounter += 1;
   const thisLoad = loadCounter;
-  intendedIdle = false;
+  // Treat the receiver as intentionally idle until this load is confirmed —
+  // a stale IDLE/FINISHED status from the track this load supersedes can
+  // still arrive and must not double-advance the queue. A genuine FINISHED
+  // for the new media cannot arrive before its loadMedia() resolves, so
+  // end-of-track detection is re-armed there.
+  intendedIdle = true;
   lastKnownProgress = progress / 1000;
 
   callbacks?.onLoadStart();
   session.loadMedia(request).then(
     () => {
       if (thisLoad !== loadCounter) return; // superseded by a newer load
+      intendedIdle = false;
       callbacks?.onCanPlay();
     },
     (error: unknown) => {
@@ -373,3 +379,16 @@ export const endCastSession = (): void => {
 // ======================================================================
 
 export const isConnected = (): boolean => connected;
+
+/** True when the connected receiver already has media loaded. */
+export const isMediaLoaded = (): boolean => {
+  return !!(connected && remotePlayer && remotePlayer.isMediaLoaded);
+};
+
+/** The receiver's current volume (0-100), or null when not connected. */
+export const getVolume = (): number | null => {
+  if (connected && remotePlayer && remotePlayer.volumeLevel != null) {
+    return Math.round(remotePlayer.volumeLevel * 100);
+  }
+  return null;
+};

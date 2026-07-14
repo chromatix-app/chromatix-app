@@ -148,6 +148,7 @@ declare namespace cast.framework {
 
   class RemotePlayer {
     isConnected: boolean;
+    isMediaLoaded: boolean;
     isPaused: boolean;
     isMuted: boolean;
     currentTime: number;

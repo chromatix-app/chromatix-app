@@ -65,7 +65,7 @@ Auth tokens ride along as query parameters on both stream and artwork URLs, beca
 - **Connecting**: the local player's position and play state are captured, local players are silenced, and the current track is loaded onto the device at the same position.
 - **Disconnecting**: the device's last position is captured (via the SDK's `savedPlayerState`), and the track is reloaded in the browser at that position — **paused**, so your laptop doesn't unexpectedly start blasting audio.
 - **Page reload while casting**: the session is rejoined automatically (`ORIGIN_SCOPED` auto-join). If the device is mid-track, Chromatix adopts the remote state instead of interrupting playback.
-- **Logout**: the cast session is ended and the device stops.
+- **Logout, switching server, or an invalid library**: whenever playback is torn down entirely, the cast session is ended and the device stops — the app can no longer control what the receiver would keep playing.
 
 ### 3.4. Volume
 

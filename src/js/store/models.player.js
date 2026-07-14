@@ -120,6 +120,12 @@ const effects = (dispatch) => ({
   },
 
   playerRefreshTrack(payload, rootState) {
+    // If a rejoined cast session is already playing media, the receiver is the
+    // source of truth — don't clobber it with a boot-time reload. The session
+    // resume handler (playerCastConnected) adopts the remote state instead.
+    if (rootState.playerModel.castConnected && playerX.isCastMediaLoaded()) {
+      return;
+    }
     // For Plex DASH tracks, serverBaseUrl and userToken are needed to build the
     // manifest URL and load asynchronously after login, so retry until both are
     // available. Native-codec Plex tracks and all Jellyfin tracks embed their
@@ -164,8 +170,9 @@ const effects = (dispatch) => ({
       playerPlaying: false,
       playerTrackLoaded: false,
     });
-    // Disconnect from any cast device — playerUnload only fires on logout,
-    // and a logged-out app should not keep control of the receiver.
+    // Disconnect from any cast device — playerUnload fires when playback is
+    // torn down entirely (logout, server switch, invalid library), and in all
+    // of those cases the app can no longer control what the receiver plays.
     playerX.endCastSession();
     playerX.unload();
   },
@@ -364,9 +371,13 @@ const effects = (dispatch) => ({
     }
     const isPaused = payload;
     const playerPlaying = rootState.playerModel.playerPlaying;
+    // A queue must still exist before mirroring a remote resume — flows like
+    // switching users pause the receiver and wipe the queue without unloading
+    // the player, and playerPlaying without a queue crashes playerProgress.
+    const hasQueue = !!(rootState.sessionModel.playingTrackList && rootState.sessionModel.playingTrackKeys);
     if (isPaused && playerPlaying) {
       dispatch.playerModel.setPlayerState({ playerPlaying: false });
-    } else if (!isPaused && !playerPlaying && rootState.playerModel.playerTrackLoaded) {
+    } else if (!isPaused && !playerPlaying && rootState.playerModel.playerTrackLoaded && hasQueue) {
       dispatch.playerModel.setPlayerState({ playerPlaying: true });
     }
   },
@@ -980,6 +991,18 @@ const effects = (dispatch) => ({
 
   volumeRefresh(payload, rootState) {
     // console.log('%c--- volumeRefresh ---', 'color:#5c16b1');
+    // While casting, the receiver's own volume is authoritative — adopt it
+    // instead of pushing the persisted app volume to the device, which could
+    // blast the speakers after a page reload rejoins a session.
+    const castVolume = playerX.getCastVolume();
+    if (castVolume !== null) {
+      dispatch.sessionModel.setSessionState({
+        volumeLevel: castVolume,
+        volumeMuted: false,
+      });
+      playerX.setVolume(castVolume);
+      return;
+    }
     const volumeLevel = rootState.sessionModel.volumeLevel;
     const volumeMuted = rootState.sessionModel.volumeMuted;
     const actualVolume = volumeMuted ? 0 : volumeLevel;
