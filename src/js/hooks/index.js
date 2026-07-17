@@ -1,3 +1,4 @@
+export { default as useAirPlay } from './useAirPlay';
 export { default as useColorTheme } from './useColorTheme';
 export { default as useElectronStatus } from './useElectronStatus';
 export { default as useGetAlbumDetail } from './useGetAlbumDetail';

@@ -16,6 +16,9 @@ let isResetting = false;
 // Guards unload() from doing unnecessary work when the player is already idle.
 let needsReinit = true;
 
+const airPlayCallbacks = new Set<(available: boolean) => void>();
+let airPlayAvailable = false;
+
 // ======================================================================
 // INITIALISE
 // ======================================================================
@@ -33,6 +36,11 @@ export const init = ({
     playerElement = document.createElement('audio');
     playerElement.pause();
     playerElement.volume = volumeMuted ? 0 : volumeLevel / 100;
+    playerElement.setAttribute('x-webkit-airplay', 'allow');
+    playerElement.addEventListener('webkitplaybacktargetavailabilitychanged', (event: Event) => {
+      airPlayAvailable = (event as any).availability === 'available';
+      airPlayCallbacks.forEach((cb) => cb(airPlayAvailable));
+    });
     playerElement.addEventListener('loadstart', () => {
       // New source is loading — clear the flag so subsequent errors are real.
       isResetting = false;
@@ -157,3 +165,20 @@ export const getCurrentProgress = (): number => {
 // export const clearNextTrack = (): void => {
 //   return;
 // };
+
+// ======================================================================
+// AIRPLAY
+// ======================================================================
+
+export const showAirPlayPicker = (): void => {
+  (playerElement as any)?.webkitShowPlaybackTargetPicker?.();
+};
+
+export const subscribeAirPlayAvailability = (cb: (available: boolean) => void): void => {
+  airPlayCallbacks.add(cb);
+  cb(airPlayAvailable); // replay current state immediately
+};
+
+export const unsubscribeAirPlayAvailability = (cb: (available: boolean) => void): void => {
+  airPlayCallbacks.delete(cb);
+};

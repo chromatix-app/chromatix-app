@@ -76,6 +76,7 @@ const NowPlayingSettings = ({ platformOpts }) => {
 const SecondarySettings = ({ platformOpts }) => {
   const controlBarFullPageToggle = useSelector(({ sessionModel }) => sessionModel.controlBarFullPageToggle);
   const controlBarQueueToggle = useSelector(({ sessionModel }) => sessionModel.controlBarQueueToggle);
+  const controlBarAirPlayToggle = useSelector(({ sessionModel }) => sessionModel.controlBarAirPlayToggle);
   const controlBarVolumeToggle = useSelector(({ sessionModel }) => sessionModel.controlBarVolumeToggle);
   const controlBarVolumeSlider = useSelector(({ sessionModel }) => sessionModel.controlBarVolumeSlider);
 
@@ -89,6 +90,11 @@ const SecondarySettings = ({ platformOpts }) => {
       key: 'controlBarQueueToggle',
       label: 'Queue toggle',
       state: controlBarQueueToggle,
+    },
+    {
+      key: 'controlBarAirPlayToggle',
+      label: 'AirPlay toggle',
+      state: controlBarAirPlayToggle,
     },
     {
       key: 'controlBarVolumeToggle',

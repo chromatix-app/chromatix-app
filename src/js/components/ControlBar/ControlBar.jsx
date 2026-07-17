@@ -8,7 +8,7 @@ import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 
 import { Favourite, Icon, PopoverMenu, RangeSlider, StarRating } from 'js/components';
-import { useKeyPlaybackControls, useKeyMediaControls, useMediaMeta, usePlayerProgress } from 'js/hooks';
+import { useAirPlay, useKeyPlaybackControls, useKeyMediaControls, useMediaMeta, usePlayerProgress } from 'js/hooks';
 import { analyticsEvent, durationToStringShort } from 'js/utils';
 import platformFeatures from 'js/_config/platformFeatures';
 
@@ -224,6 +224,7 @@ export const SecondaryControls = ({ fullPageMode }) => {
 
   const controlBarFullPageToggle = useSelector(({ sessionModel }) => sessionModel.controlBarFullPageToggle);
   const controlBarQueueToggle = useSelector(({ sessionModel }) => sessionModel.controlBarQueueToggle);
+  const controlBarAirPlayToggle = useSelector(({ sessionModel }) => sessionModel.controlBarAirPlayToggle);
   const controlBarVolumeToggle = useSelector(({ sessionModel }) => sessionModel.controlBarVolumeToggle);
   const controlBarVolumeSlider = useSelector(({ sessionModel }) => sessionModel.controlBarVolumeSlider);
 
@@ -232,6 +233,8 @@ export const SecondaryControls = ({ fullPageMode }) => {
   const queueDisabled = !trackCurrent && !queueIsVisible ? true : false;
 
   const volIcon = volumeMuted || volumeLevel <= 0 ? 'VolXIcon' : volumeLevel < 50 ? 'VolLowIcon' : 'VolHighIcon';
+
+  const { isAvailable: airPlayAvailable, showPicker: showAirPlay } = useAirPlay();
 
   return (
     <div className={clsx(style.secondaryControls, { [style.fullPageMode]: fullPageMode })}>
@@ -263,6 +266,12 @@ export const SecondaryControls = ({ fullPageMode }) => {
             disabled={queueDisabled}
           >
             <Icon icon="QueueIcon" cover stroke />
+          </button>
+        )}
+
+        {airPlayAvailable && controlBarAirPlayToggle && (
+          <button type="button" className={style.airplay} onClick={showAirPlay} title="AirPlay">
+            <Icon icon="AirPlayIcon" cover stroke />
           </button>
         )}
 

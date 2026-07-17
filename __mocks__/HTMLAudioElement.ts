@@ -41,6 +41,10 @@ export class MockHTMLAudioElement {
     return Promise.resolve();
   }
 
+  setAttribute(_name: string, _value: string) {
+    // no-op — attribute setting not needed in tests
+  }
+
   pause() {
     this.paused = true;
   }

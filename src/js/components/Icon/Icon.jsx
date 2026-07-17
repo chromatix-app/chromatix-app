@@ -8,6 +8,7 @@ import style from './Icon.module.scss';
 
 // General Icons
 import AccessibilityIcon from './icons/general-compressed/accessibility.svg?react';
+import AirPlayIcon from './icons/general-original/airplay.svg?react'; // [NOTE] use original — no compressed version yet
 import AlbumCollectionsIcon from './icons/general-compressed/album-collections.svg?react';
 import AlbumGenresIcon from './icons/general-compressed/album-genres.svg?react';
 import AlbumMoodsIcon from './icons/general-compressed/album-moods.svg?react';
@@ -130,6 +131,7 @@ import WindowsSiteIcon from './icons/site-compressed/windows.svg?react';
 // react-doctor-disable-next-line react-doctor/only-export-components
 export const generalIcons = {
   AccessibilityIcon,
+  AirPlayIcon,
   AlbumCollectionsIcon,
   AlbumGenresIcon,
   AlbumMoodsIcon,

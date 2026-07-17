@@ -128,6 +128,7 @@ const sessionState = {
 
   controlBarFullPageToggle: true,
   controlBarQueueToggle: true,
+  controlBarAirPlayToggle: true,
   controlBarVolumeToggle: true,
   controlBarVolumeSlider: true,
 
