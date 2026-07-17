@@ -1694,6 +1694,19 @@ export const logPlaybackStop = (currentTrack) => {
   logPlaybackStatus(currentTrack, 'stopped', duration);
 };
 
+// ======================================================================
+// GET LYRICS
+// ======================================================================
+
+export const getLyrics = ({ trackId }) => {
+  const currentServer = store.getState().sessionModel.currentServer;
+  const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  if (!currentServer || !serverBaseUrl) return Promise.resolve(null);
+  const accessToken = currentServer.accessToken;
+  const currentService = store.getState().appModel.currentService;
+  return serviceTools[currentService].getLyrics({ accessToken, serverBaseUrl, trackId });
+};
+
 export const logPlaybackStatus = (currentTrack, state, currentTime) => {
   const optionLogPlaybackToServer = store.getState().sessionModel.optionLogPlaybackToServer;
   if (optionLogPlaybackToServer) {

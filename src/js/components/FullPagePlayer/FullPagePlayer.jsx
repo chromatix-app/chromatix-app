@@ -8,9 +8,9 @@ import clsx from 'clsx';
 
 import platformFeatures from 'js/_config/platformFeatures';
 import { ControlProgress, PrimaryControls, SecondaryControls } from 'js/components/ControlBar/ControlBar';
-import { Favourite, StarRating } from 'js/components';
-import { useKeyControl } from 'js/hooks';
-import { analyticsEvent } from 'js/utils';
+import { Favourite, Icon, StarRating } from 'js/components';
+import LyricsPanel from 'js/components/LyricsPanel/LyricsPanel';
+import { useKeyControl, useLyrics } from 'js/hooks';
 
 import style from './FullPagePlayer.module.scss';
 
@@ -73,10 +73,15 @@ const NowPlaying = () => {
 
   const thumbSrc = trackCurrent?.thumbMd || trackCurrent?.thumbSm;
 
+  const { timed, lines } = useLyrics();
+  const lyricsVisible = useSelector(({ sessionModel }) => sessionModel.lyricsVisible);
+  const hasLyrics = platformOpts.enableLyrics && lines.length > 0;
+  const showLyrics = hasLyrics && lyricsVisible;
+
   // console.log(trackCurrent);
 
   return (
-    <div className={style.nowPlaying}>
+    <div className={clsx(style.nowPlaying, { [style.nowPlayingLyrics]: showLyrics })}>
       <div className={clsx(style.cover, { [style.coverPlaceholder]: !trackCurrent || !thumbSrc })}>
         {trackCurrent && (
           <>
@@ -100,7 +105,7 @@ const NowPlaying = () => {
           </>
         )}
       </div>
-      <div className={style.details}>
+      <div className={clsx(style.details, { [style.detailsLyrics]: showLyrics })}>
         {trackCurrent && (
           <>
             {trackCurrent.title && <div className={clsx(style.title, 'text-trim')}>{trackCurrent.title}</div>}
@@ -157,6 +162,8 @@ const NowPlaying = () => {
                 {fullPageBitrate && trackCurrent.bitrate && `${trackCurrent.bitrate}kbps`}
               </div>
             )}
+
+            {showLyrics && <LyricsPanel lines={lines} timed={timed} className={style.lyricsScroll} />}
           </>
         )}
       </div>

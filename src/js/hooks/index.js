@@ -16,6 +16,7 @@ export { default as useGotRequiredData } from './useGotRequiredData';
 export { default as useKeyControl } from './useKeyControl';
 export { default as useKeyMediaControls } from './useKeyMediaControls';
 export { default as useKeyPlaybackControls } from './useKeyPlaybackControls';
+export { default as useLyrics } from './useLyrics';
 export { default as useMediaMeta } from './useMediaMeta';
 export { default as useNavigationHistory } from './useNavigationHistory';
 export { default as useNearTop } from './useNearTop';

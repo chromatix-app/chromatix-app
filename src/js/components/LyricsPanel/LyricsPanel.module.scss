@@ -1,0 +1,44 @@
+// Shared styles for the LyricsPanel component.
+// Callers override .scroll via the `className` prop for size/spacing.
+
+.scroll {
+  flex: 1 1 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  padding-right: 6px;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-opacity-02);
+    border-radius: 2px;
+  }
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-opacity-02) transparent;
+}
+
+.line {
+  padding: var(--lyrics-padding, 3px 0);
+  font-size: var(--lyrics-font-size, 13px);
+  line-height: var(--lyrics-line-height, 1.55);
+  color: var(--color-opacity-03);
+  transition: color 0.25s;
+}
+
+.active {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.timed {
+  cursor: pointer;
+  &:hover {
+    color: var(--color-text);
+  }
+}

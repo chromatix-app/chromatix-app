@@ -51,6 +51,10 @@
   width: 100%;
 }
 
+.nowPlayingLyrics {
+  align-items: stretch;
+}
+
 .cover {
   overflow: hidden;
   flex: 0 0 auto;
@@ -305,6 +309,33 @@
   }
   @media (min-width: 1580px) and (min-height: 900px) {
     font-size: 13px;
+  }
+}
+
+//
+// LYRICS
+//
+
+.detailsLyrics {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0 !important;
+}
+
+.lyricsScroll {
+  flex: 1 1 0;
+  min-height: 0;
+  margin-top: 16px;
+  // scrollbar + fade handled by the shared LyricsPanel.module.scss
+
+  // Scale up font at larger breakpoints
+  --lyrics-font-size: 13px;
+
+  @media (min-width: 1024px) and (min-height: 640px) {
+    --lyrics-font-size: 14px;
+  }
+  @media (min-width: 1360px) and (min-height: 820px) {
+    --lyrics-font-size: 15px;
   }
 }
 

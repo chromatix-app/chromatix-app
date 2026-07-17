@@ -60,6 +60,7 @@ import GridIcon from './icons/general-compressed/grid-small.svg?react';
 import HeartIcon from './icons/general-compressed/heart.svg?react';
 import InfoIcon from './icons/general-compressed/info.svg?react';
 import KeyboardIcon from './icons/general-original/keyboard.svg?react'; // [NOTE] use original due to small details
+import LyricsIcon from './icons/general-original/lyrics.svg?react'; // [NOTE] use original — no compressed version yet
 import LastFMIcon from './icons/general-compressed/lastfm.svg?react';
 import ListIcon from './icons/general-compressed/list-small.svg?react';
 import LockIcon from './icons/general-compressed/lock.svg?react';
@@ -183,6 +184,7 @@ export const generalIcons = {
   InfoIcon,
   KeyboardIcon,
   LastFMIcon,
+  LyricsIcon,
   ListIcon,
   LockIcon,
   LogoutIcon,
