@@ -128,12 +128,14 @@ const sessionState = {
 
   controlBarFullPageToggle: true,
   controlBarQueueToggle: true,
+  controlBarLyricsToggle: true,
   controlBarVolumeToggle: true,
   controlBarVolumeSlider: true,
 
   // QUEUE OPTIONS
 
   queueIsVisible: false,
+  lyricsVisible: false,
   queueExpandArtwork: true,
 
   queueArtist: true,
@@ -431,11 +433,22 @@ const reducers = {
   },
 
   queueVisibleToggle(rootState, payload) {
-    // console.log('%c--- queueVisibleToggle ---', 'color:#439c08');
     analyticsEvent('Queue / ' + (rootState.queueIsVisible ? 'Hide' : 'Show'));
     return {
       ...rootState,
       queueIsVisible: !rootState.queueIsVisible,
+      // close lyrics when queue opens
+      ...(rootState.queueIsVisible ? {} : { lyricsVisible: false }),
+    };
+  },
+
+  lyricsVisibleToggle(rootState, payload) {
+    analyticsEvent('Lyrics / ' + (rootState.lyricsVisible ? 'Hide' : 'Show'));
+    return {
+      ...rootState,
+      lyricsVisible: !rootState.lyricsVisible,
+      // close queue when lyrics opens
+      ...(rootState.lyricsVisible ? {} : { queueIsVisible: false }),
     };
   },
 

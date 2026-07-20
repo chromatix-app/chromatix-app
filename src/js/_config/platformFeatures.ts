@@ -28,6 +28,7 @@ export const platformFeatures = {
 
     // features
     playlistManagement: true,
+    enableLyrics: false,
   },
 
   plex: {
@@ -59,6 +60,7 @@ export const platformFeatures = {
 
     // features
     playlistManagement: true,
+    enableLyrics: true,
   },
 };
 

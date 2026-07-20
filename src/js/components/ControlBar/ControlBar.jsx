@@ -224,8 +224,14 @@ export const SecondaryControls = ({ fullPageMode }) => {
 
   const controlBarFullPageToggle = useSelector(({ sessionModel }) => sessionModel.controlBarFullPageToggle);
   const controlBarQueueToggle = useSelector(({ sessionModel }) => sessionModel.controlBarQueueToggle);
+  const controlBarLyricsToggle = useSelector(({ sessionModel }) => sessionModel.controlBarLyricsToggle);
   const controlBarVolumeToggle = useSelector(({ sessionModel }) => sessionModel.controlBarVolumeToggle);
   const controlBarVolumeSlider = useSelector(({ sessionModel }) => sessionModel.controlBarVolumeSlider);
+
+  const lyricsVisible = useSelector(({ sessionModel }) => sessionModel.lyricsVisible);
+
+  const currentService = useSelector(({ appModel }) => appModel.currentService);
+  const platformOpts = platformFeatures[currentService] || {};
 
   const trackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
   const expandDisabled = !trackCurrent ? true : false;
@@ -243,6 +249,17 @@ export const SecondaryControls = ({ fullPageMode }) => {
         )}
 
         {fullPageMode && <FullPageMenu />}
+
+        {fullPageMode && platformOpts.enableLyrics && (
+          <button
+            type="button"
+            className={clsx(style.lyrics, { [style.active]: lyricsVisible })}
+            onClick={dispatch.sessionModel.lyricsVisibleToggle}
+            title="Lyrics"
+          >
+            <Icon icon="LyricsIcon" cover stroke />
+          </button>
+        )}
 
         {!fullPageMode && controlBarFullPageToggle && (
           <button
@@ -265,6 +282,19 @@ export const SecondaryControls = ({ fullPageMode }) => {
             <Icon icon="QueueIcon" cover stroke />
           </button>
         )}
+
+        {!fullPageMode && platformOpts.enableLyrics && controlBarLyricsToggle && (
+          <button
+            type="button"
+            className={clsx(style.lyrics, { [style.active]: lyricsVisible })}
+            onClick={dispatch.sessionModel.lyricsVisibleToggle}
+            disabled={!trackCurrent}
+            title="Lyrics"
+          >
+            <Icon icon="LyricsIcon" cover stroke />
+          </button>
+        )}
+
 
         {controlBarVolumeToggle && (
           <button type="button" className={style.volume} onClick={dispatch.playerModel.volumeMuteToggle}>

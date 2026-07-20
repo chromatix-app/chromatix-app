@@ -1865,6 +1865,37 @@ export const setStarRating = ({ accessToken, rating, ratingKey, serverBaseUrl, s
 };
 
 // ======================================================================
+// GET LYRICS
+// ======================================================================
+
+export const getLyrics = async ({ accessToken, serverBaseUrl, trackId }) => {
+  try {
+    const response = await axios.get(`${serverBaseUrl}/library/metadata/${trackId}`, {
+      headers: getRequestHeaders(accessToken),
+    });
+
+    const track = response.data?.MediaContainer?.Metadata?.[0];
+    if (!track) return null;
+
+    // Lyric streams have streamType === 4, found inside Media[0].Part[0].Stream[]
+    const streams = track.Media?.[0]?.Part?.[0]?.Stream || [];
+    const lyricStream = streams.find((s) => s.streamType === 4);
+    console.log('[getLyrics] trackId', trackId, 'streams:', streams.length, 'lyricStream:', lyricStream ? {key: lyricStream.key, format: lyricStream.format, streamType: lyricStream.streamType} : null);
+    if (!lyricStream?.key) return null;
+
+    // 'timed' may be absent from the JSON; fall back to format === 'lrc'
+    const timed = lyricStream.timed === true || lyricStream.timed === 1 || lyricStream.format === 'lrc' || lyricStream.codec === 'lrc';
+    const contentResponse = await axios.get(`${serverBaseUrl}${lyricStream.key}?X-Plex-Token=${accessToken}`, {
+      responseType: 'text',
+      headers: { Accept: 'text/plain' },
+    });
+    return { timed, content: contentResponse.data };
+  } catch {
+    return null; // lyrics not available is not an error
+  }
+};
+
+// ======================================================================
 // LOG PLAYBACK STATUS
 // ======================================================================
 

@@ -18,6 +18,7 @@ import {
   ToastNotification,
   UserMenu,
 } from 'js/components';
+import LyricsSidebar from 'js/components/LyricsSidebar/LyricsSidebar';
 import {
   useColorTheme,
   useElectronStatus,
@@ -338,6 +339,7 @@ const AppMain = () => {
 
   const fullPageMode = useSelector(({ appModel }) => appModel.fullPageMode);
   const queueIsVisible = useSelector(({ sessionModel }) => sessionModel.queueIsVisible);
+  const lyricsVisible = useSelector(({ sessionModel }) => sessionModel.lyricsVisible);
 
   const { windowWidth } = useWindowSize();
 
@@ -412,6 +414,11 @@ const AppMain = () => {
           {queueIsVisible && (
             <div className="layout-rightbar">
               <Queue />
+            </div>
+          )}
+          {lyricsVisible && !queueIsVisible && (
+            <div className="layout-rightbar">
+              <LyricsSidebar />
             </div>
           )}
         </div>

@@ -1647,6 +1647,13 @@ const logPlaybackStopped = ({ accessToken, currentTime, itemId, serverBaseUrl, s
 // This is because axios does not support keepalive, and fetch with keepalive
 // will allow the request to complete even if the page is closed.
 
+// ======================================================================
+// GET LYRICS
+// ======================================================================
+
+// ponytail: Jellyfin doesn't expose a lyrics API — return null so bridge.getLyrics works uniformly
+export const getLyrics = () => Promise.resolve(null);
+
 export const logPlaybackQuit = ({ accessToken, currentTime, itemId, serverBaseUrl, sessionId, userId }) => {
   try {
     const endpoint = endpointConfig.status.logPlaybackStopped(serverBaseUrl);

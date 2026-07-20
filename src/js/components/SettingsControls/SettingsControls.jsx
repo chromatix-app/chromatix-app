@@ -76,6 +76,7 @@ const NowPlayingSettings = ({ platformOpts }) => {
 const SecondarySettings = ({ platformOpts }) => {
   const controlBarFullPageToggle = useSelector(({ sessionModel }) => sessionModel.controlBarFullPageToggle);
   const controlBarQueueToggle = useSelector(({ sessionModel }) => sessionModel.controlBarQueueToggle);
+  const controlBarLyricsToggle = useSelector(({ sessionModel }) => sessionModel.controlBarLyricsToggle);
   const controlBarVolumeToggle = useSelector(({ sessionModel }) => sessionModel.controlBarVolumeToggle);
   const controlBarVolumeSlider = useSelector(({ sessionModel }) => sessionModel.controlBarVolumeSlider);
 
@@ -90,6 +91,15 @@ const SecondarySettings = ({ platformOpts }) => {
       label: 'Queue toggle',
       state: controlBarQueueToggle,
     },
+    ...(platformOpts.enableLyrics
+      ? [
+          {
+            key: 'controlBarLyricsToggle',
+            label: 'Lyrics toggle',
+            state: controlBarLyricsToggle,
+          },
+        ]
+      : []),
     {
       key: 'controlBarVolumeToggle',
       label: 'Volume toggle',
