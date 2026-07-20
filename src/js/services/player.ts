@@ -164,6 +164,14 @@ export const setVolume = (volumeLevel: number): void => {
 };
 
 // ======================================================================
+// AIRPLAY
+// ======================================================================
+
+export const showAirPlayPicker = (): void => nativeX.showAirPlayPicker();
+export const subscribeAirPlayAvailability = nativeX.subscribeAirPlayAvailability;
+export const unsubscribeAirPlayAvailability = nativeX.unsubscribeAirPlayAvailability;
+
+// ======================================================================
 // PRELOADING STUBS
 // [NOTE] Not currently used, but may be in future
 // ======================================================================
