@@ -1,14 +1,14 @@
 export { default as useColorTheme } from './useColorTheme';
 export { default as useElectronStatus } from './useElectronStatus';
-export { default as useGetAlbumDetail } from './useGetAlbumDetail';
 export { default as useGetAlbumArray } from './useGetAlbumArray';
+export { default as useGetAlbumDetail } from './useGetAlbumDetail';
 export { default as useGetArtistArray } from './useGetArtistArray';
-export { default as useGetCollectionArray } from './useGetCollectionArray';
-export { default as useGetPlaylistArray } from './useGetPlaylistArray';
 export { default as useGetArtistDetail } from './useGetArtistDetail';
+export { default as useGetCollectionArray } from './useGetCollectionArray';
 export { default as useGetCollectionItems } from './useGetCollectionItems';
 export { default as useGetDownloadLinks } from './useGetDownloadLinks';
 export { default as useGetFolderItems } from './useGetFolderItems';
+export { default as useGetPlaylistArray } from './useGetPlaylistArray';
 export { default as useGetPlaylistDetail } from './useGetPlaylistDetail';
 export { default as useGetPlaylistSidebar } from './useGetPlaylistSidebar';
 export { default as useGetQueuedTracks } from './useGetQueuedTracks';
