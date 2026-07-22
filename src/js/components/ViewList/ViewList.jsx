@@ -10,10 +10,15 @@ import clsx from 'clsx';
 
 import { ContextMenu, Favourite, Icon, StarRating } from 'js/components';
 import platformFeatures from 'js/_config/platformFeatures';
-import { useScrollToTrack, useScrollToVirtualTrack, useTableOptions, useWindowSize, usePlaylistDrag } from 'js/hooks';
+import {
+  useContextMenuTracks,
+  usePlaylistDrag,
+  useScrollToTrack,
+  useScrollToVirtualTrack,
+  useTableOptions,
+  useWindowSize,
+} from 'js/hooks';
 import { durationToStringMed, durationToStringShort, formatRecentDate, formatReleaseYear } from 'js/utils';
-import * as bridge from 'js/services/bridge';
-import store from 'js/store/store';
 
 import style from './ViewList.module.scss';
 
@@ -268,7 +273,6 @@ const ViewListTracks = ({
           pauseTrack={pauseTrack}
           isTrackLoaded={isTrackLoaded}
           isDraggable={isDraggable}
-          playlistManagement={platformOpts.playlistManagement}
         />
       </div>
     );
@@ -357,7 +361,6 @@ const TableBodyStatic = ({
   pauseTrack,
   isTrackLoaded,
   isDraggable,
-  playlistManagement,
 }) => {
   useScrollToTrack();
 
@@ -423,7 +426,6 @@ const TableBodyStatic = ({
                 playTrack={playTrack}
                 pauseTrack={pauseTrack}
                 isTrackLoaded={isTrackLoaded}
-                playlistManagement={playlistManagement}
                 // drag related props
                 isDraggable={isDraggable}
                 isDragging={draggingItemId === entry.playlistItemID}
@@ -493,7 +495,6 @@ const TableBodyVirtual = ({
   pauseTrack,
   isTrackLoaded,
   isDraggable,
-  playlistManagement,
 }) => {
   // Element refs
   innerRef = useRef(null);
@@ -664,7 +665,6 @@ const TableBodyVirtual = ({
                   playTrack={playTrack}
                   pauseTrack={pauseTrack}
                   isTrackLoaded={isTrackLoaded}
-                  playlistManagement={playlistManagement}
                   // drag related props
                   isDraggable={isDraggable}
                   isDragging={draggingItemId === entry.playlistItemID}
@@ -946,7 +946,6 @@ const TrackRow = ({
   playerPlaying,
   pauseTrack,
   isTrackLoaded,
-  playlistManagement,
   // drag related props
   isDraggable,
   isDragging,
@@ -981,43 +980,11 @@ const TrackRow = ({
   // artistTracks
   // playlistTracks
 
-  const hasContextAdd = playlistManagement;
-  const hasContextRemove = playlistManagement && tableVariant === 'playlistTracks';
-  const hasContextArtist = !!entry.artistLink && tableVariant !== 'artistTracks';
-  const hasContextAlbum = !!entry.albumLink && tableVariant !== 'albumTracks';
-  const hasContextDivider = (hasContextAdd || hasContextRemove) && (hasContextArtist || hasContextAlbum);
-
-  const contextEntries = [
-    ...(hasContextAdd
-      ? [
-          {
-            variant: 'submenu',
-            label: 'Add to Playlist',
-            icon: 'PlusCircleIcon',
-            getEntries: () => {
-              const playlists = store.getState().appModel.allPlaylists || [];
-              return playlists.map((playlist) => ({
-                label: playlist.title,
-                onSelect: () =>
-                  bridge.addTracksToPlaylist({ playlistId: playlist.playlistId, trackIds: [entry.trackId] }),
-              }));
-            },
-          },
-        ]
-      : []),
-    ...(hasContextRemove
-      ? [
-          {
-            label: 'Remove from Playlist',
-            icon: 'MinusCircleIcon',
-            onSelect: () => bridge.removeTrackFromPlaylist({ playlistId, playlistItemId: entry.playlistItemID }),
-          },
-        ]
-      : []),
-    ...(hasContextDivider ? [{ variant: 'divider' }] : []),
-    ...(hasContextArtist ? [{ label: 'Go to Artist', icon: 'PeopleIcon', to: entry.artistLink }] : []),
-    ...(hasContextAlbum ? [{ label: 'Go to Album', icon: 'PlayCircleIcon', to: entry.albumLink }] : []),
-  ];
+  const contextEntries = useContextMenuTracks(entry, {
+    playlistId: tableVariant === 'playlistTracks' ? playlistId : null,
+    showArtist: tableVariant !== 'artistTracks',
+    showAlbum: tableVariant !== 'albumTracks',
+  });
 
   return (
     <ContextMenu entries={contextEntries}>

@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 
-import { Favourite, Icon, PopoverMenu, RangeSlider, StarRating } from 'js/components';
+import { Favourite, Icon, PopoverMenu, RangeSlider, StarRating, ContextMenuTracks } from 'js/components';
 import { useKeyPlaybackControls, useKeyMediaControls, useMediaMeta, usePlayerProgress } from 'js/hooks';
 import { analyticsEvent, durationToStringShort } from 'js/utils';
 import platformFeatures from 'js/_config/platformFeatures';
@@ -56,72 +56,76 @@ const NowPlaying = () => {
   const trackCurrent = playingTrackList?.[playingTrackKeys[playingTrackIndex]];
 
   return (
-    <div className={style.nowPlaying}>
-      <div className={clsx(style.coverWrap, { [style.coverPlaceholder]: !trackCurrent || !trackCurrent?.thumbSm })}>
-        {trackCurrent && (
-          <>
-            {trackCurrent.thumbSm && (
-              <div className={style.coverArtwork}>
-                <img src={trackCurrent.thumbSm} alt={trackCurrent.title} draggable="false" />
-              </div>
-            )}
-            {playingLink && (
-              <NavLink
-                className={style.coverLink}
-                to={playingLink}
-                draggable="false"
-                onClick={() => {
-                  dispatch.appModel.setAppState({ scrollToPlaying: true });
-                  analyticsEvent('Navigate to Playing');
-                }}
-              />
-            )}
-          </>
-        )}
-      </div>
-
-      <div className={style.detailsWrap}>
-        {trackCurrent && (
-          <>
-            {controlBarTitle && <div className={style.title}>{trackCurrent.title}</div>}
-
-            {controlBarArtist && (
-              <div className={style.artist}>
-                {trackCurrent.artistLink && (
-                  <NavLink to={trackCurrent.artistLink} draggable="false">
-                    {trackCurrent.artist}
-                  </NavLink>
+    <div className={style.nowPlayingOuter}>
+      <ContextMenuTracks track={trackCurrent}>
+        <div className={style.nowPlayingInner}>
+          <div className={clsx(style.coverWrap, { [style.coverPlaceholder]: !trackCurrent || !trackCurrent?.thumbSm })}>
+            {trackCurrent && (
+              <>
+                {trackCurrent.thumbSm && (
+                  <div className={style.coverArtwork}>
+                    <img src={trackCurrent.thumbSm} alt={trackCurrent.title} draggable="false" />
+                  </div>
                 )}
-                {!trackCurrent.artistLink && trackCurrent.artist}
-              </div>
+                {playingLink && (
+                  <NavLink
+                    className={style.coverLink}
+                    to={playingLink}
+                    draggable="false"
+                    onClick={() => {
+                      dispatch.appModel.setAppState({ scrollToPlaying: true });
+                      analyticsEvent('Navigate to Playing');
+                    }}
+                  />
+                )}
+              </>
             )}
+          </div>
 
-            {controlBarIsFavourite && platformOpts?.enableIsFavourite && (
-              <div className={style.favourite}>
-                <Favourite
-                  type="track"
-                  itemId={trackCurrent.trackId}
-                  isFavourite={trackCurrent.isFavourite}
-                  size={14}
-                  editable
-                />
-              </div>
-            )}
+          <div className={style.detailsWrap}>
+            {trackCurrent && (
+              <>
+                {controlBarTitle && <div className={style.title}>{trackCurrent.title}</div>}
 
-            {controlBarUserRating && platformOpts?.enableUserRating && (
-              <div className={style.rating}>
-                <StarRating
-                  type="track"
-                  ratingKey={trackCurrent.trackId}
-                  rating={trackCurrent.userRating}
-                  editable
-                  size={13}
-                />
-              </div>
+                {controlBarArtist && (
+                  <div className={style.artist}>
+                    {trackCurrent.artistLink && (
+                      <NavLink to={trackCurrent.artistLink} draggable="false">
+                        {trackCurrent.artist}
+                      </NavLink>
+                    )}
+                    {!trackCurrent.artistLink && trackCurrent.artist}
+                  </div>
+                )}
+
+                {controlBarIsFavourite && platformOpts?.enableIsFavourite && (
+                  <div className={style.favourite}>
+                    <Favourite
+                      type="track"
+                      itemId={trackCurrent.trackId}
+                      isFavourite={trackCurrent.isFavourite}
+                      size={14}
+                      editable
+                    />
+                  </div>
+                )}
+
+                {controlBarUserRating && platformOpts?.enableUserRating && (
+                  <div className={style.rating}>
+                    <StarRating
+                      type="track"
+                      ratingKey={trackCurrent.trackId}
+                      rating={trackCurrent.userRating}
+                      editable
+                      size={13}
+                    />
+                  </div>
+                )}
+              </>
             )}
-          </>
-        )}
-      </div>
+          </div>
+        </div>
+      </ContextMenuTracks>
     </div>
   );
 };

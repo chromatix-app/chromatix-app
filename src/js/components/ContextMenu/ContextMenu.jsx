@@ -22,7 +22,7 @@ export const ContextMenu = ({ children, entries }) => {
       <RadixMenu.Trigger asChild>{children}</RadixMenu.Trigger>
 
       <RadixMenu.Portal>
-        <RadixMenu.Content className={style.content}>
+        <RadixMenu.Content className={style.content} collisionPadding={12}>
           {entries.map((entry, index) => (
             <MenuEntry key={index} {...entry} />
           ))}
@@ -95,7 +95,7 @@ const SubmenuEntry = ({ label, getEntries, icon }) => {
         </span>
       </RadixMenu.SubTrigger>
       <RadixMenu.Portal>
-        <RadixMenu.SubContent className={style.content}>
+        <RadixMenu.SubContent className={style.content} collisionPadding={8}>
           <SubmenuContent getEntries={getEntries} />
         </RadixMenu.SubContent>
       </RadixMenu.Portal>
