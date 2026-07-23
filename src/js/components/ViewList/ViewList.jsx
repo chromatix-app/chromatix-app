@@ -11,6 +11,7 @@ import clsx from 'clsx';
 import { ContextMenu, Favourite, Icon, StarRating } from 'js/components';
 import platformFeatures from 'js/_config/platformFeatures';
 import {
+  useContextMenuAlbums,
   useContextMenuTracks,
   usePlaylistDrag,
   useScrollToTrack,
@@ -103,6 +104,7 @@ const ViewListBasic = ({
           entries={entriesWithGroups}
           titleBlock={children}
           headerBlock={headerBlock()}
+          variant={variant}
           tableVariant={tableVariant}
           tableOptions={tableOptions}
           gridTemplateColumns={gridTemplateColumns}
@@ -348,6 +350,7 @@ const TableBodyStatic = ({
   entries,
   titleBlock,
   headerBlock,
+  variant,
   tableVariant,
   tableOptions,
   gridTemplateColumns,
@@ -440,6 +443,7 @@ const TableBodyStatic = ({
               <StandardRow
                 key={index}
                 entry={entry}
+                variant={variant}
                 tableVariant={tableVariant}
                 tableOptions={tableOptions}
                 gridTemplateColumns={gridTemplateColumns}
@@ -480,6 +484,7 @@ const TableBodyVirtual = ({
   entries,
   titleBlock,
   headerBlock,
+  variant,
   tableVariant,
   tableOptions,
   gridTemplateColumns,
@@ -680,6 +685,7 @@ const TableBodyVirtual = ({
                   key={virtualEntry.index}
                   entry={entry}
                   virtualEntry={virtualEntry}
+                  variant={variant}
                   tableVariant={tableVariant}
                   tableOptions={tableOptions}
                   gridTemplateColumns={gridTemplateColumns}
@@ -773,157 +779,192 @@ const DiscRow = ({ virtualEntry, entry }) => {
 // STANDARD ROW
 // ======================================================================
 
-const StandardRow = ({ virtualEntry, entry, tableVariant, tableOptions, gridTemplateColumns }) => {
+const StandardRow = ({ virtualEntry, entry, variant, tableVariant, tableOptions, gridTemplateColumns }) => {
   const { ratingType, ratingKey } = lookupVariantFields[tableVariant] || {};
   const rowKey = entry.albumId || entry.artistId || entry.playlistId || entry.collectionId;
 
+  const isAlbum = tableVariant === 'albums';
+
+  const contextEntries = useContextMenuAlbums(isAlbum ? entry : null, {
+    showArtist: variant !== 'artistAlbums',
+  });
+
   return (
-    <NavLink
-      className={style.entry}
-      to={entry.link}
-      draggable="false"
-      style={{
-        ...(virtualEntry && {
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          transform: `translateY(${virtualEntry.start}px)`,
-        }),
-        gridTemplateColumns,
-      }}
-    >
-      {tableOptions
-        .filter((columnOptions) => columnOptions.visible !== false)
-        .map((columnOptions, index) => {
-          switch (columnOptions.colKey) {
-            case 'addedAt':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.addedAt, 'text-trim')}>
-                  {formatRecentDate(entry.addedAt)}
-                </div>
-              );
-
-            case 'artist':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.artist, 'text-trim')}>
-                  {entry.artist}
-                </div>
-              );
-
-            case 'country':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.country, 'text-trim')}>
-                  {entry.country}
-                </div>
-              );
-
-            case 'duration':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.duration, 'text-trim')}>
-                  {durationToStringMed(entry.duration)}
-                </div>
-              );
-
-            case 'genre':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.genre, 'text-trim')}>
-                  {entry.genre}
-                </div>
-              );
-
-            case 'isFavourite':
-              return (
-                <div key={rowKey + '-' + index} className={style.isFavourite}>
-                  <Favourite
-                    variant="table"
-                    type={ratingType}
-                    itemId={rowKey}
-                    isFavourite={entry.isFavourite}
-                    editable
-                  />
-                </div>
-              );
-
-            case 'kind':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.kind, 'text-trim')}>
-                  {entry.kind?.replace('aaa', '')}
-                </div>
-              );
-
-            case 'lastPlayed':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.lastPlayed, 'text-trim')}>
-                  {formatRecentDate(entry.lastPlayed)}
-                </div>
-              );
-
-            case 'releaseDate':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.releaseDate, 'text-trim')}>
-                  {formatReleaseYear(entry.releaseDate)}
-                </div>
-              );
-
-            case 'sortOrder':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.trackNumberPermanent, style.colCenter)}>
-                  <span>-</span>
-                </div>
-              );
-
-            case 'thumb':
-              if (columnOptions.icon) {
+    <ContextMenu entries={contextEntries}>
+      <NavLink
+        className={style.entry}
+        to={entry.link}
+        draggable="false"
+        style={{
+          ...(virtualEntry && {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            transform: `translateY(${virtualEntry.start}px)`,
+          }),
+          gridTemplateColumns,
+        }}
+      >
+        {tableOptions
+          .filter((columnOptions) => columnOptions.visible !== false)
+          .map((columnOptions, index) => {
+            switch (columnOptions.colKey) {
+              case 'addedAt':
                 return (
-                  <div key={rowKey + '-' + index} className={clsx(style.thumb, style.thumbFolder)}>
-                    <span className={style.thumbIcon}>
-                      <Icon icon={columnOptions.icon} cover stroke strokeWidth={1.2} />
-                    </span>
+                  <div key={rowKey + '-' + index} className={clsx(style.addedAt, 'text-trim')}>
+                    {formatRecentDate(entry.addedAt)}
                   </div>
                 );
-              } else {
+
+              case 'artist':
                 return (
-                  <div key={rowKey + '-' + index} className={style.thumb}>
-                    {entry.thumbSm && <img src={entry.thumbSm} alt={entry.title} draggable="false" loading="lazy" />}
+                  <div key={rowKey + '-' + index} className={clsx(style.artist, 'text-trim')}>
+                    {entry.artist}
                   </div>
                 );
-              }
 
-            case 'title':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.title, 'text-trim')}>
-                  {entry.title}
-                </div>
-              );
+              case 'country':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.country, 'text-trim')}>
+                    {entry.country}
+                  </div>
+                );
 
-            case 'totalTracks':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.totalTracks, 'text-trim')}>
-                  {entry.totalTracks}
-                  {(entry.totalTracks || entry.totalTracks === 0) && <> track{entry.totalTracks !== 1 ? 's' : ''}</>}
-                </div>
-              );
+              case 'duration':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.duration, 'text-trim')}>
+                    {durationToStringMed(entry.duration)}
+                  </div>
+                );
 
-            case 'userRating':
-              return (
-                <div key={rowKey + '-' + index} className={style.userRating}>
-                  <StarRating
-                    variant="list"
-                    type={ratingType}
-                    ratingKey={entry[ratingKey]}
-                    rating={entry.userRating}
-                    editable
-                    onlyShowOnHover
-                  />
-                </div>
-              );
+              case 'genre':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.genre, 'text-trim')}>
+                    {entry.genre}
+                  </div>
+                );
 
-            default:
-              return null;
-          }
-        })}
-    </NavLink>
+              case 'isFavourite':
+                return (
+                  <div key={rowKey + '-' + index} className={style.isFavourite}>
+                    <Favourite
+                      variant="table"
+                      type={ratingType}
+                      itemId={rowKey}
+                      isFavourite={entry.isFavourite}
+                      editable
+                    />
+                  </div>
+                );
+
+              case 'kind':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.kind, 'text-trim')}>
+                    {entry.kind?.replace('aaa', '')}
+                  </div>
+                );
+
+              case 'lastPlayed':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.lastPlayed, 'text-trim')}>
+                    {formatRecentDate(entry.lastPlayed)}
+                  </div>
+                );
+
+              case 'releaseDate':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.releaseDate, 'text-trim')}>
+                    {formatReleaseYear(entry.releaseDate)}
+                  </div>
+                );
+
+              case 'sortOrder':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.trackNumberPermanent, style.colCenter)}>
+                    <span>-</span>
+                  </div>
+                );
+
+              case 'thumb':
+                if (columnOptions.icon) {
+                  return (
+                    <div key={rowKey + '-' + index} className={clsx(style.thumb, style.thumbFolder)}>
+                      <span className={style.thumbIcon}>
+                        <Icon icon={columnOptions.icon} cover stroke strokeWidth={1.2} />
+                      </span>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div key={rowKey + '-' + index} className={style.thumb}>
+                      {entry.thumbSm && <img src={entry.thumbSm} alt={entry.title} draggable="false" loading="lazy" />}
+                    </div>
+                  );
+                }
+
+              case 'title':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.title, 'text-trim')}>
+                    {entry.title}
+                  </div>
+                );
+
+              case 'totalTracks':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.totalTracks, 'text-trim')}>
+                    {entry.totalTracks}
+                    {(entry.totalTracks || entry.totalTracks === 0) && <> track{entry.totalTracks !== 1 ? 's' : ''}</>}
+                  </div>
+                );
+
+              case 'userRating':
+                return (
+                  <div key={rowKey + '-' + index} className={style.userRating}>
+                    <StarRating
+                      variant="list"
+                      type={ratingType}
+                      ratingKey={entry[ratingKey]}
+                      rating={entry.userRating}
+                      editable
+                      onlyShowOnHover
+                    />
+                  </div>
+                );
+
+              case 'contextMenu':
+                return (
+                  <div key={rowKey + '-' + index} className={style.contextMenu}>
+                    {!!contextEntries.length && (
+                      <button
+                        type="button"
+                        className={style.contextButton}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          e.currentTarget.dispatchEvent(
+                            new MouseEvent('contextmenu', {
+                              bubbles: true,
+                              cancelable: true,
+                              clientX: rect.left,
+                              clientY: rect.bottom,
+                            })
+                          );
+                        }}
+                      >
+                        <Icon icon="EllipsisIcon" cover />
+                      </button>
+                    )}
+                  </div>
+                );
+
+              default:
+                return null;
+            }
+          })}
+      </NavLink>
+    </ContextMenu>
   );
 };
 

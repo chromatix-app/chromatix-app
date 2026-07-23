@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import clsx from 'clsx';
 
-import { Favourite, Icon, StarRating } from 'js/components';
+import { ContextMenuAlbums, Favourite, Icon, StarRating } from 'js/components';
 import { useScrollToTrack, useScrollToVirtualTrack, useWindowSize } from 'js/hooks';
 import platformFeatures from 'js/_config/platformFeatures';
 
@@ -596,7 +596,10 @@ const ListEntry = React.memo(
     const isIconCard = iconImage && !thumbSm && !trackId;
     const isSquareCard = !isIconCard || variant === 'folders';
 
-    return (
+    // Context menu is only applicable to album cards
+    const isAlbum = variant === 'albums' || variant === 'artistAlbums';
+
+    const card = (
       <div
         id={variant === 'folders' && trackId ? trackId : null}
         className={clsx(style.card, { [style.cardCurrent]: isCurrentlyLoaded, [style.cardLink]: link })}
@@ -679,6 +682,16 @@ const ListEntry = React.memo(
           )}
         </div>
       </div>
+    );
+
+    if (!isAlbum) {
+      return card;
+    }
+
+    return (
+      <ContextMenuAlbums album={{ albumId, title, artistId, artistLink }} showArtist={variant !== 'artistAlbums'}>
+        {card}
+      </ContextMenuAlbums>
     );
   }
 );

@@ -1,4 +1,5 @@
 export { default as useColorTheme } from './useColorTheme';
+export { default as useContextMenuAlbums } from './useContextMenuAlbums';
 export { default as useContextMenuTracks } from './useContextMenuTracks';
 export { default as useElectronStatus } from './useElectronStatus';
 export { default as useGetAlbumArray } from './useGetAlbumArray';
