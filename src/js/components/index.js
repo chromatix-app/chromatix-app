@@ -2,6 +2,7 @@ export { default as Blocker } from './Blocker/Blocker';
 export { default as Button } from './Button/Button';
 export { default as ContextMenu } from './ContextMenu/ContextMenu';
 export { default as ContextMenuAlbums } from './ContextMenuAlbums/ContextMenuAlbums';
+export { default as ContextMenuPlaylists } from './ContextMenuPlaylists/ContextMenuPlaylists';
 export { default as ContextMenuTracks } from './ContextMenuTracks/ContextMenuTracks';
 export { default as ControlBar } from './ControlBar/ControlBar';
 export { default as ElectronUI } from './ElectronUI/ElectronUI';

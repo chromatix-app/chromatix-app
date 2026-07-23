@@ -11,6 +11,7 @@ import clsx from 'clsx';
 import { ContextMenu, Favourite, Icon, StarRating } from 'js/components';
 import {
   useContextMenuAlbums,
+  useContextMenuPlaylists,
   useContextMenuTracks,
   usePlaylistDrag,
   useScrollToTrack,
@@ -780,10 +781,15 @@ const StandardRow = ({ virtualEntry, entry, variant, tableVariant, tableOptions,
   const rowKey = entry.albumId || entry.artistId || entry.playlistId || entry.collectionId;
 
   const isAlbum = tableVariant === 'albums';
+  const isPlaylist = tableVariant === 'playlists';
 
-  const contextEntries = useContextMenuAlbums(isAlbum ? entry : null, {
+  const albumContextEntries = useContextMenuAlbums(isAlbum ? entry : null, {
     showArtist: variant !== 'artistAlbums',
   });
+  const playlistContextEntries = useContextMenuPlaylists(
+    isPlaylist ? { playlistId: entry.playlistId, playlistTitle: entry.title } : null
+  );
+  const contextEntries = isAlbum ? albumContextEntries : isPlaylist ? playlistContextEntries : [];
 
   return (
     <ContextMenu entries={contextEntries}>
