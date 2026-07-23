@@ -100,7 +100,7 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
     // if (!playlistInfo) {
     bridge.getPlaylistDetails(libraryId, playlistId);
     // }
-    bridge.getPlaylistTracks(libraryId, playlistId).catch(() => {});
+    bridge.getPlaylistTracks(libraryId, playlistId);
   }, [libraryId, playlistId]);
 
   // // Fallback in case playlist data is not included in the allPlaylists array

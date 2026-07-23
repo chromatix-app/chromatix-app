@@ -290,7 +290,7 @@ const useGetArtistDetail = ({ variant, libraryId, artistId }) => {
   useEffect(() => {
     if (libraryId && artistId && artistName) {
       bridge.getAllArtistAppearanceAlbums(libraryId, artistId, artistName);
-      bridge.getAllArtistTracks(libraryId, artistId, artistName).catch(() => {});
+      bridge.getAllArtistTracks(libraryId, artistId, artistName);
     }
   }, [libraryId, artistId, artistName]);
 
