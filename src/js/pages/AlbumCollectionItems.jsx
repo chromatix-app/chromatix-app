@@ -241,6 +241,7 @@ const Title = ({
                   ...(platformOpts?.enableUserRating
                     ? [
                         {
+                          variant: 'checkbox',
                           label: 'Show star ratings',
                           attr: 'gridAlbumCollectionItemsUserRating',
                           checked: gridOptions.userRating,
@@ -258,21 +259,25 @@ const Title = ({
               setter={setColumnVisibility}
               entries={[
                 {
+                  variant: 'checkbox',
                   label: 'Title',
                   disabled: true,
                   checked: true,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Artist',
                   attr: 'colCollectionAlbumsArtist',
                   checked: colOptions.artist,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Genre',
                   attr: 'colCollectionAlbumsGenre',
                   checked: colOptions.genre,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Released',
                   attr: 'colCollectionAlbumsReleaseDate',
                   checked: colOptions.releaseDate,
@@ -280,6 +285,7 @@ const Title = ({
                 ...(platformOpts?.enableAddedAt
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Added',
                         attr: 'colCollectionAlbumsAddedAt',
                         checked: colOptions.addedAt,
@@ -289,6 +295,7 @@ const Title = ({
                 ...(platformOpts?.enableLastPlayed
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Last played',
                         attr: 'colCollectionAlbumsLastPlayed',
                         checked: colOptions.lastPlayed,
@@ -298,6 +305,7 @@ const Title = ({
                 ...(platformOpts?.enableUserRating
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Rating',
                         attr: 'colCollectionAlbumsUserRating',
                         checked: colOptions.userRating,

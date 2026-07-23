@@ -9,7 +9,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import clsx from 'clsx';
 
 import platformFeatures from 'js/_config/platformFeatures';
-import { Favourite, Icon, PopoverMenu, StarRating } from 'js/components';
+import { Favourite, Icon, PopoverMenu, StarRating, ContextMenuTracks } from 'js/components';
 import { useGetQueuedTracks, useWindowSize } from 'js/hooks';
 import { analyticsEvent } from 'js/utils';
 
@@ -376,109 +376,116 @@ const NowPlayingLarge = ({ entry, virtualEntry }) => {
   };
 
   return (
-    <div
-      className={style.expandedEntry}
-      style={{
-        ...(virtualEntry && {
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          transform: `translateY(${virtualEntry.start}px)`,
-        }),
-      }}
-    >
-      <div className={style.expandedThumb}>
-        {(entry.thumbMd || entry.thumbSm) && (
-          <img src={entry.thumbMd ? entry.thumbMd : entry.thumbSm} alt={entry.title} draggable="false" loading="lazy" />
-        )}
-        {playingLink && (
-          <NavLink
-            to={playingLink}
-            className={style.expandedLink}
-            onClick={() => {
-              dispatch.appModel.setAppState({ scrollToPlaying: true });
-              analyticsEvent('Navigate to Playing');
-            }}
-            tabIndex={-1}
-          ></NavLink>
-        )}
-        <button type="button" className={style.expandedCollapse} onClick={collapseArtwork}>
-          <span>
+    <ContextMenuTracks track={entry}>
+      <div
+        className={style.expandedEntry}
+        style={{
+          ...(virtualEntry && {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            transform: `translateY(${virtualEntry.start}px)`,
+          }),
+        }}
+      >
+        <div className={style.expandedThumb}>
+          {(entry.thumbMd || entry.thumbSm) && (
+            <img
+              src={entry.thumbMd ? entry.thumbMd : entry.thumbSm}
+              alt={entry.title}
+              draggable="false"
+              loading="lazy"
+            />
+          )}
+          {playingLink && (
+            <NavLink
+              to={playingLink}
+              className={style.expandedLink}
+              onClick={() => {
+                dispatch.appModel.setAppState({ scrollToPlaying: true });
+                analyticsEvent('Navigate to Playing');
+              }}
+              tabIndex={-1}
+            ></NavLink>
+          )}
+          <button type="button" className={style.expandedCollapse} onClick={collapseArtwork}>
             <span>
-              <Icon icon="CollapseIcon" cover stroke strokeWidth={1.5} />
+              <span>
+                <Icon icon="CollapseIcon" cover stroke strokeWidth={1.5} />
+              </span>
             </span>
-          </span>
-        </button>
-      </div>
-
-      <div className={style.expandedDetails}>
-        <div className={style.expandedDetailsMain}>
-          {entry.title && <div className={clsx(style.expandedTitle, 'text-trim')}>{entry.title}</div>}
-
-          {queueArtist && entry.artist && entry.artistLink && (
-            <div className={clsx(style.expandedArtist, 'text-trim')}>
-              <NavLink draggable="false" to={entry.artistLink} tabIndex={-1}>
-                {entry.artist}
-              </NavLink>
-            </div>
-          )}
-
-          {queueArtist && entry.artist && !entry.artistLink && (
-            <div className={clsx(style.expandedArtist, 'text-trim')}>{entry.artist}</div>
-          )}
-
-          {queueAlbum && entry.album && entry.albumLink && (
-            <div className={clsx(style.expandedAlbum, 'text-trim')}>
-              <NavLink to={entry.albumLink} tabIndex={-1}>
-                {entry.album}
-              </NavLink>
-            </div>
-          )}
-
-          {queueAlbum && entry.album && !entry.albumLink && (
-            <div className={clsx(style.expandedAlbum, 'text-trim')}>{entry.album}</div>
-          )}
-
-          {((queueCodec && entry.codec) || (queueBitrate && entry.bitrate)) && (
-            <div className={clsx(style.expandedSpecs, 'text-trim')}>
-              {queueCodec && entry.codec && entry.codec}
-              {queueCodec && queueBitrate && entry.codec && entry.bitrate && ' • '}
-              {queueBitrate && entry.bitrate && `${entry.bitrate}kbps`}
-            </div>
-          )}
-
-          {queueIsFavourite && platformOpts.enableIsFavourite && (
-            <div className={style.expandedFavourite}>
-              <Favourite
-                variant="queue"
-                type="track"
-                itemId={entry.trackId}
-                isFavourite={entry.isFavourite}
-                size={16}
-                editable
-              />
-            </div>
-          )}
-
-          {queueUserRating && platformOpts.enableUserRating && (
-            <div className={style.expandedRating}>
-              <StarRating
-                variant="queue"
-                type="track"
-                ratingKey={entry.trackId}
-                rating={entry.userRating}
-                size={15}
-                editable
-              />
-            </div>
-          )}
+          </button>
         </div>
-        <div className={style.expandedDetailsButton}>
-          <NowPlayingMenu />
+
+        <div className={style.expandedDetails}>
+          <div className={style.expandedDetailsMain}>
+            {entry.title && <div className={clsx(style.expandedTitle, 'text-trim')}>{entry.title}</div>}
+
+            {queueArtist && entry.artist && entry.artistLink && (
+              <div className={clsx(style.expandedArtist, 'text-trim')}>
+                <NavLink draggable="false" to={entry.artistLink} tabIndex={-1}>
+                  {entry.artist}
+                </NavLink>
+              </div>
+            )}
+
+            {queueArtist && entry.artist && !entry.artistLink && (
+              <div className={clsx(style.expandedArtist, 'text-trim')}>{entry.artist}</div>
+            )}
+
+            {queueAlbum && entry.album && entry.albumLink && (
+              <div className={clsx(style.expandedAlbum, 'text-trim')}>
+                <NavLink to={entry.albumLink} tabIndex={-1}>
+                  {entry.album}
+                </NavLink>
+              </div>
+            )}
+
+            {queueAlbum && entry.album && !entry.albumLink && (
+              <div className={clsx(style.expandedAlbum, 'text-trim')}>{entry.album}</div>
+            )}
+
+            {((queueCodec && entry.codec) || (queueBitrate && entry.bitrate)) && (
+              <div className={clsx(style.expandedSpecs, 'text-trim')}>
+                {queueCodec && entry.codec && entry.codec}
+                {queueCodec && queueBitrate && entry.codec && entry.bitrate && ' • '}
+                {queueBitrate && entry.bitrate && `${entry.bitrate}kbps`}
+              </div>
+            )}
+
+            {queueIsFavourite && platformOpts.enableIsFavourite && (
+              <div className={style.expandedFavourite}>
+                <Favourite
+                  variant="queue"
+                  type="track"
+                  itemId={entry.trackId}
+                  isFavourite={entry.isFavourite}
+                  size={16}
+                  editable
+                />
+              </div>
+            )}
+
+            {queueUserRating && platformOpts.enableUserRating && (
+              <div className={style.expandedRating}>
+                <StarRating
+                  variant="queue"
+                  type="track"
+                  ratingKey={entry.trackId}
+                  rating={entry.userRating}
+                  size={15}
+                  editable
+                />
+              </div>
+            )}
+          </div>
+          <div className={style.expandedDetailsButton}>
+            <NowPlayingMenu />
+          </div>
         </div>
       </div>
-    </div>
+    </ContextMenuTracks>
   );
 };
 
@@ -607,45 +614,47 @@ const TrackEntry = ({ entry, isCurrentlyPlaying = false, virtualEntry }) => {
   };
 
   return (
-    <div
-      className={clsx(style.trackEntry, 'text-trim', {
-        [style.trackEntryCurrent]: isCurrentlyPlaying,
-      })}
-      style={{
-        ...(virtualEntry && {
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          transform: `translateY(${virtualEntry.start}px)`,
-        }),
-      }}
-      onDoubleClick={() => {
-        doPlay(true);
-      }}
-      onKeyDown={(event) => {
-        if (event.key === 'Enter') {
+    <ContextMenuTracks track={entry}>
+      <div
+        className={clsx(style.trackEntry, 'text-trim', {
+          [style.trackEntryCurrent]: isCurrentlyPlaying,
+        })}
+        style={{
+          ...(virtualEntry && {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            transform: `translateY(${virtualEntry.start}px)`,
+          }),
+        }}
+        onDoubleClick={() => {
           doPlay(true);
-        }
-      }}
-      tabIndex={0}
-    >
-      <div className={style.trackThumb}>
-        {entry.thumbSm && <img src={entry.thumbSm} alt={entry.title} loading="lazy" draggable="false" />}
-      </div>
+        }}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') {
+            doPlay(true);
+          }
+        }}
+        tabIndex={0}
+      >
+        <div className={style.trackThumb}>
+          {entry.thumbSm && <img src={entry.thumbSm} alt={entry.title} loading="lazy" draggable="false" />}
+        </div>
 
-      <div className={clsx(style.trackContent, 'text-trim')}>
-        <div className={clsx(style.trackTitle, 'text-trim')}>{entry.title}</div>
-        <div className={clsx(style.trackArtist, 'text-trim')}>
-          {entry.artistLink && (
-            <NavLink to={entry.artistLink} tabIndex={-1} draggable="false">
-              {entry.artist}
-            </NavLink>
-          )}
-          {!entry.artistLink && entry.artist}
+        <div className={clsx(style.trackContent, 'text-trim')}>
+          <div className={clsx(style.trackTitle, 'text-trim')}>{entry.title}</div>
+          <div className={clsx(style.trackArtist, 'text-trim')}>
+            {entry.artistLink && (
+              <NavLink to={entry.artistLink} tabIndex={-1} draggable="false">
+                {entry.artist}
+              </NavLink>
+            )}
+            {!entry.artistLink && entry.artist}
+          </div>
         </div>
       </div>
-    </div>
+    </ContextMenuTracks>
   );
 };
 

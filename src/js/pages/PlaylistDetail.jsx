@@ -5,8 +5,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { Favourite, FilterButton, FilterMenu, ViewList, Loading, StarRating, TitleHeading } from 'js/components';
-import { useGetPlaylistDetail } from 'js/hooks';
+import { Favourite, FilterMenu, ViewList, Loading, StarRating, TitleHeading } from 'js/components';
+import { useContextMenuPlaylists, useGetPlaylistDetail } from 'js/hooks';
 import platformFeatures from 'js/_config/platformFeatures';
 
 // ======================================================================
@@ -145,7 +145,7 @@ const Title = ({
   playlistTracks,
   setColumnVisibility,
 }) => {
-  const dispatch = useDispatch();
+  const contextEntries = useContextMenuPlaylists({ playlistId, playlistTitle });
 
   return (
     <TitleHeading
@@ -221,36 +221,43 @@ const Title = ({
               setter={setColumnVisibility}
               entries={[
                 {
+                  variant: 'checkbox',
                   label: 'Artwork',
                   attr: 'colPlaylistArtwork',
                   checked: colOptions.artwork,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Title',
                   disabled: true,
                   checked: true,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Artist',
                   attr: 'colPlaylistArtist',
                   checked: colOptions.artist,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Album',
                   attr: 'colPlaylistAlbum',
                   checked: colOptions.album,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Audio codec',
                   attr: 'colPlaylistCodec',
                   checked: colOptions.codec,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Bitrate',
                   attr: 'colPlaylistBitrate',
                   checked: colOptions.bitrate,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Duration',
                   attr: 'colPlaylistDuration',
                   checked: colOptions.duration,
@@ -258,6 +265,7 @@ const Title = ({
                 ...(platformOpts?.enableIsFavourite
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Favourite',
                         attr: 'colPlaylistIsFavourite',
                         checked: colOptions.isFavourite,
@@ -267,6 +275,7 @@ const Title = ({
                 ...(platformOpts?.enableUserRating
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Rating',
                         attr: 'colPlaylistUserRating',
                         checked: colOptions.userRating,
@@ -276,21 +285,9 @@ const Title = ({
               ]}
             />
           </div>
-          {platformOpts.playlistManagement && (
-            <div className="filterIconWrap">
-              <FilterButton
-                variant="Large"
-                label="Edit playlist"
-                icon="PencilIcon"
-                onClick={() =>
-                  dispatch.dialogModel.showModal({
-                    modal: 'PlaylistEdit',
-                    data: { playlistId, playlistTitle },
-                  })
-                }
-              />
-            </div>
-          )}
+          <div className="filterIconWrap">
+            <FilterMenu variant="Large" label="More" icon="EllipsisIcon" entries={contextEntries} />
+          </div>
         </>
       }
       showPlay={true}

@@ -99,13 +99,35 @@ const Component = () => {
               icon="CogIcon"
               setter={handleColChange}
               entries={[
-                { label: 'Country', attr: 'country', checked: colOptions.country },
-                { label: 'Genre', attr: 'genre', checked: colOptions.genre },
-                { label: 'Rating', attr: 'userRating', checked: colOptions.userRating },
-                { label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
+                { variant: 'checkbox', label: 'Country', attr: 'country', checked: colOptions.country },
+                { variant: 'checkbox', label: 'Genre', attr: 'genre', checked: colOptions.genre },
+                { variant: 'checkbox', label: 'Rating', attr: 'userRating', checked: colOptions.userRating },
+                { variant: 'checkbox', label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
               ]}
             />
             <FilterButton label="New playlist" icon="PlusIcon" onClick={() => {}} />
+            <FilterMenu
+              label="More"
+              icon="EllipsisCircleIcon"
+              entries={[
+                {
+                  variant: 'submenu',
+                  label: 'Add to playlist',
+                  icon: 'PlusCircleIcon',
+                  getEntries: () => [
+                    { variant: 'action', label: 'Chill Vibes', onSelect: () => {} },
+                    { variant: 'action', label: 'Workout Mix', onSelect: () => {} },
+                    { variant: 'action', label: 'Road Trip', onSelect: () => {} },
+                  ],
+                },
+                { variant: 'action', label: 'Remove from playlist', icon: 'MinusCircleIcon', onSelect: () => {} },
+                { variant: 'divider' },
+                { variant: 'action', label: 'Add to queue', icon: 'QueueAfterIcon', onSelect: () => {} },
+                { variant: 'divider' },
+                { variant: 'action', label: 'Go to artist', icon: 'PeopleIcon', onSelect: () => {} },
+                { variant: 'action', label: 'Go to album', icon: 'PlayCircleIcon', onSelect: () => {} },
+              ]}
+            />
           </FilterWrap>
         </div>
 
@@ -151,13 +173,36 @@ const Component = () => {
               icon="CogIcon"
               setter={handleColChange}
               entries={[
-                { label: 'Country', attr: 'country', checked: colOptions.country },
-                { label: 'Genre', attr: 'genre', checked: colOptions.genre },
-                { label: 'Rating', attr: 'userRating', checked: colOptions.userRating },
-                { label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
+                { variant: 'checkbox', label: 'Country', attr: 'country', checked: colOptions.country },
+                { variant: 'checkbox', label: 'Genre', attr: 'genre', checked: colOptions.genre },
+                { variant: 'checkbox', label: 'Rating', attr: 'userRating', checked: colOptions.userRating },
+                { variant: 'checkbox', label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
               ]}
             />
             <FilterButton variant="Large" label="New playlist" icon="PlusIcon" onClick={() => {}} />
+            <FilterMenu
+              variant="Large"
+              label="More"
+              icon="EllipsisIcon"
+              entries={[
+                {
+                  variant: 'submenu',
+                  label: 'Add to playlist',
+                  icon: 'PlusCircleIcon',
+                  getEntries: () => [
+                    { variant: 'action', label: 'Chill Vibes', onSelect: () => {} },
+                    { variant: 'action', label: 'Workout Mix', onSelect: () => {} },
+                    { variant: 'action', label: 'Road Trip', onSelect: () => {} },
+                  ],
+                },
+                { variant: 'action', label: 'Remove from playlist', icon: 'MinusCircleIcon', onSelect: () => {} },
+                { variant: 'divider' },
+                { variant: 'action', label: 'Add to queue', icon: 'QueueAfterIcon', onSelect: () => {} },
+                { variant: 'divider' },
+                { variant: 'action', label: 'Go to artist', icon: 'PeopleIcon', onSelect: () => {} },
+                { variant: 'action', label: 'Go to album', icon: 'PlayCircleIcon', onSelect: () => {} },
+              ]}
+            />
           </div>
         </div>
 

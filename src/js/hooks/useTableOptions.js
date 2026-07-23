@@ -335,6 +335,12 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
         isDesc: sortKey === 'isFavourite' && orderKey === 'desc',
         visible: colOptions?.isFavourite !== false,
       },
+      {
+        colKey: 'contextMenu',
+        label: '',
+        colWidth: '30px',
+        visible: true,
+      },
     ];
   }
 
@@ -533,6 +539,12 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
         isAsc: sortKey === 'isFavourite' && orderKey === 'asc',
         isDesc: sortKey === 'isFavourite' && orderKey === 'desc',
         visible: colOptions?.isFavourite !== false,
+      },
+      {
+        colKey: 'contextMenu',
+        label: '',
+        colWidth: '30px',
+        visible: true,
       },
     ];
   }

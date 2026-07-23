@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import clsx from 'clsx';
 
-import { Favourite, Icon, StarRating } from 'js/components';
+import { ContextMenuAlbums, ContextMenuPlaylists, Favourite, Icon, StarRating } from 'js/components';
 import { useScrollToTrack, useScrollToVirtualTrack, useWindowSize } from 'js/hooks';
 import platformFeatures from 'js/_config/platformFeatures';
 
@@ -596,7 +596,11 @@ const ListEntry = React.memo(
     const isIconCard = iconImage && !thumbSm && !trackId;
     const isSquareCard = !isIconCard || variant === 'folders';
 
-    return (
+    // Context menu is only applicable to album and playlist cards
+    const isAlbum = variant === 'albums' || variant === 'artistAlbums';
+    const isPlaylist = variant === 'playlists';
+
+    const card = (
       <div
         id={variant === 'folders' && trackId ? trackId : null}
         className={clsx(style.card, { [style.cardCurrent]: isCurrentlyLoaded, [style.cardLink]: link })}
@@ -649,7 +653,7 @@ const ListEntry = React.memo(
                     type={lookupType[variant] || variant}
                     itemId={ratingKey}
                     isFavourite={true}
-                    editable={false}
+                    editable
                   />
                 </span>
               )}
@@ -674,12 +678,26 @@ const ListEntry = React.memo(
           {showRatings && (
             // typeof userRating !== 'undefined' && userRating > 0 && (
             <div className={style.rating}>
-              <StarRating variant="card" type={variant} ratingKey={ratingKey} rating={userRating} />
+              <StarRating variant="card" type={variant} ratingKey={ratingKey} rating={userRating} editable />
             </div>
           )}
         </div>
       </div>
     );
+
+    if (isAlbum) {
+      return (
+        <ContextMenuAlbums album={{ albumId, title, artistId, artistLink }} showArtist={variant !== 'artistAlbums'}>
+          {card}
+        </ContextMenuAlbums>
+      );
+    }
+
+    if (isPlaylist) {
+      return <ContextMenuPlaylists playlist={{ playlistId, playlistTitle: title }}>{card}</ContextMenuPlaylists>;
+    }
+
+    return card;
   }
 );
 

@@ -19,15 +19,12 @@ export const platformFeatures = {
     menuArtistTags: true,
     menuAlbumTags: true,
 
-    // fields
+    // data fields
     enableCountry: false,
     enableAddedAt: false,
     enableLastPlayed: false,
     enableUserRating: false,
     enableIsFavourite: true,
-
-    // features
-    playlistManagement: true,
   },
 
   plex: {
@@ -50,15 +47,12 @@ export const platformFeatures = {
     menuArtistTags: false,
     menuAlbumTags: false,
 
-    // fields
+    // data fields
     enableCountry: true,
     enableAddedAt: true,
     enableLastPlayed: true,
     enableUserRating: true,
     enableIsFavourite: false,
-
-    // features
-    playlistManagement: true,
   },
 };
 

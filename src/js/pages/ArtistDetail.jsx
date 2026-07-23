@@ -466,6 +466,7 @@ const Title = ({
                   ...(platformOpts?.enableIsFavourite
                     ? [
                         {
+                          variant: 'checkbox',
                           label: 'Show favourites',
                           attr: 'gridArtistAlbumsIsFavourite',
                           checked: gridOptions.isFavourite,
@@ -475,6 +476,7 @@ const Title = ({
                   ...(platformOpts?.enableUserRating
                     ? [
                         {
+                          variant: 'checkbox',
                           label: 'Show star ratings',
                           attr: 'gridArtistAlbumsUserRating',
                           checked: gridOptions.userRating,
@@ -485,6 +487,7 @@ const Title = ({
                     variant: 'divider',
                   },
                   {
+                    variant: 'checkbox',
                     label: 'Group by type',
                     attr: 'artistAlbumsGroupByType',
                     checked: artistAlbumsGroupByType,
@@ -500,21 +503,20 @@ const Title = ({
               icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
-                // {
-                //   variant: 'sectionHeading',
-                //   label: 'Columns',
-                // },
                 {
+                  variant: 'checkbox',
                   label: 'Title',
                   disabled: true,
                   checked: true,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Genre',
                   attr: 'colArtistAlbumsGenre',
                   checked: colOptions.genre,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Released',
                   attr: 'colArtistAlbumsReleaseDate',
                   checked: colOptions.releaseDate,
@@ -522,6 +524,7 @@ const Title = ({
                 ...(platformOpts?.enableAddedAt
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Added',
                         attr: 'colArtistAlbumsAddedAt',
                         checked: colOptions.addedAt,
@@ -531,6 +534,7 @@ const Title = ({
                 ...(platformOpts?.enableLastPlayed
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Last played',
                         attr: 'colArtistAlbumsLastPlayed',
                         checked: colOptions.lastPlayed,
@@ -540,6 +544,7 @@ const Title = ({
                 ...(platformOpts?.enableIsFavourite
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Favourite',
                         attr: 'colArtistAlbumsIsFavourite',
                         checked: colOptions.isFavourite,
@@ -549,6 +554,7 @@ const Title = ({
                 ...(platformOpts?.enableUserRating
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Rating',
                         attr: 'colArtistAlbumsUserRating',
                         checked: colOptions.userRating,
@@ -558,11 +564,8 @@ const Title = ({
                 {
                   variant: 'divider',
                 },
-                // {
-                //   variant: 'sectionHeading',
-                //   label: 'Options',
-                // },
                 {
+                  variant: 'checkbox',
                   label: 'Group by type',
                   attr: 'artistAlbumsGroupByType',
                   checked: artistAlbumsGroupByType,
@@ -577,46 +580,50 @@ const Title = ({
               icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
-                // {
-                //   variant: 'sectionHeading',
-                //   label: 'Columns',
-                // },
                 {
+                  variant: 'checkbox',
                   label: 'Artwork',
                   attr: 'colArtistTracksArtwork',
                   checked: colOptions.artwork,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Title',
                   disabled: true,
                   checked: true,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Artist',
                   attr: 'colArtistTracksArtist',
                   checked: colOptions.artist,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Album',
                   attr: 'colArtistTracksAlbum',
                   checked: colOptions.album,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Released',
                   attr: 'colArtistTracksReleaseDate',
                   checked: colOptions.releaseDate,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Audio codec',
                   attr: 'colArtistTracksCodec',
                   checked: colOptions.codec,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Bitrate',
                   attr: 'colArtistTracksBitrate',
                   checked: colOptions.bitrate,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Duration',
                   attr: 'colArtistTracksDuration',
                   checked: colOptions.duration,
@@ -624,6 +631,7 @@ const Title = ({
                 ...(platformOpts?.enableIsFavourite
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Favourite',
                         attr: 'colArtistTracksIsFavourite',
                         checked: colOptions.isFavourite,
@@ -633,6 +641,7 @@ const Title = ({
                 ...(platformOpts?.enableUserRating
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Rating',
                         attr: 'colArtistTracksUserRating',
                         checked: colOptions.userRating,

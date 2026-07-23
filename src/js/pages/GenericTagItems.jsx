@@ -284,6 +284,7 @@ const Title = ({
                   ...(platformOpts?.enableIsFavourite
                     ? [
                         {
+                          variant: 'checkbox',
                           label: 'Show favourites',
                           attr: `${gridStatePrefix}IsFavourite`,
                           checked: gridOptions.isFavourite,
@@ -293,6 +294,7 @@ const Title = ({
                   ...(platformOpts?.enableUserRating
                     ? [
                         {
+                          variant: 'checkbox',
                           label: 'Show star ratings',
                           attr: `${gridStatePrefix}UserRating`,
                           checked: gridOptions.userRating,
@@ -310,11 +312,13 @@ const Title = ({
               setter={setColumnVisibility}
               entries={[
                 {
+                  variant: 'checkbox',
                   label: 'Title',
                   disabled: true,
                   checked: true,
                 },
                 ...colFields.map((field) => ({
+                  variant: 'checkbox',
                   label: field.label,
                   attr: `${colStatePrefix}${field.attr}`,
                   checked: colOptions[field.key],
@@ -322,6 +326,7 @@ const Title = ({
                 ...(platformOpts?.enableIsFavourite
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Favourite',
                         attr: `${colStatePrefix}IsFavourite`,
                         checked: colOptions.isFavourite,
@@ -331,6 +336,7 @@ const Title = ({
                 ...(platformOpts?.enableUserRating
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Rating',
                         attr: `${colStatePrefix}UserRating`,
                         checked: colOptions.userRating,

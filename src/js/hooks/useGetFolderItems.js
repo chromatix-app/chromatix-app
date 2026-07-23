@@ -88,7 +88,7 @@ const useGetFolderItems = (folderId) => {
   };
 
   useEffect(() => {
-    bridge.getFolderItems(folderId).catch(() => {});
+    bridge.getFolderItems(folderId);
   }, [folderId]);
 
   return {
