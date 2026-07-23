@@ -652,7 +652,7 @@ const ListEntry = React.memo(
                     type={lookupType[variant] || variant}
                     itemId={ratingKey}
                     isFavourite={true}
-                    editable={false}
+                    editable
                   />
                 </span>
               )}
@@ -677,7 +677,7 @@ const ListEntry = React.memo(
           {showRatings && (
             // typeof userRating !== 'undefined' && userRating > 0 && (
             <div className={style.rating}>
-              <StarRating variant="card" type={variant} ratingKey={ratingKey} rating={userRating} />
+              <StarRating variant="card" type={variant} ratingKey={ratingKey} rating={userRating} editable />
             </div>
           )}
         </div>
