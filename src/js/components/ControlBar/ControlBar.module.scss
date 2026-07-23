@@ -27,7 +27,13 @@
 .leftSection {
 }
 
-.nowPlaying {
+.nowPlayingOuter {
+  display: flex;
+  align-items: center;
+  text-align: left;
+}
+
+.nowPlayingInner {
   display: flex;
   align-items: center;
   text-align: left;

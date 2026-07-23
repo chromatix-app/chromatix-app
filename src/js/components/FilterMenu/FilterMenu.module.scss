@@ -1,5 +1,4 @@
 @use '../../../css/_config/_mixins';
-@use '../../../css/_config/_vars';
 
 .wrap {
   display: inline-block;
@@ -66,14 +65,6 @@
 .content {
   top: 2px;
   left: -7px;
-  z-index: 99;
-  padding: 4px;
-  background: var(--color-secondary-bg);
-  border: 1px solid var(--color-secondary-border);
-  border-radius: 5px;
-  box-shadow: var(--shadow-md);
-  font-size: 12px;
-  line-height: 14px;
 
   &WithGroups {
     left: 16px;
@@ -83,59 +74,5 @@
   &Large {
     top: 4px;
     left: 0;
-  }
-}
-
-.sectionHeading {
-  padding: 7px 16px 6px 8px;
-  font-size: 10px;
-  font-weight: 700;
-  // text-transform: uppercase;
-  color: var(--color-opacity-05);
-}
-
-.divider {
-  height: 1px;
-  margin: 4px 7px;
-  background: var(--color-secondary-border);
-}
-
-.checkboxItem {
-  display: block;
-  position: relative;
-  padding: 6px 16px 6px 8px;
-  border-radius: 2px;
-
-  &:not([data-disabled]):hover,
-  &:not([data-disabled]):focus {
-    background: var(--color-secondary-hover);
-    cursor: pointer;
-
-    @include mixins.focus-self-fill;
-  }
-
-  &[data-disabled] {
-    color: var(--color-opacity-04);
-  }
-
-  // &[data-state='checked'] {
-  //   color: var(--color-core);
-  // }
-}
-
-.checkboxIcon {
-  display: inline-block;
-  position: relative;
-  // top: -1px;
-  width: 14px;
-  height: 14px;
-  margin-right: 8px;
-
-  &Inactive {
-    opacity: var(--opacity-02);
-  }
-
-  [data-disabled] & {
-    opacity: var(--opacity-06);
   }
 }

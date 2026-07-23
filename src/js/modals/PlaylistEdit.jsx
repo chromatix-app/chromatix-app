@@ -42,29 +42,6 @@ const PlaylistEdit = () => {
     }
   };
 
-  const handleDelete = () => {
-    dispatch.dialogModel.showConfirm({
-      icon: 'WarningTriangleIcon',
-      title: 'Are you sure you want to delete the playlist "' + currentModalData.playlistTitle + '"?',
-      body: 'This action cannot be undone.',
-      yesButton: 'Delete',
-      noButton: 'Cancel',
-      yesCallback: async () => {
-        setLoading(true);
-        dispatch.appModel.showBlocker();
-        try {
-          await bridge.deletePlaylist({ playlistId: currentModalData.playlistId });
-          dispatch.dialogModel.closeModal();
-        } catch (_error) {
-          // [TODO] add error handling
-        } finally {
-          setLoading(false);
-          dispatch.appModel.hideBlocker();
-        }
-      },
-    });
-  };
-
   return (
     <ModalWindow variant="playlist">
       <Dialog.Title asChild>
@@ -95,9 +72,6 @@ const PlaylistEdit = () => {
         </Button>
         <Button onClick={() => dispatch.dialogModel.closeModal()} size="small" color="tertiary" disabled={loading}>
           Cancel
-        </Button>
-        <Button onClick={handleDelete} size="small" color="outlineTertiary" disabled={loading}>
-          Delete Playlist
         </Button>
       </div>
     </ModalWindow>

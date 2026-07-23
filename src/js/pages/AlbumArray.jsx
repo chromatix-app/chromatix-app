@@ -187,6 +187,7 @@ const Title = ({
                 ...(platformOpts?.enableIsFavourite
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Show favourites',
                         attr: 'gridAlbumsIsFavourite',
                         checked: gridOptions.isFavourite,
@@ -196,6 +197,7 @@ const Title = ({
                 ...(platformOpts?.enableUserRating
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Show star ratings',
                         attr: 'gridAlbumsUserRating',
                         checked: gridOptions.userRating,
@@ -213,21 +215,25 @@ const Title = ({
             setter={setColumnVisibility}
             entries={[
               {
+                variant: 'checkbox',
                 label: 'Title',
                 disabled: true,
                 checked: true,
               },
               {
+                variant: 'checkbox',
                 label: 'Artist',
                 attr: 'colAlbumsArtist',
                 checked: colOptions.artist,
               },
               {
+                variant: 'checkbox',
                 label: 'Genre',
                 attr: 'colAlbumsGenre',
                 checked: colOptions.genre,
               },
               {
+                variant: 'checkbox',
                 label: 'Released',
                 attr: 'colAlbumsReleaseDate',
                 checked: colOptions.releaseDate,
@@ -235,6 +241,7 @@ const Title = ({
               ...(platformOpts?.enableAddedAt
                 ? [
                     {
+                      variant: 'checkbox',
                       label: 'Added',
                       attr: 'colAlbumsAddedAt',
                       checked: colOptions.addedAt,
@@ -244,6 +251,7 @@ const Title = ({
               ...(platformOpts?.enableLastPlayed
                 ? [
                     {
+                      variant: 'checkbox',
                       label: 'Last played',
                       attr: 'colAlbumsLastPlayed',
                       checked: colOptions.lastPlayed,
@@ -253,6 +261,7 @@ const Title = ({
               ...(platformOpts?.enableIsFavourite
                 ? [
                     {
+                      variant: 'checkbox',
                       label: 'Favourite',
                       attr: 'colAlbumsIsFavourite',
                       checked: colOptions.isFavourite,
@@ -262,6 +271,7 @@ const Title = ({
               ...(platformOpts?.enableUserRating
                 ? [
                     {
+                      variant: 'checkbox',
                       label: 'Rating',
                       attr: 'colAlbumsUserRating',
                       checked: colOptions.userRating,

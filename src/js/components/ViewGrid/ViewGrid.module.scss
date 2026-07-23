@@ -88,7 +88,8 @@
     margin-bottom: 20px;
   }
 
-  &:hover {
+  &:hover,
+  &[data-state='open'] {
     background: var(--color-card-on-primary-bg);
     border: 1px solid var(--color-card-on-primary-border);
   }
@@ -168,6 +169,7 @@
   pointer-events: none;
 
   .card:hover &,
+  .card[data-state='open'] &,
   .card.cardCurrent & {
     opacity: 1;
     transform: translateY(0);
@@ -218,6 +220,10 @@
   top: 3px;
   margin: -2px 6px -2px 0;
   color: var(--color-core);
+
+  &:hover {
+    color: var(--color-text);
+  }
 }
 
 .subtitle {
@@ -228,4 +234,8 @@
 .rating {
   margin-top: 6px;
   color: var(--color-opacity-04);
+
+  &:hover {
+    color: var(--color-text);
+  }
 }

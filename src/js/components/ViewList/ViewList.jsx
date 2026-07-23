@@ -9,11 +9,17 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import clsx from 'clsx';
 
 import { ContextMenu, Favourite, Icon, StarRating } from 'js/components';
-import platformFeatures from 'js/_config/platformFeatures';
-import { useScrollToTrack, useScrollToVirtualTrack, useTableOptions, useWindowSize, usePlaylistDrag } from 'js/hooks';
+import {
+  useContextMenuAlbums,
+  useContextMenuPlaylists,
+  useContextMenuTracks,
+  usePlaylistDrag,
+  useScrollToTrack,
+  useScrollToVirtualTrack,
+  useTableOptions,
+  useWindowSize,
+} from 'js/hooks';
 import { durationToStringMed, durationToStringShort, formatRecentDate, formatReleaseYear } from 'js/utils';
-import * as bridge from 'js/services/bridge';
-import store from 'js/store/store';
 
 import style from './ViewList.module.scss';
 
@@ -98,6 +104,7 @@ const ViewListBasic = ({
           entries={entriesWithGroups}
           titleBlock={children}
           headerBlock={headerBlock()}
+          variant={variant}
           tableVariant={tableVariant}
           tableOptions={tableOptions}
           gridTemplateColumns={gridTemplateColumns}
@@ -212,9 +219,6 @@ const ViewListTracks = ({
     );
   };
 
-  const currentService = useSelector(({ appModel }) => appModel.currentService);
-  const platformOpts = platformFeatures[currentService] || {};
-
   if (entries) {
     const TableBodyComponent = entries.length <= virtualThreshold ? TableBodyStatic : TableBodyVirtual;
 
@@ -222,8 +226,8 @@ const ViewListTracks = ({
     const isSorted = sortKey && !sortKey.startsWith('sortOrder');
     const showDiscNumbers = !isSorted && discCount > 1;
 
-    // Drag is only available for playlist tracks in default sort order on services that support playlist management
-    const isDraggable = platformOpts.playlistManagement && tableVariant === 'playlistTracks' && !isSorted;
+    // Drag is only available for playlist tracks in default sort order
+    const isDraggable = tableVariant === 'playlistTracks' && !isSorted;
 
     // If disc numbers are shown, add them into our entries array
     let currentDisc = 0;
@@ -268,7 +272,6 @@ const ViewListTracks = ({
           pauseTrack={pauseTrack}
           isTrackLoaded={isTrackLoaded}
           isDraggable={isDraggable}
-          playlistManagement={platformOpts.playlistManagement}
         />
       </div>
     );
@@ -344,6 +347,7 @@ const TableBodyStatic = ({
   entries,
   titleBlock,
   headerBlock,
+  variant,
   tableVariant,
   tableOptions,
   gridTemplateColumns,
@@ -357,7 +361,6 @@ const TableBodyStatic = ({
   pauseTrack,
   isTrackLoaded,
   isDraggable,
-  playlistManagement,
 }) => {
   useScrollToTrack();
 
@@ -423,7 +426,6 @@ const TableBodyStatic = ({
                 playTrack={playTrack}
                 pauseTrack={pauseTrack}
                 isTrackLoaded={isTrackLoaded}
-                playlistManagement={playlistManagement}
                 // drag related props
                 isDraggable={isDraggable}
                 isDragging={draggingItemId === entry.playlistItemID}
@@ -438,6 +440,7 @@ const TableBodyStatic = ({
               <StandardRow
                 key={index}
                 entry={entry}
+                variant={variant}
                 tableVariant={tableVariant}
                 tableOptions={tableOptions}
                 gridTemplateColumns={gridTemplateColumns}
@@ -478,6 +481,7 @@ const TableBodyVirtual = ({
   entries,
   titleBlock,
   headerBlock,
+  variant,
   tableVariant,
   tableOptions,
   gridTemplateColumns,
@@ -493,7 +497,6 @@ const TableBodyVirtual = ({
   pauseTrack,
   isTrackLoaded,
   isDraggable,
-  playlistManagement,
 }) => {
   // Element refs
   innerRef = useRef(null);
@@ -664,7 +667,6 @@ const TableBodyVirtual = ({
                   playTrack={playTrack}
                   pauseTrack={pauseTrack}
                   isTrackLoaded={isTrackLoaded}
-                  playlistManagement={playlistManagement}
                   // drag related props
                   isDraggable={isDraggable}
                   isDragging={draggingItemId === entry.playlistItemID}
@@ -680,6 +682,7 @@ const TableBodyVirtual = ({
                   key={virtualEntry.index}
                   entry={entry}
                   virtualEntry={virtualEntry}
+                  variant={variant}
                   tableVariant={tableVariant}
                   tableOptions={tableOptions}
                   gridTemplateColumns={gridTemplateColumns}
@@ -773,157 +776,198 @@ const DiscRow = ({ virtualEntry, entry }) => {
 // STANDARD ROW
 // ======================================================================
 
-const StandardRow = ({ virtualEntry, entry, tableVariant, tableOptions, gridTemplateColumns }) => {
+const StandardRow = ({ virtualEntry, entry, variant, tableVariant, tableOptions, gridTemplateColumns }) => {
   const { ratingType, ratingKey } = lookupVariantFields[tableVariant] || {};
   const rowKey = entry.albumId || entry.artistId || entry.playlistId || entry.collectionId;
 
+  const isAlbum = tableVariant === 'albums';
+  const isPlaylist = tableVariant === 'playlists';
+
+  const albumContextEntries = useContextMenuAlbums(isAlbum ? entry : null, {
+    showArtist: variant !== 'artistAlbums',
+  });
+  const playlistContextEntries = useContextMenuPlaylists(
+    isPlaylist ? { playlistId: entry.playlistId, playlistTitle: entry.title } : null
+  );
+  const contextEntries = isAlbum ? albumContextEntries : isPlaylist ? playlistContextEntries : [];
+
   return (
-    <NavLink
-      className={style.entry}
-      to={entry.link}
-      draggable="false"
-      style={{
-        ...(virtualEntry && {
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          transform: `translateY(${virtualEntry.start}px)`,
-        }),
-        gridTemplateColumns,
-      }}
-    >
-      {tableOptions
-        .filter((columnOptions) => columnOptions.visible !== false)
-        .map((columnOptions, index) => {
-          switch (columnOptions.colKey) {
-            case 'addedAt':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.addedAt, 'text-trim')}>
-                  {formatRecentDate(entry.addedAt)}
-                </div>
-              );
-
-            case 'artist':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.artist, 'text-trim')}>
-                  {entry.artist}
-                </div>
-              );
-
-            case 'country':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.country, 'text-trim')}>
-                  {entry.country}
-                </div>
-              );
-
-            case 'duration':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.duration, 'text-trim')}>
-                  {durationToStringMed(entry.duration)}
-                </div>
-              );
-
-            case 'genre':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.genre, 'text-trim')}>
-                  {entry.genre}
-                </div>
-              );
-
-            case 'isFavourite':
-              return (
-                <div key={rowKey + '-' + index} className={style.isFavourite}>
-                  <Favourite
-                    variant="table"
-                    type={ratingType}
-                    itemId={rowKey}
-                    isFavourite={entry.isFavourite}
-                    editable
-                  />
-                </div>
-              );
-
-            case 'kind':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.kind, 'text-trim')}>
-                  {entry.kind?.replace('aaa', '')}
-                </div>
-              );
-
-            case 'lastPlayed':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.lastPlayed, 'text-trim')}>
-                  {formatRecentDate(entry.lastPlayed)}
-                </div>
-              );
-
-            case 'releaseDate':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.releaseDate, 'text-trim')}>
-                  {formatReleaseYear(entry.releaseDate)}
-                </div>
-              );
-
-            case 'sortOrder':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.trackNumberPermanent, style.colCenter)}>
-                  <span>-</span>
-                </div>
-              );
-
-            case 'thumb':
-              if (columnOptions.icon) {
+    <ContextMenu entries={contextEntries}>
+      <NavLink
+        className={style.entry}
+        to={entry.link}
+        draggable="false"
+        style={{
+          ...(virtualEntry && {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            transform: `translateY(${virtualEntry.start}px)`,
+          }),
+          gridTemplateColumns,
+        }}
+      >
+        {tableOptions
+          .filter((columnOptions) => columnOptions.visible !== false)
+          .map((columnOptions, index) => {
+            switch (columnOptions.colKey) {
+              case 'addedAt':
                 return (
-                  <div key={rowKey + '-' + index} className={clsx(style.thumb, style.thumbFolder)}>
-                    <span className={style.thumbIcon}>
-                      <Icon icon={columnOptions.icon} cover stroke strokeWidth={1.2} />
-                    </span>
+                  <div key={rowKey + '-' + index} className={clsx(style.addedAt, 'text-trim')}>
+                    {formatRecentDate(entry.addedAt)}
                   </div>
                 );
-              } else {
+
+              case 'artist':
                 return (
-                  <div key={rowKey + '-' + index} className={style.thumb}>
-                    {entry.thumbSm && <img src={entry.thumbSm} alt={entry.title} draggable="false" loading="lazy" />}
+                  <div key={rowKey + '-' + index} className={clsx(style.artist, 'text-trim')}>
+                    {entry.artist}
                   </div>
                 );
-              }
 
-            case 'title':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.title, 'text-trim')}>
-                  {entry.title}
-                </div>
-              );
+              case 'country':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.country, 'text-trim')}>
+                    {entry.country}
+                  </div>
+                );
 
-            case 'totalTracks':
-              return (
-                <div key={rowKey + '-' + index} className={clsx(style.totalTracks, 'text-trim')}>
-                  {entry.totalTracks}
-                  {(entry.totalTracks || entry.totalTracks === 0) && <> track{entry.totalTracks !== 1 ? 's' : ''}</>}
-                </div>
-              );
+              case 'duration':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.duration, 'text-trim')}>
+                    {durationToStringMed(entry.duration)}
+                  </div>
+                );
 
-            case 'userRating':
-              return (
-                <div key={rowKey + '-' + index} className={style.userRating}>
-                  <StarRating
-                    variant="list"
-                    type={ratingType}
-                    ratingKey={entry[ratingKey]}
-                    rating={entry.userRating}
-                    editable
-                    onlyShowOnHover
-                  />
-                </div>
-              );
+              case 'genre':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.genre, 'text-trim')}>
+                    {entry.genre}
+                  </div>
+                );
 
-            default:
-              return null;
-          }
-        })}
-    </NavLink>
+              case 'isFavourite':
+                return (
+                  <div key={rowKey + '-' + index} className={style.isFavourite}>
+                    <Favourite
+                      variant="table"
+                      type={ratingType}
+                      itemId={rowKey}
+                      isFavourite={entry.isFavourite}
+                      editable
+                    />
+                  </div>
+                );
+
+              case 'kind':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.kind, 'text-trim')}>
+                    {entry.kind?.replace('aaa', '')}
+                  </div>
+                );
+
+              case 'lastPlayed':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.lastPlayed, 'text-trim')}>
+                    {formatRecentDate(entry.lastPlayed)}
+                  </div>
+                );
+
+              case 'releaseDate':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.releaseDate, 'text-trim')}>
+                    {formatReleaseYear(entry.releaseDate)}
+                  </div>
+                );
+
+              case 'sortOrder':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.trackNumberPermanent, style.colCenter)}>
+                    <span>-</span>
+                  </div>
+                );
+
+              case 'thumb':
+                if (columnOptions.icon) {
+                  return (
+                    <div key={rowKey + '-' + index} className={clsx(style.thumb, style.thumbFolder)}>
+                      <span className={style.thumbIcon}>
+                        <Icon icon={columnOptions.icon} cover stroke strokeWidth={1.2} />
+                      </span>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div key={rowKey + '-' + index} className={style.thumb}>
+                      {entry.thumbSm && <img src={entry.thumbSm} alt={entry.title} draggable="false" loading="lazy" />}
+                    </div>
+                  );
+                }
+
+              case 'title':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.title, 'text-trim')}>
+                    {entry.title}
+                  </div>
+                );
+
+              case 'totalTracks':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.totalTracks, 'text-trim')}>
+                    {entry.totalTracks}
+                    {(entry.totalTracks || entry.totalTracks === 0) && <> track{entry.totalTracks !== 1 ? 's' : ''}</>}
+                  </div>
+                );
+
+              case 'userRating':
+                return (
+                  <div key={rowKey + '-' + index} className={style.userRating}>
+                    <StarRating
+                      variant="list"
+                      type={ratingType}
+                      ratingKey={entry[ratingKey]}
+                      rating={entry.userRating}
+                      editable
+                      onlyShowOnHover
+                    />
+                  </div>
+                );
+
+              case 'contextMenu':
+                return (
+                  <div key={rowKey + '-' + index} className={style.contextMenu}>
+                    {!!contextEntries.length && (
+                      <button
+                        type="button"
+                        className={style.contextButton}
+                        aria-label="More options"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          e.currentTarget.dispatchEvent(
+                            new MouseEvent('contextmenu', {
+                              bubbles: true,
+                              cancelable: true,
+                              clientX: rect.left,
+                              clientY: rect.bottom,
+                            })
+                          );
+                        }}
+                      >
+                        <Icon icon="EllipsisIcon" cover />
+                      </button>
+                    )}
+                  </div>
+                );
+
+              default:
+                return null;
+            }
+          })}
+      </NavLink>
+    </ContextMenu>
   );
 };
 
@@ -946,7 +990,6 @@ const TrackRow = ({
   playerPlaying,
   pauseTrack,
   isTrackLoaded,
-  playlistManagement,
   // drag related props
   isDraggable,
   isDragging,
@@ -981,43 +1024,11 @@ const TrackRow = ({
   // artistTracks
   // playlistTracks
 
-  const hasContextAdd = playlistManagement;
-  const hasContextRemove = playlistManagement && tableVariant === 'playlistTracks';
-  const hasContextArtist = !!entry.artistLink && tableVariant !== 'artistTracks';
-  const hasContextAlbum = !!entry.albumLink && tableVariant !== 'albumTracks';
-  const hasContextDivider = (hasContextAdd || hasContextRemove) && (hasContextArtist || hasContextAlbum);
-
-  const contextEntries = [
-    ...(hasContextAdd
-      ? [
-          {
-            variant: 'submenu',
-            label: 'Add to Playlist',
-            icon: 'PlusCircleIcon',
-            getEntries: () => {
-              const playlists = store.getState().appModel.allPlaylists || [];
-              return playlists.map((playlist) => ({
-                label: playlist.title,
-                onSelect: () =>
-                  bridge.addTracksToPlaylist({ playlistId: playlist.playlistId, trackIds: [entry.trackId] }),
-              }));
-            },
-          },
-        ]
-      : []),
-    ...(hasContextRemove
-      ? [
-          {
-            label: 'Remove from Playlist',
-            icon: 'MinusCircleIcon',
-            onSelect: () => bridge.removeTrackFromPlaylist({ playlistId, playlistItemId: entry.playlistItemID }),
-          },
-        ]
-      : []),
-    ...(hasContextDivider ? [{ variant: 'divider' }] : []),
-    ...(hasContextArtist ? [{ label: 'Go to Artist', icon: 'PeopleIcon', to: entry.artistLink }] : []),
-    ...(hasContextAlbum ? [{ label: 'Go to Album', icon: 'PlayCircleIcon', to: entry.albumLink }] : []),
-  ];
+  const contextEntries = useContextMenuTracks(entry, {
+    playlistId: tableVariant === 'playlistTracks' ? playlistId : null,
+    showArtist: tableVariant !== 'artistTracks',
+    showAlbum: tableVariant !== 'albumTracks',
+  });
 
   return (
     <ContextMenu entries={contextEntries}>
@@ -1234,6 +1245,7 @@ const TrackRow = ({
                       <button
                         type="button"
                         className={style.contextButton}
+                        aria-label="More options"
                         onDoubleClick={(e) => e.stopPropagation()}
                         onPointerDown={(e) => e.stopPropagation()}
                         onClick={(e) => {

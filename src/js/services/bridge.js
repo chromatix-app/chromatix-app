@@ -25,18 +25,6 @@ const storageTokenKey = config.storageTokenKey;
 const refetchData = true;
 
 // ======================================================================
-// HELPER - CHECK IF STORE IS READY
-// ======================================================================
-
-// Used during development to guard against a Vite HMR timing issue where bridge functions can fire
-// before the store has been rehydrated from localStorage. In production this never occurs, so we skip the check.
-const isStoreReady = () => {
-  if (import.meta.env.PROD) return true;
-  const { sessionModel } = store.getState();
-  return Boolean(sessionModel.currentServer) && Boolean(sessionModel.currentLibrary);
-};
-
-// ======================================================================
 // ABORT HANDLING
 // ======================================================================
 
@@ -448,21 +436,23 @@ export const getAllAlbumArtists = () => {
 // GET ARTIST DETAILS
 // ======================================================================
 
-let getArtistDetailsRunning;
-
 export const getArtistDetails = (libraryId, artistId) => {
   if (!isStoreReady()) return;
-  if (!getArtistDetailsRunning) {
-    const prevArtistDetails = store.getState().appModel.allArtists?.find((artist) => artist.artistId === artistId);
-    if (refetchData || !prevArtistDetails) {
+  const runningKey = `getArtistDetails-${libraryId}-${artistId}`;
+  const runningFetch = getRunningFetch(runningKey);
+  if (runningFetch) {
+    return runningFetch;
+  }
+  const prevArtistDetails = store.getState().appModel.allArtists?.find((artist) => artist.artistId === artistId);
+  if (refetchData || !prevArtistDetails) {
+    return runFetch(runningKey, () => {
       console.log('%c--- bridge - getArtistDetails ---', 'color:#f9743b;');
-      getArtistDetailsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
 
-      serviceTools[currentService]
+      return serviceTools[currentService]
         .getArtistDetails({
           accessToken,
           artistId,
@@ -480,11 +470,8 @@ export const getArtistDetails = (libraryId, artistId) => {
             store.dispatch.appModel.storeArtist404({ artistId });
           }
           analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Artist Details');
-        })
-        .finally(() => {
-          getArtistDetailsRunning = false;
         });
-    }
+    });
   }
 };
 
@@ -492,23 +479,25 @@ export const getArtistDetails = (libraryId, artistId) => {
 // GET ALBUM ARTIST DETAILS
 // ======================================================================
 
-let getAlbumArtistDetailsRunning;
-
 export const getAlbumArtistDetails = (libraryId, artistId) => {
   if (!isStoreReady()) return;
-  if (!getAlbumArtistDetailsRunning) {
-    const prevAlbumArtistDetails = store
-      .getState()
-      .appModel.allAlbumArtists?.find((artist) => artist.artistId === artistId);
-    if (refetchData || !prevAlbumArtistDetails) {
+  const runningKey = `getAlbumArtistDetails-${libraryId}-${artistId}`;
+  const runningFetch = getRunningFetch(runningKey);
+  if (runningFetch) {
+    return runningFetch;
+  }
+  const prevAlbumArtistDetails = store
+    .getState()
+    .appModel.allAlbumArtists?.find((artist) => artist.artistId === artistId);
+  if (refetchData || !prevAlbumArtistDetails) {
+    return runFetch(runningKey, () => {
       console.log('%c--- bridge - getAlbumArtistDetails ---', 'color:#f9743b;');
-      getAlbumArtistDetailsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
 
-      serviceTools[currentService]
+      return serviceTools[currentService]
         .getArtistDetails({
           accessToken,
           artistId,
@@ -526,11 +515,8 @@ export const getAlbumArtistDetails = (libraryId, artistId) => {
             store.dispatch.appModel.storeAlbumArtist404({ artistId });
           }
           analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Album Artist Details');
-        })
-        .finally(() => {
-          getAlbumArtistDetailsRunning = false;
         });
-    }
+    });
   }
 };
 
@@ -538,21 +524,23 @@ export const getAlbumArtistDetails = (libraryId, artistId) => {
 // GET ARTIST ALBUMS
 // ======================================================================
 
-let getAllArtistAlbumsRunning;
-
 export const getAllArtistAlbums = (libraryId, artistId) => {
   if (!isStoreReady()) return;
-  if (!getAllArtistAlbumsRunning) {
-    const prevAllAlbums = store.getState().appModel.allArtistAlbums[libraryId + '-' + artistId];
-    if (refetchData || !prevAllAlbums) {
+  const runningKey = `getAllArtistAlbums-${libraryId}-${artistId}`;
+  const runningFetch = getRunningFetch(runningKey);
+  if (runningFetch) {
+    return runningFetch;
+  }
+  const prevAllAlbums = store.getState().appModel.allArtistAlbums[libraryId + '-' + artistId];
+  if (refetchData || !prevAllAlbums) {
+    return runFetch(runningKey, () => {
       console.log('%c--- bridge - getAllArtistAlbums ---', 'color:#f9743b;');
-      getAllArtistAlbumsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
 
-      serviceTools[currentService]
+      return serviceTools[currentService]
         .getAllArtistAlbums({
           accessToken,
           artistId,
@@ -567,11 +555,8 @@ export const getAllArtistAlbums = (libraryId, artistId) => {
         .catch((error) => {
           console.error(error);
           analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Artist Albums');
-        })
-        .finally(() => {
-          getAllArtistAlbumsRunning = false;
         });
-    }
+    });
   }
 };
 
@@ -579,20 +564,22 @@ export const getAllArtistAlbums = (libraryId, artistId) => {
 // GET ARTIST RELATED ALBUMS
 // ======================================================================
 
-let getAllArtistRelatedAlbumsRunning;
-
 export const getAllArtistRelatedAlbums = (libraryId, artistId) => {
   if (!isStoreReady()) return;
-  if (!getAllArtistRelatedAlbumsRunning) {
-    const prevAllRelated = store.getState().appModel.allArtistRelatedAlbums[libraryId + '-' + artistId];
-    if (refetchData || !prevAllRelated) {
+  const runningKey = `getAllArtistRelatedAlbums-${libraryId}-${artistId}`;
+  const runningFetch = getRunningFetch(runningKey);
+  if (runningFetch) {
+    return runningFetch;
+  }
+  const prevAllRelated = store.getState().appModel.allArtistRelatedAlbums[libraryId + '-' + artistId];
+  if (refetchData || !prevAllRelated) {
+    return runFetch(runningKey, () => {
       console.log('%c--- bridge - getAllArtistRelatedAlbums ---', 'color:#f9743b;');
-      getAllArtistRelatedAlbumsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
-      serviceTools[currentService]
+      return serviceTools[currentService]
         .getAllArtistRelatedAlbums({
           accessToken,
           artistId,
@@ -606,11 +593,8 @@ export const getAllArtistRelatedAlbums = (libraryId, artistId) => {
         .catch((error) => {
           console.error(error);
           analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Artist Related Albums');
-        })
-        .finally(() => {
-          getAllArtistRelatedAlbumsRunning = false;
         });
-    }
+    });
   }
 };
 
@@ -618,21 +602,23 @@ export const getAllArtistRelatedAlbums = (libraryId, artistId) => {
 // GET ARTIST APPEARANCE ALBUMS
 // ======================================================================
 
-let getAllArtistAppearanceAlbumsRunning;
-
 export const getAllArtistAppearanceAlbums = (libraryId, artistId, artistName) => {
   if (!isStoreReady()) return;
-  if (!getAllArtistAppearanceAlbumsRunning) {
-    const prevAllAppearanceAlbums = store.getState().appModel.allArtistAppearanceAlbums[libraryId + '-' + artistId];
-    if (refetchData || !prevAllAppearanceAlbums) {
+  const runningKey = `getAllArtistAppearanceAlbums-${libraryId}-${artistId}`;
+  const runningFetch = getRunningFetch(runningKey);
+  if (runningFetch) {
+    return runningFetch;
+  }
+  const prevAllAppearanceAlbums = store.getState().appModel.allArtistAppearanceAlbums[libraryId + '-' + artistId];
+  if (refetchData || !prevAllAppearanceAlbums) {
+    return runFetch(runningKey, () => {
       console.log('%c--- bridge - getAllArtistAppearanceAlbums ---', 'color:#f9743b;');
-      getAllArtistAppearanceAlbumsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
       const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
 
-      serviceTools[currentService]
+      return serviceTools[currentService]
         .getAllArtistAppearanceAlbums({
           accessToken,
           artistId,
@@ -653,11 +639,8 @@ export const getAllArtistAppearanceAlbums = (libraryId, artistId, artistName) =>
         .catch((error) => {
           console.error(error);
           analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Artist Appearance Albums');
-        })
-        .finally(() => {
-          getAllArtistAppearanceAlbumsRunning = false;
         });
-    }
+    });
   }
 };
 
@@ -665,57 +648,45 @@ export const getAllArtistAppearanceAlbums = (libraryId, artistId, artistName) =>
 // GET ARTIST TRACKS
 // ======================================================================
 
-let getAllArtistTracksRunning;
-
 export const getAllArtistTracks = (libraryId, artistId, artistName) => {
-  return new Promise((resolve, reject) => {
-    if (!isStoreReady()) {
-      resolve();
-      return;
-    }
-    if (!getAllArtistTracksRunning) {
-      const prevArtistTracks = store.getState().appModel.allArtistTracks[libraryId + '-' + artistId];
-      if (refetchData || !prevArtistTracks) {
-        console.log('%c--- bridge - getAllArtistTracks ---', 'color:#f9743b;');
-        getAllArtistTracksRunning = true;
-        const accessToken = store.getState().sessionModel.currentServer.accessToken;
-        const currentService = store.getState().appModel.currentService;
-        const serverBaseUrl = store.getState().appModel.serverBaseUrl;
-        const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
+  if (!isStoreReady()) return;
+  const runningKey = `getAllArtistTracks-${libraryId}-${artistId}`;
+  const runningFetch = getRunningFetch(runningKey);
+  if (runningFetch) {
+    return runningFetch;
+  }
+  const prevArtistTracks = store.getState().appModel.allArtistTracks[libraryId + '-' + artistId];
+  if (refetchData || !prevArtistTracks) {
+    return runFetch(runningKey, () => {
+      console.log('%c--- bridge - getAllArtistTracks ---', 'color:#f9743b;');
+      const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const currentService = store.getState().appModel.currentService;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
 
-        serviceTools[currentService]
-          .getAllArtistTracks({
-            accessToken,
-            artistId,
-            artistName,
+      return serviceTools[currentService]
+        .getAllArtistTracks({
+          accessToken,
+          artistId,
+          artistName,
+          libraryId,
+          serverBaseUrl,
+          userId,
+        })
+        .then((response) => {
+          // console.log(response);
+          store.dispatch.appModel.storeArtistTracks({
             libraryId,
-            serverBaseUrl,
-            userId,
-          })
-          .then((response) => {
-            // console.log(response);
-            store.dispatch.appModel.storeArtistTracks({
-              libraryId,
-              artistId,
-              artistTracks: response,
-            });
-            resolve();
-          })
-          .catch((error) => {
-            console.error(error);
-            analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Artist Tracks');
-            reject(error);
-          })
-          .finally(() => {
-            getAllArtistTracksRunning = false;
+            artistId,
+            artistTracks: response,
           });
-      } else {
-        resolve();
-      }
-    } else {
-      resolve();
-    }
-  });
+        })
+        .catch((error) => {
+          console.error(error);
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Artist Tracks');
+        });
+    });
+  }
 };
 
 // ======================================================================
@@ -764,20 +735,22 @@ export const getAllAlbums = () => {
 // GET ALBUM DETAILS
 // ======================================================================
 
-let getAlbumDetailsRunning;
-
 export const getAlbumDetails = (libraryId, albumId, callback) => {
   if (!isStoreReady()) return;
-  if (!getAlbumDetailsRunning) {
-    const prevAlbumDetails = store.getState().appModel.allAlbums?.find((album) => album.albumId === albumId);
-    if (refetchData || !prevAlbumDetails) {
+  const runningKey = `getAlbumDetails-${libraryId}-${albumId}`;
+  const runningFetch = getRunningFetch(runningKey);
+  if (runningFetch) {
+    return runningFetch;
+  }
+  const prevAlbumDetails = store.getState().appModel.allAlbums?.find((album) => album.albumId === albumId);
+  if (refetchData || !prevAlbumDetails) {
+    return runFetch(runningKey, () => {
       console.log('%c--- bridge - getAlbumDetails ---', 'color:#f9743b;');
-      getAlbumDetailsRunning = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
-      serviceTools[currentService]
+      return serviceTools[currentService]
         .getAlbumDetails({
           accessToken,
           albumId,
@@ -797,11 +770,8 @@ export const getAlbumDetails = (libraryId, albumId, callback) => {
             store.dispatch.appModel.storeAlbum404({ albumId });
           }
           analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Album Details');
-        })
-        .finally(() => {
-          getAlbumDetailsRunning = false;
         });
-    }
+    });
   }
 };
 
@@ -809,106 +779,82 @@ export const getAlbumDetails = (libraryId, albumId, callback) => {
 // GET ALBUM TRACKS
 // ======================================================================
 
-let getAlbumTracksRunning;
-
 export const getAlbumTracks = (libraryId, albumId) => {
-  return new Promise((resolve, reject) => {
-    if (!isStoreReady()) {
-      resolve();
-      return;
-    }
-    if (!getAlbumTracksRunning) {
-      const prevAlbumTracks = store.getState().appModel.allAlbumTracks[libraryId + '-' + albumId];
-      if (refetchData || !prevAlbumTracks) {
-        console.log('%c--- bridge - getAlbumTracks ---', 'color:#f9743b;');
-        getAlbumTracksRunning = true;
-        const accessToken = store.getState().sessionModel.currentServer.accessToken;
-        const currentService = store.getState().appModel.currentService;
-        const serverBaseUrl = store.getState().appModel.serverBaseUrl;
-        const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
+  if (!isStoreReady()) return;
+  const runningKey = `getAlbumTracks-${libraryId}-${albumId}`;
+  const runningFetch = getRunningFetch(runningKey);
+  if (runningFetch) {
+    return runningFetch;
+  }
+  const prevAlbumTracks = store.getState().appModel.allAlbumTracks[libraryId + '-' + albumId];
+  if (refetchData || !prevAlbumTracks) {
+    return runFetch(runningKey, () => {
+      console.log('%c--- bridge - getAlbumTracks ---', 'color:#f9743b;');
+      const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const currentService = store.getState().appModel.currentService;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+      const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
 
-        serviceTools[currentService]
-          .getAlbumTracks({
-            accessToken,
-            albumId,
-            libraryId,
-            serverBaseUrl,
-            userId,
-          })
-          .then((response) => {
-            // console.log(response);
-            store.dispatch.appModel.storeAlbumTracks({ libraryId, albumId, albumTracks: response });
-            resolve();
-          })
-          .catch((error) => {
-            console.error(error);
-            analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Album Tracks');
-            reject(error);
-          })
-          .finally(() => {
-            getAlbumTracksRunning = false;
-          });
-      } else {
-        resolve();
-      }
-    } else {
-      resolve();
-    }
-  });
+      return serviceTools[currentService]
+        .getAlbumTracks({
+          accessToken,
+          albumId,
+          libraryId,
+          serverBaseUrl,
+          userId,
+        })
+        .then((response) => {
+          // console.log(response);
+          store.dispatch.appModel.storeAlbumTracks({ libraryId, albumId, albumTracks: response });
+        })
+        .catch((error) => {
+          console.error(error);
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Album Tracks');
+        });
+    });
+  }
 };
 
 // ======================================================================
 // GET FOLDER ITEMS
 // ======================================================================
 
-let getFolderItemsRunning;
-
 export const getFolderItems = (folderId) => {
-  return new Promise((resolve, reject) => {
-    if (!isStoreReady()) {
-      resolve();
-      return;
-    }
-    if (!getFolderItemsRunning) {
-      const { libraryId } = store.getState().sessionModel.currentLibrary;
-      const prevFolderItems = store.getState().appModel.allFolderItems[libraryId + '-' + folderId];
-      if (refetchData || !prevFolderItems) {
-        console.log('%c--- bridge - getFolderItems ---', 'color:#f9743b;');
-        getFolderItemsRunning = true;
-        const accessToken = store.getState().sessionModel.currentServer.accessToken;
-        const currentService = store.getState().appModel.currentService;
-        const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  if (!isStoreReady()) return;
+  const { libraryId } = store.getState().sessionModel.currentLibrary;
+  const runningKey = `getFolderItems-${libraryId}-${folderId}`;
+  const runningFetch = getRunningFetch(runningKey);
+  if (runningFetch) {
+    return runningFetch;
+  }
+  const prevFolderItems = store.getState().appModel.allFolderItems[libraryId + '-' + folderId];
+  if (refetchData || !prevFolderItems) {
+    return runFetch(runningKey, () => {
+      console.log('%c--- bridge - getFolderItems ---', 'color:#f9743b;');
+      const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const currentService = store.getState().appModel.currentService;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
-        serviceTools[currentService]
-          .getFolderItems({
-            accessToken,
-            folderId,
-            libraryId,
-            serverBaseUrl,
-          })
-          .then((response) => {
-            // console.log(response);
-            store.dispatch.appModel.storeFolderItems({ libraryId, folderId, folderItems: response });
-            resolve();
-          })
-          .catch((error) => {
-            console.error(error);
-            if (error?.error?.status === 400 || error?.error?.status === 404) {
-              store.dispatch.appModel.storeFolder404({ libraryId, folderId });
-            }
-            analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Folder Items');
-            reject(error);
-          })
-          .finally(() => {
-            getFolderItemsRunning = false;
-          });
-      } else {
-        resolve();
-      }
-    } else {
-      resolve();
-    }
-  });
+      return serviceTools[currentService]
+        .getFolderItems({
+          accessToken,
+          folderId,
+          libraryId,
+          serverBaseUrl,
+        })
+        .then((response) => {
+          // console.log(response);
+          store.dispatch.appModel.storeFolderItems({ libraryId, folderId, folderItems: response });
+        })
+        .catch((error) => {
+          console.error(error);
+          if (error?.error?.status === 400 || error?.error?.status === 404) {
+            store.dispatch.appModel.storeFolder404({ libraryId, folderId });
+          }
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Folder Items');
+        });
+    });
+  }
 };
 
 // ======================================================================
@@ -960,17 +906,19 @@ export const getAllPlaylists = () => {
 // GET PLAYLIST DETAILS
 // ======================================================================
 
-let getPlaylistDetailsRunning;
-
 export const getPlaylistDetails = (libraryId, playlistId) => {
   if (!isStoreReady()) return;
-  if (!getPlaylistDetailsRunning) {
-    const prevPlaylistDetails = store
-      .getState()
-      .appModel.allPlaylists?.find((playlist) => playlist.playlistId === playlistId);
-    if (refetchData || !prevPlaylistDetails) {
+  const runningKey = `getPlaylistDetails-${libraryId}-${playlistId}`;
+  const runningFetch = getRunningFetch(runningKey);
+  if (runningFetch) {
+    return runningFetch;
+  }
+  const prevPlaylistDetails = store
+    .getState()
+    .appModel.allPlaylists?.find((playlist) => playlist.playlistId === playlistId);
+  if (refetchData || !prevPlaylistDetails) {
+    return runFetch(runningKey, () => {
       console.log('%c--- bridge - getPlaylistDetails ---', 'color:#f9743b;');
-      getPlaylistDetailsRunning = true;
       const currentService = store.getState().appModel.currentService;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
@@ -997,11 +945,8 @@ export const getPlaylistDetails = (libraryId, playlistId) => {
             store.dispatch.appModel.storePlaylist404({ playlistId });
           }
           analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Playlist Details');
-        })
-        .finally(() => {
-          getPlaylistDetailsRunning = false;
         });
-    }
+    });
   }
 };
 
@@ -1009,50 +954,38 @@ export const getPlaylistDetails = (libraryId, playlistId) => {
 // GET PLAYLIST TRACKS
 // ======================================================================
 
-let getPlaylistTracksRunning;
-
 export const getPlaylistTracks = (libraryId, playlistId) => {
-  return new Promise((resolve, reject) => {
-    if (!isStoreReady()) {
-      resolve();
-      return;
-    }
-    if (!getPlaylistTracksRunning) {
-      const prevPlaylistTracks = store.getState().appModel.allPlaylistTracks[libraryId + '-' + playlistId];
-      if (refetchData || !prevPlaylistTracks) {
-        console.log('%c--- bridge - getPlaylistTracks ---', 'color:#f9743b;');
-        getPlaylistTracksRunning = true;
-        const accessToken = store.getState().sessionModel.currentServer.accessToken;
-        const currentService = store.getState().appModel.currentService;
-        const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  if (!isStoreReady()) return;
+  const runningKey = `getPlaylistTracks-${libraryId}-${playlistId}`;
+  const runningFetch = getRunningFetch(runningKey);
+  if (runningFetch) {
+    return runningFetch;
+  }
+  const prevPlaylistTracks = store.getState().appModel.allPlaylistTracks[libraryId + '-' + playlistId];
+  if (refetchData || !prevPlaylistTracks) {
+    return runFetch(runningKey, () => {
+      console.log('%c--- bridge - getPlaylistTracks ---', 'color:#f9743b;');
+      const accessToken = store.getState().sessionModel.currentServer.accessToken;
+      const currentService = store.getState().appModel.currentService;
+      const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
-        serviceTools[currentService]
-          .getPlaylistTracks({
-            accessToken,
-            libraryId,
-            playlistId,
-            serverBaseUrl,
-          })
-          .then((response) => {
-            // console.log(response);
-            store.dispatch.appModel.storePlaylistTracks({ libraryId, playlistId, playlistTracks: response });
-            resolve();
-          })
-          .catch((error) => {
-            console.error(error);
-            analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Playlist Tracks');
-            reject(error);
-          })
-          .finally(() => {
-            getPlaylistTracksRunning = false;
-          });
-      } else {
-        resolve();
-      }
-    } else {
-      resolve();
-    }
-  });
+      return serviceTools[currentService]
+        .getPlaylistTracks({
+          accessToken,
+          libraryId,
+          playlistId,
+          serverBaseUrl,
+        })
+        .then((response) => {
+          // console.log(response);
+          store.dispatch.appModel.storePlaylistTracks({ libraryId, playlistId, playlistTracks: response });
+        })
+        .catch((error) => {
+          console.error(error);
+          analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Playlist Tracks');
+        });
+    });
+  }
 };
 
 // ======================================================================
@@ -1319,11 +1252,6 @@ export const getAllCollections = () => {
 // GET COLLECTION ITEMS
 // ======================================================================
 
-let getCollectionItemsRunning = {
-  Artist: false,
-  Album: false,
-};
-
 let collectionItemsTimeouts = [];
 
 export const getCollectionItems = (libraryId, collectionId, typeKey) => {
@@ -1338,17 +1266,20 @@ export const getCollectionItems = (libraryId, collectionId, typeKey) => {
     return;
   }
 
-  if (!getCollectionItemsRunning[typeKey]) {
-    const prevCollectionItems =
-      store.getState().appModel[`all${typeKey}CollectionItems`][libraryId + '-' + collectionId];
-    if (refetchData || !prevCollectionItems) {
+  const runningKey = `getCollectionItems-${typeKey}-${libraryId}-${collectionId}`;
+  const runningFetch = getRunningFetch(runningKey);
+  if (runningFetch) {
+    return runningFetch;
+  }
+  const prevCollectionItems = store.getState().appModel[`all${typeKey}CollectionItems`][libraryId + '-' + collectionId];
+  if (refetchData || !prevCollectionItems) {
+    return runFetch(runningKey, () => {
       console.log('%c--- bridge - getCollectionItems - ' + typeKey + ' ---', 'color:#f9743b;');
-      getCollectionItemsRunning[typeKey] = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const currentService = store.getState().appModel.currentService;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
-      serviceTools[currentService]
+      return serviceTools[currentService]
         .getCollectionItems({
           accessToken,
           collectionId,
@@ -1370,11 +1301,8 @@ export const getCollectionItems = (libraryId, collectionId, typeKey) => {
             store.dispatch.appModel[`store${typeKey}Collection404`]({ collectionId });
           }
           analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Collection Items');
-        })
-        .finally(() => {
-          getCollectionItemsRunning[typeKey] = false;
         });
-    }
+    });
   }
 };
 
@@ -1477,17 +1405,6 @@ const getAllJellyfinTags = () => {
 // GET TAG ITEMS
 // ======================================================================
 
-let getTagItemsRunning = {
-  AlbumGenreItems: false,
-  AlbumMoodItems: false,
-  AlbumStyleItems: false,
-  AlbumTagItems: false,
-  ArtistGenreItems: false,
-  ArtistMoodItems: false,
-  ArtistStyleItems: false,
-  ArtistTagItems: false,
-};
-
 let tagItemsTimeouts = [];
 
 export const getTagItems = (libraryId, tagId, typeKey) => {
@@ -1515,15 +1432,19 @@ export const getTagItems = (libraryId, tagId, typeKey) => {
     }
   }
 
-  if (!getTagItemsRunning[typeKey]) {
-    const prevTagItems = store.getState().appModel[`all${typeKey}`][libraryId + '-' + tagId];
-    if (refetchData || !prevTagItems) {
+  const runningKey = `getTagItems-${typeKey}-${libraryId}-${tagId}`;
+  const runningFetch = getRunningFetch(runningKey);
+  if (runningFetch) {
+    return runningFetch;
+  }
+  const prevTagItems = store.getState().appModel[`all${typeKey}`][libraryId + '-' + tagId];
+  if (refetchData || !prevTagItems) {
+    return runFetch(runningKey, () => {
       console.log('%c--- bridge - getTagItems ---', 'color:#f9743b;');
-      getTagItemsRunning[typeKey] = true;
       const accessToken = store.getState().sessionModel.currentServer.accessToken;
       const serverBaseUrl = store.getState().appModel.serverBaseUrl;
 
-      serviceTools[currentService]
+      return serviceTools[currentService]
         .getTagItems({
           accessToken,
           libraryId,
@@ -1544,11 +1465,8 @@ export const getTagItems = (libraryId, tagId, typeKey) => {
             store.dispatch.appModel[`store${typeKey}404`]({ tagId });
           }
           analyticsEvent(toUpperFirst(currentService) + ' / Error / Get Tag Items');
-        })
-        .finally(() => {
-          getTagItemsRunning[typeKey] = false;
         });
-    }
+    });
   }
 };
 
@@ -1766,11 +1684,53 @@ export const logPlaybackQuit = (currentTrack, currentTime) => {
 };
 
 // ======================================================================
-// HELPER FUNCTIONS
+// HELPER - CHECK IF STORE IS READY
+// ======================================================================
+
+// Used during development to guard against a Vite HMR timing issue where bridge functions can fire
+// before the store has been rehydrated from localStorage. In production this never occurs, so we skip the check.
+const isStoreReady = () => {
+  if (import.meta.env.PROD) return true;
+  const { sessionModel } = store.getState();
+  return Boolean(sessionModel.currentServer) && Boolean(sessionModel.currentLibrary);
+};
+
+// ======================================================================
+// HELPER - UPPERCASE FIRST LETTER
 // ======================================================================
 
 const toUpperFirst = (string) => {
   return string?.charAt(0).toUpperCase() + string?.slice(1);
+};
+
+// ======================================================================
+// HELPER - PER-ENTITY IN-FLIGHT REQUEST GUARD
+// ======================================================================
+
+// Tracks in-flight fetches keyed by a caller-provided string (e.g. `getAlbumTracks-${libraryId}-${albumId}`).
+// Stores the actual Promise, not just a boolean, so a concurrent `await` on the same key genuinely
+// waits for real data instead of resolving instantly while the original fetch is still pending.
+//
+// [NOTE] callers using this guard must swallow their own fetch errors rather than rethrowing - the
+// promise is shared with every concurrent caller (including fire-and-forget ones), so this should
+// always resolve, never reject.
+const runningRequests = new Map();
+
+const getRunningFetch = (key) => runningRequests.get(key);
+
+const runFetch = (key, startFetch) => {
+  // Deferred via Promise.resolve().then() so a synchronous throw in startFetch rejects instead of
+  // throwing outright; the .catch() then guarantees this never rejects, per the note above.
+  const promise = Promise.resolve()
+    .then(startFetch)
+    .catch((error) => {
+      console.error(error);
+    })
+    .finally(() => {
+      runningRequests.delete(key);
+    });
+  runningRequests.set(key, promise);
+  return promise;
 };
 
 // ======================================================================

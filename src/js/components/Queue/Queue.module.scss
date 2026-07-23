@@ -305,7 +305,8 @@ button.label {
 
   @include mixins.focus-self-outline();
 
-  &:hover {
+  &:hover,
+  &[data-state='open'] {
     background: var(--color-card-on-secondary-bg);
     border: 1px solid var(--color-card-on-secondary-border);
   }
@@ -361,7 +362,8 @@ button.label {
   // .trackEntryCurrent & {
   //   opacity: 1;
   // }
-  .trackEntry:hover & {
+  .trackEntry:hover &,
+  .trackEntry[data-state='open'] & {
     color: var(--color-text);
   }
 }

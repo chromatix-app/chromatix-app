@@ -1,3 +1,22 @@
+# 0.67.0 (2026-07-23)
+
+Features:
+
+- Added context menus to playlists, albums, and track headers, and reworked the playlist header menu, for quicker access to common actions.
+- Albums can now be added to playlists directly from their context menu.
+- Track context menus are now available on queued tracks and from the control bar.
+- Ratings can now be edited directly from grid view, not just list view.
+
+Fixes:
+
+- Fixed an issue where editing a playlist's rating could be reverted on the front end after the playlist reloaded.
+
+Code changes:
+
+- Improved request-is-running checks in `bridge.js` to avoid redundant in-flight requests.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.66.0 (2026-07-05)
 
 Features:

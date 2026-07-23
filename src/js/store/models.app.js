@@ -1000,10 +1000,17 @@ const effects = (dispatch) => {
         payload.isExtra = true;
         allPlaylists.push(payload);
       } else {
-        if (allPlaylists[playlistIndex].isExtra) {
+        const existingPlaylist = allPlaylists[playlistIndex];
+        if (existingPlaylist.isExtra) {
           payload.isExtra = true;
         }
-        allPlaylists[playlistIndex] = payload;
+        // Plex's single-playlist endpoint doesn't return userRating/lastPlayed - keep
+        // whatever was already known (e.g. from the playlist list or a recent rating edit)
+        allPlaylists[playlistIndex] = {
+          ...payload,
+          userRating: payload.userRating ?? existingPlaylist.userRating,
+          lastPlayed: payload.lastPlayed ?? existingPlaylist.lastPlayed,
+        };
       }
       dispatch.appModel.setAppState({
         allPlaylists,

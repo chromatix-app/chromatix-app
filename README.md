@@ -16,8 +16,7 @@ Get started at [https://chromatix.app/](https://chromatix.app/)
 - [8. Use of AI](#8-use-of-ai)
 - [9. Roadmap, feature requests and bug reports](#9-roadmap-feature-requests-and-bug-reports)
 - [10. Contributing](#10-contributing)
-  - [10.1. Want to help?](#101-want-to-help)
-  - [10.2. Please let me know what you're working on](#102-please-let-me-know-what-youre-working-on)
+  - [10.1. Please let me know what you're working on](#101-please-let-me-know-what-youre-working-on)
 
 # 1. Introduction
 
@@ -108,13 +107,13 @@ npm run check
 
 # 8. Use of AI
 
-AI is an obviously common but controversial tool in software development right now. After years of building websites and web apps by hand, and over a year of building and maintaining Chromatix manually, I do now use [GitHub Copilot](https://github.com/features/copilot) and I want to be transparent about that.
+AI is an obviously common but controversial tool in software development right now. After years of building websites and web apps by hand, and over a year of building and maintaining Chromatix manually, I do now use AI coding tools and I want to be transparent about that.
 
 I have no interest in AI slop. All AI-assisted code is manually reviewed before it's committed. AI can be wrong, inconsistent, and confidently incorrect, so I treat it as a tool that needs oversight rather than a source of truth.
 
-In practice, I've so far used it mostly for writing unit tests (the bulk of test files in this project were Copilot-assisted), but increasingly use it for other tasks throughout the codebase. A `.github/copilot-instructions.md` file is included in this repo, which documents project conventions and guides Copilot towards consistent output.
+In practice, I use it for various tasks throughout the codebase. Agent instruction files are included in this repo, which document project conventions and guide AI tools towards consistent output.
 
-I also use GitHub Copilot code review, which has been useful for catching minor mistakes and oversights that are easy to miss in a manual review.
+I also use AI-assisted code review, which has been useful for catching minor mistakes and oversights that are easy to miss in a manual review.
 
 I appreciate that some people have strong feelings about AI in open source projects. I respect that, and I try to use it carefully and responsibly.
 
@@ -128,19 +127,9 @@ This is also the best place for feature requests and bug reports, as it allows y
 
 I’m not particularly looking for contributors, and hadn’t really planned to open source the code base as I’m happy keeping this as a personal side project, but I kept getting requests to open source it for the sake of transparency, so here it is.
 
-## 10.1. Want to help?
+## 10.1. Please let me know what you're working on
 
-I don’t expect help, but if any keen devs with good knowledge of the tech do want to help, there’s a few key things that would be useful!
-
-1. The actual player. Gapless playback is a high request, but I think quite challenging with web tech. There’s a few interesting libraries I’ve seen, but they have various pros and cons that don’t seem to make any of them perfect or flawless.
-2. Performance improvements.
-   - Especially the List components which use virtualisation.
-   - API calls to Plex may be able to be optimised.
-3. Automated testing. (I DEFINITELY don’t expect people to take on the grunt work, but hey, if that's something that floats anyone's boat then go for it.)
-
-## 10.2. Please let me know what you're working on
-
-If you do see something you want to help with, feel free get in touch here on Github, on [Reddit](https://www.reddit.com/r/chromatix/), or on [Bluesky](https://bsky.app/profile/chromaticnova.com) with any questions, or to ensure we aren’t working on the same things at once.
+If you do see something you want to help with, feel free get in touch here on GitHub, on [Reddit](https://www.reddit.com/r/chromatix/), or on [Bluesky](https://bsky.app/profile/chromaticnova.com) with any questions, or to ensure we aren’t working on the same things at once.
 
 > [!IMPORTANT]
 > I cant guarantee I’ll merge in any big features or changes, as I still view this largely as a personal project I want to maintain and control myself, so best to check with me before starting anything.
