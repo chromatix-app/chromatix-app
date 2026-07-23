@@ -179,11 +179,13 @@ const Title = ({
             setter={setColumnVisibility}
             entries={[
               {
+                variant: 'checkbox',
                 label: 'Title',
                 disabled: true,
                 checked: true,
               },
               {
+                variant: 'checkbox',
                 label: 'Kind',
                 attr: 'colFoldersKind',
                 checked: colOptions.kind,

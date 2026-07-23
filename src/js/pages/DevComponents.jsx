@@ -99,10 +99,10 @@ const Component = () => {
               icon="CogIcon"
               setter={handleColChange}
               entries={[
-                { label: 'Country', attr: 'country', checked: colOptions.country },
-                { label: 'Genre', attr: 'genre', checked: colOptions.genre },
-                { label: 'Rating', attr: 'userRating', checked: colOptions.userRating },
-                { label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
+                { variant: 'checkbox', label: 'Country', attr: 'country', checked: colOptions.country },
+                { variant: 'checkbox', label: 'Genre', attr: 'genre', checked: colOptions.genre },
+                { variant: 'checkbox', label: 'Rating', attr: 'userRating', checked: colOptions.userRating },
+                { variant: 'checkbox', label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
               ]}
             />
             <FilterButton label="New playlist" icon="PlusIcon" onClick={() => {}} />
@@ -151,10 +151,10 @@ const Component = () => {
               icon="CogIcon"
               setter={handleColChange}
               entries={[
-                { label: 'Country', attr: 'country', checked: colOptions.country },
-                { label: 'Genre', attr: 'genre', checked: colOptions.genre },
-                { label: 'Rating', attr: 'userRating', checked: colOptions.userRating },
-                { label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
+                { variant: 'checkbox', label: 'Country', attr: 'country', checked: colOptions.country },
+                { variant: 'checkbox', label: 'Genre', attr: 'genre', checked: colOptions.genre },
+                { variant: 'checkbox', label: 'Rating', attr: 'userRating', checked: colOptions.userRating },
+                { variant: 'checkbox', label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
               ]}
             />
             <FilterButton variant="Large" label="New playlist" icon="PlusIcon" onClick={() => {}} />

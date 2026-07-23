@@ -192,6 +192,7 @@ const Title = ({
                 ...(platformOpts?.enableIsFavourite
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Show favourites',
                         attr: 'gridPlaylistsIsFavourite',
                         checked: gridOptions.isFavourite,
@@ -201,6 +202,7 @@ const Title = ({
                 ...(platformOpts?.enableUserRating
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Show star ratings',
                         attr: 'gridPlaylistsUserRating',
                         checked: gridOptions.userRating,
@@ -223,16 +225,19 @@ const Title = ({
             setter={setColumnVisibility}
             entries={[
               {
+                variant: 'checkbox',
                 label: 'Title',
                 disabled: true,
                 checked: true,
               },
               {
+                variant: 'checkbox',
                 label: 'Tracks',
                 attr: 'colPlaylistsTotalTracks',
                 checked: colOptions.totalTracks,
               },
               {
+                variant: 'checkbox',
                 label: 'Duration',
                 attr: 'colPlaylistsDuration',
                 checked: colOptions.duration,
@@ -240,6 +245,7 @@ const Title = ({
               ...(platformOpts?.enableAddedAt
                 ? [
                     {
+                      variant: 'checkbox',
                       label: 'Added',
                       attr: 'colPlaylistsAddedAt',
                       checked: colOptions.addedAt,
@@ -249,6 +255,7 @@ const Title = ({
               ...(platformOpts?.enableLastPlayed
                 ? [
                     {
+                      variant: 'checkbox',
                       label: 'Last played',
                       attr: 'colPlaylistsLastPlayed',
                       checked: colOptions.lastPlayed,
@@ -258,6 +265,7 @@ const Title = ({
               ...(platformOpts?.enableIsFavourite
                 ? [
                     {
+                      variant: 'checkbox',
                       label: 'Favourite',
                       attr: 'colPlaylistsIsFavourite',
                       checked: colOptions.isFavourite,
@@ -267,6 +275,7 @@ const Title = ({
               ...(platformOpts?.enableUserRating
                 ? [
                     {
+                      variant: 'checkbox',
                       label: 'Rating',
                       attr: 'colPlaylistsUserRating',
                       checked: colOptions.userRating,

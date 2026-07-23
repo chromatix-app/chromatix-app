@@ -221,36 +221,43 @@ const Title = ({
               setter={setColumnVisibility}
               entries={[
                 {
+                  variant: 'checkbox',
                   label: 'Artwork',
                   attr: 'colPlaylistArtwork',
                   checked: colOptions.artwork,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Title',
                   disabled: true,
                   checked: true,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Artist',
                   attr: 'colPlaylistArtist',
                   checked: colOptions.artist,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Album',
                   attr: 'colPlaylistAlbum',
                   checked: colOptions.album,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Audio codec',
                   attr: 'colPlaylistCodec',
                   checked: colOptions.codec,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Bitrate',
                   attr: 'colPlaylistBitrate',
                   checked: colOptions.bitrate,
                 },
                 {
+                  variant: 'checkbox',
                   label: 'Duration',
                   attr: 'colPlaylistDuration',
                   checked: colOptions.duration,
@@ -258,6 +265,7 @@ const Title = ({
                 ...(platformOpts?.enableIsFavourite
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Favourite',
                         attr: 'colPlaylistIsFavourite',
                         checked: colOptions.isFavourite,
@@ -267,6 +275,7 @@ const Title = ({
                 ...(platformOpts?.enableUserRating
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Rating',
                         attr: 'colPlaylistUserRating',
                         checked: colOptions.userRating,

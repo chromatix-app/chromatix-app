@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useParams } from 'react-router-dom';
 
 import { Favourite, FilterMenu, ViewList, Loading, StarRating, TitleHeading } from 'js/components';
-import { useGetAlbumDetail } from 'js/hooks';
+import { useContextMenuAlbums, useGetAlbumDetail } from 'js/hooks';
 import platformFeatures from 'js/_config/platformFeatures';
 
 // ======================================================================
@@ -159,6 +159,8 @@ const Title = ({
   platformOpts,
   setColumnVisibility,
 }) => {
+  const contextEntries = useContextMenuAlbums({ albumId, artistLink: albumArtistLink });
+
   return (
     <TitleHeading
       key={libraryId + '-' + albumId}
@@ -231,60 +233,72 @@ const Title = ({
         )
       }
       optionsMenu={
-        <div className="filterIconWrap">
-          <FilterMenu
-            variant="Large"
-            label="Options"
-            icon="CogIcon"
-            iconStrokeWidth={1.2}
-            setter={setColumnVisibility}
-            entries={[
-              {
-                label: 'Title',
-                disabled: true,
-                checked: true,
-              },
-              {
-                label: 'Artist',
-                attr: 'colAlbumArtist',
-                checked: colOptions.artist,
-              },
-              {
-                label: 'Audio codec',
-                attr: 'colAlbumCodec',
-                checked: colOptions.codec,
-              },
-              {
-                label: 'Bitrate',
-                attr: 'colAlbumBitrate',
-                checked: colOptions.bitrate,
-              },
-              {
-                label: 'Duration',
-                attr: 'colAlbumDuration',
-                checked: colOptions.duration,
-              },
-              ...(platformOpts?.enableIsFavourite
-                ? [
-                    {
-                      label: 'Favourite',
-                      attr: 'colAlbumIsFavourite',
-                      checked: colOptions.isFavourite,
-                    },
-                  ]
-                : []),
-              ...(platformOpts?.enableUserRating
-                ? [
-                    {
-                      label: 'Rating',
-                      attr: 'colAlbumUserRating',
-                      checked: colOptions.userRating,
-                    },
-                  ]
-                : []),
-            ]}
-          />
-        </div>
+        <>
+          <div className="filterIconWrap">
+            <FilterMenu
+              variant="Large"
+              label="Options"
+              icon="CogIcon"
+              iconStrokeWidth={1.2}
+              setter={setColumnVisibility}
+              entries={[
+                {
+                  variant: 'checkbox',
+                  label: 'Title',
+                  disabled: true,
+                  checked: true,
+                },
+                {
+                  variant: 'checkbox',
+                  label: 'Artist',
+                  attr: 'colAlbumArtist',
+                  checked: colOptions.artist,
+                },
+                {
+                  variant: 'checkbox',
+                  label: 'Audio codec',
+                  attr: 'colAlbumCodec',
+                  checked: colOptions.codec,
+                },
+                {
+                  variant: 'checkbox',
+                  label: 'Bitrate',
+                  attr: 'colAlbumBitrate',
+                  checked: colOptions.bitrate,
+                },
+                {
+                  variant: 'checkbox',
+                  label: 'Duration',
+                  attr: 'colAlbumDuration',
+                  checked: colOptions.duration,
+                },
+                ...(platformOpts?.enableIsFavourite
+                  ? [
+                      {
+                        variant: 'checkbox',
+                        label: 'Favourite',
+                        attr: 'colAlbumIsFavourite',
+                        checked: colOptions.isFavourite,
+                      },
+                    ]
+                  : []),
+                ...(platformOpts?.enableUserRating
+                  ? [
+                      {
+                        variant: 'checkbox',
+                        label: 'Rating',
+                        attr: 'colAlbumUserRating',
+                        checked: colOptions.userRating,
+                      },
+                    ]
+                  : []),
+              ]}
+            />
+          </div>
+          <div className="filterIconWrap">
+            <FilterMenu variant="Large" label="More" icon="EllipsisIcon" entries={contextEntries} />
+          </div>
+        </>
       }
       showPlay={true}
       isLoaded={isLoaded}

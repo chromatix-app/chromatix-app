@@ -180,6 +180,7 @@ const Title = ({
                 ...(platformOpts?.enableUserRating
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Show star ratings',
                         attr: 'gridCollectionsUserRating',
                         checked: gridOptions.userRating,
@@ -197,6 +198,7 @@ const Title = ({
             setter={setColumnVisibility}
             entries={[
               {
+                variant: 'checkbox',
                 label: 'Title',
                 disabled: true,
                 checked: true,
@@ -204,6 +206,7 @@ const Title = ({
               ...(platformOpts?.enableAddedAt
                 ? [
                     {
+                      variant: 'checkbox',
                       label: 'Added',
                       attr: 'colCollectionAddedAt',
                       checked: colOptions.addedAt,
@@ -213,6 +216,7 @@ const Title = ({
               ...(platformOpts?.enableUserRating
                 ? [
                     {
+                      variant: 'checkbox',
                       label: 'Rating',
                       attr: 'colCollectionUserRating',
                       checked: colOptions.userRating,

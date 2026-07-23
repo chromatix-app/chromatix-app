@@ -1,14 +1,16 @@
 import * as bridge from 'js/services/bridge';
 import store from 'js/store/store';
 
-// Builds the context menu entries for a track, for use with <ContextMenu>.
-// Works with any track object shaped like the entries in playingTrackList /
-// ViewList (trackId, artistLink, albumLink, playlistItemID etc).
-//
-// Options:
-// - playlistId: enables "Remove from Playlist" (requires track.playlistItemID)
-// - showArtist: show "Go to Artist" (default true; pass false e.g. when already on the artist page)
-// - showAlbum: show "Go to Album" (default true; pass false e.g. when already on the album page)
+/**
+ * Builds the context menu entries for a track, for use with <ContextMenu>.
+ * Works with any track object shaped like the entries in playingTrackList / ViewList
+ * (trackId, artistLink, albumLink, playlistItemID etc).
+ * @param track - The track to build entries for
+ * @param options.playlistId - Enables "Remove from Playlist" (requires track.playlistItemID)
+ * @param options.showArtist - Show "Go to Artist" (default true; pass false e.g. when already on the artist page)
+ * @param options.showAlbum - Show "Go to Album" (default true; pass false e.g. when already on the album page)
+ * @returns Array of entries for use with the shared MenuEntry renderer
+ */
 
 const useContextMenuTracks = (track, { playlistId, showArtist = true, showAlbum = true } = {}) => {
   if (!track) {
@@ -28,6 +30,7 @@ const useContextMenuTracks = (track, { playlistId, showArtist = true, showAlbum 
       getEntries: () => {
         const playlists = store.getState().appModel.allPlaylists || [];
         return playlists.map((playlist) => ({
+          variant: 'action',
           label: playlist.title,
           onSelect: () => bridge.addTracksToPlaylist({ playlistId: playlist.playlistId, trackIds: [track.trackId] }),
         }));
@@ -36,6 +39,7 @@ const useContextMenuTracks = (track, { playlistId, showArtist = true, showAlbum 
     ...(hasContextRemove
       ? [
           {
+            variant: 'action',
             label: 'Remove from Playlist',
             icon: 'MinusCircleIcon',
             onSelect: () => bridge.removeTrackFromPlaylist({ playlistId, playlistItemId: track.playlistItemID }),
@@ -43,8 +47,12 @@ const useContextMenuTracks = (track, { playlistId, showArtist = true, showAlbum 
         ]
       : []),
     ...(hasContextDivider ? [{ variant: 'divider' }] : []),
-    ...(hasContextArtist ? [{ label: 'Go to Artist', icon: 'PeopleIcon', to: track.artistLink }] : []),
-    ...(hasContextAlbum ? [{ label: 'Go to Album', icon: 'PlayCircleIcon', to: track.albumLink }] : []),
+    ...(hasContextArtist
+      ? [{ variant: 'action', label: 'Go to Artist', icon: 'PeopleIcon', to: track.artistLink }]
+      : []),
+    ...(hasContextAlbum
+      ? [{ variant: 'action', label: 'Go to Album', icon: 'PlayCircleIcon', to: track.albumLink }]
+      : []),
   ];
 };
 

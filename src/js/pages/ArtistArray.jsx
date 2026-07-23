@@ -197,6 +197,7 @@ const Title = ({
                 ...(platformOpts?.enableIsFavourite
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Show favourites',
                         attr: 'gridArtistsIsFavourite',
                         checked: gridOptions.isFavourite,
@@ -206,6 +207,7 @@ const Title = ({
                 ...(platformOpts?.enableUserRating
                   ? [
                       {
+                        variant: 'checkbox',
                         label: 'Show star ratings',
                         attr: 'gridArtistsUserRating',
                         checked: gridOptions.userRating,
@@ -223,6 +225,7 @@ const Title = ({
             setter={setColumnVisibility}
             entries={[
               {
+                variant: 'checkbox',
                 label: 'Title',
                 disabled: true,
                 checked: true,
@@ -230,6 +233,7 @@ const Title = ({
               ...(platformOpts?.enableCountry
                 ? [
                     {
+                      variant: 'checkbox',
                       label: 'Country',
                       attr: 'colArtistsCountry',
                       checked: colOptions.country,
@@ -237,6 +241,7 @@ const Title = ({
                   ]
                 : []),
               {
+                variant: 'checkbox',
                 label: 'Genre',
                 attr: 'colArtistsGenre',
                 checked: colOptions.genre,
@@ -244,6 +249,7 @@ const Title = ({
               ...(platformOpts?.enableAddedAt
                 ? [
                     {
+                      variant: 'checkbox',
                       label: 'Added',
                       attr: 'colArtistsAddedAt',
                       checked: colOptions.addedAt,
@@ -253,6 +259,7 @@ const Title = ({
               ...(platformOpts?.enableLastPlayed
                 ? [
                     {
+                      variant: 'checkbox',
                       label: 'Last played',
                       attr: 'colArtistsLastPlayed',
                       checked: colOptions.lastPlayed,
@@ -262,6 +269,7 @@ const Title = ({
               ...(platformOpts?.enableIsFavourite
                 ? [
                     {
+                      variant: 'checkbox',
                       label: 'Favourite',
                       attr: 'colArtistsIsFavourite',
                       checked: colOptions.isFavourite,
@@ -271,6 +279,7 @@ const Title = ({
               ...(platformOpts?.enableUserRating
                 ? [
                     {
+                      variant: 'checkbox',
                       label: 'Rating',
                       attr: 'colArtistsUserRating',
                       checked: colOptions.userRating,

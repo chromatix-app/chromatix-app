@@ -18,6 +18,7 @@ export { default as FormTheme } from './FormTheme/FormTheme';
 export { default as FullPagePlayer } from './FullPagePlayer/FullPagePlayer';
 export { default as Icon } from './Icon/Icon';
 export { default as Loading } from './Loading/Loading';
+export { default as MenuEntry } from './MenuEntries/MenuEntries';
 export { default as ModalWindow } from './ModalWindow/ModalWindow';
 export { default as ModalWrap } from './ModalWrap/ModalWrap';
 export { default as PageHome } from './PageHome/PageHome';

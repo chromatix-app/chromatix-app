@@ -1,12 +1,13 @@
 import * as bridge from 'js/services/bridge';
 import store from 'js/store/store';
 
-// Builds the context menu entries for an album, for use with <ContextMenu>.
-// Works with any album object shaped like the entries in ViewList / ViewGrid
-// (albumId, artistLink etc).
-//
-// Options:
-// - showArtist: show "Go to Artist" (default true; pass false e.g. when already on the artist page)
+/**
+ * Builds the context menu entries for an album, for use with <ContextMenu>.
+ * Works with any album object shaped like the entries in ViewList / ViewGrid (albumId, artistLink etc).
+ * @param album - The album to build entries for
+ * @param options.showArtist - Show "Go to Artist" (default true; pass false e.g. when already on the artist page)
+ * @returns Array of entries for use with the shared MenuEntry renderer
+ */
 
 const useContextMenuAlbums = (album, { showArtist = true } = {}) => {
   if (!album) {
@@ -23,6 +24,7 @@ const useContextMenuAlbums = (album, { showArtist = true } = {}) => {
       getEntries: () => {
         const playlists = store.getState().appModel.allPlaylists || [];
         return playlists.map((playlist) => ({
+          variant: 'action',
           label: playlist.title,
           onSelect: async () => {
             const libraryId = store.getState().sessionModel.currentLibrary?.libraryId;
@@ -41,7 +43,7 @@ const useContextMenuAlbums = (album, { showArtist = true } = {}) => {
       },
     },
     ...(hasContextArtist
-      ? [{ variant: 'divider' }, { label: 'Go to Artist', icon: 'PeopleIcon', to: album.artistLink }]
+      ? [{ variant: 'divider' }, { variant: 'action', label: 'Go to Artist', icon: 'PeopleIcon', to: album.artistLink }]
       : []),
   ];
 };
