@@ -19,7 +19,7 @@ const useContextMenuAlbums = (album, { showArtist = true } = {}) => {
   return [
     {
       variant: 'submenu',
-      label: 'Add to Playlist',
+      label: 'Add album to playlist',
       icon: 'PlusCircleIcon',
       getEntries: () => {
         const playlists = store.getState().appModel.allPlaylists || [];
@@ -43,7 +43,7 @@ const useContextMenuAlbums = (album, { showArtist = true } = {}) => {
       },
     },
     ...(hasContextArtist
-      ? [{ variant: 'divider' }, { variant: 'action', label: 'Go to Artist', icon: 'PeopleIcon', to: album.artistLink }]
+      ? [{ variant: 'divider' }, { variant: 'action', label: 'Go to artist', icon: 'PeopleIcon', to: album.artistLink }]
       : []),
   ];
 };

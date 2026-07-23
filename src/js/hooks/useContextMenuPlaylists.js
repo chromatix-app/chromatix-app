@@ -19,14 +19,14 @@ const useContextMenuPlaylists = (playlist) => {
   return [
     {
       variant: 'action',
-      label: 'Edit Playlist',
+      label: 'Edit playlist',
       icon: 'PencilIcon',
       onSelect: () =>
         store.dispatch.dialogModel.showModal({ modal: 'PlaylistEdit', data: { playlistId, playlistTitle } }),
     },
     {
       variant: 'action',
-      label: 'Delete Playlist',
+      label: 'Delete playlist',
       icon: 'MinusCircleIcon',
       onSelect: () =>
         store.dispatch.dialogModel.showConfirm({

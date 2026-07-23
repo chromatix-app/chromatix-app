@@ -25,7 +25,7 @@ const useContextMenuTracks = (track, { playlistId, showArtist = true, showAlbum 
   return [
     {
       variant: 'submenu',
-      label: 'Add to Playlist',
+      label: 'Add to playlist',
       icon: 'PlusCircleIcon',
       getEntries: () => {
         const playlists = store.getState().appModel.allPlaylists || [];
@@ -40,7 +40,7 @@ const useContextMenuTracks = (track, { playlistId, showArtist = true, showAlbum 
       ? [
           {
             variant: 'action',
-            label: 'Remove from Playlist',
+            label: 'Remove from playlist',
             icon: 'MinusCircleIcon',
             onSelect: () => bridge.removeTrackFromPlaylist({ playlistId, playlistItemId: track.playlistItemID }),
           },
@@ -48,10 +48,10 @@ const useContextMenuTracks = (track, { playlistId, showArtist = true, showAlbum 
       : []),
     ...(hasContextDivider ? [{ variant: 'divider' }] : []),
     ...(hasContextArtist
-      ? [{ variant: 'action', label: 'Go to Artist', icon: 'PeopleIcon', to: track.artistLink }]
+      ? [{ variant: 'action', label: 'Go to artist', icon: 'PeopleIcon', to: track.artistLink }]
       : []),
     ...(hasContextAlbum
-      ? [{ variant: 'action', label: 'Go to Album', icon: 'PlayCircleIcon', to: track.albumLink }]
+      ? [{ variant: 'action', label: 'Go to album', icon: 'PlayCircleIcon', to: track.albumLink }]
       : []),
   ];
 };
