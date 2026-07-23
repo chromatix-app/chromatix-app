@@ -129,7 +129,7 @@ I’m not particularly looking for contributors, and hadn’t really planned to 
 
 ## 10.1. Please let me know what you're working on
 
-If you do see something you want to help with, feel free get in touch here on Github, on [Reddit](https://www.reddit.com/r/chromatix/), or on [Bluesky](https://bsky.app/profile/chromaticnova.com) with any questions, or to ensure we aren’t working on the same things at once.
+If you do see something you want to help with, feel free get in touch here on GitHub, on [Reddit](https://www.reddit.com/r/chromatix/), or on [Bluesky](https://bsky.app/profile/chromaticnova.com) with any questions, or to ensure we aren’t working on the same things at once.
 
 > [!IMPORTANT]
 > I cant guarantee I’ll merge in any big features or changes, as I still view this largely as a personal project I want to maintain and control myself, so best to check with me before starting anything.

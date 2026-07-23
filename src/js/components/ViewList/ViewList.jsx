@@ -941,6 +941,7 @@ const StandardRow = ({ virtualEntry, entry, variant, tableVariant, tableOptions,
                       <button
                         type="button"
                         className={style.contextButton}
+                        aria-label="More options"
                         onClick={(e) => {
                           e.stopPropagation();
                           e.preventDefault();
@@ -1244,6 +1245,7 @@ const TrackRow = ({
                       <button
                         type="button"
                         className={style.contextButton}
+                        aria-label="More options"
                         onDoubleClick={(e) => e.stopPropagation()}
                         onPointerDown={(e) => e.stopPropagation()}
                         onClick={(e) => {
