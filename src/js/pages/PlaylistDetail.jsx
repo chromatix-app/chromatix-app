@@ -5,8 +5,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { Favourite, FilterButton, FilterMenu, ViewList, Loading, StarRating, TitleHeading } from 'js/components';
-import { useGetPlaylistDetail } from 'js/hooks';
+import { Favourite, FilterMenu, ViewList, Loading, StarRating, TitleHeading } from 'js/components';
+import { useContextMenuPlaylists, useGetPlaylistDetail } from 'js/hooks';
 import platformFeatures from 'js/_config/platformFeatures';
 
 // ======================================================================
@@ -145,7 +145,7 @@ const Title = ({
   playlistTracks,
   setColumnVisibility,
 }) => {
-  const dispatch = useDispatch();
+  const contextEntries = useContextMenuPlaylists({ playlistId, playlistTitle });
 
   return (
     <TitleHeading
@@ -286,17 +286,7 @@ const Title = ({
             />
           </div>
           <div className="filterIconWrap">
-            <FilterButton
-              variant="Large"
-              label="Edit playlist"
-              icon="PencilIcon"
-              onClick={() =>
-                dispatch.dialogModel.showModal({
-                  modal: 'PlaylistEdit',
-                  data: { playlistId, playlistTitle },
-                })
-              }
-            />
+            <FilterMenu variant="Large" label="More" icon="EllipsisIcon" entries={contextEntries} />
           </div>
         </>
       }
