@@ -1707,25 +1707,28 @@ const toUpperFirst = (string) => {
 // HELPER - PER-ENTITY IN-FLIGHT REQUEST GUARD
 // ======================================================================
 
-// Tracks in-flight fetches keyed by a caller-provided string (e.g. `getAlbumTracks-${libraryId}-${albumId}`),
-// so concurrent fetches for different entities of the same type don't clobber one another's in-flight guard.
+// Tracks in-flight fetches keyed by a caller-provided string (e.g. `getAlbumTracks-${libraryId}-${albumId}`).
+// Stores the actual Promise, not just a boolean, so a concurrent `await` on the same key genuinely
+// waits for real data instead of resolving instantly while the original fetch is still pending.
 //
-// Stores the actual in-flight Promise (not just a boolean) - callers that `await` a fetch which is
-// already running are handed that same promise, so `await` genuinely waits for real data to land in
-// the store rather than resolving instantly while the original request is still pending.
-//
-// [NOTE] every function using this guard must swallow its own fetch errors (report via console.error /
-// analyticsEvent, dispatch a 404 state, etc.) rather than rethrowing - the shared promise here is handed
-// to every concurrent caller, so a rejection would propagate to callers who never expected one, including
-// fire-and-forget call sites with no .catch(). These functions should always resolve, never reject.
+// [NOTE] callers using this guard must swallow their own fetch errors rather than rethrowing - the
+// promise is shared with every concurrent caller (including fire-and-forget ones), so this should
+// always resolve, never reject.
 const runningRequests = new Map();
 
 const getRunningFetch = (key) => runningRequests.get(key);
 
 const runFetch = (key, startFetch) => {
-  const promise = startFetch().finally(() => {
-    runningRequests.delete(key);
-  });
+  // Deferred via Promise.resolve().then() so a synchronous throw in startFetch rejects instead of
+  // throwing outright; the .catch() then guarantees this never rejects, per the note above.
+  const promise = Promise.resolve()
+    .then(startFetch)
+    .catch((error) => {
+      console.error(error);
+    })
+    .finally(() => {
+      runningRequests.delete(key);
+    });
   runningRequests.set(key, promise);
   return promise;
 };
