@@ -26,7 +26,7 @@ export const SettingsSidebar = () => {
         <GeneralSettings platformOpts={platformOpts} />
         <LibrarySettings platformOpts={platformOpts} />
         <BrowseSettings platformOpts={platformOpts} />
-        <PlaylistSettings platformOpts={platformOpts} />
+        <PlaylistSettings />
       </>
     </>
   );
@@ -247,7 +247,7 @@ const BrowseSettings = ({ platformOpts }) => {
 // PLAYLIST
 //
 
-const PlaylistSettings = ({ platformOpts }) => {
+const PlaylistSettings = () => {
   const menuShowAllPlaylists = useSelector(({ sessionModel }) => sessionModel.menuShowAllPlaylists);
   const menuShowAddPlaylist = useSelector(({ sessionModel }) => sessionModel.menuShowAddPlaylist);
 
@@ -257,16 +257,12 @@ const PlaylistSettings = ({ platformOpts }) => {
       label: 'Show playlists',
       state: menuShowAllPlaylists,
     },
-    ...(platformOpts.playlistManagement
-      ? [
-          {
-            key: 'menuShowAddPlaylist',
-            label: 'Show "New Playlist" button',
-            state: menuShowAddPlaylist,
-            disabled: !menuShowAllPlaylists,
-          },
-        ]
-      : []),
+    {
+      key: 'menuShowAddPlaylist',
+      label: 'Show "New Playlist" button',
+      state: menuShowAddPlaylist,
+      disabled: !menuShowAllPlaylists,
+    },
   ];
 
   return <SettingsList title="Playlists" menuItems={menuItems} variant="compact" />;

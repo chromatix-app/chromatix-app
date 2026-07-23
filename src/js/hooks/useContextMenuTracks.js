@@ -1,6 +1,3 @@
-import { useSelector } from 'react-redux';
-
-import platformFeatures from 'js/_config/platformFeatures';
 import * as bridge from 'js/services/bridge';
 import store from 'js/store/store';
 
@@ -14,37 +11,28 @@ import store from 'js/store/store';
 // - showAlbum: show "Go to Album" (default true; pass false e.g. when already on the album page)
 
 const useContextMenuTracks = (track, { playlistId, showArtist = true, showAlbum = true } = {}) => {
-  const currentService = useSelector(({ appModel }) => appModel.currentService);
-  const platformOpts = platformFeatures[currentService] || {};
-
   if (!track) {
     return [];
   }
 
-  const hasContextAdd = platformOpts.playlistManagement;
-  const hasContextRemove = platformOpts.playlistManagement && !!playlistId && !!track.playlistItemID;
+  const hasContextRemove = !!playlistId && !!track.playlistItemID;
   const hasContextArtist = !!track.artistLink && showArtist;
   const hasContextAlbum = !!track.albumLink && showAlbum;
-  const hasContextDivider = (hasContextAdd || hasContextRemove) && (hasContextArtist || hasContextAlbum);
+  const hasContextDivider = hasContextArtist || hasContextAlbum;
 
   return [
-    ...(hasContextAdd
-      ? [
-          {
-            variant: 'submenu',
-            label: 'Add to Playlist',
-            icon: 'PlusCircleIcon',
-            getEntries: () => {
-              const playlists = store.getState().appModel.allPlaylists || [];
-              return playlists.map((playlist) => ({
-                label: playlist.title,
-                onSelect: () =>
-                  bridge.addTracksToPlaylist({ playlistId: playlist.playlistId, trackIds: [track.trackId] }),
-              }));
-            },
-          },
-        ]
-      : []),
+    {
+      variant: 'submenu',
+      label: 'Add to Playlist',
+      icon: 'PlusCircleIcon',
+      getEntries: () => {
+        const playlists = store.getState().appModel.allPlaylists || [];
+        return playlists.map((playlist) => ({
+          label: playlist.title,
+          onSelect: () => bridge.addTracksToPlaylist({ playlistId: playlist.playlistId, trackIds: [track.trackId] }),
+        }));
+      },
+    },
     ...(hasContextRemove
       ? [
           {

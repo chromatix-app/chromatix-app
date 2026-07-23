@@ -9,7 +9,6 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import clsx from 'clsx';
 
 import { ContextMenu, Favourite, Icon, StarRating } from 'js/components';
-import platformFeatures from 'js/_config/platformFeatures';
 import {
   useContextMenuAlbums,
   useContextMenuTracks,
@@ -219,9 +218,6 @@ const ViewListTracks = ({
     );
   };
 
-  const currentService = useSelector(({ appModel }) => appModel.currentService);
-  const platformOpts = platformFeatures[currentService] || {};
-
   if (entries) {
     const TableBodyComponent = entries.length <= virtualThreshold ? TableBodyStatic : TableBodyVirtual;
 
@@ -229,8 +225,8 @@ const ViewListTracks = ({
     const isSorted = sortKey && !sortKey.startsWith('sortOrder');
     const showDiscNumbers = !isSorted && discCount > 1;
 
-    // Drag is only available for playlist tracks in default sort order on services that support playlist management
-    const isDraggable = platformOpts.playlistManagement && tableVariant === 'playlistTracks' && !isSorted;
+    // Drag is only available for playlist tracks in default sort order
+    const isDraggable = tableVariant === 'playlistTracks' && !isSorted;
 
     // If disc numbers are shown, add them into our entries array
     let currentDisc = 0;
