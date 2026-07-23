@@ -13,7 +13,7 @@ Fixes:
 
 Code changes:
 
-- Improved request-is-running checks in `bridge.js` to avoid redundant in-flight requests.
+- Reworked in-flight request tracking in `bridge.js` so duplicate calls for the same data now share and await the existing request's result, instead of just skipping the call.
 
 <!-- CHANGELOG SPLIT MARKER -->
 
