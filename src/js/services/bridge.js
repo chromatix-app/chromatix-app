@@ -992,7 +992,7 @@ export const getPlaylistTracks = (libraryId, playlistId) => {
 // CREATE PLAYLIST
 // ======================================================================
 
-export const createPlaylist = ({ title }) => {
+export const createPlaylist = ({ title, itemIds, navigate = true }) => {
   if (!isStoreReady()) return;
   const currentService = store.getState().appModel.currentService;
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
@@ -1001,14 +1001,17 @@ export const createPlaylist = ({ title }) => {
   const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
   const { libraryId } = store.getState().sessionModel.currentLibrary;
   return serviceTools[currentService]
-    .createPlaylist({ accessToken, libraryId, serverId, serverBaseUrl, title, userId })
+    .createPlaylist({ accessToken, libraryId, serverId, serverBaseUrl, title, userId, itemIds })
     .then(async (response) => {
       analyticsEvent(toUpperFirst(currentService) + ' / Create Playlist');
       // refresh data
       await getAllPlaylists();
-      // navigate to the new playlist details page
       const newPlaylistId = currentService === 'jellyfin' ? response.Id : response.ratingKey;
-      store.getState().appModel.history.push(`/libraries/${libraryId}/playlists/${newPlaylistId}`);
+      // navigate to the new playlist details page
+      if (navigate) {
+        store.getState().appModel.history.push(`/libraries/${libraryId}/playlists/${newPlaylistId}`);
+      }
+      return newPlaylistId;
     })
     .catch((error) => {
       console.error(error);

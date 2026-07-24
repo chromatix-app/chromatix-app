@@ -26,26 +26,43 @@ const useContextMenuAlbums = (album, { showArtist = true, showAlbum = true } = {
       variant: 'submenu',
       label: 'Add to playlist',
       icon: 'PlusCircleIcon',
-      emptyLabel: 'No playlists found',
       getEntries: () => {
         const playlists = store.getState().appModel.allPlaylists || [];
-        return playlists.map((playlist) => ({
-          variant: 'action',
-          label: playlist.title,
-          onSelect: async () => {
-            const libraryId = store.getState().sessionModel.currentLibrary?.libraryId;
-            const albumTracksKey = libraryId + '-' + album.albumId;
-            let albumTracks = store.getState().appModel.allAlbumTracks[albumTracksKey];
-            if (!albumTracks) {
-              await bridge.getAlbumTracks(libraryId, album.albumId);
-              albumTracks = store.getState().appModel.allAlbumTracks[albumTracksKey];
-            }
-            const trackIds = (albumTracks || []).map((track) => track.trackId);
-            if (trackIds.length) {
-              bridge.addTracksToPlaylist({ playlistId: playlist.playlistId, trackIds });
-            }
+        return [
+          {
+            variant: 'action',
+            label: 'New playlist',
+            icon: 'PlusIcon',
+            onSelect: () => {
+              // deferred so it opens after Radix returns focus to the trigger on menu close,
+              // otherwise that focus-return wins the race and steals focus from the modal's input
+              setTimeout(() => {
+                store.dispatch.dialogModel.showModal({
+                  modal: 'PlaylistAdd',
+                  data: { albumId: album.albumId },
+                });
+              }, 100);
+            },
           },
-        }));
+          ...(playlists.length ? [{ variant: 'divider' }] : []),
+          ...playlists.map((playlist) => ({
+            variant: 'action',
+            label: playlist.title,
+            onSelect: async () => {
+              const libraryId = store.getState().sessionModel.currentLibrary?.libraryId;
+              const albumTracksKey = libraryId + '-' + album.albumId;
+              let albumTracks = store.getState().appModel.allAlbumTracks[albumTracksKey];
+              if (!albumTracks) {
+                await bridge.getAlbumTracks(libraryId, album.albumId);
+                albumTracks = store.getState().appModel.allAlbumTracks[albumTracksKey];
+              }
+              const trackIds = (albumTracks || []).map((track) => track.trackId);
+              if (trackIds.length) {
+                bridge.addTracksToPlaylist({ playlistId: playlist.playlistId, trackIds });
+              }
+            },
+          })),
+        ];
       },
     },
     {

@@ -27,14 +27,31 @@ const useContextMenuTracks = (track, { playlistId, showArtist = true, showAlbum 
       variant: 'submenu',
       label: 'Add to playlist',
       icon: 'PlusCircleIcon',
-      emptyLabel: 'No playlists found',
       getEntries: () => {
         const playlists = store.getState().appModel.allPlaylists || [];
-        return playlists.map((playlist) => ({
-          variant: 'action',
-          label: playlist.title,
-          onSelect: () => bridge.addTracksToPlaylist({ playlistId: playlist.playlistId, trackIds: [track.trackId] }),
-        }));
+        return [
+          {
+            variant: 'action',
+            label: 'New playlist',
+            icon: 'PlusIcon',
+            onSelect: () => {
+              // deferred so it opens after Radix returns focus to the trigger on menu close,
+              // otherwise that focus-return wins the race and steals focus from the modal's input
+              setTimeout(() => {
+                store.dispatch.dialogModel.showModal({
+                  modal: 'PlaylistAdd',
+                  data: { trackIds: [track.trackId] },
+                });
+              }, 100);
+            },
+          },
+          ...(playlists.length ? [{ variant: 'divider' }] : []),
+          ...playlists.map((playlist) => ({
+            variant: 'action',
+            label: playlist.title,
+            onSelect: () => bridge.addTracksToPlaylist({ playlistId: playlist.playlistId, trackIds: [track.trackId] }),
+          })),
+        ];
       },
     },
     ...(hasContextRemove

@@ -1270,10 +1270,13 @@ export const getPlaylistTracks = ({ accessToken, libraryId, playlistId, serverBa
 // CREATE PLAYLIST
 // ======================================================================
 
-export const createPlaylist = ({ accessToken, libraryId, serverId, serverBaseUrl, title }) => {
+export const createPlaylist = ({ accessToken, libraryId, serverId, serverBaseUrl, title, itemIds }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.playlist.createPlaylist(serverBaseUrl);
+      const uri = itemIds?.length
+        ? `server://${serverId}/com.plexapp.plugins.library/library/metadata/${itemIds.join(',')}`
+        : `server://${serverId}/com.plexapp.plugins.library/library/sections/${libraryId}`;
       axios
         .post(endpoint, null, {
           headers: getRequestHeaders(accessToken),
@@ -1282,7 +1285,7 @@ export const createPlaylist = ({ accessToken, libraryId, serverId, serverBaseUrl
             type: 'audio',
             smart: 0,
             sectionID: libraryId,
-            uri: `server://${serverId}/com.plexapp.plugins.library/library/sections/${libraryId}`,
+            uri,
           },
         })
         .then((response) => {

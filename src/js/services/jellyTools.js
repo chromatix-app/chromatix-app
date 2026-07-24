@@ -899,7 +899,7 @@ export const getPlaylistTracks = ({ accessToken, libraryId, playlistId, serverBa
 // CREATE PLAYLIST
 // ======================================================================
 
-export const createPlaylist = ({ accessToken, serverBaseUrl, title, userId }) => {
+export const createPlaylist = ({ accessToken, serverBaseUrl, title, userId, itemIds }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.playlist.createPlaylist(serverBaseUrl);
@@ -911,7 +911,7 @@ export const createPlaylist = ({ accessToken, serverBaseUrl, title, userId }) =>
           endpoint,
           {
             Name: title,
-            Ids: [],
+            Ids: itemIds || [],
             UserId: userId,
             MediaType: 'Audio',
           },
