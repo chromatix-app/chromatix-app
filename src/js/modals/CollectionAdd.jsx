@@ -8,6 +8,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 
 import { Button, ModalWindow } from 'js/components';
 import * as bridge from 'js/services/bridge';
+import { validateEntityName } from 'js/utils';
 import style from './modals.module.scss';
 
 // ======================================================================
@@ -17,11 +18,17 @@ import style from './modals.module.scss';
 const CollectionAdd = () => {
   const dispatch = useDispatch();
   const currentModalData = useSelector(({ dialogModel }) => dialogModel.currentModalData);
+  const allArtistCollections = useSelector(({ appModel }) => appModel.allArtistCollections);
+  const allAlbumCollections = useSelector(({ appModel }) => appModel.allAlbumCollections);
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const allCollections = currentModalData?.type === 'artist' ? allArtistCollections : allAlbumCollections;
+  const existingTitles = (allCollections || []).map((collection) => collection.title);
+  const validationError = validateEntityName(title, existingTitles);
+
   const handleSubmit = async () => {
-    if (!title.trim()) return;
+    if (validationError) return;
     setLoading(true);
     dispatch.appModel.showBlocker();
     try {
@@ -60,11 +67,12 @@ const CollectionAdd = () => {
               if (e.key === 'Enter') handleSubmit();
             }}
           />
+          {title.trim() && validationError && <p className={style.inputErrorMessage}>{validationError}</p>}
         </div>
       </Dialog.Description>
 
       <div className={style.buttons}>
-        <Button onClick={handleSubmit} size="small" color="mono" disabled={!title.trim()} loading={loading}>
+        <Button onClick={handleSubmit} size="small" color="mono" disabled={!!validationError} loading={loading}>
           Create Collection
         </Button>
         <Button onClick={() => dispatch.dialogModel.closeModal()} size="small" color="tertiary" disabled={loading}>

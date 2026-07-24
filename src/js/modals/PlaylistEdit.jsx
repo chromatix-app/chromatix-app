@@ -8,6 +8,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 
 import { Button, ModalWindow } from 'js/components';
 import * as bridge from 'js/services/bridge';
+import { validateEntityName } from 'js/utils';
 import style from './modals.module.scss';
 
 // ======================================================================
@@ -17,6 +18,7 @@ import style from './modals.module.scss';
 const PlaylistEdit = () => {
   const dispatch = useDispatch();
   const currentModalData = useSelector(({ dialogModel }) => dialogModel.currentModalData);
+  const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
 
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,12 +29,20 @@ const PlaylistEdit = () => {
     }
   }, [currentModalData]);
 
+  const existingTitles = (allPlaylists || [])
+    .filter((playlist) => playlist.playlistId !== currentModalData?.playlistId)
+    .map((playlist) => playlist.title);
+  const validationError = validateEntityName(title, existingTitles, currentModalData?.playlistTitle);
+
   const handleSubmit = async () => {
-    if (!title.trim()) return;
+    if (validationError) return;
     setLoading(true);
     dispatch.appModel.showBlocker();
     try {
-      await bridge.editPlaylist({ playlistId: currentModalData.playlistId, title: title.trim() });
+      await bridge.editPlaylist({
+        playlistId: currentModalData.playlistId,
+        title: title.trim(),
+      });
       dispatch.dialogModel.closeModal();
     } catch (_error) {
       // [TODO] add error handling
@@ -63,11 +73,12 @@ const PlaylistEdit = () => {
               if (e.key === 'Enter') handleSubmit();
             }}
           />
+          {title.trim() && validationError && <p className={style.inputErrorMessage}>{validationError}</p>}
         </div>
       </Dialog.Description>
 
       <div className={style.buttons}>
-        <Button onClick={handleSubmit} size="small" color="mono" disabled={!title.trim()} loading={loading}>
+        <Button onClick={handleSubmit} size="small" color="mono" disabled={!!validationError} loading={loading}>
           Save Playlist
         </Button>
         <Button onClick={() => dispatch.dialogModel.closeModal()} size="small" color="tertiary" disabled={loading}>

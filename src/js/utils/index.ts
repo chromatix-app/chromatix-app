@@ -18,3 +18,4 @@ export { default as safeEncodeURIComponent } from './safeEncodeURIComponent';
 export { default as sendToElectron } from './sendToElectron';
 export { default as setLocalStorage } from './setLocalStorage';
 export { default as sortList } from './sortList';
+export { default as validateEntityName } from './validateEntityName';

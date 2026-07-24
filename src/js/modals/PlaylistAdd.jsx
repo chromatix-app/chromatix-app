@@ -9,6 +9,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { Button, ModalWindow } from 'js/components';
 import * as bridge from 'js/services/bridge';
 import store from 'js/store/store';
+import { validateEntityName } from 'js/utils';
 import style from './modals.module.scss';
 
 // ======================================================================
@@ -20,11 +21,15 @@ import style from './modals.module.scss';
 const PlaylistAdd = () => {
   const dispatch = useDispatch();
   const currentModalData = useSelector(({ dialogModel }) => dialogModel.currentModalData);
+  const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const existingTitles = (allPlaylists || []).map((playlist) => playlist.title);
+  const validationError = validateEntityName(title, existingTitles);
+
   const handleSubmit = async () => {
-    if (!title.trim()) return;
+    if (validationError) return;
     setLoading(true);
     dispatch.appModel.showBlocker();
     try {
@@ -40,7 +45,11 @@ const PlaylistAdd = () => {
         }
         trackIds = (albumTracks || []).map((track) => track.trackId);
       }
-      await bridge.createPlaylist({ title: title.trim(), itemIds: trackIds, navigate: !seedItem });
+      await bridge.createPlaylist({
+        title: title.trim(),
+        itemIds: trackIds,
+        navigate: !seedItem,
+      });
       dispatch.dialogModel.closeModal();
     } catch (_error) {
       // [TODO] add error handling
@@ -71,11 +80,12 @@ const PlaylistAdd = () => {
               if (e.key === 'Enter') handleSubmit();
             }}
           />
+          {title.trim() && validationError && <p className={style.inputErrorMessage}>{validationError}</p>}
         </div>
       </Dialog.Description>
 
       <div className={style.buttons}>
-        <Button onClick={handleSubmit} size="small" color="mono" disabled={!title.trim()} loading={loading}>
+        <Button onClick={handleSubmit} size="small" color="mono" disabled={!!validationError} loading={loading}>
           Create Playlist
         </Button>
         <Button onClick={() => dispatch.dialogModel.closeModal()} size="small" color="tertiary" disabled={loading}>

@@ -23,7 +23,10 @@ const useContextMenuCollections = (collection) => {
       label: 'Edit collection',
       icon: 'PencilIcon',
       onSelect: () =>
-        store.dispatch.dialogModel.showModal({ modal: 'CollectionEdit', data: { collectionId, collectionTitle } }),
+        store.dispatch.dialogModel.showModal({
+          modal: 'CollectionEdit',
+          data: { collectionId, collectionTitle, collectionType },
+        }),
     },
     {
       variant: 'action',
