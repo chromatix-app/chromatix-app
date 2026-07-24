@@ -1310,13 +1310,10 @@ export const createCollection = ({ title, type, itemIds }) => {
   const { libraryId } = store.getState().sessionModel.currentLibrary;
   return serviceTools[currentService]
     .createCollection({ accessToken, libraryId, serverId, serverBaseUrl, title, type, itemIds })
-    .then(async (response) => {
+    .then(async () => {
       analyticsEvent(toUpperFirst(currentService) + ' / Create Collection');
       // refresh data
       await getAllCollections();
-      // navigate to the new collection details page
-      const collectionPath = type === 'artist' ? 'artist-collections' : 'album-collections';
-      store.getState().appModel.history.push(`/libraries/${libraryId}/${collectionPath}/${response.ratingKey}`);
     })
     .catch((error) => {
       console.error(error);

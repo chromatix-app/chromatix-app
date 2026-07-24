@@ -52,22 +52,39 @@ const useContextMenuAlbums = (album, { showArtist = true, showAlbum = true } = {
       variant: 'submenu',
       label: 'Add to collection',
       icon: 'PlusCircleIcon',
-      emptyLabel: 'No collections found',
       getEntries: () => {
         const collections = store.getState().appModel.allAlbumCollections || [];
-        return collections.map((collection) => ({
-          variant: 'action',
-          label: collection.title,
-          onSelect: () => {
-            const libraryId = store.getState().sessionModel.currentLibrary?.libraryId;
-            bridge.addItemsToCollection({
-              collectionId: collection.collectionId,
-              libraryId,
-              typeKey: 'Album',
-              itemIds: [album.albumId],
-            });
+        return [
+          {
+            variant: 'action',
+            label: 'New collection',
+            icon: 'PlusIcon',
+            onSelect: () => {
+              // deferred so it opens after Radix returns focus to the trigger on menu close,
+              // otherwise that focus-return wins the race and steals focus from the modal's input
+              setTimeout(() => {
+                store.dispatch.dialogModel.showModal({
+                  modal: 'CollectionAdd',
+                  data: { type: 'album', itemId: album.albumId },
+                });
+              }, 100);
+            },
           },
-        }));
+          ...(collections.length ? [{ variant: 'divider' }] : []),
+          ...collections.map((collection) => ({
+            variant: 'action',
+            label: collection.title,
+            onSelect: () => {
+              const libraryId = store.getState().sessionModel.currentLibrary?.libraryId;
+              bridge.addItemsToCollection({
+                collectionId: collection.collectionId,
+                libraryId,
+                typeKey: 'Album',
+                itemIds: [album.albumId],
+              });
+            },
+          })),
+        ];
       },
     },
     ...(album.collectionId

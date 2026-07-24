@@ -23,22 +23,39 @@ const useContextMenuArtists = (artist, { showArtist = true } = {}) => {
       variant: 'submenu',
       label: 'Add to collection',
       icon: 'PlusCircleIcon',
-      emptyLabel: 'No collections found',
       getEntries: () => {
         const collections = store.getState().appModel.allArtistCollections || [];
-        return collections.map((collection) => ({
-          variant: 'action',
-          label: collection.title,
-          onSelect: () => {
-            const libraryId = store.getState().sessionModel.currentLibrary?.libraryId;
-            bridge.addItemsToCollection({
-              collectionId: collection.collectionId,
-              libraryId,
-              typeKey: 'Artist',
-              itemIds: [artist.artistId],
-            });
+        return [
+          {
+            variant: 'action',
+            label: 'New collection',
+            icon: 'PlusIcon',
+            onSelect: () => {
+              // deferred so it opens after Radix returns focus to the trigger on menu close,
+              // otherwise that focus-return wins the race and steals focus from the modal's input
+              setTimeout(() => {
+                store.dispatch.dialogModel.showModal({
+                  modal: 'CollectionAdd',
+                  data: { type: 'artist', itemId: artist.artistId },
+                });
+              }, 100);
+            },
           },
-        }));
+          ...(collections.length ? [{ variant: 'divider' }] : []),
+          ...collections.map((collection) => ({
+            variant: 'action',
+            label: collection.title,
+            onSelect: () => {
+              const libraryId = store.getState().sessionModel.currentLibrary?.libraryId;
+              bridge.addItemsToCollection({
+                collectionId: collection.collectionId,
+                libraryId,
+                typeKey: 'Artist',
+                itemIds: [artist.artistId],
+              });
+            },
+          })),
+        ];
       },
     },
     ...(artist.collectionId

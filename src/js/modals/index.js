@@ -1,4 +1,5 @@
 export { default as Alert } from './Alert';
+export { default as CollectionAdd } from './CollectionAdd';
 export { default as CollectionEdit } from './CollectionEdit';
 export { default as Confirmation } from './Confirmation';
 export { default as ImagePreview } from './ImagePreview';
