@@ -11,6 +11,8 @@ import clsx from 'clsx';
 import { ContextMenu, Favourite, Icon, StarRating } from 'js/components';
 import {
   useContextMenuAlbums,
+  useContextMenuArtists,
+  useContextMenuCollections,
   useContextMenuPlaylists,
   useContextMenuTracks,
   usePlaylistDrag,
@@ -54,6 +56,7 @@ const ViewListBasic = ({
   groupBy,
   artistId,
   albumId,
+  collectionId,
   playlistId,
   folderId,
   entries,
@@ -102,6 +105,7 @@ const ViewListBasic = ({
       <div className={clsx(style.wrap, style['wrap' + variant?.charAt(0).toUpperCase() + variant?.slice(1)], {})}>
         <TableBodyComponent
           entries={entriesWithGroups}
+          collectionId={collectionId}
           titleBlock={children}
           headerBlock={headerBlock()}
           variant={variant}
@@ -345,6 +349,7 @@ const SortableHeading = ({
 
 const TableBodyStatic = ({
   entries,
+  collectionId,
   titleBlock,
   headerBlock,
   variant,
@@ -441,6 +446,7 @@ const TableBodyStatic = ({
                 key={index}
                 entry={entry}
                 variant={variant}
+                collectionId={collectionId}
                 tableVariant={tableVariant}
                 tableOptions={tableOptions}
                 gridTemplateColumns={gridTemplateColumns}
@@ -479,6 +485,7 @@ let innerRef;
 
 const TableBodyVirtual = ({
   entries,
+  collectionId,
   titleBlock,
   headerBlock,
   variant,
@@ -683,6 +690,7 @@ const TableBodyVirtual = ({
                   entry={entry}
                   virtualEntry={virtualEntry}
                   variant={variant}
+                  collectionId={collectionId}
                   tableVariant={tableVariant}
                   tableOptions={tableOptions}
                   gridTemplateColumns={gridTemplateColumns}
@@ -776,20 +784,44 @@ const DiscRow = ({ virtualEntry, entry }) => {
 // STANDARD ROW
 // ======================================================================
 
-const StandardRow = ({ virtualEntry, entry, variant, tableVariant, tableOptions, gridTemplateColumns }) => {
+const StandardRow = ({
+  virtualEntry,
+  entry,
+  variant,
+  collectionId,
+  tableVariant,
+  tableOptions,
+  gridTemplateColumns,
+}) => {
   const { ratingType, ratingKey } = lookupVariantFields[tableVariant] || {};
   const rowKey = entry.albumId || entry.artistId || entry.playlistId || entry.collectionId;
 
+  const isArtist = tableVariant === 'artists';
   const isAlbum = tableVariant === 'albums';
   const isPlaylist = tableVariant === 'playlists';
+  const isCollection = tableVariant === 'collections';
 
-  const albumContextEntries = useContextMenuAlbums(isAlbum ? entry : null, {
+  const artistContextEntries = useContextMenuArtists(isArtist ? { ...entry, collectionId } : null);
+  const albumContextEntries = useContextMenuAlbums(isAlbum ? { ...entry, collectionId } : null, {
     showArtist: variant !== 'artistAlbums',
   });
   const playlistContextEntries = useContextMenuPlaylists(
-    isPlaylist ? { playlistId: entry.playlistId, playlistTitle: entry.title } : null
+    isPlaylist ? { playlistId: entry.playlistId, playlistTitle: entry.title, link: entry.link } : null
   );
-  const contextEntries = isAlbum ? albumContextEntries : isPlaylist ? playlistContextEntries : [];
+  const collectionContextEntries = useContextMenuCollections(
+    isCollection
+      ? { collectionId: entry.collectionId, collectionTitle: entry.title, collectionType: entry.type, link: entry.link }
+      : null
+  );
+  const contextEntries = isArtist
+    ? artistContextEntries
+    : isAlbum
+      ? albumContextEntries
+      : isPlaylist
+        ? playlistContextEntries
+        : isCollection
+          ? collectionContextEntries
+          : [];
 
   return (
     <ContextMenu entries={contextEntries}>

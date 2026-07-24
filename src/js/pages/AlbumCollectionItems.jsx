@@ -9,14 +9,13 @@ import {
   FilterMenu,
   FilterSelect,
   FilterToggle,
-  FilterWrap,
   ViewGrid,
   ViewList,
   Loading,
   StarRating,
   TitleHeading,
 } from 'js/components';
-import { useGetCollectionItems } from 'js/hooks';
+import { useContextMenuCollections, useGetCollectionItems } from 'js/hooks';
 import platformFeatures from 'js/_config/platformFeatures';
 
 // ======================================================================
@@ -55,6 +54,12 @@ const AlbumCollectionItems = () => {
     itemsKey: 'AlbumCollectionItems',
   });
 
+  const contextEntries = useContextMenuCollections(
+    collectionInfo && !collectionInfo?.error404
+      ? { collectionId, collectionTitle: collectionInfo.title, collectionType: 'album' }
+      : null
+  );
+
   if (!collectionInfo) {
     return <Loading forceVisible inline showOffline />;
   }
@@ -78,6 +83,7 @@ const AlbumCollectionItems = () => {
           collectionThumbMedium={collectionThumbMedium}
           collectionTitle={collectionTitle}
           colOptions={colOptions}
+          contextEntries={contextEntries}
           gridOptions={gridOptions}
           isGridView={isGridView}
           isListView={isListView}
@@ -95,7 +101,12 @@ const AlbumCollectionItems = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ViewGrid variant="albums" entries={sortedCollectionItems} showRatings={gridOptions.userRating}>
+        <ViewGrid
+          variant="albums"
+          collectionId={collectionId}
+          entries={sortedCollectionItems}
+          showRatings={gridOptions.userRating}
+        >
           <Title
             collectionId={collectionId}
             collectionRating={collectionRating}
@@ -103,6 +114,7 @@ const AlbumCollectionItems = () => {
             collectionThumbMedium={collectionThumbMedium}
             collectionTitle={collectionTitle}
             colOptions={colOptions}
+            contextEntries={contextEntries}
             gridOptions={gridOptions}
             isGridView={isGridView}
             isListView={isListView}
@@ -122,6 +134,7 @@ const AlbumCollectionItems = () => {
       {isListView && (
         <ViewList
           variant="albumCollectionItems"
+          collectionId={collectionId}
           entries={sortedCollectionItems}
           sortKey={sortCollectionItems}
           orderKey={orderCollectionItems}
@@ -134,6 +147,7 @@ const AlbumCollectionItems = () => {
             collectionThumbMedium={collectionThumbMedium}
             collectionTitle={collectionTitle}
             colOptions={colOptions}
+            contextEntries={contextEntries}
             gridOptions={gridOptions}
             isGridView={isGridView}
             isListView={isListView}
@@ -161,6 +175,7 @@ const Title = ({
   collectionThumbMedium,
   collectionTitle,
   colOptions,
+  contextEntries,
   gridOptions,
   isGridView,
   isListView,
@@ -197,125 +212,135 @@ const Title = ({
         )
       }
       padding={!isListView && !isGridView}
-      filters={
-        <FilterWrap>
-          <FilterToggle
-            value={viewCollectionItems}
-            options={[
-              { value: 'grid', label: 'Grid view' },
-              { value: 'list', label: 'List view' },
-            ]}
-            setter={setViewCollectionItems}
-            icon={viewCollectionItems === 'grid' ? 'GridIcon' : 'ListIcon'}
-          />
-          {viewCollectionItems === 'grid' && (
-            <>
-              <FilterSelect
-                value={sortCollectionItems}
-                options={[
-                  { value: 'title', label: 'Alphabetical' },
-                  { value: 'artist', label: 'Artist' },
-                  { value: 'artist-asc-releaseDate-asc', label: 'Artist, oldest release first' },
-                  { value: 'artist-asc-releaseDate-desc', label: 'Artist, newest release first' },
-                  ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
-                  ...(platformOpts?.enableLastPlayed ? [{ value: 'lastPlayed', label: 'Date played' }] : []),
-                  { value: 'releaseDate', label: 'Date released' },
-                  ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
-                ]}
-                setter={setSortCollectionItems}
-              />
-              <FilterToggle
-                value={orderCollectionItems}
-                options={[
-                  { value: 'asc', label: 'Ascending' },
-                  { value: 'desc', label: 'Descending' },
-                ]}
-                setter={setOrderCollectionItems}
-                icon={orderCollectionItems === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
-              />
+      optionsMenu={
+        <>
+          <div className="filterIconWrap">
+            <FilterToggle
+              variant="Large"
+              value={viewCollectionItems}
+              options={[
+                { value: 'grid', label: 'Grid view' },
+                { value: 'list', label: 'List view' },
+              ]}
+              setter={setViewCollectionItems}
+              icon={viewCollectionItems === 'grid' ? 'GridIcon' : 'ListIcon'}
+            />
+            {viewCollectionItems === 'grid' && (
+              <>
+                <FilterSelect
+                  variant="Large"
+                  value={sortCollectionItems}
+                  options={[
+                    { value: 'title', label: 'Alphabetical' },
+                    { value: 'artist', label: 'Artist' },
+                    { value: 'artist-asc-releaseDate-asc', label: 'Artist, oldest release first' },
+                    { value: 'artist-asc-releaseDate-desc', label: 'Artist, newest release first' },
+                    ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
+                    ...(platformOpts?.enableLastPlayed ? [{ value: 'lastPlayed', label: 'Date played' }] : []),
+                    { value: 'releaseDate', label: 'Date released' },
+                    ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
+                  ]}
+                  setter={setSortCollectionItems}
+                />
+                <FilterToggle
+                  variant="Large"
+                  value={orderCollectionItems}
+                  options={[
+                    { value: 'asc', label: 'Ascending' },
+                    { value: 'desc', label: 'Descending' },
+                  ]}
+                  setter={setOrderCollectionItems}
+                  icon={orderCollectionItems === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+                />
+                <FilterMenu
+                  variant="Large"
+                  label="Options"
+                  icon="CogIcon"
+                  setter={setColumnVisibility}
+                  entries={[
+                    ...(platformOpts?.enableUserRating
+                      ? [
+                          {
+                            variant: 'checkbox',
+                            label: 'Show star ratings',
+                            attr: 'gridAlbumCollectionItemsUserRating',
+                            checked: gridOptions.userRating,
+                          },
+                        ]
+                      : []),
+                  ]}
+                />
+              </>
+            )}
+            {viewCollectionItems === 'list' && (
               <FilterMenu
+                variant="Large"
                 label="Options"
                 icon="CogIcon"
                 setter={setColumnVisibility}
                 entries={[
+                  {
+                    variant: 'checkbox',
+                    label: 'Title',
+                    disabled: true,
+                    checked: true,
+                  },
+                  {
+                    variant: 'checkbox',
+                    label: 'Artist',
+                    attr: 'colCollectionAlbumsArtist',
+                    checked: colOptions.artist,
+                  },
+                  {
+                    variant: 'checkbox',
+                    label: 'Genre',
+                    attr: 'colCollectionAlbumsGenre',
+                    checked: colOptions.genre,
+                  },
+                  {
+                    variant: 'checkbox',
+                    label: 'Released',
+                    attr: 'colCollectionAlbumsReleaseDate',
+                    checked: colOptions.releaseDate,
+                  },
+                  ...(platformOpts?.enableAddedAt
+                    ? [
+                        {
+                          variant: 'checkbox',
+                          label: 'Added',
+                          attr: 'colCollectionAlbumsAddedAt',
+                          checked: colOptions.addedAt,
+                        },
+                      ]
+                    : []),
+                  ...(platformOpts?.enableLastPlayed
+                    ? [
+                        {
+                          variant: 'checkbox',
+                          label: 'Last played',
+                          attr: 'colCollectionAlbumsLastPlayed',
+                          checked: colOptions.lastPlayed,
+                        },
+                      ]
+                    : []),
                   ...(platformOpts?.enableUserRating
                     ? [
                         {
                           variant: 'checkbox',
-                          label: 'Show star ratings',
-                          attr: 'gridAlbumCollectionItemsUserRating',
-                          checked: gridOptions.userRating,
+                          label: 'Rating',
+                          attr: 'colCollectionAlbumsUserRating',
+                          checked: colOptions.userRating,
                         },
                       ]
                     : []),
                 ]}
               />
-            </>
-          )}
-          {viewCollectionItems === 'list' && (
-            <FilterMenu
-              label="Options"
-              icon="CogIcon"
-              setter={setColumnVisibility}
-              entries={[
-                {
-                  variant: 'checkbox',
-                  label: 'Title',
-                  disabled: true,
-                  checked: true,
-                },
-                {
-                  variant: 'checkbox',
-                  label: 'Artist',
-                  attr: 'colCollectionAlbumsArtist',
-                  checked: colOptions.artist,
-                },
-                {
-                  variant: 'checkbox',
-                  label: 'Genre',
-                  attr: 'colCollectionAlbumsGenre',
-                  checked: colOptions.genre,
-                },
-                {
-                  variant: 'checkbox',
-                  label: 'Released',
-                  attr: 'colCollectionAlbumsReleaseDate',
-                  checked: colOptions.releaseDate,
-                },
-                ...(platformOpts?.enableAddedAt
-                  ? [
-                      {
-                        variant: 'checkbox',
-                        label: 'Added',
-                        attr: 'colCollectionAlbumsAddedAt',
-                        checked: colOptions.addedAt,
-                      },
-                    ]
-                  : []),
-                ...(platformOpts?.enableLastPlayed
-                  ? [
-                      {
-                        variant: 'checkbox',
-                        label: 'Last played',
-                        attr: 'colCollectionAlbumsLastPlayed',
-                        checked: colOptions.lastPlayed,
-                      },
-                    ]
-                  : []),
-                ...(platformOpts?.enableUserRating
-                  ? [
-                      {
-                        variant: 'checkbox',
-                        label: 'Rating',
-                        attr: 'colCollectionAlbumsUserRating',
-                        checked: colOptions.userRating,
-                      },
-                    ]
-                  : []),
-              ]}
-            />
-          )}
-        </FilterWrap>
+            )}
+          </div>
+          <div className="filterIconWrap">
+            <FilterMenu variant="Large" label="More" icon="EllipsisIcon" entries={contextEntries} />
+          </div>
+        </>
       }
     />
   );

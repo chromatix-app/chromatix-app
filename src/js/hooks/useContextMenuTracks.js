@@ -27,6 +27,7 @@ const useContextMenuTracks = (track, { playlistId, showArtist = true, showAlbum 
       variant: 'submenu',
       label: 'Add to playlist',
       icon: 'PlusCircleIcon',
+      emptyLabel: 'No playlists found',
       getEntries: () => {
         const playlists = store.getState().appModel.allPlaylists || [];
         return playlists.map((playlist) => ({

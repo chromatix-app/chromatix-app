@@ -97,6 +97,12 @@ const endpointConfig = {
     getAllCollections: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/collections`,
     getCollectionItems: (serverBaseUrl, collectionId) =>
       `${serverBaseUrl}/library/collections/${collectionId}/children`,
+    createCollection: (serverBaseUrl) => `${serverBaseUrl}/library/collections`,
+    editCollection: (serverBaseUrl, collectionId) => `${serverBaseUrl}/library/collections/${collectionId}`,
+    deleteCollection: (serverBaseUrl, collectionId) => `${serverBaseUrl}/library/collections/${collectionId}`,
+    addItemsToCollection: (serverBaseUrl, collectionId) => `${serverBaseUrl}/library/collections/${collectionId}/items`,
+    removeItemFromCollection: (serverBaseUrl, collectionId, itemId) =>
+      `${serverBaseUrl}/library/collections/${collectionId}/items/${itemId}`,
   },
   tags: {
     getAllArtistGenres: (serverBaseUrl, libraryId) => `${serverBaseUrl}/library/sections/${libraryId}/genre`,
@@ -1607,6 +1613,179 @@ export const getCollectionItems = ({ accessToken, collectionId, libraryId, serve
       reject({
         code: 'plex.getCollectionItems.2',
         message: 'Failed to get all collection items: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// CREATE COLLECTION
+// ======================================================================
+
+export const createCollection = ({ accessToken, libraryId, serverId, serverBaseUrl, title, type, itemIds }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.collection.createCollection(serverBaseUrl);
+      axios
+        .post(endpoint, null, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            title,
+            type: type === 'artist' ? 8 : 9,
+            smart: 0,
+            sectionId: libraryId,
+            uri: `server://${serverId}/com.plexapp.plugins.library/library/metadata/${itemIds.join(',')}`,
+          },
+        })
+        .then((response) => {
+          resolve(response.data?.MediaContainer?.Metadata?.[0]);
+        })
+        .catch((error) => {
+          reject({
+            code: 'plex.createCollection.1',
+            message: 'Failed to create collection: ' + error?.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'plex.createCollection.2',
+        message: 'Failed to create collection: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// EDIT COLLECTION
+// ======================================================================
+
+export const editCollection = ({ accessToken, serverBaseUrl, collectionId, title }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.collection.editCollection(serverBaseUrl, collectionId);
+      axios
+        .put(endpoint, null, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            ...(title !== undefined && { title }),
+          },
+        })
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject({
+            code: 'plex.editCollection.1',
+            message: 'Failed to edit collection: ' + error?.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'plex.editCollection.2',
+        message: 'Failed to edit collection: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// DELETE COLLECTION
+// ======================================================================
+
+export const deleteCollection = ({ accessToken, serverBaseUrl, collectionId }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.collection.deleteCollection(serverBaseUrl, collectionId);
+      axios
+        .delete(endpoint, {
+          headers: getRequestHeaders(accessToken),
+        })
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject({
+            code: 'plex.deleteCollection.1',
+            message: 'Failed to delete collection: ' + error?.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'plex.deleteCollection.2',
+        message: 'Failed to delete collection: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// ADD ITEMS TO COLLECTION
+// ======================================================================
+
+export const addItemsToCollection = ({ accessToken, serverBaseUrl, collectionId, serverId, itemIds }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.collection.addItemsToCollection(serverBaseUrl, collectionId);
+      axios
+        .put(endpoint, null, {
+          headers: getRequestHeaders(accessToken),
+          params: {
+            uri: `server://${serverId}/com.plexapp.plugins.library/library/metadata/${itemIds.join(',')}`,
+          },
+        })
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject({
+            code: 'plex.addItemsToCollection.1',
+            message: 'Failed to add items to collection: ' + error?.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'plex.addItemsToCollection.2',
+        message: 'Failed to add items to collection: ' + error?.message,
+        error: error,
+      });
+    }
+  });
+};
+
+// ======================================================================
+// REMOVE ITEM FROM COLLECTION
+// ======================================================================
+
+export const removeItemFromCollection = ({ accessToken, serverBaseUrl, collectionId, itemId }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const endpoint = endpointConfig.collection.removeItemFromCollection(serverBaseUrl, collectionId, itemId);
+      axios
+        .delete(endpoint, {
+          headers: getRequestHeaders(accessToken),
+        })
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject({
+            code: 'plex.removeItemFromCollection.1',
+            message: 'Failed to remove item from collection: ' + error?.message,
+            error: error,
+          });
+        });
+    } catch (error) {
+      reject({
+        code: 'plex.removeItemFromCollection.2',
+        message: 'Failed to remove item from collection: ' + error?.message,
         error: error,
       });
     }

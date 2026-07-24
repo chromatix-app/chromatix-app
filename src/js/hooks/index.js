@@ -1,5 +1,7 @@
 export { default as useColorTheme } from './useColorTheme';
 export { default as useContextMenuAlbums } from './useContextMenuAlbums';
+export { default as useContextMenuArtists } from './useContextMenuArtists';
+export { default as useContextMenuCollections } from './useContextMenuCollections';
 export { default as useContextMenuPlaylists } from './useContextMenuPlaylists';
 export { default as useContextMenuTracks } from './useContextMenuTracks';
 export { default as useElectronStatus } from './useElectronStatus';
@@ -11,9 +13,9 @@ export { default as useGetCollectionArray } from './useGetCollectionArray';
 export { default as useGetCollectionItems } from './useGetCollectionItems';
 export { default as useGetDownloadLinks } from './useGetDownloadLinks';
 export { default as useGetFolderItems } from './useGetFolderItems';
+export { default as useGetGlobalData } from './useGetGlobalData';
 export { default as useGetPlaylistArray } from './useGetPlaylistArray';
 export { default as useGetPlaylistDetail } from './useGetPlaylistDetail';
-export { default as useGetPlaylistSidebar } from './useGetPlaylistSidebar';
 export { default as useGetQueuedTracks } from './useGetQueuedTracks';
 export { default as useGotRequiredData } from './useGotRequiredData';
 export { default as useKeyControl } from './useKeyControl';
