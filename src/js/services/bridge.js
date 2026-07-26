@@ -1387,6 +1387,7 @@ export const addItemsToCollection = ({ collectionId, libraryId, typeKey, itemIds
     .then(() => {
       analyticsEvent(toUpperFirst(currentService) + ' / Add Items To Collection');
       // refresh the collection
+      getAllCollections();
       getCollectionItems(libraryId, collectionId, typeKey);
     })
     .catch((error) => {
@@ -1409,6 +1410,7 @@ export const removeItemFromCollection = ({ collectionId, libraryId, typeKey, ite
     .then(() => {
       analyticsEvent(toUpperFirst(currentService) + ' / Remove Item From Collection');
       // refresh the collection
+      getAllCollections();
       getCollectionItems(libraryId, collectionId, typeKey);
     })
     .catch((error) => {
