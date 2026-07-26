@@ -2,7 +2,7 @@
 // IMPORTS
 // ======================================================================
 
-import { FilterToggle, FilterWrap, ViewGrid, ViewList, Loading, TitleHeading } from 'js/components';
+import { ActionToggle, ActionWrap, ViewGrid, ViewList, Loading, TitleHeading } from 'js/components';
 import { useGetCollectionArray } from 'js/hooks';
 
 // ======================================================================
@@ -104,8 +104,8 @@ const Title = ({
         }
         padding={!isListView && !isGridView}
       />
-      <FilterWrap padding={true} inset={isListView || isGridView}>
-        <FilterToggle
+      <ActionWrap padding={true} inset={isListView || isGridView}>
+        <ActionToggle
           value={viewCollections}
           options={[
             { value: 'grid', label: 'Grid view' },
@@ -116,18 +116,18 @@ const Title = ({
         />
         {viewCollections === 'grid' && (
           <>
-            <FilterToggle
+            <ActionToggle
               value={orderCollections}
               options={[
-                { value: 'asc', label: 'Ascending' },
-                { value: 'desc', label: 'Descending' },
+                { value: 'asc', label: 'Alphabetical' },
+                { value: 'desc', label: 'Alphabetical' },
               ]}
               setter={setOrderCollections}
               icon={orderCollections === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
           </>
         )}
-      </FilterWrap>
+      </ActionWrap>
     </>
   );
 };

@@ -1,0 +1,32 @@
+@use '../Action/_shared' as action;
+
+.wrap {
+  @include action.wrap;
+}
+
+.trigger {
+  @include action.trigger;
+}
+
+.icon {
+  @include action.icon;
+}
+
+.label {
+  @include action.label;
+}
+
+//
+// DROPDOWN
+//
+
+.content {
+  top: 2px;
+  left: -7px;
+
+  // Icon variant used alongside play buttons
+  &Large {
+    top: 4px;
+    left: 0;
+  }
+}

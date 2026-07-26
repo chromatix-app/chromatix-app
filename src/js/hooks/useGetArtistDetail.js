@@ -241,9 +241,10 @@ const useGetArtistDetail = ({ variant, libraryId, artistId }) => {
     });
   };
 
-  const setSortArtistAlbums = (sortArtistAlbums) => {
+  const setSortArtistAlbums = (sortArtistAlbums, orderArtistAlbums) => {
     dispatch.sessionModel.setSessionState({
       sortArtistAlbums,
+      ...(orderArtistAlbums !== undefined && { orderArtistAlbums }),
     });
   };
 

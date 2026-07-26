@@ -4,7 +4,8 @@ import store from 'js/store/store';
 /**
  * Builds the context menu entries for a playlist, for use with <ContextMenu>.
  * Works with any playlist object shaped like the entries in PlaylistArray / PlaylistDetail
- * (playlistId, playlistTitle).
+ * (playlistId, playlistTitle, link).
+ * Pass link (e.g. from grid/list entries) to show "Go to playlist"; omit it on the playlist's own detail page.
  * @param playlist - The playlist to build entries for
  * @returns Array of entries for use with the shared MenuEntry renderer
  */
@@ -14,7 +15,7 @@ const useContextMenuPlaylists = (playlist) => {
     return [];
   }
 
-  const { playlistId, playlistTitle } = playlist;
+  const { playlistId, playlistTitle, link } = playlist;
 
   return [
     {
@@ -47,6 +48,9 @@ const useContextMenuPlaylists = (playlist) => {
           },
         }),
     },
+    ...(link
+      ? [{ variant: 'divider' }, { variant: 'action', label: 'Go to playlist', icon: 'PlaylistIcon', to: link }]
+      : []),
   ];
 };
 

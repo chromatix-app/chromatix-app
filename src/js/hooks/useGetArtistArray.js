@@ -70,9 +70,10 @@ const useGetArtistArray = ({ variant }) => {
     });
   };
 
-  const setSortArtists = (sortArtists) => {
+  const setSortArtists = (sortArtists, orderArtists) => {
     dispatch.sessionModel.setSessionState({
       sortArtists,
+      ...(orderArtists !== undefined && { orderArtists }),
     });
   };
 

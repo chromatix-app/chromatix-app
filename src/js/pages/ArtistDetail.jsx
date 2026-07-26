@@ -7,16 +7,16 @@ import { useParams } from 'react-router-dom';
 
 import {
   Favourite,
-  FilterMenu,
-  FilterSelect,
-  FilterToggle,
+  ActionMenu,
+  ActionSelect,
+  ActionSort,
   ViewGrid,
   ViewList,
   Loading,
   StarRating,
   TitleHeading,
 } from 'js/components';
-import { useGetArtistDetail } from 'js/hooks';
+import { useContextMenuArtists, useGetArtistDetail } from 'js/hooks';
 import platformFeatures from 'js/_config/platformFeatures';
 
 // ======================================================================
@@ -340,6 +340,8 @@ const Title = ({
   sortedArtistTracks,
   viewArtistAlbums,
 }) => {
+  const contextEntries = useContextMenuArtists({ artistId, title: artistName });
+
   let subtitle = <>&nbsp;</>;
   // Track view count
   if (isTrackView && artistTracksTotal) {
@@ -411,65 +413,136 @@ const Title = ({
         </>
       }
       optionsMenu={
-        <div className="filterIconWrap">
-          <FilterSelect
-            variant="Large"
-            value={viewArtistAlbums}
-            options={[
-              { value: 'grid', label: 'Grid view' },
-              { value: 'list', label: 'List view' },
-              { value: 'track', label: 'Track view' },
-            ]}
-            setter={setViewArtistAlbums}
-            icon={
-              viewArtistAlbums === 'grid'
-                ? 'GridIcon'
-                : viewArtistAlbums === 'list'
-                  ? 'ListIcon'
-                  : 'MusicNoteSingleIcon'
-            }
-          />
-          {viewArtistAlbums === 'grid' && (
-            <>
-              <FilterSelect
-                variant="Large"
-                value={sortArtistAlbums}
-                options={[
-                  { value: 'title', label: 'Alphabetical' },
-                  // { value: 'artist', label: 'Artist' },
-                  // { value: 'artist-asc-releaseDate-asc', label: 'Artist, oldest release first' },
-                  // { value: 'artist-asc-releaseDate-desc', label: 'Artist, newest release first' },
-                  ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
-                  ...(platformOpts?.enableLastPlayed ? [{ value: 'lastPlayed', label: 'Date played' }] : []),
-                  { value: 'releaseDate', label: 'Date released' },
-                  ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
-                  ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
-                ]}
-                setter={setSortArtistAlbums}
-              />
-              <FilterToggle
-                variant="Large"
-                value={orderArtistAlbums}
-                options={[
-                  { value: 'asc', label: 'Ascending' },
-                  { value: 'desc', label: 'Descending' },
-                ]}
-                setter={setOrderArtistAlbums}
-                icon={orderArtistAlbums === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
-              />
-              <FilterMenu
+        <>
+          <div className="actionIconWrap">
+            <ActionSelect
+              variant="Large"
+              value={viewArtistAlbums}
+              options={[
+                { value: 'grid', label: 'Grid view' },
+                { value: 'list', label: 'List view' },
+                { value: 'track', label: 'Track view' },
+              ]}
+              setter={setViewArtistAlbums}
+              icon={
+                viewArtistAlbums === 'grid'
+                  ? 'GridIcon'
+                  : viewArtistAlbums === 'list'
+                    ? 'ListIcon'
+                    : 'MusicNoteSingleIcon'
+              }
+            />
+            {viewArtistAlbums === 'grid' && (
+              <>
+                <ActionSort
+                  variant="Large"
+                  sortValue={sortArtistAlbums}
+                  orderValue={orderArtistAlbums}
+                  options={[
+                    { value: 'title', label: 'Alphabetical' },
+                    // { value: 'artist', label: 'Artist' },
+                    // { value: 'artist-asc-releaseDate-asc', label: 'Artist, oldest release first' },
+                    // { value: 'artist-asc-releaseDate-desc', label: 'Artist, newest release first' },
+                    ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
+                    ...(platformOpts?.enableLastPlayed ? [{ value: 'lastPlayed', label: 'Date played' }] : []),
+                    { value: 'releaseDate', label: 'Date released' },
+                    ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
+                    ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
+                  ]}
+                  setSort={setSortArtistAlbums}
+                  setOrder={setOrderArtistAlbums}
+                />
+                <ActionMenu
+                  variant="Large"
+                  label="Options"
+                  icon="CogIcon"
+                  setter={setColumnVisibility}
+                  entries={[
+                    ...(platformOpts?.enableIsFavourite
+                      ? [
+                          {
+                            variant: 'checkbox',
+                            label: 'Show favourites',
+                            attr: 'gridArtistAlbumsIsFavourite',
+                            checked: gridOptions.isFavourite,
+                          },
+                        ]
+                      : []),
+                    ...(platformOpts?.enableUserRating
+                      ? [
+                          {
+                            variant: 'checkbox',
+                            label: 'Show star ratings',
+                            attr: 'gridArtistAlbumsUserRating',
+                            checked: gridOptions.userRating,
+                          },
+                        ]
+                      : []),
+                    {
+                      variant: 'divider',
+                    },
+                    {
+                      variant: 'checkbox',
+                      label: 'Group by type',
+                      attr: 'artistAlbumsGroupByType',
+                      checked: artistAlbumsGroupByType,
+                    },
+                  ]}
+                />
+              </>
+            )}
+            {viewArtistAlbums === 'list' && (
+              <ActionMenu
                 variant="Large"
                 label="Options"
                 icon="CogIcon"
                 setter={setColumnVisibility}
                 entries={[
+                  {
+                    variant: 'checkbox',
+                    label: 'Title',
+                    disabled: true,
+                    checked: true,
+                  },
+                  {
+                    variant: 'checkbox',
+                    label: 'Genre',
+                    attr: 'colArtistAlbumsGenre',
+                    checked: colOptions.genre,
+                  },
+                  {
+                    variant: 'checkbox',
+                    label: 'Released',
+                    attr: 'colArtistAlbumsReleaseDate',
+                    checked: colOptions.releaseDate,
+                  },
+                  ...(platformOpts?.enableAddedAt
+                    ? [
+                        {
+                          variant: 'checkbox',
+                          label: 'Added',
+                          attr: 'colArtistAlbumsAddedAt',
+                          checked: colOptions.addedAt,
+                        },
+                      ]
+                    : []),
+                  ...(platformOpts?.enableLastPlayed
+                    ? [
+                        {
+                          variant: 'checkbox',
+                          label: 'Last played',
+                          attr: 'colArtistAlbumsLastPlayed',
+                          checked: colOptions.lastPlayed,
+                        },
+                      ]
+                    : []),
                   ...(platformOpts?.enableIsFavourite
                     ? [
                         {
                           variant: 'checkbox',
-                          label: 'Show favourites',
-                          attr: 'gridArtistAlbumsIsFavourite',
-                          checked: gridOptions.isFavourite,
+                          label: 'Favourite',
+                          attr: 'colArtistAlbumsIsFavourite',
+                          checked: colOptions.isFavourite,
                         },
                       ]
                     : []),
@@ -477,9 +550,9 @@ const Title = ({
                     ? [
                         {
                           variant: 'checkbox',
-                          label: 'Show star ratings',
-                          attr: 'gridArtistAlbumsUserRating',
-                          checked: gridOptions.userRating,
+                          label: 'Rating',
+                          attr: 'colArtistAlbumsUserRating',
+                          checked: colOptions.userRating,
                         },
                       ]
                     : []),
@@ -494,164 +567,92 @@ const Title = ({
                   },
                 ]}
               />
-            </>
+            )}
+            {viewArtistAlbums === 'track' && (
+              <ActionMenu
+                variant="Large"
+                label="Options"
+                icon="CogIcon"
+                setter={setColumnVisibility}
+                entries={[
+                  {
+                    variant: 'checkbox',
+                    label: 'Artwork',
+                    attr: 'colArtistTracksArtwork',
+                    checked: colOptions.artwork,
+                  },
+                  {
+                    variant: 'checkbox',
+                    label: 'Title',
+                    disabled: true,
+                    checked: true,
+                  },
+                  {
+                    variant: 'checkbox',
+                    label: 'Artist',
+                    attr: 'colArtistTracksArtist',
+                    checked: colOptions.artist,
+                  },
+                  {
+                    variant: 'checkbox',
+                    label: 'Album',
+                    attr: 'colArtistTracksAlbum',
+                    checked: colOptions.album,
+                  },
+                  {
+                    variant: 'checkbox',
+                    label: 'Released',
+                    attr: 'colArtistTracksReleaseDate',
+                    checked: colOptions.releaseDate,
+                  },
+                  {
+                    variant: 'checkbox',
+                    label: 'Audio codec',
+                    attr: 'colArtistTracksCodec',
+                    checked: colOptions.codec,
+                  },
+                  {
+                    variant: 'checkbox',
+                    label: 'Bitrate',
+                    attr: 'colArtistTracksBitrate',
+                    checked: colOptions.bitrate,
+                  },
+                  {
+                    variant: 'checkbox',
+                    label: 'Duration',
+                    attr: 'colArtistTracksDuration',
+                    checked: colOptions.duration,
+                  },
+                  ...(platformOpts?.enableIsFavourite
+                    ? [
+                        {
+                          variant: 'checkbox',
+                          label: 'Favourite',
+                          attr: 'colArtistTracksIsFavourite',
+                          checked: colOptions.isFavourite,
+                        },
+                      ]
+                    : []),
+                  ...(platformOpts?.enableUserRating
+                    ? [
+                        {
+                          variant: 'checkbox',
+                          label: 'Rating',
+                          attr: 'colArtistTracksUserRating',
+                          checked: colOptions.userRating,
+                        },
+                      ]
+                    : []),
+                ]}
+              />
+            )}
+          </div>
+          {platformOpts.menuArtistCollections && (
+            <div className="actionIconWrap">
+              <ActionMenu variant="Large" label="More" icon="EllipsisIcon" entries={contextEntries} />
+            </div>
           )}
-          {viewArtistAlbums === 'list' && (
-            <FilterMenu
-              variant="Large"
-              label="Options"
-              icon="CogIcon"
-              setter={setColumnVisibility}
-              entries={[
-                {
-                  variant: 'checkbox',
-                  label: 'Title',
-                  disabled: true,
-                  checked: true,
-                },
-                {
-                  variant: 'checkbox',
-                  label: 'Genre',
-                  attr: 'colArtistAlbumsGenre',
-                  checked: colOptions.genre,
-                },
-                {
-                  variant: 'checkbox',
-                  label: 'Released',
-                  attr: 'colArtistAlbumsReleaseDate',
-                  checked: colOptions.releaseDate,
-                },
-                ...(platformOpts?.enableAddedAt
-                  ? [
-                      {
-                        variant: 'checkbox',
-                        label: 'Added',
-                        attr: 'colArtistAlbumsAddedAt',
-                        checked: colOptions.addedAt,
-                      },
-                    ]
-                  : []),
-                ...(platformOpts?.enableLastPlayed
-                  ? [
-                      {
-                        variant: 'checkbox',
-                        label: 'Last played',
-                        attr: 'colArtistAlbumsLastPlayed',
-                        checked: colOptions.lastPlayed,
-                      },
-                    ]
-                  : []),
-                ...(platformOpts?.enableIsFavourite
-                  ? [
-                      {
-                        variant: 'checkbox',
-                        label: 'Favourite',
-                        attr: 'colArtistAlbumsIsFavourite',
-                        checked: colOptions.isFavourite,
-                      },
-                    ]
-                  : []),
-                ...(platformOpts?.enableUserRating
-                  ? [
-                      {
-                        variant: 'checkbox',
-                        label: 'Rating',
-                        attr: 'colArtistAlbumsUserRating',
-                        checked: colOptions.userRating,
-                      },
-                    ]
-                  : []),
-                {
-                  variant: 'divider',
-                },
-                {
-                  variant: 'checkbox',
-                  label: 'Group by type',
-                  attr: 'artistAlbumsGroupByType',
-                  checked: artistAlbumsGroupByType,
-                },
-              ]}
-            />
-          )}
-          {viewArtistAlbums === 'track' && (
-            <FilterMenu
-              variant="Large"
-              label="Options"
-              icon="CogIcon"
-              setter={setColumnVisibility}
-              entries={[
-                {
-                  variant: 'checkbox',
-                  label: 'Artwork',
-                  attr: 'colArtistTracksArtwork',
-                  checked: colOptions.artwork,
-                },
-                {
-                  variant: 'checkbox',
-                  label: 'Title',
-                  disabled: true,
-                  checked: true,
-                },
-                {
-                  variant: 'checkbox',
-                  label: 'Artist',
-                  attr: 'colArtistTracksArtist',
-                  checked: colOptions.artist,
-                },
-                {
-                  variant: 'checkbox',
-                  label: 'Album',
-                  attr: 'colArtistTracksAlbum',
-                  checked: colOptions.album,
-                },
-                {
-                  variant: 'checkbox',
-                  label: 'Released',
-                  attr: 'colArtistTracksReleaseDate',
-                  checked: colOptions.releaseDate,
-                },
-                {
-                  variant: 'checkbox',
-                  label: 'Audio codec',
-                  attr: 'colArtistTracksCodec',
-                  checked: colOptions.codec,
-                },
-                {
-                  variant: 'checkbox',
-                  label: 'Bitrate',
-                  attr: 'colArtistTracksBitrate',
-                  checked: colOptions.bitrate,
-                },
-                {
-                  variant: 'checkbox',
-                  label: 'Duration',
-                  attr: 'colArtistTracksDuration',
-                  checked: colOptions.duration,
-                },
-                ...(platformOpts?.enableIsFavourite
-                  ? [
-                      {
-                        variant: 'checkbox',
-                        label: 'Favourite',
-                        attr: 'colArtistTracksIsFavourite',
-                        checked: colOptions.isFavourite,
-                      },
-                    ]
-                  : []),
-                ...(platformOpts?.enableUserRating
-                  ? [
-                      {
-                        variant: 'checkbox',
-                        label: 'Rating',
-                        attr: 'colArtistTracksUserRating',
-                        checked: colOptions.userRating,
-                      },
-                    ]
-                  : []),
-              ]}
-            />
-          )}
-        </div>
+        </>
       }
       showPlay={true}
       isLoaded={isLoaded}

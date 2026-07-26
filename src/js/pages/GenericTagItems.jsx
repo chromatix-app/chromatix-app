@@ -6,10 +6,10 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import {
-  FilterMenu,
-  FilterSelect,
-  FilterToggle,
-  FilterWrap,
+  ActionMenu,
+  ActionSort,
+  ActionToggle,
+  ActionWrap,
   ViewGrid,
   ViewList,
   Loading,
@@ -232,8 +232,8 @@ const Title = ({
       icon={icon}
       padding={!isListView && !isGridView}
       filters={
-        <FilterWrap>
-          <FilterToggle
+        <ActionWrap>
+          <ActionToggle
             value={viewCollectionItems}
             options={[
               { value: 'grid', label: 'Grid view' },
@@ -244,8 +244,9 @@ const Title = ({
           />
           {viewCollectionItems === 'grid' && (
             <>
-              <FilterSelect
-                value={sortCollectionItems}
+              <ActionSort
+                sortValue={sortCollectionItems}
+                orderValue={orderCollectionItems}
                 options={
                   variant === 'artists'
                     ? [
@@ -265,18 +266,10 @@ const Title = ({
                         ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
                       ]
                 }
-                setter={setSortCollectionItems}
+                setSort={setSortCollectionItems}
+                setOrder={setOrderCollectionItems}
               />
-              <FilterToggle
-                value={orderCollectionItems}
-                options={[
-                  { value: 'asc', label: 'Ascending' },
-                  { value: 'desc', label: 'Descending' },
-                ]}
-                setter={setOrderCollectionItems}
-                icon={orderCollectionItems === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
-              />
-              <FilterMenu
+              <ActionMenu
                 label="Options"
                 icon="CogIcon"
                 setter={setColumnVisibility}
@@ -306,7 +299,7 @@ const Title = ({
             </>
           )}
           {viewCollectionItems === 'list' && (
-            <FilterMenu
+            <ActionMenu
               label="Options"
               icon="CogIcon"
               setter={setColumnVisibility}
@@ -346,7 +339,7 @@ const Title = ({
               ]}
             />
           )}
-        </FilterWrap>
+        </ActionWrap>
       }
     />
   );

@@ -8,13 +8,13 @@ import clsx from 'clsx';
 
 import { Icon } from 'js/components';
 
-import style from './FilterSelect.module.scss';
+import style from './ActionSelect.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-export const FilterSelect = ({ variant, value, options, setter, icon = 'ArrowsVerticalIcon' }) => {
+export const ActionSelect = ({ variant, value, options, setter, icon = 'ArrowsVerticalIcon' }) => {
   const handleValueChange = (newValue) => {
     setter(newValue);
   };
@@ -56,7 +56,7 @@ export const FilterSelect = ({ variant, value, options, setter, icon = 'ArrowsVe
 const SelectEntry = forwardRef(({ children, ...entry }, forwardedRef) => {
   return (
     <RadixSelect.Item className={style.selectItem} {...entry} ref={forwardedRef}>
-      <RadixSelect.ItemIndicator className={style.selectIndicator}>
+      <RadixSelect.ItemIndicator>
         <span className={style.selectIcon}>
           <Icon icon="CheckCircleEmptyIcon" cover stroke />
           <span className={clsx(style.selectIcon, style.selectIconMiddle)}>
@@ -79,4 +79,4 @@ const SelectEntry = forwardRef(({ children, ...entry }, forwardedRef) => {
 // EXPORT
 // ======================================================================
 
-export default FilterSelect;
+export default ActionSelect;

@@ -20,11 +20,12 @@ import style from './MenuEntries.module.scss';
 // Entry shape (variant is required, and discriminates which fields apply):
 // - action: { variant: 'action', label, icon, onSelect, to, disabled }
 // - checkbox: { variant: 'checkbox', label, icon, attr, checked, disabled } - calls setter(attr, newValue)
-// - submenu: { variant: 'submenu', label, icon, getEntries } - getEntries is called lazily, only once open
+// - submenu: { variant: 'submenu', label, icon, getEntries, emptyLabel } - getEntries is called lazily, only
+//   once open; emptyLabel is shown when getEntries returns nothing (defaults to "Nothing found")
 // - divider: { variant: 'divider' }
 // - sectionHeading: { variant: 'sectionHeading', label }
 //
-// [NOTE] variant has no default on purpose - ContextMenu and FilterMenu disagree on what an
+// [NOTE] variant has no default on purpose - ContextMenu and ActionMenu disagree on what an
 // untagged entry should mean (action vs checkbox), so a silent default previously caused
 // entries meant for one to render wrong (e.g. as an empty checkbox) when reused by the other.
 
@@ -123,7 +124,7 @@ const CheckboxEntry = ({ radixMenu: RadixMenu, label, setter, totalEntries, ...e
   );
 };
 
-const SubmenuEntry = ({ radixMenu: RadixMenu, label, getEntries, icon }) => {
+const SubmenuEntry = ({ radixMenu: RadixMenu, label, getEntries, emptyLabel, icon }) => {
   return (
     <RadixMenu.Sub>
       <RadixMenu.SubTrigger className={style.subTrigger}>
@@ -136,7 +137,7 @@ const SubmenuEntry = ({ radixMenu: RadixMenu, label, getEntries, icon }) => {
       </RadixMenu.SubTrigger>
       <RadixMenu.Portal>
         <RadixMenu.SubContent className={style.content} collisionPadding={8}>
-          <SubmenuContent radixMenu={RadixMenu} getEntries={getEntries} />
+          <SubmenuContent radixMenu={RadixMenu} getEntries={getEntries} emptyLabel={emptyLabel} />
         </RadixMenu.SubContent>
       </RadixMenu.Portal>
     </RadixMenu.Sub>
@@ -144,10 +145,10 @@ const SubmenuEntry = ({ radixMenu: RadixMenu, label, getEntries, icon }) => {
 };
 
 // Separate component so it only mounts (and calls getEntries) when the submenu is actually open
-const SubmenuContent = ({ radixMenu: RadixMenu, getEntries }) => {
+const SubmenuContent = ({ radixMenu: RadixMenu, getEntries, emptyLabel = 'Nothing found' }) => {
   const entries = getEntries();
   if (!entries?.length) {
-    return <RadixMenu.Label className={style.actionItemNull}>No playlists found</RadixMenu.Label>;
+    return <RadixMenu.Label className={style.actionItemNull}>{emptyLabel}</RadixMenu.Label>;
   }
   return entries.map((entry, index) => <MenuEntry key={index} radixMenu={RadixMenu} {...entry} />);
 };

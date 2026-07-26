@@ -8,7 +8,6 @@ import * as Dialog from '@radix-ui/react-dialog';
 
 import { Button, ModalWindow } from 'js/components';
 import * as bridge from 'js/services/bridge';
-import store from 'js/store/store';
 import { validateEntityName } from 'js/utils';
 import style from './modals.module.scss';
 
@@ -16,16 +15,16 @@ import style from './modals.module.scss';
 // COMPONENT
 // ======================================================================
 
-// If opened with modal data ({ trackIds } or { albumId }), the new playlist is seeded with those
-// tracks at creation time and playback stays on the current page, rather than navigating to the new playlist.
-const PlaylistAdd = () => {
+const CollectionAdd = () => {
   const dispatch = useDispatch();
   const currentModalData = useSelector(({ dialogModel }) => dialogModel.currentModalData);
-  const allPlaylists = useSelector(({ appModel }) => appModel.allPlaylists);
+  const allArtistCollections = useSelector(({ appModel }) => appModel.allArtistCollections);
+  const allAlbumCollections = useSelector(({ appModel }) => appModel.allAlbumCollections);
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const existingTitles = (allPlaylists || []).map((playlist) => playlist.title);
+  const allCollections = currentModalData?.type === 'artist' ? allArtistCollections : allAlbumCollections;
+  const existingTitles = (allCollections || []).map((collection) => collection.title);
   const validationError = validateEntityName(title, existingTitles);
 
   const handleSubmit = async () => {
@@ -33,22 +32,10 @@ const PlaylistAdd = () => {
     setLoading(true);
     dispatch.appModel.showBlocker();
     try {
-      const seedItem = currentModalData;
-      let trackIds = seedItem?.trackIds;
-      if (seedItem && !trackIds && seedItem.albumId) {
-        const libraryId = store.getState().sessionModel.currentLibrary?.libraryId;
-        const albumTracksKey = libraryId + '-' + seedItem.albumId;
-        let albumTracks = store.getState().appModel.allAlbumTracks[albumTracksKey];
-        if (!albumTracks) {
-          await bridge.getAlbumTracks(libraryId, seedItem.albumId);
-          albumTracks = store.getState().appModel.allAlbumTracks[albumTracksKey];
-        }
-        trackIds = (albumTracks || []).map((track) => track.trackId);
-      }
-      await bridge.createPlaylist({
+      await bridge.createCollection({
         title: title.trim(),
-        itemIds: trackIds,
-        navigate: !seedItem,
+        type: currentModalData.type,
+        itemIds: [currentModalData.itemId],
       });
       dispatch.dialogModel.closeModal();
     } catch (_error) {
@@ -62,7 +49,7 @@ const PlaylistAdd = () => {
   return (
     <ModalWindow variant="playlist">
       <Dialog.Title asChild>
-        <h1 className={style.title}>New Playlist</h1>
+        <h1 className={style.title}>New Collection</h1>
       </Dialog.Title>
 
       <Dialog.Description asChild>
@@ -70,7 +57,7 @@ const PlaylistAdd = () => {
           <input
             className={style.input}
             type="text"
-            placeholder="Playlist title"
+            placeholder="Collection title"
             value={title}
             autoFocus
             maxLength={128}
@@ -86,7 +73,7 @@ const PlaylistAdd = () => {
 
       <div className={style.buttons}>
         <Button onClick={handleSubmit} size="small" color="mono" disabled={!!validationError} loading={loading}>
-          Create Playlist
+          Create Collection
         </Button>
         <Button onClick={() => dispatch.dialogModel.closeModal()} size="small" color="tertiary" disabled={loading}>
           Cancel
@@ -100,4 +87,4 @@ const PlaylistAdd = () => {
 // EXPORT
 // ======================================================================
 
-export default PlaylistAdd;
+export default CollectionAdd;

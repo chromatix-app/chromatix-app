@@ -7,11 +7,12 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
   Button,
-  FilterButton,
-  FilterMenu,
-  FilterSelect,
-  FilterToggle,
-  FilterWrap,
+  ActionButton,
+  ActionMenu,
+  ActionSelect,
+  ActionSort,
+  ActionToggle,
+  ActionWrap,
   FormOTP,
   FormTabButtons,
   FormTabGroup,
@@ -61,12 +62,12 @@ const Component = () => {
     <>
       <TitleHeading title="Components" />
       <PageText fontSize="small" wysiwyg={true}>
-        {/* FILTERS - STANDARD */}
+        {/* ACTIONS - STANDARD */}
 
         <div>
-          <h2>Filters - Standard</h2>
-          <FilterWrap>
-            <FilterToggle
+          <h2>Actions - Standard</h2>
+          <ActionWrap>
+            <ActionToggle
               value={view}
               options={[
                 { value: 'grid', label: 'Grid view' },
@@ -75,7 +76,19 @@ const Component = () => {
               setter={setView}
               icon={view === 'grid' ? 'GridIcon' : 'ListIcon'}
             />
-            <FilterSelect
+            <ActionSort
+              sortValue={sort}
+              orderValue={order}
+              options={[
+                { value: 'title', label: 'Alphabetical' },
+                { value: 'addedAt', label: 'Date added' },
+                { value: 'lastPlayed', label: 'Date played' },
+                { value: 'userRating', label: 'Rating' },
+              ]}
+              setSort={setSort}
+              setOrder={setOrder}
+            />
+            <ActionSelect
               value={sort}
               options={[
                 { value: 'title', label: 'Alphabetical' },
@@ -85,16 +98,7 @@ const Component = () => {
               ]}
               setter={setSort}
             />
-            <FilterToggle
-              value={order}
-              options={[
-                { value: 'asc', label: 'Ascending' },
-                { value: 'desc', label: 'Descending' },
-              ]}
-              setter={setOrder}
-              icon={order === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
-            />
-            <FilterMenu
+            <ActionMenu
               label="Options"
               icon="CogIcon"
               setter={handleColChange}
@@ -105,11 +109,12 @@ const Component = () => {
                 { variant: 'checkbox', label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
               ]}
             />
-            <FilterButton label="New playlist" icon="PlusIcon" onClick={() => {}} />
-            <FilterMenu
+            <ActionButton label="New playlist" icon="PlusIcon" onClick={() => {}} />
+            <ActionMenu
               label="More"
               icon="EllipsisCircleIcon"
               entries={[
+                { variant: 'sectionHeading', label: 'Section heading' },
                 {
                   variant: 'submenu',
                   label: 'Add to playlist',
@@ -122,21 +127,22 @@ const Component = () => {
                 },
                 { variant: 'action', label: 'Remove from playlist', icon: 'MinusCircleIcon', onSelect: () => {} },
                 { variant: 'divider' },
-                { variant: 'action', label: 'Add to queue', icon: 'QueueAfterIcon', onSelect: () => {} },
+                { variant: 'action', label: 'Add to queue', icon: 'QueueBeforeIcon', onSelect: () => {} },
                 { variant: 'divider' },
+                { variant: 'action', label: 'Play track', icon: 'PlayIcon', onSelect: () => {} },
                 { variant: 'action', label: 'Go to artist', icon: 'PeopleIcon', onSelect: () => {} },
                 { variant: 'action', label: 'Go to album', icon: 'PlayCircleIcon', onSelect: () => {} },
               ]}
             />
-          </FilterWrap>
+          </ActionWrap>
         </div>
 
-        {/* FILTERS - ICON */}
+        {/* ACTIONS - ICON */}
 
         <div>
-          <h2>Filters - Icon</h2>
+          <h2>Actions - Icon</h2>
           <div>
-            <FilterToggle
+            <ActionToggle
               variant="Large"
               value={view}
               options={[
@@ -146,7 +152,20 @@ const Component = () => {
               setter={setView}
               icon={view === 'grid' ? 'GridIcon' : 'ListIcon'}
             />
-            <FilterSelect
+            <ActionSort
+              variant="Large"
+              sortValue={sort}
+              orderValue={order}
+              options={[
+                { value: 'title', label: 'Alphabetical' },
+                { value: 'addedAt', label: 'Date added' },
+                { value: 'lastPlayed', label: 'Date played' },
+                { value: 'userRating', label: 'Rating' },
+              ]}
+              setSort={setSort}
+              setOrder={setOrder}
+            />
+            <ActionSelect
               variant="Large"
               value={sort}
               options={[
@@ -157,17 +176,7 @@ const Component = () => {
               ]}
               setter={setSort}
             />
-            <FilterToggle
-              variant="Large"
-              value={order}
-              options={[
-                { value: 'asc', label: 'Ascending' },
-                { value: 'desc', label: 'Descending' },
-              ]}
-              setter={setOrder}
-              icon={order === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
-            />
-            <FilterMenu
+            <ActionMenu
               variant="Large"
               label="Options"
               icon="CogIcon"
@@ -179,12 +188,13 @@ const Component = () => {
                 { variant: 'checkbox', label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
               ]}
             />
-            <FilterButton variant="Large" label="New playlist" icon="PlusIcon" onClick={() => {}} />
-            <FilterMenu
+            <ActionButton variant="Large" label="New playlist" icon="PlusIcon" onClick={() => {}} />
+            <ActionMenu
               variant="Large"
               label="More"
               icon="EllipsisIcon"
               entries={[
+                { variant: 'sectionHeading', label: 'Section heading' },
                 {
                   variant: 'submenu',
                   label: 'Add to playlist',
@@ -197,8 +207,9 @@ const Component = () => {
                 },
                 { variant: 'action', label: 'Remove from playlist', icon: 'MinusCircleIcon', onSelect: () => {} },
                 { variant: 'divider' },
-                { variant: 'action', label: 'Add to queue', icon: 'QueueAfterIcon', onSelect: () => {} },
+                { variant: 'action', label: 'Add to queue', icon: 'QueueBeforeIcon', onSelect: () => {} },
                 { variant: 'divider' },
+                { variant: 'action', label: 'Play track', icon: 'PlayIcon', onSelect: () => {} },
                 { variant: 'action', label: 'Go to artist', icon: 'PeopleIcon', onSelect: () => {} },
                 { variant: 'action', label: 'Go to album', icon: 'PlayCircleIcon', onSelect: () => {} },
               ]}

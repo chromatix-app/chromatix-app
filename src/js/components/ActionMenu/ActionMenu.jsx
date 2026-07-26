@@ -8,15 +8,13 @@ import clsx from 'clsx';
 import { Icon, MenuEntry } from 'js/components';
 import menuEntriesStyle from 'js/components/MenuEntries/MenuEntries.module.scss';
 
-import style from './FilterMenu.module.scss';
+import style from './ActionMenu.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-export const FilterMenu = ({ variant, label, icon = 'EllipsisCircleIcon', iconStrokeWidth = 1, setter, entries }) => {
-  const hasGroups = entries.find((entry) => entry.variant === 'sectionHeading');
-
+export const ActionMenu = ({ variant, label, icon = 'EllipsisCircleIcon', iconStrokeWidth = 1, setter, entries }) => {
   return (
     <div className={clsx(style.wrap, style['wrap' + variant])}>
       <RadixMenu.Root>
@@ -31,9 +29,7 @@ export const FilterMenu = ({ variant, label, icon = 'EllipsisCircleIcon', iconSt
           <RadixMenu.Content
             side="bottom"
             align="start"
-            className={clsx(menuEntriesStyle.content, style.content, style['content' + variant], {
-              [style.contentWithGroups]: hasGroups,
-            })}
+            className={clsx(menuEntriesStyle.content, style.content, style['content' + variant])}
           >
             {entries.map((entry, index) => (
               <MenuEntry key={index} radixMenu={RadixMenu} setter={setter} totalEntries={entries?.length} {...entry} />
@@ -49,4 +45,4 @@ export const FilterMenu = ({ variant, label, icon = 'EllipsisCircleIcon', iconSt
 // EXPORT
 // ======================================================================
 
-export default FilterMenu;
+export default ActionMenu;

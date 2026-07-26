@@ -18,6 +18,10 @@
   font-size: 14px;
   text-align: left;
 
+  &:focus-visible {
+    background: var(--color-secondary-hover);
+  }
+
   @include mixins.focus-self-outline;
 }
 

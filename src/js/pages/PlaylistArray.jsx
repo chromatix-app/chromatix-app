@@ -5,11 +5,11 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-  FilterButton,
-  FilterMenu,
-  FilterSelect,
-  FilterToggle,
-  FilterWrap,
+  ActionButton,
+  ActionMenu,
+  ActionSort,
+  ActionToggle,
+  ActionWrap,
   ViewGrid,
   ViewList,
   Loading,
@@ -150,8 +150,8 @@ const Title = ({
         }
         padding={!isListView && !isGridView}
       />
-      <FilterWrap padding={true} inset={isListView || isGridView}>
-        <FilterToggle
+      <ActionWrap padding={true} inset={isListView || isGridView}>
+        <ActionToggle
           value={viewPlaylists}
           options={[
             { value: 'grid', label: 'Grid view' },
@@ -162,8 +162,9 @@ const Title = ({
         />
         {viewPlaylists === 'grid' && (
           <>
-            <FilterSelect
-              value={sortPlaylists}
+            <ActionSort
+              sortValue={sortPlaylists}
+              orderValue={orderPlaylists}
               options={[
                 { value: 'title', label: 'Alphabetical' },
                 ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
@@ -173,18 +174,10 @@ const Title = ({
                 ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
                 { value: 'totalTracks', label: 'Track count' },
               ]}
-              setter={setSortPlaylists}
+              setSort={setSortPlaylists}
+              setOrder={setOrderPlaylists}
             />
-            <FilterToggle
-              value={orderPlaylists}
-              options={[
-                { value: 'asc', label: 'Ascending' },
-                { value: 'desc', label: 'Descending' },
-              ]}
-              setter={setOrderPlaylists}
-              icon={orderPlaylists === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
-            />
-            <FilterMenu
+            <ActionMenu
               label="Options"
               icon="CogIcon"
               setter={setColumnVisibility}
@@ -213,13 +206,8 @@ const Title = ({
             />
           </>
         )}
-        <FilterButton
-          label="New playlist"
-          icon="PlusIcon"
-          onClick={() => dispatch.dialogModel.showModal('PlaylistAdd')}
-        />
         {viewPlaylists === 'list' && (
-          <FilterMenu
+          <ActionMenu
             label="Options"
             icon="CogIcon"
             setter={setColumnVisibility}
@@ -285,7 +273,12 @@ const Title = ({
             ]}
           />
         )}
-      </FilterWrap>
+        <ActionButton
+          label="New playlist"
+          icon="PlusIcon"
+          onClick={() => dispatch.dialogModel.showModal('PlaylistAdd')}
+        />
+      </ActionWrap>
     </>
   );
 };
