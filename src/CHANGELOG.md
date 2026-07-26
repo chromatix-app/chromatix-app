@@ -1,3 +1,19 @@
+# 0.68.0 (2026-07-26)
+
+Features:
+
+- Collections management (Plex only) — create, edit, and delete artist and album collections directly within Chromatix.
+- Context menus have continued to be added to more places throughout, including options for collection management where possible — such as adding and removing artists and albums from collections, and creating a new collection on the fly.
+- Sort field and direction are now combined into a single control throughout the app, for a more compact and consistent toolbar.
+- Playlist and collection names are now validated as you type, rejecting unsafe characters and duplicate names.
+
+Code changes:
+
+- Renamed the `Filter*` toolbar components to `Action*` for clarity, and reworked their shared styling into common mixins.
+- Added stub implementations to `plexTools.js`/`jellyTools.js` for functionality not supported by the other service, for consistency and to avoid runtime errors if called.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.67.0 (2026-07-23)
 
 Features:
