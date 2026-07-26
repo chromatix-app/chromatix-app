@@ -6,9 +6,9 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import {
-  FilterMenu,
-  FilterSort,
-  FilterToggle,
+  ActionMenu,
+  ActionSort,
+  ActionToggle,
   ViewGrid,
   ViewList,
   Loading,
@@ -214,8 +214,8 @@ const Title = ({
       padding={!isListView && !isGridView}
       optionsMenu={
         <>
-          <div className="filterIconWrap">
-            <FilterToggle
+          <div className="actionIconWrap">
+            <ActionToggle
               variant="Large"
               value={viewCollectionItems}
               options={[
@@ -227,7 +227,7 @@ const Title = ({
             />
             {viewCollectionItems === 'grid' && (
               <>
-                <FilterSort
+                <ActionSort
                   variant="Large"
                   sortValue={sortCollectionItems}
                   orderValue={orderCollectionItems}
@@ -244,7 +244,7 @@ const Title = ({
                   setSort={setSortCollectionItems}
                   setOrder={setOrderCollectionItems}
                 />
-                <FilterMenu
+                <ActionMenu
                   variant="Large"
                   label="Options"
                   icon="CogIcon"
@@ -265,7 +265,7 @@ const Title = ({
               </>
             )}
             {viewCollectionItems === 'list' && (
-              <FilterMenu
+              <ActionMenu
                 variant="Large"
                 label="Options"
                 icon="CogIcon"
@@ -329,8 +329,8 @@ const Title = ({
               />
             )}
           </div>
-          <div className="filterIconWrap">
-            <FilterMenu variant="Large" label="More" icon="EllipsisIcon" entries={contextEntries} />
+          <div className="actionIconWrap">
+            <ActionMenu variant="Large" label="More" icon="EllipsisIcon" entries={contextEntries} />
           </div>
         </>
       }

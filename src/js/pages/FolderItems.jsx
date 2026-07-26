@@ -5,10 +5,10 @@
 import { useParams } from 'react-router-dom';
 
 import {
-  FilterMenu,
-  FilterSort,
-  FilterToggle,
-  FilterWrap,
+  ActionMenu,
+  ActionSort,
+  ActionToggle,
+  ActionWrap,
   ViewGrid,
   ViewList,
   Loading,
@@ -140,8 +140,8 @@ const Title = ({
         }
         padding={!isListView && !isGridView}
       />
-      <FilterWrap padding={true} inset={isListView || isGridView}>
-        <FilterToggle
+      <ActionWrap padding={true} inset={isListView || isGridView}>
+        <ActionToggle
           value={viewFolders}
           options={[
             { value: 'grid', label: 'Grid view' },
@@ -152,7 +152,7 @@ const Title = ({
         />
         {viewFolders === 'grid' && (
           <>
-            <FilterSort
+            <ActionSort
               sortValue={sortFolders}
               orderValue={orderFolders}
               options={[
@@ -166,7 +166,7 @@ const Title = ({
           </>
         )}
         {viewFolders === 'list' && (
-          <FilterMenu
+          <ActionMenu
             label="Options"
             icon="CogIcon"
             setter={setColumnVisibility}
@@ -186,7 +186,7 @@ const Title = ({
             ]}
           />
         )}
-      </FilterWrap>
+      </ActionWrap>
     </>
   );
 };

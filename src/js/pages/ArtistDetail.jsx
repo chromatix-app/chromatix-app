@@ -7,9 +7,9 @@ import { useParams } from 'react-router-dom';
 
 import {
   Favourite,
-  FilterMenu,
-  FilterSelect,
-  FilterSort,
+  ActionMenu,
+  ActionSelect,
+  ActionSort,
   ViewGrid,
   ViewList,
   Loading,
@@ -414,8 +414,8 @@ const Title = ({
       }
       optionsMenu={
         <>
-          <div className="filterIconWrap">
-            <FilterSelect
+          <div className="actionIconWrap">
+            <ActionSelect
               variant="Large"
               value={viewArtistAlbums}
               options={[
@@ -434,7 +434,7 @@ const Title = ({
             />
             {viewArtistAlbums === 'grid' && (
               <>
-                <FilterSort
+                <ActionSort
                   variant="Large"
                   sortValue={sortArtistAlbums}
                   orderValue={orderArtistAlbums}
@@ -452,7 +452,7 @@ const Title = ({
                   setSort={setSortArtistAlbums}
                   setOrder={setOrderArtistAlbums}
                 />
-                <FilterMenu
+                <ActionMenu
                   variant="Large"
                   label="Options"
                   icon="CogIcon"
@@ -492,7 +492,7 @@ const Title = ({
               </>
             )}
             {viewArtistAlbums === 'list' && (
-              <FilterMenu
+              <ActionMenu
                 variant="Large"
                 label="Options"
                 icon="CogIcon"
@@ -569,7 +569,7 @@ const Title = ({
               />
             )}
             {viewArtistAlbums === 'track' && (
-              <FilterMenu
+              <ActionMenu
                 variant="Large"
                 label="Options"
                 icon="CogIcon"
@@ -647,8 +647,8 @@ const Title = ({
               />
             )}
           </div>
-          <div className="filterIconWrap">
-            <FilterMenu variant="Large" label="More" icon="EllipsisIcon" entries={contextEntries} />
+          <div className="actionIconWrap">
+            <ActionMenu variant="Large" label="More" icon="EllipsisIcon" entries={contextEntries} />
           </div>
         </>
       }

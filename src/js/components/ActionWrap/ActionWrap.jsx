@@ -4,13 +4,13 @@
 
 import clsx from 'clsx';
 
-import style from './FilterWrap.module.scss';
+import style from './ActionWrap.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-export const FilterWrap = ({ children, padding = false, inset = false }) => {
+export const ActionWrap = ({ children, padding = false, inset = false }) => {
   return (
     <div
       className={clsx(style.wrap, {
@@ -27,4 +27,4 @@ export const FilterWrap = ({ children, padding = false, inset = false }) => {
 // EXPORT
 // ======================================================================
 
-export default FilterWrap;
+export default ActionWrap;

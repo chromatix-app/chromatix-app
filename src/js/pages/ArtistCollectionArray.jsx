@@ -5,10 +5,10 @@
 import { useSelector } from 'react-redux';
 
 import {
-  FilterMenu,
-  FilterSort,
-  FilterToggle,
-  FilterWrap,
+  ActionMenu,
+  ActionSort,
+  ActionToggle,
+  ActionWrap,
   ViewGrid,
   ViewList,
   Loading,
@@ -142,8 +142,8 @@ const Title = ({
         }
         padding={!isListView && !isGridView}
       />
-      <FilterWrap padding={true} inset={isListView || isGridView}>
-        <FilterToggle
+      <ActionWrap padding={true} inset={isListView || isGridView}>
+        <ActionToggle
           value={viewCollections}
           options={[
             { value: 'grid', label: 'Grid view' },
@@ -154,7 +154,7 @@ const Title = ({
         />
         {viewCollections === 'grid' && (
           <>
-            <FilterSort
+            <ActionSort
               sortValue={sortCollections}
               orderValue={orderCollections}
               options={[
@@ -165,7 +165,7 @@ const Title = ({
               setSort={setSortCollections}
               setOrder={setOrderCollections}
             />
-            <FilterMenu
+            <ActionMenu
               label="Options"
               icon="CogIcon"
               setter={setColumnVisibility}
@@ -185,7 +185,7 @@ const Title = ({
           </>
         )}
         {viewCollections === 'list' && (
-          <FilterMenu
+          <ActionMenu
             label="Options"
             icon="CogIcon"
             setter={setColumnVisibility}
@@ -219,7 +219,7 @@ const Title = ({
             ]}
           />
         )}
-      </FilterWrap>
+      </ActionWrap>
     </>
   );
 };

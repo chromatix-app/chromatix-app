@@ -8,13 +8,13 @@ import clsx from 'clsx';
 import { Icon } from 'js/components';
 import menuEntriesStyle from 'js/components/MenuEntries/MenuEntries.module.scss';
 
-import style from './FilterSort.module.scss';
+import style from './ActionSort.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-export const FilterSort = ({ variant, sortValue, orderValue, options, setSort, setOrder }) => {
+export const ActionSort = ({ variant, sortValue, orderValue, options, setSort, setOrder }) => {
   const orderIcon = orderValue === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon';
   const valueLabel = options.find((option) => option.value === sortValue)?.label;
 
@@ -68,4 +68,4 @@ export const FilterSort = ({ variant, sortValue, orderValue, options, setSort, s
 // EXPORT
 // ======================================================================
 
-export default FilterSort;
+export default ActionSort;

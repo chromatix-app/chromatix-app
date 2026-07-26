@@ -25,7 +25,7 @@ import style from './MenuEntries.module.scss';
 // - divider: { variant: 'divider' }
 // - sectionHeading: { variant: 'sectionHeading', label }
 //
-// [NOTE] variant has no default on purpose - ContextMenu and FilterMenu disagree on what an
+// [NOTE] variant has no default on purpose - ContextMenu and ActionMenu disagree on what an
 // untagged entry should mean (action vs checkbox), so a silent default previously caused
 // entries meant for one to render wrong (e.g. as an empty checkbox) when reused by the other.
 

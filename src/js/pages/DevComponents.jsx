@@ -7,12 +7,12 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
   Button,
-  FilterButton,
-  FilterMenu,
-  FilterSelect,
-  FilterSort,
-  FilterToggle,
-  FilterWrap,
+  ActionButton,
+  ActionMenu,
+  ActionSelect,
+  ActionSort,
+  ActionToggle,
+  ActionWrap,
   FormOTP,
   FormTabButtons,
   FormTabGroup,
@@ -66,8 +66,8 @@ const Component = () => {
 
         <div>
           <h2>Filters - Standard</h2>
-          <FilterWrap>
-            <FilterToggle
+          <ActionWrap>
+            <ActionToggle
               value={view}
               options={[
                 { value: 'grid', label: 'Grid view' },
@@ -76,7 +76,7 @@ const Component = () => {
               setter={setView}
               icon={view === 'grid' ? 'GridIcon' : 'ListIcon'}
             />
-            <FilterSort
+            <ActionSort
               sortValue={sort}
               orderValue={order}
               options={[
@@ -88,7 +88,7 @@ const Component = () => {
               setSort={setSort}
               setOrder={setOrder}
             />
-            <FilterSelect
+            <ActionSelect
               value={sort}
               options={[
                 { value: 'title', label: 'Alphabetical' },
@@ -98,7 +98,7 @@ const Component = () => {
               ]}
               setter={setSort}
             />
-            <FilterMenu
+            <ActionMenu
               label="Options"
               icon="CogIcon"
               setter={handleColChange}
@@ -109,8 +109,8 @@ const Component = () => {
                 { variant: 'checkbox', label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
               ]}
             />
-            <FilterButton label="New playlist" icon="PlusIcon" onClick={() => {}} />
-            <FilterMenu
+            <ActionButton label="New playlist" icon="PlusIcon" onClick={() => {}} />
+            <ActionMenu
               label="More"
               icon="EllipsisCircleIcon"
               entries={[
@@ -133,7 +133,7 @@ const Component = () => {
                 { variant: 'action', label: 'Go to album', icon: 'PlayCircleIcon', onSelect: () => {} },
               ]}
             />
-          </FilterWrap>
+          </ActionWrap>
         </div>
 
         {/* FILTERS - ICON */}
@@ -141,7 +141,7 @@ const Component = () => {
         <div>
           <h2>Filters - Icon</h2>
           <div>
-            <FilterToggle
+            <ActionToggle
               variant="Large"
               value={view}
               options={[
@@ -151,7 +151,7 @@ const Component = () => {
               setter={setView}
               icon={view === 'grid' ? 'GridIcon' : 'ListIcon'}
             />
-            <FilterSort
+            <ActionSort
               variant="Large"
               sortValue={sort}
               orderValue={order}
@@ -164,7 +164,7 @@ const Component = () => {
               setSort={setSort}
               setOrder={setOrder}
             />
-            <FilterSelect
+            <ActionSelect
               variant="Large"
               value={sort}
               options={[
@@ -175,7 +175,7 @@ const Component = () => {
               ]}
               setter={setSort}
             />
-            <FilterMenu
+            <ActionMenu
               variant="Large"
               label="Options"
               icon="CogIcon"
@@ -187,8 +187,8 @@ const Component = () => {
                 { variant: 'checkbox', label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
               ]}
             />
-            <FilterButton variant="Large" label="New playlist" icon="PlusIcon" onClick={() => {}} />
-            <FilterMenu
+            <ActionButton variant="Large" label="New playlist" icon="PlusIcon" onClick={() => {}} />
+            <ActionMenu
               variant="Large"
               label="More"
               icon="EllipsisIcon"

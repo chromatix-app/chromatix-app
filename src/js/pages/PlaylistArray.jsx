@@ -5,11 +5,11 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-  FilterButton,
-  FilterMenu,
-  FilterSort,
-  FilterToggle,
-  FilterWrap,
+  ActionButton,
+  ActionMenu,
+  ActionSort,
+  ActionToggle,
+  ActionWrap,
   ViewGrid,
   ViewList,
   Loading,
@@ -150,8 +150,8 @@ const Title = ({
         }
         padding={!isListView && !isGridView}
       />
-      <FilterWrap padding={true} inset={isListView || isGridView}>
-        <FilterToggle
+      <ActionWrap padding={true} inset={isListView || isGridView}>
+        <ActionToggle
           value={viewPlaylists}
           options={[
             { value: 'grid', label: 'Grid view' },
@@ -162,7 +162,7 @@ const Title = ({
         />
         {viewPlaylists === 'grid' && (
           <>
-            <FilterSort
+            <ActionSort
               sortValue={sortPlaylists}
               orderValue={orderPlaylists}
               options={[
@@ -177,7 +177,7 @@ const Title = ({
               setSort={setSortPlaylists}
               setOrder={setOrderPlaylists}
             />
-            <FilterMenu
+            <ActionMenu
               label="Options"
               icon="CogIcon"
               setter={setColumnVisibility}
@@ -207,7 +207,7 @@ const Title = ({
           </>
         )}
         {viewPlaylists === 'list' && (
-          <FilterMenu
+          <ActionMenu
             label="Options"
             icon="CogIcon"
             setter={setColumnVisibility}
@@ -273,12 +273,12 @@ const Title = ({
             ]}
           />
         )}
-        <FilterButton
+        <ActionButton
           label="New playlist"
           icon="PlusIcon"
           onClick={() => dispatch.dialogModel.showModal('PlaylistAdd')}
         />
-      </FilterWrap>
+      </ActionWrap>
     </>
   );
 };

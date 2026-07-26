@@ -8,13 +8,13 @@ import clsx from 'clsx';
 
 import { Icon } from 'js/components';
 
-import style from './FilterSelect.module.scss';
+import style from './ActionSelect.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-export const FilterSelect = ({ variant, value, options, setter, icon = 'ArrowsVerticalIcon' }) => {
+export const ActionSelect = ({ variant, value, options, setter, icon = 'ArrowsVerticalIcon' }) => {
   const handleValueChange = (newValue) => {
     setter(newValue);
   };
@@ -79,4 +79,4 @@ const SelectEntry = forwardRef(({ children, ...entry }, forwardedRef) => {
 // EXPORT
 // ======================================================================
 
-export default FilterSelect;
+export default ActionSelect;

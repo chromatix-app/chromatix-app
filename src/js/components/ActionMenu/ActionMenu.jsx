@@ -8,13 +8,13 @@ import clsx from 'clsx';
 import { Icon, MenuEntry } from 'js/components';
 import menuEntriesStyle from 'js/components/MenuEntries/MenuEntries.module.scss';
 
-import style from './FilterMenu.module.scss';
+import style from './ActionMenu.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-export const FilterMenu = ({ variant, label, icon = 'EllipsisCircleIcon', iconStrokeWidth = 1, setter, entries }) => {
+export const ActionMenu = ({ variant, label, icon = 'EllipsisCircleIcon', iconStrokeWidth = 1, setter, entries }) => {
   const hasGroups = entries.find((entry) => entry.variant === 'sectionHeading');
 
   return (
@@ -49,4 +49,4 @@ export const FilterMenu = ({ variant, label, icon = 'EllipsisCircleIcon', iconSt
 // EXPORT
 // ======================================================================
 
-export default FilterMenu;
+export default ActionMenu;
