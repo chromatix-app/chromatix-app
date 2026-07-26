@@ -10,6 +10,15 @@
 
 .icon {
   @include action.icon;
+
+  // Smaller spacing because the icon is narrower than most
+  &:first-child {
+    .wrap:not(.wrapLarge) & {
+      position: relative;
+      left: -2px;
+      margin: 0 2px 0 0;
+    }
+  }
 }
 
 .label {
@@ -39,5 +48,17 @@
 
   &Hidden {
     opacity: 0;
+  }
+
+  // Smaller spacing because the icon is narrower than most
+  .content:not(.contentLarge) & {
+    margin-left: -2px;
+  }
+}
+
+// Smaller spacing because the icon is narrower than most
+.actionItem {
+  .content:not(.contentLarge) & {
+    gap: 4px;
   }
 }

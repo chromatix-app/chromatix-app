@@ -48,7 +48,7 @@ export const ActionSort = ({ variant, sortValue, orderValue, options, setSort, s
             {options.map((option) => (
               <RadixMenu.Item
                 key={option.value}
-                className={menuEntriesStyle.actionItem}
+                className={clsx(style.actionItem, menuEntriesStyle.actionItem)}
                 onSelect={(event) => handleSelect(event, option.value)}
               >
                 <span className={clsx(style.entryIcon, option.value !== sortValue && style.entryIconHidden)}>
