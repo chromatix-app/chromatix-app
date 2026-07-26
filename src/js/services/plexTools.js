@@ -619,7 +619,8 @@ export const getAllArtists = ({ accessToken, libraryId, serverBaseUrl }) => {
 // ======================================================================
 
 /*
-This is not required when using the Plex API, but is here for compatibility with other services.
+STUB
+This is not supported by the Plex API, but is here for compatibility with other services.
 */
 
 export const getAllAlbumArtists = ({ accessToken, libraryId, serverBaseUrl }) => {
@@ -1629,6 +1630,9 @@ export const getCollectionItems = ({ accessToken, collectionId, libraryId, serve
 export const createCollection = ({ accessToken, libraryId, serverId, serverBaseUrl, title, type, itemIds }) => {
   return new Promise((resolve, reject) => {
     try {
+      if (!itemIds?.length) {
+        throw new Error('At least one item is required to create a collection');
+      }
       const endpoint = endpointConfig.collection.createCollection(serverBaseUrl);
       axios
         .post(endpoint, null, {
