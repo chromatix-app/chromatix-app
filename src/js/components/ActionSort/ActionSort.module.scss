@@ -1,61 +1,19 @@
-@use '../../../css/_config/_mixins';
+@use '../Action/_shared' as action;
 
 .wrap {
-  display: inline-block;
+  @include action.wrap;
 }
 
 .trigger {
-  display: flex;
-  align-items: center;
-  padding: 6px 6px;
-  border-radius: 6px;
-  font-size: 12px;
-  line-height: 1;
-  color: var(--color-opacity-06);
-
-  @include mixins.focus-self-outline;
-
-  .wrapLarge & {
-    padding: 5px 12px;
-    background: var(--color-button-on-primary-bg);
-    border: 1px solid var(--color-button-on-primary-border);
-  }
-  .wrapLarge:not(:first-child) & {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-  .wrapLarge:not(:last-child) & {
-    border-right: none;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
+  @include action.trigger;
 }
 
 .icon {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  opacity: var(--opacity-06);
-  color: var(--color-text);
-
-  &:first-child {
-    margin: 0 8px 0 0;
-  }
-  &:last-child {
-    margin: 0 0 0 8px;
-  }
-
-  .wrapLarge & {
-    margin: 0 !important;
-    opacity: 1;
-    color: var(--color-opacity-07);
-  }
+  @include action.icon;
 }
 
 .label {
-  .wrapLarge & {
-    display: none;
-  }
+  @include action.label;
 }
 
 //
@@ -66,7 +24,7 @@
   top: 2px;
   left: -7px;
 
-  // Variant used alongside play buttons
+  // Icon variant used alongside play buttons
   &Large {
     top: 4px;
     left: 0;

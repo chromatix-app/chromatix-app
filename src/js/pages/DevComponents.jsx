@@ -62,10 +62,10 @@ const Component = () => {
     <>
       <TitleHeading title="Components" />
       <PageText fontSize="small" wysiwyg={true}>
-        {/* FILTERS - STANDARD */}
+        {/* ACTIONS - STANDARD */}
 
         <div>
-          <h2>Filters - Standard</h2>
+          <h2>Actions - Standard</h2>
           <ActionWrap>
             <ActionToggle
               value={view}
@@ -114,6 +114,7 @@ const Component = () => {
               label="More"
               icon="EllipsisCircleIcon"
               entries={[
+                { variant: 'sectionHeading', label: 'Section heading' },
                 {
                   variant: 'submenu',
                   label: 'Add to playlist',
@@ -136,10 +137,10 @@ const Component = () => {
           </ActionWrap>
         </div>
 
-        {/* FILTERS - ICON */}
+        {/* ACTIONS - ICON */}
 
         <div>
-          <h2>Filters - Icon</h2>
+          <h2>Actions - Icon</h2>
           <div>
             <ActionToggle
               variant="Large"
@@ -193,6 +194,7 @@ const Component = () => {
               label="More"
               icon="EllipsisIcon"
               entries={[
+                { variant: 'sectionHeading', label: 'Section heading' },
                 {
                   variant: 'submenu',
                   label: 'Add to playlist',

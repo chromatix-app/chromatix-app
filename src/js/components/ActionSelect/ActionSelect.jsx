@@ -56,7 +56,7 @@ export const ActionSelect = ({ variant, value, options, setter, icon = 'ArrowsVe
 const SelectEntry = forwardRef(({ children, ...entry }, forwardedRef) => {
   return (
     <RadixSelect.Item className={style.selectItem} {...entry} ref={forwardedRef}>
-      <RadixSelect.ItemIndicator className={style.selectIndicator}>
+      <RadixSelect.ItemIndicator>
         <span className={style.selectIcon}>
           <Icon icon="CheckCircleEmptyIcon" cover stroke />
           <span className={clsx(style.selectIcon, style.selectIconMiddle)}>

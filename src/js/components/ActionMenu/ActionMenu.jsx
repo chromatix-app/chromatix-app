@@ -15,8 +15,6 @@ import style from './ActionMenu.module.scss';
 // ======================================================================
 
 export const ActionMenu = ({ variant, label, icon = 'EllipsisCircleIcon', iconStrokeWidth = 1, setter, entries }) => {
-  const hasGroups = entries.find((entry) => entry.variant === 'sectionHeading');
-
   return (
     <div className={clsx(style.wrap, style['wrap' + variant])}>
       <RadixMenu.Root>
@@ -31,9 +29,7 @@ export const ActionMenu = ({ variant, label, icon = 'EllipsisCircleIcon', iconSt
           <RadixMenu.Content
             side="bottom"
             align="start"
-            className={clsx(menuEntriesStyle.content, style.content, style['content' + variant], {
-              [style.contentWithGroups]: hasGroups,
-            })}
+            className={clsx(menuEntriesStyle.content, style.content, style['content' + variant])}
           >
             {entries.map((entry, index) => (
               <MenuEntry key={index} radixMenu={RadixMenu} setter={setter} totalEntries={entries?.length} {...entry} />
