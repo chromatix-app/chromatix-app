@@ -492,7 +492,8 @@ export const getAllArtistAlbums = ({ accessToken, artistId, libraryId, serverBas
 // ======================================================================
 
 /*
-This is not required when using the Jellyfin API, but is here for compatibility with other services.
+STUB
+This is not supported by the Jellyfin API, but is here for compatibility with other services.
 */
 
 export const getAllArtistRelatedAlbums = () => {
@@ -754,7 +755,8 @@ export const getAlbumTracks = ({ accessToken, albumId, libraryId, serverBaseUrl,
 // ======================================================================
 
 /*
-This is not required when using the Jellyfin API, but is here for compatibility with other services.
+STUB
+This is not supported by the Jellyfin API, but is here for compatibility with other services.
 */
 
 export const getFolderItems = () => {
@@ -899,7 +901,7 @@ export const getPlaylistTracks = ({ accessToken, libraryId, playlistId, serverBa
 // CREATE PLAYLIST
 // ======================================================================
 
-export const createPlaylist = ({ accessToken, serverBaseUrl, title, userId }) => {
+export const createPlaylist = ({ accessToken, serverBaseUrl, title, userId, itemIds }) => {
   return new Promise((resolve, reject) => {
     try {
       const endpoint = endpointConfig.playlist.createPlaylist(serverBaseUrl);
@@ -911,7 +913,7 @@ export const createPlaylist = ({ accessToken, serverBaseUrl, title, userId }) =>
           endpoint,
           {
             Name: title,
-            Ids: [],
+            Ids: itemIds || [],
             UserId: userId,
             MediaType: 'Audio',
           },
@@ -1193,11 +1195,12 @@ export const movePlaylistItem = ({
 };
 
 // ======================================================================
-// GET ALL COLLECTIONS
+// COLLECTIONS
 // ======================================================================
 
 /*
-This is not required when using the Jellyfin API, but is here for compatibility with other services.
+STUB
+This is not supported by the Jellyfin API, but is here for compatibility with other services.
 */
 
 export const getAllCollections = () => {
@@ -1209,14 +1212,6 @@ export const getAllCollections = () => {
   });
 };
 
-// ======================================================================
-// GET COLLECTION ITEMS
-// ======================================================================
-
-/*
-This is not required when using the Jellyfin API, but is here for compatibility with other services.
-*/
-
 export const getCollectionItems = () => {
   return new Promise((resolve, reject) => {
     const error = new Error('Not found');
@@ -1224,6 +1219,66 @@ export const getCollectionItems = () => {
     reject({
       code: 'jelly.getCollectionItems.1',
       message: 'Failed to get all collection items: ' + error?.message,
+      error: error,
+    });
+  });
+};
+
+export const createCollection = () => {
+  return new Promise((resolve, reject) => {
+    const error = new Error('Not found');
+    error.status = 404;
+    reject({
+      code: 'jelly.createCollection.1',
+      message: 'Failed to create collection: ' + error?.message,
+      error: error,
+    });
+  });
+};
+
+export const editCollection = () => {
+  return new Promise((resolve, reject) => {
+    const error = new Error('Not found');
+    error.status = 404;
+    reject({
+      code: 'jelly.editCollection.1',
+      message: 'Failed to edit collection: ' + error?.message,
+      error: error,
+    });
+  });
+};
+
+export const deleteCollection = () => {
+  return new Promise((resolve, reject) => {
+    const error = new Error('Not found');
+    error.status = 404;
+    reject({
+      code: 'jelly.deleteCollection.1',
+      message: 'Failed to delete collection: ' + error?.message,
+      error: error,
+    });
+  });
+};
+
+export const addItemsToCollection = () => {
+  return new Promise((resolve, reject) => {
+    const error = new Error('Not found');
+    error.status = 404;
+    reject({
+      code: 'jelly.addItemsToCollection.1',
+      message: 'Failed to add items to collection: ' + error?.message,
+      error: error,
+    });
+  });
+};
+
+export const removeItemFromCollection = () => {
+  return new Promise((resolve, reject) => {
+    const error = new Error('Not found');
+    error.status = 404;
+    reject({
+      code: 'jelly.removeItemFromCollection.1',
+      message: 'Failed to remove item from collection: ' + error?.message,
       error: error,
     });
   });

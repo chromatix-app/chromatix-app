@@ -992,7 +992,7 @@ export const getPlaylistTracks = (libraryId, playlistId) => {
 // CREATE PLAYLIST
 // ======================================================================
 
-export const createPlaylist = ({ title }) => {
+export const createPlaylist = ({ title, itemIds, navigate = true }) => {
   if (!isStoreReady()) return;
   const currentService = store.getState().appModel.currentService;
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
@@ -1001,14 +1001,17 @@ export const createPlaylist = ({ title }) => {
   const userId = currentService === 'jellyfin' ? store.getState().appModel.currentAccount.userId : null;
   const { libraryId } = store.getState().sessionModel.currentLibrary;
   return serviceTools[currentService]
-    .createPlaylist({ accessToken, libraryId, serverId, serverBaseUrl, title, userId })
+    .createPlaylist({ accessToken, libraryId, serverId, serverBaseUrl, title, userId, itemIds })
     .then(async (response) => {
       analyticsEvent(toUpperFirst(currentService) + ' / Create Playlist');
       // refresh data
       await getAllPlaylists();
-      // navigate to the new playlist details page
       const newPlaylistId = currentService === 'jellyfin' ? response.Id : response.ratingKey;
-      store.getState().appModel.history.push(`/libraries/${libraryId}/playlists/${newPlaylistId}`);
+      // navigate to the new playlist details page
+      if (navigate) {
+        store.getState().appModel.history.push(`/libraries/${libraryId}/playlists/${newPlaylistId}`);
+      }
+      return newPlaylistId;
     })
     .catch((error) => {
       console.error(error);
@@ -1176,17 +1179,8 @@ export const movePlaylistItem = ({ playlistId, playlistItemId, afterPlaylistItem
     });
 };
 
-// window.bridge.createPlaylist({ title: 'AAA Test' })
-// window.bridge.editPlaylist({ playlistId: '168468', title: 'Renamed' })
-// window.bridge.deletePlaylist({ playlistId: '168468' })
-// window.bridge.addTracksToPlaylist({ playlistId: '168468', trackIds: ['163222'] });
-// window.bridge.addTracksToPlaylist({ playlistId: '168468', trackIds: ['163222', '163223', '163224'] });
-// window.bridge.removeTrackFromPlaylist({ playlistId: '168468', playlistItemId: '9872' })
-// window.bridge.removeTracksFromPlaylist({ playlistId: '168468', playlistItemIds: ['9956', '9957', '9958'] })
-// window.bridge.movePlaylistItem({ playlistId: '168468', playlistItemId: '9872', afterPlaylistItemId: '9869' })
-
 // ======================================================================
-// GET SHARED MEDIA
+// GET SHARED MEDIA (i.e. playlists etc shared with you)
 // ======================================================================
 
 export const getSharedMedia = () => {
@@ -1304,6 +1298,125 @@ export const getCollectionItems = (libraryId, collectionId, typeKey) => {
         });
     });
   }
+};
+
+// ======================================================================
+// CREATE COLLECTION
+// ======================================================================
+
+export const createCollection = ({ title, type, itemIds }) => {
+  if (!isStoreReady()) return;
+  const currentService = store.getState().appModel.currentService;
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const serverId = store.getState().sessionModel.currentServer.serverId;
+  const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  const { libraryId } = store.getState().sessionModel.currentLibrary;
+  return serviceTools[currentService]
+    .createCollection({ accessToken, libraryId, serverId, serverBaseUrl, title, type, itemIds })
+    .then(async () => {
+      analyticsEvent(toUpperFirst(currentService) + ' / Create Collection');
+      // refresh data
+      await getAllCollections();
+    })
+    .catch((error) => {
+      console.error(error);
+      analyticsEvent(toUpperFirst(currentService) + ' / Error / Create Collection');
+    });
+};
+
+// ======================================================================
+// EDIT COLLECTION
+// ======================================================================
+
+export const editCollection = ({ collectionId, title }) => {
+  if (!isStoreReady()) return;
+  const currentService = store.getState().appModel.currentService;
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  return serviceTools[currentService]
+    .editCollection({ accessToken, serverBaseUrl, collectionId, title })
+    .then(async () => {
+      analyticsEvent(toUpperFirst(currentService) + ' / Edit Collection');
+      // refresh data
+      await getAllCollections();
+    })
+    .catch((error) => {
+      console.error(error);
+      analyticsEvent(toUpperFirst(currentService) + ' / Error / Edit Collection');
+    });
+};
+
+// ======================================================================
+// DELETE COLLECTION
+// ======================================================================
+
+export const deleteCollection = ({ collectionId, type }) => {
+  if (!isStoreReady()) return;
+  const currentService = store.getState().appModel.currentService;
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  const { libraryId } = store.getState().sessionModel.currentLibrary;
+  return serviceTools[currentService]
+    .deleteCollection({ accessToken, serverBaseUrl, collectionId })
+    .then(async () => {
+      analyticsEvent(toUpperFirst(currentService) + ' / Delete Collection');
+      // refresh data
+      await getAllCollections();
+      // navigate to the collections list page
+      const collectionPath = type === 'artist' ? 'artist-collections' : 'album-collections';
+      store.getState().appModel.history.push(`/libraries/${libraryId}/${collectionPath}`);
+    })
+    .catch((error) => {
+      console.error(error);
+      analyticsEvent(toUpperFirst(currentService) + ' / Error / Delete Collection');
+    });
+};
+
+// ======================================================================
+// ADD ITEMS TO COLLECTION
+// ======================================================================
+
+export const addItemsToCollection = ({ collectionId, libraryId, typeKey, itemIds }) => {
+  if (!isStoreReady()) return;
+  const currentService = store.getState().appModel.currentService;
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const serverId = store.getState().sessionModel.currentServer.serverId;
+  const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  return serviceTools[currentService]
+    .addItemsToCollection({ accessToken, serverBaseUrl, collectionId, serverId, itemIds })
+    .then(() => {
+      analyticsEvent(toUpperFirst(currentService) + ' / Add Items To Collection');
+      // refresh the collection
+      getAllCollections();
+      getCollectionItems(libraryId, collectionId, typeKey);
+    })
+    .catch((error) => {
+      console.error(error);
+      analyticsEvent(toUpperFirst(currentService) + ' / Error / Add Items To Collection');
+    });
+};
+
+// ======================================================================
+// REMOVE ITEM FROM COLLECTION
+// ======================================================================
+
+export const removeItemFromCollection = ({ collectionId, libraryId, typeKey, itemId }) => {
+  if (!isStoreReady()) return;
+  const currentService = store.getState().appModel.currentService;
+  const accessToken = store.getState().sessionModel.currentServer.accessToken;
+  const serverBaseUrl = store.getState().appModel.serverBaseUrl;
+  return serviceTools[currentService]
+    .removeItemFromCollection({ accessToken, serverBaseUrl, collectionId, itemId })
+    .then(() => {
+      analyticsEvent(toUpperFirst(currentService) + ' / Remove Item From Collection');
+      // refresh the collection
+      getAllCollections();
+      getCollectionItems(libraryId, collectionId, typeKey);
+    })
+    .catch((error) => {
+      console.error(error);
+      analyticsEvent(toUpperFirst(currentService) + ' / Error / Remove Item From Collection');
+    });
 };
 
 // ======================================================================
@@ -1742,9 +1855,13 @@ const isLocal = import.meta.env.VITE_ENV === 'local';
 if (isLocal) {
   window.bridge = {
     abortAllRequests,
+    addItemsToCollection,
     addTracksToPlaylist,
+    createCollection,
     createPlaylist,
+    deleteCollection,
     deletePlaylist,
+    editCollection,
     editPlaylist,
     getAlbumArtistDetails,
     getAlbumDetails,
@@ -1760,7 +1877,6 @@ if (isLocal) {
     getAllLibraries,
     getAllPlaylists,
     getAllServers,
-    getSharedMedia,
     getAllTags,
     getAllUsers,
     getArtistDetails,
@@ -1768,6 +1884,7 @@ if (isLocal) {
     getFolderItems,
     getPlaylistDetails,
     getPlaylistTracks,
+    getSharedMedia,
     getTagItems,
     getUserInfo,
     init,

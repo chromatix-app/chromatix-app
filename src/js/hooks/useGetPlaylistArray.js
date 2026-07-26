@@ -72,9 +72,10 @@ const useGetPlaylistArray = () => {
     });
   };
 
-  const setSortPlaylists = (sortPlaylists) => {
+  const setSortPlaylists = (sortPlaylists, orderPlaylists) => {
     dispatch.sessionModel.setSessionState({
       sortPlaylists,
+      ...(orderPlaylists !== undefined && { orderPlaylists }),
     });
   };
 

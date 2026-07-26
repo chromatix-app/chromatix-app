@@ -5,10 +5,10 @@
 import { useSelector } from 'react-redux';
 
 import {
-  FilterMenu,
-  FilterSelect,
-  FilterToggle,
-  FilterWrap,
+  ActionMenu,
+  ActionSort,
+  ActionToggle,
+  ActionWrap,
   ViewGrid,
   ViewList,
   Loading,
@@ -143,8 +143,8 @@ const Title = ({
         }
         padding={!isListView && !isGridView}
       />
-      <FilterWrap padding={true} inset={isListView || isGridView}>
-        <FilterToggle
+      <ActionWrap padding={true} inset={isListView || isGridView}>
+        <ActionToggle
           value={viewAlbums}
           options={[
             { value: 'grid', label: 'Grid view' },
@@ -155,8 +155,9 @@ const Title = ({
         />
         {viewAlbums === 'grid' && (
           <>
-            <FilterSelect
-              value={sortAlbums}
+            <ActionSort
+              sortValue={sortAlbums}
+              orderValue={orderAlbums}
               options={[
                 { value: 'title', label: 'Alphabetical' },
                 { value: 'artist', label: 'Artist' },
@@ -168,18 +169,10 @@ const Title = ({
                 ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
                 ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
               ]}
-              setter={setSortAlbums}
+              setSort={setSortAlbums}
+              setOrder={setOrderAlbums}
             />
-            <FilterToggle
-              value={orderAlbums}
-              options={[
-                { value: 'asc', label: 'Ascending' },
-                { value: 'desc', label: 'Descending' },
-              ]}
-              setter={setOrderAlbums}
-              icon={orderAlbums === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
-            />
-            <FilterMenu
+            <ActionMenu
               label="Options"
               icon="CogIcon"
               setter={setColumnVisibility}
@@ -209,7 +202,7 @@ const Title = ({
           </>
         )}
         {viewAlbums === 'list' && (
-          <FilterMenu
+          <ActionMenu
             label="Options"
             icon="CogIcon"
             setter={setColumnVisibility}
@@ -281,7 +274,7 @@ const Title = ({
             ]}
           />
         )}
-      </FilterWrap>
+      </ActionWrap>
     </>
   );
 };

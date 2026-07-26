@@ -64,6 +64,12 @@
   }
 }
 
+.inputErrorMessage {
+  margin: 8px 2px 0;
+  font-size: 13px;
+  color: var(--color-text);
+}
+
 .buttons {
   display: flex;
   flex-direction: row-reverse;

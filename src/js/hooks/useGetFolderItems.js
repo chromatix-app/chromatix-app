@@ -68,9 +68,10 @@ const useGetFolderItems = (folderId) => {
     });
   };
 
-  const setSortFolders = (sortFolders) => {
+  const setSortFolders = (sortFolders, orderFolders) => {
     dispatch.sessionModel.setSessionState({
       sortFolders,
+      ...(orderFolders !== undefined && { orderFolders }),
     });
   };
 

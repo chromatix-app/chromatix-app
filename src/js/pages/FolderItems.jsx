@@ -5,10 +5,10 @@
 import { useParams } from 'react-router-dom';
 
 import {
-  FilterMenu,
-  FilterSelect,
-  FilterToggle,
-  FilterWrap,
+  ActionMenu,
+  ActionSort,
+  ActionToggle,
+  ActionWrap,
   ViewGrid,
   ViewList,
   Loading,
@@ -140,8 +140,8 @@ const Title = ({
         }
         padding={!isListView && !isGridView}
       />
-      <FilterWrap padding={true} inset={isListView || isGridView}>
-        <FilterToggle
+      <ActionWrap padding={true} inset={isListView || isGridView}>
+        <ActionToggle
           value={viewFolders}
           options={[
             { value: 'grid', label: 'Grid view' },
@@ -152,28 +152,21 @@ const Title = ({
         />
         {viewFolders === 'grid' && (
           <>
-            <FilterSelect
-              value={sortFolders}
+            <ActionSort
+              sortValue={sortFolders}
+              orderValue={orderFolders}
               options={[
                 { value: 'sortOrder', label: 'Default' },
                 { value: 'kind', label: 'Kind' },
                 { value: 'title', label: 'Title' },
               ]}
-              setter={setSortFolders}
-            />
-            <FilterToggle
-              value={orderFolders}
-              options={[
-                { value: 'asc', label: 'Ascending' },
-                { value: 'desc', label: 'Descending' },
-              ]}
-              setter={setOrderFolders}
-              icon={orderFolders === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+              setSort={setSortFolders}
+              setOrder={setOrderFolders}
             />
           </>
         )}
         {viewFolders === 'list' && (
-          <FilterMenu
+          <ActionMenu
             label="Options"
             icon="CogIcon"
             setter={setColumnVisibility}
@@ -193,7 +186,7 @@ const Title = ({
             ]}
           />
         )}
-      </FilterWrap>
+      </ActionWrap>
     </>
   );
 };

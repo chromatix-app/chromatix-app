@@ -309,7 +309,8 @@
   opacity: 0;
   color: var(--color-text);
 
-  .label:hover & {
+  .label:hover &,
+  .label:focus-visible & {
     opacity: var(--opacity-05);
   }
 
@@ -343,7 +344,8 @@
   @include mixins.focus-self-outline;
 
   &:hover,
-  &:focus {
+  &:focus-visible,
+  &[data-state='open'] {
     background: var(--color-secondary-hover);
   }
 

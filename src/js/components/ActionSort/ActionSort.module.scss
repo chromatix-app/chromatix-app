@@ -1,0 +1,64 @@
+@use '../Action/_shared' as action;
+
+.wrap {
+  @include action.wrap;
+}
+
+.trigger {
+  @include action.trigger;
+}
+
+.icon {
+  @include action.icon;
+
+  // Smaller spacing because the icon is narrower than most
+  &:first-child {
+    .wrap:not(.wrapLarge) & {
+      position: relative;
+      left: -2px;
+      margin: 0 2px 0 0;
+    }
+  }
+}
+
+.label {
+  @include action.label;
+}
+
+//
+// DROPDOWN
+//
+
+.content {
+  top: 2px;
+  left: -7px;
+
+  // Icon variant used alongside play buttons
+  &Large {
+    top: 4px;
+    left: 0;
+  }
+}
+
+.entryIcon {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  opacity: var(--opacity-06);
+
+  &Hidden {
+    opacity: 0;
+  }
+
+  // Smaller spacing because the icon is narrower than most
+  .content:not(.contentLarge) & {
+    margin-left: -2px;
+  }
+}
+
+// Smaller spacing because the icon is narrower than most
+.actionItem {
+  .content:not(.contentLarge) & {
+    gap: 4px;
+  }
+}

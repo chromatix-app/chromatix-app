@@ -1,0 +1,17 @@
+@use '../Action/_shared' as action;
+
+.wrap {
+  @include action.wrap;
+}
+
+.trigger {
+  @include action.trigger;
+}
+
+.icon {
+  @include action.icon;
+}
+
+.label {
+  @include action.label;
+}

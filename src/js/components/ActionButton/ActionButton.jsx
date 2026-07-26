@@ -6,27 +6,20 @@ import clsx from 'clsx';
 
 import { Icon } from 'js/components';
 
-import style from './FilterToggle.module.scss';
+import style from './ActionButton.module.scss';
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-export const FilterToggle = ({ variant, value, options, setter, icon = 'ArrowsVerticalIcon' }) => {
-  const handleValueChange = () => {
-    const otherOption = options.find((option) => option.value !== value);
-    setter(otherOption.value);
-  };
-
-  const valueString = options.find((option) => option.value === value)?.label;
-
+export const ActionButton = ({ variant, label, onClick, icon = 'ArrowsVerticalIcon' }) => {
   return (
     <div className={clsx(style.wrap, style['wrap' + variant])}>
-      <button type="button" className={style.trigger} onClick={handleValueChange} aria-label={valueString}>
+      <button type="button" className={style.trigger} onClick={onClick} aria-label={label}>
         <span className={style.icon}>
           <Icon icon={icon} cover stroke />
         </span>
-        <span className={style.label}>{valueString}</span>
+        <span className={style.label}>{label}</span>
       </button>
     </div>
   );
@@ -36,4 +29,4 @@ export const FilterToggle = ({ variant, value, options, setter, icon = 'ArrowsVe
 // EXPORT
 // ======================================================================
 
-export default FilterToggle;
+export default ActionButton;

@@ -136,6 +136,24 @@ Components and hooks are barrel-exported from `components/index.js` and `hooks/i
 
 Use `clsx` for conditional class composition. Use CSS Modules for component-specific styles.
 
+## Context Menus
+
+Right-click/"more options" menus share one entry schema and renderer (`MenuEntry` in `components/MenuEntries/`), consumed by both `ContextMenu` (Radix context-menu, right-click) and `ActionMenu` (Radix dropdown-menu, click-triggered "..." button). An entry is `{ variant: 'action' | 'checkbox' | 'submenu' | 'divider' | 'sectionHeading', ... }` — see the header comment in `MenuEntries.jsx` for the per-variant fields. `ActionSort` also builds on the same dropdown-menu primitive and reuses `MenuEntries.module.scss`'s shared popup/item styling, but renders its own entries directly rather than going through `MenuEntry`, since a sort option isn't one of the variant shapes above.
+
+Each entity type (album, artist, playlist, collection, track) has a `useContextMenu<Entity>` hook that builds its entries array from a plain object shaped like the entity's list/grid row, plus a thin `ContextMenu<Entity>` wrapper component. Follow the existing hooks for conventions such as: omitting a `link` field to suppress a "Go to X" entry on that entity's own detail page, and showing a "Remove from X" entry only when the relevant parent ID (e.g. `collectionId`) is present on the entity object.
+
+## Action Components
+
+The `Action*` components are the toolbar controls shown above list/grid views. Their shared trigger/icon/label CSS lives in `components/Action/_shared.scss` as Sass mixins (`@include action.trigger`, etc.) — this is a plain `.scss` partial, not a `.module.scss`, since Sass's `@use` resolution won't find a `.module.scss` file and it's never imported as a style object from JS, only `@use`'d from other Sass.
+
+`ActionSort` combines a sort-field select with direction (asc/desc) into one control: selecting a new option sets it ascending; re-selecting the active option toggles direction. It's built on `@radix-ui/react-dropdown-menu` rather than `react-select`, since Select suppresses `onValueChange` when re-selecting the already-active value and always closes on select — neither of which this component wants. Each `useGet<Entity>Array`/`useGet<Entity>Items` hook's `setSort<Entity>(sort, order?)` setter accepts an optional second `order` argument so `ActionSort` can update both fields in one dispatch; calling `setSort` and `setOrder` as two separate dispatches back-to-back will clobber the sort field, because `setOrder` re-writes it from a stale closure value to guard against sorting by a hidden field.
+
+## Modals
+
+Modal content components live as flat files directly under `js/modals/` (no per-modal folder), sharing one stylesheet (`modals.module.scss`). Open one via `dispatch.dialogModel.showModal('Name')` or `showModal({ modal: 'Name', data: {...} })`; the modal reads `dialogModel.currentModalData` via `useSelector`. Confirmations use `dispatch.dialogModel.showConfirm({...})` instead (see `models.dialog.js`) rather than a dedicated modal component.
+
+Name-entry modals (playlists, collections) validate inline using `validateEntityName` from `js/utils` — trims whitespace, rejects unsafe characters, and checks for a case-insensitive duplicate against the relevant list already in the store. Follow this pattern for any other user-named entity.
+
 ## TypeScript Migration
 
 The codebase is partially migrated to TypeScript. New utilities and hooks should be written in TypeScript (`.ts`/`.tsx`). Existing `.js`/`.jsx` files do not need to be converted unless directly touched. The store models remain in JavaScript for now.

@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import * as RadixPopover from '@radix-ui/react-popover';
 
-import { Icon, ReleaseBanner, UserMenu } from 'js/components';
-import { useGetPlaylistSidebar, useKeyControl, useNavigationHistory } from 'js/hooks';
+import { ContextMenuPlaylists, Icon, ReleaseBanner, UserMenu } from 'js/components';
+import { useGetGlobalData, useKeyControl, useNavigationHistory } from 'js/hooks';
 import { getEnvironment } from 'js/utils';
 import * as bridge from 'js/services/bridge';
 import platformFeatures from 'js/_config/platformFeatures';
@@ -25,7 +25,7 @@ const SideBar = () => {
   const dispatch = useDispatch();
 
   const { canGoBack, canGoForward, goBack, goForward } = useNavigationHistory();
-  const { hasPlaylists, sortedPlaylists } = useGetPlaylistSidebar();
+  const { hasPlaylists, sortedPlaylists } = useGetGlobalData();
 
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const currentLibraryId = useSelector(({ sessionModel }) => sessionModel.currentLibrary?.libraryId);
@@ -417,20 +417,7 @@ const SideBar = () => {
                   </button>
                 )}
                 {sortedPlaylists.map((playlist) => (
-                  <NavLink
-                    key={playlist.playlistId}
-                    className={style.link}
-                    activeClassName={style.linkActive}
-                    to={playlist.link}
-                    draggable="false"
-                  >
-                    {menuShowIcons && (
-                      <span className={style.icon}>
-                        <Icon icon="PlaylistIcon" cover stroke />
-                      </span>
-                    )}
-                    {playlist.title}
-                  </NavLink>
+                  <SidebarPlaylistLink key={playlist.playlistId} playlist={playlist} menuShowIcons={menuShowIcons} />
                 ))}
               </>
             )}
@@ -438,6 +425,23 @@ const SideBar = () => {
         )}
       </div>
     </>
+  );
+};
+
+const SidebarPlaylistLink = ({ playlist, menuShowIcons }) => {
+  return (
+    <ContextMenuPlaylists
+      playlist={{ playlistId: playlist.playlistId, playlistTitle: playlist.title, link: playlist.link }}
+    >
+      <NavLink className={style.link} activeClassName={style.linkActive} to={playlist.link} draggable="false">
+        {menuShowIcons && (
+          <span className={style.icon}>
+            <Icon icon="PlaylistIcon" cover stroke />
+          </span>
+        )}
+        {playlist.title}
+      </NavLink>
+    </ContextMenuPlaylists>
   );
 };
 
