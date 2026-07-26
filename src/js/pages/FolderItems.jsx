@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 
 import {
   FilterMenu,
-  FilterSelect,
+  FilterSort,
   FilterToggle,
   FilterWrap,
   ViewGrid,
@@ -152,23 +152,16 @@ const Title = ({
         />
         {viewFolders === 'grid' && (
           <>
-            <FilterSelect
-              value={sortFolders}
+            <FilterSort
+              sortValue={sortFolders}
+              orderValue={orderFolders}
               options={[
                 { value: 'sortOrder', label: 'Default' },
                 { value: 'kind', label: 'Kind' },
                 { value: 'title', label: 'Title' },
               ]}
-              setter={setSortFolders}
-            />
-            <FilterToggle
-              value={orderFolders}
-              options={[
-                { value: 'asc', label: 'Ascending' },
-                { value: 'desc', label: 'Descending' },
-              ]}
-              setter={setOrderFolders}
-              icon={orderFolders === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+              setSort={setSortFolders}
+              setOrder={setOrderFolders}
             />
           </>
         )}

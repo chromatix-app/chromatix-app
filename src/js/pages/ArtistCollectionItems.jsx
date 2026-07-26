@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom';
 
 import {
   FilterMenu,
-  FilterSelect,
+  FilterSort,
   FilterToggle,
   ViewGrid,
   ViewList,
@@ -227,26 +227,18 @@ const Title = ({
             />
             {viewCollectionItems === 'grid' && (
               <>
-                <FilterSelect
+                <FilterSort
                   variant="Large"
-                  value={sortCollectionItems}
+                  sortValue={sortCollectionItems}
+                  orderValue={orderCollectionItems}
                   options={[
                     { value: 'title', label: 'Alphabetical' },
                     ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
                     ...(platformOpts?.enableLastPlayed ? [{ value: 'lastPlayed', label: 'Date played' }] : []),
                     ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
                   ]}
-                  setter={setSortCollectionItems}
-                />
-                <FilterToggle
-                  variant="Large"
-                  value={orderCollectionItems}
-                  options={[
-                    { value: 'asc', label: 'Ascending' },
-                    { value: 'desc', label: 'Descending' },
-                  ]}
-                  setter={setOrderCollectionItems}
-                  icon={orderCollectionItems === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+                  setSort={setSortCollectionItems}
+                  setOrder={setOrderCollectionItems}
                 />
                 <FilterMenu
                   variant="Large"

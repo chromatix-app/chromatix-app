@@ -12,6 +12,7 @@ export { default as Favourite } from './Favourite/Favourite';
 export { default as FilterButton } from './FilterButton/FilterButton';
 export { default as FilterMenu } from './FilterMenu/FilterMenu';
 export { default as FilterSelect } from './FilterSelect/FilterSelect';
+export { default as FilterSort } from './FilterSort/FilterSort';
 export { default as FilterToggle } from './FilterToggle/FilterToggle';
 export { default as FilterWrap } from './FilterWrap/FilterWrap';
 export { default as FormOTP } from './FormOTP/FormOTP';

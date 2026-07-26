@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   FilterButton,
   FilterMenu,
-  FilterSelect,
+  FilterSort,
   FilterToggle,
   FilterWrap,
   ViewGrid,
@@ -162,8 +162,9 @@ const Title = ({
         />
         {viewPlaylists === 'grid' && (
           <>
-            <FilterSelect
-              value={sortPlaylists}
+            <FilterSort
+              sortValue={sortPlaylists}
+              orderValue={orderPlaylists}
               options={[
                 { value: 'title', label: 'Alphabetical' },
                 ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
@@ -173,16 +174,8 @@ const Title = ({
                 ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
                 { value: 'totalTracks', label: 'Track count' },
               ]}
-              setter={setSortPlaylists}
-            />
-            <FilterToggle
-              value={orderPlaylists}
-              options={[
-                { value: 'asc', label: 'Ascending' },
-                { value: 'desc', label: 'Descending' },
-              ]}
-              setter={setOrderPlaylists}
-              icon={orderPlaylists === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+              setSort={setSortPlaylists}
+              setOrder={setOrderPlaylists}
             />
             <FilterMenu
               label="Options"
@@ -213,11 +206,6 @@ const Title = ({
             />
           </>
         )}
-        <FilterButton
-          label="New playlist"
-          icon="PlusIcon"
-          onClick={() => dispatch.dialogModel.showModal('PlaylistAdd')}
-        />
         {viewPlaylists === 'list' && (
           <FilterMenu
             label="Options"
@@ -285,6 +273,11 @@ const Title = ({
             ]}
           />
         )}
+        <FilterButton
+          label="New playlist"
+          icon="PlusIcon"
+          onClick={() => dispatch.dialogModel.showModal('PlaylistAdd')}
+        />
       </FilterWrap>
     </>
   );

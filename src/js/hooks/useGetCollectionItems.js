@@ -132,9 +132,10 @@ const useGetCollectionItems = ({
     });
   };
 
-  const setSortCollectionItems = (sortCollectionItems) => {
+  const setSortCollectionItems = (sortCollectionItems, orderCollectionItems) => {
     dispatch.sessionModel.setSessionState({
       [`sort${itemsKey}`]: sortCollectionItems,
+      ...(orderCollectionItems !== undefined && { [`order${itemsKey}`]: orderCollectionItems }),
     });
   };
 

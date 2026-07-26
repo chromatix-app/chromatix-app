@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 
 import {
   FilterMenu,
-  FilterSelect,
+  FilterSort,
   FilterToggle,
   FilterWrap,
   ViewGrid,
@@ -155,8 +155,9 @@ const Title = ({
         />
         {viewAlbums === 'grid' && (
           <>
-            <FilterSelect
-              value={sortAlbums}
+            <FilterSort
+              sortValue={sortAlbums}
+              orderValue={orderAlbums}
               options={[
                 { value: 'title', label: 'Alphabetical' },
                 { value: 'artist', label: 'Artist' },
@@ -168,16 +169,8 @@ const Title = ({
                 ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
                 ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
               ]}
-              setter={setSortAlbums}
-            />
-            <FilterToggle
-              value={orderAlbums}
-              options={[
-                { value: 'asc', label: 'Ascending' },
-                { value: 'desc', label: 'Descending' },
-              ]}
-              setter={setOrderAlbums}
-              icon={orderAlbums === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+              setSort={setSortAlbums}
+              setOrder={setOrderAlbums}
             />
             <FilterMenu
               label="Options"

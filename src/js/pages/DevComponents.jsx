@@ -10,6 +10,7 @@ import {
   FilterButton,
   FilterMenu,
   FilterSelect,
+  FilterSort,
   FilterToggle,
   FilterWrap,
   FormOTP,
@@ -75,6 +76,18 @@ const Component = () => {
               setter={setView}
               icon={view === 'grid' ? 'GridIcon' : 'ListIcon'}
             />
+            <FilterSort
+              sortValue={sort}
+              orderValue={order}
+              options={[
+                { value: 'title', label: 'Alphabetical' },
+                { value: 'addedAt', label: 'Date added' },
+                { value: 'lastPlayed', label: 'Date played' },
+                { value: 'userRating', label: 'Rating' },
+              ]}
+              setSort={setSort}
+              setOrder={setOrder}
+            />
             <FilterSelect
               value={sort}
               options={[
@@ -84,15 +97,6 @@ const Component = () => {
                 { value: 'userRating', label: 'Rating' },
               ]}
               setter={setSort}
-            />
-            <FilterToggle
-              value={order}
-              options={[
-                { value: 'asc', label: 'Ascending' },
-                { value: 'desc', label: 'Descending' },
-              ]}
-              setter={setOrder}
-              icon={order === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
             <FilterMenu
               label="Options"
@@ -122,8 +126,9 @@ const Component = () => {
                 },
                 { variant: 'action', label: 'Remove from playlist', icon: 'MinusCircleIcon', onSelect: () => {} },
                 { variant: 'divider' },
-                { variant: 'action', label: 'Add to queue', icon: 'QueueAfterIcon', onSelect: () => {} },
+                { variant: 'action', label: 'Add to queue', icon: 'QueueBeforeIcon', onSelect: () => {} },
                 { variant: 'divider' },
+                { variant: 'action', label: 'Play track', icon: 'PlayIcon', onSelect: () => {} },
                 { variant: 'action', label: 'Go to artist', icon: 'PeopleIcon', onSelect: () => {} },
                 { variant: 'action', label: 'Go to album', icon: 'PlayCircleIcon', onSelect: () => {} },
               ]}
@@ -146,6 +151,19 @@ const Component = () => {
               setter={setView}
               icon={view === 'grid' ? 'GridIcon' : 'ListIcon'}
             />
+            <FilterSort
+              variant="Large"
+              sortValue={sort}
+              orderValue={order}
+              options={[
+                { value: 'title', label: 'Alphabetical' },
+                { value: 'addedAt', label: 'Date added' },
+                { value: 'lastPlayed', label: 'Date played' },
+                { value: 'userRating', label: 'Rating' },
+              ]}
+              setSort={setSort}
+              setOrder={setOrder}
+            />
             <FilterSelect
               variant="Large"
               value={sort}
@@ -156,16 +174,6 @@ const Component = () => {
                 { value: 'userRating', label: 'Rating' },
               ]}
               setter={setSort}
-            />
-            <FilterToggle
-              variant="Large"
-              value={order}
-              options={[
-                { value: 'asc', label: 'Ascending' },
-                { value: 'desc', label: 'Descending' },
-              ]}
-              setter={setOrder}
-              icon={order === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
             />
             <FilterMenu
               variant="Large"
@@ -197,8 +205,9 @@ const Component = () => {
                 },
                 { variant: 'action', label: 'Remove from playlist', icon: 'MinusCircleIcon', onSelect: () => {} },
                 { variant: 'divider' },
-                { variant: 'action', label: 'Add to queue', icon: 'QueueAfterIcon', onSelect: () => {} },
+                { variant: 'action', label: 'Add to queue', icon: 'QueueBeforeIcon', onSelect: () => {} },
                 { variant: 'divider' },
+                { variant: 'action', label: 'Play track', icon: 'PlayIcon', onSelect: () => {} },
                 { variant: 'action', label: 'Go to artist', icon: 'PeopleIcon', onSelect: () => {} },
                 { variant: 'action', label: 'Go to album', icon: 'PlayCircleIcon', onSelect: () => {} },
               ]}

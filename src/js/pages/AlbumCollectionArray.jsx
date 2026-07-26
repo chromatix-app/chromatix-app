@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 
 import {
   FilterMenu,
-  FilterSelect,
+  FilterSort,
   FilterToggle,
   FilterWrap,
   ViewGrid,
@@ -154,23 +154,16 @@ const Title = ({
         />
         {viewCollections === 'grid' && (
           <>
-            <FilterSelect
-              value={sortCollections}
+            <FilterSort
+              sortValue={sortCollections}
+              orderValue={orderCollections}
               options={[
                 { value: 'title', label: 'Alphabetical' },
                 ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
                 ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
               ]}
-              setter={setSortCollections}
-            />
-            <FilterToggle
-              value={orderCollections}
-              options={[
-                { value: 'asc', label: 'Ascending' },
-                { value: 'desc', label: 'Descending' },
-              ]}
-              setter={setOrderCollections}
-              icon={orderCollections === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+              setSort={setSortCollections}
+              setOrder={setOrderCollections}
             />
             <FilterMenu
               label="Options"

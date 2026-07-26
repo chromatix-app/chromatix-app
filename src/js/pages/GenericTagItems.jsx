@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom';
 
 import {
   FilterMenu,
-  FilterSelect,
+  FilterSort,
   FilterToggle,
   FilterWrap,
   ViewGrid,
@@ -244,8 +244,9 @@ const Title = ({
           />
           {viewCollectionItems === 'grid' && (
             <>
-              <FilterSelect
-                value={sortCollectionItems}
+              <FilterSort
+                sortValue={sortCollectionItems}
+                orderValue={orderCollectionItems}
                 options={
                   variant === 'artists'
                     ? [
@@ -265,16 +266,8 @@ const Title = ({
                         ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
                       ]
                 }
-                setter={setSortCollectionItems}
-              />
-              <FilterToggle
-                value={orderCollectionItems}
-                options={[
-                  { value: 'asc', label: 'Ascending' },
-                  { value: 'desc', label: 'Descending' },
-                ]}
-                setter={setOrderCollectionItems}
-                icon={orderCollectionItems === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+                setSort={setSortCollectionItems}
+                setOrder={setOrderCollectionItems}
               />
               <FilterMenu
                 label="Options"

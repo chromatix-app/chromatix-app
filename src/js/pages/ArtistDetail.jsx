@@ -9,7 +9,7 @@ import {
   Favourite,
   FilterMenu,
   FilterSelect,
-  FilterToggle,
+  FilterSort,
   ViewGrid,
   ViewList,
   Loading,
@@ -434,9 +434,10 @@ const Title = ({
             />
             {viewArtistAlbums === 'grid' && (
               <>
-                <FilterSelect
+                <FilterSort
                   variant="Large"
-                  value={sortArtistAlbums}
+                  sortValue={sortArtistAlbums}
+                  orderValue={orderArtistAlbums}
                   options={[
                     { value: 'title', label: 'Alphabetical' },
                     // { value: 'artist', label: 'Artist' },
@@ -448,17 +449,8 @@ const Title = ({
                     ...(platformOpts?.enableIsFavourite ? [{ value: 'isFavourite', label: 'Favourites' }] : []),
                     ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
                   ]}
-                  setter={setSortArtistAlbums}
-                />
-                <FilterToggle
-                  variant="Large"
-                  value={orderArtistAlbums}
-                  options={[
-                    { value: 'asc', label: 'Ascending' },
-                    { value: 'desc', label: 'Descending' },
-                  ]}
-                  setter={setOrderArtistAlbums}
-                  icon={orderArtistAlbums === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}
+                  setSort={setSortArtistAlbums}
+                  setOrder={setOrderArtistAlbums}
                 />
                 <FilterMenu
                   variant="Large"

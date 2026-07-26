@@ -60,9 +60,10 @@ const useGetCollectionArray = (collectionKey) => {
     });
   };
 
-  const setSortCollections = (sortCollections) => {
+  const setSortCollections = (sortCollections, orderCollections) => {
     dispatch.sessionModel.setSessionState({
       [`sort${collectionKey}`]: sortCollections,
+      ...(orderCollections !== undefined && { [`order${collectionKey}`]: orderCollections }),
     });
   };
 

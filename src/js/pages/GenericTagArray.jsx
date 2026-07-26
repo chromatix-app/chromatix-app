@@ -119,8 +119,8 @@ const Title = ({
             <FilterToggle
               value={orderCollections}
               options={[
-                { value: 'asc', label: 'Ascending' },
-                { value: 'desc', label: 'Descending' },
+                { value: 'asc', label: 'Alphabetical' },
+                { value: 'desc', label: 'Alphabetical' },
               ]}
               setter={setOrderCollections}
               icon={orderCollections === 'asc' ? 'ArrowDownLongIcon' : 'ArrowUpLongIcon'}

@@ -74,9 +74,10 @@ const useGetAlbumArray = () => {
     });
   };
 
-  const setSortAlbums = (sortAlbums) => {
+  const setSortAlbums = (sortAlbums, orderAlbums) => {
     dispatch.sessionModel.setSessionState({
       sortAlbums,
+      ...(orderAlbums !== undefined && { orderAlbums }),
     });
   };
 
