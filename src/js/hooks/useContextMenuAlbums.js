@@ -1,3 +1,4 @@
+import platformFeatures from 'js/_config/platformFeatures';
 import * as bridge from 'js/services/bridge';
 import store from 'js/store/store';
 
@@ -17,6 +18,8 @@ const useContextMenuAlbums = (album, { showArtist = true, showAlbum = true } = {
     return [];
   }
 
+  const currentService = store.getState().appModel.currentService;
+  const hasContextCollections = platformFeatures[currentService]?.menuAlbumCollections;
   const hasContextArtist = !!album.artistLink && showArtist;
   const hasContextAlbum = !!album.link && showAlbum;
   const hasContextDivider = hasContextArtist || hasContextAlbum;
@@ -65,46 +68,50 @@ const useContextMenuAlbums = (album, { showArtist = true, showAlbum = true } = {
         ];
       },
     },
-    {
-      variant: 'submenu',
-      label: 'Add to collection',
-      icon: 'PlusCircleIcon',
-      getEntries: () => {
-        const collections = store.getState().appModel.allAlbumCollections || [];
-        return [
+    ...(hasContextCollections
+      ? [
           {
-            variant: 'action',
-            label: 'New collection',
-            icon: 'PlusIcon',
-            onSelect: () => {
-              // deferred so it opens after Radix returns focus to the trigger on menu close,
-              // otherwise that focus-return wins the race and steals focus from the modal's input
-              setTimeout(() => {
-                store.dispatch.dialogModel.showModal({
-                  modal: 'CollectionAdd',
-                  data: { type: 'album', itemId: album.albumId },
-                });
-              }, 100);
+            variant: 'submenu',
+            label: 'Add to collection',
+            icon: 'PlusCircleIcon',
+            getEntries: () => {
+              const collections = store.getState().appModel.allAlbumCollections || [];
+              return [
+                {
+                  variant: 'action',
+                  label: 'New collection',
+                  icon: 'PlusIcon',
+                  onSelect: () => {
+                    // deferred so it opens after Radix returns focus to the trigger on menu close,
+                    // otherwise that focus-return wins the race and steals focus from the modal's input
+                    setTimeout(() => {
+                      store.dispatch.dialogModel.showModal({
+                        modal: 'CollectionAdd',
+                        data: { type: 'album', itemId: album.albumId },
+                      });
+                    }, 100);
+                  },
+                },
+                ...(collections.length ? [{ variant: 'divider' }] : []),
+                ...collections.map((collection) => ({
+                  variant: 'action',
+                  label: collection.title,
+                  onSelect: () => {
+                    const libraryId = store.getState().sessionModel.currentLibrary?.libraryId;
+                    bridge.addItemsToCollection({
+                      collectionId: collection.collectionId,
+                      libraryId,
+                      typeKey: 'Album',
+                      itemIds: [album.albumId],
+                    });
+                  },
+                })),
+              ];
             },
           },
-          ...(collections.length ? [{ variant: 'divider' }] : []),
-          ...collections.map((collection) => ({
-            variant: 'action',
-            label: collection.title,
-            onSelect: () => {
-              const libraryId = store.getState().sessionModel.currentLibrary?.libraryId;
-              bridge.addItemsToCollection({
-                collectionId: collection.collectionId,
-                libraryId,
-                typeKey: 'Album',
-                itemIds: [album.albumId],
-              });
-            },
-          })),
-        ];
-      },
-    },
-    ...(album.collectionId
+        ]
+      : []),
+    ...(hasContextCollections && album.collectionId
       ? [
           {
             variant: 'action',

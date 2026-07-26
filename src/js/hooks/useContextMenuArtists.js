@@ -1,3 +1,4 @@
+import platformFeatures from 'js/_config/platformFeatures';
 import * as bridge from 'js/services/bridge';
 import store from 'js/store/store';
 
@@ -6,13 +7,15 @@ import store from 'js/store/store';
  * Works with any artist object shaped like the entries in ViewList / ViewGrid (artistId, link etc).
  * Pass collectionId when the artist is displayed within a collection's items page, to show "Remove from collection".
  * Collections are preloaded app-wide by SideBar, so this does not fetch them itself.
+ * Returns no entries at all on platforms without artist collections (currently the hook's only content).
  * @param artist - The artist to build entries for
  * @param options.showArtist - Show "Go to Artist" (default true; pass false e.g. when already on the artist page)
  * @returns Array of entries for use with the shared MenuEntry renderer
  */
 
 const useContextMenuArtists = (artist, { showArtist = true } = {}) => {
-  if (!artist) {
+  const currentService = store.getState().appModel.currentService;
+  if (!artist || !platformFeatures[currentService]?.menuArtistCollections) {
     return [];
   }
 

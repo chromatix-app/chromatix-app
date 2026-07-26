@@ -647,9 +647,11 @@ const Title = ({
               />
             )}
           </div>
-          <div className="actionIconWrap">
-            <ActionMenu variant="Large" label="More" icon="EllipsisIcon" entries={contextEntries} />
-          </div>
+          {platformOpts.menuArtistCollections && (
+            <div className="actionIconWrap">
+              <ActionMenu variant="Large" label="More" icon="EllipsisIcon" entries={contextEntries} />
+            </div>
+          )}
         </>
       }
       showPlay={true}
