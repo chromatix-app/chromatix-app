@@ -46,12 +46,12 @@ const ViewGrid = ({
   playingOrder,
   sortKey,
   showArtist = false,
-  showReleaseDate = false,
-  showTotalTracks = false,
   showDuration = false,
-  showTotalItems = false,
   showFavs = false,
   showRatings = false,
+  showReleaseDate = false,
+  showTotalItems = false,
+  showTotalTracks = false,
 }) => {
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
@@ -119,12 +119,12 @@ const ViewGrid = ({
           playingOrder={playingOrder}
           sortKey={sortKey}
           showArtist={showArtist}
-          showReleaseDate={showReleaseDate}
-          showTotalTracks={showTotalTracks}
           showDuration={showDuration}
-          showTotalItems={showTotalItems}
           showFavs={showFavs}
           showRatings={showRatings}
+          showReleaseDate={showReleaseDate}
+          showTotalItems={showTotalItems}
+          showTotalTracks={showTotalTracks}
           titleBlock={children}
           variant={variant}
         />
@@ -148,12 +148,12 @@ const ListBodyStatic = ({
   playingOrder,
   sortKey,
   showArtist,
-  showReleaseDate,
-  showTotalTracks,
   showDuration,
-  showTotalItems,
   showFavs,
   showRatings,
+  showReleaseDate,
+  showTotalItems,
+  showTotalTracks,
   titleBlock,
   variant,
 }) => {
@@ -191,12 +191,12 @@ const ListBodyStatic = ({
                 playingOrder={playingOrder}
                 sortKey={sortKey}
                 showArtist={showArtist}
-                showReleaseDate={showReleaseDate}
-                showTotalTracks={showTotalTracks}
                 showDuration={showDuration}
-                showTotalItems={showTotalItems}
                 showFavs={showFavs}
                 showRatings={showRatings}
+                showReleaseDate={showReleaseDate}
+                showTotalItems={showTotalItems}
+                showTotalTracks={showTotalTracks}
                 isCurrentlyLoaded={isCurrentlyLoaded(variant, entryKey)}
                 isCurrentlyPlaying={playerPlaying}
                 {...entry}
@@ -231,12 +231,12 @@ const ListBodyVirtual = ({
   playerPlaying,
   playingOrder,
   showArtist,
-  showReleaseDate,
-  showTotalTracks,
   showDuration,
-  showTotalItems,
   showFavs,
   showRatings,
+  showReleaseDate,
+  showTotalItems,
+  showTotalTracks,
   sortKey,
   titleBlock,
   variant,
@@ -255,11 +255,11 @@ const ListBodyVirtual = ({
         variant,
         iconImage,
         showArtist,
-        showReleaseDate,
-        showTotalTracks,
         showDuration,
-        showTotalItems,
         showRatings,
+        showReleaseDate,
+        showTotalItems,
+        showTotalTracks,
         contentWidth,
         innerWidth,
         contentBreakpoint
@@ -286,11 +286,11 @@ const ListBodyVirtual = ({
         variant,
         iconImage,
         showArtist,
-        showReleaseDate,
-        showTotalTracks,
         showDuration,
-        showTotalItems,
         showRatings,
+        showReleaseDate,
+        showTotalItems,
+        showTotalTracks,
         outerWidth,
         innerWidth,
         contentBreakpoint
@@ -310,11 +310,11 @@ const ListBodyVirtual = ({
     variant,
     iconImage,
     showArtist,
-    showReleaseDate,
-    showTotalTracks,
     showDuration,
-    showTotalItems,
     showRatings,
+    showReleaseDate,
+    showTotalItems,
+    showTotalTracks,
     numColumns,
     rowHeight,
     queueIsVisible,
@@ -439,12 +439,12 @@ const ListBodyVirtual = ({
                   playingOrder={playingOrder}
                   sortKey={sortKey}
                   showArtist={showArtist}
-                  showReleaseDate={showReleaseDate}
-                  showTotalTracks={showTotalTracks}
                   showDuration={showDuration}
-                  showTotalItems={showTotalItems}
                   showFavs={showFavs}
                   showRatings={showRatings}
+                  showReleaseDate={showReleaseDate}
+                  showTotalItems={showTotalItems}
+                  showTotalTracks={showTotalTracks}
                   isCurrentlyLoaded={isCurrentlyLoaded(variant, entryKey)}
                   isCurrentlyPlaying={playerPlaying}
                   {...entry}
@@ -479,11 +479,11 @@ const calculateDimensions = (
   variant,
   iconImage,
   showArtist,
-  showReleaseDate,
-  showTotalTracks,
   showDuration,
-  showTotalItems,
   showRatings,
+  showReleaseDate,
+  showTotalItems,
+  showTotalTracks,
   outerWidth,
   innerWidth,
   contentBreakpoint
@@ -597,12 +597,12 @@ const ListEntry = React.memo(
     playingOrder,
     sortKey,
     showArtist,
-    showReleaseDate,
-    showTotalTracks,
     showDuration,
-    showTotalItems,
     showFavs,
     showRatings,
+    showReleaseDate,
+    showTotalItems,
+    showTotalTracks,
 
     isCurrentlyLoaded,
     isCurrentlyPlaying,
