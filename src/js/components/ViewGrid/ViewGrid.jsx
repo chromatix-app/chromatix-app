@@ -700,6 +700,7 @@ const ListEntry = React.memo(
     // Ratings
     const ratingKeyMap = {
       albums: albumId,
+      artistAlbums: albumId,
       artists: artistId,
       playlists: playlistId,
       collections: collectionId,
@@ -814,7 +815,13 @@ const ListEntry = React.memo(
           {showRatings && (
             // typeof userRating !== 'undefined' && userRating > 0 && (
             <div className={style.rating}>
-              <StarRating variant="card" type={variant} ratingKey={ratingKey} rating={userRating} editable />
+              <StarRating
+                variant="card"
+                type={lookupType[variant] || variant}
+                ratingKey={ratingKey}
+                rating={userRating}
+                editable
+              />
             </div>
           )}
         </div>
