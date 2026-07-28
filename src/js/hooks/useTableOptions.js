@@ -687,6 +687,14 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
         visible: true,
       },
       {
+        colKey: 'totalItems',
+        label: variant === 'artistCollections' ? 'Artists' : 'Albums',
+        colWidth: '1fr',
+        isAsc: sortKey === 'totalItems' && orderKey === 'asc',
+        isDesc: sortKey === 'totalItems' && orderKey === 'desc',
+        visible: colOptions?.totalItems !== false,
+      },
+      {
         colKey: 'addedAt',
         label: 'Added',
         colWidth: '1fr',

@@ -274,6 +274,7 @@ const sessionState = {
   gridPlaylistsUserRating: true,
   gridPlaylistsIsFavourite: true,
 
+  gridCollectionsTotalItems: true,
   gridCollectionsUserRating: true,
 
   // LIST VIEW COLUMN VISIBILITY OPTIONS
@@ -335,6 +336,7 @@ const sessionState = {
   colPlaylistUserRating: true,
   colPlaylistIsFavourite: true,
 
+  colCollectionTotalItems: true,
   colCollectionAddedAt: true,
   colCollectionUserRating: true,
 

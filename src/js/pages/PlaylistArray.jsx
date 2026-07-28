@@ -186,7 +186,7 @@ const Title = ({
               entries={[
                 {
                   variant: 'checkbox',
-                  label: 'Show tracks',
+                  label: 'Show total tracks',
                   attr: 'gridPlaylistsTotalTracks',
                   checked: gridOptions.totalTracks,
                 },

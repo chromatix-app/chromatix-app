@@ -12,6 +12,7 @@ const useGetCollectionArray = (collectionKey) => {
   const platformOpts = platformFeatures[currentService] || {};
 
   // const mediaType = collectionKey.includes('Artist') ? 'Artist' : 'Album';
+  const isCollection = collectionKey.includes('Collections');
 
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const currentLibraryId = currentLibrary?.libraryId;
@@ -20,8 +21,10 @@ const useGetCollectionArray = (collectionKey) => {
   const sortCollections = useSelector(({ sessionModel }) => sessionModel[`sort${collectionKey}`]);
   const orderCollections = useSelector(({ sessionModel }) => sessionModel[`order${collectionKey}`]);
 
+  const gridCollectionsTotalItems = useSelector(({ sessionModel }) => sessionModel.gridCollectionsTotalItems);
   const gridCollectionsUserRating = useSelector(({ sessionModel }) => sessionModel.gridCollectionsUserRating);
 
+  const colCollectionTotalItems = useSelector(({ sessionModel }) => sessionModel.colCollectionTotalItems);
   const colCollectionAddedAt = useSelector(({ sessionModel }) => sessionModel.colCollectionAddedAt);
   const colCollectionUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionUserRating);
 
@@ -33,6 +36,7 @@ const useGetCollectionArray = (collectionKey) => {
   // prevent sorting by a hidden field
   const allowedSort = {
     title: true,
+    totalItems: isCollection && (viewCollections === 'grid' || (viewCollections === 'list' && colCollectionTotalItems)),
     addedAt:
       platformOpts.enableAddedAt &&
       (viewCollections === 'grid' || (viewCollections === 'list' && colCollectionAddedAt)),
@@ -81,12 +85,12 @@ const useGetCollectionArray = (collectionKey) => {
   };
 
   useEffect(() => {
-    if (collectionKey.includes('Collections')) {
+    if (isCollection) {
       bridge.getAllCollections();
     } else {
       bridge.getAllTags(collectionKey);
     }
-  }, [collectionKey]);
+  }, [collectionKey, isCollection]);
 
   return {
     viewCollections,
@@ -94,10 +98,12 @@ const useGetCollectionArray = (collectionKey) => {
     orderCollections: actualOrderCollections,
 
     gridOptions: {
+      ...(isCollection && { totalItems: gridCollectionsTotalItems }),
       userRating: gridCollectionsUserRating,
     },
 
     colOptions: {
+      ...(isCollection && { totalItems: colCollectionTotalItems }),
       addedAt: platformOpts.enableAddedAt && colCollectionAddedAt,
       userRating: colCollectionUserRating,
       isFavourite: false,

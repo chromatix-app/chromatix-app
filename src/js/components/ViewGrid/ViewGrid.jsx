@@ -49,6 +49,7 @@ const ViewGrid = ({
   showReleaseDate = false,
   showTotalTracks = false,
   showDuration = false,
+  showTotalItems = false,
   showFavs = false,
   showRatings = false,
 }) => {
@@ -121,6 +122,7 @@ const ViewGrid = ({
           showReleaseDate={showReleaseDate}
           showTotalTracks={showTotalTracks}
           showDuration={showDuration}
+          showTotalItems={showTotalItems}
           showFavs={showFavs}
           showRatings={showRatings}
           titleBlock={children}
@@ -149,6 +151,7 @@ const ListBodyStatic = ({
   showReleaseDate,
   showTotalTracks,
   showDuration,
+  showTotalItems,
   showFavs,
   showRatings,
   titleBlock,
@@ -191,6 +194,7 @@ const ListBodyStatic = ({
                 showReleaseDate={showReleaseDate}
                 showTotalTracks={showTotalTracks}
                 showDuration={showDuration}
+                showTotalItems={showTotalItems}
                 showFavs={showFavs}
                 showRatings={showRatings}
                 isCurrentlyLoaded={isCurrentlyLoaded(variant, entryKey)}
@@ -230,6 +234,7 @@ const ListBodyVirtual = ({
   showReleaseDate,
   showTotalTracks,
   showDuration,
+  showTotalItems,
   showFavs,
   showRatings,
   sortKey,
@@ -253,6 +258,7 @@ const ListBodyVirtual = ({
         showReleaseDate,
         showTotalTracks,
         showDuration,
+        showTotalItems,
         showRatings,
         contentWidth,
         innerWidth,
@@ -283,6 +289,7 @@ const ListBodyVirtual = ({
         showReleaseDate,
         showTotalTracks,
         showDuration,
+        showTotalItems,
         showRatings,
         outerWidth,
         innerWidth,
@@ -306,6 +313,7 @@ const ListBodyVirtual = ({
     showReleaseDate,
     showTotalTracks,
     showDuration,
+    showTotalItems,
     showRatings,
     numColumns,
     rowHeight,
@@ -434,6 +442,7 @@ const ListBodyVirtual = ({
                   showReleaseDate={showReleaseDate}
                   showTotalTracks={showTotalTracks}
                   showDuration={showDuration}
+                  showTotalItems={showTotalItems}
                   showFavs={showFavs}
                   showRatings={showRatings}
                   isCurrentlyLoaded={isCurrentlyLoaded(variant, entryKey)}
@@ -473,6 +482,7 @@ const calculateDimensions = (
   showReleaseDate,
   showTotalTracks,
   showDuration,
+  showTotalItems,
   showRatings,
   outerWidth,
   innerWidth,
@@ -508,7 +518,11 @@ const calculateDimensions = (
         ? (showArtist ? 1 : 0) + (showReleaseDate ? 1 : 0)
         : variant === 'playlists'
           ? (showTotalTracks ? 1 : 0) + (showDuration ? 1 : 0)
-          : 0;
+          : variant === 'collections'
+            ? showTotalItems
+              ? 1
+              : 0
+            : 0;
   const subtitleHeight = subtitleLines * subtitleLineHeight;
   const ratingHeight =
     showRatings && ['albums', 'artistAlbums', 'artists', 'playlists', 'collections'].includes(variant) ? 19 : 0;
@@ -575,6 +589,7 @@ const ListEntry = React.memo(
     releaseDate,
     totalTracks,
     duration,
+    totalItems,
     isFavourite,
     userRating,
     link,
@@ -585,6 +600,7 @@ const ListEntry = React.memo(
     showReleaseDate,
     showTotalTracks,
     showDuration,
+    showTotalItems,
     showFavs,
     showRatings,
 
@@ -787,6 +803,13 @@ const ListEntry = React.memo(
           )}
 
           {showDuration && <div className={clsx(style.subtitle, 'text-trim')}>{durationToStringMed(duration)}</div>}
+
+          {showTotalItems && (totalItems || totalItems === 0) && (
+            <div className={clsx(style.subtitle, 'text-trim')}>
+              {totalItems} {type === 'artist' ? 'Artist' : 'Album'}
+              {totalItems !== 1 ? 's' : ''}
+            </div>
+          )}
 
           {showRatings && (
             // typeof userRating !== 'undefined' && userRating > 0 && (

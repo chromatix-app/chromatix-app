@@ -66,7 +66,12 @@ const ArtistCollectionArray = () => {
       )}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ViewGrid variant="collections" entries={sortedCollections} showRatings={gridOptions.userRating}>
+        <ViewGrid
+          variant="collections"
+          entries={sortedCollections}
+          showTotalItems={gridOptions.totalItems}
+          showRatings={gridOptions.userRating}
+        >
           <Title
             colOptions={colOptions}
             gridOptions={gridOptions}
@@ -159,6 +164,7 @@ const Title = ({
               orderValue={orderCollections}
               options={[
                 { value: 'title', label: 'Alphabetical' },
+                { value: 'totalItems', label: 'Total artists' },
                 ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
                 ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
               ]}
@@ -170,6 +176,12 @@ const Title = ({
               icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
+                {
+                  variant: 'checkbox',
+                  label: 'Show total artists',
+                  attr: 'gridCollectionsTotalItems',
+                  checked: gridOptions.totalItems,
+                },
                 ...(platformOpts?.enableUserRating
                   ? [
                       {
@@ -195,6 +207,12 @@ const Title = ({
                 label: 'Title',
                 disabled: true,
                 checked: true,
+              },
+              {
+                variant: 'checkbox',
+                label: 'Total artists',
+                attr: 'colCollectionTotalItems',
+                checked: colOptions.totalItems,
               },
               ...(platformOpts?.enableAddedAt
                 ? [
