@@ -35,6 +35,12 @@ const GenericTagItems = ({
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
 
+  // [NOTE] the list view needs its own variant, derived from itemsKey (e.g. 'albumGenreItems'), rather than the
+  // generic grid variant ('albums' / 'artists'). Sorting via the table headers derives its session state key from
+  // this variant, so using the generic one would write the sort to sortAlbums / sortArtists - the keys belonging to
+  // the main Albums / Artists pages - while this page reads from sort{itemsKey}.
+  const listVariant = itemsKey.charAt(0).toLowerCase() + itemsKey.slice(1);
+
   const {
     collectionInfo,
     sortedCollectionItems,
@@ -138,7 +144,7 @@ const GenericTagItems = ({
       )}
       {isListView && (
         <ViewList
-          variant={variant}
+          variant={listVariant}
           entries={sortedCollectionItems}
           sortKey={sortCollectionItems}
           orderKey={orderCollectionItems}
