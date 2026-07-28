@@ -50,6 +50,7 @@ const sessionState = {
 
   optionSortNumbersFirst: false,
   optionSortIgnoreLeadingArticles: true,
+  optionFoldersOnTop: true,
 
   optionUseHalfStars: true,
 

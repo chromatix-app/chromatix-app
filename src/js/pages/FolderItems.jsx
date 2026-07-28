@@ -28,6 +28,7 @@ const FolderItems = () => {
     sortFolders,
     orderFolders,
     colOptions,
+    optionFoldersOnTop,
 
     setViewFolders,
     setSortFolders,
@@ -51,6 +52,7 @@ const FolderItems = () => {
           folderId={folderId}
           isGridView={isGridView}
           isListView={isListView}
+          optionFoldersOnTop={optionFoldersOnTop}
           orderFolders={orderFolders}
           setColumnVisibility={setColumnVisibility}
           setOrderFolders={setOrderFolders}
@@ -75,6 +77,7 @@ const FolderItems = () => {
             folderId={folderId}
             isGridView={isGridView}
             isListView={isListView}
+            optionFoldersOnTop={optionFoldersOnTop}
             orderFolders={orderFolders}
             setColumnVisibility={setColumnVisibility}
             setOrderFolders={setOrderFolders}
@@ -101,6 +104,7 @@ const FolderItems = () => {
             folderId={folderId}
             isGridView={isGridView}
             isListView={isListView}
+            optionFoldersOnTop={optionFoldersOnTop}
             orderFolders={orderFolders}
             setColumnVisibility={setColumnVisibility}
             setOrderFolders={setOrderFolders}
@@ -121,6 +125,7 @@ const Title = ({
   folderId,
   isGridView,
   isListView,
+  optionFoldersOnTop,
   orderFolders,
   setColumnVisibility,
   setOrderFolders,
@@ -157,11 +162,23 @@ const Title = ({
               orderValue={orderFolders}
               options={[
                 { value: 'sortOrder', label: 'Default' },
-                { value: 'kind', label: 'Kind' },
-                { value: 'title', label: 'Title' },
+                { value: 'title', label: 'Alphabetical' },
               ]}
               setSort={setSortFolders}
               setOrder={setOrderFolders}
+            />
+            <ActionMenu
+              label="Options"
+              icon="CogIcon"
+              setter={setColumnVisibility}
+              entries={[
+                {
+                  variant: 'checkbox',
+                  label: 'Keep folders on top',
+                  attr: 'optionFoldersOnTop',
+                  checked: optionFoldersOnTop,
+                },
+              ]}
             />
           </>
         )}
@@ -182,6 +199,13 @@ const Title = ({
                 label: 'Kind',
                 attr: 'colFoldersKind',
                 checked: colOptions.kind,
+              },
+              { variant: 'divider' },
+              {
+                variant: 'checkbox',
+                label: 'Keep folders on top',
+                attr: 'optionFoldersOnTop',
+                checked: optionFoldersOnTop,
               },
             ]}
           />
