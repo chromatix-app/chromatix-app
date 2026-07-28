@@ -105,6 +105,8 @@ const AlbumCollectionItems = () => {
           variant="albums"
           collectionId={collectionId}
           entries={sortedCollectionItems}
+          showArtist={gridOptions.artist}
+          showReleaseDate={gridOptions.releaseDate}
           showRatings={gridOptions.userRating}
         >
           <Title
@@ -250,6 +252,18 @@ const Title = ({
                   icon="CogIcon"
                   setter={setColumnVisibility}
                   entries={[
+                    {
+                      variant: 'checkbox',
+                      label: 'Show album artists',
+                      attr: 'gridAlbumCollectionItemsArtist',
+                      checked: gridOptions.artist,
+                    },
+                    {
+                      variant: 'checkbox',
+                      label: 'Show release dates',
+                      attr: 'gridAlbumCollectionItemsReleaseDate',
+                      checked: gridOptions.releaseDate,
+                    },
                     ...(platformOpts?.enableUserRating
                       ? [
                           {

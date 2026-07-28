@@ -69,6 +69,8 @@ const AlbumArray = () => {
         <ViewGrid
           variant="albums"
           entries={sortedAlbums}
+          showArtist={gridOptions.artist}
+          showReleaseDate={gridOptions.releaseDate}
           showFavs={gridOptions.isFavourite}
           showRatings={gridOptions.userRating}
         >
@@ -177,6 +179,18 @@ const Title = ({
               icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
+                {
+                  variant: 'checkbox',
+                  label: 'Show album artists',
+                  attr: 'gridAlbumsArtist',
+                  checked: gridOptions.artist,
+                },
+                {
+                  variant: 'checkbox',
+                  label: 'Show release dates',
+                  attr: 'gridAlbumsReleaseDate',
+                  checked: gridOptions.releaseDate,
+                },
                 ...(platformOpts?.enableIsFavourite
                   ? [
                       {

@@ -19,6 +19,7 @@ import {
   StarRating,
 } from 'js/components';
 import { useScrollToTrack, useScrollToVirtualTrack, useWindowSize } from 'js/hooks';
+import { formatReleaseYear } from 'js/utils';
 import platformFeatures from 'js/_config/platformFeatures';
 
 import style from './ViewGrid.module.scss';
@@ -44,6 +45,8 @@ const ViewGrid = ({
   entries,
   playingOrder,
   sortKey,
+  showArtist = false,
+  showReleaseDate = false,
   showFavs = false,
   showRatings = false,
 }) => {
@@ -112,6 +115,8 @@ const ViewGrid = ({
           playerPlaying={playerPlaying}
           playingOrder={playingOrder}
           sortKey={sortKey}
+          showArtist={showArtist}
+          showReleaseDate={showReleaseDate}
           showFavs={showFavs}
           showRatings={showRatings}
           titleBlock={children}
@@ -136,6 +141,8 @@ const ListBodyStatic = ({
   playerPlaying,
   playingOrder,
   sortKey,
+  showArtist,
+  showReleaseDate,
   showFavs,
   showRatings,
   titleBlock,
@@ -174,6 +181,8 @@ const ListBodyStatic = ({
                 folderId={folderId}
                 playingOrder={playingOrder}
                 sortKey={sortKey}
+                showArtist={showArtist}
+                showReleaseDate={showReleaseDate}
                 showFavs={showFavs}
                 showRatings={showRatings}
                 isCurrentlyLoaded={isCurrentlyLoaded(variant, entryKey)}
@@ -209,6 +218,8 @@ const ListBodyVirtual = ({
   isCurrentlyLoaded,
   playerPlaying,
   playingOrder,
+  showArtist,
+  showReleaseDate,
   showFavs,
   showRatings,
   sortKey,
@@ -225,7 +236,16 @@ const ListBodyVirtual = ({
   const initialDimensions = useMemo(
     () => {
       const innerWidth = contentWidth >= 800 ? contentWidth - 60 : contentWidth - 40;
-      return calculateDimensions(variant, iconImage, showRatings, contentWidth, innerWidth, contentBreakpoint);
+      return calculateDimensions(
+        variant,
+        iconImage,
+        showArtist,
+        showReleaseDate,
+        showRatings,
+        contentWidth,
+        innerWidth,
+        contentBreakpoint
+      );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -247,6 +267,8 @@ const ListBodyVirtual = ({
       const dimensions = calculateDimensions(
         variant,
         iconImage,
+        showArtist,
+        showReleaseDate,
         showRatings,
         outerWidth,
         innerWidth,
@@ -263,7 +285,18 @@ const ListBodyVirtual = ({
         setToggleColumnHeight((prev) => !prev);
       }
     }
-  }, [variant, iconImage, showRatings, numColumns, rowHeight, queueIsVisible, windowWidth, contentBreakpoint]);
+  }, [
+    variant,
+    iconImage,
+    showArtist,
+    showReleaseDate,
+    showRatings,
+    numColumns,
+    rowHeight,
+    queueIsVisible,
+    windowWidth,
+    contentBreakpoint,
+  ]);
 
   // Calculate number of rows needed given total items and columns
   const numRows = numColumns ? Math.ceil(totalItems / numColumns) : 0;
@@ -381,6 +414,8 @@ const ListBodyVirtual = ({
                   folderId={folderId}
                   playingOrder={playingOrder}
                   sortKey={sortKey}
+                  showArtist={showArtist}
+                  showReleaseDate={showReleaseDate}
                   showFavs={showFavs}
                   showRatings={showRatings}
                   isCurrentlyLoaded={isCurrentlyLoaded(variant, entryKey)}
@@ -413,7 +448,16 @@ const measureElement = (element) => {
 
 // Helper to determine the number of columns based on container width
 // Note: This function must match the grid layout defined in the CSS.
-const calculateDimensions = (variant, iconImage, showRatings, outerWidth, innerWidth, contentBreakpoint) => {
+const calculateDimensions = (
+  variant,
+  iconImage,
+  showArtist,
+  showReleaseDate,
+  showRatings,
+  outerWidth,
+  innerWidth,
+  contentBreakpoint
+) => {
   let minColumnWidth = 140;
   if (outerWidth >= 860) {
     minColumnWidth = 180;
@@ -436,7 +480,14 @@ const calculateDimensions = (variant, iconImage, showRatings, outerWidth, innerW
   const isSquareCard = !iconImage || variant === 'folders';
   const imageHeight = isSquareCard ? columnWidth : (columnWidth - 20) * 0.6 + 20;
   const titleHeight = 28.8;
-  const subtitleHeight = ['albums', 'artistAlbums', 'folders'].includes(variant) ? 15.4 : 0;
+  const subtitleLineHeight = 15.4;
+  const subtitleLines =
+    variant === 'folders'
+      ? 1
+      : ['albums', 'artistAlbums'].includes(variant)
+        ? (showArtist ? 1 : 0) + (showReleaseDate ? 1 : 0)
+        : 0;
+  const subtitleHeight = subtitleLines * subtitleLineHeight;
   const ratingHeight =
     showRatings && ['albums', 'artistAlbums', 'artists', 'playlists', 'collections'].includes(variant) ? 19 : 0;
   const columnHeight = Math.ceil(imageHeight + titleHeight + subtitleHeight + ratingHeight + rowGap);
@@ -499,12 +550,15 @@ const ListEntry = React.memo(
     playlistItemID,
     trackId,
     type,
+    releaseDate,
     isFavourite,
     userRating,
     link,
 
     playingOrder,
     sortKey,
+    showArtist,
+    showReleaseDate,
     showFavs,
     showRatings,
 
@@ -682,9 +736,9 @@ const ListEntry = React.memo(
             </div>
           )}
 
-          {artist && !artistLink && <div className={clsx(style.subtitle, 'text-trim')}>{artist}</div>}
+          {showArtist && artist && !artistLink && <div className={clsx(style.subtitle, 'text-trim')}>{artist}</div>}
 
-          {artist && artistLink && (
+          {showArtist && artist && artistLink && (
             <NavLink
               className={clsx(style.subtitle, 'text-trim')}
               to={artistLink}
@@ -694,6 +748,10 @@ const ListEntry = React.memo(
             >
               {artist}
             </NavLink>
+          )}
+
+          {showReleaseDate && releaseDate && (
+            <div className={clsx(style.subtitle, 'text-trim')}>{formatReleaseYear(releaseDate)}</div>
           )}
 
           {showRatings && (

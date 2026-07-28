@@ -116,11 +116,16 @@ const useGetCollectionItems = ({
   const gridArtistCollectionItemsUserRating = useSelector(
     ({ sessionModel }) => sessionModel.gridArtistCollectionItemsUserRating
   );
-  const gridAlbumCollectionItemsUserRating = useSelector(
-    ({ sessionModel }) => sessionModel.gridAlbumCollectionItemsUserRating
-  );
   const gridArtistCollectionItemsIsFavourite = useSelector(
     ({ sessionModel }) => sessionModel.gridArtistCollectionItemsIsFavourite
+  );
+
+  const gridAlbumCollectionItemsArtist = useSelector(({ sessionModel }) => sessionModel.gridAlbumCollectionItemsArtist);
+  const gridAlbumCollectionItemsReleaseDate = useSelector(
+    ({ sessionModel }) => sessionModel.gridAlbumCollectionItemsReleaseDate
+  );
+  const gridAlbumCollectionItemsUserRating = useSelector(
+    ({ sessionModel }) => sessionModel.gridAlbumCollectionItemsUserRating
   );
   const gridAlbumCollectionItemsIsFavourite = useSelector(
     ({ sessionModel }) => sessionModel.gridAlbumCollectionItemsIsFavourite
@@ -178,6 +183,8 @@ const useGetCollectionItems = ({
             isFavourite: platformOpts.enableIsFavourite && gridArtistCollectionItemsIsFavourite,
           }
         : {
+            artist: gridAlbumCollectionItemsArtist,
+            releaseDate: gridAlbumCollectionItemsReleaseDate,
             userRating: platformOpts.enableUserRating && gridAlbumCollectionItemsUserRating,
             isFavourite: platformOpts.enableIsFavourite && gridAlbumCollectionItemsIsFavourite,
           },

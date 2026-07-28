@@ -249,19 +249,30 @@ const sessionState = {
   // GRID VIEW OPTIONS
 
   gridArtistsUserRating: true,
-  gridArtistAlbumsUserRating: true,
-  gridArtistCollectionItemsUserRating: true,
-  gridAlbumsUserRating: true,
-  gridAlbumCollectionItemsUserRating: true,
-  gridPlaylistsUserRating: true,
-  gridCollectionsUserRating: true,
-
   gridArtistsIsFavourite: true,
+
+  gridArtistAlbumsArtist: true,
+  gridArtistAlbumsReleaseDate: false,
+  gridArtistAlbumsUserRating: true,
   gridArtistAlbumsIsFavourite: true,
+
+  gridArtistCollectionItemsUserRating: true,
   gridArtistCollectionItemsIsFavourite: true,
+
+  gridAlbumsArtist: true,
+  gridAlbumsReleaseDate: false,
+  gridAlbumsUserRating: true,
   gridAlbumsIsFavourite: true,
+
+  gridAlbumCollectionItemsArtist: true,
+  gridAlbumCollectionItemsReleaseDate: false,
+  gridAlbumCollectionItemsUserRating: true,
   gridAlbumCollectionItemsIsFavourite: true,
+
+  gridPlaylistsUserRating: true,
   gridPlaylistsIsFavourite: true,
+
+  gridCollectionsUserRating: true,
 
   // LIST VIEW COLUMN VISIBILITY OPTIONS
 

@@ -18,6 +18,8 @@ const useGetAlbumArray = () => {
   const sortAlbums = useSelector(({ sessionModel }) => sessionModel.sortAlbums);
   const orderAlbums = useSelector(({ sessionModel }) => sessionModel.orderAlbums);
 
+  const gridAlbumsArtist = useSelector(({ sessionModel }) => sessionModel.gridAlbumsArtist);
+  const gridAlbumsReleaseDate = useSelector(({ sessionModel }) => sessionModel.gridAlbumsReleaseDate);
   const gridAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.gridAlbumsUserRating);
   const gridAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridAlbumsIsFavourite);
 
@@ -104,6 +106,8 @@ const useGetAlbumArray = () => {
     orderAlbums: actualOrderAlbums,
 
     gridOptions: {
+      artist: gridAlbumsArtist,
+      releaseDate: gridAlbumsReleaseDate,
       userRating: platformOpts.enableUserRating && gridAlbumsUserRating,
       isFavourite: platformOpts.enableIsFavourite && gridAlbumsIsFavourite,
     },

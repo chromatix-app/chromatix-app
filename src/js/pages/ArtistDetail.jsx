@@ -176,6 +176,8 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
           variant="artistAlbums"
           {...(artistAlbumsGroupByType ? { groupBy: 'albumGroup' } : { groupBy: 'releaseGroup' })}
           entries={sortedAllReleasesAndAppearances}
+          showArtist={gridOptions.artist}
+          showReleaseDate={gridOptions.releaseDate}
           showFavs={gridOptions.isFavourite}
           showRatings={gridOptions.userRating}
         >
@@ -458,6 +460,18 @@ const Title = ({
                   icon="CogIcon"
                   setter={setColumnVisibility}
                   entries={[
+                    {
+                      variant: 'checkbox',
+                      label: 'Show artists',
+                      attr: 'gridArtistAlbumsArtist',
+                      checked: gridOptions.artist,
+                    },
+                    {
+                      variant: 'checkbox',
+                      label: 'Show release dates',
+                      attr: 'gridArtistAlbumsReleaseDate',
+                      checked: gridOptions.releaseDate,
+                    },
                     ...(platformOpts?.enableIsFavourite
                       ? [
                           {
