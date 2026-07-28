@@ -70,6 +70,8 @@ const PlaylistArray = () => {
         <ViewGrid
           variant="playlists"
           entries={sortedPlaylists}
+          showTotalTracks={gridOptions.totalTracks}
+          showDuration={gridOptions.duration}
           showFavs={gridOptions.isFavourite}
           showRatings={gridOptions.userRating}
         >
@@ -182,6 +184,18 @@ const Title = ({
               icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
+                {
+                  variant: 'checkbox',
+                  label: 'Show tracks',
+                  attr: 'gridPlaylistsTotalTracks',
+                  checked: gridOptions.totalTracks,
+                },
+                {
+                  variant: 'checkbox',
+                  label: 'Show durations',
+                  attr: 'gridPlaylistsDuration',
+                  checked: gridOptions.duration,
+                },
                 ...(platformOpts?.enableIsFavourite
                   ? [
                       {

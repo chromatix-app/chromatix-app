@@ -269,6 +269,8 @@ const sessionState = {
   gridAlbumCollectionItemsUserRating: true,
   gridAlbumCollectionItemsIsFavourite: true,
 
+  gridPlaylistsTotalTracks: true,
+  gridPlaylistsDuration: false,
   gridPlaylistsUserRating: true,
   gridPlaylistsIsFavourite: true,
 

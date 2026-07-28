@@ -19,7 +19,7 @@ import {
   StarRating,
 } from 'js/components';
 import { useScrollToTrack, useScrollToVirtualTrack, useWindowSize } from 'js/hooks';
-import { formatReleaseYear } from 'js/utils';
+import { durationToStringMed, formatReleaseYear } from 'js/utils';
 import platformFeatures from 'js/_config/platformFeatures';
 
 import style from './ViewGrid.module.scss';
@@ -47,6 +47,8 @@ const ViewGrid = ({
   sortKey,
   showArtist = false,
   showReleaseDate = false,
+  showTotalTracks = false,
+  showDuration = false,
   showFavs = false,
   showRatings = false,
 }) => {
@@ -117,6 +119,8 @@ const ViewGrid = ({
           sortKey={sortKey}
           showArtist={showArtist}
           showReleaseDate={showReleaseDate}
+          showTotalTracks={showTotalTracks}
+          showDuration={showDuration}
           showFavs={showFavs}
           showRatings={showRatings}
           titleBlock={children}
@@ -143,6 +147,8 @@ const ListBodyStatic = ({
   sortKey,
   showArtist,
   showReleaseDate,
+  showTotalTracks,
+  showDuration,
   showFavs,
   showRatings,
   titleBlock,
@@ -183,6 +189,8 @@ const ListBodyStatic = ({
                 sortKey={sortKey}
                 showArtist={showArtist}
                 showReleaseDate={showReleaseDate}
+                showTotalTracks={showTotalTracks}
+                showDuration={showDuration}
                 showFavs={showFavs}
                 showRatings={showRatings}
                 isCurrentlyLoaded={isCurrentlyLoaded(variant, entryKey)}
@@ -220,6 +228,8 @@ const ListBodyVirtual = ({
   playingOrder,
   showArtist,
   showReleaseDate,
+  showTotalTracks,
+  showDuration,
   showFavs,
   showRatings,
   sortKey,
@@ -241,6 +251,8 @@ const ListBodyVirtual = ({
         iconImage,
         showArtist,
         showReleaseDate,
+        showTotalTracks,
+        showDuration,
         showRatings,
         contentWidth,
         innerWidth,
@@ -269,6 +281,8 @@ const ListBodyVirtual = ({
         iconImage,
         showArtist,
         showReleaseDate,
+        showTotalTracks,
+        showDuration,
         showRatings,
         outerWidth,
         innerWidth,
@@ -290,6 +304,8 @@ const ListBodyVirtual = ({
     iconImage,
     showArtist,
     showReleaseDate,
+    showTotalTracks,
+    showDuration,
     showRatings,
     numColumns,
     rowHeight,
@@ -416,6 +432,8 @@ const ListBodyVirtual = ({
                   sortKey={sortKey}
                   showArtist={showArtist}
                   showReleaseDate={showReleaseDate}
+                  showTotalTracks={showTotalTracks}
+                  showDuration={showDuration}
                   showFavs={showFavs}
                   showRatings={showRatings}
                   isCurrentlyLoaded={isCurrentlyLoaded(variant, entryKey)}
@@ -453,6 +471,8 @@ const calculateDimensions = (
   iconImage,
   showArtist,
   showReleaseDate,
+  showTotalTracks,
+  showDuration,
   showRatings,
   outerWidth,
   innerWidth,
@@ -486,7 +506,9 @@ const calculateDimensions = (
       ? 1
       : ['albums', 'artistAlbums'].includes(variant)
         ? (showArtist ? 1 : 0) + (showReleaseDate ? 1 : 0)
-        : 0;
+        : variant === 'playlists'
+          ? (showTotalTracks ? 1 : 0) + (showDuration ? 1 : 0)
+          : 0;
   const subtitleHeight = subtitleLines * subtitleLineHeight;
   const ratingHeight =
     showRatings && ['albums', 'artistAlbums', 'artists', 'playlists', 'collections'].includes(variant) ? 19 : 0;
@@ -551,6 +573,8 @@ const ListEntry = React.memo(
     trackId,
     type,
     releaseDate,
+    totalTracks,
+    duration,
     isFavourite,
     userRating,
     link,
@@ -559,6 +583,8 @@ const ListEntry = React.memo(
     sortKey,
     showArtist,
     showReleaseDate,
+    showTotalTracks,
+    showDuration,
     showFavs,
     showRatings,
 
@@ -753,6 +779,14 @@ const ListEntry = React.memo(
           {showReleaseDate && releaseDate && (
             <div className={clsx(style.subtitle, 'text-trim')}>{formatReleaseYear(releaseDate)}</div>
           )}
+
+          {showTotalTracks && (totalTracks || totalTracks === 0) && (
+            <div className={clsx(style.subtitle, 'text-trim')}>
+              {totalTracks} track{totalTracks !== 1 ? 's' : ''}
+            </div>
+          )}
+
+          {showDuration && <div className={clsx(style.subtitle, 'text-trim')}>{durationToStringMed(duration)}</div>}
 
           {showRatings && (
             // typeof userRating !== 'undefined' && userRating > 0 && (
