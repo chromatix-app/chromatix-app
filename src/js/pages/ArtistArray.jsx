@@ -25,6 +25,11 @@ const ArtistArray = ({ pageTitle = 'Artists', pageVariant = 'Artists', singularN
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
 
+  // [NOTE] the list view needs its own variant, derived from pageVariant (e.g. 'albumArtists'), rather than the
+  // generic grid variant ('artists'). Sorting via the table headers derives its session state key from this variant,
+  // so using the generic one would write the sort to sortArtists for both this page and the album artists page.
+  const listVariant = pageVariant.charAt(0).toLowerCase() + pageVariant.slice(1);
+
   const {
     viewArtists,
     sortArtists,
@@ -57,6 +62,7 @@ const ArtistArray = ({ pageTitle = 'Artists', pageVariant = 'Artists', singularN
           isListView={isListView}
           orderArtists={orderArtists}
           pageTitle={pageTitle}
+          pageVariant={pageVariant}
           platformOpts={platformOpts}
           setColumnVisibility={setColumnVisibility}
           setOrderArtists={setOrderArtists}
@@ -83,6 +89,7 @@ const ArtistArray = ({ pageTitle = 'Artists', pageVariant = 'Artists', singularN
             isListView={isListView}
             orderArtists={orderArtists}
             pageTitle={pageTitle}
+            pageVariant={pageVariant}
             platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderArtists={setOrderArtists}
@@ -97,7 +104,7 @@ const ArtistArray = ({ pageTitle = 'Artists', pageVariant = 'Artists', singularN
       )}
       {isListView && (
         <ViewList
-          variant="artists"
+          variant={listVariant}
           entries={sortedArtists}
           sortKey={sortArtists}
           orderKey={orderArtists}
@@ -110,6 +117,7 @@ const ArtistArray = ({ pageTitle = 'Artists', pageVariant = 'Artists', singularN
             isListView={isListView}
             orderArtists={orderArtists}
             pageTitle={pageTitle}
+            pageVariant={pageVariant}
             platformOpts={platformOpts}
             setColumnVisibility={setColumnVisibility}
             setOrderArtists={setOrderArtists}
@@ -133,6 +141,7 @@ const Title = ({
   isListView,
   orderArtists,
   pageTitle,
+  pageVariant,
   platformOpts,
   setColumnVisibility,
   setOrderArtists,
@@ -192,7 +201,7 @@ const Title = ({
                       {
                         variant: 'checkbox',
                         label: 'Show favourites',
-                        attr: 'gridArtistsIsFavourite',
+                        attr: `grid${pageVariant}IsFavourite`,
                         checked: gridOptions.isFavourite,
                       },
                     ]
@@ -202,7 +211,7 @@ const Title = ({
                       {
                         variant: 'checkbox',
                         label: 'Show star ratings',
-                        attr: 'gridArtistsUserRating',
+                        attr: `grid${pageVariant}UserRating`,
                         checked: gridOptions.userRating,
                       },
                     ]
@@ -228,7 +237,7 @@ const Title = ({
                     {
                       variant: 'checkbox',
                       label: 'Country',
-                      attr: 'colArtistsCountry',
+                      attr: `col${pageVariant}Country`,
                       checked: colOptions.country,
                     },
                   ]
@@ -236,7 +245,7 @@ const Title = ({
               {
                 variant: 'checkbox',
                 label: 'Genre',
-                attr: 'colArtistsGenre',
+                attr: `col${pageVariant}Genre`,
                 checked: colOptions.genre,
               },
               ...(platformOpts?.enableAddedAt
@@ -244,7 +253,7 @@ const Title = ({
                     {
                       variant: 'checkbox',
                       label: 'Added',
-                      attr: 'colArtistsAddedAt',
+                      attr: `col${pageVariant}AddedAt`,
                       checked: colOptions.addedAt,
                     },
                   ]
@@ -254,7 +263,7 @@ const Title = ({
                     {
                       variant: 'checkbox',
                       label: 'Last played',
-                      attr: 'colArtistsLastPlayed',
+                      attr: `col${pageVariant}LastPlayed`,
                       checked: colOptions.lastPlayed,
                     },
                   ]
@@ -264,7 +273,7 @@ const Title = ({
                     {
                       variant: 'checkbox',
                       label: 'Favourite',
-                      attr: 'colArtistsIsFavourite',
+                      attr: `col${pageVariant}IsFavourite`,
                       checked: colOptions.isFavourite,
                     },
                   ]
@@ -274,7 +283,7 @@ const Title = ({
                     {
                       variant: 'checkbox',
                       label: 'Rating',
-                      attr: 'colArtistsUserRating',
+                      attr: `col${pageVariant}UserRating`,
                       checked: colOptions.userRating,
                     },
                   ]

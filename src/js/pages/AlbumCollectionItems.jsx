@@ -294,19 +294,19 @@ const Title = ({
                   {
                     variant: 'checkbox',
                     label: 'Artist',
-                    attr: 'colCollectionAlbumsArtist',
+                    attr: 'colAlbumCollectionItemsArtist',
                     checked: colOptions.artist,
                   },
                   {
                     variant: 'checkbox',
                     label: 'Genre',
-                    attr: 'colCollectionAlbumsGenre',
+                    attr: 'colAlbumCollectionItemsGenre',
                     checked: colOptions.genre,
                   },
                   {
                     variant: 'checkbox',
                     label: 'Released',
-                    attr: 'colCollectionAlbumsReleaseDate',
+                    attr: 'colAlbumCollectionItemsReleaseDate',
                     checked: colOptions.releaseDate,
                   },
                   ...(platformOpts?.enableAddedAt
@@ -314,7 +314,7 @@ const Title = ({
                         {
                           variant: 'checkbox',
                           label: 'Added',
-                          attr: 'colCollectionAlbumsAddedAt',
+                          attr: 'colAlbumCollectionItemsAddedAt',
                           checked: colOptions.addedAt,
                         },
                       ]
@@ -324,7 +324,7 @@ const Title = ({
                         {
                           variant: 'checkbox',
                           label: 'Last played',
-                          attr: 'colCollectionAlbumsLastPlayed',
+                          attr: 'colAlbumCollectionItemsLastPlayed',
                           checked: colOptions.lastPlayed,
                         },
                       ]
@@ -334,7 +334,7 @@ const Title = ({
                         {
                           variant: 'checkbox',
                           label: 'Rating',
-                          attr: 'colCollectionAlbumsUserRating',
+                          attr: 'colAlbumCollectionItemsUserRating',
                           checked: colOptions.userRating,
                         },
                       ]

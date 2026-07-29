@@ -59,6 +59,7 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
   // ARTISTS
   if (
     variant === 'artists' ||
+    variant === 'albumArtists' ||
     variant === 'artistCollectionItems' ||
     variant === 'artistGenreItems' ||
     variant === 'artistMoodItems' ||

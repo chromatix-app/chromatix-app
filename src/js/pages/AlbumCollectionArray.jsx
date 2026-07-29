@@ -179,7 +179,7 @@ const Title = ({
                 {
                   variant: 'checkbox',
                   label: 'Show total albums',
-                  attr: 'gridCollectionsTotalItems',
+                  attr: 'gridAlbumCollectionsTotalItems',
                   checked: gridOptions.totalItems,
                 },
                 ...(platformOpts?.enableUserRating
@@ -187,7 +187,7 @@ const Title = ({
                       {
                         variant: 'checkbox',
                         label: 'Show star ratings',
-                        attr: 'gridCollectionsUserRating',
+                        attr: 'gridAlbumCollectionsUserRating',
                         checked: gridOptions.userRating,
                       },
                     ]
@@ -211,7 +211,7 @@ const Title = ({
               {
                 variant: 'checkbox',
                 label: 'Total albums',
-                attr: 'colCollectionTotalItems',
+                attr: 'colAlbumCollectionsTotalItems',
                 checked: colOptions.totalItems,
               },
               ...(platformOpts?.enableAddedAt
@@ -219,7 +219,7 @@ const Title = ({
                     {
                       variant: 'checkbox',
                       label: 'Added',
-                      attr: 'colCollectionAddedAt',
+                      attr: 'colAlbumCollectionsAddedAt',
                       checked: colOptions.addedAt,
                     },
                   ]
@@ -229,7 +229,7 @@ const Title = ({
                     {
                       variant: 'checkbox',
                       label: 'Rating',
-                      attr: 'colCollectionUserRating',
+                      attr: 'colAlbumCollectionsUserRating',
                       checked: colOptions.userRating,
                     },
                   ]

@@ -6,7 +6,7 @@ import sha3 from 'crypto-js/sha3';
 
 import config from 'js/_config/config';
 import * as bridge from 'js/services/bridge';
-import { analyticsEvent } from 'js/utils';
+import { analyticsEvent, migrateSessionState } from 'js/utils';
 
 // ======================================================================
 // STATE
@@ -157,6 +157,7 @@ const sessionState = {
   // VIEW OPTIONS
 
   viewArtists: 'grid',
+  viewAlbumArtists: 'grid',
   viewArtistAlbums: 'grid',
   viewAlbums: 'grid',
   viewFolders: 'grid',
@@ -185,6 +186,7 @@ const sessionState = {
   // VIEW SORTING OPTIONS
 
   sortArtists: 'title',
+  sortAlbumArtists: 'title',
   sortArtistAlbums: 'releaseDate',
   sortArtistTracks: 'releaseDate',
   sortAlbums: 'title', // artist-asc-releaseDate-asc
@@ -216,6 +218,7 @@ const sessionState = {
   // VIEW ORDERING OPTIONS
 
   orderArtists: 'asc',
+  orderAlbumArtists: 'asc',
   orderArtistAlbums: 'asc',
   orderArtistTracks: 'asc',
   orderAlbums: 'asc',
@@ -246,39 +249,63 @@ const sessionState = {
 
   artistAlbumsGroupByType: true,
 
-  // GRID VIEW OPTIONS
-
+  // artists
   gridArtistsUserRating: true,
   gridArtistsIsFavourite: true,
 
+  // album artists
+  gridAlbumArtistsUserRating: true,
+  gridAlbumArtistsIsFavourite: true,
+
+  // artist albums
   gridArtistAlbumsArtist: true,
   gridArtistAlbumsReleaseDate: false,
   gridArtistAlbumsUserRating: true,
   gridArtistAlbumsIsFavourite: true,
 
+  // artist collections
+  gridArtistCollectionsTotalItems: true,
+  gridArtistCollectionsUserRating: true,
+
+  // artist collection items
   gridArtistCollectionItemsUserRating: true,
   gridArtistCollectionItemsIsFavourite: true,
 
+  // artist tag items
+  gridArtistTagItemsUserRating: true,
+  gridArtistTagItemsIsFavourite: true,
+
+  // albums
   gridAlbumsArtist: true,
   gridAlbumsReleaseDate: false,
   gridAlbumsUserRating: true,
   gridAlbumsIsFavourite: true,
 
+  // album collections
+  gridAlbumCollectionsTotalItems: true,
+  gridAlbumCollectionsUserRating: true,
+
+  // album collection items
   gridAlbumCollectionItemsArtist: true,
   gridAlbumCollectionItemsReleaseDate: false,
   gridAlbumCollectionItemsUserRating: true,
   gridAlbumCollectionItemsIsFavourite: true,
 
+  // album tag items
+  gridAlbumTagItemsArtist: true,
+  gridAlbumTagItemsReleaseDate: false,
+  gridAlbumTagItemsUserRating: true,
+  gridAlbumTagItemsIsFavourite: true,
+
+  // playlists
   gridPlaylistsTotalTracks: true,
   gridPlaylistsDuration: false,
   gridPlaylistsUserRating: true,
   gridPlaylistsIsFavourite: true,
 
-  gridCollectionsTotalItems: true,
-  gridCollectionsUserRating: true,
-
   // LIST VIEW COLUMN VISIBILITY OPTIONS
 
+  // artists
   colArtistsCountry: true,
   colArtistsGenre: true,
   colArtistsAddedAt: false,
@@ -286,6 +313,15 @@ const sessionState = {
   colArtistsUserRating: true,
   colArtistsIsFavourite: true,
 
+  // album artists
+  colAlbumArtistsCountry: true,
+  colAlbumArtistsGenre: true,
+  colAlbumArtistsAddedAt: false,
+  colAlbumArtistsLastPlayed: false,
+  colAlbumArtistsUserRating: true,
+  colAlbumArtistsIsFavourite: true,
+
+  // artist albums
   colArtistAlbumsGenre: false,
   colArtistAlbumsReleaseDate: true,
   colArtistAlbumsAddedAt: false,
@@ -293,6 +329,7 @@ const sessionState = {
   colArtistAlbumsUserRating: true,
   colArtistAlbumsIsFavourite: true,
 
+  // artist tracks
   colArtistTracksArtwork: true,
   colArtistTracksArtist: false,
   colArtistTracksAlbum: true,
@@ -303,6 +340,28 @@ const sessionState = {
   colArtistTracksUserRating: true,
   colArtistTracksIsFavourite: true,
 
+  // artist collections
+  colArtistCollectionsTotalItems: true,
+  colArtistCollectionsAddedAt: true,
+  colArtistCollectionsUserRating: true,
+
+  // artist collection items
+  colArtistCollectionItemsCountry: true,
+  colArtistCollectionItemsGenre: true,
+  colArtistCollectionItemsAddedAt: false,
+  colArtistCollectionItemsLastPlayed: false,
+  colArtistCollectionItemsUserRating: true,
+  colArtistCollectionItemsIsFavourite: true,
+
+  // artist tag items
+  colArtistTagItemsCountry: true,
+  colArtistTagItemsGenre: true,
+  colArtistTagItemsAddedAt: false,
+  colArtistTagItemsLastPlayed: false,
+  colArtistTagItemsUserRating: true,
+  colArtistTagItemsIsFavourite: true,
+
+  // albums
   colAlbumsArtist: true,
   colAlbumsGenre: false,
   colAlbumsReleaseDate: true,
@@ -311,6 +370,7 @@ const sessionState = {
   colAlbumsUserRating: true,
   colAlbumsIsFavourite: true,
 
+  // album tracks
   colAlbumArtist: true,
   colAlbumCodec: false,
   colAlbumBitrate: false,
@@ -318,8 +378,33 @@ const sessionState = {
   colAlbumUserRating: true,
   colAlbumIsFavourite: true,
 
+  // album collections
+  colAlbumCollectionsTotalItems: true,
+  colAlbumCollectionsAddedAt: true,
+  colAlbumCollectionsUserRating: true,
+
+  // album collection items
+  colAlbumCollectionItemsArtist: true,
+  colAlbumCollectionItemsGenre: false,
+  colAlbumCollectionItemsReleaseDate: true,
+  colAlbumCollectionItemsAddedAt: false,
+  colAlbumCollectionItemsLastPlayed: false,
+  colAlbumCollectionItemsUserRating: true,
+  colAlbumCollectionItemsIsFavourite: true,
+
+  // album tag items
+  colAlbumTagItemsArtist: true,
+  colAlbumTagItemsGenre: false,
+  colAlbumTagItemsReleaseDate: true,
+  colAlbumTagItemsAddedAt: false,
+  colAlbumTagItemsLastPlayed: false,
+  colAlbumTagItemsUserRating: true,
+  colAlbumTagItemsIsFavourite: true,
+
+  // folders
   colFoldersKind: true,
 
+  // playlists
   colPlaylistsTotalTracks: true,
   colPlaylistsDuration: true,
   colPlaylistsAddedAt: false,
@@ -327,6 +412,7 @@ const sessionState = {
   colPlaylistsUserRating: true,
   colPlaylistsIsFavourite: true,
 
+  // playlist tracks
   colPlaylistArtwork: true,
   colPlaylistArtist: true,
   colPlaylistAlbum: true,
@@ -335,25 +421,6 @@ const sessionState = {
   colPlaylistDuration: true,
   colPlaylistUserRating: true,
   colPlaylistIsFavourite: true,
-
-  colCollectionTotalItems: true,
-  colCollectionAddedAt: true,
-  colCollectionUserRating: true,
-
-  colCollectionArtistsCountry: true,
-  colCollectionArtistsGenre: true,
-  colCollectionArtistsAddedAt: false,
-  colCollectionArtistsLastPlayed: false,
-  colCollectionArtistsUserRating: true,
-  colCollectionArtistsIsFavourite: true,
-
-  colCollectionAlbumsArtist: true,
-  colCollectionAlbumsGenre: false,
-  colCollectionAlbumsReleaseDate: true,
-  colCollectionAlbumsAddedAt: false,
-  colCollectionAlbumsLastPlayed: false,
-  colCollectionAlbumsUserRating: true,
-  colCollectionAlbumsIsFavourite: true,
 };
 
 const playingState = {
@@ -556,71 +623,9 @@ const effects = (dispatch) => ({
       try {
         localStorageState = localStorage.getItem(sessionKey) ? JSON.parse(localStorage.getItem(sessionKey)) : {};
 
-        // [NOTE] migrate old accessibilityContrast setting to currentContrast
-        if (typeof localStorageState.accessibilityContrast === 'boolean') {
-          localStorageState.currentContrast = localStorageState.accessibilityContrast ? 'medium' : 'default';
-          delete localStorageState.accessibilityContrast;
-        }
-
-        // [NOTE] migrate old accessibilityFocus setting to themeKeyFocus
-        if (typeof localStorageState.accessibilityFocus === 'boolean') {
-          localStorageState.themeKeyFocus = localStorageState.accessibilityFocus;
-          delete localStorageState.accessibilityFocus;
-        }
-
-        // [NOTE] migrate old optionLogPlexPlayback setting to optionLogPlaybackToServer
-        if (typeof localStorageState.optionLogPlexPlayback !== 'undefined') {
-          console.log('%c--- migrating optionLogPlexPlayback to optionLogPlaybackToServer ---', 'color:#439c08');
-          localStorageState.optionLogPlaybackToServer = localStorageState.optionLogPlexPlayback;
-          delete localStorageState.optionLogPlexPlayback;
-        }
-
-        // [NOTE] clean up some old data that was once accidentally saved to local storage
-        if (localStorageState.appModel) {
-          console.log('%c--- removing appModel from localStorageState ---', 'color:#439c08');
-          delete localStorageState.appModel;
-
-          if (localStorageState.persistentModel) {
-            delete localStorageState.persistentModel;
-          }
-          if (localStorageState.playerModel) {
-            delete localStorageState.playerModel;
-          }
-          if (localStorageState.sessionModel) {
-            delete localStorageState.sessionModel;
-          }
-        }
-
-        // [NOTE] bust the playing state cache if the version is outdated
-        if (!localStorageState.playingVersion || localStorageState.playingVersion < playingState.playingVersion) {
-          Object.assign(localStorageState, playingState);
-        }
-
-        // [NOTE] migrate renamed theme keys
-        const renamedThemes = {
-          chromatix: 'chromatix-magenta',
-          plex: 'chromatix-yellow',
-          'black-blue-1': 'black-blue',
-          'black-blue-2': 'black-indigo-2',
-          'black-green-1': 'black-green',
-          'black-green-2': 'black-mint',
-          'black-indigo': 'black-violet',
-          'black-pink': 'black-magenta',
-          'chromatix-blue-1': 'chromatix-blue',
-          'chromatix-blue-2': 'chromatix-indigo-2',
-          'chromatix-green-1': 'chromatix-green',
-          'chromatix-green-2': 'chromatix-mint',
-          'chromatix-indigo': 'chromatix-violet',
-          'white-blue-1': 'white-blue',
-          'white-blue-2': 'white-indigo-2',
-          'white-green-1': 'white-green',
-          'white-green-2': 'white-mint',
-          'white-indigo': 'white-violet',
-          'white-pink': 'white-magenta',
-        };
-        if (localStorageState.currentTheme && renamedThemes[localStorageState.currentTheme]) {
-          localStorageState.currentTheme = renamedThemes[localStorageState.currentTheme];
-        }
+        // [NOTE] bring the stored state up to date with the current state shape - see migrateSessionState for the
+        // individual migrations. Each one is a no-op once applied, so this is safe to run on every load.
+        localStorageState = migrateSessionState(localStorageState, playingState);
       } catch (error) {
         // browser does not support local storage, or local storage item does not exist
       }

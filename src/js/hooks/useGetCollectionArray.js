@@ -21,12 +21,14 @@ const useGetCollectionArray = (collectionKey) => {
   const sortCollections = useSelector(({ sessionModel }) => sessionModel[`sort${collectionKey}`]);
   const orderCollections = useSelector(({ sessionModel }) => sessionModel[`order${collectionKey}`]);
 
-  const gridCollectionsTotalItems = useSelector(({ sessionModel }) => sessionModel.gridCollectionsTotalItems);
-  const gridCollectionsUserRating = useSelector(({ sessionModel }) => sessionModel.gridCollectionsUserRating);
+  // [NOTE] for collection listings, collectionKey is 'ArtistCollections' or 'AlbumCollections', which matches the
+  // suffix used by this view's session state keys. Tag listings have no grid / column settings of their own.
+  const gridTotalItems = useSelector(({ sessionModel }) => sessionModel[`grid${collectionKey}TotalItems`]);
+  const gridUserRating = useSelector(({ sessionModel }) => sessionModel[`grid${collectionKey}UserRating`]);
 
-  const colCollectionTotalItems = useSelector(({ sessionModel }) => sessionModel.colCollectionTotalItems);
-  const colCollectionAddedAt = useSelector(({ sessionModel }) => sessionModel.colCollectionAddedAt);
-  const colCollectionUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionUserRating);
+  const colTotalItems = useSelector(({ sessionModel }) => sessionModel[`col${collectionKey}TotalItems`]);
+  const colAddedAt = useSelector(({ sessionModel }) => sessionModel[`col${collectionKey}AddedAt`]);
+  const colUserRating = useSelector(({ sessionModel }) => sessionModel[`col${collectionKey}UserRating`]);
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
   const optionSortIgnoreLeadingArticles = useSelector(
@@ -36,11 +38,9 @@ const useGetCollectionArray = (collectionKey) => {
   // prevent sorting by a hidden field
   const allowedSort = {
     title: true,
-    totalItems: isCollection && (viewCollections === 'grid' || (viewCollections === 'list' && colCollectionTotalItems)),
-    addedAt:
-      platformOpts.enableAddedAt &&
-      (viewCollections === 'grid' || (viewCollections === 'list' && colCollectionAddedAt)),
-    userRating: viewCollections === 'grid' || (viewCollections === 'list' && colCollectionUserRating),
+    totalItems: isCollection && (viewCollections === 'grid' || (viewCollections === 'list' && colTotalItems)),
+    addedAt: platformOpts.enableAddedAt && (viewCollections === 'grid' || (viewCollections === 'list' && colAddedAt)),
+    userRating: viewCollections === 'grid' || (viewCollections === 'list' && colUserRating),
   };
   const actualSortCollections = allowedSort[sortCollections] ? sortCollections : 'title';
   const actualOrderCollections = allowedSort[sortCollections] ? orderCollections : 'asc';
@@ -98,14 +98,14 @@ const useGetCollectionArray = (collectionKey) => {
     orderCollections: actualOrderCollections,
 
     gridOptions: {
-      ...(isCollection && { totalItems: gridCollectionsTotalItems }),
-      userRating: gridCollectionsUserRating,
+      ...(isCollection && { totalItems: gridTotalItems }),
+      userRating: gridUserRating,
     },
 
     colOptions: {
-      ...(isCollection && { totalItems: colCollectionTotalItems }),
-      addedAt: platformOpts.enableAddedAt && colCollectionAddedAt,
-      userRating: colCollectionUserRating,
+      ...(isCollection && { totalItems: colTotalItems }),
+      addedAt: platformOpts.enableAddedAt && colAddedAt,
+      userRating: colUserRating,
       isFavourite: false,
     },
 

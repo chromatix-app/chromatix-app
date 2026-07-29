@@ -204,8 +204,8 @@ const Title = ({
 }) => {
   // Auto-generate configurations based on variant and collectionKey
   const icon = `${collectionKey}Icon`;
-  const gridStatePrefix = variant === 'artists' ? 'gridArtistCollectionItems' : 'gridAlbumCollectionItems';
-  const colStatePrefix = variant === 'artists' ? 'colCollectionArtists' : 'colCollectionAlbums';
+  const gridStatePrefix = variant === 'artists' ? 'gridArtistTagItems' : 'gridAlbumTagItems';
+  const colStatePrefix = variant === 'artists' ? 'colArtistTagItems' : 'colAlbumTagItems';
 
   // Define column field configurations based on variant
   const colFields =

@@ -78,6 +78,7 @@ const ViewModeSettings = () => {
   const dispatch = useDispatch();
 
   const viewArtists = useSelector(({ sessionModel }) => sessionModel.viewArtists);
+  const viewAlbumArtists = useSelector(({ sessionModel }) => sessionModel.viewAlbumArtists);
   const viewArtistAlbums = useSelector(({ sessionModel }) => sessionModel.viewArtistAlbums);
   const viewAlbums = useSelector(({ sessionModel }) => sessionModel.viewAlbums);
   const viewFolders = useSelector(({ sessionModel }) => sessionModel.viewFolders);
@@ -105,6 +106,7 @@ const ViewModeSettings = () => {
 
   const allValues = [
     viewArtists,
+    viewAlbumArtists,
     viewArtistAlbums,
     viewAlbums,
     viewFolders,
@@ -137,6 +139,7 @@ const ViewModeSettings = () => {
   const toggleGridView = () => {
     dispatch.sessionModel.setSessionState({
       viewArtists: 'grid',
+      viewAlbumArtists: 'grid',
       viewArtistAlbums: 'grid',
       viewAlbums: 'grid',
       viewFolders: 'grid',
@@ -167,6 +170,7 @@ const ViewModeSettings = () => {
   const toggleListView = () => {
     dispatch.sessionModel.setSessionState({
       viewArtists: 'list',
+      viewAlbumArtists: 'list',
       viewArtistAlbums: 'list',
       viewAlbums: 'list',
       viewFolders: 'list',
@@ -242,27 +246,35 @@ const FavouriteSettings = () => {
   const dispatch = useDispatch();
 
   const gridArtistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridArtistsIsFavourite);
+  const gridAlbumArtistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridAlbumArtistsIsFavourite);
   const gridArtistAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridArtistAlbumsIsFavourite);
   const gridArtistCollectionItemsIsFavourite = useSelector(
     ({ sessionModel }) => sessionModel.gridArtistCollectionItemsIsFavourite
   );
+  const gridArtistTagItemsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridArtistTagItemsIsFavourite);
   const gridAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridAlbumsIsFavourite);
   const gridAlbumCollectionItemsIsFavourite = useSelector(
     ({ sessionModel }) => sessionModel.gridAlbumCollectionItemsIsFavourite
   );
+  const gridAlbumTagItemsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridAlbumTagItemsIsFavourite);
   const gridPlaylistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridPlaylistsIsFavourite);
 
   const colArtistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colArtistsIsFavourite);
+  const colAlbumArtistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colAlbumArtistsIsFavourite);
   const colArtistAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsIsFavourite);
   const colArtistTracksIsFavourite = useSelector(({ sessionModel }) => sessionModel.colArtistTracksIsFavourite);
   const colAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colAlbumsIsFavourite);
   const colAlbumIsFavourite = useSelector(({ sessionModel }) => sessionModel.colAlbumIsFavourite);
   const colPlaylistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colPlaylistsIsFavourite);
   const colPlaylistIsFavourite = useSelector(({ sessionModel }) => sessionModel.colPlaylistIsFavourite);
-  const colCollectionArtistsIsFavourite = useSelector(
-    ({ sessionModel }) => sessionModel.colCollectionArtistsIsFavourite
+  const colArtistCollectionItemsIsFavourite = useSelector(
+    ({ sessionModel }) => sessionModel.colArtistCollectionItemsIsFavourite
   );
-  const colCollectionAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsIsFavourite);
+  const colArtistTagItemsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colArtistTagItemsIsFavourite);
+  const colAlbumCollectionItemsIsFavourite = useSelector(
+    ({ sessionModel }) => sessionModel.colAlbumCollectionItemsIsFavourite
+  );
+  const colAlbumTagItemsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colAlbumTagItemsIsFavourite);
 
   const controlBarIsFavourite = useSelector(({ sessionModel }) => sessionModel.controlBarIsFavourite);
   const queueIsFavourite = useSelector(({ sessionModel }) => sessionModel.queueIsFavourite);
@@ -270,21 +282,27 @@ const FavouriteSettings = () => {
 
   const allValues = [
     gridArtistsIsFavourite,
+    gridAlbumArtistsIsFavourite,
     gridArtistAlbumsIsFavourite,
     gridArtistCollectionItemsIsFavourite,
+    gridArtistTagItemsIsFavourite,
     gridAlbumsIsFavourite,
     gridAlbumCollectionItemsIsFavourite,
+    gridAlbumTagItemsIsFavourite,
     gridPlaylistsIsFavourite,
 
     colArtistsIsFavourite,
+    colAlbumArtistsIsFavourite,
     colArtistAlbumsIsFavourite,
     colArtistTracksIsFavourite,
     colAlbumsIsFavourite,
     colAlbumIsFavourite,
     colPlaylistsIsFavourite,
     colPlaylistIsFavourite,
-    colCollectionArtistsIsFavourite,
-    colCollectionAlbumsIsFavourite,
+    colArtistCollectionItemsIsFavourite,
+    colArtistTagItemsIsFavourite,
+    colAlbumCollectionItemsIsFavourite,
+    colAlbumTagItemsIsFavourite,
 
     controlBarIsFavourite,
     queueIsFavourite,
@@ -297,21 +315,27 @@ const FavouriteSettings = () => {
   const toggleShowFavourites = () => {
     dispatch.sessionModel.setSessionState({
       gridArtistsIsFavourite: true,
+      gridAlbumArtistsIsFavourite: true,
       gridArtistAlbumsIsFavourite: true,
       gridArtistCollectionItemsIsFavourite: true,
+      gridArtistTagItemsIsFavourite: true,
       gridAlbumsIsFavourite: true,
       gridAlbumCollectionItemsIsFavourite: true,
+      gridAlbumTagItemsIsFavourite: true,
       gridPlaylistsIsFavourite: true,
 
       colArtistsIsFavourite: true,
+      colAlbumArtistsIsFavourite: true,
       colArtistAlbumsIsFavourite: true,
       colArtistTracksIsFavourite: true,
       colAlbumsIsFavourite: true,
       colAlbumIsFavourite: true,
       colPlaylistsIsFavourite: true,
       colPlaylistIsFavourite: true,
-      colCollectionArtistsIsFavourite: true,
-      colCollectionAlbumsIsFavourite: true,
+      colArtistCollectionItemsIsFavourite: true,
+      colArtistTagItemsIsFavourite: true,
+      colAlbumCollectionItemsIsFavourite: true,
+      colAlbumTagItemsIsFavourite: true,
 
       controlBarIsFavourite: true,
       queueIsFavourite: true,
@@ -322,21 +346,27 @@ const FavouriteSettings = () => {
   const toggleHideFavourites = () => {
     dispatch.sessionModel.setSessionState({
       gridArtistsIsFavourite: false,
+      gridAlbumArtistsIsFavourite: false,
       gridArtistAlbumsIsFavourite: false,
       gridArtistCollectionItemsIsFavourite: false,
+      gridArtistTagItemsIsFavourite: false,
       gridAlbumsIsFavourite: false,
       gridAlbumCollectionItemsIsFavourite: false,
+      gridAlbumTagItemsIsFavourite: false,
       gridPlaylistsIsFavourite: false,
 
       colArtistsIsFavourite: false,
+      colAlbumArtistsIsFavourite: false,
       colArtistAlbumsIsFavourite: false,
       colArtistTracksIsFavourite: false,
       colAlbumsIsFavourite: false,
       colAlbumIsFavourite: false,
       colPlaylistsIsFavourite: false,
       colPlaylistIsFavourite: false,
-      colCollectionArtistsIsFavourite: false,
-      colCollectionAlbumsIsFavourite: false,
+      colArtistCollectionItemsIsFavourite: false,
+      colArtistTagItemsIsFavourite: false,
+      colAlbumCollectionItemsIsFavourite: false,
+      colAlbumTagItemsIsFavourite: false,
 
       controlBarIsFavourite: false,
       queueIsFavourite: false,
@@ -393,27 +423,41 @@ const StarRatingSettings = () => {
   const dispatch = useDispatch();
 
   const gridArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.gridArtistsUserRating);
+  const gridAlbumArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.gridAlbumArtistsUserRating);
   const gridArtistAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.gridArtistAlbumsUserRating);
   const gridArtistCollectionItemsUserRating = useSelector(
     ({ sessionModel }) => sessionModel.gridArtistCollectionItemsUserRating
   );
+  const gridArtistTagItemsUserRating = useSelector(({ sessionModel }) => sessionModel.gridArtistTagItemsUserRating);
   const gridAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.gridAlbumsUserRating);
   const gridAlbumCollectionItemsUserRating = useSelector(
     ({ sessionModel }) => sessionModel.gridAlbumCollectionItemsUserRating
   );
+  const gridAlbumTagItemsUserRating = useSelector(({ sessionModel }) => sessionModel.gridAlbumTagItemsUserRating);
   const gridPlaylistsUserRating = useSelector(({ sessionModel }) => sessionModel.gridPlaylistsUserRating);
-  const gridCollectionsUserRating = useSelector(({ sessionModel }) => sessionModel.gridCollectionsUserRating);
+  const gridArtistCollectionsUserRating = useSelector(
+    ({ sessionModel }) => sessionModel.gridArtistCollectionsUserRating
+  );
+  const gridAlbumCollectionsUserRating = useSelector(({ sessionModel }) => sessionModel.gridAlbumCollectionsUserRating);
 
   const colArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistsUserRating);
+  const colAlbumArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumArtistsUserRating);
   const colArtistAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistAlbumsUserRating);
   const colArtistTracksUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistTracksUserRating);
   const colAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumsUserRating);
   const colAlbumUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumUserRating);
   const colPlaylistsUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistsUserRating);
   const colPlaylistUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistUserRating);
-  const colCollectionUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionUserRating);
-  const colCollectionArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionArtistsUserRating);
-  const colCollectionAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionAlbumsUserRating);
+  const colArtistCollectionsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistCollectionsUserRating);
+  const colAlbumCollectionsUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumCollectionsUserRating);
+  const colArtistCollectionItemsUserRating = useSelector(
+    ({ sessionModel }) => sessionModel.colArtistCollectionItemsUserRating
+  );
+  const colArtistTagItemsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistTagItemsUserRating);
+  const colAlbumCollectionItemsUserRating = useSelector(
+    ({ sessionModel }) => sessionModel.colAlbumCollectionItemsUserRating
+  );
+  const colAlbumTagItemsUserRating = useSelector(({ sessionModel }) => sessionModel.colAlbumTagItemsUserRating);
 
   const controlBarUserRating = useSelector(({ sessionModel }) => sessionModel.controlBarUserRating);
   const queueUserRating = useSelector(({ sessionModel }) => sessionModel.queueUserRating);
@@ -421,23 +465,31 @@ const StarRatingSettings = () => {
 
   const allValues = [
     gridArtistsUserRating,
+    gridAlbumArtistsUserRating,
     gridArtistAlbumsUserRating,
     gridArtistCollectionItemsUserRating,
+    gridArtistTagItemsUserRating,
     gridAlbumsUserRating,
     gridAlbumCollectionItemsUserRating,
+    gridAlbumTagItemsUserRating,
     gridPlaylistsUserRating,
-    gridCollectionsUserRating,
+    gridArtistCollectionsUserRating,
+    gridAlbumCollectionsUserRating,
 
     colArtistsUserRating,
+    colAlbumArtistsUserRating,
     colArtistAlbumsUserRating,
     colArtistTracksUserRating,
     colAlbumsUserRating,
     colAlbumUserRating,
     colPlaylistsUserRating,
     colPlaylistUserRating,
-    colCollectionUserRating,
-    colCollectionArtistsUserRating,
-    colCollectionAlbumsUserRating,
+    colArtistCollectionsUserRating,
+    colAlbumCollectionsUserRating,
+    colArtistCollectionItemsUserRating,
+    colArtistTagItemsUserRating,
+    colAlbumCollectionItemsUserRating,
+    colAlbumTagItemsUserRating,
 
     controlBarUserRating,
     queueUserRating,
@@ -450,23 +502,31 @@ const StarRatingSettings = () => {
   const toggleShowUserRating = () => {
     dispatch.sessionModel.setSessionState({
       gridArtistsUserRating: true,
+      gridAlbumArtistsUserRating: true,
       gridArtistAlbumsUserRating: true,
       gridArtistCollectionItemsUserRating: true,
+      gridArtistTagItemsUserRating: true,
       gridAlbumsUserRating: true,
       gridAlbumCollectionItemsUserRating: true,
+      gridAlbumTagItemsUserRating: true,
       gridPlaylistsUserRating: true,
-      gridCollectionsUserRating: true,
+      gridArtistCollectionsUserRating: true,
+      gridAlbumCollectionsUserRating: true,
 
       colArtistsUserRating: true,
+      colAlbumArtistsUserRating: true,
       colArtistAlbumsUserRating: true,
       colArtistTracksUserRating: true,
       colAlbumsUserRating: true,
       colAlbumUserRating: true,
       colPlaylistsUserRating: true,
       colPlaylistUserRating: true,
-      colCollectionUserRating: true,
-      colCollectionArtistsUserRating: true,
-      colCollectionAlbumsUserRating: true,
+      colArtistCollectionsUserRating: true,
+      colAlbumCollectionsUserRating: true,
+      colArtistCollectionItemsUserRating: true,
+      colArtistTagItemsUserRating: true,
+      colAlbumCollectionItemsUserRating: true,
+      colAlbumTagItemsUserRating: true,
 
       controlBarUserRating: true,
       queueUserRating: true,
@@ -477,23 +537,31 @@ const StarRatingSettings = () => {
   const toggleHideUserRating = () => {
     dispatch.sessionModel.setSessionState({
       gridArtistsUserRating: false,
+      gridAlbumArtistsUserRating: false,
       gridArtistAlbumsUserRating: false,
       gridArtistCollectionItemsUserRating: false,
+      gridArtistTagItemsUserRating: false,
       gridAlbumsUserRating: false,
       gridAlbumCollectionItemsUserRating: false,
+      gridAlbumTagItemsUserRating: false,
       gridPlaylistsUserRating: false,
-      gridCollectionsUserRating: false,
+      gridArtistCollectionsUserRating: false,
+      gridAlbumCollectionsUserRating: false,
 
       colArtistsUserRating: false,
+      colAlbumArtistsUserRating: false,
       colArtistAlbumsUserRating: false,
       colArtistTracksUserRating: false,
       colAlbumsUserRating: false,
       colAlbumUserRating: false,
       colPlaylistsUserRating: false,
       colPlaylistUserRating: false,
-      colCollectionUserRating: false,
-      colCollectionArtistsUserRating: false,
-      colCollectionAlbumsUserRating: false,
+      colArtistCollectionsUserRating: false,
+      colAlbumCollectionsUserRating: false,
+      colArtistCollectionItemsUserRating: false,
+      colArtistTagItemsUserRating: false,
+      colAlbumCollectionItemsUserRating: false,
+      colAlbumTagItemsUserRating: false,
 
       controlBarUserRating: false,
       queueUserRating: false,

@@ -278,7 +278,7 @@ const Title = ({
                         {
                           variant: 'checkbox',
                           label: 'Country',
-                          attr: 'colCollectionArtistsCountry',
+                          attr: 'colArtistCollectionItemsCountry',
                           checked: colOptions.country,
                         },
                       ]
@@ -286,7 +286,7 @@ const Title = ({
                   {
                     variant: 'checkbox',
                     label: 'Genre',
-                    attr: 'colCollectionArtistsGenre',
+                    attr: 'colArtistCollectionItemsGenre',
                     checked: colOptions.genre,
                   },
                   ...(platformOpts?.enableAddedAt
@@ -294,7 +294,7 @@ const Title = ({
                         {
                           variant: 'checkbox',
                           label: 'Added',
-                          attr: 'colCollectionArtistsAddedAt',
+                          attr: 'colArtistCollectionItemsAddedAt',
                           checked: colOptions.addedAt,
                         },
                       ]
@@ -304,7 +304,7 @@ const Title = ({
                         {
                           variant: 'checkbox',
                           label: 'Last played',
-                          attr: 'colCollectionArtistsLastPlayed',
+                          attr: 'colArtistCollectionItemsLastPlayed',
                           checked: colOptions.lastPlayed,
                         },
                       ]
@@ -314,7 +314,7 @@ const Title = ({
                         {
                           variant: 'checkbox',
                           label: 'Rating',
-                          attr: 'colCollectionArtistsUserRating',
+                          attr: 'colArtistCollectionItemsUserRating',
                           checked: colOptions.userRating,
                         },
                       ]
