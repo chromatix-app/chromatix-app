@@ -163,7 +163,7 @@ The codebase is partially migrated to TypeScript. New utilities and hooks should
 Tests are colocated with the file they cover using the `.test.ts` suffix (e.g. `sortList.ts` / `sortList.test.ts`). This applies to all modules — utilities, services, hooks, etc. All utility functions should have thorough tests. Follow the existing naming convention:
 
 ```ts
-// Generated using GitHub Copilot
+// Tests generated using AI
 
 import functionName from './functionName';
 

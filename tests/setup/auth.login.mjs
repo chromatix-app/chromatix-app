@@ -1,4 +1,4 @@
-// Generated using GitHub Copilot
+// Tests generated using AI
 // Standalone login script — run via `npm run test:e2e:login`
 // Opens Edge, waits for you to log in, then saves the session.
 
