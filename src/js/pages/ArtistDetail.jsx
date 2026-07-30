@@ -133,42 +133,44 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
   const isLoaded = playingVariant === 'artists' && playingArtistId === artistId;
   const isPlaying = isLoaded && playerPlaying;
 
+  const titleBlock = (
+    <Title
+      artistAlbumsGroupByType={artistAlbumsGroupByType}
+      artistCountry={artistCountry}
+      artistGenre={artistGenre}
+      artistId={artistId}
+      artistIsFavourite={artistIsFavourite}
+      artistName={artistName}
+      artistRating={artistRating}
+      artistReleasesTotal={artistReleasesTotal}
+      artistThumb={artistThumb}
+      artistThumbMedium={artistThumbMedium}
+      artistTracksTotal={artistTracksTotal}
+      colOptions={isTrackView ? colTrackOptions : colOptions}
+      doPlay={doPlay}
+      gridOptions={gridOptions}
+      isGridView={isGridView}
+      isListView={isListView}
+      isLoaded={isLoaded}
+      isLoading1={isLoading1}
+      isPlaying={isPlaying}
+      isTrackView={isTrackView}
+      libraryId={libraryId}
+      orderArtistAlbums={orderArtistAlbums}
+      platformOpts={platformOpts}
+      setColumnVisibility={setColumnVisibility}
+      setOrderArtistAlbums={setOrderArtistAlbums}
+      setSortArtistAlbums={setSortArtistAlbums}
+      setViewArtistAlbums={setViewArtistAlbums}
+      sortArtistAlbums={sortArtistAlbums}
+      sortedArtistTracks={sortedArtistTracks}
+      viewArtistAlbums={viewArtistAlbums}
+    />
+  );
+
   return (
     <>
-      {(isLoading2 || isEmptyList1 || isEmptyList2) && (
-        <Title
-          artistAlbumsGroupByType={artistAlbumsGroupByType}
-          artistCountry={artistCountry}
-          artistGenre={artistGenre}
-          artistId={artistId}
-          artistIsFavourite={artistIsFavourite}
-          artistName={artistName}
-          artistRating={artistRating}
-          artistReleasesTotal={artistReleasesTotal}
-          artistThumb={artistThumb}
-          artistThumbMedium={artistThumbMedium}
-          artistTracksTotal={artistTracksTotal}
-          colOptions={colOptions}
-          doPlay={doPlay}
-          gridOptions={gridOptions}
-          isGridView={isGridView}
-          isListView={isListView}
-          isLoaded={isLoaded}
-          isLoading1={isLoading1}
-          isPlaying={isPlaying}
-          isTrackView={isTrackView}
-          libraryId={libraryId}
-          orderArtistAlbums={orderArtistAlbums}
-          platformOpts={platformOpts}
-          setColumnVisibility={setColumnVisibility}
-          setOrderArtistAlbums={setOrderArtistAlbums}
-          setSortArtistAlbums={setSortArtistAlbums}
-          setViewArtistAlbums={setViewArtistAlbums}
-          sortArtistAlbums={sortArtistAlbums}
-          sortedArtistTracks={sortedArtistTracks}
-          viewArtistAlbums={viewArtistAlbums}
-        />
-      )}
+      {(isLoading2 || isEmptyList1 || isEmptyList2) && titleBlock}
       {isLoading2 && <Loading forceVisible inline showOffline />}
 
       {isGridView && (
@@ -181,38 +183,7 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
           showFavs={gridOptions.isFavourite}
           showRatings={gridOptions.userRating}
         >
-          <Title
-            artistAlbumsGroupByType={artistAlbumsGroupByType}
-            artistCountry={artistCountry}
-            artistGenre={artistGenre}
-            artistId={artistId}
-            artistIsFavourite={artistIsFavourite}
-            artistName={artistName}
-            artistRating={artistRating}
-            artistReleasesTotal={artistReleasesTotal}
-            artistThumb={artistThumb}
-            artistThumbMedium={artistThumbMedium}
-            artistTracksTotal={artistTracksTotal}
-            colOptions={colOptions}
-            doPlay={doPlay}
-            gridOptions={gridOptions}
-            isGridView={isGridView}
-            isListView={isListView}
-            isLoaded={isLoaded}
-            isLoading1={isLoading1}
-            isPlaying={isPlaying}
-            isTrackView={isTrackView}
-            libraryId={libraryId}
-            orderArtistAlbums={orderArtistAlbums}
-            platformOpts={platformOpts}
-            setColumnVisibility={setColumnVisibility}
-            setOrderArtistAlbums={setOrderArtistAlbums}
-            setSortArtistAlbums={setSortArtistAlbums}
-            setViewArtistAlbums={setViewArtistAlbums}
-            sortArtistAlbums={sortArtistAlbums}
-            sortedArtistTracks={sortedArtistTracks}
-            viewArtistAlbums={viewArtistAlbums}
-          />
+          {titleBlock}
         </ViewGrid>
       )}
 
@@ -225,38 +196,7 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
           orderKey={orderArtistAlbums}
           colOptions={colOptions}
         >
-          <Title
-            artistAlbumsGroupByType={artistAlbumsGroupByType}
-            artistCountry={artistCountry}
-            artistGenre={artistGenre}
-            artistId={artistId}
-            artistIsFavourite={artistIsFavourite}
-            artistName={artistName}
-            artistRating={artistRating}
-            artistReleasesTotal={artistReleasesTotal}
-            artistThumb={artistThumb}
-            artistThumbMedium={artistThumbMedium}
-            artistTracksTotal={artistTracksTotal}
-            colOptions={colOptions}
-            doPlay={doPlay}
-            gridOptions={gridOptions}
-            isGridView={isGridView}
-            isListView={isListView}
-            isLoaded={isLoaded}
-            isLoading1={isLoading1}
-            isPlaying={isPlaying}
-            isTrackView={isTrackView}
-            libraryId={libraryId}
-            orderArtistAlbums={orderArtistAlbums}
-            platformOpts={platformOpts}
-            setColumnVisibility={setColumnVisibility}
-            setOrderArtistAlbums={setOrderArtistAlbums}
-            setSortArtistAlbums={setSortArtistAlbums}
-            setViewArtistAlbums={setViewArtistAlbums}
-            sortArtistAlbums={sortArtistAlbums}
-            sortedArtistTracks={sortedArtistTracks}
-            viewArtistAlbums={viewArtistAlbums}
-          />
+          {titleBlock}
         </ViewList>
       )}
 
@@ -272,38 +212,7 @@ const ArtistDetail = ({ pageVariant = 'Artists' }) => {
           orderKey={orderArtistTracks}
           colOptions={colTrackOptions}
         >
-          <Title
-            artistAlbumsGroupByType={artistAlbumsGroupByType}
-            artistCountry={artistCountry}
-            artistGenre={artistGenre}
-            artistId={artistId}
-            artistIsFavourite={artistIsFavourite}
-            artistName={artistName}
-            artistRating={artistRating}
-            artistReleasesTotal={artistReleasesTotal}
-            artistThumb={artistThumb}
-            artistThumbMedium={artistThumbMedium}
-            artistTracksTotal={artistTracksTotal}
-            colOptions={colTrackOptions}
-            doPlay={doPlay}
-            gridOptions={gridOptions}
-            isGridView={isGridView}
-            isListView={isListView}
-            isLoaded={isLoaded}
-            isLoading1={isLoading1}
-            isPlaying={isPlaying}
-            isTrackView={isTrackView}
-            libraryId={libraryId}
-            orderArtistAlbums={orderArtistAlbums}
-            platformOpts={platformOpts}
-            setColumnVisibility={setColumnVisibility}
-            setOrderArtistAlbums={setOrderArtistAlbums}
-            setSortArtistAlbums={setSortArtistAlbums}
-            setViewArtistAlbums={setViewArtistAlbums}
-            sortArtistAlbums={sortArtistAlbums}
-            sortedArtistTracks={sortedArtistTracks}
-            viewArtistAlbums={viewArtistAlbums}
-          />
+          {titleBlock}
         </ViewList>
       )}
     </>

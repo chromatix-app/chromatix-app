@@ -45,25 +45,27 @@ const AlbumCollectionArray = () => {
   const isGridView = !isLoading && !isEmptyList && viewCollections === 'grid';
   const isListView = !isLoading && !isEmptyList && viewCollections === 'list';
 
+  const titleBlock = (
+    <Title
+      colOptions={colOptions}
+      gridOptions={gridOptions}
+      isGridView={isGridView}
+      isListView={isListView}
+      orderCollections={orderCollections}
+      platformOpts={platformOpts}
+      setColumnVisibility={setColumnVisibility}
+      setOrderCollections={setOrderCollections}
+      setSortCollections={setSortCollections}
+      setViewCollections={setViewCollections}
+      sortCollections={sortCollections}
+      sortedCollections={sortedCollections}
+      viewCollections={viewCollections}
+    />
+  );
+
   return (
     <>
-      {(isLoading || isEmptyList) && (
-        <Title
-          colOptions={colOptions}
-          gridOptions={gridOptions}
-          isGridView={isGridView}
-          isListView={isListView}
-          orderCollections={orderCollections}
-          platformOpts={platformOpts}
-          setColumnVisibility={setColumnVisibility}
-          setOrderCollections={setOrderCollections}
-          setSortCollections={setSortCollections}
-          setViewCollections={setViewCollections}
-          sortCollections={sortCollections}
-          sortedCollections={sortedCollections}
-          viewCollections={viewCollections}
-        />
-      )}
+      {(isLoading || isEmptyList) && titleBlock}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
         <ViewGrid
@@ -72,21 +74,7 @@ const AlbumCollectionArray = () => {
           showTotalItems={gridOptions.totalItems}
           showRatings={gridOptions.userRating}
         >
-          <Title
-            colOptions={colOptions}
-            gridOptions={gridOptions}
-            isGridView={isGridView}
-            isListView={isListView}
-            orderCollections={orderCollections}
-            platformOpts={platformOpts}
-            setColumnVisibility={setColumnVisibility}
-            setOrderCollections={setOrderCollections}
-            setSortCollections={setSortCollections}
-            setViewCollections={setViewCollections}
-            sortCollections={sortCollections}
-            sortedCollections={sortedCollections}
-            viewCollections={viewCollections}
-          />
+          {titleBlock}
         </ViewGrid>
       )}
       {isListView && (
@@ -97,21 +85,7 @@ const AlbumCollectionArray = () => {
           orderKey={orderCollections}
           colOptions={colOptions}
         >
-          <Title
-            colOptions={colOptions}
-            gridOptions={gridOptions}
-            isGridView={isGridView}
-            isListView={isListView}
-            orderCollections={orderCollections}
-            platformOpts={platformOpts}
-            setColumnVisibility={setColumnVisibility}
-            setOrderCollections={setOrderCollections}
-            setSortCollections={setSortCollections}
-            setViewCollections={setViewCollections}
-            sortCollections={sortCollections}
-            sortedCollections={sortedCollections}
-            viewCollections={viewCollections}
-          />
+          {titleBlock}
         </ViewList>
       )}
     </>

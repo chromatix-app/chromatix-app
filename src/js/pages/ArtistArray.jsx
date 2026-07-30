@@ -52,28 +52,30 @@ const ArtistArray = ({ pageTitle = 'Artists', pageVariant = 'Artists', singularN
   const isGridView = !isLoading && !isEmptyList && viewArtists === 'grid';
   const isListView = !isLoading && !isEmptyList && viewArtists === 'list';
 
+  const titleBlock = (
+    <Title
+      colOptions={colOptions}
+      gridOptions={gridOptions}
+      isGridView={isGridView}
+      isListView={isListView}
+      orderArtists={orderArtists}
+      pageTitle={pageTitle}
+      pageVariant={pageVariant}
+      platformOpts={platformOpts}
+      setColumnVisibility={setColumnVisibility}
+      setOrderArtists={setOrderArtists}
+      setSortArtists={setSortArtists}
+      setViewArtists={setViewArtists}
+      singularName={singularName}
+      sortArtists={sortArtists}
+      sortedArtists={sortedArtists}
+      viewArtists={viewArtists}
+    />
+  );
+
   return (
     <>
-      {(isLoading || isEmptyList) && (
-        <Title
-          colOptions={colOptions}
-          gridOptions={gridOptions}
-          isGridView={isGridView}
-          isListView={isListView}
-          orderArtists={orderArtists}
-          pageTitle={pageTitle}
-          pageVariant={pageVariant}
-          platformOpts={platformOpts}
-          setColumnVisibility={setColumnVisibility}
-          setOrderArtists={setOrderArtists}
-          setSortArtists={setSortArtists}
-          setViewArtists={setViewArtists}
-          singularName={singularName}
-          sortArtists={sortArtists}
-          sortedArtists={sortedArtists}
-          viewArtists={viewArtists}
-        />
-      )}
+      {(isLoading || isEmptyList) && titleBlock}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
         <ViewGrid
@@ -82,24 +84,7 @@ const ArtistArray = ({ pageTitle = 'Artists', pageVariant = 'Artists', singularN
           showFavs={gridOptions.isFavourite}
           showRatings={gridOptions.userRating}
         >
-          <Title
-            colOptions={colOptions}
-            gridOptions={gridOptions}
-            isGridView={isGridView}
-            isListView={isListView}
-            orderArtists={orderArtists}
-            pageTitle={pageTitle}
-            pageVariant={pageVariant}
-            platformOpts={platformOpts}
-            setColumnVisibility={setColumnVisibility}
-            setOrderArtists={setOrderArtists}
-            setSortArtists={setSortArtists}
-            setViewArtists={setViewArtists}
-            singularName={singularName}
-            sortArtists={sortArtists}
-            sortedArtists={sortedArtists}
-            viewArtists={viewArtists}
-          />
+          {titleBlock}
         </ViewGrid>
       )}
       {isListView && (
@@ -110,24 +95,7 @@ const ArtistArray = ({ pageTitle = 'Artists', pageVariant = 'Artists', singularN
           orderKey={orderArtists}
           colOptions={colOptions}
         >
-          <Title
-            colOptions={colOptions}
-            gridOptions={gridOptions}
-            isGridView={isGridView}
-            isListView={isListView}
-            orderArtists={orderArtists}
-            pageTitle={pageTitle}
-            pageVariant={pageVariant}
-            platformOpts={platformOpts}
-            setColumnVisibility={setColumnVisibility}
-            setOrderArtists={setOrderArtists}
-            setSortArtists={setSortArtists}
-            setViewArtists={setViewArtists}
-            singularName={singularName}
-            sortArtists={sortArtists}
-            sortedArtists={sortedArtists}
-            viewArtists={viewArtists}
-          />
+          {titleBlock}
         </ViewList>
       )}
     </>

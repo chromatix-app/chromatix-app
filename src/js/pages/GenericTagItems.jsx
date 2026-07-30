@@ -80,33 +80,35 @@ const GenericTagItems = ({
   const isGridView = !isLoading && !isEmptyList && viewCollectionItems === 'grid';
   const isListView = !isLoading && !isEmptyList && viewCollectionItems === 'list';
 
+  const titleBlock = (
+    <Title
+      collectionId={collectionId}
+      collectionKey={collectionKey}
+      collectionThumb={collectionThumb}
+      collectionThumbMedium={collectionThumbMedium}
+      collectionTitle={collectionTitle}
+      colOptions={colOptions}
+      gridOptions={gridOptions}
+      isGridView={isGridView}
+      isListView={isListView}
+      libraryId={libraryId}
+      orderCollectionItems={orderCollectionItems}
+      platformOpts={platformOpts}
+      setColumnVisibility={setColumnVisibility}
+      setOrderCollectionItems={setOrderCollectionItems}
+      setSortCollectionItems={setSortCollectionItems}
+      setViewCollectionItems={setViewCollectionItems}
+      singularName={singularName}
+      sortCollectionItems={sortCollectionItems}
+      sortedCollectionItems={sortedCollectionItems}
+      variant={variant}
+      viewCollectionItems={viewCollectionItems}
+    />
+  );
+
   return (
     <>
-      {(isLoading || isEmptyList) && (
-        <Title
-          collectionId={collectionId}
-          collectionKey={collectionKey}
-          collectionThumb={collectionThumb}
-          collectionThumbMedium={collectionThumbMedium}
-          collectionTitle={collectionTitle}
-          colOptions={colOptions}
-          gridOptions={gridOptions}
-          isGridView={isGridView}
-          isListView={isListView}
-          libraryId={libraryId}
-          orderCollectionItems={orderCollectionItems}
-          platformOpts={platformOpts}
-          setColumnVisibility={setColumnVisibility}
-          setOrderCollectionItems={setOrderCollectionItems}
-          setSortCollectionItems={setSortCollectionItems}
-          setViewCollectionItems={setViewCollectionItems}
-          singularName={singularName}
-          sortCollectionItems={sortCollectionItems}
-          sortedCollectionItems={sortedCollectionItems}
-          variant={variant}
-          viewCollectionItems={viewCollectionItems}
-        />
-      )}
+      {(isLoading || isEmptyList) && titleBlock}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
         <ViewGrid
@@ -117,29 +119,7 @@ const GenericTagItems = ({
           showFavs={gridOptions.isFavourite}
           showRatings={gridOptions.userRating}
         >
-          <Title
-            collectionId={collectionId}
-            collectionKey={collectionKey}
-            collectionThumb={collectionThumb}
-            collectionThumbMedium={collectionThumbMedium}
-            collectionTitle={collectionTitle}
-            colOptions={colOptions}
-            gridOptions={gridOptions}
-            isGridView={isGridView}
-            isListView={isListView}
-            libraryId={libraryId}
-            orderCollectionItems={orderCollectionItems}
-            platformOpts={platformOpts}
-            setColumnVisibility={setColumnVisibility}
-            setOrderCollectionItems={setOrderCollectionItems}
-            setSortCollectionItems={setSortCollectionItems}
-            setViewCollectionItems={setViewCollectionItems}
-            singularName={singularName}
-            sortCollectionItems={sortCollectionItems}
-            sortedCollectionItems={sortedCollectionItems}
-            variant={variant}
-            viewCollectionItems={viewCollectionItems}
-          />
+          {titleBlock}
         </ViewGrid>
       )}
       {isListView && (
@@ -150,29 +130,7 @@ const GenericTagItems = ({
           orderKey={orderCollectionItems}
           colOptions={colOptions}
         >
-          <Title
-            collectionId={collectionId}
-            collectionKey={collectionKey}
-            collectionThumb={collectionThumb}
-            collectionThumbMedium={collectionThumbMedium}
-            collectionTitle={collectionTitle}
-            colOptions={colOptions}
-            gridOptions={gridOptions}
-            isGridView={isGridView}
-            isListView={isListView}
-            libraryId={libraryId}
-            orderCollectionItems={orderCollectionItems}
-            platformOpts={platformOpts}
-            setColumnVisibility={setColumnVisibility}
-            setOrderCollectionItems={setOrderCollectionItems}
-            setSortCollectionItems={setSortCollectionItems}
-            setViewCollectionItems={setViewCollectionItems}
-            singularName={singularName}
-            sortCollectionItems={sortCollectionItems}
-            sortedCollectionItems={sortedCollectionItems}
-            variant={variant}
-            viewCollectionItems={viewCollectionItems}
-          />
+          {titleBlock}
         </ViewList>
       )}
     </>

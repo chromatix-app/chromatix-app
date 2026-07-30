@@ -44,25 +44,27 @@ const FolderItems = () => {
   const isGridView = !isLoading && !isEmptyList && viewFolders === 'grid';
   const isListView = !isLoading && !isEmptyList && viewFolders === 'list';
 
+  const titleBlock = (
+    <Title
+      colOptions={colOptions}
+      folderId={folderId}
+      isGridView={isGridView}
+      isListView={isListView}
+      optionFoldersOnTop={optionFoldersOnTop}
+      orderFolders={orderFolders}
+      setColumnVisibility={setColumnVisibility}
+      setOrderFolders={setOrderFolders}
+      setSortFolders={setSortFolders}
+      setViewFolders={setViewFolders}
+      sortedFolders={sortedFolders}
+      sortFolders={sortFolders}
+      viewFolders={viewFolders}
+    />
+  );
+
   return (
     <>
-      {(isLoading || isEmptyList) && (
-        <Title
-          colOptions={colOptions}
-          folderId={folderId}
-          isGridView={isGridView}
-          isListView={isListView}
-          optionFoldersOnTop={optionFoldersOnTop}
-          orderFolders={orderFolders}
-          setColumnVisibility={setColumnVisibility}
-          setOrderFolders={setOrderFolders}
-          setSortFolders={setSortFolders}
-          setViewFolders={setViewFolders}
-          sortedFolders={sortedFolders}
-          sortFolders={sortFolders}
-          viewFolders={viewFolders}
-        />
-      )}
+      {(isLoading || isEmptyList) && titleBlock}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
         <ViewGrid
@@ -72,21 +74,7 @@ const FolderItems = () => {
           playingOrder={folderOrder}
           sortKey={sortFolders}
         >
-          <Title
-            colOptions={colOptions}
-            folderId={folderId}
-            isGridView={isGridView}
-            isListView={isListView}
-            optionFoldersOnTop={optionFoldersOnTop}
-            orderFolders={orderFolders}
-            setColumnVisibility={setColumnVisibility}
-            setOrderFolders={setOrderFolders}
-            setSortFolders={setSortFolders}
-            setViewFolders={setViewFolders}
-            sortedFolders={sortedFolders}
-            sortFolders={sortFolders}
-            viewFolders={viewFolders}
-          />
+          {titleBlock}
         </ViewGrid>
       )}
       {isListView && (
@@ -99,21 +87,7 @@ const FolderItems = () => {
           orderKey={orderFolders}
           colOptions={colOptions}
         >
-          <Title
-            colOptions={colOptions}
-            folderId={folderId}
-            isGridView={isGridView}
-            isListView={isListView}
-            optionFoldersOnTop={optionFoldersOnTop}
-            orderFolders={orderFolders}
-            setColumnVisibility={setColumnVisibility}
-            setOrderFolders={setOrderFolders}
-            setSortFolders={setSortFolders}
-            setViewFolders={setViewFolders}
-            sortedFolders={sortedFolders}
-            sortFolders={sortFolders}
-            viewFolders={viewFolders}
-          />
+          {titleBlock}
         </ViewList>
       )}
     </>
