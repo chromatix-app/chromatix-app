@@ -93,7 +93,6 @@
     "crypto-js": "^4.2.0",
     "dashjs": "^5.2.0",
     "dayjs": "^1.11.21",
-    "formik": "^2.4.9",
     "input-otp": "^1.4.2",
     "lodash": "^4.18.1",
     "react": "^18.3.1",
@@ -102,8 +101,7 @@
     "react-router-dom": "^5.3.4",
     "sass": "^1.101.6",
     "semver": "^7.8.5",
-    "sonner": "^2.0.7",
-    "yup": "^1.7.1"
+    "sonner": "^2.0.7"
   },
   "devDependencies": {
     "@eslint-react/eslint-plugin": "^5.18.0",

@@ -2,10 +2,9 @@
 // IMPORTS
 // ======================================================================
 
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 // import { useDispatch } from 'react-redux';
-import { Formik, Form, Field } from 'formik';
-import { object, string } from 'yup';
 import clsx from 'clsx';
 
 import { Button } from 'js/components';
@@ -30,30 +29,41 @@ const initialValues = {
   server: isLocal ? devServer : '',
   username: isLocal ? devUsername : '',
   password: isLocal ? devPassword : '',
-  general: '',
 };
 
 export const PageLoginJelly = () => {
-  const validationSchema = object({
-    server: string()
-      .url('Invalid URL')
-      .test('is-https', 'Server address must use HTTPS', (value) => {
-        if (!value) return false;
-        if (window.location.protocol === 'https:') {
-          return value.toLowerCase().startsWith('https://');
-        }
-        return true;
-      })
-      .required('Server address is required'),
-    username: string().required('Username is required'),
-    password: string().required('Password is required'),
-  });
+  const [values, setValues] = useState(initialValues);
+  const [touched, setTouched] = useState({});
+  const [errors, setErrors] = useState({});
+  const [generalError, setGeneralError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onSubmit = (values, { setFieldTouched, setFieldValue, setFieldError, setSubmitting }) => {
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setValues((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleBlur = (event) => {
+    const { name } = event.target;
+    setTouched((prev) => ({ ...prev, [name]: true }));
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const validationErrors = validate(values);
+    setErrors(validationErrors);
+    setTouched({ server: true, username: true, password: true });
+    setGeneralError(null);
+
+    if (Object.keys(validationErrors).length > 0) return;
+
+    setIsSubmitting(true);
+
     bridge.jellyLogin(values).catch((err) => {
-      setSubmitting(false);
-      setFieldTouched('password', false);
-      setFieldValue('password', '', false);
+      setIsSubmitting(false);
+      setTouched((prev) => ({ ...prev, password: false }));
+      setValues((prev) => ({ ...prev, password: '' }));
       setTimeout(function () {
         if (
           [
@@ -69,16 +79,14 @@ export const PageLoginJelly = () => {
             'SELF_SIGNED_CERT_IN_CHAIN',
           ].includes(err?.error?.code)
         ) {
-          setFieldError(
-            'general',
+          setGeneralError(
             <>
               <p>Sorry, we couldn't log you in.</p>
               <p>Your server must be running and have a valid SSL certificate.</p>
             </>
           );
         } else {
-          setFieldError(
-            'general',
+          setGeneralError(
             <>
               <p>Sorry, we couldn't log you in.</p>
               <p>Are your login details correct?</p>
@@ -102,41 +110,59 @@ export const PageLoginJelly = () => {
           </p>
         </div>
 
-        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-          {({ errors, touched, isSubmitting }) => (
-            <Form className={style.form}>
-              <div className={style.formRow}>
-                <label htmlFor="server">Jellyfin Server Address *</label>
-                <Field type="text" id="server" name="server" placeholder="Example: https://192.168.0.1:8920" />
-                {errors.server && touched.server && <div className={style.errorField}>{errors.server}</div>}
-              </div>
+        <form className={style.form} onSubmit={handleSubmit}>
+          <div className={style.formRow}>
+            <label htmlFor="server">Jellyfin Server Address *</label>
+            <input
+              type="text"
+              id="server"
+              name="server"
+              placeholder="Example: https://192.168.0.1:8920"
+              value={values.server}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.server && touched.server && <div className={style.errorField}>{errors.server}</div>}
+          </div>
 
-              <div className={style.formRow}>
-                <label htmlFor="username">Jellyfin Username *</label>
-                <Field type="text" id="username" name="username" />
-                {errors.username && touched.username && <div className={style.errorField}>{errors.username}</div>}
-              </div>
+          <div className={style.formRow}>
+            <label htmlFor="username">Jellyfin Username *</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={values.username}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.username && touched.username && <div className={style.errorField}>{errors.username}</div>}
+          </div>
 
-              <div className={style.formRow}>
-                <label htmlFor="password">Password *</label>
-                <Field type="password" id="password" name="password" />
-                {errors.password && touched.password && <div className={style.errorField}>{errors.password}</div>}
-              </div>
+          <div className={style.formRow}>
+            <label htmlFor="password">Password *</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={values.password}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.password && touched.password && <div className={style.errorField}>{errors.password}</div>}
+          </div>
 
-              <div className={style.buttonRow}>
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? 'Logging in...' : 'Login with Jellyfin'}
-                </Button>
-              </div>
+          <div className={style.buttonRow}>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Logging in...' : 'Login with Jellyfin'}
+            </Button>
+          </div>
 
-              {errors.general && touched.general && <div className={style.errorGeneral}>{errors.general}</div>}
+          {generalError && <div className={style.errorGeneral}>{generalError}</div>}
 
-              <div className={style.links}>
-                <NavLink to="/">Back to Home</NavLink>
-              </div>
-            </Form>
-          )}
-        </Formik>
+          <div className={style.links}>
+            <NavLink to="/">Back to Home</NavLink>
+          </div>
+        </form>
       </div>
 
       <div className={style.troubleshooting}>
@@ -165,6 +191,37 @@ export const PageLoginJelly = () => {
       <div className={style.legal}>Copyright &copy; {new Date().getFullYear()}</div>
     </div>
   );
+};
+
+// ======================================================================
+// HELPERS
+// ======================================================================
+
+const isValidUrl = (value) => {
+  try {
+    // eslint-disable-next-line no-new
+    new URL(value);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const validate = (values) => {
+  const errors = {};
+
+  if (!values.server) {
+    errors.server = 'Server address is required';
+  } else if (!isValidUrl(values.server)) {
+    errors.server = 'Invalid URL';
+  } else if (window.location.protocol === 'https:' && !values.server.toLowerCase().startsWith('https://')) {
+    errors.server = 'Server address must use HTTPS';
+  }
+
+  if (!values.username) errors.username = 'Username is required';
+  if (!values.password) errors.password = 'Password is required';
+
+  return errors;
 };
 
 // ======================================================================
