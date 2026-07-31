@@ -1,3 +1,23 @@
+# 0.69.0 (2026-07-31)
+
+Features:
+
+- Play and shuffle buttons have been added to artist, album, and playlist context menus.
+- Album, playlist, and collection grid views can now optionally show extra info, such as release dates and total item counts.
+
+Fixes:
+
+- Fixed an issue where editing an album's rating from an artist's album list didn't work.
+
+Code changes:
+
+- Reworked the Jellyfin login form, removing the `formik`/`yup` dependencies in favour of a lighter, self-contained implementation.
+- Reduced duplicated title-rendering logic across the library page components.
+- Outdated local storage state is now migrated to the current shape via a dedicated, tested utility, replacing ad-hoc inline migration logic.
+- Split the DASH playback bundle out of the main build for a smaller initial load.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.68.0 (2026-07-26)
 
 Features:
