@@ -40,12 +40,15 @@ export const PageLoginJelly = () => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setValues((prev) => ({ ...prev, [name]: value }));
+    const nextValues = { ...values, [name]: value };
+    setValues(nextValues);
+    if (touched[name]) setErrors(validate(nextValues));
   };
 
   const handleBlur = (event) => {
     const { name } = event.target;
     setTouched((prev) => ({ ...prev, [name]: true }));
+    setErrors(validate(values));
   };
 
   const handleSubmit = (event) => {
