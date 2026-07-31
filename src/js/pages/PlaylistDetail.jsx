@@ -129,7 +129,7 @@ const Title = ({
   playlistTracks,
   setColumnVisibility,
 }) => {
-  const contextEntries = useContextMenuPlaylists({ playlistId, playlistTitle });
+  const contextEntries = useContextMenuPlaylists({ playlistId, playlistTitle }, { showPlay: false });
 
   return (
     <TitleHeading

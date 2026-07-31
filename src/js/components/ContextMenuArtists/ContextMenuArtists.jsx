@@ -12,8 +12,8 @@ import { useContextMenuArtists } from 'js/hooks';
 // Convenience wrapper that attaches an artist context menu to its children.
 // Renders children untouched if there are no applicable menu entries.
 
-const ContextMenuArtists = ({ artist, showArtist, children }) => {
-  const contextEntries = useContextMenuArtists(artist, { showArtist });
+const ContextMenuArtists = ({ artist, showArtist, showPlay, children }) => {
+  const contextEntries = useContextMenuArtists(artist, { showArtist, showPlay });
 
   return <ContextMenu entries={contextEntries}>{children}</ContextMenu>;
 };

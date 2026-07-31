@@ -140,7 +140,7 @@ const Title = ({
   platformOpts,
   setColumnVisibility,
 }) => {
-  const contextEntries = useContextMenuAlbums({ albumId, artistLink: albumArtistLink });
+  const contextEntries = useContextMenuAlbums({ albumId, artistLink: albumArtistLink }, { showPlay: false });
 
   return (
     <TitleHeading

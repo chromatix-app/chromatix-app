@@ -251,7 +251,7 @@ const Title = ({
   sortedArtistTracks,
   viewArtistAlbums,
 }) => {
-  const contextEntries = useContextMenuArtists({ artistId, title: artistName });
+  const contextEntries = useContextMenuArtists({ artistId, title: artistName }, { showPlay: false });
 
   let subtitle = <>&nbsp;</>;
   // Track view count

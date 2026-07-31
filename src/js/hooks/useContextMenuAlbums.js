@@ -10,10 +10,12 @@ import store from 'js/store/store';
  * @param album - The album to build entries for
  * @param options.showArtist - Show "Go to Artist" (default true; pass false e.g. when already on the artist page)
  * @param options.showAlbum - Show "Go to Album" (default true; pass false e.g. when already on the album page)
+ * @param options.showPlay - Show "Play" / "Shuffle" (default true; pass false e.g. on the album's own detail page,
+ * which already has dedicated play/shuffle buttons)
  * @returns Array of entries for use with the shared MenuEntry renderer
  */
 
-const useContextMenuAlbums = (album, { showArtist = true, showAlbum = true } = {}) => {
+const useContextMenuAlbums = (album, { showArtist = true, showAlbum = true, showPlay = true } = {}) => {
   if (!album) {
     return [];
   }
@@ -126,6 +128,23 @@ const useContextMenuAlbums = (album, { showArtist = true, showAlbum = true } = {
                 itemId: album.albumId,
               });
             },
+          },
+        ]
+      : []),
+    ...(showPlay
+      ? [
+          { variant: 'divider' },
+          {
+            variant: 'action',
+            label: 'Play',
+            icon: 'PlaySmallIcon',
+            onSelect: () => store.dispatch.playerModel.playerLoadAlbum({ albumId: album.albumId }),
+          },
+          {
+            variant: 'action',
+            label: 'Shuffle',
+            icon: 'ShuffleIcon',
+            onSelect: () => store.dispatch.playerModel.playerLoadAlbum({ albumId: album.albumId, isShuffle: true }),
           },
         ]
       : []),
