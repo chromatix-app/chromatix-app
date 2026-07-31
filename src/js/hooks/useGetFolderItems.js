@@ -44,9 +44,9 @@ const useGetFolderItems = (folderId) => {
     : null;
 
   const sortedWithFoldersOnTop =
-    actualSortFolders === 'kind' || !optionFoldersOnTop
+    actualSortFolders === 'kind' || !optionFoldersOnTop || !sortedFolders
       ? sortedFolders
-      : [...sortedFolders]?.sort((a, b) => {
+      : [...sortedFolders].sort((a, b) => {
           if (a.kind === 'aaafolder' && b.kind !== 'aaafolder') return -1;
           if (a.kind !== 'aaafolder' && b.kind === 'aaafolder') return 1;
           return 0;
