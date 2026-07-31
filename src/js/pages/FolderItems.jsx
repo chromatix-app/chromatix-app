@@ -28,6 +28,7 @@ const FolderItems = () => {
     sortFolders,
     orderFolders,
     colOptions,
+    optionFoldersOnTop,
 
     setViewFolders,
     setSortFolders,
@@ -43,24 +44,27 @@ const FolderItems = () => {
   const isGridView = !isLoading && !isEmptyList && viewFolders === 'grid';
   const isListView = !isLoading && !isEmptyList && viewFolders === 'list';
 
+  const titleBlock = (
+    <Title
+      colOptions={colOptions}
+      folderId={folderId}
+      isGridView={isGridView}
+      isListView={isListView}
+      optionFoldersOnTop={optionFoldersOnTop}
+      orderFolders={orderFolders}
+      setColumnVisibility={setColumnVisibility}
+      setOrderFolders={setOrderFolders}
+      setSortFolders={setSortFolders}
+      setViewFolders={setViewFolders}
+      sortedFolders={sortedFolders}
+      sortFolders={sortFolders}
+      viewFolders={viewFolders}
+    />
+  );
+
   return (
     <>
-      {(isLoading || isEmptyList) && (
-        <Title
-          colOptions={colOptions}
-          folderId={folderId}
-          isGridView={isGridView}
-          isListView={isListView}
-          orderFolders={orderFolders}
-          setColumnVisibility={setColumnVisibility}
-          setOrderFolders={setOrderFolders}
-          setSortFolders={setSortFolders}
-          setViewFolders={setViewFolders}
-          sortedFolders={sortedFolders}
-          sortFolders={sortFolders}
-          viewFolders={viewFolders}
-        />
-      )}
+      {(isLoading || isEmptyList) && titleBlock}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
         <ViewGrid
@@ -69,21 +73,9 @@ const FolderItems = () => {
           entries={sortedFolders}
           playingOrder={folderOrder}
           sortKey={sortFolders}
+          showArtist
         >
-          <Title
-            colOptions={colOptions}
-            folderId={folderId}
-            isGridView={isGridView}
-            isListView={isListView}
-            orderFolders={orderFolders}
-            setColumnVisibility={setColumnVisibility}
-            setOrderFolders={setOrderFolders}
-            setSortFolders={setSortFolders}
-            setViewFolders={setViewFolders}
-            sortedFolders={sortedFolders}
-            sortFolders={sortFolders}
-            viewFolders={viewFolders}
-          />
+          {titleBlock}
         </ViewGrid>
       )}
       {isListView && (
@@ -96,20 +88,7 @@ const FolderItems = () => {
           orderKey={orderFolders}
           colOptions={colOptions}
         >
-          <Title
-            colOptions={colOptions}
-            folderId={folderId}
-            isGridView={isGridView}
-            isListView={isListView}
-            orderFolders={orderFolders}
-            setColumnVisibility={setColumnVisibility}
-            setOrderFolders={setOrderFolders}
-            setSortFolders={setSortFolders}
-            setViewFolders={setViewFolders}
-            sortedFolders={sortedFolders}
-            sortFolders={sortFolders}
-            viewFolders={viewFolders}
-          />
+          {titleBlock}
         </ViewList>
       )}
     </>
@@ -121,6 +100,7 @@ const Title = ({
   folderId,
   isGridView,
   isListView,
+  optionFoldersOnTop,
   orderFolders,
   setColumnVisibility,
   setOrderFolders,
@@ -157,11 +137,23 @@ const Title = ({
               orderValue={orderFolders}
               options={[
                 { value: 'sortOrder', label: 'Default' },
-                { value: 'kind', label: 'Kind' },
-                { value: 'title', label: 'Title' },
+                { value: 'title', label: 'Alphabetical' },
               ]}
               setSort={setSortFolders}
               setOrder={setOrderFolders}
+            />
+            <ActionMenu
+              label="Options"
+              icon="CogIcon"
+              setter={setColumnVisibility}
+              entries={[
+                {
+                  variant: 'checkbox',
+                  label: 'Keep folders on top',
+                  attr: 'optionFoldersOnTop',
+                  checked: optionFoldersOnTop,
+                },
+              ]}
             />
           </>
         )}
@@ -182,6 +174,13 @@ const Title = ({
                 label: 'Kind',
                 attr: 'colFoldersKind',
                 checked: colOptions.kind,
+              },
+              { variant: 'divider' },
+              {
+                variant: 'checkbox',
+                label: 'Keep folders on top',
+                attr: 'optionFoldersOnTop',
+                checked: optionFoldersOnTop,
               },
             ]}
           />

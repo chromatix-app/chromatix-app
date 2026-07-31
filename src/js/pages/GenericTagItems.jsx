@@ -35,6 +35,12 @@ const GenericTagItems = ({
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
 
+  // [NOTE] the list view needs its own variant, derived from itemsKey (e.g. 'albumGenreItems'), rather than the
+  // generic grid variant ('albums' / 'artists'). Sorting via the table headers derives its session state key from
+  // this variant, so using the generic one would write the sort to sortAlbums / sortArtists - the keys belonging to
+  // the main Albums / Artists pages - while this page reads from sort{itemsKey}.
+  const listVariant = itemsKey.charAt(0).toLowerCase() + itemsKey.slice(1);
+
   const {
     collectionInfo,
     sortedCollectionItems,
@@ -74,97 +80,57 @@ const GenericTagItems = ({
   const isGridView = !isLoading && !isEmptyList && viewCollectionItems === 'grid';
   const isListView = !isLoading && !isEmptyList && viewCollectionItems === 'list';
 
+  const titleBlock = (
+    <Title
+      collectionId={collectionId}
+      collectionKey={collectionKey}
+      collectionThumb={collectionThumb}
+      collectionThumbMedium={collectionThumbMedium}
+      collectionTitle={collectionTitle}
+      colOptions={colOptions}
+      gridOptions={gridOptions}
+      isGridView={isGridView}
+      isListView={isListView}
+      libraryId={libraryId}
+      orderCollectionItems={orderCollectionItems}
+      platformOpts={platformOpts}
+      setColumnVisibility={setColumnVisibility}
+      setOrderCollectionItems={setOrderCollectionItems}
+      setSortCollectionItems={setSortCollectionItems}
+      setViewCollectionItems={setViewCollectionItems}
+      singularName={singularName}
+      sortCollectionItems={sortCollectionItems}
+      sortedCollectionItems={sortedCollectionItems}
+      variant={variant}
+      viewCollectionItems={viewCollectionItems}
+    />
+  );
+
   return (
     <>
-      {(isLoading || isEmptyList) && (
-        <Title
-          collectionId={collectionId}
-          collectionKey={collectionKey}
-          collectionThumb={collectionThumb}
-          collectionThumbMedium={collectionThumbMedium}
-          collectionTitle={collectionTitle}
-          colOptions={colOptions}
-          gridOptions={gridOptions}
-          isGridView={isGridView}
-          isListView={isListView}
-          libraryId={libraryId}
-          orderCollectionItems={orderCollectionItems}
-          platformOpts={platformOpts}
-          setColumnVisibility={setColumnVisibility}
-          setOrderCollectionItems={setOrderCollectionItems}
-          setSortCollectionItems={setSortCollectionItems}
-          setViewCollectionItems={setViewCollectionItems}
-          singularName={singularName}
-          sortCollectionItems={sortCollectionItems}
-          sortedCollectionItems={sortedCollectionItems}
-          variant={variant}
-          viewCollectionItems={viewCollectionItems}
-        />
-      )}
+      {(isLoading || isEmptyList) && titleBlock}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
         <ViewGrid
           variant={variant}
           entries={sortedCollectionItems}
+          showArtist={gridOptions.artist}
+          showReleaseDate={gridOptions.releaseDate}
           showFavs={gridOptions.isFavourite}
           showRatings={gridOptions.userRating}
         >
-          <Title
-            collectionId={collectionId}
-            collectionKey={collectionKey}
-            collectionThumb={collectionThumb}
-            collectionThumbMedium={collectionThumbMedium}
-            collectionTitle={collectionTitle}
-            colOptions={colOptions}
-            gridOptions={gridOptions}
-            isGridView={isGridView}
-            isListView={isListView}
-            libraryId={libraryId}
-            orderCollectionItems={orderCollectionItems}
-            platformOpts={platformOpts}
-            setColumnVisibility={setColumnVisibility}
-            setOrderCollectionItems={setOrderCollectionItems}
-            setSortCollectionItems={setSortCollectionItems}
-            setViewCollectionItems={setViewCollectionItems}
-            singularName={singularName}
-            sortCollectionItems={sortCollectionItems}
-            sortedCollectionItems={sortedCollectionItems}
-            variant={variant}
-            viewCollectionItems={viewCollectionItems}
-          />
+          {titleBlock}
         </ViewGrid>
       )}
       {isListView && (
         <ViewList
-          variant={variant}
+          variant={listVariant}
           entries={sortedCollectionItems}
           sortKey={sortCollectionItems}
           orderKey={orderCollectionItems}
           colOptions={colOptions}
         >
-          <Title
-            collectionId={collectionId}
-            collectionKey={collectionKey}
-            collectionThumb={collectionThumb}
-            collectionThumbMedium={collectionThumbMedium}
-            collectionTitle={collectionTitle}
-            colOptions={colOptions}
-            gridOptions={gridOptions}
-            isGridView={isGridView}
-            isListView={isListView}
-            libraryId={libraryId}
-            orderCollectionItems={orderCollectionItems}
-            platformOpts={platformOpts}
-            setColumnVisibility={setColumnVisibility}
-            setOrderCollectionItems={setOrderCollectionItems}
-            setSortCollectionItems={setSortCollectionItems}
-            setViewCollectionItems={setViewCollectionItems}
-            singularName={singularName}
-            sortCollectionItems={sortCollectionItems}
-            sortedCollectionItems={sortedCollectionItems}
-            variant={variant}
-            viewCollectionItems={viewCollectionItems}
-          />
+          {titleBlock}
         </ViewList>
       )}
     </>
@@ -196,8 +162,8 @@ const Title = ({
 }) => {
   // Auto-generate configurations based on variant and collectionKey
   const icon = `${collectionKey}Icon`;
-  const gridStatePrefix = variant === 'artists' ? 'gridArtistCollectionItems' : 'gridAlbumCollectionItems';
-  const colStatePrefix = variant === 'artists' ? 'colCollectionArtists' : 'colCollectionAlbums';
+  const gridStatePrefix = variant === 'artists' ? 'gridArtistTagItems' : 'gridAlbumTagItems';
+  const colStatePrefix = variant === 'artists' ? 'colArtistTagItems' : 'colAlbumTagItems';
 
   // Define column field configurations based on variant
   const colFields =
@@ -274,6 +240,22 @@ const Title = ({
                 icon="CogIcon"
                 setter={setColumnVisibility}
                 entries={[
+                  ...(variant !== 'artists'
+                    ? [
+                        {
+                          variant: 'checkbox',
+                          label: 'Show album artists',
+                          attr: `${gridStatePrefix}Artist`,
+                          checked: gridOptions.artist,
+                        },
+                        {
+                          variant: 'checkbox',
+                          label: 'Show release dates',
+                          attr: `${gridStatePrefix}ReleaseDate`,
+                          checked: gridOptions.releaseDate,
+                        },
+                      ]
+                    : []),
                   ...(platformOpts?.enableIsFavourite
                     ? [
                         {

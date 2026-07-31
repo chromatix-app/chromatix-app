@@ -14,6 +14,7 @@ type Entry = {
   releaseDate?: string;
   sortOrder?: number;
   title?: string;
+  totalItems?: number;
   totalTracks?: number;
   trackNumber?: number;
   userRating?: number;
@@ -179,6 +180,7 @@ const getSortFunctions = (sortNumbersFirst: boolean, ignoreLeadingArticles: bool
     discNumber: (a, b) => (a.discNumber ?? 0) - (b.discNumber ?? 0),
     duration: (a, b) => (a.duration ?? 0) - (b.duration ?? 0),
     sortOrder: (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0),
+    totalItems: (a, b) => (a.totalItems ?? 0) - (b.totalItems ?? 0),
     totalTracks: (a, b) => (a.totalTracks ?? 0) - (b.totalTracks ?? 0),
     trackNumber: (a, b) => (a.trackNumber ?? 0) - (b.trackNumber ?? 0),
     userRating: (a, b) => (a.userRating ?? 0) - (b.userRating ?? 0),

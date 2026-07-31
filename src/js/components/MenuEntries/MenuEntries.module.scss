@@ -26,6 +26,11 @@
   height: 1px;
   margin: 4px 7px;
   background: var(--color-secondary-border);
+
+  &:first-child,
+  &:last-child {
+    display: none;
+  }
 }
 
 .actionItem,

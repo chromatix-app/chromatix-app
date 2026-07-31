@@ -59,6 +59,7 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
   // ARTISTS
   if (
     variant === 'artists' ||
+    variant === 'albumArtists' ||
     variant === 'artistCollectionItems' ||
     variant === 'artistGenreItems' ||
     variant === 'artistMoodItems' ||
@@ -685,6 +686,14 @@ const getTableOptions = (variant, artistId, albumId, playlistId, folderId, sortK
         isAsc: sortKey === 'title' && orderKey === 'asc',
         isDesc: sortKey === 'title' && orderKey === 'desc',
         visible: true,
+      },
+      {
+        colKey: 'totalItems',
+        label: variant === 'artistCollections' ? 'Artists' : 'Albums',
+        colWidth: '1fr',
+        isAsc: sortKey === 'totalItems' && orderKey === 'asc',
+        isDesc: sortKey === 'totalItems' && orderKey === 'desc',
+        visible: colOptions?.totalItems !== false,
       },
       {
         colKey: 'addedAt',

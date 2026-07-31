@@ -1,4 +1,4 @@
-// Generated using GitHub Copilot
+// Tests generated using AI
 
 import sortList from './sortList';
 
@@ -842,6 +842,49 @@ describe('Testing userRating field sorting', () => {
     expect(sorted[0].userRating).toBe(5);
     expect(sorted[1].userRating).toBe(3);
     expect(sorted[2].userRating).toBe(1);
+  });
+});
+
+describe('Testing totalItems field sorting', () => {
+  // BASIC TOTALITEMS SORTING
+
+  test('Test sorting by totalItems ascending', () => {
+    const entriesWithTotalItems = [
+      { title: 'Album A', totalItems: 12 },
+      { title: 'Album B', totalItems: 3 },
+      { title: 'Album C', totalItems: 8 },
+    ];
+    const sorted = sortList({ entries: entriesWithTotalItems, options: 'totalItems-asc' });
+    expect(sorted[0].totalItems).toBe(3);
+    expect(sorted[1].totalItems).toBe(8);
+    expect(sorted[2].totalItems).toBe(12);
+  });
+
+  test('Test sorting by totalItems descending', () => {
+    const entriesWithTotalItems = [
+      { title: 'Album A', totalItems: 12 },
+      { title: 'Album B', totalItems: 3 },
+      { title: 'Album C', totalItems: 8 },
+    ];
+    const sorted = sortList({ entries: entriesWithTotalItems, options: 'totalItems-desc' });
+    expect(sorted[0].totalItems).toBe(12);
+    expect(sorted[1].totalItems).toBe(8);
+    expect(sorted[2].totalItems).toBe(3);
+  });
+
+  test('Test sorting by totalItems with missing values', () => {
+    const entriesWithMissingTotalItems = [
+      { title: 'Album A', totalItems: 5 },
+      { title: 'Album B' }, // undefined totalItems
+      { title: 'Album C', totalItems: 2 },
+      { title: 'Album D' }, // undefined totalItems
+    ];
+    const sorted = sortList({ entries: entriesWithMissingTotalItems, options: 'totalItems-asc' });
+    // undefined should be treated as 0
+    expect(sorted[0].title).toBe('Album B');
+    expect(sorted[1].title).toBe('Album D');
+    expect(sorted[2].totalItems).toBe(2);
+    expect(sorted[3].totalItems).toBe(5);
   });
 });
 

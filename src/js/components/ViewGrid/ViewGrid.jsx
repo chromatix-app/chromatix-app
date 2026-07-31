@@ -19,6 +19,7 @@ import {
   StarRating,
 } from 'js/components';
 import { useScrollToTrack, useScrollToVirtualTrack, useWindowSize } from 'js/hooks';
+import { durationToStringMed, formatReleaseYear } from 'js/utils';
 import platformFeatures from 'js/_config/platformFeatures';
 
 import style from './ViewGrid.module.scss';
@@ -44,8 +45,13 @@ const ViewGrid = ({
   entries,
   playingOrder,
   sortKey,
+  showArtist = false,
+  showDuration = false,
   showFavs = false,
   showRatings = false,
+  showReleaseDate = false,
+  showTotalItems = false,
+  showTotalTracks = false,
 }) => {
   const currentService = useSelector(({ appModel }) => appModel.currentService);
   const platformOpts = platformFeatures[currentService] || {};
@@ -112,8 +118,13 @@ const ViewGrid = ({
           playerPlaying={playerPlaying}
           playingOrder={playingOrder}
           sortKey={sortKey}
+          showArtist={showArtist}
+          showDuration={showDuration}
           showFavs={showFavs}
           showRatings={showRatings}
+          showReleaseDate={showReleaseDate}
+          showTotalItems={showTotalItems}
+          showTotalTracks={showTotalTracks}
           titleBlock={children}
           variant={variant}
         />
@@ -136,8 +147,13 @@ const ListBodyStatic = ({
   playerPlaying,
   playingOrder,
   sortKey,
+  showArtist,
+  showDuration,
   showFavs,
   showRatings,
+  showReleaseDate,
+  showTotalItems,
+  showTotalTracks,
   titleBlock,
   variant,
 }) => {
@@ -174,8 +190,13 @@ const ListBodyStatic = ({
                 folderId={folderId}
                 playingOrder={playingOrder}
                 sortKey={sortKey}
+                showArtist={showArtist}
+                showDuration={showDuration}
                 showFavs={showFavs}
                 showRatings={showRatings}
+                showReleaseDate={showReleaseDate}
+                showTotalItems={showTotalItems}
+                showTotalTracks={showTotalTracks}
                 isCurrentlyLoaded={isCurrentlyLoaded(variant, entryKey)}
                 isCurrentlyPlaying={playerPlaying}
                 {...entry}
@@ -209,8 +230,13 @@ const ListBodyVirtual = ({
   isCurrentlyLoaded,
   playerPlaying,
   playingOrder,
+  showArtist,
+  showDuration,
   showFavs,
   showRatings,
+  showReleaseDate,
+  showTotalItems,
+  showTotalTracks,
   sortKey,
   titleBlock,
   variant,
@@ -225,7 +251,19 @@ const ListBodyVirtual = ({
   const initialDimensions = useMemo(
     () => {
       const innerWidth = contentWidth >= 800 ? contentWidth - 60 : contentWidth - 40;
-      return calculateDimensions(variant, iconImage, showRatings, contentWidth, innerWidth, contentBreakpoint);
+      return calculateDimensions(
+        variant,
+        iconImage,
+        showArtist,
+        showDuration,
+        showRatings,
+        showReleaseDate,
+        showTotalItems,
+        showTotalTracks,
+        contentWidth,
+        innerWidth,
+        contentBreakpoint
+      );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -247,7 +285,12 @@ const ListBodyVirtual = ({
       const dimensions = calculateDimensions(
         variant,
         iconImage,
+        showArtist,
+        showDuration,
         showRatings,
+        showReleaseDate,
+        showTotalItems,
+        showTotalTracks,
         outerWidth,
         innerWidth,
         contentBreakpoint
@@ -263,7 +306,21 @@ const ListBodyVirtual = ({
         setToggleColumnHeight((prev) => !prev);
       }
     }
-  }, [variant, iconImage, showRatings, numColumns, rowHeight, queueIsVisible, windowWidth, contentBreakpoint]);
+  }, [
+    variant,
+    iconImage,
+    showArtist,
+    showDuration,
+    showRatings,
+    showReleaseDate,
+    showTotalItems,
+    showTotalTracks,
+    numColumns,
+    rowHeight,
+    queueIsVisible,
+    windowWidth,
+    contentBreakpoint,
+  ]);
 
   // Calculate number of rows needed given total items and columns
   const numRows = numColumns ? Math.ceil(totalItems / numColumns) : 0;
@@ -381,8 +438,13 @@ const ListBodyVirtual = ({
                   folderId={folderId}
                   playingOrder={playingOrder}
                   sortKey={sortKey}
+                  showArtist={showArtist}
+                  showDuration={showDuration}
                   showFavs={showFavs}
                   showRatings={showRatings}
+                  showReleaseDate={showReleaseDate}
+                  showTotalItems={showTotalItems}
+                  showTotalTracks={showTotalTracks}
                   isCurrentlyLoaded={isCurrentlyLoaded(variant, entryKey)}
                   isCurrentlyPlaying={playerPlaying}
                   {...entry}
@@ -413,7 +475,19 @@ const measureElement = (element) => {
 
 // Helper to determine the number of columns based on container width
 // Note: This function must match the grid layout defined in the CSS.
-const calculateDimensions = (variant, iconImage, showRatings, outerWidth, innerWidth, contentBreakpoint) => {
+const calculateDimensions = (
+  variant,
+  iconImage,
+  showArtist,
+  showDuration,
+  showRatings,
+  showReleaseDate,
+  showTotalItems,
+  showTotalTracks,
+  outerWidth,
+  innerWidth,
+  contentBreakpoint
+) => {
   let minColumnWidth = 140;
   if (outerWidth >= 860) {
     minColumnWidth = 180;
@@ -436,7 +510,22 @@ const calculateDimensions = (variant, iconImage, showRatings, outerWidth, innerW
   const isSquareCard = !iconImage || variant === 'folders';
   const imageHeight = isSquareCard ? columnWidth : (columnWidth - 20) * 0.6 + 20;
   const titleHeight = 28.8;
-  const subtitleHeight = ['albums', 'artistAlbums', 'folders'].includes(variant) ? 15.4 : 0;
+  const subtitleLineHeight = 15.4;
+  const subtitleLines =
+    variant === 'folders'
+      ? showArtist
+        ? 1
+        : 0
+      : ['albums', 'artistAlbums'].includes(variant)
+        ? (showArtist ? 1 : 0) + (showReleaseDate ? 1 : 0)
+        : variant === 'playlists'
+          ? (showTotalTracks ? 1 : 0) + (showDuration ? 1 : 0)
+          : variant === 'collections'
+            ? showTotalItems
+              ? 1
+              : 0
+            : 0;
+  const subtitleHeight = subtitleLines * subtitleLineHeight;
   const ratingHeight =
     showRatings && ['albums', 'artistAlbums', 'artists', 'playlists', 'collections'].includes(variant) ? 19 : 0;
   const columnHeight = Math.ceil(imageHeight + titleHeight + subtitleHeight + ratingHeight + rowGap);
@@ -499,14 +588,23 @@ const ListEntry = React.memo(
     playlistItemID,
     trackId,
     type,
+    releaseDate,
+    totalTracks,
+    duration,
+    totalItems,
     isFavourite,
     userRating,
     link,
 
     playingOrder,
     sortKey,
+    showArtist,
+    showDuration,
     showFavs,
     showRatings,
+    showReleaseDate,
+    showTotalItems,
+    showTotalTracks,
 
     isCurrentlyLoaded,
     isCurrentlyPlaying,
@@ -604,6 +702,7 @@ const ListEntry = React.memo(
     // Ratings
     const ratingKeyMap = {
       albums: albumId,
+      artistAlbums: albumId,
       artists: artistId,
       playlists: playlistId,
       collections: collectionId,
@@ -682,9 +781,9 @@ const ListEntry = React.memo(
             </div>
           )}
 
-          {artist && !artistLink && <div className={clsx(style.subtitle, 'text-trim')}>{artist}</div>}
+          {showArtist && artist && !artistLink && <div className={clsx(style.subtitle, 'text-trim')}>{artist}</div>}
 
-          {artist && artistLink && (
+          {showArtist && artist && artistLink && (
             <NavLink
               className={clsx(style.subtitle, 'text-trim')}
               to={artistLink}
@@ -696,10 +795,35 @@ const ListEntry = React.memo(
             </NavLink>
           )}
 
+          {showReleaseDate && releaseDate && (
+            <div className={clsx(style.subtitle, 'text-trim')}>{formatReleaseYear(releaseDate)}</div>
+          )}
+
+          {showTotalTracks && (totalTracks || totalTracks === 0) && (
+            <div className={clsx(style.subtitle, 'text-trim')}>
+              {totalTracks} track{totalTracks !== 1 ? 's' : ''}
+            </div>
+          )}
+
+          {showDuration && <div className={clsx(style.subtitle, 'text-trim')}>{durationToStringMed(duration)}</div>}
+
+          {showTotalItems && (totalItems || totalItems === 0) && (
+            <div className={clsx(style.subtitle, 'text-trim')}>
+              {totalItems} {type === 'artist' ? 'Artist' : 'Album'}
+              {totalItems !== 1 ? 's' : ''}
+            </div>
+          )}
+
           {showRatings && (
             // typeof userRating !== 'undefined' && userRating > 0 && (
             <div className={style.rating}>
-              <StarRating variant="card" type={variant} ratingKey={ratingKey} rating={userRating} editable />
+              <StarRating
+                variant="card"
+                type={lookupType[variant] || variant}
+                ratingKey={ratingKey}
+                rating={userRating}
+                editable
+              />
             </div>
           )}
         </div>

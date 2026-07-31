@@ -45,48 +45,38 @@ const AlbumArray = () => {
   const isGridView = !isLoading && !isEmptyList && viewAlbums === 'grid';
   const isListView = !isLoading && !isEmptyList && viewAlbums === 'list';
 
+  const titleBlock = (
+    <Title
+      colOptions={colOptions}
+      gridOptions={gridOptions}
+      isGridView={isGridView}
+      isListView={isListView}
+      orderAlbums={orderAlbums}
+      platformOpts={platformOpts}
+      setColumnVisibility={setColumnVisibility}
+      setOrderAlbums={setOrderAlbums}
+      setSortAlbums={setSortAlbums}
+      setViewAlbums={setViewAlbums}
+      sortAlbums={sortAlbums}
+      sortedAlbums={sortedAlbums}
+      viewAlbums={viewAlbums}
+    />
+  );
+
   return (
     <>
-      {(isLoading || isEmptyList) && (
-        <Title
-          colOptions={colOptions}
-          gridOptions={gridOptions}
-          isGridView={isGridView}
-          isListView={isListView}
-          orderAlbums={orderAlbums}
-          platformOpts={platformOpts}
-          setColumnVisibility={setColumnVisibility}
-          setOrderAlbums={setOrderAlbums}
-          setSortAlbums={setSortAlbums}
-          setViewAlbums={setViewAlbums}
-          sortAlbums={sortAlbums}
-          sortedAlbums={sortedAlbums}
-          viewAlbums={viewAlbums}
-        />
-      )}
+      {(isLoading || isEmptyList) && titleBlock}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
         <ViewGrid
           variant="albums"
           entries={sortedAlbums}
+          showArtist={gridOptions.artist}
+          showReleaseDate={gridOptions.releaseDate}
           showFavs={gridOptions.isFavourite}
           showRatings={gridOptions.userRating}
         >
-          <Title
-            colOptions={colOptions}
-            gridOptions={gridOptions}
-            isGridView={isGridView}
-            isListView={isListView}
-            orderAlbums={orderAlbums}
-            platformOpts={platformOpts}
-            setColumnVisibility={setColumnVisibility}
-            setOrderAlbums={setOrderAlbums}
-            setSortAlbums={setSortAlbums}
-            setViewAlbums={setViewAlbums}
-            sortAlbums={sortAlbums}
-            sortedAlbums={sortedAlbums}
-            viewAlbums={viewAlbums}
-          />
+          {titleBlock}
         </ViewGrid>
       )}
       {isListView && (
@@ -97,21 +87,7 @@ const AlbumArray = () => {
           orderKey={orderAlbums}
           colOptions={colOptions}
         >
-          <Title
-            colOptions={colOptions}
-            gridOptions={gridOptions}
-            isGridView={isGridView}
-            isListView={isListView}
-            orderAlbums={orderAlbums}
-            platformOpts={platformOpts}
-            setColumnVisibility={setColumnVisibility}
-            setOrderAlbums={setOrderAlbums}
-            setSortAlbums={setSortAlbums}
-            setViewAlbums={setViewAlbums}
-            sortAlbums={sortAlbums}
-            sortedAlbums={sortedAlbums}
-            viewAlbums={viewAlbums}
-          />
+          {titleBlock}
         </ViewList>
       )}
     </>
@@ -177,6 +153,18 @@ const Title = ({
               icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
+                {
+                  variant: 'checkbox',
+                  label: 'Show album artists',
+                  attr: 'gridAlbumsArtist',
+                  checked: gridOptions.artist,
+                },
+                {
+                  variant: 'checkbox',
+                  label: 'Show release dates',
+                  attr: 'gridAlbumsReleaseDate',
+                  checked: gridOptions.releaseDate,
+                },
                 ...(platformOpts?.enableIsFavourite
                   ? [
                       {

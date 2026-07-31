@@ -45,43 +45,36 @@ const AlbumCollectionArray = () => {
   const isGridView = !isLoading && !isEmptyList && viewCollections === 'grid';
   const isListView = !isLoading && !isEmptyList && viewCollections === 'list';
 
+  const titleBlock = (
+    <Title
+      colOptions={colOptions}
+      gridOptions={gridOptions}
+      isGridView={isGridView}
+      isListView={isListView}
+      orderCollections={orderCollections}
+      platformOpts={platformOpts}
+      setColumnVisibility={setColumnVisibility}
+      setOrderCollections={setOrderCollections}
+      setSortCollections={setSortCollections}
+      setViewCollections={setViewCollections}
+      sortCollections={sortCollections}
+      sortedCollections={sortedCollections}
+      viewCollections={viewCollections}
+    />
+  );
+
   return (
     <>
-      {(isLoading || isEmptyList) && (
-        <Title
-          colOptions={colOptions}
-          gridOptions={gridOptions}
-          isGridView={isGridView}
-          isListView={isListView}
-          orderCollections={orderCollections}
-          platformOpts={platformOpts}
-          setColumnVisibility={setColumnVisibility}
-          setOrderCollections={setOrderCollections}
-          setSortCollections={setSortCollections}
-          setViewCollections={setViewCollections}
-          sortCollections={sortCollections}
-          sortedCollections={sortedCollections}
-          viewCollections={viewCollections}
-        />
-      )}
+      {(isLoading || isEmptyList) && titleBlock}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
-        <ViewGrid variant="collections" entries={sortedCollections} showRatings={gridOptions.userRating}>
-          <Title
-            colOptions={colOptions}
-            gridOptions={gridOptions}
-            isGridView={isGridView}
-            isListView={isListView}
-            orderCollections={orderCollections}
-            platformOpts={platformOpts}
-            setColumnVisibility={setColumnVisibility}
-            setOrderCollections={setOrderCollections}
-            setSortCollections={setSortCollections}
-            setViewCollections={setViewCollections}
-            sortCollections={sortCollections}
-            sortedCollections={sortedCollections}
-            viewCollections={viewCollections}
-          />
+        <ViewGrid
+          variant="collections"
+          entries={sortedCollections}
+          showTotalItems={gridOptions.totalItems}
+          showRatings={gridOptions.userRating}
+        >
+          {titleBlock}
         </ViewGrid>
       )}
       {isListView && (
@@ -92,21 +85,7 @@ const AlbumCollectionArray = () => {
           orderKey={orderCollections}
           colOptions={colOptions}
         >
-          <Title
-            colOptions={colOptions}
-            gridOptions={gridOptions}
-            isGridView={isGridView}
-            isListView={isListView}
-            orderCollections={orderCollections}
-            platformOpts={platformOpts}
-            setColumnVisibility={setColumnVisibility}
-            setOrderCollections={setOrderCollections}
-            setSortCollections={setSortCollections}
-            setViewCollections={setViewCollections}
-            sortCollections={sortCollections}
-            sortedCollections={sortedCollections}
-            viewCollections={viewCollections}
-          />
+          {titleBlock}
         </ViewList>
       )}
     </>
@@ -159,6 +138,7 @@ const Title = ({
               orderValue={orderCollections}
               options={[
                 { value: 'title', label: 'Alphabetical' },
+                { value: 'totalItems', label: 'Total albums' },
                 ...(platformOpts?.enableAddedAt ? [{ value: 'addedAt', label: 'Date added' }] : []),
                 ...(platformOpts?.enableUserRating ? [{ value: 'userRating', label: 'Rating' }] : []),
               ]}
@@ -170,12 +150,18 @@ const Title = ({
               icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
+                {
+                  variant: 'checkbox',
+                  label: 'Show total albums',
+                  attr: 'gridAlbumCollectionsTotalItems',
+                  checked: gridOptions.totalItems,
+                },
                 ...(platformOpts?.enableUserRating
                   ? [
                       {
                         variant: 'checkbox',
                         label: 'Show star ratings',
-                        attr: 'gridCollectionsUserRating',
+                        attr: 'gridAlbumCollectionsUserRating',
                         checked: gridOptions.userRating,
                       },
                     ]
@@ -196,12 +182,18 @@ const Title = ({
                 disabled: true,
                 checked: true,
               },
+              {
+                variant: 'checkbox',
+                label: 'Total albums',
+                attr: 'colAlbumCollectionsTotalItems',
+                checked: colOptions.totalItems,
+              },
               ...(platformOpts?.enableAddedAt
                 ? [
                     {
                       variant: 'checkbox',
                       label: 'Added',
-                      attr: 'colCollectionAddedAt',
+                      attr: 'colAlbumCollectionsAddedAt',
                       checked: colOptions.addedAt,
                     },
                   ]
@@ -211,7 +203,7 @@ const Title = ({
                     {
                       variant: 'checkbox',
                       label: 'Rating',
-                      attr: 'colCollectionUserRating',
+                      attr: 'colAlbumCollectionsUserRating',
                       checked: colOptions.userRating,
                     },
                   ]

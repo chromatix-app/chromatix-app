@@ -1,4 +1,4 @@
-// Generated using GitHub Copilot
+// Tests generated using AI
 
 // Real-world user agent strings for use in tests.
 // Source: https://www.useragents.me / browser vendor release notes.

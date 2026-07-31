@@ -12,6 +12,7 @@ const useGetCollectionArray = (collectionKey) => {
   const platformOpts = platformFeatures[currentService] || {};
 
   // const mediaType = collectionKey.includes('Artist') ? 'Artist' : 'Album';
+  const isCollection = collectionKey.includes('Collections');
 
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const currentLibraryId = currentLibrary?.libraryId;
@@ -20,10 +21,14 @@ const useGetCollectionArray = (collectionKey) => {
   const sortCollections = useSelector(({ sessionModel }) => sessionModel[`sort${collectionKey}`]);
   const orderCollections = useSelector(({ sessionModel }) => sessionModel[`order${collectionKey}`]);
 
-  const gridCollectionsUserRating = useSelector(({ sessionModel }) => sessionModel.gridCollectionsUserRating);
+  // [NOTE] for collection listings, collectionKey is 'ArtistCollections' or 'AlbumCollections', which matches the
+  // suffix used by this view's session state keys. Tag listings have no grid / column settings of their own.
+  const gridTotalItems = useSelector(({ sessionModel }) => sessionModel[`grid${collectionKey}TotalItems`]);
+  const gridUserRating = useSelector(({ sessionModel }) => sessionModel[`grid${collectionKey}UserRating`]);
 
-  const colCollectionAddedAt = useSelector(({ sessionModel }) => sessionModel.colCollectionAddedAt);
-  const colCollectionUserRating = useSelector(({ sessionModel }) => sessionModel.colCollectionUserRating);
+  const colTotalItems = useSelector(({ sessionModel }) => sessionModel[`col${collectionKey}TotalItems`]);
+  const colAddedAt = useSelector(({ sessionModel }) => sessionModel[`col${collectionKey}AddedAt`]);
+  const colUserRating = useSelector(({ sessionModel }) => sessionModel[`col${collectionKey}UserRating`]);
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
   const optionSortIgnoreLeadingArticles = useSelector(
@@ -33,10 +38,9 @@ const useGetCollectionArray = (collectionKey) => {
   // prevent sorting by a hidden field
   const allowedSort = {
     title: true,
-    addedAt:
-      platformOpts.enableAddedAt &&
-      (viewCollections === 'grid' || (viewCollections === 'list' && colCollectionAddedAt)),
-    userRating: viewCollections === 'grid' || (viewCollections === 'list' && colCollectionUserRating),
+    totalItems: isCollection && (viewCollections === 'grid' || (viewCollections === 'list' && colTotalItems)),
+    addedAt: platformOpts.enableAddedAt && (viewCollections === 'grid' || (viewCollections === 'list' && colAddedAt)),
+    userRating: viewCollections === 'grid' || (viewCollections === 'list' && colUserRating),
   };
   const actualSortCollections = allowedSort[sortCollections] ? sortCollections : 'title';
   const actualOrderCollections = allowedSort[sortCollections] ? orderCollections : 'asc';
@@ -81,12 +85,12 @@ const useGetCollectionArray = (collectionKey) => {
   };
 
   useEffect(() => {
-    if (collectionKey.includes('Collections')) {
+    if (isCollection) {
       bridge.getAllCollections();
     } else {
       bridge.getAllTags(collectionKey);
     }
-  }, [collectionKey]);
+  }, [collectionKey, isCollection]);
 
   return {
     viewCollections,
@@ -94,12 +98,14 @@ const useGetCollectionArray = (collectionKey) => {
     orderCollections: actualOrderCollections,
 
     gridOptions: {
-      userRating: gridCollectionsUserRating,
+      ...(isCollection && { totalItems: gridTotalItems }),
+      userRating: gridUserRating,
     },
 
     colOptions: {
-      addedAt: platformOpts.enableAddedAt && colCollectionAddedAt,
-      userRating: colCollectionUserRating,
+      ...(isCollection && { totalItems: colTotalItems }),
+      addedAt: platformOpts.enableAddedAt && colAddedAt,
+      userRating: colUserRating,
       isFavourite: false,
     },
 
