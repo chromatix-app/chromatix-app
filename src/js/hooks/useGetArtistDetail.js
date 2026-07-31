@@ -22,6 +22,8 @@ const useGetArtistDetail = ({ variant, libraryId, artistId }) => {
   const artistRating = artistInfo?.userRating;
   const artistIsFavourite = artistInfo?.isFavourite;
 
+  const gridArtistAlbumsArtist = useSelector(({ sessionModel }) => sessionModel.gridArtistAlbumsArtist);
+  const gridArtistAlbumsReleaseDate = useSelector(({ sessionModel }) => sessionModel.gridArtistAlbumsReleaseDate);
   const gridArtistAlbumsUserRating = useSelector(({ sessionModel }) => sessionModel.gridArtistAlbumsUserRating);
   const gridArtistAlbumsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridArtistAlbumsIsFavourite);
   const artistAlbumsGroupByType = useSelector(({ sessionModel }) => sessionModel.artistAlbumsGroupByType);
@@ -323,6 +325,8 @@ const useGetArtistDetail = ({ variant, libraryId, artistId }) => {
     artistAlbumsGroupByType,
 
     gridOptions: {
+      artist: gridArtistAlbumsArtist,
+      releaseDate: gridArtistAlbumsReleaseDate,
       userRating: platformOpts.enableUserRating && gridArtistAlbumsUserRating,
       isFavourite: platformOpts.enableIsFavourite && gridArtistAlbumsIsFavourite,
     },

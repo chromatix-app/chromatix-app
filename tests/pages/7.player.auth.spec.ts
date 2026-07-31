@@ -1,4 +1,4 @@
-// Generated using GitHub Copilot
+// Tests generated using AI
 
 /**
  * Player Playback Tests

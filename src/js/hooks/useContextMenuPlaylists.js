@@ -7,10 +7,12 @@ import store from 'js/store/store';
  * (playlistId, playlistTitle, link).
  * Pass link (e.g. from grid/list entries) to show "Go to playlist"; omit it on the playlist's own detail page.
  * @param playlist - The playlist to build entries for
+ * @param options.showPlay - Show "Play" / "Shuffle" (default true; pass false e.g. on the playlist's own detail
+ * page, which already has dedicated play/shuffle buttons)
  * @returns Array of entries for use with the shared MenuEntry renderer
  */
 
-const useContextMenuPlaylists = (playlist) => {
+const useContextMenuPlaylists = (playlist, { showPlay = true } = {}) => {
   if (!playlist) {
     return [];
   }
@@ -48,6 +50,23 @@ const useContextMenuPlaylists = (playlist) => {
           },
         }),
     },
+    ...(showPlay
+      ? [
+          { variant: 'divider' },
+          {
+            variant: 'action',
+            label: 'Play',
+            icon: 'PlaySmallIcon',
+            onSelect: () => store.dispatch.playerModel.playerLoadPlaylist({ playlistId }),
+          },
+          {
+            variant: 'action',
+            label: 'Shuffle',
+            icon: 'ShuffleIcon',
+            onSelect: () => store.dispatch.playerModel.playerLoadPlaylist({ playlistId, isShuffle: true }),
+          },
+        ]
+      : []),
     ...(link
       ? [{ variant: 'divider' }, { variant: 'action', label: 'Go to playlist', icon: 'PlaylistIcon', to: link }]
       : []),

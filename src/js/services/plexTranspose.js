@@ -346,6 +346,7 @@ const transposeCollectionData = (collection, libraryId, serverBaseUrl, accessTok
     addedAt: collection.addedAt,
     userRating: collection.userRating,
     type: collection.subtype,
+    totalItems: collection.childCount,
     link:
       '/libraries/' +
       libraryId +

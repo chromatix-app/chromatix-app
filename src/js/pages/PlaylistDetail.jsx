@@ -68,29 +68,31 @@ const PlaylistDetail = () => {
   const isLoaded = playingVariant === 'playlists' && playingPlaylistId === playlistId;
   const isPlaying = isLoaded && playerPlaying;
 
+  const titleBlock = (
+    <Title
+      colOptions={colOptions}
+      doPlay={doPlay}
+      isListView={isListView}
+      isLoaded={isLoaded}
+      isPlaying={isPlaying}
+      libraryId={libraryId}
+      platformOpts={platformOpts}
+      playlistDurationString={playlistDurationString}
+      playlistId={playlistId}
+      playlistIsFavourite={playlistIsFavourite}
+      playlistRating={playlistRating}
+      playlistThumb={playlistThumb}
+      playlistThumbMedium={playlistThumbMedium}
+      playlistTitle={playlistTitle}
+      playlistTrackCount={playlistTrackCount}
+      playlistTracks={playlistTracks}
+      setColumnVisibility={setColumnVisibility}
+    />
+  );
+
   return (
     <>
-      {(isLoading || isEmptyList) && (
-        <Title
-          colOptions={colOptions}
-          doPlay={doPlay}
-          isListView={isListView}
-          isLoaded={isLoaded}
-          isPlaying={isPlaying}
-          libraryId={libraryId}
-          platformOpts={platformOpts}
-          playlistDurationString={playlistDurationString}
-          playlistId={playlistId}
-          playlistIsFavourite={playlistIsFavourite}
-          playlistRating={playlistRating}
-          playlistThumb={playlistThumb}
-          playlistThumbMedium={playlistThumbMedium}
-          playlistTitle={playlistTitle}
-          playlistTrackCount={playlistTrackCount}
-          playlistTracks={playlistTracks}
-          setColumnVisibility={setColumnVisibility}
-        />
-      )}
+      {(isLoading || isEmptyList) && titleBlock}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isListView && (
         <ViewList
@@ -101,25 +103,7 @@ const PlaylistDetail = () => {
           sortString={playlistSortString}
           colOptions={colOptions}
         >
-          <Title
-            colOptions={colOptions}
-            doPlay={doPlay}
-            isListView={isListView}
-            isLoaded={isLoaded}
-            isPlaying={isPlaying}
-            libraryId={libraryId}
-            platformOpts={platformOpts}
-            playlistDurationString={playlistDurationString}
-            playlistId={playlistId}
-            playlistIsFavourite={playlistIsFavourite}
-            playlistRating={playlistRating}
-            playlistThumb={playlistThumb}
-            playlistThumbMedium={playlistThumbMedium}
-            playlistTitle={playlistTitle}
-            playlistTrackCount={playlistTrackCount}
-            playlistTracks={playlistTracks}
-            setColumnVisibility={setColumnVisibility}
-          />
+          {titleBlock}
         </ViewList>
       )}
     </>
@@ -145,7 +129,7 @@ const Title = ({
   playlistTracks,
   setColumnVisibility,
 }) => {
-  const contextEntries = useContextMenuPlaylists({ playlistId, playlistTitle });
+  const contextEntries = useContextMenuPlaylists({ playlistId, playlistTitle }, { showPlay: false });
 
   return (
     <TitleHeading

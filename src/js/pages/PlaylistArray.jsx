@@ -46,48 +46,38 @@ const PlaylistArray = () => {
   const isGridView = !isLoading && !isEmptyList && viewPlaylists === 'grid';
   const isListView = !isLoading && !isEmptyList && viewPlaylists === 'list';
 
+  const titleBlock = (
+    <Title
+      colOptions={colOptions}
+      gridOptions={gridOptions}
+      isGridView={isGridView}
+      isListView={isListView}
+      orderPlaylists={orderPlaylists}
+      platformOpts={platformOpts}
+      setColumnVisibility={setColumnVisibility}
+      setOrderPlaylists={setOrderPlaylists}
+      setSortPlaylists={setSortPlaylists}
+      setViewPlaylists={setViewPlaylists}
+      sortedPlaylists={sortedPlaylists}
+      sortPlaylists={sortPlaylists}
+      viewPlaylists={viewPlaylists}
+    />
+  );
+
   return (
     <>
-      {(isLoading || isEmptyList) && (
-        <Title
-          colOptions={colOptions}
-          gridOptions={gridOptions}
-          isGridView={isGridView}
-          isListView={isListView}
-          orderPlaylists={orderPlaylists}
-          platformOpts={platformOpts}
-          setColumnVisibility={setColumnVisibility}
-          setOrderPlaylists={setOrderPlaylists}
-          setSortPlaylists={setSortPlaylists}
-          setViewPlaylists={setViewPlaylists}
-          sortedPlaylists={sortedPlaylists}
-          sortPlaylists={sortPlaylists}
-          viewPlaylists={viewPlaylists}
-        />
-      )}
+      {(isLoading || isEmptyList) && titleBlock}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
         <ViewGrid
           variant="playlists"
           entries={sortedPlaylists}
+          showTotalTracks={gridOptions.totalTracks}
+          showDuration={gridOptions.duration}
           showFavs={gridOptions.isFavourite}
           showRatings={gridOptions.userRating}
         >
-          <Title
-            colOptions={colOptions}
-            gridOptions={gridOptions}
-            isGridView={isGridView}
-            isListView={isListView}
-            orderPlaylists={orderPlaylists}
-            platformOpts={platformOpts}
-            setColumnVisibility={setColumnVisibility}
-            setOrderPlaylists={setOrderPlaylists}
-            setSortPlaylists={setSortPlaylists}
-            setViewPlaylists={setViewPlaylists}
-            sortedPlaylists={sortedPlaylists}
-            sortPlaylists={sortPlaylists}
-            viewPlaylists={viewPlaylists}
-          />
+          {titleBlock}
         </ViewGrid>
       )}
       {isListView && (
@@ -98,21 +88,7 @@ const PlaylistArray = () => {
           orderKey={orderPlaylists}
           colOptions={colOptions}
         >
-          <Title
-            colOptions={colOptions}
-            gridOptions={gridOptions}
-            isGridView={isGridView}
-            isListView={isListView}
-            orderPlaylists={orderPlaylists}
-            platformOpts={platformOpts}
-            setColumnVisibility={setColumnVisibility}
-            setOrderPlaylists={setOrderPlaylists}
-            setSortPlaylists={setSortPlaylists}
-            setViewPlaylists={setViewPlaylists}
-            sortedPlaylists={sortedPlaylists}
-            sortPlaylists={sortPlaylists}
-            viewPlaylists={viewPlaylists}
-          />
+          {titleBlock}
         </ViewList>
       )}
     </>
@@ -182,6 +158,18 @@ const Title = ({
               icon="CogIcon"
               setter={setColumnVisibility}
               entries={[
+                {
+                  variant: 'checkbox',
+                  label: 'Show total tracks',
+                  attr: 'gridPlaylistsTotalTracks',
+                  checked: gridOptions.totalTracks,
+                },
+                {
+                  variant: 'checkbox',
+                  label: 'Show durations',
+                  attr: 'gridPlaylistsDuration',
+                  checked: gridOptions.duration,
+                },
                 ...(platformOpts?.enableIsFavourite
                   ? [
                       {

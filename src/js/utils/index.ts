@@ -10,6 +10,7 @@ export { default as getDashSrc } from './getDashSrc';
 export { default as getEnvironment } from './getEnvironment';
 export { default as getLocalStorage } from './getLocalStorage';
 export { default as getTrackKeys } from './getTrackKeys';
+export { default as migrateSessionState } from './migrateSessionState';
 export { default as pageWasReloaded } from './pageWasReloaded';
 export { default as raceToSuccess } from './raceToSuccess';
 export { default as requiresTranscoding } from './requiresTranscoding';

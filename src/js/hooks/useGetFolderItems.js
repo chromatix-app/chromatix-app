@@ -15,6 +15,7 @@ const useGetFolderItems = (folderId) => {
 
   const colFoldersKind = useSelector(({ sessionModel }) => sessionModel.colFoldersKind);
 
+  const optionFoldersOnTop = useSelector(({ sessionModel }) => sessionModel.optionFoldersOnTop);
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
   const optionSortIgnoreLeadingArticles = useSelector(
     ({ sessionModel }) => sessionModel.optionSortIgnoreLeadingArticles
@@ -24,7 +25,7 @@ const useGetFolderItems = (folderId) => {
   const allowedSort = {
     sortOrder: true,
     title: true,
-    kind: viewFolders === 'grid' || (viewFolders === 'list' && colFoldersKind),
+    kind: viewFolders === 'list' && colFoldersKind,
   };
   const actualSortFolders = allowedSort[sortFolders] ? sortFolders : 'title';
   const actualOrderFolders = allowedSort[sortFolders] ? orderFolders : 'asc';
@@ -43,9 +44,9 @@ const useGetFolderItems = (folderId) => {
     : null;
 
   const sortedWithFoldersOnTop =
-    actualSortFolders === 'kind'
+    actualSortFolders === 'kind' || !optionFoldersOnTop || !sortedFolders
       ? sortedFolders
-      : sortedFolders?.sort((a, b) => {
+      : [...sortedFolders].sort((a, b) => {
           if (a.kind === 'aaafolder' && b.kind !== 'aaafolder') return -1;
           if (a.kind !== 'aaafolder' && b.kind === 'aaafolder') return 1;
           return 0;
@@ -99,6 +100,7 @@ const useGetFolderItems = (folderId) => {
     colOptions: {
       kind: colFoldersKind,
     },
+    optionFoldersOnTop,
 
     setViewFolders,
     setSortFolders,

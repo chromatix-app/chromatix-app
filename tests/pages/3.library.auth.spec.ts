@@ -1,4 +1,4 @@
-// Generated using GitHub Copilot
+// Tests generated using AI
 
 import { test } from '@playwright/test';
 import { readFileSync } from 'fs';
@@ -62,7 +62,7 @@ test.describe('library pages match snapshots', () => {
   });
 
   test('album collection detail page matches snapshot', async ({ page }) => {
-    await snapshotPage(page, `/libraries/${libraryId}/album-collections/165459`, '012-album-collection-detail');
+    await snapshotPage(page, `/libraries/${libraryId}/album-collections/165433`, '012-album-collection-detail');
   });
 
   test('artist genres page matches snapshot', async ({ page }) => {

@@ -14,19 +14,20 @@ const useGetArtistArray = ({ variant }) => {
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const currentLibraryId = currentLibrary?.libraryId;
 
-  const viewArtists = useSelector(({ sessionModel }) => sessionModel.viewArtists);
-  const sortArtists = useSelector(({ sessionModel }) => sessionModel.sortArtists);
-  const orderArtists = useSelector(({ sessionModel }) => sessionModel.orderArtists);
+  // [NOTE] variant is 'Artists' or 'AlbumArtists', which matches the suffix used by this view's session state keys
+  const viewArtists = useSelector(({ sessionModel }) => sessionModel[`view${variant}`]);
+  const sortArtists = useSelector(({ sessionModel }) => sessionModel[`sort${variant}`]);
+  const orderArtists = useSelector(({ sessionModel }) => sessionModel[`order${variant}`]);
 
-  const gridArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.gridArtistsUserRating);
-  const gridArtistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.gridArtistsIsFavourite);
+  const gridUserRating = useSelector(({ sessionModel }) => sessionModel[`grid${variant}UserRating`]);
+  const gridIsFavourite = useSelector(({ sessionModel }) => sessionModel[`grid${variant}IsFavourite`]);
 
-  const colArtistsCountry = useSelector(({ sessionModel }) => sessionModel.colArtistsCountry);
-  const colArtistsGenre = useSelector(({ sessionModel }) => sessionModel.colArtistsGenre);
-  const colArtistsAddedAt = useSelector(({ sessionModel }) => sessionModel.colArtistsAddedAt);
-  const colArtistsLastPlayed = useSelector(({ sessionModel }) => sessionModel.colArtistsLastPlayed);
-  const colArtistsUserRating = useSelector(({ sessionModel }) => sessionModel.colArtistsUserRating);
-  const colArtistsIsFavourite = useSelector(({ sessionModel }) => sessionModel.colArtistsIsFavourite);
+  const colCountry = useSelector(({ sessionModel }) => sessionModel[`col${variant}Country`]);
+  const colGenre = useSelector(({ sessionModel }) => sessionModel[`col${variant}Genre`]);
+  const colAddedAt = useSelector(({ sessionModel }) => sessionModel[`col${variant}AddedAt`]);
+  const colLastPlayed = useSelector(({ sessionModel }) => sessionModel[`col${variant}LastPlayed`]);
+  const colUserRating = useSelector(({ sessionModel }) => sessionModel[`col${variant}UserRating`]);
+  const colIsFavourite = useSelector(({ sessionModel }) => sessionModel[`col${variant}IsFavourite`]);
 
   const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
   const optionSortIgnoreLeadingArticles = useSelector(
@@ -36,15 +37,13 @@ const useGetArtistArray = ({ variant }) => {
   // prevent sorting by a hidden field
   const allowedSort = {
     title: true,
-    addedAt: platformOpts.enableAddedAt && (viewArtists === 'grid' || (viewArtists === 'list' && colArtistsAddedAt)),
-    country: platformOpts.enableCountry && viewArtists === 'list' && colArtistsCountry,
-    lastPlayed:
-      platformOpts.enableLastPlayed && (viewArtists === 'grid' || (viewArtists === 'list' && colArtistsLastPlayed)),
-    genre: viewArtists === 'list' && colArtistsGenre,
-    userRating:
-      platformOpts.enableUserRating && (viewArtists === 'grid' || (viewArtists === 'list' && colArtistsUserRating)),
+    addedAt: platformOpts.enableAddedAt && (viewArtists === 'grid' || (viewArtists === 'list' && colAddedAt)),
+    country: platformOpts.enableCountry && viewArtists === 'list' && colCountry,
+    lastPlayed: platformOpts.enableLastPlayed && (viewArtists === 'grid' || (viewArtists === 'list' && colLastPlayed)),
+    genre: viewArtists === 'list' && colGenre,
+    userRating: platformOpts.enableUserRating && (viewArtists === 'grid' || (viewArtists === 'list' && colUserRating)),
     isFavourite:
-      platformOpts.enableIsFavourite && (viewArtists === 'grid' || (viewArtists === 'list' && colArtistsIsFavourite)),
+      platformOpts.enableIsFavourite && (viewArtists === 'grid' || (viewArtists === 'list' && colIsFavourite)),
   };
   const actualSortArtists = allowedSort[sortArtists] ? sortArtists : 'title';
   const actualOrderArtists = allowedSort[sortArtists] ? orderArtists : 'asc';
@@ -66,21 +65,21 @@ const useGetArtistArray = ({ variant }) => {
 
   const setViewArtists = (viewArtists) => {
     dispatch.sessionModel.setSessionState({
-      viewArtists,
+      [`view${variant}`]: viewArtists,
     });
   };
 
   const setSortArtists = (sortArtists, orderArtists) => {
     dispatch.sessionModel.setSessionState({
-      sortArtists,
-      ...(orderArtists !== undefined && { orderArtists }),
+      [`sort${variant}`]: sortArtists,
+      ...(orderArtists !== undefined && { [`order${variant}`]: orderArtists }),
     });
   };
 
   const setOrderArtists = (orderArtists) => {
     dispatch.sessionModel.setSessionState({
-      sortArtists: actualSortArtists,
-      orderArtists,
+      [`sort${variant}`]: actualSortArtists,
+      [`order${variant}`]: orderArtists,
     });
   };
 
@@ -104,17 +103,17 @@ const useGetArtistArray = ({ variant }) => {
     orderArtists: actualOrderArtists,
 
     gridOptions: {
-      userRating: platformOpts.enableUserRating && gridArtistsUserRating,
-      isFavourite: platformOpts.enableIsFavourite && gridArtistsIsFavourite,
+      userRating: platformOpts.enableUserRating && gridUserRating,
+      isFavourite: platformOpts.enableIsFavourite && gridIsFavourite,
     },
 
     colOptions: {
-      country: platformOpts.enableCountry && colArtistsCountry,
-      genre: colArtistsGenre,
-      addedAt: platformOpts.enableAddedAt && colArtistsAddedAt,
-      lastPlayed: platformOpts.enableLastPlayed && colArtistsLastPlayed,
-      userRating: platformOpts.enableUserRating && colArtistsUserRating,
-      isFavourite: platformOpts.enableIsFavourite && colArtistsIsFavourite,
+      country: platformOpts.enableCountry && colCountry,
+      genre: colGenre,
+      addedAt: platformOpts.enableAddedAt && colAddedAt,
+      lastPlayed: platformOpts.enableLastPlayed && colLastPlayed,
+      userRating: platformOpts.enableUserRating && colUserRating,
+      isFavourite: platformOpts.enableIsFavourite && colIsFavourite,
     },
 
     setViewArtists,

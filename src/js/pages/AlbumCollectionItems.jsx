@@ -73,62 +73,45 @@ const AlbumCollectionItems = () => {
   const isGridView = !isLoading && !isEmptyList && viewCollectionItems === 'grid';
   const isListView = !isLoading && !isEmptyList && viewCollectionItems === 'list';
 
+  const titleBlock = (
+    <Title
+      collectionId={collectionId}
+      collectionRating={collectionRating}
+      collectionThumb={collectionThumb}
+      collectionThumbMedium={collectionThumbMedium}
+      collectionTitle={collectionTitle}
+      colOptions={colOptions}
+      contextEntries={contextEntries}
+      gridOptions={gridOptions}
+      isGridView={isGridView}
+      isListView={isListView}
+      libraryId={libraryId}
+      orderCollectionItems={orderCollectionItems}
+      platformOpts={platformOpts}
+      setColumnVisibility={setColumnVisibility}
+      setOrderCollectionItems={setOrderCollectionItems}
+      setSortCollectionItems={setSortCollectionItems}
+      setViewCollectionItems={setViewCollectionItems}
+      sortCollectionItems={sortCollectionItems}
+      sortedCollectionItems={sortedCollectionItems}
+      viewCollectionItems={viewCollectionItems}
+    />
+  );
+
   return (
     <>
-      {(isLoading || isEmptyList) && (
-        <Title
-          collectionId={collectionId}
-          collectionRating={collectionRating}
-          collectionThumb={collectionThumb}
-          collectionThumbMedium={collectionThumbMedium}
-          collectionTitle={collectionTitle}
-          colOptions={colOptions}
-          contextEntries={contextEntries}
-          gridOptions={gridOptions}
-          isGridView={isGridView}
-          isListView={isListView}
-          libraryId={libraryId}
-          orderCollectionItems={orderCollectionItems}
-          platformOpts={platformOpts}
-          setColumnVisibility={setColumnVisibility}
-          setOrderCollectionItems={setOrderCollectionItems}
-          setSortCollectionItems={setSortCollectionItems}
-          setViewCollectionItems={setViewCollectionItems}
-          sortCollectionItems={sortCollectionItems}
-          sortedCollectionItems={sortedCollectionItems}
-          viewCollectionItems={viewCollectionItems}
-        />
-      )}
+      {(isLoading || isEmptyList) && titleBlock}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
         <ViewGrid
           variant="albums"
           collectionId={collectionId}
           entries={sortedCollectionItems}
+          showArtist={gridOptions.artist}
+          showReleaseDate={gridOptions.releaseDate}
           showRatings={gridOptions.userRating}
         >
-          <Title
-            collectionId={collectionId}
-            collectionRating={collectionRating}
-            collectionThumb={collectionThumb}
-            collectionThumbMedium={collectionThumbMedium}
-            collectionTitle={collectionTitle}
-            colOptions={colOptions}
-            contextEntries={contextEntries}
-            gridOptions={gridOptions}
-            isGridView={isGridView}
-            isListView={isListView}
-            libraryId={libraryId}
-            orderCollectionItems={orderCollectionItems}
-            platformOpts={platformOpts}
-            setColumnVisibility={setColumnVisibility}
-            setOrderCollectionItems={setOrderCollectionItems}
-            setSortCollectionItems={setSortCollectionItems}
-            setViewCollectionItems={setViewCollectionItems}
-            sortCollectionItems={sortCollectionItems}
-            sortedCollectionItems={sortedCollectionItems}
-            viewCollectionItems={viewCollectionItems}
-          />
+          {titleBlock}
         </ViewGrid>
       )}
       {isListView && (
@@ -140,28 +123,7 @@ const AlbumCollectionItems = () => {
           orderKey={orderCollectionItems}
           colOptions={colOptions}
         >
-          <Title
-            collectionId={collectionId}
-            collectionRating={collectionRating}
-            collectionThumb={collectionThumb}
-            collectionThumbMedium={collectionThumbMedium}
-            collectionTitle={collectionTitle}
-            colOptions={colOptions}
-            contextEntries={contextEntries}
-            gridOptions={gridOptions}
-            isGridView={isGridView}
-            isListView={isListView}
-            libraryId={libraryId}
-            orderCollectionItems={orderCollectionItems}
-            platformOpts={platformOpts}
-            setColumnVisibility={setColumnVisibility}
-            setOrderCollectionItems={setOrderCollectionItems}
-            setSortCollectionItems={setSortCollectionItems}
-            setViewCollectionItems={setViewCollectionItems}
-            sortCollectionItems={sortCollectionItems}
-            sortedCollectionItems={sortedCollectionItems}
-            viewCollectionItems={viewCollectionItems}
-          />
+          {titleBlock}
         </ViewList>
       )}
     </>
@@ -250,6 +212,18 @@ const Title = ({
                   icon="CogIcon"
                   setter={setColumnVisibility}
                   entries={[
+                    {
+                      variant: 'checkbox',
+                      label: 'Show album artists',
+                      attr: 'gridAlbumCollectionItemsArtist',
+                      checked: gridOptions.artist,
+                    },
+                    {
+                      variant: 'checkbox',
+                      label: 'Show release dates',
+                      attr: 'gridAlbumCollectionItemsReleaseDate',
+                      checked: gridOptions.releaseDate,
+                    },
                     ...(platformOpts?.enableUserRating
                       ? [
                           {
@@ -280,19 +254,19 @@ const Title = ({
                   {
                     variant: 'checkbox',
                     label: 'Artist',
-                    attr: 'colCollectionAlbumsArtist',
+                    attr: 'colAlbumCollectionItemsArtist',
                     checked: colOptions.artist,
                   },
                   {
                     variant: 'checkbox',
                     label: 'Genre',
-                    attr: 'colCollectionAlbumsGenre',
+                    attr: 'colAlbumCollectionItemsGenre',
                     checked: colOptions.genre,
                   },
                   {
                     variant: 'checkbox',
                     label: 'Released',
-                    attr: 'colCollectionAlbumsReleaseDate',
+                    attr: 'colAlbumCollectionItemsReleaseDate',
                     checked: colOptions.releaseDate,
                   },
                   ...(platformOpts?.enableAddedAt
@@ -300,7 +274,7 @@ const Title = ({
                         {
                           variant: 'checkbox',
                           label: 'Added',
-                          attr: 'colCollectionAlbumsAddedAt',
+                          attr: 'colAlbumCollectionItemsAddedAt',
                           checked: colOptions.addedAt,
                         },
                       ]
@@ -310,7 +284,7 @@ const Title = ({
                         {
                           variant: 'checkbox',
                           label: 'Last played',
-                          attr: 'colCollectionAlbumsLastPlayed',
+                          attr: 'colAlbumCollectionItemsLastPlayed',
                           checked: colOptions.lastPlayed,
                         },
                       ]
@@ -320,7 +294,7 @@ const Title = ({
                         {
                           variant: 'checkbox',
                           label: 'Rating',
-                          attr: 'colCollectionAlbumsUserRating',
+                          attr: 'colAlbumCollectionItemsUserRating',
                           checked: colOptions.userRating,
                         },
                       ]

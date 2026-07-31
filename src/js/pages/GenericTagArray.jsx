@@ -29,50 +29,32 @@ const GenericTagArray = ({
   const isGridView = !isLoading && !isEmptyList && viewCollections === 'grid';
   const isListView = !isLoading && !isEmptyList && viewCollections === 'list';
 
+  const titleBlock = (
+    <Title
+      isGridView={isGridView}
+      isListView={isListView}
+      orderCollections={orderCollections}
+      pageTitle={pageTitle}
+      setOrderCollections={setOrderCollections}
+      setViewCollections={setViewCollections}
+      singularName={singularName}
+      sortedCollections={sortedCollections}
+      viewCollections={viewCollections}
+    />
+  );
+
   return (
     <>
-      {(isLoading || isEmptyList) && (
-        <Title
-          isGridView={isGridView}
-          isListView={isListView}
-          orderCollections={orderCollections}
-          pageTitle={pageTitle}
-          setOrderCollections={setOrderCollections}
-          setViewCollections={setViewCollections}
-          singularName={singularName}
-          sortedCollections={sortedCollections}
-          viewCollections={viewCollections}
-        />
-      )}
+      {(isLoading || isEmptyList) && titleBlock}
       {isLoading && <Loading forceVisible inline showOffline />}
       {isGridView && (
         <ViewGrid variant={variant} entries={sortedCollections}>
-          <Title
-            isGridView={isGridView}
-            isListView={isListView}
-            orderCollections={orderCollections}
-            pageTitle={pageTitle}
-            setOrderCollections={setOrderCollections}
-            setViewCollections={setViewCollections}
-            singularName={singularName}
-            sortedCollections={sortedCollections}
-            viewCollections={viewCollections}
-          />
+          {titleBlock}
         </ViewGrid>
       )}
       {isListView && (
         <ViewList variant={variant} entries={sortedCollections} sortKey={sortCollections} orderKey={orderCollections}>
-          <Title
-            isGridView={isGridView}
-            isListView={isListView}
-            orderCollections={orderCollections}
-            pageTitle={pageTitle}
-            setOrderCollections={setOrderCollections}
-            setViewCollections={setViewCollections}
-            singularName={singularName}
-            sortedCollections={sortedCollections}
-            viewCollections={viewCollections}
-          />
+          {titleBlock}
         </ViewList>
       )}
     </>

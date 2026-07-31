@@ -944,6 +944,20 @@ const StandardRow = ({
                   </div>
                 );
 
+              case 'totalItems':
+                return (
+                  <div key={rowKey + '-' + index} className={clsx(style.totalItems, 'text-trim')}>
+                    {entry.totalItems}
+                    {(entry.totalItems || entry.totalItems === 0) && (
+                      <>
+                        {' '}
+                        {entry.type === 'artist' ? 'Artist' : 'Album'}
+                        {entry.totalItems !== 1 ? 's' : ''}
+                      </>
+                    )}
+                  </div>
+                );
+
               case 'totalTracks':
                 return (
                   <div key={rowKey + '-' + index} className={clsx(style.totalTracks, 'text-trim')}>

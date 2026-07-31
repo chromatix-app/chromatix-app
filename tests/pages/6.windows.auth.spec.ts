@@ -1,4 +1,4 @@
-// Generated using GitHub Copilot
+// Tests generated using AI
 
 import { test, Page } from '@playwright/test';
 import { waitForContent, snapshotAtViewports, PAGE_NAV_DELAY_MS } from '../utils';
