@@ -3,27 +3,16 @@
 // ======================================================================
 
 import * as dashX from './player.dash';
+import * as gaplessX from './player.gapless';
 import * as nativeX from './player.native';
-import type { PlayerInitParams } from 'types/player';
+import type { GaplessInitParams, GaplessQueueEntry, GaplessQueueFlags, PlayerTrack } from 'types/player';
 import requiresTranscoding from 'js/utils/requiresTranscoding';
-
-// ======================================================================
-// TYPES
-// ======================================================================
-
-/** Minimal track shape required by the player router. */
-interface PlayerTrack {
-  src: string;
-  dashSrc?: string | null;
-  codec?: string | null;
-  trackKey?: string | null;
-}
 
 // ======================================================================
 // STATE
 // ======================================================================
 
-type ActivePlayer = 'native' | 'dash';
+type ActivePlayer = 'native' | 'dash' | 'gapless';
 
 let activePlayer: ActivePlayer = 'native';
 
@@ -31,7 +20,7 @@ let activePlayer: ActivePlayer = 'native';
 // INITIALISE / UNLOAD
 // ======================================================================
 
-export const init = (params: PlayerInitParams): void => {
+export const init = (params: GaplessInitParams): void => {
   // Each sub-player gets its own callback wrappers that only forward events
   // if that player is currently active. This prevents the inactive player's
   // stale events from affecting playback state (e.g. a spurious loadstart from
@@ -68,11 +57,30 @@ export const init = (params: PlayerInitParams): void => {
       // else console.log('%c--- player - dash error suppressed (native is active) ---', 'color:#4c25b9', e);
     },
   });
+  gaplessX.init({
+    ...params,
+    onLoadStart: () => {
+      if (activePlayer === 'gapless') params.onLoadStart();
+    },
+    onCanPlay: () => {
+      if (activePlayer === 'gapless') params.onCanPlay();
+    },
+    onEnded: () => {
+      if (activePlayer === 'gapless') params.onEnded();
+    },
+    onError: (e) => {
+      if (activePlayer === 'gapless') params.onError(e);
+    },
+    // Gapless-specific callbacks always forward — they can only originate
+    // from the gapless engine, and seam advances must reach the store even
+    // during routing transitions.
+  });
 };
 
 export const unload = (): void => {
   nativeX.unload();
   dashX.unload();
+  gaplessX.unload();
   activePlayer = 'native';
 };
 
@@ -85,11 +93,33 @@ export const unload = (): void => {
  * load the track (e.g. a Plex DASH track whose credentials are not yet
  * available), so callers can surface an error state without needing to
  * replicate the routing logic.
+ *
+ * `queueIndex` is the track's position in the store's play queue — required
+ * by the gapless engine to align its window with the store queue; the other
+ * players ignore it.
  */
-export const loadTrack = (track: PlayerTrack, progress: number = 0, play: boolean = true): boolean => {
+export const loadTrack = (
+  track: PlayerTrack,
+  progress: number = 0,
+  play: boolean = true,
+  queueIndex?: number
+): boolean => {
+  // Gapless engine first: it only accepts direct-playable tracks while the
+  // gapless setting is enabled, and falls through otherwise.
+  if (gaplessX.canPlay(track, queueIndex)) {
+    nativeX.unload();
+    dashX.unload();
+    const loaded = gaplessX.loadTrack(track, progress, play, queueIndex);
+    if (loaded) {
+      activePlayer = 'gapless';
+      return true;
+    }
+  }
+
   const transcoding = requiresTranscoding(track.codec);
   if (transcoding && track.dashSrc && dashX.isSupported()) {
     nativeX.unload();
+    gaplessX.unload();
     dashX.loadTrack(track.dashSrc, progress, play);
     activePlayer = 'dash';
   } else if (transcoding && !track.dashSrc && track.trackKey && dashX.isSupported()) {
@@ -97,12 +127,14 @@ export const loadTrack = (track: PlayerTrack, progress: number = 0, play: boolea
     // ready yet. Leave both players idle; Resume will retry with a fresh URL.
     dashX.unload();
     nativeX.unload();
+    gaplessX.unload();
     activePlayer = 'native';
     return false;
   } else {
     // Native path: either codec is supported, or the src URL already embeds
     // server-side transcoding (e.g. Jellyfin universal endpoint).
     dashX.unload();
+    gaplessX.unload();
     nativeX.loadTrack(track.src, progress, play);
     activePlayer = 'native';
   }
@@ -114,7 +146,9 @@ export const loadTrack = (track: PlayerTrack, progress: number = 0, play: boolea
 // ======================================================================
 
 export const pause = (): void => {
-  if (activePlayer === 'dash') {
+  if (activePlayer === 'gapless') {
+    gaplessX.pause();
+  } else if (activePlayer === 'dash') {
     dashX.pause();
   } else {
     nativeX.pause();
@@ -122,7 +156,9 @@ export const pause = (): void => {
 };
 
 export const resume = (): void => {
-  if (activePlayer === 'dash') {
+  if (activePlayer === 'gapless') {
+    gaplessX.resume();
+  } else if (activePlayer === 'dash') {
     dashX.resume();
   } else {
     nativeX.resume();
@@ -130,7 +166,9 @@ export const resume = (): void => {
 };
 
 export const restart = (): void => {
-  if (activePlayer === 'dash') {
+  if (activePlayer === 'gapless') {
+    gaplessX.restart();
+  } else if (activePlayer === 'dash') {
     dashX.restart();
   } else {
     nativeX.restart();
@@ -138,7 +176,9 @@ export const restart = (): void => {
 };
 
 export const setProgress = (progress: number): void => {
-  if (activePlayer === 'dash') {
+  if (activePlayer === 'gapless') {
+    gaplessX.setProgress(progress);
+  } else if (activePlayer === 'dash') {
     dashX.setProgress(progress);
   } else {
     nativeX.setProgress(progress);
@@ -146,6 +186,9 @@ export const setProgress = (progress: number): void => {
 };
 
 export const getCurrentProgress = (): number => {
+  if (activePlayer === 'gapless') {
+    return gaplessX.getCurrentProgress();
+  }
   if (activePlayer === 'dash') {
     return dashX.getCurrentProgress();
   }
@@ -157,34 +200,38 @@ export const getCurrentProgress = (): number => {
 // ======================================================================
 
 export const setVolume = (volumeLevel: number): void => {
-  // Both players need to stay in sync so that switching between them
+  // All players need to stay in sync so that switching between them
   // doesn't cause a volume change.
   nativeX.setVolume(volumeLevel);
   dashX.setVolume(volumeLevel);
+  gaplessX.setVolume(volumeLevel);
 };
 
 // ======================================================================
-// PRELOADING STUBS
-// [NOTE] Not currently used, but may be in future
+// GAPLESS QUEUE
 // ======================================================================
 
-// // Listen to track progress and preload the next track when we're within 45 seconds
-// // of the end, or at 60% progress, whichever comes first
-// export const updateProgress = (_currentProgress: number): void => {
-//   return;
-// };
+/** Enable/disable the gapless engine (Settings -> Playback). */
+export const setGaplessEnabled = (value: boolean): void => {
+  gaplessX.setEnabled(value);
+  if (!value && activePlayer === 'gapless') {
+    activePlayer = 'native';
+  }
+};
 
-// export const preloadNextTrack = (_trackSrc: string): void => {
-//   return;
-// };
+/** Whether the gapless engine is available on this platform at all. */
+export const isGaplessSupported = (): boolean => {
+  return gaplessX.isSupported();
+};
 
-// export const setNextTrack = (_track: PlayerTrack | null): void => {
-//   return;
-// };
-
-// export const clearNextTrack = (): void => {
-//   return;
-// };
+/**
+ * Mirror the store's play queue (in playback order) and repeat flags into
+ * the gapless engine so it always preloads and schedules the correct next
+ * track. Cheap when gapless is disabled.
+ */
+export const syncGaplessQueue = (entries: GaplessQueueEntry[], flags: GaplessQueueFlags): void => {
+  gaplessX.syncQueue(entries, flags);
+};
 
 // ======================================================================
 // DEBUGGING - BROWSER CONSOLE ACCESS
@@ -194,5 +241,6 @@ if (import.meta.env.VITE_ENV === 'local') {
   (window as any).__playerX = {
     getCurrentProgress,
     getActivePlayer: () => activePlayer,
+    getGaplessState: () => gaplessX.getDebugState(),
   };
 }

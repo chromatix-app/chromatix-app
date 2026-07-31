@@ -78,6 +78,10 @@ const effects = (dispatch) => ({
       onCanPlay,
       onEnded,
       onError: dispatch.playerModel.playerError,
+      // gapless engine events
+      onGaplessSeamAdvance: dispatch.playerModel.playerSeamAdvance,
+      onGaplessError: dispatch.playerModel.playerGaplessError,
+      onGaplessPlayBlocked: () => dispatch.playerModel.setPlayerState({ playerPlaying: false }),
     });
     dispatch.playerModel.setPlayerState({
       playerInited: true,
@@ -92,6 +96,11 @@ const effects = (dispatch) => ({
   playerRefresh(payload, rootState) {
     console.log('%c--- playerRefresh ---', 'color:#5c16b1');
     dispatch.playerModel.volumeRefresh();
+    // Session state has just been restored from localStorage — apply the
+    // gapless setting and rebuild the engine's queue mirror before any track
+    // is loaded, so the restored track routes to the right player.
+    playerX.setGaplessEnabled(rootState.sessionModel.gaplessPlayback);
+    dispatch.playerModel.playerSyncGaplessQueue();
     const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
     const playingTrackProgress = rootState.sessionModel.playingTrackProgress;
     if (playingTrackIndex || playingTrackIndex === 0) {
@@ -498,13 +507,20 @@ const effects = (dispatch) => ({
     dispatch.sessionModel.setSessionState({
       ...payload,
     });
+    // keep the gapless engine's queue mirror aligned with the new queue
+    dispatch.playerModel.playerSyncGaplessQueue();
     // start playing
     const currentService = rootState.appModel.currentService;
     const serverBaseUrl = rootState.appModel.serverBaseUrl;
     const userToken = rootState.appModel.userToken;
     const sessionId = rootState.sessionModel.sessionId;
     const currentTrack = payload.playingTrackList[payload.playingTrackKeys[payload.playingTrackIndex]];
-    playerX.loadTrack(withDashSrc(currentTrack, currentService, serverBaseUrl, userToken, sessionId));
+    playerX.loadTrack(
+      withDashSrc(currentTrack, currentService, serverBaseUrl, userToken, sessionId),
+      0,
+      true,
+      payload.playingTrackIndex
+    );
 
     // // Set next track for preloading
     // // [NOTE] Not currently used, but may be in future
@@ -543,7 +559,7 @@ const effects = (dispatch) => ({
         const userToken = rootState.appModel.userToken;
         const sessionId = rootState.sessionModel.sessionId;
         const trackWithDash = withDashSrc(currentTrack, currentService, serverBaseUrl, userToken, sessionId);
-        const trackLoaded = playerX.loadTrack(trackWithDash, progress, play);
+        const trackLoaded = playerX.loadTrack(trackWithDash, progress, play, index);
         dispatch.playerModel.setPlayerState({
           playerPlaying: trackLoaded ? play : false,
           playerTrackLoaded: true,
@@ -798,22 +814,108 @@ const effects = (dispatch) => ({
   },
 
   updateNextTrack(payload, rootState) {
-    // // Helper function to update the next track for preloading
-    // // [NOTE] Not currently used, but may be in future
-    // const currentService = rootState.appModel.currentService;
-    // const serverBaseUrl = rootState.appModel.serverBaseUrl;
-    // const userToken = rootState.appModel.userToken;
-    // const sessionId = rootState.sessionModel.sessionId;
-    // const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
-    // const playingTrackList = rootState.sessionModel.playingTrackList;
-    // const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
-    // const nextIndex = playingTrackIndex + 1;
-    // if (nextIndex < playingTrackKeys.length) {
-    //   const nextTrack = playingTrackList[playingTrackKeys[nextIndex]];
-    //   playerX.setNextTrack(withDashSrc(nextTrack, currentService, serverBaseUrl, userToken, sessionId));
-    // } else {
-    //   playerX.clearNextTrack();
-    // }
+    // The upcoming-track prediction changed (repeat or shuffle toggled) —
+    // re-mirror the queue so the gapless engine reschedules the correct
+    // next track.
+    dispatch.playerModel.playerSyncGaplessQueue();
+  },
+
+  //
+  // GAPLESS PLAYBACK
+  //
+
+  playerSyncGaplessQueue(payload, rootState) {
+    // Mirror the play queue (in playback order) and repeat flags into the
+    // gapless engine. Cheap when gapless is disabled or no queue exists.
+    const playingTrackList = rootState.sessionModel.playingTrackList;
+    const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
+    if (!playingTrackList || !playingTrackKeys) {
+      playerX.syncGaplessQueue([], { repeatOnce: false, repeatAll: false });
+      return;
+    }
+    const entries = playingTrackKeys.map((realIndex, queueIndex) => {
+      const track = playingTrackList[realIndex];
+      return {
+        src: track?.src,
+        codec: track?.codec,
+        queueIndex,
+        title: track?.title,
+        artist: track?.artist,
+        album: track?.album,
+        thumbMd: track?.thumbMd,
+      };
+    });
+    playerX.syncGaplessQueue(entries, {
+      repeatOnce: rootState.sessionModel.playingRepeatOnce,
+      repeatAll: rootState.sessionModel.playingRepeatAll,
+    });
+  },
+
+  playerSeamAdvance(payload, rootState) {
+    console.log('%c--- playerSeamAdvance ---', 'color:#5c16b1');
+    // The gapless engine crossed a track boundary seamlessly — the next
+    // track is ALREADY playing. Advance the store to match, without loading
+    // anything.
+    const { index } = payload;
+    const currentService = rootState.appModel.currentService;
+    const playingTrackList = rootState.sessionModel.playingTrackList;
+    const playingTrackKeys = rootState.sessionModel.playingTrackKeys;
+    const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+    if (!playingTrackList || !playingTrackKeys || playingTrackKeys[index] === undefined) {
+      return;
+    }
+    dispatch.sessionModel.setSessionState({
+      playingTrackIndex: index,
+      playingTrackProgress: 0,
+    });
+    dispatch.playerModel.setPlayerState({
+      playerPlaying: true,
+      playerTrackLoaded: true,
+      playerTrackError: false,
+    });
+    // log playback state to server
+    const newTrack = playingTrackList[playingTrackKeys[index]];
+    bridge.logPlaybackPlay(newTrack);
+    analyticsEvent(toUpperFirst(currentService) + ' / Music / Next Track (Gapless)');
+    // disable repeat once, mirroring the playerLoadIndex behaviour
+    const disableRepeatOnceOnTrackChange = rootState.sessionModel.disableRepeatOnceOnTrackChange;
+    if (playingTrackIndex !== index && disableRepeatOnceOnTrackChange) {
+      dispatch.playerModel.playerRepeatOff();
+    }
+    // re-arm the engine window for the track after this one
+    dispatch.playerModel.playerSyncGaplessQueue();
+  },
+
+  playerGaplessError(payload, rootState) {
+    console.error('%c--- playerGaplessError ---', 'color:#f00', payload);
+    // Mirror the local playback error flow: mark the track as errored, notify
+    // the user, and try the next track.
+    dispatch.playerModel.setPlayerState({
+      playerTrackError: true,
+    });
+    dispatch.playerModel.playerErrorPlayback(true);
+  },
+
+  playerGaplessToggle(payload, rootState) {
+    console.log('%c--- playerGaplessToggle ---', 'color:#5c16b1');
+    const currentService = rootState.appModel.currentService;
+    const gaplessPlayback = !rootState.sessionModel.gaplessPlayback;
+    dispatch.sessionModel.setSessionState({ gaplessPlayback });
+    playerX.setGaplessEnabled(gaplessPlayback);
+    dispatch.playerModel.playerSyncGaplessQueue();
+    // Migrate the current track to the right engine mid-play, from the
+    // current position.
+    const playerTrackLoaded = rootState.playerModel.playerTrackLoaded;
+    const playingTrackIndex = rootState.sessionModel.playingTrackIndex;
+    if (playerTrackLoaded && (playingTrackIndex || playingTrackIndex === 0)) {
+      const progress = playerX.getCurrentProgress() * 1000;
+      dispatch.playerModel.playerLoadIndex({
+        index: playingTrackIndex,
+        play: rootState.playerModel.playerPlaying,
+        progress,
+      });
+    }
+    analyticsEvent(toUpperFirst(currentService) + ' / Music / Gapless ' + (gaplessPlayback ? 'On' : 'Off'));
   },
 
   //
