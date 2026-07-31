@@ -73,6 +73,7 @@ const FolderItems = () => {
           entries={sortedFolders}
           playingOrder={folderOrder}
           sortKey={sortFolders}
+          showArtist
         >
           {titleBlock}
         </ViewGrid>

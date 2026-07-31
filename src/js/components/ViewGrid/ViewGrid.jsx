@@ -513,7 +513,9 @@ const calculateDimensions = (
   const subtitleLineHeight = 15.4;
   const subtitleLines =
     variant === 'folders'
-      ? 1
+      ? showArtist
+        ? 1
+        : 0
       : ['albums', 'artistAlbums'].includes(variant)
         ? (showArtist ? 1 : 0) + (showReleaseDate ? 1 : 0)
         : variant === 'playlists'
