@@ -1,3 +1,11 @@
+# 0.70.0 (2026-08-05)
+
+Code changes:
+
+- Added backend endpoints to anonymously track tag usage across libraries, to help inform future features.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.69.0 (2026-08-01)
 
 Features:
