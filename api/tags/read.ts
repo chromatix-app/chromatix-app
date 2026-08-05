@@ -1,5 +1,5 @@
-import { readTags } from './_store';
-import { isAllowedOrigin, isValidApiKey, getCorsHeaders } from './_auth';
+import { readTags } from './_store.js';
+import { isAllowedOrigin, isValidApiKey, getCorsHeaders } from './_auth.js';
 
 export default async function handler(request: Request): Promise<Response> {
   const corsHeaders = getCorsHeaders(request, {
