@@ -1,9 +1,10 @@
-import { put } from '@vercel/blob';
-import { readTags, TAGS_BLOB_PATHNAME } from './_store';
+import { put, BlobPreconditionFailedError } from '@vercel/blob';
+import { readTagsWithEtag, TAGS_BLOB_PATHNAME } from './_store';
 import { sanitizeTagName, MAX_TAG_LENGTH } from './_sanitize';
 import { isAllowedOrigin, isValidApiKey, getCorsHeaders } from './_auth';
 
 const MAX_TAGS_PER_REQUEST = 9999;
+const MAX_WRITE_ATTEMPTS = 5;
 
 const TAGS_ENDPOINT_MESSAGE =
   "This API endpoint captures all possible tags found across Chromatix users' libraries, in case " +
@@ -55,40 +56,55 @@ export default async function handler(request: Request): Promise<Response> {
       );
     }
 
-    const existingTags = await readTags();
-    const existingTagsLower = new Set(existingTags.map((tag) => tag.toLowerCase()));
+    let addedCount = 0;
 
-    const newTags: string[] = [];
-    const seenLower = new Set<string>();
+    for (let attempt = 0; attempt < MAX_WRITE_ATTEMPTS; attempt += 1) {
+      const { tags: existingTags, etag } = await readTagsWithEtag();
+      const existingTagsLower = new Set(existingTags.map((tag) => tag.toLowerCase()));
 
-    for (const rawTag of incomingTags) {
-      const tag = sanitizeTagName(rawTag);
-      const tagLower = tag.toLowerCase();
+      const newTags: string[] = [];
+      const seenLower = new Set<string>();
 
-      if (!tag || tag.length > MAX_TAG_LENGTH || existingTagsLower.has(tagLower) || seenLower.has(tagLower)) {
-        continue;
+      for (const rawTag of incomingTags) {
+        const tag = sanitizeTagName(rawTag);
+        const tagLower = tag.toLowerCase();
+
+        if (!tag || tag.length > MAX_TAG_LENGTH || existingTagsLower.has(tagLower) || seenLower.has(tagLower)) {
+          continue;
+        }
+
+        seenLower.add(tagLower);
+        newTags.push(tag);
       }
 
-      seenLower.add(tagLower);
-      newTags.push(tag);
+      if (newTags.length === 0) {
+        addedCount = 0;
+        break;
+      }
+
+      const updatedTags = [...existingTags, ...newTags].sort((a, b) => a.localeCompare(b));
+
+      try {
+        await put(TAGS_BLOB_PATHNAME, JSON.stringify(updatedTags), {
+          access: 'private',
+          contentType: 'application/json',
+          addRandomSuffix: false,
+          allowOverwrite: true,
+          ...(etag && { ifMatch: etag }),
+          abortSignal: AbortSignal.timeout(10000),
+        });
+        addedCount = newTags.length;
+        break;
+      } catch (error) {
+        if (error instanceof BlobPreconditionFailedError && attempt < MAX_WRITE_ATTEMPTS - 1) {
+          continue;
+        }
+        throw error;
+      }
     }
-
-    if (newTags.length === 0) {
-      return Response.json({ success: true, added: 0, message: TAGS_ENDPOINT_MESSAGE }, { headers: corsHeaders });
-    }
-
-    const updatedTags = [...existingTags, ...newTags].sort((a, b) => a.localeCompare(b));
-
-    await put(TAGS_BLOB_PATHNAME, JSON.stringify(updatedTags), {
-      access: 'private',
-      contentType: 'application/json',
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      abortSignal: AbortSignal.timeout(10000),
-    });
 
     return Response.json(
-      { success: true, added: newTags.length, message: TAGS_ENDPOINT_MESSAGE },
+      { success: true, added: addedCount, message: TAGS_ENDPOINT_MESSAGE },
       { headers: corsHeaders }
     );
   } catch (error) {

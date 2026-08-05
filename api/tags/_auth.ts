@@ -24,6 +24,7 @@ export function getCorsHeaders(request: Request, extraHeaders: Record<string, st
   const origin = getRequestOrigin(request);
 
   return {
+    Vary: 'Origin',
     ...(origin && { 'Access-Control-Allow-Origin': origin }),
     ...extraHeaders,
   };

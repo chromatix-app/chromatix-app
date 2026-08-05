@@ -1600,14 +1600,17 @@ const syncedTagTypes = new Set();
 
 const syncTagsToBlob = (typeKey, tags) => {
   if ((isLocal && !syncTagsLocally) || !tags?.length || syncedTagTypes.has(typeKey)) return;
-  syncedTagTypes.add(typeKey);
   fetch(`${syncTagsApiBase}/api/tags/add`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'X-Api-Key': import.meta.env.VITE_TAGS_ADD_API_KEY },
     body: JSON.stringify({ tags: tags.map((tag) => tag.title) }),
-  }).catch((error) => {
-    console.error(error);
-  });
+  })
+    .then((response) => {
+      if (response.ok) syncedTagTypes.add(typeKey);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 };
 
 // ======================================================================
