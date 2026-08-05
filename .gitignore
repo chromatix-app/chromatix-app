@@ -1,15 +1,16 @@
-node_modules/
-.eslintcache
-.sass-cache/
-.ftpconfig
 .DS_Store
+.env*
+.eslintcache
+.ftpconfig
+.sass-cache/
 *.bak
+*.env
 *.log
 *.map
 *.old
 *.psd
 *.scssc
-*.env
+node_modules/
 
 # Playwright
 test-report/
@@ -19,3 +20,4 @@ tests/.auth/
 # Builds
 build/
 dist/
+.vercel

@@ -20,6 +20,8 @@ const serviceTools = {
 const storageServiceKey = config.storageServiceKey;
 const storageTokenKey = config.storageTokenKey;
 
+const isLocal = import.meta.env.VITE_ENV === 'local';
+
 // [NOTE] this is a temporary flag just in case this change
 // causes any issues and needs to be reverted
 const refetchData = true;
@@ -1464,6 +1466,7 @@ const getAllPlexTags = (typeKey) => {
         .then((response) => {
           // console.log(response);
           store.dispatch.appModel.setAppState({ [`all${typeKey}`]: response });
+          syncTagsToBlob(typeKey, response);
         })
         .catch((error) => {
           console.error(error);
@@ -1502,6 +1505,9 @@ const getAllJellyfinTags = () => {
         })
         .then((response) => {
           store.dispatch.appModel.setAppState(response);
+          Object.entries(response).forEach(([key, tags]) => {
+            syncTagsToBlob(key.replace(/^all/, ''), tags);
+          });
         })
         .catch((error) => {
           console.error(error);
@@ -1581,6 +1587,30 @@ export const getTagItems = (libraryId, tagId, typeKey) => {
         });
     });
   }
+};
+
+// ======================================================================
+// SYNC TAGS TO BLOB STORAGE
+// ======================================================================
+
+const syncTagsLocally = false;
+const syncTagsApiBase = isLocal ? 'http://localhost:3000' : '';
+
+const syncedTagTypes = new Set();
+
+const syncTagsToBlob = (typeKey, tags) => {
+  if ((isLocal && !syncTagsLocally) || !tags?.length || syncedTagTypes.has(typeKey)) return;
+  fetch(`${syncTagsApiBase}/api/tags/add`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Api-Key': import.meta.env.VITE_TAGS_ADD_API_KEY },
+    body: JSON.stringify({ tags: tags.map((tag) => tag.title) }),
+  })
+    .then((response) => {
+      if (response.ok) syncedTagTypes.add(typeKey);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 };
 
 // ======================================================================
@@ -1849,8 +1879,6 @@ const runFetch = (key, startFetch) => {
 // ======================================================================
 // DEBUGGING - BROWSER CONSOLE ACCESS
 // ======================================================================
-
-const isLocal = import.meta.env.VITE_ENV === 'local';
 
 if (isLocal) {
   window.bridge = {
