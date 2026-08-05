@@ -1,7 +1,7 @@
 import { readTags } from './_store.js';
 import { isAllowedOrigin, isValidApiKey, getCorsHeaders } from './_auth.js';
 
-export default async function handler(request: Request): Promise<Response> {
+async function handler(request: Request): Promise<Response> {
   const corsHeaders = getCorsHeaders(request, {
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Access-Control-Allow-Headers': 'X-Api-Key',
@@ -40,5 +40,7 @@ export default async function handler(request: Request): Promise<Response> {
     );
   }
 }
+
+export default { fetch: handler };
 
 export const config = { runtime: 'nodejs' };

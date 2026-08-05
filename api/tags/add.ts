@@ -10,7 +10,7 @@ const TAGS_ENDPOINT_MESSAGE =
   "This API endpoint captures all possible tags found across Chromatix users' libraries, in case " +
   'Chromatix decides to do something with these in future (e.g. generating thumbnails for all tags).';
 
-export default async function handler(request: Request): Promise<Response> {
+async function handler(request: Request): Promise<Response> {
   const corsHeaders = getCorsHeaders(request, {
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, X-Api-Key',
@@ -117,5 +117,7 @@ export default async function handler(request: Request): Promise<Response> {
     );
   }
 }
+
+export default { fetch: handler };
 
 export const config = { runtime: 'nodejs' };
