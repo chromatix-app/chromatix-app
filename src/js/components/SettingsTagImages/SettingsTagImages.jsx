@@ -39,6 +39,7 @@ export const SettingsTagImages = () => {
   const tagImageCustomType = useSelector(({ sessionModel }) => sessionModel.tagImageCustomType);
   const tagImageCustomUrl = useSelector(({ sessionModel }) => sessionModel.tagImageCustomUrl);
   const tagImageCustomPath = useSelector(({ sessionModel }) => sessionModel.tagImageCustomPath);
+  const tagImageCustomExtension = useSelector(({ sessionModel }) => sessionModel.tagImageCustomExtension);
 
   const optionMenuItems = [
     // {
@@ -102,6 +103,23 @@ export const SettingsTagImages = () => {
     },
   ];
 
+  const extensionMenuItems = [
+    {
+      type: 'tabGroup',
+      key: 'tagImageCustomExtension',
+      label: 'Image format',
+      description: 'Choose the file extension your own images are saved with.',
+      state: tagImageCustomExtension,
+      options: [
+        { label: '.avif', value: 'avif' },
+        { label: '.gif', value: 'gif' },
+        { label: '.jpg', value: 'jpg' },
+        { label: '.png', value: 'png' },
+        { label: '.webp', value: 'webp' },
+      ],
+    },
+  ];
+
   return (
     <>
       <SettingsList
@@ -119,6 +137,8 @@ export const SettingsTagImages = () => {
       {tagImageOption === 'custom' && tagImageCustomType === 'local' && envData.isElectron && (
         <SettingsList menuItems={pathMenuItems} />
       )}
+
+      {tagImageOption === 'custom' && <SettingsList menuItems={extensionMenuItems} />}
 
       <div className={clsx('settingsGroup', style.settingsGroup)}>
         <div className={clsx(style.title)}>Preview</div>

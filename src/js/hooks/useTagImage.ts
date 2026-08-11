@@ -35,6 +35,7 @@ const useTagImage = (title: string | null | undefined, hasIcon: boolean): [strin
             tagImageCustomType: sessionModel.tagImageCustomType,
             tagImageCustomUrl: sessionModel.tagImageCustomUrl,
             tagImageCustomPath: sessionModel.tagImageCustomPath,
+            tagImageCustomExtension: sessionModel.tagImageCustomExtension,
           }
         : null,
     shallowEqual
@@ -43,22 +44,22 @@ const useTagImage = (title: string | null | undefined, hasIcon: boolean): [strin
   let tagImageSrc: string | null = null;
 
   if (isApplicable && tagImageSettings && tagImageSettings.tagImageOption !== 'none') {
-    const { tagImageOption, tagImageCustomType, tagImageCustomUrl, tagImageCustomPath } = tagImageSettings;
+    const { tagImageOption, tagImageCustomType, tagImageCustomUrl, tagImageCustomPath, tagImageCustomExtension } =
+      tagImageSettings;
 
     if (tagImageOption === 'local') {
       tagImageSrc = `${localImageBase}${slugifyTagName(title as string)}.jpg`;
     } else if (tagImageOption === 'community') {
       tagImageSrc = `${communityImageBase}${slugifyTagName(title as string)}.jpg`;
     } else if (tagImageOption === 'custom' && tagImageCustomType === 'hosted' && tagImageCustomUrl) {
-      tagImageSrc = `${tagImageCustomUrl}${slugifyTagName(title as string)}.jpg`;
+      tagImageSrc = `${tagImageCustomUrl}${slugifyTagName(title as string)}.${tagImageCustomExtension}`;
     } else if (
       tagImageOption === 'custom' &&
       tagImageCustomType === 'local' &&
       tagImageCustomPath &&
       envData.isElectron
     ) {
-      // /Users/Alex/Servers/Alex Bimpson/Chromatix/Chromatix - Assets/assets/tags/community/
-      tagImageSrc = `chromatix://local/${encodeURIComponent(tagImageCustomPath + slugifyTagName(title as string) + '.jpg')}`;
+      tagImageSrc = `chromatix://local/${encodeURIComponent(tagImageCustomPath + slugifyTagName(title as string) + '.' + tagImageCustomExtension)}`;
     }
   }
 

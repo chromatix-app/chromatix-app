@@ -89,6 +89,7 @@ const sessionState = {
   tagImageCustomType: 'hosted',
   tagImageCustomUrl: '',
   tagImageCustomPath: '',
+  tagImageCustomExtension: 'jpg', // 'jpg' | 'png' | 'gif' | 'webp' | 'avif' - only relevant when tagImageOption is 'custom'
 
   // KEYBOARD OPTIONS
 
