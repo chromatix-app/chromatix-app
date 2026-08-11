@@ -85,6 +85,30 @@ const SettingsList = ({ title, description, menuItems, padding, variant }) => {
                     </div>
                   </div>
                 );
+              } else if (type === 'text') {
+                return (
+                  <div key={index} className={style.listEntry}>
+                    <div>
+                      <label htmlFor={`setting-${key}`} className={clsx(style.label, disabled && style.disabled)}>
+                        {label}
+                      </label>
+                      {description && (
+                        <div className={clsx(style.description, disabled && style.disabled)}>{description}</div>
+                      )}
+                      {footnote && <div className={clsx(style.footnote, disabled && style.disabled)}>{footnote}</div>}
+                      <input
+                        id={`setting-${key}`}
+                        type="text"
+                        className={style.textInput}
+                        value={state || ''}
+                        disabled={disabled}
+                        placeholder={props?.placeholder}
+                        onChange={(event) => dispatch.sessionModel.setSessionState({ [key]: event.target.value })}
+                      />
+                      {props?.error && <div className={style.inputErrorMessage}>{props.error}</div>}
+                    </div>
+                  </div>
+                );
               } else if (type === 'radio') {
                 return (
                   <fieldset key={index} className={clsx(style.listEntry, style.radioFieldset)}>

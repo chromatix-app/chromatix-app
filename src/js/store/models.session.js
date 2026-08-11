@@ -37,6 +37,7 @@ const sessionState = {
         devSettingsCheck3: true,
         devSettingsRadio: 'option1',
         devSettingsRange: 3,
+        devSettingsText: '',
         devSettingsTabGroup1: 'option1',
         devSettingsTabGroup2: 'option1',
         devSettingsTabGroup3: 'option1',

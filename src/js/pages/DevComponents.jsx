@@ -38,6 +38,7 @@ const Component = () => {
   const devSettingsTabGroup3 = useSelector(({ sessionModel }) => sessionModel.devSettingsTabGroup3);
   const devSettingsRadio = useSelector(({ sessionModel }) => sessionModel.devSettingsRadio);
   const devSettingsRange = useSelector(({ sessionModel }) => sessionModel.devSettingsRange);
+  const devSettingsText = useSelector(({ sessionModel }) => sessionModel.devSettingsText);
 
   const themeKeyFocus = useSelector(({ sessionModel }) => sessionModel.themeKeyFocus);
 
@@ -476,6 +477,50 @@ const Component = () => {
                   { value: 'option2', label: 'Option 2' },
                   { value: 'option3', label: 'Option 3' },
                 ],
+              },
+              {
+                type: 'spacer',
+              },
+              {
+                type: 'text',
+                key: 'devSettingsText',
+                label: 'Text input item',
+                state: devSettingsText,
+                props: {
+                  placeholder: 'Placeholder text',
+                },
+              },
+              {
+                type: 'text',
+                key: 'devSettingsText',
+                label: 'Text input item lorem ipsum dolor sit amet consectetur adipiscing elit',
+                description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit.',
+                state: devSettingsText,
+                props: {
+                  placeholder: 'Placeholder text',
+                },
+              },
+              {
+                type: 'text',
+                key: 'devSettingsText',
+                label: 'Text input item (with error)',
+                description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit.',
+                state: devSettingsText,
+                props: {
+                  placeholder: 'Placeholder text',
+                  error: 'This is an example error message.',
+                },
+              },
+              {
+                type: 'text',
+                key: 'devSettingsText',
+                label: 'Text input item (disabled)',
+                description: 'This option is currently unavailable.',
+                state: devSettingsText,
+                disabled: true,
+                props: {
+                  placeholder: 'Placeholder text',
+                },
               },
             ]}
           />
