@@ -45,6 +45,7 @@ export { default as SettingsKeyboard } from './SettingsKeyboard/SettingsKeyboard
 export { default as SettingsList } from './SettingsList/SettingsList';
 export { default as SettingsPlayback } from './SettingsPlayback/SettingsPlayback';
 export { default as SettingsSidebar } from './SettingsSidebar/SettingsSidebar';
+export { default as SettingsTagImages } from './SettingsTagImages/SettingsTagImages';
 export { default as SideBar } from './SideBar/SideBar';
 export { default as StarRating } from './StarRating/StarRating';
 export { default as TitleBasic } from './TitleBasic/TitleBasic';

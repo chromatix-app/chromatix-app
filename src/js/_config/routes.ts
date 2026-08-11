@@ -301,6 +301,11 @@ export const authRoutes = [
     exact: true,
     component: 'SettingsSidebar',
   },
+  {
+    path: '/settings/tag-images',
+    exact: true,
+    component: 'SettingsTagImages',
+  },
 
   // dev tools
   ...(isLocal
@@ -329,6 +334,11 @@ export const authRoutes = [
           path: '/dev/settings',
           exact: true,
           component: 'DevSettings',
+        },
+        {
+          path: '/dev/tags',
+          exact: true,
+          component: 'DevTags',
         },
       ]
     : []),

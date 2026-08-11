@@ -83,6 +83,13 @@ const sessionState = {
   winAutoHideScrollbars: false,
   winScrollbarWidth: 12,
 
+  // TAG IMAGES
+
+  tagImageOption: 'none',
+  tagImageCustomType: 'hosted',
+  tagImageCustomUrl: '',
+  tagImageCustomPath: '',
+
   // KEYBOARD OPTIONS
 
   keyboardMediaKeys: true,

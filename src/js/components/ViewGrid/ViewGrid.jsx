@@ -18,7 +18,7 @@ import {
   Icon,
   StarRating,
 } from 'js/components';
-import { useScrollToTrack, useScrollToVirtualTrack, useWindowSize } from 'js/hooks';
+import { useScrollToTrack, useScrollToVirtualTrack, useTagImage, useWindowSize } from 'js/hooks';
 import { durationToStringMed, formatReleaseYear } from 'js/utils';
 import platformFeatures from 'js/_config/platformFeatures';
 
@@ -720,6 +720,9 @@ const ListEntry = React.memo(
     const isCollection = variant === 'collections';
     const isTrack = variant === 'folders' && !!trackId;
 
+    // Tag image thumbnails
+    const [tagImageSrc, handleTagImageError] = useTagImage(title, isIconCard);
+
     const card = (
       <div
         id={variant === 'folders' && trackId ? trackId : null}
@@ -734,8 +737,13 @@ const ListEntry = React.memo(
           {/* Artwork */}
           {thumbSm && <img src={thumbSm} alt={title} draggable="false" loading="lazy" />}
 
+          {/* Tag image */}
+          {tagImageSrc && (
+            <img src={tagImageSrc} alt={title} draggable="false" loading="lazy" onError={handleTagImageError} />
+          )}
+
           {/* Icon */}
-          {isIconCard && (
+          {isIconCard && !tagImageSrc && (
             <div className={style.icon}>
               <Icon icon={iconImage} cover stroke strokeWidth={1.6} />
             </div>

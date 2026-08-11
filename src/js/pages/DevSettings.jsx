@@ -7,12 +7,13 @@ import {
   SettingsAccounts,
   SettingsAppearance,
   SettingsBrowse,
-  SettingsChangelog,
+  // SettingsChangelog,
   SettingsControls,
   SettingsDownloads,
   SettingsKeyboard,
   SettingsPlayback,
   SettingsSidebar,
+  SettingsTagImages,
   TitleHeading,
 } from 'js/components';
 
@@ -28,12 +29,13 @@ const Component = () => {
       <SettingsAppearance debug={true} />
       <SettingsBrowse debug={true} />
       <SettingsPlayback />
+      <SettingsTagImages />
       <SettingsKeyboard />
       <SettingsSidebar />
       <SettingsControls />
       <SettingsDownloads />
       <SettingsAbout />
-      <SettingsChangelog />
+      {/* <SettingsChangelog /> */}
     </>
   );
 };
