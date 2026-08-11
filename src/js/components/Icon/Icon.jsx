@@ -58,6 +58,7 @@ import FolderIcon from './icons/general-compressed/folder.svg?react';
 import GithubIcon from './icons/general-compressed/github.svg?react';
 import GridIcon from './icons/general-compressed/grid-small.svg?react';
 import HeartIcon from './icons/general-compressed/heart.svg?react';
+import ImageIcon from './icons/general-compressed/image.svg?react';
 import InfoIcon from './icons/general-compressed/info.svg?react';
 import KeyboardIcon from './icons/general-original/keyboard.svg?react'; // [NOTE] use original due to small details
 import LastFMIcon from './icons/general-compressed/lastfm.svg?react';
@@ -181,6 +182,7 @@ export const generalIcons = {
   GithubIcon,
   GridIcon,
   HeartIcon,
+  ImageIcon,
   InfoIcon,
   KeyboardIcon,
   LastFMIcon,
