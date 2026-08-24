@@ -2,8 +2,8 @@
 // DEFAULT (LOGGED OUT) ROUTES
 // ======================================================================
 
-const isLocal = import.meta.env.VITE_ENV === 'local';
-// const isProduction = import.meta.env.VITE_ENV === 'production';
+// const isLocal = import.meta.env.VITE_ENV === 'local';
+const isProduction = import.meta.env.VITE_ENV === 'production';
 
 export const defaultRoutes = [
   // main
@@ -308,7 +308,7 @@ export const authRoutes = [
   },
 
   // dev tools
-  ...(isLocal
+  ...(!isProduction
     ? [
         {
           path: '/dev',
@@ -347,7 +347,7 @@ export const authRoutes = [
   // [NOTE] not used locally to avoid masking potential issues with legacy paths during development,
   // but included in production to avoid breaking existing links and user habits
   // [NOTE] to be removed in future
-  ...(!isLocal
+  ...(isProduction
     ? [
         {
           path: '/artists',

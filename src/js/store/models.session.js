@@ -12,7 +12,7 @@ import { analyticsEvent, migrateSessionState } from 'js/utils';
 // STATE
 // ======================================================================
 
-const isLocal = import.meta.env.VITE_ENV === 'local';
+// const isLocal = import.meta.env.VITE_ENV === 'local';
 const isPreview = import.meta.env.VITE_ENV === 'preview';
 const isProduction = import.meta.env.VITE_ENV === 'production';
 
@@ -30,7 +30,7 @@ const sessionState = {
 
   // DEV OPTIONS
 
-  ...(isLocal
+  ...(!isProduction
     ? {
         devSettingsCheck1: true,
         devSettingsCheck2: true,
@@ -38,6 +38,7 @@ const sessionState = {
         devSettingsRadio: 'option1',
         devSettingsRange: 3,
         devSettingsText: '',
+        devSettingsSelect: 'option1',
         devSettingsTabGroup1: 'option1',
         devSettingsTabGroup2: 'option1',
         devSettingsTabGroup3: 'option1',
