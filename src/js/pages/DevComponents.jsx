@@ -13,7 +13,9 @@ import {
   ActionSort,
   ActionToggle,
   ActionWrap,
+  FormInput,
   FormOTP,
+  FormSelect,
   FormTabButtons,
   FormTabGroup,
   FormTheme,
@@ -39,6 +41,7 @@ const Component = () => {
   const devSettingsRadio = useSelector(({ sessionModel }) => sessionModel.devSettingsRadio);
   const devSettingsRange = useSelector(({ sessionModel }) => sessionModel.devSettingsRange);
   const devSettingsText = useSelector(({ sessionModel }) => sessionModel.devSettingsText);
+  const devSettingsSelect = useSelector(({ sessionModel }) => sessionModel.devSettingsSelect);
 
   const themeKeyFocus = useSelector(({ sessionModel }) => sessionModel.themeKeyFocus);
 
@@ -46,6 +49,8 @@ const Component = () => {
   const [tabView, setTabView] = useState('grid');
   const [tabGroup, setTabGroup] = useState('grid');
   const [otp, setOtp] = useState('');
+  const [inputValue, setInputValue] = useState('');
+  const [selectValue, setSelectValue] = useState('');
   const [sort, setSort] = useState('title');
   const [order, setOrder] = useState('asc');
   const [colOptions, setColOptions] = useState({
@@ -225,6 +230,86 @@ const Component = () => {
           <FormTheme themeKey="currentTheme" />
         </div>
 
+        {/* FORM - SELECT */}
+
+        <div>
+          <h2>Form - Select</h2>
+          <FormSelect
+            value={selectValue}
+            onChange={setSelectValue}
+            placeholder="Choose an option"
+            options={[
+              { value: 'option1', label: 'Option 1' },
+              {
+                value: 'option2',
+                label: 'Option 2 with much longer text that might even go onto multiple lines',
+              },
+              { value: 'option3', label: 'Option 3' },
+              {
+                value: 'option4',
+                label: 'Option 4',
+                disabled: true,
+              },
+            ]}
+          />
+          <br />
+          <FormSelect
+            value=""
+            onChange={() => {}}
+            placeholder="Choose an option"
+            options={[
+              { value: 'option1', label: 'Option 1' },
+              { value: 'option2', label: 'Option 2' },
+            ]}
+            disabled
+          />
+        </div>
+
+        {/* FORM - TEXT INPUT */}
+
+        <div>
+          <h2>Form - Text Input</h2>
+          <FormInput value={inputValue} onChange={setInputValue} placeholder="Placeholder text" />
+          <br />
+          <FormInput
+            value={inputValue}
+            onChange={setInputValue}
+            placeholder="Placeholder text"
+            error="This is an example error message."
+          />
+          <br />
+          <FormInput value="" onChange={() => {}} placeholder="Disabled" disabled />
+          <br />
+          <FormInput
+            value={inputValue}
+            onChange={setInputValue}
+            placeholder="Color: primary (default)"
+            color="primary"
+          />
+          <br />
+          <FormInput value={inputValue} onChange={setInputValue} placeholder="Color: secondary" color="secondary" />
+          <br />
+          <FormInput value={inputValue} onChange={setInputValue} placeholder="Size: default (default)" size="default" />
+          <br />
+          <FormInput value={inputValue} onChange={setInputValue} placeholder="Size: large" size="large" />
+          <br />
+          <FormInput
+            value={inputValue}
+            onChange={setInputValue}
+            placeholder="Size: large, color: secondary (modal style)"
+            size="large"
+            color="secondary"
+          />
+        </div>
+
+        {/* FORM - OTP */}
+
+        <div>
+          <h2>Form - OTP</h2>
+          <br />
+          <FormOTP value={otp} onChange={setOtp} />
+        </div>
+
         {/* FORM - TAB BUTTONS */}
 
         <div>
@@ -282,13 +367,6 @@ const Component = () => {
           />
         </div>
 
-        {/* FORM - OTP */}
-
-        <div>
-          <h2>Form - OTP</h2>
-          <br />
-          <FormOTP value={otp} onChange={setOtp} />
-        </div>
         {/* SETTINGS LIST */}
 
         <div>
@@ -445,7 +523,6 @@ const Component = () => {
                 type: 'tabGroup',
                 key: 'devSettingsTabGroup1',
                 label: 'Tab group item',
-                description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit.',
                 state: devSettingsTabGroup1,
                 options: [
                   { value: 'option1', label: 'Option 1' },
@@ -476,6 +553,47 @@ const Component = () => {
                   { value: 'option1', label: 'Option 1' },
                   { value: 'option2', label: 'Option 2' },
                   { value: 'option3', label: 'Option 3' },
+                ],
+              },
+              {
+                type: 'spacer',
+              },
+              {
+                type: 'select',
+                key: 'devSettingsSelect',
+                label: 'Select item',
+                state: devSettingsSelect,
+                options: [
+                  { value: 'option1', label: 'Option 1' },
+                  { value: 'option2', label: 'Option 2' },
+                  { value: 'option3', label: 'Option 3', disabled: true },
+                ],
+              },
+              {
+                type: 'select',
+                key: 'devSettingsSelect',
+                label: 'Select item lorem ipsum dolor sit amet consectetur adipiscing elit',
+                description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit.',
+                state: devSettingsSelect,
+                props: {
+                  placeholder: 'Choose an option',
+                },
+                options: [
+                  { value: 'option1', label: 'Option 1' },
+                  { value: 'option2', label: 'Option 2' },
+                  { value: 'option3', label: 'Option 3', disabled: true },
+                ],
+              },
+              {
+                type: 'select',
+                key: 'devSettingsSelect',
+                label: 'Select item (disabled)',
+                description: 'This option is currently unavailable.',
+                state: devSettingsSelect,
+                disabled: true,
+                options: [
+                  { value: 'option1', label: 'Option 1' },
+                  { value: 'option2', label: 'Option 2' },
                 ],
               },
               {

@@ -15,7 +15,9 @@ export { default as ContextMenuTracks } from './ContextMenuTracks/ContextMenuTra
 export { default as ControlBar } from './ControlBar/ControlBar';
 export { default as ElectronUI } from './ElectronUI/ElectronUI';
 export { default as Favourite } from './Favourite/Favourite';
+export { default as FormInput } from './FormInput/FormInput';
 export { default as FormOTP } from './FormOTP/FormOTP';
+export { default as FormSelect } from './FormSelect/FormSelect';
 export { default as FormTabButtons } from './FormTabButtons/FormTabButtons';
 export { default as FormTabGroup } from './FormTabGroup/FormTabGroup';
 export { default as FormTheme } from './FormTheme/FormTheme';

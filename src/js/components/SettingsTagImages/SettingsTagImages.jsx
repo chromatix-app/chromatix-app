@@ -105,7 +105,7 @@ export const SettingsTagImages = () => {
 
   const extensionMenuItems = [
     {
-      type: 'tabGroup',
+      type: 'select',
       key: 'tagImageCustomExtension',
       label: 'Image format',
       description: 'Choose the file extension your own images are saved with.',

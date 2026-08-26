@@ -209,47 +209,9 @@
 }
 
 //
-// TEXT
+// TEXT / SELECT
 //
 
-.textInput {
-  display: block;
-  width: 100%;
-  max-width: 420px;
-  padding: 8px 12px;
+.field {
   margin-top: 7px;
-  background: var(--color-tertiary-bg);
-  border: 1px solid var(--color-tertiary-border);
-  border-radius: 6px;
-  font-size: 14px;
-  color: var(--color-text);
-
-  @include mixins.focus-self-outline;
-
-  :global(html[data-theme='light']) & {
-    background: var(--color-primary-bg);
-    border-color: var(--color-secondary-border);
-  }
-
-  &::placeholder {
-    color: var(--color-opacity-05);
-  }
-
-  &:focus {
-    border-color: var(--color-opacity-03);
-
-    :global(html[data-theme='light']) & {
-      border-color: var(--color-tertiary-border);
-    }
-  }
-
-  &:disabled {
-    opacity: var(--opacity-04);
-  }
-}
-
-.inputErrorMessage {
-  margin: 8px 2px 0;
-  font-size: 12px;
-  color: var(--color-text);
 }
