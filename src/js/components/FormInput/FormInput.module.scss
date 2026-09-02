@@ -1,0 +1,81 @@
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
+
+.wrap {
+}
+
+.input {
+  display: block;
+  width: 100%;
+  border-radius: 6px;
+
+  @include mixins.focus-self-outline;
+
+  &::placeholder {
+    color: var(--color-opacity-05);
+  }
+
+  &:disabled {
+    opacity: var(--opacity-04);
+  }
+}
+
+.error {
+  margin: 4px 2px 0;
+  font-size: 12px;
+  color: var(--color-text);
+}
+
+//
+// COLORS
+//
+
+.colorPrimary {
+  background: var(--color-button-on-primary-bg);
+  border: 1px solid var(--color-button-on-primary-border);
+  color: var(--color-text);
+
+  &:focus {
+    border-color: var(--color-opacity-03);
+  }
+}
+
+.colorSecondary {
+  background: var(--color-tertiary-bg);
+  border: 1px solid var(--color-tertiary-border);
+  color: var(--color-text);
+
+  :global(html[data-theme='light']) & {
+    background: var(--color-primary-bg);
+    border-color: var(--color-secondary-border);
+  }
+
+  &:focus {
+    border-color: var(--color-opacity-03);
+
+    :global(html[data-theme='light']) & {
+      border-color: var(--color-tertiary-border);
+    }
+  }
+}
+
+//
+// SIZES
+//
+
+.sizeDefault {
+  max-width: 420px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.sizeLarge {
+  padding: 8px 12px;
+  margin: 18px 0 0;
+  font-size: 16px;
+}
+
+.error.sizeLarge {
+  margin: 8px 2px 0;
+  font-size: 13px;
+}

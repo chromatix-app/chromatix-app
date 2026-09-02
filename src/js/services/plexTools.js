@@ -504,11 +504,13 @@ export const getFastestConnection = ({ server }) => {
     return 0;
   });
 
+  const requestUris = []; // for debugging purposes only
+
   const requests = connections.map((connection, index) => {
     // incremental delay based on position in sorted array,
     // because we want the preferred connections to be tested first
     const delay = index * 300;
-
+    requestUris.push(connection.uri);
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         axios
@@ -527,6 +529,46 @@ export const getFastestConnection = ({ server }) => {
       }, delay);
     });
   });
+
+  // local connections are addressed via a plex.direct hostname, which relies on
+  // public DNS resolving it back to a private IP - DNS rebinding protection (on
+  // the Plex server, the client's router, or an upstream resolver) can block this
+  // even though the server itself is reachable, so also race a direct connection
+  // by IP/port, bypassing plex.direct DNS entirely. Electron-only: a direct local
+  // connection is plain http, which a browser build would mixed-content-block
+  // when Chromatix itself is served over https.
+  if (envData.isElectron) {
+    connections
+      .filter((connection) => connection.local)
+      .forEach((connection, index) => {
+        const delay = index * 300;
+        const address = connection.IPv6 ? `[${connection.address}]` : connection.address;
+        const directUri = `http://${address}:${connection.port}`;
+        requestUris.push(directUri);
+        requests.push(
+          new Promise((resolve, reject) => {
+            setTimeout(() => {
+              axios
+                .head(directUri, {
+                  headers: getRequestHeaders(accessToken),
+                  timeout: 3000,
+                })
+                .then(() => resolve(directUri))
+                .catch((error) => {
+                  reject({
+                    code: 'plex.getFastestConnection.2',
+                    message: `Failed to connect to ${directUri}: ${error?.message}`,
+                    error,
+                  });
+                });
+            }, delay);
+          })
+        );
+      });
+  }
+
+  // console.log(connections);
+  // console.log(requestUris);
 
   // return the first connection that responds
   return raceToSuccess(requests)

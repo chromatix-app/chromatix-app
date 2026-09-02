@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import clsx from 'clsx';
 
 import { Icon } from 'js/components';
-import { useNearTop } from 'js/hooks';
+import { useNearTop, useTagImage } from 'js/hooks';
 
 import style from './TitleHeading.module.scss';
 
@@ -38,6 +38,9 @@ const TitleHeading = ({
   const titleLength = typeof title === 'string' ? title.replace(/<[^>]*>/g, '').length : 0;
   const titleSize = titleLength <= 10 ? 'xl' : titleLength <= 30 ? 'lg' : titleLength <= 40 ? 'md' : 'sm';
 
+  // Tag image thumbnails
+  const [tagImageSrc, handleTagImageError] = useTagImage(title, icon && !thumb);
+
   return (
     <>
       <div
@@ -61,7 +64,22 @@ const TitleHeading = ({
           </button>
         )}
 
-        {icon && (
+        {icon && tagImageSrc && (
+          <button
+            type="button"
+            className={style.thumb}
+            onClick={() => {
+              dispatch.dialogModel.showModal({
+                modal: 'ImagePreview',
+                data: { src: tagImageSrc, title },
+              });
+            }}
+          >
+            <img src={tagImageSrc} alt={title} draggable="false" onError={handleTagImageError} />
+          </button>
+        )}
+
+        {icon && !tagImageSrc && (
           <div className={style.thumbBg}>
             <div className={style.thumbIcon}>
               <Icon icon={icon} cover stroke strokeWidth={1.6} />

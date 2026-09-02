@@ -18,5 +18,8 @@ export { default as safeDecodeURIComponent } from './safeDecodeURIComponent';
 export { default as safeEncodeURIComponent } from './safeEncodeURIComponent';
 export { default as sendToElectron } from './sendToElectron';
 export { default as setLocalStorage } from './setLocalStorage';
+export { default as slugifyTagName } from './slugifyTagName';
 export { default as sortList } from './sortList';
 export { default as validateEntityName } from './validateEntityName';
+export { default as validateHttpsUrl } from './validateHttpsUrl';
+export { default as validateLocalPath } from './validateLocalPath';

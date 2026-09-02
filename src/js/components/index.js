@@ -15,7 +15,9 @@ export { default as ContextMenuTracks } from './ContextMenuTracks/ContextMenuTra
 export { default as ControlBar } from './ControlBar/ControlBar';
 export { default as ElectronUI } from './ElectronUI/ElectronUI';
 export { default as Favourite } from './Favourite/Favourite';
+export { default as FormInput } from './FormInput/FormInput';
 export { default as FormOTP } from './FormOTP/FormOTP';
+export { default as FormSelect } from './FormSelect/FormSelect';
 export { default as FormTabButtons } from './FormTabButtons/FormTabButtons';
 export { default as FormTabGroup } from './FormTabGroup/FormTabGroup';
 export { default as FormTheme } from './FormTheme/FormTheme';
@@ -45,6 +47,7 @@ export { default as SettingsKeyboard } from './SettingsKeyboard/SettingsKeyboard
 export { default as SettingsList } from './SettingsList/SettingsList';
 export { default as SettingsPlayback } from './SettingsPlayback/SettingsPlayback';
 export { default as SettingsSidebar } from './SettingsSidebar/SettingsSidebar';
+export { default as SettingsTagImages } from './SettingsTagImages/SettingsTagImages';
 export { default as SideBar } from './SideBar/SideBar';
 export { default as StarRating } from './StarRating/StarRating';
 export { default as TitleBasic } from './TitleBasic/TitleBasic';

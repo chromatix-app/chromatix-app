@@ -284,7 +284,9 @@ const getFastestConnection = async (currentServer, currentService, currentAccoun
       serverBaseUrl = currentAccount.serverBaseUrl;
       store.dispatch.appModel.setAppState({ serverBaseUrl });
     } else {
+      console.log('%c--- bridge - getFastestConnection ---', 'color:#f9743b;');
       await plexTools.getFastestConnection({ server: currentServer }).then((response) => {
+        console.log('serverBaseUrl', response);
         serverBaseUrl = response;
         store.dispatch.appModel.setAppState({ serverBaseUrl });
       });

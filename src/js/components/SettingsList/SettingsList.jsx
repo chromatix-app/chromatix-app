@@ -5,7 +5,7 @@
 import { useDispatch } from 'react-redux';
 import clsx from 'clsx';
 
-import { FormTabGroup, Icon, RangeSlider } from 'js/components';
+import { FormInput, FormSelect, FormTabGroup, Icon, RangeSlider } from 'js/components';
 
 import style from './SettingsList.module.scss';
 
@@ -85,6 +85,54 @@ const SettingsList = ({ title, description, menuItems, padding, variant }) => {
                     </div>
                   </div>
                 );
+              } else if (type === 'text') {
+                return (
+                  <div key={index} className={style.listEntry}>
+                    <div>
+                      <label htmlFor={`setting-${key}`} className={clsx(style.label, disabled && style.disabled)}>
+                        {label}
+                      </label>
+                      {description && (
+                        <div className={clsx(style.description, disabled && style.disabled)}>{description}</div>
+                      )}
+                      {footnote && <div className={clsx(style.footnote, disabled && style.disabled)}>{footnote}</div>}
+                      <div className={style.field}>
+                        <FormInput
+                          id={`setting-${key}`}
+                          value={state}
+                          disabled={disabled}
+                          placeholder={props?.placeholder}
+                          error={props?.error}
+                          onChange={(value) => dispatch.sessionModel.setSessionState({ [key]: value })}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              } else if (type === 'select') {
+                return (
+                  <div key={index} className={style.listEntry}>
+                    <div>
+                      <label htmlFor={`setting-${key}`} className={clsx(style.label, disabled && style.disabled)}>
+                        {label}
+                      </label>
+                      {description && (
+                        <div className={clsx(style.description, disabled && style.disabled)}>{description}</div>
+                      )}
+                      {footnote && <div className={clsx(style.footnote, disabled && style.disabled)}>{footnote}</div>}
+                      <div className={style.field}>
+                        <FormSelect
+                          id={`setting-${key}`}
+                          value={state}
+                          disabled={disabled}
+                          placeholder={props?.placeholder}
+                          options={options}
+                          onChange={(value) => dispatch.sessionModel.setSessionState({ [key]: value })}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
               } else if (type === 'radio') {
                 return (
                   <fieldset key={index} className={clsx(style.listEntry, style.radioFieldset)}>
@@ -122,13 +170,15 @@ const SettingsList = ({ title, description, menuItems, padding, variant }) => {
                         <div className={clsx(style.description, disabled && style.disabled)}>{description}</div>
                       )}
                       {footnote && <div className={clsx(style.footnote, disabled && style.disabled)}>{footnote}</div>}
-                      <FormTabGroup
-                        name={label || key}
-                        value={state}
-                        onChange={(val) => dispatch.sessionModel.setSessionState({ [key]: val })}
-                        options={options}
-                        disabled={disabled}
-                      />
+                      <div className={style.field}>
+                        <FormTabGroup
+                          name={label || key}
+                          value={state}
+                          onChange={(val) => dispatch.sessionModel.setSessionState({ [key]: val })}
+                          options={options}
+                          disabled={disabled}
+                        />
+                      </div>
                     </div>
                   </div>
                 );

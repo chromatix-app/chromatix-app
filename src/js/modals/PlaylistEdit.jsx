@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Dialog from '@radix-ui/react-dialog';
 
-import { Button, ModalWindow } from 'js/components';
+import { Button, FormInput, ModalWindow } from 'js/components';
 import * as bridge from 'js/services/bridge';
 import { validateEntityName } from 'js/utils';
 import style from './modals.module.scss';
@@ -60,20 +60,21 @@ const PlaylistEdit = () => {
 
       <Dialog.Description asChild>
         <div className={style.body}>
-          <input
-            className={style.input}
+          <FormInput
+            size="large"
+            color="secondary"
             type="text"
             placeholder="Playlist title"
             value={title}
             autoFocus
             maxLength={128}
             disabled={loading}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={setTitle}
             onKeyDown={(e) => {
               if (e.key === 'Enter') handleSubmit();
             }}
+            error={title.trim() && validationError ? validationError : undefined}
           />
-          {title.trim() && validationError && <p className={style.inputErrorMessage}>{validationError}</p>}
         </div>
       </Dialog.Description>
 
