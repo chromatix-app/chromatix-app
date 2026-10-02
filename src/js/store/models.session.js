@@ -12,7 +12,7 @@ import { analyticsEvent, migrateSessionState } from 'js/utils';
 // STATE
 // ======================================================================
 
-const isLocal = import.meta.env.VITE_ENV === 'local';
+// const isLocal = import.meta.env.VITE_ENV === 'local';
 const isPreview = import.meta.env.VITE_ENV === 'preview';
 const isProduction = import.meta.env.VITE_ENV === 'production';
 
@@ -30,13 +30,15 @@ const sessionState = {
 
   // DEV OPTIONS
 
-  ...(isLocal
+  ...(!isProduction
     ? {
         devSettingsCheck1: true,
         devSettingsCheck2: true,
         devSettingsCheck3: true,
         devSettingsRadio: 'option1',
         devSettingsRange: 3,
+        devSettingsText: '',
+        devSettingsSelect: 'option1',
         devSettingsTabGroup1: 'option1',
         devSettingsTabGroup2: 'option1',
         devSettingsTabGroup3: 'option1',
@@ -81,6 +83,14 @@ const sessionState = {
   winCustomScrollbars: true,
   winAutoHideScrollbars: false,
   winScrollbarWidth: 12,
+
+  // TAG IMAGES
+
+  tagImageOption: 'none',
+  tagImageCustomType: 'hosted',
+  tagImageCustomUrl: '',
+  tagImageCustomPath: '',
+  tagImageCustomExtension: 'jpg', // 'jpg' | 'png' | 'gif' | 'webp' | 'avif' - only relevant when tagImageOption is 'custom'
 
   // KEYBOARD OPTIONS
 

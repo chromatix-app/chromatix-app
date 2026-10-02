@@ -489,51 +489,80 @@ export const getAllServers = ({ userToken }) => {
 };
 
 // ======================================================================
-// GET FASTEST SERVER CONNECTION
+// GET BEST SERVER CONNECTION
 // ======================================================================
 
-export const getFastestConnection = ({ server }) => {
-  let { accessToken, connections } = server;
+const localTimeout = 2000;
+const remoteTimeout = 3000;
 
-  // sort connections based on preference
-  connections.sort((a, b) => {
-    if (a.local && !b.local) return -1;
-    if (!a.local && b.local) return 1;
-    if (a.relay && !b.relay) return 1;
-    if (!a.relay && b.relay) return -1;
-    return 0;
-  });
+/**
+ * Finds the best way to reach the server and returns its URI. Plex lists several addresses per server, grouped as:
+ *
+ * 1. Local - same network as the server, so fastest. Tried first.
+ * 2. Remote - over the internet, straight to the server. Tried alongside local, but starting slightly later so
+ *    that local wins if both work.
+ * 3. Relay - routed through Plex's own servers, so slow and bandwidth-limited. Only tried once 1 and 2 have failed.
+ *
+ * In Electron, the server's local IP is also tried directly, in case the local addresses above can't be resolved.
+ * Local and remote https addresses are all tried before any plain http ones, so the token is never sent
+ * unencrypted while a secure direct route might work. Whichever address responds first wins, and any attempts not
+ * yet started are skipped.
+ *
+ * @returns A promise resolving with the winning URI, or rejecting if no address responds
+ */
+export const getBestConnection = ({ server }) => {
+  const { accessToken, connections } = server;
+  let connected = false;
 
-  const requests = connections.map((connection, index) => {
-    // incremental delay based on position in sorted array,
-    // because we want the preferred connections to be tested first
-    const delay = index * 300;
-
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        axios
-          .head(connection.uri, {
-            headers: getRequestHeaders(accessToken),
-            timeout: 3000,
-          })
-          .then(() => resolve(connection.uri))
-          .catch((error) => {
-            reject({
-              code: 'plex.getFastestConnection.1',
-              message: `Failed to connect to ${connection.uri}: ${error?.message}`,
-              error,
-            });
-          });
-      }, delay);
+  const testConnection = (uri, delay, timeout) =>
+    new Promise((resolve) => setTimeout(resolve, delay)).then(() => {
+      // Skip this attempt if another connection succeeded while it was waiting on its delay
+      if (connected) throw new Error('Already connected');
+      console.log('Attempting connection', uri);
+      return axios.head(uri, { headers: getRequestHeaders(accessToken), timeout }).then(() => {
+        connected = true;
+        return uri;
+      });
     });
-  });
 
-  // return the first connection that responds
-  return raceToSuccess(requests)
-    .then((activeConnection) => {
-      return activeConnection;
-    })
-    .catch((error) => {
+  // Races multiple connection attempts and resolves with the first successful one. Attempts start 300ms apart
+  // (after an optional initial delay), so earlier URIs get a head start and win if several respond.
+  const race = (uris, timeout, initialDelay = 0) =>
+    raceToSuccess(uris.map((uri, index) => testConnection(uri, initialDelay + index * 300, timeout)));
+
+  // Utility function to extract URIs from a list of connection objects.
+  const getUris = (list) => list.map(({ uri }) => uri);
+
+  const local = connections.filter((connection) => connection.local && !connection.relay);
+  const remote = connections.filter((connection) => !connection.local && !connection.relay);
+  const relay = connections.filter((connection) => connection.relay);
+
+  // Electron only - bypasses plex.direct DNS, which DNS rebinding protection can block
+  const getDirectUris = (scheme) =>
+    envData.isElectron
+      ? local.map(({ address, port, IPv6 }) => `${scheme}://${IPv6 ? `[${address}]` : address}:${port}`)
+      : [];
+
+  console.log('Local:', getUris(local));
+  console.log('Remote:', getUris(remote));
+  console.log('Relay:', getUris(relay));
+  console.log('Direct:', [...getDirectUris('https'), ...getDirectUris('http')]);
+
+  // Set removes duplicates, as Plex may already list the local IP as a plain http address
+  const localUris = [...new Set([...getUris(local), ...getDirectUris('https'), ...getDirectUris('http')])];
+  const remoteUris = getUris(remote);
+
+  // Races local and remote URIs that match the filter, starting remote 300ms after local so local is preferred
+  const raceLocalAndRemote = (filter) =>
+    raceToSuccess([race(localUris.filter(filter), localTimeout), race(remoteUris.filter(filter), remoteTimeout, 300)]);
+
+  const isSecure = (uri) => uri.startsWith('https://');
+
+  // Only fall back to http once every https connection has failed, then to relay
+  return raceLocalAndRemote(isSecure)
+    .catch(() => raceLocalAndRemote((uri) => !isSecure(uri)))
+    .catch(() => race(getUris(relay), remoteTimeout))
+    .catch(() => {
       throw new Error('No active connection found');
     });
 };

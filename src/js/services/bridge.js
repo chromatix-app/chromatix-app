@@ -274,17 +274,19 @@ export const getAllServers = () => {
 };
 
 // ======================================================================
-// GET FASTEST SERVER CONNECTION
+// GET BEST SERVER CONNECTION
 // ======================================================================
 
-const getFastestConnection = async (currentServer, currentService, currentAccount) => {
+const getBestConnection = async (currentServer, currentService, currentAccount) => {
   let serverBaseUrl;
   try {
     if (currentAccount?.serverBaseUrl) {
       serverBaseUrl = currentAccount.serverBaseUrl;
       store.dispatch.appModel.setAppState({ serverBaseUrl });
     } else {
-      await plexTools.getFastestConnection({ server: currentServer }).then((response) => {
+      console.log('%c--- bridge - getBestConnection ---', 'color:#f9743b;');
+      await plexTools.getBestConnection({ server: currentServer }).then((response) => {
+        console.log('serverBaseUrl', response);
         serverBaseUrl = response;
         store.dispatch.appModel.setAppState({ serverBaseUrl });
       });
@@ -316,10 +318,10 @@ export const getAllLibraries = async () => {
         const currentService = store.getState().appModel.currentService;
         const currentAccount = currentService === 'jellyfin' ? store.getState().appModel.currentAccount : null;
 
-        // before getting libraries, get the fastest server connection
+        // before getting libraries, get the best server connection
         let serverBaseUrl;
         try {
-          serverBaseUrl = await getFastestConnection(currentServer, currentService, currentAccount);
+          serverBaseUrl = await getBestConnection(currentServer, currentService, currentAccount);
         } catch (error) {
           getUserLibrariesRunning = false;
           return;

@@ -21,3 +21,6 @@ tests/.auth/
 build/
 dist/
 .vercel
+
+# Local-only symlinks
+public/tags/

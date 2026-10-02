@@ -32,4 +32,5 @@ export { default as useScrollToTrack } from './useScrollToTrack';
 export { default as useScrollToVirtualTrack } from './useScrollToVirtualTrack';
 export { default as useStyleOptions } from './useStyleOptions';
 export { default as useTableOptions } from './useTableOptions';
+export { default as useTagImage } from './useTagImage';
 export { default as useWindowSize } from './useWindowSize';

@@ -26,7 +26,7 @@ export default defineConfig({
     react(),
     svgr(),
     fullReloadOnHooksChange,
-    process.env.ANALYZE && visualizer({ open: true, filename: 'build/stats.html', gzipSize: true, brotliSize: true }),
+    !!process.env.ANALYZE && visualizer({ open: true, filename: 'build/stats.html', gzipSize: true, brotliSize: true }),
   ],
   resolve: {
     tsconfigPaths: true,

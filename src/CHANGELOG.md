@@ -1,3 +1,17 @@
+# 0.71.0 (2026-10-02)
+
+Features:
+
+- Improved Plex server connections for better compatibility and security.
+- Form errors are now read out by screen readers.
+
+Code changes:
+
+- Added reusable form field components.
+- Moved developer tools to the settings page.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.70.0 (2026-08-05)
 
 Code changes:
