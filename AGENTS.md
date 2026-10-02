@@ -112,6 +112,8 @@ The audio player has three layers: `player.ts` is the router that selects the ac
 
 The Plex API is entirely undocumented and reverse engineered. Plex API fields are explicitly excluded where not needed to reduce payload size.
 
+Never send the server access token over plain `http` while an `https` route might work — `getBestConnection` in `plexTools.js` only falls back to `http` addresses once every `https` attempt in that group has failed. Keep this guarantee when changing how connections are chosen.
+
 ## Routing
 
 Routes are defined in `js/_config/routes.ts` as arrays of route objects:
@@ -151,6 +153,8 @@ The `Action*` components are the toolbar controls shown above list/grid views. T
 ## Form Fields
 
 `FormInput` and `FormSelect` are standalone, size-matched text-input and select-field components (plain `value`/`onChange`/`options`/`disabled` props, no store dependency) — use them anywhere a form field is needed. `FormInput` also takes a `color` prop (`primary` default, `secondary`) to match the background it's placed on — e.g. modals pass `color="secondary"` since they sit on a secondary surface, while `SettingsList` relies on the `primary` default since it only ever renders on the primary main-content background. `FormSelect` has no `color` prop yet, since nothing currently renders it outside a primary-background context. `SettingsList`'s `text` and `select` entry types are thin wrappers around them that additionally dispatch to `sessionModel` by `key`. `FormTheme` is a separate, larger Radix Select styled specifically for theme swatches and isn't a general-purpose select.
+
+`FormInput`'s `error` prop only displays a message (announced to screen readers) — it doesn't stop the value being saved. `SettingsList` text entries write every keystroke to `sessionModel`, so any code that reads a validated setting must re-run its validator (e.g. `validateHttpsUrl`) and use the trimmed value, rather than trusting the stored string.
 
 ## Modals
 
@@ -222,11 +226,12 @@ Set via `import.meta.env` (Vite convention, prefixed `VITE_`):
 - `package.json` has `"type": "module"` — the project is ESM-native
 - Husky + lint-staged run ESLint and Prettier checks on staged files at pre-commit; knip, typecheck, and tests also run pre-commit
 - Knip is used for dead code detection — avoid unused exports, imports, and files
+- Never remove existing `console.log` debug statements, even if they look temporary — they're intentional
 - Use `clsx` for all conditional class name composition (not string concatenation)
 - Use CSS Modules for component-scoped styles; import as `style` and reference as `style.className`
-- Use `getEnvironment()` from `js/utils` as the single source of truth for environment, browser, OS, and Electron info — do not access `import.meta.env` or `navigator` directly for these
+- Use `getEnvironment()` from `js/utils` as the single source of truth for environment, browser, OS, and Electron info — do not access `import.meta.env` or `navigator` directly for these, except plain `import.meta.env.VITE_*` reads used only to gate build-time config (e.g. `routes.ts`'s `isProduction`), which are fine directly
 - Use `getLocalStorage` / `setLocalStorage` from `js/utils` for all localStorage access
-- Use `safeEncodeURIComponent` / `safeDecodeURIComponent` from `js/utils` rather than the native globals
+- Use `safeEncodeURIComponent` / `safeDecodeURIComponent` from `js/utils` (not the native globals) for values embedded in React Router route paths/params (e.g. genre, tag, collection IDs) — their placeholder scheme exists specifically to survive React Router's own decoding, and only makes sense paired on both ends of that round-trip. For values that never pass through React Router (e.g. a `chromatix://` protocol URL read directly by Electron), use the native `encodeURIComponent` / `decodeURIComponent`
 - All top-level exports in `js/hooks/` and `js/utils/` must have a clear, succinct JSDoc comment. Keep descriptions brief and factual — one sentence for simple functions, a few lines for complex ones. Include `@param` and `@returns` tags only when they add meaningful clarity beyond what the types convey
 - Section comments use a consistent three-line banner style — a divider, a title, then a closing divider:
   ```
