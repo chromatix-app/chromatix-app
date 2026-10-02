@@ -504,8 +504,8 @@ const remoteTimeout = 3000;
  * 3. Relay - routed through Plex's own servers, so slow and bandwidth-limited. Only tried once 1 and 2 have failed.
  *
  * In Electron, the server's local IP is also tried directly, in case the local addresses above can't be resolved.
- * Within local and remote, plain http addresses are only tried once every https one has failed, so the token is
- * never sent unencrypted when a secure route works. Whichever address responds first wins, and any attempts not
+ * Local and remote https addresses are all tried before any plain http ones, so the token is never sent
+ * unencrypted while a secure direct route might work. Whichever address responds first wins, and any attempts not
  * yet started are skipped.
  *
  * @returns A promise resolving with the winning URI, or rejecting if no address responds
@@ -530,13 +530,6 @@ export const getBestConnection = ({ server }) => {
   const race = (uris, timeout, initialDelay = 0) =>
     raceToSuccess(uris.map((uri, index) => testConnection(uri, initialDelay + index * 300, timeout)));
 
-  // Only fall back to http once all https connections have failed
-  const raceSecureFirst = (uris, timeout, initialDelay) => {
-    const secureUris = uris.filter((uri) => uri.startsWith('https://'));
-    const insecureUris = uris.filter((uri) => !secureUris.includes(uri));
-    return race(secureUris, timeout, initialDelay).catch(() => race(insecureUris, timeout));
-  };
-
   // Utility function to extract URIs from a list of connection objects.
   const getUris = (list) => list.map(({ uri }) => uri);
 
@@ -557,11 +550,17 @@ export const getBestConnection = ({ server }) => {
 
   // Set removes duplicates, as Plex may already list the local IP as a plain http address
   const localUris = [...new Set([...getUris(local), ...getDirectUris('https'), ...getDirectUris('http')])];
-  const localRequest = raceSecureFirst(localUris, localTimeout);
-  // Start remote 300ms after local, so local is preferred when both work
-  const remoteRequest = raceSecureFirst(getUris(remote), remoteTimeout, 300);
+  const remoteUris = getUris(remote);
 
-  return raceToSuccess([localRequest, remoteRequest])
+  // Races local and remote URIs that match the filter, starting remote 300ms after local so local is preferred
+  const raceLocalAndRemote = (filter) =>
+    raceToSuccess([race(localUris.filter(filter), localTimeout), race(remoteUris.filter(filter), remoteTimeout, 300)]);
+
+  const isSecure = (uri) => uri.startsWith('https://');
+
+  // Only fall back to http once every https connection has failed, then to relay
+  return raceLocalAndRemote(isSecure)
+    .catch(() => raceLocalAndRemote((uri) => !isSecure(uri)))
     .catch(() => race(getUris(relay), remoteTimeout))
     .catch(() => {
       throw new Error('No active connection found');

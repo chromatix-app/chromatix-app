@@ -112,7 +112,7 @@ The audio player has three layers: `player.ts` is the router that selects the ac
 
 The Plex API is entirely undocumented and reverse engineered. Plex API fields are explicitly excluded where not needed to reduce payload size.
 
-Never send the server access token over plain `http` while an `https` route might work — `getBestConnection` in `plexTools.js` only falls back to `http` addresses once every `https` attempt in that group has failed. Keep this guarantee when changing how connections are chosen.
+Never send the server access token over plain `http` while a direct (non-relay) `https` route might work — `getBestConnection` in `plexTools.js` tries every local and remote `https` address before any `http` one, and only then the relay. Keep this guarantee when changing how connections are chosen.
 
 ## Routing
 

@@ -143,6 +143,19 @@ describe('Testing "getBestConnection" function', () => {
     expect(requestedUris()).not.toContain(remoteHttp.uri);
   });
 
+  test('Does not try local http while a remote https attempt is still pending', async () => {
+    const result = await resolveWith([remote.uri, directHttp], [local, remote], { [remote.uri]: 2500 });
+    expect(result).toEqual({ value: remote.uri });
+    expect(requestedUris()).not.toContain(directHttp);
+  });
+
+  test('An http-only remote group cannot beat a slightly slow local https connection', async () => {
+    env.isElectron = false;
+    const result = await resolveWith([local.uri, remoteHttp.uri], [local, remoteHttp], { [local.uri]: 100 });
+    expect(result).toEqual({ value: local.uri });
+    expect(requestedUris()).not.toContain(remoteHttp.uri);
+  });
+
   test('Uses a Plex-listed http address once secure attempts have failed', async () => {
     env.isElectron = false;
     expect(await resolveWith([localHttp.uri], [local, localHttp])).toEqual({ value: localHttp.uri });
