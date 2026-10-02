@@ -503,8 +503,10 @@ const remoteTimeout = 3000;
  *    that local wins if both work.
  * 3. Relay - routed through Plex's own servers, so slow and bandwidth-limited. Only tried once 1 and 2 have failed.
  *
- * In Electron, if the local addresses fail, the server's local IP is also tried directly - https first, then plain
- * http as a last resort. Whichever address responds first wins, and any attempts not yet started are skipped.
+ * In Electron, the server's local IP is also tried directly, in case the local addresses above can't be resolved.
+ * Within local and remote, plain http addresses are only tried once every https one has failed, so the token is
+ * never sent unencrypted when a secure route works. Whichever address responds first wins, and any attempts not
+ * yet started are skipped.
  *
  * @returns A promise resolving with the winning URI, or rejecting if no address responds
  */
@@ -528,6 +530,13 @@ export const getBestConnection = ({ server }) => {
   const race = (uris, timeout, initialDelay = 0) =>
     raceToSuccess(uris.map((uri, index) => testConnection(uri, initialDelay + index * 300, timeout)));
 
+  // Only fall back to http once all https connections have failed
+  const raceSecureFirst = (uris, timeout, initialDelay) => {
+    const secureUris = uris.filter((uri) => uri.startsWith('https://'));
+    const insecureUris = uris.filter((uri) => !secureUris.includes(uri));
+    return race(secureUris, timeout, initialDelay).catch(() => race(insecureUris, timeout));
+  };
+
   // Utility function to extract URIs from a list of connection objects.
   const getUris = (list) => list.map(({ uri }) => uri);
 
@@ -544,14 +553,13 @@ export const getBestConnection = ({ server }) => {
   console.log('Local:', getUris(local));
   console.log('Remote:', getUris(remote));
   console.log('Relay:', getUris(relay));
-  console.log('Direct:', getDirectUris('https'));
+  console.log('Direct:', [...getDirectUris('https'), ...getDirectUris('http')]);
 
-  // Only fall back to http once all https connections have failed
-  const localRequest = race([...getUris(local), ...getDirectUris('https')], localTimeout).catch(() =>
-    race(getDirectUris('http'), localTimeout)
-  );
+  // Set removes duplicates, as Plex may already list the local IP as a plain http address
+  const localUris = [...new Set([...getUris(local), ...getDirectUris('https'), ...getDirectUris('http')])];
+  const localRequest = raceSecureFirst(localUris, localTimeout);
   // Start remote 300ms after local, so local is preferred when both work
-  const remoteRequest = race(getUris(remote), remoteTimeout, 300);
+  const remoteRequest = raceSecureFirst(getUris(remote), remoteTimeout, 300);
 
   return raceToSuccess([localRequest, remoteRequest])
     .catch(() => race(getUris(relay), remoteTimeout))

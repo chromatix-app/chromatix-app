@@ -46,6 +46,10 @@ const relay = {
 const directHttps = 'https://192.168.1.2:32400';
 const directHttp = 'http://192.168.1.2:32400';
 
+// plain http addresses as Plex itself may list them, e.g. when the server's secure connections setting is "Preferred"
+const localHttp = { ...local, uri: directHttp };
+const remoteHttp = { ...remote, uri: 'http://1.2.3.4:32400' };
+
 const headMock = vi.mocked(axios.head);
 
 /** Makes only the given URIs respond successfully (optionally after a delay in ms), then resolves the best connection. */
@@ -124,6 +128,29 @@ describe('Testing "getBestConnection" function', () => {
   test('Falls back to relay only once local and remote have all failed', async () => {
     expect(await resolveWith([relay.uri])).toEqual({ value: relay.uri });
     expect(requestedUris().at(-1)).toBe(relay.uri);
+  });
+
+  test('Defers a Plex-listed local http address until secure local attempts have failed', async () => {
+    env.isElectron = false;
+    const result = await resolveWith([local.uri, localHttp.uri], [localHttp, local], { [local.uri]: 1000 });
+    expect(result).toEqual({ value: local.uri });
+    expect(requestedUris()).not.toContain(localHttp.uri);
+  });
+
+  test('Defers a Plex-listed remote http address until secure remote attempts have failed', async () => {
+    const result = await resolveWith([remote.uri, remoteHttp.uri], [remote, remoteHttp], { [remote.uri]: 1000 });
+    expect(result).toEqual({ value: remote.uri });
+    expect(requestedUris()).not.toContain(remoteHttp.uri);
+  });
+
+  test('Uses a Plex-listed http address once secure attempts have failed', async () => {
+    env.isElectron = false;
+    expect(await resolveWith([localHttp.uri], [local, localHttp])).toEqual({ value: localHttp.uri });
+  });
+
+  test('Only tries a local http address once when Plex lists it and it is also built directly', async () => {
+    await resolveWith([], [local, localHttp]);
+    expect(requestedUris().filter((uri) => uri === directHttp)).toHaveLength(1);
   });
 
   test('Never tries direct IP connections outside Electron', async () => {
