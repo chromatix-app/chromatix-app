@@ -721,7 +721,7 @@ const ListEntry = React.memo(
     const isTrack = variant === 'folders' && !!trackId;
 
     // Tag image thumbnails
-    const [tagImageSrc, handleTagImageError] = useTagImage(title, isIconCard);
+    const [tagImageSrc, handleTagImageError] = useTagImage(title, isIconCard && variant !== 'folders');
 
     const card = (
       <div

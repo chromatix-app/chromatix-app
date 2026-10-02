@@ -12,8 +12,9 @@ const validateLocalPath = (path: string): string | null => {
     return 'Path is required';
   }
 
-  // accepts a POSIX absolute path (/Users/...) or a Windows absolute path (C:\Users\... or C:/Users/...)
-  const isAbsolute = /^\/|^[a-zA-Z]:[/\\]/.test(trimmedPath);
+  // accepts a POSIX absolute path (/Users/...), a Windows drive path (C:\Users\... or C:/Users/...), or a Windows
+  // network share (\\server\share\...)
+  const isAbsolute = /^\/|^[a-zA-Z]:[/\\]|^\\\\[^\\/]+[\\/][^\\/]+/.test(trimmedPath);
   if (!isAbsolute) {
     return 'Path must be absolute';
   }

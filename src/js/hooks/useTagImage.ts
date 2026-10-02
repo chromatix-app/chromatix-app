@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 
-import { getEnvironment, slugifyTagName, validateHttpsUrl } from 'js/utils';
+import { getEnvironment, slugifyTagName, validateHttpsUrl, validateLocalPath } from 'js/utils';
 
 const envData = getEnvironment();
 
@@ -62,9 +62,10 @@ const useTagImage = (title: string | null | undefined, hasIcon: boolean): [strin
       tagImageOption === 'custom' &&
       tagImageCustomType === 'local' &&
       tagImageCustomPath &&
+      !validateLocalPath(tagImageCustomPath) &&
       envData.isElectron
     ) {
-      tagImageSrc = `chromatix://local/${encodeURIComponent(tagImageCustomPath + slugifyTagName(title as string) + '.' + tagImageCustomExtension)}`;
+      tagImageSrc = `chromatix://local/${encodeURIComponent(tagImageCustomPath.trim() + slugifyTagName(title as string) + '.' + tagImageCustomExtension)}`;
     }
   }
 

@@ -18,6 +18,22 @@ describe('Testing "validateLocalPath" function', () => {
     expect(validateLocalPath('C:\\Users\\Alex\\tags\\')).toBeNull();
   });
 
+  test('Test with valid Windows network share paths ending in a slash', () => {
+    expect(validateLocalPath('\\\\NAS\\images\\')).toBeNull();
+    expect(validateLocalPath('\\\\NAS\\media\\tags\\')).toBeNull();
+    expect(validateLocalPath('//NAS/images/')).toBeNull();
+  });
+
+  test('Test with an incomplete Windows network share path', () => {
+    expect(validateLocalPath('\\\\NAS\\')).toBe('Path must be absolute');
+    expect(validateLocalPath('\\\\')).toBe('Path must be absolute');
+    expect(validateLocalPath('\\images\\')).toBe('Path must be absolute');
+  });
+
+  test('Test with a Windows network share path missing a trailing slash', () => {
+    expect(validateLocalPath('\\\\NAS\\images')).toBe('Path must end with a / or \\');
+  });
+
   test('Test with a relative path', () => {
     expect(validateLocalPath('tags/')).toBe('Path must be absolute');
     expect(validateLocalPath('./tags/')).toBe('Path must be absolute');
