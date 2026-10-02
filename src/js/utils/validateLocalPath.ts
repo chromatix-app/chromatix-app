@@ -19,7 +19,7 @@ const validateLocalPath = (path: string): string | null => {
   }
 
   if (!trimmedPath.endsWith('/') && !trimmedPath.endsWith('\\')) {
-    return 'Path must end with a /';
+    return 'Path must end with a / or \\';
   }
 
   return null;

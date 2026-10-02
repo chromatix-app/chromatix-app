@@ -25,7 +25,8 @@ describe('Testing "validateLocalPath" function', () => {
   });
 
   test('Test with a path missing a trailing slash', () => {
-    expect(validateLocalPath('/Users/Alex/tags')).toBe('Path must end with a /');
-    expect(validateLocalPath('C:/Users/Alex/tags')).toBe('Path must end with a /');
+    expect(validateLocalPath('/Users/Alex/tags')).toBe('Path must end with a / or \\');
+    expect(validateLocalPath('C:/Users/Alex/tags')).toBe('Path must end with a / or \\');
+    expect(validateLocalPath('C:\\Users\\Alex\\tags')).toBe('Path must end with a / or \\');
   });
 });

@@ -29,4 +29,14 @@ describe('Testing "validateHttpsUrl" function', () => {
     expect(validateHttpsUrl('https://example.com')).toBe('URL must end with a /');
     expect(validateHttpsUrl('https://assets.chromatix.app/tags/community')).toBe('URL must end with a /');
   });
+
+  test('Test with a URL containing a query string or fragment', () => {
+    expect(validateHttpsUrl('https://example.com/images/?size=/')).toBe('URL must not include a query or fragment');
+    expect(validateHttpsUrl('https://example.com/images/?foo=bar')).toBe('URL must not include a query or fragment');
+    expect(validateHttpsUrl('https://example.com/images/#section')).toBe('URL must not include a query or fragment');
+  });
+
+  test('Test with a query string that masks a missing trailing slash on the path', () => {
+    expect(validateHttpsUrl('https://example.com/images?foo=/')).toBe('URL must not include a query or fragment');
+  });
 });

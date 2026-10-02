@@ -23,7 +23,11 @@ const validateHttpsUrl = (url: string): string | null => {
     return 'URL must start with https://';
   }
 
-  if (!trimmedUrl.endsWith('/')) {
+  if (parsedUrl.search || parsedUrl.hash) {
+    return 'URL must not include a query or fragment';
+  }
+
+  if (!trimmedUrl.endsWith('/') || !parsedUrl.pathname.endsWith('/')) {
     return 'URL must end with a /';
   }
 

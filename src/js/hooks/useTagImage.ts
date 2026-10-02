@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 
-import { getEnvironment, slugifyTagName } from 'js/utils';
+import { getEnvironment, slugifyTagName, validateHttpsUrl } from 'js/utils';
 
 const envData = getEnvironment();
 
@@ -51,8 +51,13 @@ const useTagImage = (title: string | null | undefined, hasIcon: boolean): [strin
       tagImageSrc = `${localImageBase}${slugifyTagName(title as string)}.jpg`;
     } else if (tagImageOption === 'community') {
       tagImageSrc = `${communityImageBase}${slugifyTagName(title as string)}.jpg`;
-    } else if (tagImageOption === 'custom' && tagImageCustomType === 'hosted' && tagImageCustomUrl) {
-      tagImageSrc = `${tagImageCustomUrl}${slugifyTagName(title as string)}.${tagImageCustomExtension}`;
+    } else if (
+      tagImageOption === 'custom' &&
+      tagImageCustomType === 'hosted' &&
+      tagImageCustomUrl &&
+      !validateHttpsUrl(tagImageCustomUrl)
+    ) {
+      tagImageSrc = `${tagImageCustomUrl.trim()}${slugifyTagName(title as string)}.${tagImageCustomExtension}`;
     } else if (
       tagImageOption === 'custom' &&
       tagImageCustomType === 'local' &&
