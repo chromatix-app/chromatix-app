@@ -1,0 +1,108 @@
+@use '../../../css/_config/_mixins';
+@use '../../../css/_config/_vars';
+
+// ======================================================================
+// TRIGGER
+// ======================================================================
+
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 420px;
+  padding: 8px 12px;
+  background: var(--color-button-on-primary-bg);
+  border: 1px solid var(--color-button-on-primary-border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: left;
+  color: var(--color-text);
+
+  @include mixins.focus-self-outline;
+
+  &:focus-visible {
+    background: var(--color-secondary-hover);
+  }
+
+  &[data-disabled] {
+    opacity: var(--opacity-04);
+    cursor: not-allowed;
+  }
+}
+
+.triggerLabel {
+  overflow: hidden;
+  flex: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.triggerChevron {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  transition: transform 0.15s ease;
+  color: var(--color-opacity-05);
+
+  [data-state='open'] & {
+    transform: rotate(180deg);
+  }
+}
+
+// ======================================================================
+// DROPDOWN CONTENT
+// ======================================================================
+
+.content {
+  overflow-y: auto;
+  z-index: 99;
+  min-width: var(--radix-select-trigger-width);
+  max-width: 420px;
+  max-height: calc(var(--radix-select-content-available-height) - 100px);
+  padding: 4px;
+  background: var(--color-secondary-bg);
+  border: 1px solid var(--color-secondary-border);
+  border-radius: 6px;
+  box-shadow: var(--shadow-md);
+  font-size: 13px;
+}
+
+// ======================================================================
+// ITEMS
+// ======================================================================
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 8px;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  text-wrap: pretty;
+
+  @include mixins.focus-self-fill;
+
+  &[data-highlighted] {
+    background: var(--color-secondary-hover);
+  }
+
+  &[data-state='checked'] {
+    color: var(--color-core);
+  }
+
+  &[data-disabled] {
+    opacity: var(--opacity-04);
+    cursor: not-allowed;
+  }
+}
+
+.itemIndicator {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  margin-left: auto;
+  color: var(--color-core);
+}

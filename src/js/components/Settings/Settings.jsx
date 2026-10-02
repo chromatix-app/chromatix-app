@@ -14,6 +14,8 @@ import style from './Settings.module.scss';
 // COMPONENT
 // ======================================================================
 
+const isProduction = import.meta.env.VITE_ENV === 'production';
+
 export const Settings = () => {
   const currentService = useSelector(({ appModel }) => appModel.currentService);
 
@@ -68,6 +70,20 @@ export const Settings = () => {
           </div>
         </NavLink>
 
+        {!isProduction && (
+          <NavLink className={style.entry} to={'/settings/tag-images'} draggable="false">
+            <div className={style.entryIconTiny}>
+              <Icon icon="ImageIcon" cover stroke strokeWidth={1.5} />
+            </div>
+            <div>
+              Tag Images <span className={style.entryBadge}>New</span>
+            </div>
+            <div className={style.entryArrow}>
+              <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
+            </div>
+          </NavLink>
+        )}
+
         <NavLink className={style.entry} to={'/settings/keyboard'} draggable="false">
           <div className={style.entryIconMed}>
             <Icon icon="KeyboardIcon" cover stroke strokeWidth={1.5} />
@@ -108,6 +124,64 @@ export const Settings = () => {
           </div>
         </NavLink>
       </div>
+
+      {/* DOWNLOADS */}
+
+      {!isProduction && (
+        <div className={style.group}>
+          <div className={style.title}>Developer</div>
+
+          <NavLink className={style.entry} to={'/dev/components'} draggable="false">
+            <div className={style.entryIconMed}>
+              <Icon icon="CogIcon" cover stroke strokeWidth={1.5} />
+            </div>
+            <div>Components</div>
+            <div className={style.entryArrow}>
+              <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
+            </div>
+          </NavLink>
+
+          <NavLink className={style.entry} to={'/dev/icons'} draggable="false">
+            <div className={style.entryIconMed}>
+              <Icon icon="CogIcon" cover stroke strokeWidth={1.5} />
+            </div>
+            <div>Icons</div>
+            <div className={style.entryArrow}>
+              <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
+            </div>
+          </NavLink>
+
+          <NavLink className={style.entry} to={'/dev/modals'} draggable="false">
+            <div className={style.entryIconMed}>
+              <Icon icon="CogIcon" cover stroke strokeWidth={1.5} />
+            </div>
+            <div>Modals</div>
+            <div className={style.entryArrow}>
+              <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
+            </div>
+          </NavLink>
+
+          <NavLink className={style.entry} to={'/dev/settings'} draggable="false">
+            <div className={style.entryIconMed}>
+              <Icon icon="CogIcon" cover stroke strokeWidth={1.5} />
+            </div>
+            <div>Settings</div>
+            <div className={style.entryArrow}>
+              <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
+            </div>
+          </NavLink>
+
+          <NavLink className={style.entry} to={'/dev/tags'} draggable="false">
+            <div className={style.entryIconMed}>
+              <Icon icon="CogIcon" cover stroke strokeWidth={1.5} />
+            </div>
+            <div>Tags</div>
+            <div className={style.entryArrow}>
+              <Icon icon="ArrowRightIcon" cover stroke strokeWidth={1.2} />
+            </div>
+          </NavLink>
+        </div>
+      )}
 
       {/* DOWNLOADS */}
 

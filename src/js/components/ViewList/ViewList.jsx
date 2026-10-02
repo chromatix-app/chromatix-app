@@ -19,6 +19,7 @@ import {
   useScrollToTrack,
   useScrollToVirtualTrack,
   useTableOptions,
+  useTagImage,
   useWindowSize,
 } from 'js/hooks';
 import { durationToStringMed, durationToStringShort, formatRecentDate, formatReleaseYear } from 'js/utils';
@@ -796,6 +797,8 @@ const StandardRow = ({
   const { ratingType, ratingKey } = lookupVariantFields[tableVariant] || {};
   const rowKey = entry.albumId || entry.artistId || entry.playlistId || entry.collectionId;
 
+  const [tagImageSrc, handleTagImageError] = useTagImage(entry.title, tableVariant === 'tags');
+
   const isArtist = tableVariant === 'artists';
   const isAlbum = tableVariant === 'albums';
   const isPlaylist = tableVariant === 'playlists';
@@ -924,9 +927,20 @@ const StandardRow = ({
                 if (columnOptions.icon) {
                   return (
                     <div key={rowKey + '-' + index} className={clsx(style.thumb, style.thumbFolder)}>
-                      <span className={style.thumbIcon}>
-                        <Icon icon={columnOptions.icon} cover stroke strokeWidth={1.2} />
-                      </span>
+                      {tagImageSrc && (
+                        <img
+                          src={tagImageSrc}
+                          alt={entry.title}
+                          draggable="false"
+                          loading="lazy"
+                          onError={handleTagImageError}
+                        />
+                      )}
+                      {!tagImageSrc && (
+                        <span className={style.thumbIcon}>
+                          <Icon icon={columnOptions.icon} cover stroke strokeWidth={1.2} />
+                        </span>
+                      )}
                     </div>
                   );
                 } else {
