@@ -2,6 +2,7 @@
 // IMPORTS
 // ======================================================================
 
+import { useId } from 'react';
 import clsx from 'clsx';
 
 import style from './FormInput.module.scss';
@@ -24,6 +25,7 @@ const FormInput = ({
 }) => {
   const colorClass = 'color' + color.charAt(0).toUpperCase() + color.slice(1);
   const sizeClass = 'size' + size.charAt(0).toUpperCase() + size.slice(1);
+  const errorId = useId();
 
   return (
     <div className={style.wrap}>
@@ -35,9 +37,14 @@ const FormInput = ({
         disabled={disabled}
         placeholder={placeholder}
         onChange={(event) => onChange?.(event.target.value)}
+        aria-invalid={!!error}
+        aria-describedby={error ? errorId : undefined}
         {...props}
       />
-      {error && <div className={clsx(style.error, style[sizeClass])}>{error}</div>}
+      {/* always rendered: polite live regions only announce reliably if present before their content changes */}
+      <div id={errorId} aria-live="polite" className={clsx(error && [style.error, style[sizeClass]])}>
+        {error}
+      </div>
     </div>
   );
 };
