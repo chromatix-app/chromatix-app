@@ -3,7 +3,7 @@ import { readTagsWithEtag, TAGS_BLOB_PATHNAME } from './_store.js';
 import { sanitizeTagName, MAX_TAG_LENGTH } from './_sanitize.js';
 import { isAllowedOrigin, isValidApiKey, getCorsHeaders } from './_auth.js';
 
-const MAX_TAGS_PER_REQUEST = 9999;
+const MAX_TAGS_PER_REQUEST = 200;
 const MAX_WRITE_ATTEMPTS = 5;
 
 const TAGS_ENDPOINT_MESSAGE =
