@@ -20,6 +20,10 @@
 
   @include mixins.focus-self-outline;
 
+  &:focus-visible {
+    background: var(--color-button-on-primary-bg);
+  }
+
   .wrapLarge & {
     padding: 5px 12px;
     background: var(--color-button-on-primary-bg);

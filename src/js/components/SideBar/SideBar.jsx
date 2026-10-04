@@ -86,10 +86,14 @@ const SideBar = () => {
     <>
       <div className={style.nav} data-allow-key-controls>
         <button type="button" className={style.prev} disabled={!canGoBack} onClick={goBack}>
-          <Icon icon="PreviousIcon" cover stroke />
+          <span className={style.navArea}>
+            <Icon icon="PreviousIcon" cover stroke />
+          </span>
         </button>
         <button type="button" className={style.next} disabled={!canGoForward} onClick={goForward}>
-          <Icon icon="NextIcon" cover stroke />
+          <span className={style.navArea}>
+            <Icon icon="NextIcon" cover stroke />
+          </span>
         </button>
       </div>
       <div className={style.wrap} data-allow-key-controls>

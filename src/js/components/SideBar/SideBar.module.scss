@@ -23,10 +23,7 @@
   right: -4px;
   width: 40px;
   height: 100%;
-  padding: 17px 7px 17px 17px;
-  border-radius: 6px;
-
-  @include mixins.focus-self-outline;
+  padding: 10px 0 10px 10px;
 
   &:disabled {
     opacity: 0.25;
@@ -34,7 +31,22 @@
   }
 }
 .next {
-  padding: 17px 17px 17px 7px;
+  padding: 10px 10px 10px 0;
+}
+
+.navArea {
+  display: block;
+  position: relative;
+  height: 100%;
+  padding: 7px;
+  border-radius: 6px;
+
+  @include mixins.focus-child-outline;
+
+  .prev:focus-visible &,
+  .next:focus-visible & {
+    background: var(--color-secondary-hover);
+  }
 }
 
 //
@@ -278,6 +290,10 @@
     padding: 8px 10px;
   }
 
+  &:focus-visible {
+    background: var(--color-secondary-hover);
+  }
+
   // below user menu
   .userMenu + & {
     margin-top: 18px;
@@ -302,7 +318,7 @@
 .labelIcon {
   position: absolute;
   top: 50%;
-  right: 0;
+  right: 2px;
   width: 14px;
   height: 14px;
   margin-top: -7px;

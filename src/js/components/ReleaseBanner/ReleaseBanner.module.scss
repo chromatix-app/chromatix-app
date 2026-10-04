@@ -26,6 +26,14 @@
   }
 
   @include mixins.focus-self-outline;
+
+  &:focus-visible {
+    border-color: var(--color-opacity-03);
+
+    :global(html[data-theme='light']) & {
+      border-color: var(--color-tertiary-border);
+    }
+  }
 }
 
 .title,
@@ -68,10 +76,10 @@
 .close {
   display: block;
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 30px;
-  height: 30px;
+  top: 1px;
+  right: 1px;
+  width: 28px;
+  height: 28px;
   background: transparent;
   border-radius: 6px;
   font-size: 0;
@@ -80,13 +88,17 @@
 
   @include mixins.focus-self-outline;
 
+  &:focus-visible {
+    background: var(--color-tertiary-border);
+  }
+
   &:before,
   &:after {
     content: '';
     display: block;
     position: absolute;
-    top: 14px;
-    left: 9px;
+    top: 13px;
+    left: 8px;
     width: 12px;
     height: 1px;
     background: var(--color-text);
