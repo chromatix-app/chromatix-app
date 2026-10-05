@@ -28,6 +28,7 @@ export { default as MenuEntry } from './MenuEntries/MenuEntries';
 export { default as ModalWindow } from './ModalWindow/ModalWindow';
 export { default as ModalWrap } from './ModalWrap/ModalWrap';
 export { default as PageHome } from './PageHome/PageHome';
+export { default as PageLanding } from './PageLanding/PageLanding';
 export { default as PageLoginJelly } from './PageLoginJelly/PageLoginJelly';
 export { default as PageText } from './PageText/PageText';
 export { default as PlaybackErrorMessage } from './PlaybackErrorMessage/PlaybackErrorMessage';
