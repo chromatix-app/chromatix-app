@@ -8,7 +8,7 @@ import clsx from 'clsx';
 
 import { Button, Icon } from 'js/components';
 import { useGetDownloadLinks } from 'js/hooks';
-import { analyticsEvent, getEnvironment } from 'js/utils';
+import { analyticsEvent } from 'js/utils';
 
 import style from './PageHome.module.scss';
 
@@ -16,16 +16,14 @@ import style from './PageHome.module.scss';
 // COMPONENT
 // ======================================================================
 
-const envData = getEnvironment();
-
 export const PageHome = () => {
   const dispatch = useDispatch();
-  const downloadsRef = useRef(null);
+  const getStartedRef = useRef(null);
 
   const downloadLinks = useGetDownloadLinks();
 
-  const scrollToDownloads = () => {
-    downloadsRef.current.scrollIntoView({ behavior: 'smooth' });
+  const scrollToGetStarted = () => {
+    getStartedRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -52,35 +50,9 @@ export const PageHome = () => {
 
         <div className="mt-45 mt-lg-50"></div>
 
-        {!envData.isElectron && (
-          <>
-            <Button onClick={scrollToDownloads} icon={<Icon icon="DownloadIcon" cover stroke strokeWidth={2} />}>
-              Download the App
-            </Button>
-            <div className="mt-20"></div>
-          </>
-        )}
-
-        <div className={style.buttons}>
-          <Button
-            onClick={dispatch.appModel.doPlexLogin}
-            color={envData.isElectron ? 'primary' : 'tertiary'}
-            size={envData.isElectron ? 'large' : 'medium'}
-            wrap={false}
-            icon={<Icon icon="PlexSiteIcon" cover />}
-          >
-            Login with Plex
-          </Button>
-          <Button
-            to="/login-jellyfin"
-            color={envData.isElectron ? 'primary' : 'tertiary'}
-            size={envData.isElectron ? 'large' : 'medium'}
-            wrap={false}
-            icon={<Icon icon="JellyfinSiteIcon" cover />}
-          >
-            Login with Jellyfin
-          </Button>
-        </div>
+        <Button onClick={scrollToGetStarted} icon={<Icon icon="DownloadIcon" cover stroke strokeWidth={2} />}>
+          Get Started
+        </Button>
       </div>
 
       <div className={clsx(style.image, style.margin)}>
@@ -96,7 +68,7 @@ export const PageHome = () => {
         </picture>
       </div>
 
-      <div className={style.intro}>
+      <div className={style.intro} ref={getStartedRef}>
         <h1 className={style.h1}>Get Started</h1>
 
         <div className="mt-40"></div>
@@ -110,8 +82,8 @@ export const PageHome = () => {
         <div className={style.buttons}>
           <Button
             onClick={dispatch.appModel.doPlexLogin}
-            color={envData.isElectron ? 'primary' : 'tertiary'}
-            size={envData.isElectron ? 'large' : 'medium'}
+            color="tertiary"
+            size="medium"
             wrap={false}
             icon={<Icon icon="PlexSiteIcon" cover />}
           >
@@ -119,8 +91,8 @@ export const PageHome = () => {
           </Button>
           <Button
             to="/login-jellyfin"
-            color={envData.isElectron ? 'primary' : 'tertiary'}
-            size={envData.isElectron ? 'large' : 'medium'}
+            color="tertiary"
+            size="medium"
             wrap={false}
             icon={<Icon icon="JellyfinSiteIcon" cover />}
           >
@@ -128,54 +100,50 @@ export const PageHome = () => {
           </Button>
         </div>
 
-        {!envData.isElectron && (
-          <>
-            <div className="mt-100"></div>
+        <div className="mt-100"></div>
 
-            <div className={style.downloads} ref={downloadsRef}>
-              <h2 className={style.h2}>Downloads</h2>
+        <div className={style.downloads}>
+          <h2 className={style.h2}>Downloads</h2>
 
-              <div className={style.borderSmall}></div>
+          <div className={style.borderSmall}></div>
 
-              <div className={style.downloadsFlex}>
-                <div>
-                  {downloadLinks.map((downloadLink, index) => (
-                    <React.Fragment key={index}>
-                      {downloadLink.kind === 'divider' ? (
-                        <div className={style.downloadsDivider}></div>
-                      ) : downloadLink.kind === 'link' ? (
-                        <div>
-                          <a
-                            className={style.downloadsLink}
-                            href={downloadLink.url}
-                            target="_blank"
-                            rel="noreferrer nofollow"
-                            draggable="false"
-                            onClick={() => logDownload(downloadLink.label)}
-                          >
-                            <span className={style.downloadsIcon}>
-                              <Icon icon={downloadLink.icon} cover />
-                            </span>
-                            {downloadLink.label}
-                          </a>
-                        </div>
-                      ) : (
-                        <div className={style.downloadsNote}>
-                          <span className={style.downloadsIcon}>
-                            <Icon icon={downloadLink.icon} cover />
-                          </span>
-                          {downloadLink.label}
-                        </div>
-                      )}
-                    </React.Fragment>
-                  ))}
-                </div>
-              </div>
+          <div className={style.downloadsFlex}>
+            <div>
+              {downloadLinks.map((downloadLink, index) => (
+                <React.Fragment key={index}>
+                  {downloadLink.kind === 'divider' ? (
+                    <div className={style.downloadsDivider}></div>
+                  ) : downloadLink.kind === 'link' ? (
+                    <div>
+                      <a
+                        className={style.downloadsLink}
+                        href={downloadLink.url}
+                        target="_blank"
+                        rel="noreferrer nofollow"
+                        draggable="false"
+                        onClick={() => logDownload(downloadLink.label)}
+                      >
+                        <span className={style.downloadsIcon}>
+                          <Icon icon={downloadLink.icon} cover />
+                        </span>
+                        {downloadLink.label}
+                      </a>
+                    </div>
+                  ) : (
+                    <div className={style.downloadsNote}>
+                      <span className={style.downloadsIcon}>
+                        <Icon icon={downloadLink.icon} cover />
+                      </span>
+                      {downloadLink.label}
+                    </div>
+                  )}
+                </React.Fragment>
+              ))}
             </div>
+          </div>
+        </div>
 
-            <div className="mt-25"></div>
-          </>
-        )}
+        <div className="mt-25"></div>
       </div>
 
       <div className={clsx(style.social, style.margin)}>
