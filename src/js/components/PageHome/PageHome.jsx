@@ -85,9 +85,9 @@ export const PageHome = () => {
 
       <div className={clsx(style.image, style.margin)}>
         <picture>
-          <source type="image/webp" srcSet="/images/webp/chromatix005.webp" />
+          <source type="image/webp" srcSet="/images/webp/chromatix006.webp" />
           <img
-            src="/images/compressed/chromatix005.jpg"
+            src="/images/compressed/chromatix006.jpg"
             alt="Chromatix music player for Plex"
             width="1920"
             height="1425"
