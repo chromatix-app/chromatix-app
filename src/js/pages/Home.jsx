@@ -11,7 +11,7 @@ const envData = getEnvironment();
 // COMPONENT
 // ======================================================================
 
-const Login = () => {
+const Home = () => {
   return envData.isElectron ? <PageLanding /> : <PageHome />;
 };
 
@@ -19,4 +19,4 @@ const Login = () => {
 // EXPORT
 // ======================================================================
 
-export default Login;
+export default Home;

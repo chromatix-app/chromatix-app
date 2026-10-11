@@ -164,7 +164,7 @@ Name-entry modals (playlists, collections) validate inline using `validateEntity
 
 ## Home Page and Metadata
 
-The logged-out `/` route renders `PageHome` (the marketing page with download links) in the browser and `PageLanding` (just the intro and login buttons) in Electron — see `pages/Home.jsx`. `PageLanding` reuses `PageHome.module.scss`, so keep the shared intro, image, social and footer markup in sync between the two when changing either.
+The logged-out `/` route renders `PageHome` (the marketing page with download links) in the browser and `PageLanding` (just the intro and login buttons) in Electron — see `pages/Home.jsx`. `PageLanding` reuses `PageHome.module.scss`, so keep the shared intro, image, social and footer markup in sync between the two when changing either. Outside production, `PageLanding` can also be viewed in the browser at `/landing` (used for its E2E snapshot).
 
 The product description lives in several places: `index.html` (meta description and Open Graph tags), `public/manifest.json` and `README.md` all use the full "Chromatix is a desktop music player for…" sentence, while the visible intro on both pages drops the "Chromatix is" (the H1 already names it). Update them all together when the supported services or wording change.
 
