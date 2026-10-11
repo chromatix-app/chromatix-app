@@ -9,10 +9,14 @@ test('homepage matches snapshot', async ({ page }) => {
   await snapshotPage(page, '/', '001-homepage', homeViewports);
 });
 
+test('landing page matches snapshot', async ({ page }) => {
+  await snapshotPage(page, '/landing', '002-landing', homeViewports);
+});
+
 test('jellyfin login page matches snapshot', async ({ page }) => {
-  await snapshotPage(page, '/login-jellyfin', '002-login-jellyfin', homeViewports);
+  await snapshotPage(page, '/login-jellyfin', '003-login-jellyfin', homeViewports);
 });
 
 test('404 page matches snapshot', async ({ page }) => {
-  await snapshotPage(page, '/this-page-does-not-exist', '003-error', homeViewports);
+  await snapshotPage(page, '/this-page-does-not-exist', '004-error', homeViewports);
 });

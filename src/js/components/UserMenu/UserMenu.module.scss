@@ -79,7 +79,8 @@
 
   @include mixins.focus-self-outline;
 
-  &:hover {
+  &:hover,
+  &:focus-visible {
     background: var(--color-secondary-hover);
   }
 
@@ -94,7 +95,8 @@
       background: var(--color-secondary-bg);
       border-color: var(--color-secondary-border);
 
-      &:hover {
+      &:hover,
+      &:focus-visible {
         background: var(--color-secondary-hover);
 
         :global(html[data-theme='light']) & {

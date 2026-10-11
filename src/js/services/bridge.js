@@ -286,7 +286,7 @@ const getBestConnection = async (currentServer, currentService, currentAccount) 
     } else {
       console.log('%c--- bridge - getBestConnection ---', 'color:#f9743b;');
       await plexTools.getBestConnection({ server: currentServer }).then((response) => {
-        console.log('serverBaseUrl', response);
+        console.log('Established connection', response);
         serverBaseUrl = response;
         store.dispatch.appModel.setAppState({ serverBaseUrl });
       });

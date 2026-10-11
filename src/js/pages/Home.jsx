@@ -2,18 +2,21 @@
 // IMPORTS
 // ======================================================================
 
-import { PageHome } from 'js/components';
+import { PageHome, PageLanding } from 'js/components';
+import { getEnvironment } from 'js/utils';
+
+const envData = getEnvironment();
 
 // ======================================================================
 // COMPONENT
 // ======================================================================
 
-const Login = () => {
-  return <PageHome />;
+const Home = () => {
+  return envData.isElectron ? <PageLanding /> : <PageHome />;
 };
 
 // ======================================================================
 // EXPORT
 // ======================================================================
 
-export default Login;
+export default Home;

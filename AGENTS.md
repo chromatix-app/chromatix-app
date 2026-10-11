@@ -162,6 +162,12 @@ Modal content components live as flat files directly under `js/modals/` (no per-
 
 Name-entry modals (playlists, collections) validate inline using `validateEntityName` from `js/utils` — trims whitespace, rejects unsafe characters, and checks for a case-insensitive duplicate against the relevant list already in the store. Follow this pattern for any other user-named entity.
 
+## Home Page and Metadata
+
+The logged-out `/` route renders `PageHome` (the marketing page with download links) in the browser and `PageLanding` (just the intro and login buttons) in Electron — see `pages/Home.jsx`. `PageLanding` reuses `PageHome.module.scss`, so keep the shared intro, image, social and footer markup in sync between the two when changing either. Outside production, `PageLanding` can also be viewed in the browser at `/landing` (used for its E2E snapshot).
+
+The product description lives in several places: `index.html` (meta description and Open Graph tags), `public/manifest.json` and `README.md` all use the full "Chromatix is a desktop music player for…" sentence, while the visible intro on both pages drops the "Chromatix is" (the H1 already names it). Update them all together when the supported services or wording change.
+
 ## TypeScript Migration
 
 The codebase is partially migrated to TypeScript. New utilities and hooks should be written in TypeScript (`.ts`/`.tsx`). Existing `.js`/`.jsx` files do not need to be converted unless directly touched. The store models remain in JavaScript for now.

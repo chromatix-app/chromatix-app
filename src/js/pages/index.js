@@ -1,4 +1,5 @@
 export { default as Home } from './Home';
+export { default as Landing } from './Landing';
 export { default as LoginJelly } from './LoginJelly';
 
 export { default as UserArray } from './UserArray';

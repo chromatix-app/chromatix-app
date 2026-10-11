@@ -18,6 +18,17 @@ export const defaultRoutes = [
     component: 'LoginJelly',
   },
 
+  // app landing page
+  ...(!isProduction
+    ? [
+        {
+          path: '/landing',
+          exact: true,
+          component: 'Landing',
+        },
+      ]
+    : []),
+
   // error
   {
     component: 'Error404Default',
