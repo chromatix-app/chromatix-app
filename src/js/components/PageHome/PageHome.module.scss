@@ -31,27 +31,12 @@
 .intro {
   max-width: 480px;
   margin: 0 auto;
-}
 
-.badge {
-  display: inline-block;
-  min-width: 140px;
-  padding: 6px 15px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 99px;
-
-  font-size: 13px;
-  line-height: 1;
-  font-weight: bold;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
-
+  @media (min-width: 768px) {
+    max-width: 600px;
+  }
   @media (min-width: 1024px) {
-    min-width: 180px;
-    padding: 8px 20px;
-    font-size: 14px;
+    max-width: 700px;
   }
 }
 
@@ -63,8 +48,11 @@
   @media (min-width: 375px) {
     font-size: 50px;
   }
-  @media (min-width: 440px) {
+  @media (min-width: 390px) {
     font-size: 56px;
+  }
+  @media (min-width: 768px) {
+    font-size: 65px;
   }
   @media (min-width: 1024px) {
     font-size: 80px;
@@ -104,7 +92,7 @@
 .body {
   margin: 0 auto;
   font-size: 15px;
-  text-wrap: pretty;
+  text-wrap: balance;
 
   @media (min-width: 375px) {
     max-width: 95%;
@@ -113,9 +101,89 @@
   @media (min-width: 440px) {
     max-width: 400px;
   }
-  @media (min-width: 1024px) {
+  @media (min-width: 768px) {
     max-width: none;
+    font-size: 17px;
+  }
+  @media (min-width: 1024px) {
     font-size: 19px;
+  }
+}
+
+//
+// BADGES
+//
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 8px 12px 7px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 99px;
+  font-size: 14px;
+  line-height: 14px;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.5);
+
+  @media (min-width: 768px) {
+    padding: 8px 14px 7px;
+    font-size: 15px;
+    line-height: 15px;
+  }
+
+  strong {
+    display: inline-block;
+    font-weight: bold;
+  }
+}
+
+.badgeMobile {
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+.badgeDesktop {
+  @media (max-width: 767px) {
+    display: none;
+  }
+}
+
+.badgeService {
+  display: inline-flex;
+  align-items: center;
+}
+
+.badgeIcon {
+  display: inline-block;
+  position: relative;
+  width: 16px;
+  height: 16px;
+
+  @media (min-width: 1024px) {
+    width: 17px;
+    height: 17px;
+  }
+
+  &.PlexSiteIcon {
+    top: -1px;
+    margin-left: -2px;
+    margin-right: 1px;
+  }
+
+  &.JellyfinSiteIcon {
+    top: -1px;
+    margin-left: 2px;
+    margin-right: 4px;
   }
 }
 
@@ -123,7 +191,6 @@
 // DIVIDERS
 //
 
-.dividerTitle,
 .dividerSubtitle,
 .dividerFooter {
   height: 1px;
@@ -145,13 +212,6 @@
       rgba(255, 255, 255, 0) 100%
     );
   }
-}
-
-.dividerTitle {
-  max-width: 200px;
-  height: 2px;
-  margin: 0 auto;
-  opacity: 0.3;
 }
 
 .dividerSubtitle {
@@ -249,6 +309,10 @@
   opacity: 0.5;
   font-size: 11px;
   text-wrap: balance;
+
+  @media (min-width: 1024px) {
+    display: none;
+  }
 }
 
 //
@@ -285,7 +349,8 @@
 }
 
 .downloadsLink {
-  &:hover {
+  &:hover,
+  &:focus-visible {
     text-decoration: underline;
   }
 
@@ -337,8 +402,14 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
+  transition: transform 0.2s ease-in-out;
 
   @include mixins.focus-self-outline;
+
+  &:hover,
+  &:focus-visible {
+    transform: scale(1.1);
+  }
 }
 
 //
@@ -371,15 +442,16 @@
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 6px;
+  transition: transform 0.2s ease-in-out;
 
   font-size: 0;
   line-height: 0;
   text-indent: -9999px;
 
-  @media (min-width: 768px) {
-    width: 240px;
-    height: 42px;
-  }
+  // @media (min-width: 768px) {
+  //   width: 240px;
+  //   height: 42px;
+  // }
 
   // @media (min-width: 1280px) {
   //   width: 260px;
@@ -387,6 +459,11 @@
   // }
 
   @include mixins.focus-self-outline;
+
+  &:hover,
+  &:focus-visible {
+    transform: scale(1.05);
+  }
 }
 
 .kofi {
