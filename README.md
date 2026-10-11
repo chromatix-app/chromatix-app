@@ -105,6 +105,8 @@ Or run all checks at once (excluding tests) with:
 npm run check
 ```
 
+The same checks (plus the unit tests and a production build) also run automatically on GitHub Actions for every pull request and for pushes to `develop`, `staging` and `production` — see `.github/workflows/ci.yml`.
+
 # 8. Use of AI
 
 AI is an obviously common but controversial tool in software development right now. After years of building websites and web apps by hand, and over a year of building and maintaining Chromatix manually, I do now use AI coding tools and I want to be transparent about that.
