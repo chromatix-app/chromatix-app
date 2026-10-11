@@ -18,6 +18,8 @@ export const PageLanding = () => {
   const dispatch = useDispatch();
   return (
     <div className={clsx(style.wrap, 'text-center')}>
+      {/* INTRO */}
+
       <div className={style.intro}>
         <div className={style.badge}>Free to use</div>
 
@@ -25,11 +27,11 @@ export const PageLanding = () => {
 
         <h1 className={style.h1}>Chromatix</h1>
 
-        <div className="mt-35 mt-lg-50"></div>
+        <div className="mt-30 mt-lg-40"></div>
 
-        <hr className={style.hr} />
+        <hr className={style.dividerTitle} />
 
-        <div className="mt-35 mt-lg-50"></div>
+        <div className="mt-30 mt-lg-40"></div>
 
         <div className={style.body}>
           <p>
@@ -62,7 +64,9 @@ export const PageLanding = () => {
         </div>
       </div>
 
-      <div className={clsx(style.image, style.margin)}>
+      {/* IMAGE */}
+
+      <div className={style.image}>
         <picture>
           <source type="image/webp" srcSet="/images/webp/chromatix006.webp" />
           <img
@@ -75,7 +79,9 @@ export const PageLanding = () => {
         </picture>
       </div>
 
-      <div className={clsx(style.social, style.margin)}>
+      {/* SOCIAL */}
+
+      <div className={style.social}>
         <div className={style.icons}>
           <a
             className={style.icon}
@@ -139,7 +145,9 @@ export const PageLanding = () => {
         </div>
       </div>
 
-      <div className={style.border}></div>
+      {/* FOOTER */}
+
+      <hr className={style.dividerFooter} />
 
       <div className={style.legal}>Copyright &copy; {new Date().getFullYear()}</div>
     </div>

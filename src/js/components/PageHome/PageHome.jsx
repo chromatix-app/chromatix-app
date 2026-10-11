@@ -28,6 +28,8 @@ export const PageHome = () => {
 
   return (
     <div className={clsx(style.wrap, 'text-center')}>
+      {/* INTRO */}
+
       <div className={style.intro}>
         <div className={style.badge}>Free to use</div>
 
@@ -35,11 +37,11 @@ export const PageHome = () => {
 
         <h1 className={style.h1}>Chromatix</h1>
 
-        <div className="mt-35 mt-lg-50"></div>
+        <div className="mt-30 mt-lg-40"></div>
 
-        <hr className={style.hr} />
+        <hr className={style.dividerTitle} />
 
-        <div className="mt-35 mt-lg-50"></div>
+        <div className="mt-30 mt-lg-40"></div>
 
         <div className={style.body}>
           <p>
@@ -50,12 +52,12 @@ export const PageHome = () => {
 
         <div className="mt-45 mt-lg-50"></div>
 
-        <Button onClick={scrollToGetStarted} icon={<Icon icon="DownloadIcon" cover stroke strokeWidth={2} />}>
-          Get Started
-        </Button>
+        <Button onClick={scrollToGetStarted}>Get Started</Button>
       </div>
 
-      <div className={clsx(style.image, style.margin)}>
+      {/* IMAGE */}
+
+      <div className={style.image}>
         <picture>
           <source type="image/webp" srcSet="/images/webp/chromatix006.webp" />
           <img
@@ -68,44 +70,52 @@ export const PageHome = () => {
         </picture>
       </div>
 
-      <div className={style.intro} ref={getStartedRef}>
-        <h1 className={style.h1}>Get Started</h1>
+      {/* GET STARTED */}
 
-        <div className="mt-40"></div>
+      <div className={style.getStarted} ref={getStartedRef}>
+        <h2 className={style.h2}>A fresh way to enjoy your music library</h2>
 
-        <div className={style.body}>
-          <p>Login with your Plex or Jellyfin account to begin experiencing your music library in a whole new way.</p>
+        <div className="mt-50 mt-lg-65"></div>
+
+        <div className={style.option}>
+          <div className={style.optionLabel}>Option 1</div>
+          <h3 className={style.h3}>Use in your browser</h3>
+
+          <hr className={style.dividerSubtitle} />
+
+          <div className={style.buttons}>
+            <Button
+              onClick={dispatch.appModel.doPlexLogin}
+              color="tertiary"
+              size="medium"
+              wrap={false}
+              icon={<Icon icon="PlexSiteIcon" cover />}
+            >
+              Login with Plex
+            </Button>
+            <Button
+              to="/login-jellyfin"
+              color="tertiary"
+              size="medium"
+              wrap={false}
+              icon={<Icon icon="JellyfinSiteIcon" cover />}
+            >
+              Login with Jellyfin
+            </Button>
+          </div>
+
+          <div className={style.buttonsNote}>
+            Note: Chromatix is optimised for desktop devices, and will not work well on mobile
+          </div>
         </div>
 
-        <div className="mt-50"></div>
+        <div className="mt-60 mt-lg-80"></div>
 
-        <div className={style.buttons}>
-          <Button
-            onClick={dispatch.appModel.doPlexLogin}
-            color="tertiary"
-            size="medium"
-            wrap={false}
-            icon={<Icon icon="PlexSiteIcon" cover />}
-          >
-            Login with Plex
-          </Button>
-          <Button
-            to="/login-jellyfin"
-            color="tertiary"
-            size="medium"
-            wrap={false}
-            icon={<Icon icon="JellyfinSiteIcon" cover />}
-          >
-            Login with Jellyfin
-          </Button>
-        </div>
+        <div className={style.option}>
+          <div className={style.optionLabel}>Option 2</div>
+          <h3 className={style.h3}>Download the app</h3>
 
-        <div className="mt-100"></div>
-
-        <div className={style.downloads}>
-          <h2 className={style.h2}>Downloads</h2>
-
-          <div className={style.borderSmall}></div>
+          <hr className={style.dividerSubtitle} />
 
           <div className={style.downloadsFlex}>
             <div>
@@ -126,7 +136,7 @@ export const PageHome = () => {
                         <span className={style.downloadsIcon}>
                           <Icon icon={downloadLink.icon} cover />
                         </span>
-                        {downloadLink.label}
+                        <span>{downloadLink.label}</span>
                       </a>
                     </div>
                   ) : (
@@ -134,7 +144,7 @@ export const PageHome = () => {
                       <span className={style.downloadsIcon}>
                         <Icon icon={downloadLink.icon} cover />
                       </span>
-                      {downloadLink.label}
+                      <span>{downloadLink.label}</span>
                     </div>
                   )}
                 </React.Fragment>
@@ -142,11 +152,11 @@ export const PageHome = () => {
             </div>
           </div>
         </div>
-
-        <div className="mt-25"></div>
       </div>
 
-      <div className={clsx(style.social, style.margin)}>
+      {/* SOCIAL */}
+
+      <div className={style.social}>
         <div className={style.icons}>
           <a
             className={style.icon}
@@ -210,7 +220,9 @@ export const PageHome = () => {
         </div>
       </div>
 
-      <div className={style.border}></div>
+      {/* FOOTER */}
+
+      <hr className={style.dividerFooter} />
 
       <div className={style.legal}>Copyright &copy; {new Date().getFullYear()}</div>
     </div>
