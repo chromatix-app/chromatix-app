@@ -1,6 +1,6 @@
 # Chromatix - Web App<!-- omit in toc -->
 
-Chromatix is a desktop music player for Plex, that transforms your listening experience and makes interacting with your music libraries a joy.
+Chromatix is a desktop music player for Plex and Jellyfin that transforms your listening experience and makes interacting with your music libraries a joy.
 
 Get started at [https://chromatix.app/](https://chromatix.app/)
 
