@@ -1,3 +1,14 @@
+# 0.72.0 (2026-10-11)
+
+Features:
+
+- Refreshed the home page, with a new screenshot and clearer details of which services Chromatix works with.
+- The desktop app now has its own streamlined landing page.
+- Improved keyboard focus styling throughout the app.
+- Improved link previews when sharing Chromatix online.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.71.0 (2026-10-02)
 
 Features:
