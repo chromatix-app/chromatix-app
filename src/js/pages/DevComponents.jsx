@@ -172,6 +172,9 @@ const Component = () => {
                 state: themeKeyFocus,
               },
               {
+                type: 'spacer',
+              },
+              {
                 type: 'radio',
                 key: 'currentContrast',
                 label: 'Contrast',
@@ -181,6 +184,9 @@ const Component = () => {
                   { label: 'Medium', value: 'medium' },
                   { label: 'High', value: 'high' },
                 ],
+              },
+              {
+                type: 'spacer',
               },
               {
                 type: 'radio',

@@ -90,7 +90,7 @@
   }
 
   &[data-state='checked'] {
-    color: var(--color-core);
+    color: var(--color-core-main);
   }
 
   &[data-disabled] {
@@ -104,5 +104,5 @@
   width: 14px;
   height: 14px;
   margin-left: auto;
-  color: var(--color-core);
+  color: var(--color-core-main);
 }

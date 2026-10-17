@@ -120,11 +120,11 @@
 
   .input:hover &,
   .input:focus & {
-    background: var(--color-core);
+    background: var(--color-core-main);
   }
 
   .inputAccessible & {
-    background: var(--color-core);
+    background: var(--color-core-main);
   }
 
   .inputDisabled & {

@@ -44,7 +44,7 @@
 
   // :global(html[data-env='local']) & {
   //   height: 1px;
-  //   background: var(--color-core);
+  //   background: var(--color-core-main);
   //   opacity: 0.15;
   // }
 }
@@ -126,12 +126,12 @@
     padding: 0 0 100%;
   }
   &.thumbWithIcon {
-    background: var(--color-core);
-    background: linear-gradient(to bottom, var(--color-core) 0%, var(--color-primary-bg) 400%);
+    background: var(--color-core-main);
+    background: linear-gradient(to bottom, var(--color-core-main) 0%, var(--color-primary-bg) 400%);
     color: var(--color-primary-bg);
 
     :global(html[data-theme='light']) & {
-      background: linear-gradient(to top, var(--color-core) 0%, var(--color-primary-bg) 400%);
+      background: linear-gradient(to top, var(--color-core-main) 0%, var(--color-primary-bg) 400%);
     }
   }
 
@@ -186,7 +186,7 @@
   width: 40px;
   height: 40px;
   padding: 10px 8px 10px 12px;
-  background: var(--color-core);
+  background: var(--color-core-main);
   border: 1px solid var(--color-opacity-01);
   border-radius: 50%;
   box-shadow: var(--shadow-md);
@@ -219,7 +219,7 @@
   position: relative;
   top: 3px;
   margin: -2px 6px -2px 0;
-  color: var(--color-core);
+  color: var(--color-core-main);
 
   &:hover {
     color: var(--color-text);

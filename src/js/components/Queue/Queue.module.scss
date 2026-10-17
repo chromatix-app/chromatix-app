@@ -117,7 +117,7 @@
     width: 40px;
     height: 40px;
     padding: 11px;
-    background: var(--color-core);
+    background: var(--color-core-main);
     border: 1px solid var(--color-opacity-01);
     border-radius: 50%;
     box-shadow: var(--shadow-md);
@@ -230,7 +230,7 @@
 
   // .scrollableOuterVirtual & {
   //   :global(html[data-env='local']) & {
-  //     color: var(--color-core);
+  //     color: var(--color-core-main);
   //   }
   // }
 }
@@ -319,7 +319,7 @@ button.label {
 }
 
 // .trackEntryCurrent {
-//   color: var(--color-core);
+//   color: var(--color-core-main);
 // }
 
 .trackThumb {

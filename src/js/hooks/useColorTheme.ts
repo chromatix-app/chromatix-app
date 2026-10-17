@@ -242,7 +242,7 @@ function useColorTheme(): void {
     const shadowSm = isActualLightTheme ? '0 2px 4px rgba(0, 0, 0, 0.05)' : '0 2px 6px rgba(0, 0, 0, 0.2)';
 
     const colors: Record<string, string | number> = {
-      '--color-core': colorCore,
+      '--color-core-main': colorCore,
       '--color-text': colorText,
       '--color-blackout': colorBlackout,
 
@@ -263,11 +263,11 @@ function useColorTheme(): void {
       '--color-card-on-secondary-bg': colorCardOnSecondaryBg,
       '--color-card-on-secondary-border': colorCardOnSecondaryBorder,
 
-      '--color-button-on-primary-bg': colorCardOnPrimaryBg,
-      '--color-button-on-primary-border': colorCardOnPrimaryBorder,
+      '--color-button-on-primary-bg': colorCardOnPrimaryBg, // Same as card on primary background
+      '--color-button-on-primary-border': colorCardOnPrimaryBorder, // Same as card on primary border
 
-      '--color-button-on-secondary-bg': colorTertiaryBg,
-      '--color-button-on-secondary-border': colorTertiaryBorder,
+      '--color-button-on-secondary-bg': colorTertiaryBg, // Same as tertiary background
+      '--color-button-on-secondary-border': colorTertiaryBorder, // Same as tertiary border
 
       '--color-button-mono-bg': colorButtonMonoBg,
 

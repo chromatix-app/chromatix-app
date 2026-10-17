@@ -216,7 +216,7 @@ span.settings,
 button.play,
 button.pause {
   margin: 0 6px;
-  background: var(--color-core) !important;
+  background: var(--color-core-main) !important;
   border: 1px solid var(--color-opacity-01);
   color: var(--color-secondary-bg);
 
@@ -285,7 +285,7 @@ button.volume {
 }
 
 button.active {
-  color: var(--color-core);
+  color: var(--color-core-main);
 }
 
 .offline {

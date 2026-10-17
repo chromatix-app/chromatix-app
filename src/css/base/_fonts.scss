@@ -154,7 +154,7 @@ strong {
   a {
     border-radius: 2px;
     text-decoration: underline;
-    color: var(--color-core);
+    color: var(--color-core-main);
 
     // @include mixins.focus-self-outline();
     &:focus-visible:not(:active):not(:disabled) {

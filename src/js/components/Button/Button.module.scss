@@ -95,7 +95,7 @@
   color: vars.$color-primary-bg;
 
   :global(html[data-logged-in='true']) & {
-    background-color: var(--color-core);
+    background-color: var(--color-core-main);
     border: 1px solid var(--color-opacity-015);
     color: var(--color-primary-bg);
   }

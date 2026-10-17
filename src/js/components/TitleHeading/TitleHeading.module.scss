@@ -93,13 +93,13 @@
     margin-right: 25px;
   }
 
-  background: var(--color-core);
-  background: linear-gradient(to bottom, var(--color-core) 0%, var(--color-primary-bg) 400%);
+  background: var(--color-core-main);
+  background: linear-gradient(to bottom, var(--color-core-main) 0%, var(--color-primary-bg) 400%);
   outline: none;
   color: var(--color-primary-bg);
 
   :global(html[data-theme='light']) & {
-    background: linear-gradient(to top, var(--color-core) 0%, var(--color-primary-bg) 400%);
+    background: linear-gradient(to top, var(--color-core-main) 0%, var(--color-primary-bg) 400%);
   }
 }
 
@@ -259,7 +259,7 @@
   align-items: center;
   min-width: 84px;
   padding: 3px 8px;
-  background: var(--color-core);
+  background: var(--color-core-main);
   border: 1px solid var(--color-opacity-01);
   border-radius: 6px;
 
