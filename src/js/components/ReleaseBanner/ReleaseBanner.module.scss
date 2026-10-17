@@ -89,7 +89,7 @@
   @include mixins.focus-self-outline;
 
   &:focus-visible {
-    background: var(--color-tertiary-border);
+    background: var(--color-item-on-tertiary-hover);
   }
 
   &:before,

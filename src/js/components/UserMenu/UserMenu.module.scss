@@ -253,25 +253,6 @@
 
   @include mixins.focus-self-fill;
 
-  // &:first-child {
-  //   border-top-left-radius: 9px;
-  //   border-top-right-radius: 9px;
-
-  //   .wrapSideBar & {
-  //     border-top-left-radius: 6px;
-  //     border-top-right-radius: 6px;
-  //   }
-  // }
-  // &:last-child {
-  //   border-bottom-left-radius: 9px;
-  //   border-bottom-right-radius: 9px;
-
-  //   .wrapSideBar & {
-  //     border-bottom-left-radius: 6px;
-  //     border-bottom-right-radius: 6px;
-  //   }
-  // }
-
   &.buttonLibrary {
     padding-left: 18px;
   }
@@ -284,22 +265,7 @@
   &:focus {
     background: var(--color-item-on-secondary-hover);
   }
-
-  .wrapSideBar & {
-    padding-right: 36px;
-    background: var(--color-opacity-0025);
-    border-color: var(--color-opacity-01);
-
-    &:hover,
-    &:focus {
-      background: var(--color-item-on-secondary-hover);
-    }
-  }
 }
-
-// .button + .button {
-//   border-top: none;
-// }
 
 .iconBefore {
   display: block;

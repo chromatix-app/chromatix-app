@@ -128,7 +128,7 @@
 
   :global(html[data-logged-in='true']) & {
     background-color: var(--color-button-mono-bg);
-    border: 1px solid var(--color-text);
+    border: 1px solid var(--color-button-mono-border);
     color: var(--color-primary-bg);
   }
 

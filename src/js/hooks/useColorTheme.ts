@@ -276,6 +276,9 @@ function useColorTheme(): void {
       '--color-button-on-secondary-border': colorTertiaryBorder, // Same as tertiary border
 
       '--color-button-mono-bg': colorButtonMonoBg,
+      '--color-button-mono-border': colorText, // Same as text
+
+      '--color-release-on-secondary-bg': colorSecondaryBorder, // Same as secondary border
 
       '--color-opacity-0025': colorOpacity0025,
       '--color-opacity-005': colorOpacity005,
