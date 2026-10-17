@@ -81,7 +81,7 @@
 
   &:hover,
   &:focus-visible {
-    background: var(--color-secondary-hover);
+    background: var(--color-item-on-secondary-hover);
   }
 
   .wrapSideBar & {
@@ -97,7 +97,7 @@
 
       &:hover,
       &:focus-visible {
-        background: var(--color-secondary-hover);
+        background: var(--color-item-on-secondary-hover);
       }
     }
   }
@@ -282,7 +282,7 @@
 
   &:hover,
   &:focus {
-    background: var(--color-secondary-hover);
+    background: var(--color-item-on-secondary-hover);
   }
 
   .wrapSideBar & {
@@ -292,7 +292,7 @@
 
     &:hover,
     &:focus {
-      background: var(--color-secondary-hover);
+      background: var(--color-item-on-secondary-hover);
     }
   }
 }

@@ -64,7 +64,7 @@
 }
 
 .coverWrap {
-  background: var(--color-secondary-hover);
+  background: var(--color-opacity-01);
   background-image: vars.$thumbnail;
   background-size: contain;
   background-position: center;
@@ -205,10 +205,10 @@ span.settings,
 
   &:not(:disabled):hover,
   &:not(:disabled):focus-visible {
-    background: var(--color-secondary-hover);
+    background: var(--color-item-on-secondary-hover);
 
     .fullPageMode & {
-      background: var(--color-secondary-bg);
+      background: var(--color-item-on-primary-hover);
     }
   }
 }

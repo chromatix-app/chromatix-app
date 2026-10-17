@@ -45,7 +45,7 @@
 
   .prev:focus-visible &,
   .next:focus-visible & {
-    background: var(--color-secondary-hover);
+    background: var(--color-item-on-secondary-hover);
   }
 }
 
@@ -291,7 +291,7 @@
   }
 
   &:focus-visible {
-    background: var(--color-secondary-hover);
+    background: var(--color-item-on-secondary-hover);
   }
 
   // below user menu
@@ -362,11 +362,11 @@
   &:hover,
   &:focus-visible,
   &[data-state='open'] {
-    background: var(--color-secondary-hover);
+    background: var(--color-item-on-secondary-hover);
   }
 
   &Active {
-    background: var(--color-secondary-active) !important;
+    background: var(--color-item-on-secondary-active) !important;
     font-weight: 600;
     color: var(--color-core-main);
   }

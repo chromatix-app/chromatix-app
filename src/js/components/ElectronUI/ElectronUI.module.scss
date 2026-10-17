@@ -92,13 +92,13 @@
 
   &:not([data-disabled]):hover,
   &:not([data-disabled]):focus {
-    background: var(--color-secondary-hover);
+    background: var(--color-item-on-secondary-hover);
     outline: none;
 
     @include mixins.focus-self-fill;
 
     :global(html[data-logged-in='true']) & {
-      background: var(--color-tertiary-hover);
+      background: var(--color-item-on-tertiary-hover);
     }
   }
 
@@ -128,13 +128,13 @@
 
   &:not([data-disabled]):hover,
   &:not([data-disabled]):focus {
-    background: var(--color-secondary-hover);
+    background: var(--color-item-on-secondary-hover);
     outline: none;
 
     @include mixins.focus-self-fill;
 
     :global(html[data-logged-in='true']) & {
-      background: var(--color-tertiary-hover);
+      background: var(--color-item-on-tertiary-hover);
     }
   }
 

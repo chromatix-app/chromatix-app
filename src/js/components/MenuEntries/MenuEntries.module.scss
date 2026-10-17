@@ -46,7 +46,7 @@
 .actionItem {
   &:not([data-disabled]):hover,
   &:not([data-disabled]):focus {
-    background: var(--color-secondary-hover);
+    background: var(--color-item-on-secondary-hover);
     cursor: pointer;
 
     @include mixins.focus-self-fill;
@@ -69,7 +69,7 @@
 
   &:not([data-disabled]):hover,
   &:not([data-disabled]):focus {
-    background: var(--color-secondary-hover);
+    background: var(--color-item-on-secondary-hover);
     cursor: pointer;
 
     @include mixins.focus-self-fill;
@@ -108,7 +108,7 @@
   &:not([data-disabled]):hover,
   &:not([data-disabled]):focus,
   &[data-state='open'] {
-    background: var(--color-secondary-hover);
+    background: var(--color-item-on-secondary-hover);
     cursor: pointer;
 
     @include mixins.focus-self-fill;

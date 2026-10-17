@@ -23,7 +23,7 @@
   @include mixins.focus-self-outline;
 
   &:focus-visible {
-    background: var(--color-secondary-hover);
+    background: var(--color-button-on-primary-hover);
   }
 
   &[data-disabled] {
@@ -86,7 +86,7 @@
   @include mixins.focus-self-fill;
 
   &[data-highlighted] {
-    background: var(--color-secondary-hover);
+    background: var(--color-item-on-secondary-hover);
   }
 
   &[data-state='checked'] {

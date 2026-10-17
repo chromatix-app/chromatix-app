@@ -19,7 +19,7 @@
   text-align: left;
 
   &:focus-visible {
-    background: var(--color-secondary-hover);
+    background: var(--color-button-on-primary-hover);
   }
 
   @include mixins.focus-self-outline;
@@ -131,7 +131,7 @@
   @include mixins.focus-self-fill;
 
   &[data-highlighted] {
-    background: var(--color-secondary-hover);
+    background: var(--color-item-on-secondary-hover);
   }
 
   &[data-state='checked'] {

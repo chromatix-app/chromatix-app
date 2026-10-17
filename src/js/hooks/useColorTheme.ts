@@ -253,12 +253,14 @@ function useColorTheme(): void {
 
       '--color-secondary-bg': colorSecondaryBg,
       '--color-secondary-border': colorSecondaryBorder,
-      '--color-secondary-hover': colorSecondaryHover,
-      '--color-secondary-active': colorSecondaryActive,
 
       '--color-tertiary-bg': colorTertiaryBg,
       '--color-tertiary-border': colorTertiaryBorder,
-      '--color-tertiary-hover': colorTertiaryHover,
+
+      '--color-item-on-primary-hover': colorSecondaryBg, // Same as secondary background
+      '--color-item-on-secondary-hover': colorSecondaryHover,
+      '--color-item-on-secondary-active': colorSecondaryActive,
+      '--color-item-on-tertiary-hover': colorTertiaryHover,
 
       '--color-card-on-primary-bg': colorCardOnPrimaryBg,
       '--color-card-on-primary-border': colorCardOnPrimaryBorder,
@@ -268,6 +270,7 @@ function useColorTheme(): void {
 
       '--color-button-on-primary-bg': colorCardOnPrimaryBg, // Same as card on primary background
       '--color-button-on-primary-border': colorCardOnPrimaryBorder, // Same as card on primary border
+      '--color-button-on-primary-hover': colorSecondaryHover, // Same as item on secondary hover
 
       '--color-button-on-secondary-bg': colorTertiaryBg, // Same as tertiary background
       '--color-button-on-secondary-border': colorTertiaryBorder, // Same as tertiary border
