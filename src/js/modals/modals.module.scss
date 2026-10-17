@@ -202,7 +202,7 @@
   background: var(--color-button-mono-bg);
   border: 1px solid var(--color-button-mono-border);
   border-radius: 50%;
-  color: var(--color-primary-bg);
+  color: var(--color-button-mono-text);
 
   @include mixins.focus-self-outline;
 

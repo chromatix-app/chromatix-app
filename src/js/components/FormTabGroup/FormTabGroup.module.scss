@@ -42,12 +42,12 @@
   font-size: 14px;
   line-height: 16px;
   font-weight: 400;
-  color: var(--color-text);
+  color: var(--color-button-on-primary-text);
 
   &Active {
     background-color: var(--color-button-mono-bg);
     border: 1px solid var(--color-button-mono-border);
-    color: var(--color-primary-bg);
+    color: var(--color-button-mono-text);
   }
 
   &:disabled {

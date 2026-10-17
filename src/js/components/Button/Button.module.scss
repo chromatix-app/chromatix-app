@@ -90,9 +90,9 @@
 //
 
 .colorPrimary {
-  background: vars.$color-core;
+  background: vars.$color-core-main;
   border: 1px solid vars.$color-opacity-015;
-  color: vars.$color-primary-bg;
+  color: vars.$color-core-on-primary-text;
 
   :global(html[data-logged-in='true']) & {
     background-color: var(--color-core-main);
@@ -129,7 +129,7 @@
   :global(html[data-logged-in='true']) & {
     background-color: var(--color-button-mono-bg);
     border: 1px solid var(--color-button-mono-border);
-    color: var(--color-primary-bg);
+    color: var(--color-button-mono-text);
   }
 
   &.disabledText:disabled {
@@ -154,14 +154,14 @@
 }
 
 .colorSecondary {
-  background-color: vars.$color-button-secondary-bg;
-  border: 1px solid vars.$color-button-secondary-border;
-  color: vars.$color-button-secondary-text;
+  background-color: vars.$color-button-on-primary-bg;
+  border: 1px solid vars.$color-button-on-primary-border;
+  color: vars.$color-button-on-primary-text;
 
   :global(html[data-logged-in='true']) & {
     background-color: var(--color-button-on-primary-bg);
     border: 1px solid var(--color-button-on-primary-border);
-    color: var(--color-text);
+    color: var(--color-button-on-primary-text);
   }
 
   &.disabledText:disabled {
@@ -188,14 +188,15 @@
 }
 
 .colorTertiary {
-  background-color: vars.$color-button-secondary-bg;
-  border: 1px solid vars.$color-button-secondary-border;
-  color: vars.$color-button-secondary-text;
+  // Logged out pages only have a primary background, so this matches the secondary variant until logged in
+  background-color: vars.$color-button-on-primary-bg;
+  border: 1px solid vars.$color-button-on-primary-border;
+  color: vars.$color-button-on-primary-text;
 
   :global(html[data-logged-in='true']) & {
     background-color: var(--color-button-on-secondary-bg);
     border: 1px solid var(--color-button-on-secondary-border);
-    color: var(--color-text);
+    color: var(--color-button-on-secondary-text);
   }
 
   &.disabledText:disabled {
@@ -226,7 +227,7 @@
   :global(html[data-logged-in='true']) & {
     background-color: transparent;
     border: 1px solid var(--color-button-on-primary-border);
-    color: var(--color-text);
+    color: var(--color-button-on-primary-text);
   }
 
   &.loading {
@@ -243,6 +244,7 @@
 .colorOutlineTertiary {
   :global(html[data-logged-in='true']) & {
     border: 1px solid var(--color-button-on-secondary-border);
+    color: var(--color-button-on-secondary-text);
   }
 }
 

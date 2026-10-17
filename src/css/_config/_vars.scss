@@ -67,18 +67,20 @@ $grid-breakpoints: (xxs, xs, sm, md, lg, xl);
 
 // COLORS
 
-$color-core: #f7277a;
+$color-core-main: #f7277a;
+$color-core-on-primary-text: #021c27; // Same as primary background
+
 $color-text: #fff;
+
 $color-primary-bg: #021c27;
-// $color-secondary-bg: #142c38;
 $color-secondary-border: #263e4a;
+
+$color-button-on-primary-bg: #263e4a;
+$color-button-on-primary-border: rgba(255, 255, 255, 0.1);
+$color-button-on-primary-text: #fff;
 
 $color-button-mono-bg: #eeeeee;
 $color-button-mono-border: #fff;
-$color-button-mono-text: #021c27;
-
-$color-button-secondary-bg: #263e4a;
-$color-button-secondary-border: rgba(255, 255, 255, 0.1);
-$color-button-secondary-text: #fff;
+$color-button-mono-text: #021c27; // Same as primary background
 
 $color-opacity-015: rgba(255, 255, 255, 0.15);
