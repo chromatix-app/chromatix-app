@@ -58,7 +58,6 @@ const App = () => {
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const isLightTheme = useSelector(({ sessionModel }) => sessionModel.isLightTheme);
-  const isLightText = useSelector(({ sessionModel }) => sessionModel.isLightText);
   const winCustomScrollbars = useSelector(({ sessionModel }) => sessionModel.winCustomScrollbars);
   const winAutoHideScrollbars = useSelector(({ sessionModel }) => sessionModel.winAutoHideScrollbars);
 
@@ -130,8 +129,7 @@ const App = () => {
   // toggle light mode data attribute on html
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', isLightTheme ? 'light' : 'dark');
-    document.documentElement.setAttribute('data-text-theme', isLightText ? 'light' : 'dark');
-  }, [isLightTheme, isLightText]);
+  }, [isLightTheme]);
 
   // toggle accessibility focus data attribute on html
   useEffect(() => {

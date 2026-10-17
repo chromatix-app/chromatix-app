@@ -140,10 +140,9 @@
   height: 100svh;
 
   background: var(--color-primary-bg);
-  background-image: url(../../images/loading-white.png);
-  background-size: 30px auto;
-  background-position: center;
-  background-repeat: no-repeat;
+
+  // The theme's colour tokens are set after first render, so fall back to the static text colour
+  @include mixins.spinner(30px, var(--color-text, #{vars.$color-text}), 3px);
 }
 
 .wrap-middle {

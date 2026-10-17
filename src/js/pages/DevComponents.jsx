@@ -73,6 +73,7 @@ const devThemes = [
   { label: 'White / Magenta', theme: 'white-magenta' },
   { label: 'Custom / Blue + Dark', background: '#0d7eae', primary: '#ffa8cb', text: '#ffffff', tinting: 'auto' },
   { label: 'Custom / Blue + Light', background: '#0d7dad', primary: '#ffa8cb', text: '#ffffff', tinting: 'auto' },
+  { label: 'Custom / Blue + Red', background: '#b3e8ff', primary: '#0033ff', text: '#9e0000', tinting: 'auto' },
   { label: 'Custom / Sepia', background: '#f4ecd8', primary: '#a0522d', text: '#3b2f2f', tinting: 'auto' },
   { label: 'Custom / Forest', background: '#0f1f17', primary: '#7bd389', text: '#e8f5e9', tinting: 'auto' },
 ];
