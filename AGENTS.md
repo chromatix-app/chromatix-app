@@ -144,6 +144,8 @@ Use `clsx` for conditional class composition. Use CSS Modules for component-spec
 
 Theme colours are CSS custom properties generated at runtime by `useColorTheme`, and scaled by the contrast setting. In logged-in UI, use these tokens rather than hardcoded colours or raw `opacity` values, and prefer a token named for the role (e.g. `--color-button-on-primary-bg`) over a raw surface token.
 
+Role tokens are named `--color-<role>-on-<surface>-<prop or state>` (e.g. `--color-button-on-primary-hover`, `--color-item-on-secondary-hover`), and in `useColorTheme` they only ever alias base surface values, never other role tokens. `Button`'s `color` variants are named after their tokens (`core`, `mono`, `onPrimary`, `onSecondary`, `outlineOnPrimary`, `outlineOnSecondary`). Logged-out pages use the static `$color-*` variables in `_vars.scss`, which mirror the token names; any value that deliberately differs from the default theme is commented.
+
 ## Context Menus
 
 Right-click/"more options" menus share one entry schema and renderer (`MenuEntry` in `components/MenuEntries/`), consumed by both `ContextMenu` (Radix context-menu, right-click) and `ActionMenu` (Radix dropdown-menu, click-triggered "..." button). An entry is `{ variant: 'action' | 'checkbox' | 'submenu' | 'divider' | 'sectionHeading', ... }` — see the header comment in `MenuEntries.jsx` for the per-variant fields. `ActionSort` also builds on the same dropdown-menu primitive and reuses `MenuEntries.module.scss`'s shared popup/item styling, but renders its own entries directly rather than going through `MenuEntry`, since a sort option isn't one of the variant shapes above.
