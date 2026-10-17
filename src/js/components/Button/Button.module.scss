@@ -122,8 +122,8 @@
 }
 
 .colorMono {
-  background-color: vars.$color-button-mono-border;
-  border: 1px solid vars.$color-button-mono-bg;
+  background-color: vars.$color-button-mono-bg;
+  border: 1px solid vars.$color-button-mono-border;
   color: vars.$color-button-mono-text;
 
   :global(html[data-logged-in='true']) & {

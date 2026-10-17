@@ -98,10 +98,6 @@
       &:hover,
       &:focus-visible {
         background: var(--color-secondary-hover);
-
-        :global(html[data-theme='light']) & {
-          background: var(--color-secondary-hover);
-        }
       }
     }
   }

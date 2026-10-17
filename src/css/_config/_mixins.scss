@@ -257,30 +257,6 @@
   -webkit-app-region: no-drag;
 }
 
-@mixin dark-theme() {
-  html[data-theme='system'] & {
-    @media (prefers-color-scheme: dark) {
-      @content;
-    }
-  }
-  :global(html.sb-dark-mode) &,
-  html[data-theme='dark'] & {
-    @content;
-  }
-}
-
-@mixin light-theme() {
-  html[data-theme='system'] & {
-    @media (prefers-color-scheme: light) {
-      @content;
-    }
-  }
-  :global(html.sb-light-mode) &,
-  html[data-theme='light'] & {
-    @content;
-  }
-}
-
 @function color-add($color1, $color2) {
   // @return $color1 + $color2;
 
