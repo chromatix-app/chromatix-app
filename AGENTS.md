@@ -123,7 +123,7 @@ Routes are defined in `js/_config/routes.ts` as arrays of route objects:
 
 Route components are resolved by string name and lazy-loaded via `BrowserRouteSwitch.jsx`.
 
-`/dev/*` routes (component, icon, modal, settings and tag previews) are only added outside production. `/dev/components` also has quick toggles for environment, logged-in display, focus highlighting, contrast and theme, for checking the UI across variations.
+`/dev/*` routes (component, icon, modal, settings and tag previews) are only added outside production. `/dev/components` also has quick toggles for environment, logged-in display, focus highlighting, contrast and theme, plus buttons to trigger each kind of toast, for checking the UI across variations.
 
 ## Components
 

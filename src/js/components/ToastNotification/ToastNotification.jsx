@@ -5,13 +5,11 @@ import clsx from 'clsx';
 
 import style from './ToastNotification.module.scss';
 
-const isLocal = import.meta.env.VITE_ENV === 'local';
-const devMode = !isLocal ? false : false;
-const defaultDuration = !devMode ? 6000 : 999999999;
+const isProduction = import.meta.env.VITE_ENV === 'production';
+const defaultDuration = 6000;
 
 const ToastNotification = () => {
   const dispatch = useDispatch();
-  const [counter, setCounter] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
   const notifications = useSelector(({ appModel }) => appModel.notifications);
 
@@ -23,7 +21,7 @@ const ToastNotification = () => {
     const latestNotification = notifications[notifications.length - 1];
 
     // Show it with Sonner
-    if (!latestNotification.debug || isLocal) {
+    if (!latestNotification.debug || !isProduction) {
       toast(latestNotification.title, {
         id: latestNotification.id,
         description: latestNotification.description,
@@ -35,61 +33,24 @@ const ToastNotification = () => {
     }
   }, [notifications, dispatch.appModel]);
 
-  // Test function to add a notification
-  const addTestNotification = () => {
-    if (!devMode) return;
-    setCounter((prev) => prev + 1);
-    dispatch.appModel.addNotification({
-      title: `Playback error ${counter}`,
-      description: `"This is a test notification.`,
-    });
-  };
-
-  // Test function to add a notification on key press
-  useEffect(() => {
-    if (!devMode) return;
-    const handleKeyDown = (event) => {
-      if (event.key === 'a') {
-        event.preventDefault();
-        addTestNotification();
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [counter]);
-
   return (
-    <>
-      <div onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
-        <Toaster
-          position="bottom-left"
-          className={style.wrap}
-          gap={6}
-          visibleToasts={isHovering ? 30 : 3}
-          toastOptions={{
-            className: style.toast,
-            classNames: {
-              title: style.title,
-              description: style.description,
-              closeButton: style.closeButton,
-            },
-            closeButton: true,
-          }}
-        />{' '}
-      </div>
-
-      {/* Test button for adding notifications */}
-      {devMode && (
-        <div className={style.dev}>
-          <button type="button" onClick={addTestNotification}>
-            Show Notification
-          </button>
-        </div>
-      )}
-    </>
+    <div onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
+      <Toaster
+        position="bottom-left"
+        className={style.wrap}
+        gap={6}
+        visibleToasts={isHovering ? 30 : 3}
+        toastOptions={{
+          className: style.toast,
+          classNames: {
+            title: style.title,
+            description: style.description,
+            closeButton: style.closeButton,
+          },
+          closeButton: true,
+        }}
+      />
+    </div>
   );
 };
 

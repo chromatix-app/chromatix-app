@@ -266,6 +266,7 @@ function useColorTheme(): void {
       '--color-button-outline-on-secondary-hover': colorTertiaryBg,
       '--color-button-outline-on-secondary-text': colorText,
 
+      '--color-item-on-core-hover': colorCoreBorder,
       '--color-item-on-primary-hover': colorSecondaryBg,
       '--color-item-on-secondary-hover': colorSecondaryHover,
       '--color-item-on-secondary-active': colorSecondaryActive,

@@ -1,3 +1,5 @@
+@use '../../../css/_config/_mixins';
+
 .wrap {
   position: fixed;
   bottom: 120px !important;
@@ -20,9 +22,15 @@
   line-height: 18px !important;
   color: var(--color-core-on-primary-text) !important;
 
-  // Local-only debug notifications - deliberately a fixed, unthemed red so they're obviously not real toasts
+  // Non-production debug notifications - deliberately a fixed, unthemed red so they're obviously not real toasts
   &Debug {
-    background: rgb(215, 90, 90) !important;
+    background: #ff3737 !important;
+    border-color: #f00 !important;
+    color: #fff !important;
+
+    .description {
+      color: #fff !important;
+    }
   }
 }
 
@@ -40,39 +48,40 @@
   top: 0 !important;
   left: auto !important;
   right: 0 !important;
-  width: 30px !important;
-  height: 30px !important;
+  width: 28px !important;
+  height: 28px !important;
   background: transparent !important;
-  // background: rgba(255, 255, 255, 0.05) !important;
   border: none !important;
-  border-radius: 0 !important;
+  border-radius: 5px !important;
+  box-shadow: none !important;
   opacity: 0;
   transform: none !important;
   cursor: pointer;
+  color: var(--color-core-on-primary-text) !important;
 
-  color: var(--color-core-on-primary-text);
+  @include mixins.focus-self-outline;
 
   svg {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
   }
 
   .toast:hover & {
     opacity: 1;
     transition: all 0.25s ease-in-out;
   }
-}
 
-// You may need to adjust the dev section styles as well
-.dev {
-  position: fixed;
-  bottom: 100px;
-  right: 0;
-  padding: 20px;
-  background: var(--color-primary-bg);
+  // Fill only on keyboard focus, which also has to make the button visible
+  &:focus-visible {
+    background: var(--color-item-on-core-hover) !important;
+    opacity: 1;
+  }
 
-  button {
-    padding: 10px;
-    background: var(--color-core-main);
+  .toastDebug & {
+    color: #fff !important;
+
+    &:focus-visible {
+      background: #f00 !important;
+    }
   }
 }

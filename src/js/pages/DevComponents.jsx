@@ -44,6 +44,29 @@ const environmentOptions = [
   { value: 'electron-lin', label: 'Electron / Linux' },
 ];
 
+// each inner array is one row of buttons
+const devToastRows = [
+  [
+    { label: 'Standard', title: 'Toast title', description: 'Toast description text.' },
+    { label: 'Title Only', title: 'Toast title only' },
+    {
+      label: 'Long',
+      title: 'A much longer toast title that might wrap onto two lines',
+      description:
+        'A longer description to check wrapping and spacing. Lorem ipsum dolor sit amet consectetur adipiscing elit.',
+    },
+  ],
+  [
+    {
+      label: 'Persistent',
+      title: 'Persistent toast',
+      description: 'Stays until dismissed, for checking styles.',
+      duration: Infinity,
+    },
+    { label: 'Debug', title: 'Debug toast', description: 'Not shown in production builds.', debug: true },
+  ],
+];
+
 // presets use a theme key from themes.ts; custom entries set the custom theme colours (overwriting any saved ones)
 const devThemes = [
   { label: 'Chromatix / Teal', theme: 'chromatix-teal' },
@@ -202,6 +225,27 @@ const Component = () => {
               },
             ]}
           />
+        </div>
+
+        {/* TOASTS */}
+
+        <div>
+          <h2>Toasts</h2>
+          {devToastRows.map((row, index) => (
+            <div key={index} className="devButtons">
+              {row.map(({ label, ...notification }) => (
+                <Button
+                  key={label}
+                  wrap={false}
+                  size="tiny"
+                  color="onPrimary"
+                  onClick={() => dispatch.appModel.addNotification(notification)}
+                >
+                  {label}
+                </Button>
+              ))}
+            </div>
+          ))}
         </div>
 
         {/* ACTIONS - STANDARD */}
