@@ -31,31 +31,22 @@
 //
 
 .colorPrimary {
-  background: var(--color-button-on-primary-bg);
-  border: 1px solid var(--color-button-on-primary-border);
-  color: var(--color-text);
+  background: var(--color-field-on-primary-bg);
+  border: 1px solid var(--color-field-on-primary-border);
+  color: var(--color-field-on-primary-text);
 
   &:focus {
-    border-color: var(--color-opacity-03);
+    border-color: var(--color-field-on-primary-focus-border);
   }
 }
 
 .colorSecondary {
-  background: var(--color-tertiary-bg);
-  border: 1px solid var(--color-tertiary-border);
-  color: var(--color-text);
-
-  :global(html[data-theme='light']) & {
-    background: var(--color-primary-bg);
-    border-color: var(--color-secondary-border);
-  }
+  background: var(--color-field-on-secondary-bg);
+  border: 1px solid var(--color-field-on-secondary-border);
+  color: var(--color-field-on-secondary-text);
 
   &:focus {
-    border-color: var(--color-opacity-03);
-
-    :global(html[data-theme='light']) & {
-      border-color: var(--color-tertiary-border);
-    }
+    border-color: var(--color-field-on-secondary-focus-border);
   }
 }
 

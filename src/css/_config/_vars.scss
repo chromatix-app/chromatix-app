@@ -83,3 +83,7 @@ $color-button-on-primary-bg: #263e4a; // Deliberately lighter than the Magenta t
 $color-button-on-primary-border: rgba(255, 255, 255, 0.1); // Deliberately differs from the Magenta theme (#263e4a)
 $color-button-on-primary-hover: #2f4753; // One step lighter than the background above (Magenta theme: #1d3541)
 $color-button-on-primary-text: #fff;
+
+$color-field-on-primary-bg: #021c27; // Deliberately matches the background (Magenta theme: #142c38)
+$color-field-on-primary-border: #263e4a;
+$color-field-on-primary-text: #fff;

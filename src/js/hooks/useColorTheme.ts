@@ -86,9 +86,6 @@ function useColorTheme(): void {
     let colorTertiaryBorder: string;
     let colorTertiaryHover: string;
 
-    // Only card value that isn't a plain surface value (see the light theme branch)
-    let colorCardOnSecondaryBorder: string;
-
     let colorButtonMonoBg: string;
 
     // [NOTE] Optional tinting maybe to be added in future
@@ -142,9 +139,6 @@ function useColorTheme(): void {
         .darken(0.8 * chromaMultiplierHigh)
         .hex();
 
-      // [NOTE] Deliberately the secondary border rather than tertiary, so it's near invisible on light themes
-      colorCardOnSecondaryBorder = colorSecondaryBorder;
-
       colorButtonMonoBg = chroma(colorText)
         .brighten(0.3 * chromaMultiplierHigh)
         .hex();
@@ -181,21 +175,10 @@ function useColorTheme(): void {
         .brighten(1.1 * chromaMultiplierHigh)
         .hex();
 
-      colorCardOnSecondaryBorder = colorTertiaryBorder;
-
       colorButtonMonoBg = chroma(colorText)
         .darken(0.3 * chromaMultiplierHigh)
         .hex();
     }
-
-    // Core border moves away from the background: darker on light themes, lighter on dark themes
-    const colorCoreBorder = isActualLightTheme
-      ? chroma(colorCore)
-          .darken(0.25 * chromaMultiplierLow)
-          .hex()
-      : chroma(colorCore)
-          .brighten(0.25 * chromaMultiplierLow)
-          .hex();
 
     const colorOpacity0025 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.025));
     const colorOpacity005 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.05));
@@ -223,6 +206,23 @@ function useColorTheme(): void {
     const shadowLg = isActualLightTheme ? '0 4px 20px rgba(0, 0, 0, 0.1)' : '0 2px 20px rgba(0, 0, 0, 0.35)';
     const shadowMd = isActualLightTheme ? '0 4px 8px rgba(0, 0, 0, 0.1)' : '0 2px 10px rgba(0, 0, 0, 0.35)';
     const shadowSm = isActualLightTheme ? '0 2px 4px rgba(0, 0, 0, 0.05)' : '0 2px 6px rgba(0, 0, 0, 0.2)';
+
+    // Core border moves away from the background: darker on light themes, lighter on dark themes
+    const colorCoreBorder = isActualLightTheme
+      ? chroma(colorCore)
+          .darken(0.25 * chromaMultiplierLow)
+          .hex()
+      : chroma(colorCore)
+          .brighten(0.25 * chromaMultiplierLow)
+          .hex();
+
+    // Cards on secondary deliberately use the secondary border on light themes, so it's near invisible
+    const colorCardOnSecondaryBorder = isActualLightTheme ? colorSecondaryBorder : colorTertiaryBorder;
+
+    // Fields on secondary drop back to the primary background on light themes, so they read as inset
+    const colorFieldOnSecondaryBg = isActualLightTheme ? colorPrimaryBg : colorTertiaryBg;
+    const colorFieldOnSecondaryBorder = isActualLightTheme ? colorSecondaryBorder : colorTertiaryBorder;
+    const colorFieldOnSecondaryFocusBorder = isActualLightTheme ? colorTertiaryBorder : colorOpacity03;
 
     const colors: Record<string, string | number> = {
       '--color-core-main': colorCore,
@@ -266,12 +266,6 @@ function useColorTheme(): void {
       '--color-button-outline-on-secondary-hover': colorTertiaryBg,
       '--color-button-outline-on-secondary-text': colorText,
 
-      '--color-item-on-core-hover': colorCoreBorder,
-      '--color-item-on-primary-hover': colorSecondaryBg,
-      '--color-item-on-secondary-hover': colorSecondaryHover,
-      '--color-item-on-secondary-active': colorSecondaryActive,
-      '--color-item-on-tertiary-hover': colorTertiaryHover,
-
       '--color-card-on-primary-bg': colorSecondaryBg,
       '--color-card-on-primary-border': colorSecondaryBorder,
       '--color-card-on-primary-hover': colorTertiaryBg,
@@ -285,6 +279,23 @@ function useColorTheme(): void {
 
       '--color-card-ghost-on-secondary-hover': colorTertiaryBg,
       '--color-card-ghost-on-secondary-hover-border': colorCardOnSecondaryBorder,
+
+      '--color-item-on-core-hover': colorCoreBorder,
+      '--color-item-on-primary-hover': colorSecondaryBg,
+      '--color-item-on-secondary-hover': colorSecondaryHover,
+      '--color-item-on-secondary-active': colorSecondaryActive,
+      '--color-item-on-tertiary-hover': colorTertiaryHover,
+
+      '--color-field-on-primary-bg': colorSecondaryBg,
+      '--color-field-on-primary-border': colorSecondaryBorder,
+      '--color-field-on-primary-hover': colorSecondaryHover,
+      '--color-field-on-primary-focus-border': colorOpacity03,
+      '--color-field-on-primary-text': colorText,
+
+      '--color-field-on-secondary-bg': colorFieldOnSecondaryBg,
+      '--color-field-on-secondary-border': colorFieldOnSecondaryBorder,
+      '--color-field-on-secondary-focus-border': colorFieldOnSecondaryFocusBorder,
+      '--color-field-on-secondary-text': colorText,
 
       '--color-opacity-0025': colorOpacity0025,
       '--color-opacity-005': colorOpacity005,
