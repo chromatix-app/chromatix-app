@@ -288,7 +288,6 @@ function useColorTheme(): void {
 
       '--color-field-on-primary-bg': colorSecondaryBg,
       '--color-field-on-primary-border': colorSecondaryBorder,
-      '--color-field-on-primary-hover': colorSecondaryHover,
       '--color-field-on-primary-focus-border': colorOpacity03,
       '--color-field-on-primary-text': colorText,
 

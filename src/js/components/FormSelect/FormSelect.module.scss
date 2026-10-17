@@ -23,7 +23,7 @@
   @include mixins.focus-self-outline;
 
   &:focus-visible {
-    background: var(--color-field-on-primary-hover);
+    border-color: var(--color-field-on-primary-focus-border);
   }
 
   &[data-disabled] {
