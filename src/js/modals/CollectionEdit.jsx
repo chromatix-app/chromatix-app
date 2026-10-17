@@ -84,7 +84,7 @@ const CollectionEdit = () => {
         <Button onClick={handleSubmit} size="small" color="mono" disabled={!!validationError} loading={loading}>
           Save Collection
         </Button>
-        <Button onClick={() => dispatch.dialogModel.closeModal()} size="small" color="tertiary" disabled={loading}>
+        <Button onClick={() => dispatch.dialogModel.closeModal()} size="small" color="onSecondary" disabled={loading}>
           Cancel
         </Button>
       </div>

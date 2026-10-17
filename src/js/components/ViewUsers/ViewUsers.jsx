@@ -114,7 +114,7 @@ const UserForm = ({ pinUser, setRenderPinEntry }) => {
           <FormOTP value={pin} onChange={setPin} autoFocus />
         </div>
         <div className={style.cancel}>
-          <Button size="tiny" color="secondary" onClick={() => setRenderPinEntry(false)}>
+          <Button size="tiny" color="onPrimary" onClick={() => setRenderPinEntry(false)}>
             Cancel
           </Button>
         </div>

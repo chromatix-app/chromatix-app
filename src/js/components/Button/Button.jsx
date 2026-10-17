@@ -27,7 +27,7 @@ export const Button = forwardRef(
     {
       children,
       className,
-      color = 'primary',
+      color = 'core',
       icon,
       inline = false,
       loading = false,

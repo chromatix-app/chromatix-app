@@ -89,7 +89,7 @@
 // COLORS
 //
 
-.colorPrimary {
+.colorCore {
   background: vars.$color-core-main;
   border: 1px solid vars.$color-opacity-015;
   color: vars.$color-core-on-primary-text;
@@ -153,7 +153,7 @@
   }
 }
 
-.colorSecondary {
+.colorOnPrimary {
   background-color: vars.$color-button-on-primary-bg;
   border: 1px solid vars.$color-button-on-primary-border;
   color: vars.$color-button-on-primary-text;
@@ -187,8 +187,8 @@
   }
 }
 
-.colorTertiary {
-  // Logged out pages only have a primary background, so this matches the secondary variant until logged in
+.colorOnSecondary {
+  // Logged out pages only have a primary background, so this matches the onPrimary variant until logged in
   background-color: vars.$color-button-on-primary-bg;
   border: 1px solid vars.$color-button-on-primary-border;
   color: vars.$color-button-on-primary-text;
@@ -222,8 +222,8 @@
   }
 }
 
-.colorOutlineSecondary,
-.colorOutlineTertiary {
+.colorOutlineOnPrimary,
+.colorOutlineOnSecondary {
   :global(html[data-logged-in='true']) & {
     background-color: transparent;
     border: 1px solid var(--color-button-on-primary-border);
@@ -241,7 +241,7 @@
   }
 }
 
-.colorOutlineTertiary {
+.colorOutlineOnSecondary {
   :global(html[data-logged-in='true']) & {
     border: 1px solid var(--color-button-on-secondary-border);
     color: var(--color-button-on-secondary-text);

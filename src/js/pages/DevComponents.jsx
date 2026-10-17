@@ -811,10 +811,10 @@ const Component = () => {
 
           <div className="devButtons">
             <Button wrap={false} size="tiny">
-              Primary
+              Core
             </Button>
             <Button wrap={false} size="tiny" loading>
-              Primary Loading
+              Core Loading
             </Button>
             <Button wrap={false} size="tiny" disabled renderDisabled={false}>
               Disabled Text
@@ -840,50 +840,50 @@ const Component = () => {
           </div>
 
           <div className="devButtons">
-            <Button wrap={false} size="tiny" color="secondary">
-              Secondary
+            <Button wrap={false} size="tiny" color="onPrimary">
+              On Primary
             </Button>
-            <Button wrap={false} size="tiny" color="secondary" loading>
-              Secondary Loading
+            <Button wrap={false} size="tiny" color="onPrimary" loading>
+              On Primary Loading
             </Button>
-            <Button wrap={false} size="tiny" color="secondary" disabled renderDisabled={false}>
+            <Button wrap={false} size="tiny" color="onPrimary" disabled renderDisabled={false}>
               Disabled Text
             </Button>
-            <Button wrap={false} size="tiny" color="secondary" disabled>
+            <Button wrap={false} size="tiny" color="onPrimary" disabled>
               Disabled All
             </Button>
           </div>
 
           <div className="devButtons">
-            <Button wrap={false} size="tiny" color="tertiary">
-              Tertiary
+            <Button wrap={false} size="tiny" color="onSecondary">
+              On Secondary
             </Button>
-            <Button wrap={false} size="tiny" color="tertiary" loading>
-              Tertiary Loading
+            <Button wrap={false} size="tiny" color="onSecondary" loading>
+              On Secondary Loading
             </Button>
-            <Button wrap={false} size="tiny" color="tertiary" disabled renderDisabled={false}>
+            <Button wrap={false} size="tiny" color="onSecondary" disabled renderDisabled={false}>
               Disabled Text
             </Button>
-            <Button wrap={false} size="tiny" color="tertiary" disabled>
+            <Button wrap={false} size="tiny" color="onSecondary" disabled>
               Disabled All
             </Button>
           </div>
 
           <div className="devButtons">
-            <Button wrap={false} size="tiny" color="outlineSecondary">
-              Secondary Outline
+            <Button wrap={false} size="tiny" color="outlineOnPrimary">
+              Outline On Primary
             </Button>
-            <Button wrap={false} size="tiny" color="outlineSecondary" loading>
-              Secondary Loading
+            <Button wrap={false} size="tiny" color="outlineOnPrimary" loading>
+              Outline On Primary Loading
             </Button>
           </div>
 
           <div className="devButtons">
-            <Button wrap={false} size="tiny" color="outlineTertiary">
-              Tertiary Outline
+            <Button wrap={false} size="tiny" color="outlineOnSecondary">
+              Outline On Secondary
             </Button>
-            <Button wrap={false} size="tiny" color="outlineTertiary" loading>
-              Tertiary Loading
+            <Button wrap={false} size="tiny" color="outlineOnSecondary" loading>
+              Outline On Secondary Loading
             </Button>
           </div>
         </div>
