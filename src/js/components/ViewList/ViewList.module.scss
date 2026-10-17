@@ -235,13 +235,7 @@
   border-radius: 3px;
 
   &.thumbFolder {
-    background: var(--color-core-main);
-    background: linear-gradient(to bottom, var(--color-core-main) 0%, var(--color-primary-bg) 400%);
-    color: var(--color-core-on-primary-text);
-
-    :global(html[data-theme='light']) & {
-      background: linear-gradient(to top, var(--color-core-main) 0%, var(--color-primary-bg) 400%);
-    }
+    @include mixins.core-gradient-fill;
   }
 
   &:after {

@@ -93,14 +93,9 @@
     margin-right: 25px;
   }
 
-  background: var(--color-core-main);
-  background: linear-gradient(to bottom, var(--color-core-main) 0%, var(--color-primary-bg) 400%);
   outline: none;
-  color: var(--color-core-on-primary-text);
 
-  :global(html[data-theme='light']) & {
-    background: linear-gradient(to top, var(--color-core-main) 0%, var(--color-primary-bg) 400%);
-  }
+  @include mixins.core-gradient-fill;
 }
 
 .thumbIcon {

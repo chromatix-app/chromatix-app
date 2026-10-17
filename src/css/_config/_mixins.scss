@@ -60,6 +60,17 @@
   pointer-events: none;
 }
 
+// Core colour fill fading towards the primary background, for icon/folder thumbnails on primary
+@mixin core-gradient-fill() {
+  background: var(--color-core-main);
+  background: linear-gradient(to bottom, var(--color-core-main) 0%, var(--color-primary-bg) 400%);
+  color: var(--color-core-on-primary-text);
+
+  :global(html[data-theme='light']) & {
+    background: linear-gradient(to top, var(--color-core-main) 0%, var(--color-primary-bg) 400%);
+  }
+}
+
 @mixin content-padding-regular {
   padding-left: 20px;
   padding-right: 20px;
