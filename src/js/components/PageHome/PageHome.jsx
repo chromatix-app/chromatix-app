@@ -103,7 +103,7 @@ export const PageHome = () => {
             <div className={style.buttons}>
               <Button
                 onClick={dispatch.appModel.doPlexLogin}
-                color="onSecondary"
+                color="onPrimary"
                 size="medium"
                 wrap={false}
                 icon={<Icon icon="PlexSiteIcon" cover />}
@@ -112,7 +112,7 @@ export const PageHome = () => {
               </Button>
               <Button
                 to="/login-jellyfin"
-                color="onSecondary"
+                color="onPrimary"
                 size="medium"
                 wrap={false}
                 icon={<Icon icon="JellyfinSiteIcon" cover />}

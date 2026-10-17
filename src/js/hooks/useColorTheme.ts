@@ -284,6 +284,14 @@ function useColorTheme(): void {
       '--color-button-on-secondary-hover': colorTertiaryHover, // Same as item on tertiary hover
       '--color-button-on-secondary-text': colorText, // Same as text
 
+      '--color-button-outline-on-primary-border': colorCardOnPrimaryBorder, // Same as button on primary border
+      '--color-button-outline-on-primary-hover': colorCardOnPrimaryBg, // Same as button on primary background
+      '--color-button-outline-on-primary-text': colorText, // Same as text
+
+      '--color-button-outline-on-secondary-border': colorTertiaryBorder, // Same as button on secondary border
+      '--color-button-outline-on-secondary-hover': colorTertiaryBg, // Same as button on secondary background
+      '--color-button-outline-on-secondary-text': colorText, // Same as text
+
       '--color-item-on-primary-hover': colorSecondaryBg, // Same as secondary background
       '--color-item-on-secondary-hover': colorSecondaryHover,
       '--color-item-on-secondary-active': colorSecondaryActive,

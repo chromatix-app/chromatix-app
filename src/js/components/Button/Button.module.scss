@@ -97,8 +97,13 @@
 
 .colorCore {
   background: vars.$color-core-main;
-  border: 1px solid vars.$color-opacity-015;
+  border: 1px solid vars.$color-core-border;
   color: vars.$color-core-on-primary-text;
+
+  &:not(:disabled):not(.loading):hover,
+  &:not(:disabled):not(.loading):focus-visible {
+    background-color: vars.$color-core-hover;
+  }
 
   :global(html[data-logged-in='true']) & {
     background-color: var(--color-core-main);
@@ -133,10 +138,7 @@
 }
 
 .colorMono {
-  background-color: vars.$color-button-mono-bg;
-  border: 1px solid vars.$color-button-mono-border;
-  color: vars.$color-button-mono-text;
-
+  // Only used when logged in, so there are no static logged-out styles
   :global(html[data-logged-in='true']) & {
     background-color: var(--color-button-mono-bg);
     border: 1px solid var(--color-button-mono-border);
@@ -174,6 +176,11 @@
   border: 1px solid vars.$color-button-on-primary-border;
   color: vars.$color-button-on-primary-text;
 
+  &:not(:disabled):not(.loading):hover,
+  &:not(:disabled):not(.loading):focus-visible {
+    background-color: vars.$color-button-on-primary-hover;
+  }
+
   :global(html[data-logged-in='true']) & {
     background-color: var(--color-button-on-primary-bg);
     border: 1px solid var(--color-button-on-primary-border);
@@ -209,11 +216,7 @@
 }
 
 .colorOnSecondary {
-  // Logged out pages only have a primary background, so this matches the onPrimary variant until logged in
-  background-color: vars.$color-button-on-primary-bg;
-  border: 1px solid vars.$color-button-on-primary-border;
-  color: vars.$color-button-on-primary-text;
-
+  // Only used when logged in, so there are no static logged-out styles
   :global(html[data-logged-in='true']) & {
     background-color: var(--color-button-on-secondary-bg);
     border: 1px solid var(--color-button-on-secondary-border);
@@ -250,10 +253,16 @@
 
 .colorOutlineOnPrimary,
 .colorOutlineOnSecondary {
+  // Only used when logged in, so there are no static logged-out styles
   :global(html[data-logged-in='true']) & {
     background-color: transparent;
-    border: 1px solid var(--color-button-on-primary-border);
-    color: var(--color-button-on-primary-text);
+    border: 1px solid var(--color-button-outline-on-primary-border);
+    color: var(--color-button-outline-on-primary-text);
+
+    &:not(:disabled):not(.loading):hover,
+    &:not(:disabled):not(.loading):focus-visible {
+      background-color: var(--color-button-outline-on-primary-hover);
+    }
   }
 
   &.loading {
@@ -269,8 +278,13 @@
 
 .colorOutlineOnSecondary {
   :global(html[data-logged-in='true']) & {
-    border: 1px solid var(--color-button-on-secondary-border);
-    color: var(--color-button-on-secondary-text);
+    border: 1px solid var(--color-button-outline-on-secondary-border);
+    color: var(--color-button-outline-on-secondary-text);
+
+    &:not(:disabled):not(.loading):hover,
+    &:not(:disabled):not(.loading):focus-visible {
+      background-color: var(--color-button-outline-on-secondary-hover);
+    }
   }
 }
 

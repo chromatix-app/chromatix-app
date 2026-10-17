@@ -66,8 +66,12 @@ $grid-padding: (
 $grid-breakpoints: (xxs, xs, sm, md, lg, xl);
 
 // COLORS
+// Logged-out colours. Names mirror the runtime tokens set in useColorTheme, and values match the default
+// Chromatix / Magenta theme unless noted - some deliberately differ to keep the logged-out look
 
 $color-core-main: #f7277a;
+$color-core-border: #ff3c87;
+$color-core-hover: #ff3c87; // Same as core border
 $color-core-on-primary-text: #021c27; // Same as primary background
 
 $color-text: #fff;
@@ -75,12 +79,7 @@ $color-text: #fff;
 $color-primary-bg: #021c27;
 $color-secondary-border: #263e4a;
 
-$color-button-on-primary-bg: #263e4a;
-$color-button-on-primary-border: rgba(255, 255, 255, 0.1);
+$color-button-on-primary-bg: #263e4a; // Deliberately lighter than the Magenta theme (#142c38)
+$color-button-on-primary-border: rgba(255, 255, 255, 0.1); // Deliberately differs from the Magenta theme (#263e4a)
+$color-button-on-primary-hover: #2f4753; // One step lighter than the background above (Magenta theme: #1d3541)
 $color-button-on-primary-text: #fff;
-
-$color-button-mono-bg: #eeeeee;
-$color-button-mono-border: #fff;
-$color-button-mono-text: #021c27; // Same as primary background
-
-$color-opacity-015: rgba(255, 255, 255, 0.15);
