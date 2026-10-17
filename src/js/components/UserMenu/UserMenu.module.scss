@@ -60,9 +60,11 @@
 }
 
 //
-//
+// MAIN STATUS / TRIGGER ELEMENT
 //
 
+// The floating trigger deliberately uses the secondary surface tokens,
+// so it always matches the sidebar and control bar
 .status {
   display: flex;
   justify-content: flex-end;
