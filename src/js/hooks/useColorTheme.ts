@@ -216,13 +216,18 @@ function useColorTheme(): void {
           .brighten(0.25 * chromaMultiplierLow)
           .hex();
 
-    // Cards on secondary deliberately use the secondary border on light themes, so it's near invisible
-    const colorCardOnSecondaryBorder = isActualLightTheme ? colorSecondaryBorder : colorTertiaryBorder;
+    // Ghost cards on secondary deliberately use the secondary border on light themes, so it's near invisible
+    const colorCardGhostOnSecondaryHoverBorder = isActualLightTheme ? colorSecondaryBorder : colorTertiaryBorder;
 
-    // Fields on secondary drop back to the primary background on light themes, so they read as inset
-    const colorFieldOnSecondaryBg = isActualLightTheme ? colorPrimaryBg : colorTertiaryBg;
-    const colorFieldOnSecondaryBorder = isActualLightTheme ? colorSecondaryBorder : colorTertiaryBorder;
-    const colorFieldOnSecondaryFocusBorder = isActualLightTheme ? colorTertiaryBorder : colorOpacity03;
+    // Controls on secondary (the sidebar search, release banner and user menu) share one look, dropping back to the
+    // primary background on light themes. The dark focus border is the text colour at 30% over the tertiary
+    // background, flattened to a solid hex. Fields on secondary (e.g. modal inputs) use the same values
+    const colorControlOnSecondaryBg = isActualLightTheme ? colorPrimaryBg : colorTertiaryBg;
+    const colorControlOnSecondaryBorder = isActualLightTheme ? colorSecondaryBorder : colorTertiaryBorder;
+    const colorControlOnSecondaryHover = isActualLightTheme ? colorSecondaryBg : colorTertiaryHover;
+    const colorControlOnSecondaryFocusBorder = isActualLightTheme
+      ? colorTertiaryBorder
+      : chroma.mix(colorTertiaryBg, colorText, decimalMultiplier(opacityMultiplier, 0.3), 'rgb').hex();
 
     const colors: Record<string, string | number> = {
       '--color-core-main': colorCore,
@@ -271,30 +276,33 @@ function useColorTheme(): void {
       '--color-card-on-primary-hover': colorTertiaryBg,
       '--color-card-on-primary-hover-border': colorTertiaryBorder,
 
-      '--color-card-on-secondary-bg': colorTertiaryBg,
-      '--color-card-on-secondary-border': colorCardOnSecondaryBorder,
-
       '--color-card-ghost-on-primary-hover': colorSecondaryBg,
       '--color-card-ghost-on-primary-hover-border': colorSecondaryBorder,
 
       '--color-card-ghost-on-secondary-hover': colorTertiaryBg,
-      '--color-card-ghost-on-secondary-hover-border': colorCardOnSecondaryBorder,
+      '--color-card-ghost-on-secondary-hover-border': colorCardGhostOnSecondaryHoverBorder,
 
-      '--color-item-on-core-hover': colorCoreBorder,
-      '--color-item-on-primary-hover': colorSecondaryBg,
-      '--color-item-on-secondary-hover': colorSecondaryHover,
-      '--color-item-on-secondary-active': colorSecondaryActive,
-      '--color-item-on-tertiary-hover': colorTertiaryHover,
+      '--color-control-on-secondary-bg': colorControlOnSecondaryBg,
+      '--color-control-on-secondary-border': colorControlOnSecondaryBorder,
+      '--color-control-on-secondary-hover': colorControlOnSecondaryHover,
+      '--color-control-on-secondary-focus-border': colorControlOnSecondaryFocusBorder,
+      '--color-control-on-secondary-text': colorText,
 
       '--color-field-on-primary-bg': colorSecondaryBg,
       '--color-field-on-primary-border': colorSecondaryBorder,
       '--color-field-on-primary-focus-border': colorOpacity03,
       '--color-field-on-primary-text': colorText,
 
-      '--color-field-on-secondary-bg': colorFieldOnSecondaryBg,
-      '--color-field-on-secondary-border': colorFieldOnSecondaryBorder,
-      '--color-field-on-secondary-focus-border': colorFieldOnSecondaryFocusBorder,
+      '--color-field-on-secondary-bg': colorControlOnSecondaryBg,
+      '--color-field-on-secondary-border': colorControlOnSecondaryBorder,
+      '--color-field-on-secondary-focus-border': colorControlOnSecondaryFocusBorder,
       '--color-field-on-secondary-text': colorText,
+
+      '--color-item-on-core-hover': colorCoreBorder,
+      '--color-item-on-primary-hover': colorSecondaryBg,
+      '--color-item-on-secondary-hover': colorSecondaryHover,
+      '--color-item-on-secondary-active': colorSecondaryActive,
+      '--color-item-on-tertiary-hover': colorTertiaryHover,
 
       '--color-opacity-0025': colorOpacity0025,
       '--color-opacity-005': colorOpacity005,

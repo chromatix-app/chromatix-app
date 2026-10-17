@@ -93,11 +93,11 @@
     width: 100%;
     padding: 7px 30px 7px 30px;
     margin: 0 0 1px;
-    background: var(--color-field-on-secondary-bg);
-    border: 1px solid var(--color-field-on-secondary-border);
+    background: var(--color-control-on-secondary-bg);
+    border: 1px solid var(--color-control-on-secondary-border);
     border-radius: 6px;
     font-size: 13px;
-    color: var(--color-field-on-secondary-text);
+    color: var(--color-control-on-secondary-text);
 
     @include mixins.focus-self-outline;
 
@@ -112,7 +112,7 @@
 
   // Also covers focus on the clear button
   &:focus-within input {
-    border-color: var(--color-field-on-secondary-focus-border);
+    border-color: var(--color-control-on-secondary-focus-border);
   }
 }
 

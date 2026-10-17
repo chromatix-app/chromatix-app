@@ -12,8 +12,8 @@
 .banner {
   width: 100%;
   padding: 7px 30px 7px 7px;
-  background: var(--color-card-on-secondary-bg);
-  border: 1px solid var(--color-card-on-secondary-border);
+  background: var(--color-control-on-secondary-bg);
+  border: 1px solid var(--color-control-on-secondary-border);
   border-radius: 6px;
 
   font-size: 12px;
@@ -28,11 +28,7 @@
   @include mixins.focus-self-outline;
 
   &:focus-visible {
-    border-color: var(--color-opacity-03);
-
-    :global(html[data-theme='light']) & {
-      border-color: var(--color-tertiary-border);
-    }
+    border-color: var(--color-control-on-secondary-focus-border);
   }
 }
 
@@ -89,7 +85,7 @@
   @include mixins.focus-self-outline;
 
   &:focus-visible {
-    background: var(--color-item-on-tertiary-hover);
+    background: var(--color-control-on-secondary-hover);
   }
 
   &:before,
