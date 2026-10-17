@@ -40,11 +40,18 @@ function useColorTheme(): void {
           ? currentTheme
           : defaultTheme;
 
-    const colorCore =
-      currentTheme === 'custom' ? currentColorPrimary : themes[actualTheme as keyof typeof themes].primary;
-    const colorText = currentTheme === 'custom' ? currentColorText : themes[actualTheme as keyof typeof themes].text;
-    const colorPrimaryBg =
-      currentTheme === 'custom' ? currentColorBackground : themes[actualTheme as keyof typeof themes].background;
+    // Normalise to 6-digit hex, since opacity variants are built by appending an alpha suffix (e.g. '#fff' would break)
+    const toHex = (color: string): string => chroma(color).hex('rgb');
+
+    const colorCore = toHex(
+      currentTheme === 'custom' ? currentColorPrimary : themes[actualTheme as keyof typeof themes].primary
+    );
+    const colorText = toHex(
+      currentTheme === 'custom' ? currentColorText : themes[actualTheme as keyof typeof themes].text
+    );
+    const colorPrimaryBg = toHex(
+      currentTheme === 'custom' ? currentColorBackground : themes[actualTheme as keyof typeof themes].background
+    );
 
     const contrastLevel = currentContrast === 'high' ? 'high' : currentContrast === 'medium' ? 'medium' : 'default';
 

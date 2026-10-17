@@ -138,6 +138,10 @@ Components and hooks are barrel-exported from `components/index.js` and `hooks/i
 
 Use `clsx` for conditional class composition. Use CSS Modules for component-specific styles.
 
+## Colour Theme
+
+Theme colours are CSS custom properties generated at runtime by `useColorTheme`, and scaled by the contrast setting. In logged-in UI, use these tokens rather than hardcoded colours or raw `opacity` values, and prefer a token named for the role (e.g. `--color-button-on-primary-bg`) over a raw surface token.
+
 ## Context Menus
 
 Right-click/"more options" menus share one entry schema and renderer (`MenuEntry` in `components/MenuEntries/`), consumed by both `ContextMenu` (Radix context-menu, right-click) and `ActionMenu` (Radix dropdown-menu, click-triggered "..." button). An entry is `{ variant: 'action' | 'checkbox' | 'submenu' | 'divider' | 'sectionHeading', ... }` — see the header comment in `MenuEntries.jsx` for the per-variant fields. `ActionSort` also builds on the same dropdown-menu primitive and reuses `MenuEntries.module.scss`'s shared popup/item styling, but renders its own entries directly rather than going through `MenuEntry`, since a sort option isn't one of the variant shapes above.
