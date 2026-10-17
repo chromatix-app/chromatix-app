@@ -89,8 +89,8 @@
   .scrollableOuter:not(.scrollableDragging) & {
     &:hover,
     &[data-state='open'] {
-      background: var(--color-card-on-primary-bg);
-      border: 1px solid var(--color-card-on-primary-border);
+      background: var(--color-card-ghost-on-primary-hover);
+      border: 1px solid var(--color-card-ghost-on-primary-hover-border);
     }
   }
 
@@ -342,8 +342,8 @@
 }
 
 .entry.entryDragging {
-  background: var(--color-card-on-primary-bg) !important;
-  border: 1px solid var(--color-card-on-primary-border) !important;
+  background: var(--color-card-ghost-on-primary-hover) !important;
+  border: 1px solid var(--color-card-ghost-on-primary-hover-border) !important;
   cursor: grabbing;
 }
 

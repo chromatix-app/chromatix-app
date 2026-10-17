@@ -279,6 +279,12 @@ function useColorTheme(): void {
       '--color-card-on-secondary-bg': colorTertiaryBg,
       '--color-card-on-secondary-border': colorCardOnSecondaryBorder,
 
+      '--color-card-ghost-on-primary-hover': colorSecondaryBg,
+      '--color-card-ghost-on-primary-hover-border': colorSecondaryBorder,
+
+      '--color-card-ghost-on-secondary-hover': colorTertiaryBg,
+      '--color-card-ghost-on-secondary-hover-border': colorCardOnSecondaryBorder,
+
       '--color-opacity-0025': colorOpacity0025,
       '--color-opacity-005': colorOpacity005,
       '--color-opacity-0075': colorOpacity0075,

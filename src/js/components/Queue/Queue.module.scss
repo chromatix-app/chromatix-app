@@ -313,8 +313,8 @@ button.label {
 
   &:hover,
   &[data-state='open'] {
-    background: var(--color-card-on-secondary-bg);
-    border: 1px solid var(--color-card-on-secondary-border);
+    background: var(--color-card-ghost-on-secondary-hover);
+    border: 1px solid var(--color-card-ghost-on-secondary-hover-border);
   }
 
   a {
