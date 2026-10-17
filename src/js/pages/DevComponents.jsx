@@ -5,6 +5,8 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import config from 'js/_config/config';
+
 import {
   Button,
   ActionButton,
@@ -24,6 +26,44 @@ import {
   SettingsList,
   TitleHeading,
 } from 'js/components';
+import { getEnvironment, getLocalStorage, setLocalStorage } from 'js/utils';
+
+// ======================================================================
+// OPTIONS
+// ======================================================================
+
+const envData = getEnvironment();
+
+const environmentOptions = [
+  { value: 'actual', label: 'Actual environment' },
+  { value: 'web-mac', label: 'Web / macOS' },
+  { value: 'web-win', label: 'Web / Windows' },
+  { value: 'web-lin', label: 'Web / Linux' },
+  { value: 'electron-mac', label: 'Electron / macOS' },
+  { value: 'electron-win', label: 'Electron / Windows' },
+  { value: 'electron-lin', label: 'Electron / Linux' },
+];
+
+// presets use a theme key from themes.ts; custom entries set the custom theme colours (overwriting any saved ones)
+const devThemes = [
+  { label: 'Chromatix / Teal', theme: 'chromatix-teal' },
+  { label: 'White / Magenta', theme: 'white-magenta' },
+  { label: 'Custom / Blue + Dark', background: '#0d7eae', primary: '#ffa8cb', text: '#ffffff', tinting: 'auto' },
+  { label: 'Custom / Blue + Light', background: '#0d7dad', primary: '#ffa8cb', text: '#ffffff', tinting: 'auto' },
+  { label: 'Custom / Sepia', background: '#f4ecd8', primary: '#a0522d', text: '#3b2f2f', tinting: 'auto' },
+  { label: 'Custom / Forest', background: '#0f1f17', primary: '#7bd389', text: '#e8f5e9', tinting: 'auto' },
+];
+
+const devThemeToSession = ({ theme, background, primary, text, tinting }) =>
+  theme
+    ? { currentTheme: theme }
+    : {
+        currentTheme: 'custom',
+        currentColorBackground: background,
+        currentColorPrimary: primary,
+        currentColorText: text,
+        currentUiTinting: tinting,
+      };
 
 // ======================================================================
 // COMPONENT
@@ -44,6 +84,34 @@ const Component = () => {
   const devSettingsSelect = useSelector(({ sessionModel }) => sessionModel.devSettingsSelect);
 
   const themeKeyFocus = useSelector(({ sessionModel }) => sessionModel.themeKeyFocus);
+  const currentContrast = useSelector(({ sessionModel }) => sessionModel.currentContrast);
+
+  // the active dev theme is whichever one matches every session field it would set
+  const activeDevTheme = useSelector(
+    ({ sessionModel }) =>
+      devThemes.find((devTheme) =>
+        Object.entries(devThemeToSession(devTheme)).every(
+          ([key, value]) => String(sessionModel[key]).toLowerCase() === value.toLowerCase()
+        )
+      )?.label
+  );
+
+  const [environment] = useState(() => getLocalStorage(config.storageDevEnvironmentKey) || 'actual');
+  const [loggedInAttr, setLoggedInAttr] = useState(
+    () => document.documentElement.getAttribute('data-logged-in') === 'true'
+  );
+
+  // environment is read once at startup, so a reload is needed to apply a change
+  const handleEnvironmentChange = (value) => {
+    setLocalStorage(config.storageDevEnvironmentKey, value);
+    window.location.reload();
+  };
+
+  // only flips the html attribute (not the real login state), so it resets whenever login state changes
+  const handleLoggedInChange = (value) => {
+    document.documentElement.setAttribute('data-logged-in', value);
+    setLoggedInAttr(value);
+  };
 
   const [view, setView] = useState('grid');
   const [tabView, setTabView] = useState('grid');
@@ -68,6 +136,68 @@ const Component = () => {
     <>
       <TitleHeading title="Components" />
       <PageText fontSize="small" wysiwyg={true}>
+        {/* ENVIRONMENT */}
+
+        <div>
+          <h2>Environment</h2>
+          <FormSelect
+            value={envData.isRealElectron ? 'actual' : environment}
+            onChange={handleEnvironmentChange}
+            options={environmentOptions}
+            disabled={envData.isRealElectron}
+          />
+          <p>
+            Electron: <strong>{envData.isElectron ? 'Yes' : 'No'}</strong>, Platform:{' '}
+            <strong>{envData.electronPlatformName || 'Web'}</strong>, OS: <strong>{envData.osName}</strong>
+            {envData.isRealElectron ? ' (simulation not available in the Electron app)' : ''}
+            {!envData.isRealElectron && environment !== 'actual' ? ' (simulated)' : ''}
+          </p>
+          <div className="mt-35"></div>
+          <SettingsList
+            padding={false}
+            menuItems={[
+              {
+                type: 'checkbox',
+                key: 'devLoggedInAttr',
+                label: 'Display as logged in',
+                description: 'Only toggles the html attribute, so resets whenever the real login state changes.',
+                state: loggedInAttr,
+                onChange: handleLoggedInChange,
+              },
+              {
+                type: 'checkbox',
+                key: 'themeKeyFocus',
+                label: 'Highlight focused elements',
+                description: 'Displays a visual highlight on focused elements when using keyboard navigation.',
+                state: themeKeyFocus,
+              },
+              {
+                type: 'radio',
+                key: 'currentContrast',
+                label: 'Contrast',
+                state: currentContrast,
+                options: [
+                  { label: 'Default', value: 'default' },
+                  { label: 'Medium', value: 'medium' },
+                  { label: 'High', value: 'high' },
+                ],
+              },
+              {
+                type: 'radio',
+                key: 'devTheme',
+                label: 'Theme',
+                description: 'Edit the devThemes list at the top of this file to change these.',
+                state: activeDevTheme,
+                options: devThemes.map(({ label }) => ({ label, value: label })),
+                onChange: (label) =>
+                  dispatch.sessionModel.setSessionState(
+                    devThemeToSession(devThemes.find((devTheme) => devTheme.label === label))
+                  ),
+              },
+            ]}
+          />
+        </div>
+
         {/* ACTIONS - STANDARD */}
 
         <div>
@@ -400,12 +530,6 @@ const Component = () => {
               },
               {
                 type: 'checkbox',
-                key: 'themeKeyFocus',
-                label: 'Highlight focused elements',
-                state: themeKeyFocus,
-              },
-              {
-                type: 'checkbox',
                 key: 'devSettingsCheck1',
                 label: 'Checkbox item lorem ipsum dolor sit amet consectetur adipiscing elit',
                 state: devSettingsCheck1,
@@ -676,19 +800,6 @@ const Component = () => {
           <div className="devButtons">
             <Button wrap={false} size="tab">
               Tab
-            </Button>
-            <Button
-              wrap={false}
-              size="tab"
-              onClick={() =>
-                // toggle the data-logged-in attribute on the html element between true and false
-                document.documentElement.setAttribute(
-                  'data-logged-in',
-                  document.documentElement.getAttribute('data-logged-in') === 'true' ? 'false' : 'true'
-                )
-              }
-            >
-              Toggle Logged In
             </Button>
           </div>
 

@@ -123,6 +123,8 @@ Routes are defined in `js/_config/routes.ts` as arrays of route objects:
 
 Route components are resolved by string name and lazy-loaded via `BrowserRouteSwitch.jsx`.
 
+`/dev/*` routes (component, icon, modal, settings and tag previews) are only added outside production. `/dev/components` also has quick toggles for environment, logged-in display, focus highlighting, contrast and theme, for checking the UI across variations.
+
 ## Components
 
 Each component lives in its own folder under `src/js/components/` with a matching `.module.scss` file for styles:
@@ -156,7 +158,7 @@ The `Action*` components are the toolbar controls shown above list/grid views. T
 
 ## Form Fields
 
-`FormInput` and `FormSelect` are standalone, size-matched text-input and select-field components (plain `value`/`onChange`/`options`/`disabled` props, no store dependency) — use them anywhere a form field is needed. `FormInput` also takes a `color` prop (`primary` default, `secondary`) to match the background it's placed on — e.g. modals pass `color="secondary"` since they sit on a secondary surface, while `SettingsList` relies on the `primary` default since it only ever renders on the primary main-content background. `FormSelect` has no `color` prop yet, since nothing currently renders it outside a primary-background context. `SettingsList`'s `text` and `select` entry types are thin wrappers around them that additionally dispatch to `sessionModel` by `key`. `FormTheme` is a separate, larger Radix Select styled specifically for theme swatches and isn't a general-purpose select.
+`FormInput` and `FormSelect` are standalone, size-matched text-input and select-field components (plain `value`/`onChange`/`options`/`disabled` props, no store dependency) — use them anywhere a form field is needed. `FormInput` also takes a `color` prop (`primary` default, `secondary`) to match the background it's placed on — e.g. modals pass `color="secondary"` since they sit on a secondary surface, while `SettingsList` relies on the `primary` default since it only ever renders on the primary main-content background. `FormSelect` has no `color` prop yet, since nothing currently renders it outside a primary-background context. `SettingsList`'s `text` and `select` entry types are thin wrappers around them that additionally dispatch to `sessionModel` by `key`. A `checkbox` or `radio` entry can pass `onChange(value)` to handle the change itself instead of dispatching (e.g. dev-only toggles that aren't session state). `FormTheme` is a separate, larger Radix Select styled specifically for theme swatches and isn't a general-purpose select.
 
 `FormInput`'s `error` prop only displays a message (announced to screen readers) — it doesn't stop the value being saved. `SettingsList` text entries write every keystroke to `sessionModel`, so any code that reads a validated setting must re-run its validator (e.g. `validateHttpsUrl`) and use the trimmed value, rather than trusting the stored string.
 
@@ -240,6 +242,7 @@ Set via `import.meta.env` (Vite convention, prefixed `VITE_`):
 - Use `clsx` for all conditional class name composition (not string concatenation)
 - Use CSS Modules for component-scoped styles; import as `style` and reference as `style.className`
 - Use `getEnvironment()` from `js/utils` as the single source of truth for environment, browser, OS, and Electron info — do not access `import.meta.env` or `navigator` directly for these, except plain `import.meta.env.VITE_*` reads used only to gate build-time config (e.g. `routes.ts`'s `isProduction`), which are fine directly
+- Outside production, the "Environment" select on `/dev/components` can simulate another environment (e.g. Electron on Windows) by overriding the display fields `getEnvironment()` returns. Use `isElectron` for anything visual; use `isRealElectron` for behaviour that genuinely needs the Electron runtime (e.g. direct IP connections, `chromatix://` local files), so a simulated environment can't trigger it
 - Use `getLocalStorage` / `setLocalStorage` from `js/utils` for all localStorage access
 - Use `safeEncodeURIComponent` / `safeDecodeURIComponent` from `js/utils` (not the native globals) for values embedded in React Router route paths/params (e.g. genre, tag, collection IDs) — their placeholder scheme exists specifically to survive React Router's own decoding, and only makes sense paired on both ends of that round-trip. For values that never pass through React Router (e.g. a `chromatix://` protocol URL read directly by Electron), use the native `encodeURIComponent` / `decodeURIComponent`
 - All top-level exports in `js/hooks/` and `js/utils/` must have a clear, succinct JSDoc comment. Keep descriptions brief and factual — one sentence for simple functions, a few lines for complex ones. Include `@param` and `@returns` tags only when they add meaningful clarity beyond what the types convey

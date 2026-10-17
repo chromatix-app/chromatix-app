@@ -63,7 +63,7 @@ const useTagImage = (title: string | null | undefined, hasIcon: boolean): [strin
       tagImageCustomType === 'local' &&
       tagImageCustomPath &&
       !validateLocalPath(tagImageCustomPath) &&
-      envData.isElectron
+      envData.isRealElectron
     ) {
       tagImageSrc = `chromatix://local/${encodeURIComponent(tagImageCustomPath.trim() + slugifyTagName(title as string) + '.' + tagImageCustomExtension)}`;
     }

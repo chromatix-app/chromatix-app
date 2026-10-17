@@ -539,7 +539,7 @@ export const getBestConnection = ({ server }) => {
 
   // Electron only - bypasses plex.direct DNS, which DNS rebinding protection can block
   const getDirectUris = (scheme) =>
-    envData.isElectron
+    envData.isRealElectron
       ? local.map(({ address, port, IPv6 }) => `${scheme}://${IPv6 ? `[${address}]` : address}:${port}`)
       : [];
 

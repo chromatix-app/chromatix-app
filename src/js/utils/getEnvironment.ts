@@ -3,8 +3,11 @@ import advancedFormat from 'dayjs/plugin/advancedFormat';
 
 dayjs.extend(advancedFormat);
 
+import config from 'js/_config/config';
+
 import getBrowserName from './getBrowserName';
 import getElectronDetails from './getElectronDetails';
+import getLocalStorage from './getLocalStorage';
 import getOperatingSystemName from './getOperatingSystemName';
 
 interface EnvironmentData {
@@ -21,6 +24,7 @@ interface EnvironmentData {
   electronPlatformName: string | null;
   electronVersion: string | null;
   isElectron: boolean;
+  isRealElectron: boolean;
   osName: string;
   webBuildDate: string | null;
   webBuildTime: string | null;
@@ -58,6 +62,7 @@ const getEnvironment = (): EnvironmentData => {
     browserName: '',
     deviceId: 'Chromatix',
     deviceName: '',
+    isRealElectron: isElectron,
     osName: '',
     webBuildDate: webBuildDate,
     webBuildTime: webBuildTime,
@@ -79,6 +84,9 @@ const getEnvironment = (): EnvironmentData => {
 
   envData.deviceName = 'Chromatix for ' + envData.appPlatformName;
 
+  // Dev only - display the app as if running in another environment
+  applySimulatedEnvironment(envData);
+
   // // Debug logging
   // if (isLocal) {
   //   const sortedKeys = Object.keys(envData).sort();
@@ -94,6 +102,35 @@ const getEnvironment = (): EnvironmentData => {
 
   // Return
   return envData;
+};
+
+const simulatedOsNames = {
+  mac: 'macOS',
+  win: 'Windows',
+  lin: 'Linux',
+} as const;
+
+/**
+ * Overrides display-related fields with the environment chosen on the dev components page (e.g. 'electron-win').
+ * Browser and non-production only. Server-facing fields (appPlatformName, deviceName) and isRealElectron are left
+ * untouched, so API requests and Electron-only behaviour are unaffected.
+ */
+
+const applySimulatedEnvironment = (envData: EnvironmentData): void => {
+  if (import.meta.env.VITE_ENV === 'production' || envData.isRealElectron) return;
+
+  const [platform, platformId] = getLocalStorage(config.storageDevEnvironmentKey)?.split('-') ?? [];
+  const osName = simulatedOsNames[platformId as keyof typeof simulatedOsNames];
+  if ((platform !== 'web' && platform !== 'electron') || !osName) return;
+
+  const isElectron = platform === 'electron';
+
+  envData.isElectron = isElectron;
+  envData.osName = osName;
+  envData.browserName = isElectron ? 'Chromatix' : envData.browserName;
+  envData.electronPlatformId = isElectron ? platformId : null;
+  envData.electronPlatformName = isElectron ? osName : null;
+  envData.electronVersion = isElectron ? '0.0.0-simulated' : null;
 };
 
 const capitalise = (string?: string): string | null => {

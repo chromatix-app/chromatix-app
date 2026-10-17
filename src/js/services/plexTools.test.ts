@@ -8,7 +8,7 @@ import { getBestConnection } from './plexTools';
 // MOCKS
 // ======================================================================
 
-const env = vi.hoisted(() => ({ isElectron: true }));
+const env = vi.hoisted(() => ({ isRealElectron: true }));
 
 vi.mock('axios', () => ({ default: { head: vi.fn() } }));
 
@@ -83,7 +83,7 @@ describe('Testing "getBestConnection" function', () => {
     vi.useFakeTimers();
     vi.spyOn(console, 'log').mockImplementation(() => {});
     headMock.mockReset();
-    env.isElectron = true;
+    env.isRealElectron = true;
   });
 
   afterEach(() => {
@@ -131,7 +131,7 @@ describe('Testing "getBestConnection" function', () => {
   });
 
   test('Defers a Plex-listed local http address until secure local attempts have failed', async () => {
-    env.isElectron = false;
+    env.isRealElectron = false;
     const result = await resolveWith([local.uri, localHttp.uri], [localHttp, local], { [local.uri]: 1000 });
     expect(result).toEqual({ value: local.uri });
     expect(requestedUris()).not.toContain(localHttp.uri);
@@ -150,14 +150,14 @@ describe('Testing "getBestConnection" function', () => {
   });
 
   test('An http-only remote group cannot beat a slightly slow local https connection', async () => {
-    env.isElectron = false;
+    env.isRealElectron = false;
     const result = await resolveWith([local.uri, remoteHttp.uri], [local, remoteHttp], { [local.uri]: 100 });
     expect(result).toEqual({ value: local.uri });
     expect(requestedUris()).not.toContain(remoteHttp.uri);
   });
 
   test('Uses a Plex-listed http address once secure attempts have failed', async () => {
-    env.isElectron = false;
+    env.isRealElectron = false;
     expect(await resolveWith([localHttp.uri], [local, localHttp])).toEqual({ value: localHttp.uri });
   });
 
@@ -167,7 +167,7 @@ describe('Testing "getBestConnection" function', () => {
   });
 
   test('Never tries direct IP connections outside Electron', async () => {
-    env.isElectron = false;
+    env.isRealElectron = false;
     expect(await resolveWith([directHttps, directHttp, relay.uri])).toEqual({ value: relay.uri });
     expect(requestedUris()).not.toContain(directHttps);
     expect(requestedUris()).not.toContain(directHttp);

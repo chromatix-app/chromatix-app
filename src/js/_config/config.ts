@@ -3,6 +3,7 @@ export const config = {
   globalStore: true,
 
   // local storage keys
+  storageDevEnvironmentKey: 'chromatix-dev-environment',
   storageJellyServerKey: 'chromatix-jelly-server',
   storageJellyUserKey: 'chromatix-jelly-user',
   storagePersistentKey: 'chromatix-persist-v1',
