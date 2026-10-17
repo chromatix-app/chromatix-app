@@ -243,6 +243,9 @@ function useColorTheme(): void {
 
     const colors: Record<string, string | number> = {
       '--color-core-main': colorCore,
+      '--color-core-on-primary-text': colorPrimaryBg, // Same as primary background
+      '--color-core-on-secondary-text': colorSecondaryBg, // Same as secondary background
+
       '--color-text': colorText,
       '--color-blackout': colorBlackout,
 

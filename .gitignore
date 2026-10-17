@@ -24,3 +24,6 @@ dist/
 
 # Local-only symlinks
 public/tags/
+
+# Local-only docs
+docs/

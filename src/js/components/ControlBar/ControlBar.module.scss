@@ -218,10 +218,10 @@ button.pause {
   margin: 0 6px;
   background: var(--color-core-main) !important;
   border: 1px solid var(--color-opacity-01);
-  color: var(--color-secondary-bg);
+  color: var(--color-core-on-secondary-text);
 
   .fullPageMode & {
-    color: var(--color-primary-bg);
+    color: var(--color-core-on-primary-text);
   }
 
   &:disabled {

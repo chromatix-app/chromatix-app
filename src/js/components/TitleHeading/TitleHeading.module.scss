@@ -96,7 +96,7 @@
   background: var(--color-core-main);
   background: linear-gradient(to bottom, var(--color-core-main) 0%, var(--color-primary-bg) 400%);
   outline: none;
-  color: var(--color-primary-bg);
+  color: var(--color-core-on-primary-text);
 
   :global(html[data-theme='light']) & {
     background: linear-gradient(to top, var(--color-core-main) 0%, var(--color-primary-bg) 400%);
@@ -266,7 +266,7 @@
   font-size: 12px;
   line-height: 16px;
   font-weight: bold;
-  color: var(--color-primary-bg);
+  color: var(--color-core-on-primary-text);
 
   @include mixins.focus-self-outline;
 }

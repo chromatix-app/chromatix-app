@@ -128,7 +128,7 @@
   &.thumbWithIcon {
     background: var(--color-core-main);
     background: linear-gradient(to bottom, var(--color-core-main) 0%, var(--color-primary-bg) 400%);
-    color: var(--color-primary-bg);
+    color: var(--color-core-on-primary-text);
 
     :global(html[data-theme='light']) & {
       background: linear-gradient(to top, var(--color-core-main) 0%, var(--color-primary-bg) 400%);
@@ -192,7 +192,7 @@
   box-shadow: var(--shadow-md);
   transition: all ease-in-out 0.25s;
   cursor: pointer;
-  color: var(--color-primary-bg);
+  color: var(--color-core-on-primary-text);
 
   .card:hover &:hover,
   .card.cardCurrent &:hover {
