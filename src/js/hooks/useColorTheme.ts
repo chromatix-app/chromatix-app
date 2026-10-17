@@ -182,7 +182,6 @@ function useColorTheme(): void {
 
     const colorOpacity0025 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.025));
     const colorOpacity005 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.05));
-    const colorOpacity0075 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.075));
     const colorOpacity01 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.1));
     const colorOpacity015 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.15));
     const colorOpacity02 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.2));
@@ -192,7 +191,6 @@ function useColorTheme(): void {
     const colorOpacity05 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.5));
     const colorOpacity06 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.6));
     const colorOpacity07 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.7));
-    const colorOpacity08 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.8));
 
     const opacity02 = decimalMultiplier(opacityMultiplier, 0.2);
     const opacity025 = decimalMultiplier(opacityMultiplier, 0.25);
@@ -200,8 +198,6 @@ function useColorTheme(): void {
     const opacity04 = decimalMultiplier(opacityMultiplier, 0.4);
     const opacity05 = decimalMultiplier(opacityMultiplier, 0.5);
     const opacity06 = decimalMultiplier(opacityMultiplier, 0.6);
-    const opacity07 = decimalMultiplier(opacityMultiplier, 0.7);
-    const opacity08 = decimalMultiplier(opacityMultiplier, 0.8);
 
     const shadowLg = isActualLightTheme ? '0 4px 20px rgba(0, 0, 0, 0.1)' : '0 2px 20px rgba(0, 0, 0, 0.35)';
     const shadowMd = isActualLightTheme ? '0 4px 8px rgba(0, 0, 0, 0.1)' : '0 2px 10px rgba(0, 0, 0, 0.35)';
@@ -306,7 +302,6 @@ function useColorTheme(): void {
 
       '--color-opacity-0025': colorOpacity0025,
       '--color-opacity-005': colorOpacity005,
-      '--color-opacity-0075': colorOpacity0075,
       '--color-opacity-01': colorOpacity01,
       '--color-opacity-015': colorOpacity015,
       '--color-opacity-02': colorOpacity02,
@@ -316,7 +311,6 @@ function useColorTheme(): void {
       '--color-opacity-05': colorOpacity05,
       '--color-opacity-06': colorOpacity06,
       '--color-opacity-07': colorOpacity07,
-      '--color-opacity-08': colorOpacity08,
 
       '--opacity-02': opacity02,
       '--opacity-025': opacity025,
@@ -324,8 +318,6 @@ function useColorTheme(): void {
       '--opacity-04': opacity04,
       '--opacity-05': opacity05,
       '--opacity-06': opacity06,
-      '--opacity-07': opacity07,
-      '--opacity-08': opacity08,
 
       '--shadow-lg': shadowLg,
       '--shadow-md': shadowMd,
