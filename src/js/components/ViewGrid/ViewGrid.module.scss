@@ -181,12 +181,17 @@
   height: 40px;
   padding: 10px 8px 10px 12px;
   background: var(--color-core-main);
-  border: 1px solid var(--color-opacity-01);
+  border: 1px solid var(--color-core-border);
   border-radius: 50%;
   box-shadow: var(--shadow-md);
   transition: all ease-in-out 0.25s;
   cursor: pointer;
   color: var(--color-core-on-primary-text);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--color-core-hover);
+  }
 
   .card:hover &:hover,
   .card.cardCurrent &:hover {

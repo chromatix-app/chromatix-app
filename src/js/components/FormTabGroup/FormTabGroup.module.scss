@@ -44,10 +44,20 @@
   font-weight: 400;
   color: var(--color-button-on-primary-text);
 
+  &:not(:disabled):hover,
+  &:not(:disabled):focus-visible {
+    background-color: var(--color-button-on-primary-hover);
+  }
+
   &Active {
     background-color: var(--color-button-mono-bg);
     border: 1px solid var(--color-button-mono-border);
     color: var(--color-button-mono-text);
+
+    &:not(:disabled):hover,
+    &:not(:disabled):focus-visible {
+      background-color: var(--color-button-mono-hover);
+    }
   }
 
   &:disabled {

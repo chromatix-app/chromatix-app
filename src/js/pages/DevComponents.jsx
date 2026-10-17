@@ -874,7 +874,7 @@ const Component = () => {
               Outline On Primary
             </Button>
             <Button wrap={false} size="tiny" color="outlineOnPrimary" loading>
-              Outline On Primary Loading
+              Outline Loading
             </Button>
           </div>
 
@@ -883,7 +883,7 @@ const Component = () => {
               Outline On Secondary
             </Button>
             <Button wrap={false} size="tiny" color="outlineOnSecondary" loading>
-              Outline On Secondary Loading
+              Outline Loading
             </Button>
           </div>
         </div>

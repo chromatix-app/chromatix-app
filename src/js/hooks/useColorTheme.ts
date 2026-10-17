@@ -142,7 +142,7 @@ function useColorTheme(): void {
         .darken(0.9 * chromaMultiplierHigh)
         .hex();
       colorTertiaryHover = chroma(colorPrimaryBg)
-        .darken(0.9 * chromaMultiplierHigh)
+        .darken(0.8 * chromaMultiplierHigh)
         .hex();
 
       colorCardOnPrimaryBg = chroma(colorPrimaryBg)
@@ -192,7 +192,7 @@ function useColorTheme(): void {
         .brighten(1.2 * chromaMultiplierHigh)
         .hex();
       colorTertiaryHover = chroma(colorPrimaryBg)
-        .brighten(1.25 * chromaMultiplierHigh)
+        .brighten(1.1 * chromaMultiplierHigh)
         .hex();
 
       colorCardOnPrimaryBg = chroma(colorPrimaryBg)
@@ -213,6 +213,15 @@ function useColorTheme(): void {
         .darken(0.3 * chromaMultiplierHigh)
         .hex();
     }
+
+    // Core border moves away from the background: darker on light themes, lighter on dark themes
+    const colorCoreBorder = isActualLightTheme
+      ? chroma(colorCore)
+          .darken(0.25 * chromaMultiplierLow)
+          .hex()
+      : chroma(colorCore)
+          .brighten(0.25 * chromaMultiplierLow)
+          .hex();
 
     const colorOpacity0025 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.025));
     const colorOpacity005 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.05));
@@ -243,6 +252,8 @@ function useColorTheme(): void {
 
     const colors: Record<string, string | number> = {
       '--color-core-main': colorCore,
+      '--color-core-border': colorCoreBorder,
+      '--color-core-hover': colorCoreBorder, // Same as core border
       '--color-core-on-primary-text': colorPrimaryBg, // Same as primary background
       '--color-core-on-secondary-text': colorSecondaryBg, // Same as secondary background
 
@@ -253,20 +264,15 @@ function useColorTheme(): void {
 
       '--color-secondary-bg': colorSecondaryBg,
       '--color-secondary-border': colorSecondaryBorder,
+      '--color-secondary-release-bg': colorSecondaryBorder, // Same as secondary border
 
       '--color-tertiary-bg': colorTertiaryBg,
       '--color-tertiary-border': colorTertiaryBorder,
 
-      '--color-item-on-primary-hover': colorSecondaryBg, // Same as secondary background
-      '--color-item-on-secondary-hover': colorSecondaryHover,
-      '--color-item-on-secondary-active': colorSecondaryActive,
-      '--color-item-on-tertiary-hover': colorTertiaryHover,
-
-      '--color-card-on-primary-bg': colorCardOnPrimaryBg,
-      '--color-card-on-primary-border': colorCardOnPrimaryBorder,
-
-      '--color-card-on-secondary-bg': colorCardOnSecondaryBg,
-      '--color-card-on-secondary-border': colorCardOnSecondaryBorder,
+      '--color-button-mono-bg': colorButtonMonoBg,
+      '--color-button-mono-border': colorText, // Same as text
+      '--color-button-mono-hover': colorText, // Same as text (matches mono border)
+      '--color-button-mono-text': colorPrimaryBg, // Same as primary background
 
       '--color-button-on-primary-bg': colorCardOnPrimaryBg, // Same as card on primary background
       '--color-button-on-primary-border': colorCardOnPrimaryBorder, // Same as card on primary border
@@ -275,13 +281,21 @@ function useColorTheme(): void {
 
       '--color-button-on-secondary-bg': colorTertiaryBg, // Same as tertiary background
       '--color-button-on-secondary-border': colorTertiaryBorder, // Same as tertiary border
+      '--color-button-on-secondary-hover': colorTertiaryHover, // Same as item on tertiary hover
       '--color-button-on-secondary-text': colorText, // Same as text
 
-      '--color-button-mono-bg': colorButtonMonoBg,
-      '--color-button-mono-border': colorText, // Same as text
-      '--color-button-mono-text': colorPrimaryBg, // Same as primary background
+      '--color-item-on-primary-hover': colorSecondaryBg, // Same as secondary background
+      '--color-item-on-secondary-hover': colorSecondaryHover,
+      '--color-item-on-secondary-active': colorSecondaryActive,
+      '--color-item-on-tertiary-hover': colorTertiaryHover,
 
-      '--color-release-on-secondary-bg': colorSecondaryBorder, // Same as secondary border
+      '--color-card-on-primary-bg': colorCardOnPrimaryBg,
+      '--color-card-on-primary-border': colorCardOnPrimaryBorder,
+      '--color-card-on-primary-hover': colorTertiaryBg, // Same as tertiary background
+      '--color-card-on-primary-hover-border': colorTertiaryBorder, // Same as tertiary border
+
+      '--color-card-on-secondary-bg': colorCardOnSecondaryBg,
+      '--color-card-on-secondary-border': colorCardOnSecondaryBorder,
 
       '--color-opacity-0025': colorOpacity0025,
       '--color-opacity-005': colorOpacity005,

@@ -217,11 +217,16 @@ button.play,
 button.pause {
   margin: 0 6px;
   background: var(--color-core-main) !important;
-  border: 1px solid var(--color-opacity-01);
+  border: 1px solid var(--color-core-border);
   color: var(--color-core-on-secondary-text);
 
   .fullPageMode & {
     color: var(--color-core-on-primary-text);
+  }
+
+  &:not(:disabled):hover,
+  &:not(:disabled):focus-visible {
+    background: var(--color-core-hover) !important;
   }
 
   &:disabled {
