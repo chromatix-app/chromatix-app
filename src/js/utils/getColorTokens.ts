@@ -180,6 +180,30 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
   const flattenText = (background: string, opacity: number): string =>
     chroma.mix(background, colorText, decimalMultiplier(opacityMultiplier, opacity), 'rgb').hex();
 
+  // The text colour mixed over a background just far enough to reach a target contrast. Keeps `current` if it already
+  // reaches the target, and falls back to the text colour itself when the colours can't reach it
+  const textAtContrast = (background: string, target: number, current: string): string => {
+    if (chroma.contrast(current, background) >= target) return current;
+    if (chroma.contrast(colorText, background) <= target) return colorText;
+
+    // Binary search for the smallest mix that reaches the target
+    const mix = (amount: number): string => chroma.mix(background, colorText, amount, 'rgb').hex();
+    let low = 0;
+    let high = 1;
+    for (let step = 0; step < 12; step++) {
+      const middle = (low + high) / 2;
+      if (chroma.contrast(mix(middle), background) >= target) high = middle;
+      else low = middle;
+    }
+    return mix(high);
+  };
+
+  // Focus borders start as the text colour at 30% over their background, strengthened where needed to reach the WCAG
+  // minimum for UI parts (3), raised with the contrast setting
+  const focusContrast = contrastLevel === 'high' ? 4 : contrastLevel === 'medium' ? 3.5 : 3;
+  const focusBorder = (background: string): string =>
+    textAtContrast(background, focusContrast, flattenText(background, 0.3));
+
   // Shifts a colour towards another's lightness: darker if it's lighter than the target, otherwise lighter
   const shiftTowards = (color: string, amount: number, target: string): string =>
     chroma(color).luminance() > chroma(target).luminance()
@@ -202,17 +226,13 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
   const colorCardGhostOnSecondaryHoverBorder = isActualLightTheme ? colorSecondaryBorder : colorTertiaryBorder;
 
   // Controls on secondary (the sidebar search, release banner and user menu) share one look, dropping back to the
-  // primary background on light themes. The dark focus border is the text colour at 30% over the tertiary
-  // background, flattened to a solid hex. Fields on secondary (e.g. modal inputs) use the same values
+  // primary background on light themes. Fields on secondary (e.g. modal inputs) use the same values
   const colorControlOnSecondaryBg = isActualLightTheme ? colorPrimaryBg : colorTertiaryBg;
   const colorControlOnSecondaryBorder = isActualLightTheme ? colorSecondaryBorder : colorTertiaryBorder;
   const colorControlOnSecondaryHover = isActualLightTheme ? colorSecondaryBg : colorTertiaryHover;
-  const colorControlOnSecondaryFocusBorder = isActualLightTheme
-    ? colorTertiaryBorder
-    : flattenText(colorTertiaryBg, 0.3);
+  const colorControlOnSecondaryFocusBorder = focusBorder(colorControlOnSecondaryBg);
 
-  // The field focus border on primary is the text colour at 30% over the field background
-  const colorFieldOnPrimaryFocusBorder = flattenText(colorSecondaryBg, 0.3);
+  const colorFieldOnPrimaryFocusBorder = focusBorder(colorSecondaryBg);
 
   // Unchecked checkbox and radio borders are the text colour at 50% over the primary background
   const colorCheckboxOnPrimaryBorder = flattenText(colorPrimaryBg, 0.5);

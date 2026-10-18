@@ -78,9 +78,23 @@ describe('Testing "getColorTokens" function', () => {
     expect(tokens['--color-checkbox-on-primary-border']).toMatch(/^#[0-9a-f]{6}$/);
   });
 
-  test('Field focus border on primary is the text colour at 30% over the field background', () => {
-    const { tokens } = getColorTokens(dark);
-    const expected = chroma.mix(String(tokens['--color-field-on-primary-bg']), '#ffffff', 0.3, 'rgb').hex();
-    expect(tokens['--color-field-on-primary-focus-border']).toBe(expected);
+  test('Field focus borders reach the focus contrast for each contrast level', () => {
+    const focus = (contrast: ColorTokensInput['contrast'], surface: string) => {
+      const { tokens } = getColorTokens({ ...light, contrast });
+      return chroma.contrast(
+        String(tokens[`--color-field-on-${surface}-focus-border`]),
+        String(tokens[`--color-field-on-${surface}-bg`])
+      );
+    };
+    for (const surface of ['primary', 'secondary']) {
+      expect(focus('default', surface)).toBeGreaterThanOrEqual(3);
+      expect(focus('medium', surface)).toBeGreaterThanOrEqual(3.5);
+      expect(focus('high', surface)).toBeGreaterThanOrEqual(4);
+    }
+  });
+
+  test('Field focus border falls back to the text colour when the target is impossible', () => {
+    const { tokens } = getColorTokens({ ...dark, background: '#2a2a2a', text: '#6a6a6a' });
+    expect(tokens['--color-field-on-primary-focus-border']).toBe('#6a6a6a');
   });
 });

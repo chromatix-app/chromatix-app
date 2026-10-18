@@ -49,6 +49,9 @@ const changeThreshold = 0.005;
 
 const contrasts: ColorContrast[] = ['default', 'medium', 'high'];
 
+// Focus border targets per contrast level, matching getColorTokens
+const focusTargets: Record<ColorContrast, number> = { default: 3, medium: 3.5, high: 4 };
+
 // Below this, a theme's own text on its background already fails, so the UI can't fully fix it
 const limitedThemeRatio = 4.5;
 
@@ -96,8 +99,12 @@ const bands: Record<Kind, [number, number] | null> = {
   disabled: null,
 };
 
-const rate = (kind: Kind, ratio: number): Rating => {
-  const band = bands[kind];
+// Focus borders are rated against their contrast level's target, with OK up to 1 below it
+const bandFor = (kind: Kind, contrast: ColorContrast): [number, number] | null =>
+  kind === 'focus' ? [focusTargets[contrast], focusTargets[contrast] - 1] : bands[kind];
+
+const rate = (kind: Kind, ratio: number, contrast: ColorContrast): Rating => {
+  const band = bandFor(kind, contrast);
   if (!band) return 'none';
   return ratio >= band[0] ? 'good' : ratio >= band[1] ? 'ok' : 'poor';
 };
@@ -294,7 +301,7 @@ const renderGroup = (group: Group, contrast: ColorContrast, ratios: Record<strin
           ratios[key] = ratio;
 
           // The comparison script fills the delta and marks changed cells
-          return `<td class="${rate(group.kind, ratio)}" data-key="${escape(key)}" data-ratio="${ratio}" data-kind="${group.kind}">${swatch(group.kind, fg, bg)}<span class="ratio">${ratio.toFixed(2)}</span><span class="delta"></span></td>`;
+          return `<td class="${rate(group.kind, ratio, contrast)}" data-key="${escape(key)}" data-ratio="${ratio}" data-kind="${group.kind}">${swatch(group.kind, fg, bg)}<span class="ratio">${ratio.toFixed(2)}</span><span class="delta"></span></td>`;
         })
         .join('');
 
@@ -416,7 +423,7 @@ const renderReport = (panels: string, snapshots: Partial<Record<SnapshotName, Sn
       <thead><tr><th>Pair</th><th>Good</th><th>OK</th><th>Poor</th><th>Basis</th></tr></thead>
       <tbody>
         ${legendRow('text', 'Text', 'WCAG: 4.5 for normal text, 3 for large text')}
-        ${legendRow('focus', 'Focus borders', 'WCAG: 3 for UI parts')}
+        <tr><th scope="row">Focus borders</th><td class="good">The target and above</td><td class="ok">Up to 1 below</td><td class="poor">More than 1 below</td><td>Targets of ${focusTargets.default}, ${focusTargets.medium} and ${focusTargets.high} by contrast level; WCAG asks for 3 for UI parts</td></tr>
         ${legendRow('hover', 'Hover', 'Suggestion, no WCAG target')}
         ${legendRow('border', 'Borders', 'Suggestion, no WCAG target; below 1.05 is invisible')}
         <tr><th scope="row">Disabled</th><td colspan="3">Not rated</td><td>Compare enabled against disabled</td></tr>
@@ -434,10 +441,11 @@ const renderReport = (panels: string, snapshots: Partial<Record<SnapshotName, Sn
   const snapshots = ${snapshotJson};
   const changeThreshold = ${changeThreshold};
   const bands = ${JSON.stringify(bands)};
+  const focusTargets = ${JSON.stringify(focusTargets)};
 
   // Matches the report's good, OK and poor ratings, so each previous value can show its own rating
-  const rate = (kind, ratio) => {
-    const band = bands[kind];
+  const rate = (kind, ratio, contrast) => {
+    const band = kind === 'focus' ? [focusTargets[contrast], focusTargets[contrast] - 1] : bands[kind];
     if (!band) return 'none';
     return ratio >= band[0] ? 'good' : ratio >= band[1] ? 'ok' : 'poor';
   };
@@ -464,7 +472,7 @@ const renderReport = (panels: string, snapshots: Partial<Record<SnapshotName, Sn
       // A pill with the previous value, coloured by its own rating. Ratios missing from the snapshot (e.g. a dev
       // theme added since) are marked new rather than unchanged
       const delta = cell.querySelector('.delta');
-      delta.className = 'delta' + (hasChanged ? ' ' + rate(cell.dataset.kind, previous) : snapshot && previous === undefined ? ' none' : '');
+      delta.className = 'delta' + (hasChanged ? ' ' + rate(cell.dataset.kind, previous, cell.closest('.panel').id) : snapshot && previous === undefined ? ' none' : '');
       delta.textContent = hasChanged
         ? (ratio > previous ? '↑' : '↓') + ' from ' + previous.toFixed(2)
         : snapshot && previous === undefined
@@ -532,25 +540,48 @@ describe('Colour contrast audit', () => {
 // GUARDRAILS
 // ======================================================================
 
-// Minimum ratios every dev theme must meet at each contrast level, skipping themes limited by their own colours
-const guardrails: { name: string; min: number; fg: string; bg: string }[] = [
+// Minimum ratios every dev theme must meet at each contrast level, skipping themes limited by their own colours. `min`
+// can depend on the tokens and contrast level, e.g. when a target can't be reached with the theme's colours
+type GuardrailMin = number | ((t: Record<string, string>, contrast: ColorContrast) => number);
+
+// A focus border reaches its target, or matches the text colour when the field background is too close to it
+const focusMin =
+  (surface: string): GuardrailMin =>
+  (t, contrast) =>
+    Math.min(focusTargets[contrast], chroma.contrast(t['--color-text'], t[`--color-field-on-${surface}-bg`]));
+
+const guardrails: { name: string; min: GuardrailMin; fg: string; bg: string }[] = [
   { name: 'Core border on fill', min: 1.05, fg: '--color-core-border', bg: '--color-core-main' },
   { name: 'Core border on hover', min: 1.05, fg: '--color-core-border', bg: '--color-core-hover' },
   { name: 'Mono border on fill', min: 1.05, fg: '--color-button-mono-border', bg: '--color-button-mono-bg' },
   { name: 'Mono border on hover', min: 1.05, fg: '--color-button-mono-border', bg: '--color-button-mono-hover' },
   { name: 'Mono hover on fill', min: 1.05, fg: '--color-button-mono-hover', bg: '--color-button-mono-bg' },
+  {
+    name: 'Field focus border on primary',
+    min: focusMin('primary'),
+    fg: '--color-field-on-primary-focus-border',
+    bg: '--color-field-on-primary-bg',
+  },
+  {
+    name: 'Field focus border on secondary',
+    min: focusMin('secondary'),
+    fg: '--color-field-on-secondary-focus-border',
+    bg: '--color-field-on-secondary-bg',
+  },
 ];
 
 describe('Colour guardrails', () => {
   for (const guardrail of guardrails) {
-    test(`${guardrail.name} is at least ${guardrail.min}`, () => {
+    const title = typeof guardrail.min === 'number' ? `is at least ${guardrail.min}` : 'reaches its target';
+    test(`${guardrail.name} ${title}`, () => {
       for (const contrast of contrasts) {
         for (const devTheme of devThemes) {
           const t = getColorTokens(toInput(devTheme, contrast)).tokens as Record<string, string>;
           if (chroma.contrast(t['--color-text'], t['--color-primary-bg']) < limitedThemeRatio) continue;
 
+          const min = typeof guardrail.min === 'number' ? guardrail.min : guardrail.min(t, contrast);
           const ratio = chroma.contrast(t[guardrail.fg], t[guardrail.bg]);
-          expect(ratio, `${devTheme.label} at ${contrast} contrast`).toBeGreaterThanOrEqual(guardrail.min);
+          expect(ratio, `${devTheme.label} at ${contrast} contrast`).toBeGreaterThanOrEqual(min);
         }
       }
     });
