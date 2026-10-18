@@ -11,8 +11,8 @@ interface DevTheme {
 }
 
 export const devThemes: DevTheme[] = [
-  { label: 'Chromatix / Magenta', theme: 'chromatix-magenta' },
   { label: 'Chromatix / Teal', theme: 'chromatix-teal' },
+  { label: 'Chromatix / Magenta', theme: 'chromatix-magenta' },
   { label: 'White / Magenta', theme: 'white-magenta' },
   { label: 'Black / Magenta', theme: 'black-magenta' },
   { label: 'White / Mint', theme: 'white-mint' },

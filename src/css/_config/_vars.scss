@@ -70,8 +70,8 @@ $grid-breakpoints: (xxs, xs, sm, md, lg, xl);
 // Chromatix / Magenta theme unless noted - some deliberately differ to keep the logged-out look
 
 $color-core-main: #f7277a;
-$color-core-border: #ff3c87;
-$color-core-hover: #ff3c87; // Same as core border
+$color-core-border: #ff4d93;
+$color-core-hover: #ff418a;
 $color-core-on-primary-text: #021c27; // Same as primary background
 
 $color-text: #fff;
@@ -81,10 +81,10 @@ $color-secondary-border: #263e4a;
 
 $color-button-on-primary-bg: #263e4a; // Deliberately lighter than the Magenta theme (#142c38)
 $color-button-on-primary-border: rgba(255, 255, 255, 0.1); // Deliberately differs from the Magenta theme (#263e4a)
-$color-button-on-primary-hover: #2f4753; // One step lighter than the background above (Magenta theme: #1d3541)
+$color-button-on-primary-hover: #2f4753; // One step lighter than the background above (Magenta theme: #1f3743)
 $color-button-on-primary-text: #fff;
 
 $color-field-on-primary-bg: #021c27; // Deliberately matches the background (Magenta theme: #142c38)
 $color-field-on-primary-border: #263e4a;
-$color-field-on-primary-focus-border: #4e6068; // Text at 30% over the field background, flattened
+$color-field-on-primary-focus-border: #56686f; // Reaches 3:1 against the field background above (Magenta theme: #65747c)
 $color-field-on-primary-text: #fff;
