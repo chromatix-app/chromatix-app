@@ -290,7 +290,11 @@ button.volume {
 }
 
 button.active {
-  color: var(--color-core-main);
+  color: var(--color-item-on-secondary-active-text);
+
+  .fullPageMode & {
+    color: var(--color-item-on-primary-active-text);
+  }
 }
 
 .offline {

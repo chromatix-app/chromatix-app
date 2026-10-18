@@ -135,6 +135,20 @@ describe('Testing "getColorTokens" function', () => {
     expect(getColorTokens(dark).tokens['--color-select-on-secondary-checked-text']).toBe('#f7277a');
   });
 
+  test('Active items reach the focus contrast against every row state', () => {
+    const { tokens } = getColorTokens({ ...dark, contrast: 'high' });
+    const onSecondary = tokens['--color-item-on-secondary-active-text'];
+    for (const row of ['--color-secondary-bg', '--color-item-on-secondary-hover', '--color-item-on-secondary-active']) {
+      expect(chroma.contrast(onSecondary, tokens[row])).toBeGreaterThanOrEqual(4);
+    }
+    const onPrimary = tokens['--color-item-on-primary-active-text'];
+    for (const row of ['--color-primary-bg', '--color-item-on-primary-hover']) {
+      expect(chroma.contrast(onPrimary, tokens[row])).toBeGreaterThanOrEqual(4);
+    }
+    // Selected select items share the secondary colour
+    expect(tokens['--color-select-on-secondary-checked-text']).toBe(onSecondary);
+  });
+
   test('An unknown contrast setting falls back to default', () => {
     const unknown = getColorTokens({ ...dark, contrast: 'unknown' as ColorTokensInput['contrast'] });
     expect(unknown).toEqual(getColorTokens(dark));

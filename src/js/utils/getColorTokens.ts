@@ -335,11 +335,12 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
   const colorCoreAccentOnPrimary = shiftAtContrast(colorCore, [colorPrimaryBg], focusContrast);
   const colorCoreAccentOnSecondary = shiftAtContrast(colorCore, [colorSecondaryBg], focusContrast);
 
-  // Core on secondary items that may also be highlighted (selected select items), reaching the focus contrast against
-  // both the surface and its hover, since the selected item is highlighted when the popup opens
+  // Core on rows that can also be hovered or active (selected select items, active buttons and links), shifted to
+  // reach the focus contrast against every state the row can be in
+  const colorCoreAccentOnPrimaryItem = shiftAtContrast(colorCore, [colorPrimaryBg, colorSecondaryBg], focusContrast);
   const colorCoreAccentOnSecondaryItem = shiftAtContrast(
     colorCore,
-    [colorSecondaryBg, colorSecondaryHover],
+    [colorSecondaryBg, colorSecondaryHover, colorSecondaryActive],
     focusContrast
   );
 
@@ -463,8 +464,10 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     // Items are slightly miscellaneous elements used throughout
     '--color-item-on-core-hover': colorCoreHover,
     '--color-item-on-primary-hover': colorSecondaryBg,
+    '--color-item-on-primary-active-text': colorCoreAccentOnPrimaryItem,
     '--color-item-on-secondary-hover': colorSecondaryHover,
     '--color-item-on-secondary-active': colorSecondaryActive,
+    '--color-item-on-secondary-active-text': colorCoreAccentOnSecondaryItem,
     '--color-item-on-tertiary-hover': colorTertiaryHover,
 
     '--color-opacity-0025': textOpacity(0.025),

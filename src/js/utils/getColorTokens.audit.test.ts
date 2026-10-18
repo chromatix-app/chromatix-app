@@ -288,7 +288,7 @@ const groups: Group[] = [
   {
     title: 'Core accents',
     description:
-      'Plain core as text, icons and marks on each surface: on primary (links, the playing track, favourites, the downloads link, the drop indicator) and its row hover, and on secondary (the current user menu item, the control bar’s active button, modal link hovers, Electron menu ticks) with its hover and the sidebar’s active link. Reported only, with no guardrails, since a theme’s core is the user’s choice.',
+      'Plain core as text, icons and marks on each surface: on primary (links, the playing track, favourites, the downloads link, the drop indicator) and its row hover, and on secondary (modal link hovers, Electron menu ticks) and its hover. Reported only, with no guardrails, since a theme’s core is the user’s choice.',
     kind: 'focus',
     swatchKind: 'text',
     pairs: {
@@ -296,7 +296,29 @@ const groups: Group[] = [
       'On primary hover': (t) => ({ fg: t['--color-core-main'], bg: t['--color-card-ghost-on-primary-hover'] }),
       'On secondary': (t) => ({ fg: t['--color-core-main'], bg: t['--color-secondary-bg'] }),
       'On secondary hover': (t) => ({ fg: t['--color-core-main'], bg: t['--color-item-on-secondary-hover'] }),
-      'On secondary active': (t) => ({ fg: t['--color-core-main'], bg: t['--color-item-on-secondary-active'] }),
+    },
+  },
+  {
+    title: 'Active items',
+    description:
+      'Active control bar buttons, the current user menu item and the sidebar’s active link (core, shifted to the focus contrast against every row state), on secondary, its hover and its active row, and in the full-page player on primary and its hover.',
+    kind: 'focus',
+    swatchKind: 'text',
+    pairs: {
+      'On secondary': (t) => ({ fg: t['--color-item-on-secondary-active-text'], bg: t['--color-secondary-bg'] }),
+      'On secondary hover': (t) => ({
+        fg: t['--color-item-on-secondary-active-text'],
+        bg: t['--color-item-on-secondary-hover'],
+      }),
+      'On secondary active': (t) => ({
+        fg: t['--color-item-on-secondary-active-text'],
+        bg: t['--color-item-on-secondary-active'],
+      }),
+      'On primary': (t) => ({ fg: t['--color-item-on-primary-active-text'], bg: t['--color-primary-bg'] }),
+      'On primary hover': (t) => ({
+        fg: t['--color-item-on-primary-active-text'],
+        bg: t['--color-item-on-primary-hover'],
+      }),
     },
   },
   {
@@ -648,8 +670,8 @@ const coreTextMin =
       )
     );
 
-// Shifted core (checked fills, slider fills and selected select items) reaches the focus target, or is the better of
-// core and the text colour when neither can
+// Shifted core (checked fills, slider fills, selected select items and active items) reaches the focus target, or is
+// the better of core and the text colour when neither can
 const shiftedCoreMin =
   (background: string): GuardrailTarget =>
   (t, contrast) =>
@@ -751,6 +773,36 @@ const guardrails: { name: string; min: GuardrailMin; fg: string; bg: string }[] 
     min: shiftedCoreMin('--color-item-on-secondary-hover'),
     fg: '--color-select-on-secondary-checked-text',
     bg: '--color-item-on-secondary-hover',
+  },
+  {
+    name: 'Active item on secondary',
+    min: shiftedCoreMin('--color-secondary-bg'),
+    fg: '--color-item-on-secondary-active-text',
+    bg: '--color-secondary-bg',
+  },
+  {
+    name: 'Active item on secondary hover',
+    min: shiftedCoreMin('--color-item-on-secondary-hover'),
+    fg: '--color-item-on-secondary-active-text',
+    bg: '--color-item-on-secondary-hover',
+  },
+  {
+    name: 'Active item on secondary active row',
+    min: shiftedCoreMin('--color-item-on-secondary-active'),
+    fg: '--color-item-on-secondary-active-text',
+    bg: '--color-item-on-secondary-active',
+  },
+  {
+    name: 'Active item on primary',
+    min: shiftedCoreMin('--color-primary-bg'),
+    fg: '--color-item-on-primary-active-text',
+    bg: '--color-primary-bg',
+  },
+  {
+    name: 'Active item on primary hover',
+    min: shiftedCoreMin('--color-item-on-primary-hover'),
+    fg: '--color-item-on-primary-active-text',
+    bg: '--color-item-on-primary-hover',
   },
   {
     name: 'Field focus border on primary',

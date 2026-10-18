@@ -259,7 +259,7 @@
   }
 
   &.buttonCurrent {
-    color: var(--color-core-main);
+    color: var(--color-item-on-secondary-active-text);
   }
 
   &:hover,
@@ -305,7 +305,7 @@
 
 .iconCurrent {
   opacity: 1;
-  color: var(--color-core-main);
+  color: var(--color-item-on-secondary-active-text);
 }
 
 .iconHover {
