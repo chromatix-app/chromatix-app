@@ -24,6 +24,7 @@ import {
   FormTheme,
   Icon,
   PageText,
+  PlaybackButton,
   SettingsList,
   TitleHeading,
 } from 'js/components';
@@ -409,6 +410,18 @@ const Component = () => {
                 { variant: 'action', label: 'Disabled', icon: 'MinusCircleIcon', onSelect: () => {}, disabled: true },
               ]}
             />
+          </div>
+        </div>
+
+        {/* PLAYBACK BUTTONS */}
+
+        <div>
+          <h2>Playback Buttons</h2>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <PlaybackButton onClick={() => {}} />
+            <PlaybackButton isPlaying onClick={() => {}} />
+            <PlaybackButton isLoaded onClick={() => {}} />
+            <PlaybackButton variant="shuffle" onClick={() => {}} />
           </div>
         </div>
 

@@ -141,6 +141,8 @@ Components and hooks are barrel-exported from `components/index.js` and `hooks/i
 
 Use `clsx` for conditional class composition. Use CSS Modules for component-specific styles.
 
+`PlaybackButton` renders the core-coloured playback buttons (play/pause/resume, shuffle) used in `TitleHeading`. It's presentational only: the parent passes `isPlaying`, `isLoaded` and `onClick` (and handles play/pause/resume itself). Its `variant` prop picks an entry from the `variants` map in the component (`play` by default, with a Play/Pause/Resume label; `shuffle`, icon-only), so add new variants there.
+
 ## Colour Theme
 
 Theme colours are CSS custom properties computed by the pure `getColorTokens` util and applied at runtime by `useColorTheme`, and scaled by the contrast setting; every value that changes with contrast lives in its exported `contrastLevels`, which the audit also reads. `npm run test:colors` generates and opens an HTML report (`test-results/colors/audit.html`) of WCAG contrast ratios for key token pairs across every dev theme and contrast level; check it when changing colour values. The same test file's `guardrails` list enforces minimum ratios on every dev theme (skipping themes whose own text-on-background is below 4.5), so add a guardrail for any new colour rule. In logged-in UI, use these tokens rather than hardcoded colours or raw `opacity` values, and prefer a token named for the role (e.g. `--color-button-on-primary-bg`) over a raw surface token.

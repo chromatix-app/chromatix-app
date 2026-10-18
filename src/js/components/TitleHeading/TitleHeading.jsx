@@ -6,7 +6,7 @@ import { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import clsx from 'clsx';
 
-import { Icon } from 'js/components';
+import { Icon, PlaybackButton } from 'js/components';
 import { useNearTop, useTagImage } from 'js/hooks';
 
 import style from './TitleHeading.module.scss';
@@ -100,9 +100,9 @@ const TitleHeading = ({
             <div className={style.buttons}>
               {showPlay && (
                 <>
-                  <button
-                    type="button"
-                    className={style.playButton}
+                  <PlaybackButton
+                    isPlaying={isPlaying}
+                    isLoaded={isLoaded}
                     onClick={() =>
                       isPlaying
                         ? dispatch.playerModel.playerPause()
@@ -110,30 +110,8 @@ const TitleHeading = ({
                           ? dispatch.playerModel.playerResume()
                           : handlePlay && handlePlay(false)
                     }
-                  >
-                    {!isPlaying ? (
-                      <span className={style.playIcon}>
-                        <Icon icon="PlayFilledIcon" cover />
-                      </span>
-                    ) : (
-                      <span className={style.pauseIcon}>
-                        <Icon icon="PauseFilledIcon" cover />
-                      </span>
-                    )}
-                    <span className={style.playText}>{isPlaying ? 'Pause' : isLoaded ? 'Resume' : 'Play'}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    className={style.shuffleButton}
-                    onClick={() => handlePlay && handlePlay(true)}
-                    aria-label="Shuffle"
-                  >
-                    <span className={style.shuffleIcon}>
-                      <Icon icon="ShuffleIcon" cover stroke strokeWidth={1.4} />
-                    </span>
-                    {/* <span className={style.shuffleText}>Shuffle</span> */}
-                  </button>
+                  />
+                  <PlaybackButton variant="shuffle" onClick={() => handlePlay && handlePlay(true)} />
                 </>
               )}
 
