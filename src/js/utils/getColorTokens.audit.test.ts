@@ -2,7 +2,8 @@
 
 // Writes an HTML report of WCAG contrast ratios for key token pairs across every dev theme and contrast level.
 // Run on its own with `npm run test:colors`, which opens the report in the browser. `npm run test:colors:baseline`
-// saves the current ratios as a baseline, and later reports show each change from it
+// saves the current ratios as a baseline, and later reports show each change from it. The guardrails at the end
+// enforce minimum ratios, and run with the normal tests
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -391,4 +392,33 @@ describe('Colour contrast audit', () => {
 
     expect(html).toContain(devThemes[0].label);
   });
+});
+
+// ======================================================================
+// GUARDRAILS
+// ======================================================================
+
+// Minimum ratios every dev theme must meet at each contrast level, skipping themes limited by their own colours
+const guardrails: { name: string; min: number; fg: string; bg: string }[] = [
+  { name: 'Core border on fill', min: 1.05, fg: '--color-core-border', bg: '--color-core-main' },
+  { name: 'Core border on hover', min: 1.05, fg: '--color-core-border', bg: '--color-core-hover' },
+  { name: 'Mono border on fill', min: 1.05, fg: '--color-button-mono-border', bg: '--color-button-mono-bg' },
+  { name: 'Mono border on hover', min: 1.05, fg: '--color-button-mono-border', bg: '--color-button-mono-hover' },
+  { name: 'Mono hover on fill', min: 1.05, fg: '--color-button-mono-hover', bg: '--color-button-mono-bg' },
+];
+
+describe('Colour guardrails', () => {
+  for (const guardrail of guardrails) {
+    test(`${guardrail.name} is at least ${guardrail.min}`, () => {
+      for (const contrast of contrasts) {
+        for (const devTheme of devThemes) {
+          const t = getColorTokens(toInput(devTheme, contrast)).tokens as Record<string, string>;
+          if (chroma.contrast(t['--color-text'], t['--color-primary-bg']) < limitedThemeRatio) continue;
+
+          const ratio = chroma.contrast(t[guardrail.fg], t[guardrail.bg]);
+          expect(ratio, `${devTheme.label} at ${contrast} contrast`).toBeGreaterThanOrEqual(guardrail.min);
+        }
+      }
+    });
+  }
 });

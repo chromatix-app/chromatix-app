@@ -62,8 +62,6 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
   let colorTertiaryBorder: string;
   let colorTertiaryHover: string;
 
-  let colorButtonMonoBg: string;
-
   // [NOTE] Optional tinting maybe to be added in future
 
   // // Tint secondary and tertiary colours using the core colour
@@ -114,10 +112,6 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     colorTertiaryHover = chroma(colorPrimaryBg)
       .darken(0.8 * chromaMultiplierHigh)
       .hex();
-
-    colorButtonMonoBg = chroma(colorText)
-      .brighten(0.3 * chromaMultiplierHigh)
-      .hex();
   }
 
   // Dark theme handling
@@ -150,10 +144,6 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     colorTertiaryHover = chroma(colorPrimaryBg)
       .brighten(1.1 * chromaMultiplierHigh)
       .hex();
-
-    colorButtonMonoBg = chroma(colorText)
-      .darken(0.3 * chromaMultiplierHigh)
-      .hex();
   }
 
   const colorOpacity0025 = colorText + decimalToHex(decimalMultiplier(opacityMultiplier, 0.025));
@@ -183,14 +173,23 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
   const flattenText = (background: string, opacity: number): string =>
     chroma.mix(background, colorText, decimalMultiplier(opacityMultiplier, opacity), 'rgb').hex();
 
-  // Core border moves away from the background: darker on light themes, lighter on dark themes
-  const colorCoreBorder = isActualLightTheme
-    ? chroma(colorCore)
-        .darken(0.25 * chromaMultiplierLow)
-        .hex()
-    : chroma(colorCore)
-        .brighten(0.25 * chromaMultiplierLow)
-        .hex();
+  // Shifts a colour towards another's lightness: darker if it's lighter than the target, otherwise lighter
+  const shiftTowards = (color: string, amount: number, target: string): string =>
+    chroma(color).luminance() > chroma(target).luminance()
+      ? chroma(color).darken(amount).hex()
+      : chroma(color).brighten(amount).hex();
+
+  // Core hover and border move away from the background: darker on light themes, lighter on dark themes. The
+  // border moves twice as far, so it stays visible against the hover fill
+  const shiftCore = (amount: number): string =>
+    isActualLightTheme ? chroma(colorCore).darken(amount).hex() : chroma(colorCore).brighten(amount).hex();
+  const colorCoreHover = shiftCore(0.25 * chromaMultiplierLow);
+  const colorCoreBorder = shiftCore(0.5 * chromaMultiplierLow);
+
+  // The mono border is the text colour, and the fill is the text colour shifted towards the background. The hover
+  // sits halfway between them, so the border stays visible against it
+  const colorButtonMonoBg = shiftTowards(colorText, 0.6 * chromaMultiplierHigh, colorPrimaryBg);
+  const colorButtonMonoHover = shiftTowards(colorText, 0.3 * chromaMultiplierHigh, colorPrimaryBg);
 
   // Ghost cards on secondary deliberately use the secondary border on light themes, so it's near invisible
   const colorCardGhostOnSecondaryHoverBorder = isActualLightTheme ? colorSecondaryBorder : colorTertiaryBorder;
@@ -214,7 +213,7 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
   const tokens: Record<string, string | number> = {
     '--color-core-main': colorCore,
     '--color-core-border': colorCoreBorder,
-    '--color-core-hover': colorCoreBorder,
+    '--color-core-hover': colorCoreHover,
     '--color-core-on-primary-text': colorPrimaryBg,
     '--color-core-on-secondary-text': colorSecondaryBg,
 
@@ -232,7 +231,7 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
 
     '--color-button-mono-bg': colorButtonMonoBg,
     '--color-button-mono-border': colorText,
-    '--color-button-mono-hover': colorText,
+    '--color-button-mono-hover': colorButtonMonoHover,
     '--color-button-mono-text': colorPrimaryBg,
 
     '--color-button-on-primary-bg': colorSecondaryBg,
@@ -282,7 +281,7 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     '--color-field-on-secondary-focus-border': colorControlOnSecondaryFocusBorder,
     '--color-field-on-secondary-text': colorText,
 
-    '--color-item-on-core-hover': colorCoreBorder,
+    '--color-item-on-core-hover': colorCoreHover,
     '--color-item-on-primary-hover': colorSecondaryBg,
     '--color-item-on-secondary-hover': colorSecondaryHover,
     '--color-item-on-secondary-active': colorSecondaryActive,
