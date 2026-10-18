@@ -85,6 +85,14 @@ describe('Testing "getColorTokens" function', () => {
     expect(tokens['--color-core-on-secondary-text']).toBe('#111111');
   });
 
+  test('Core hovers reach the hover contrast for each contrast level', () => {
+    for (const contrast of ['default', 'medium', 'high'] as const) {
+      const { tokens } = getColorTokens({ ...dark, contrast });
+      const target = { default: 1.15, medium: 1.2, high: 1.25 }[contrast];
+      expect(chroma.contrast(tokens['--color-core-hover'], tokens['--color-core-main'])).toBeGreaterThanOrEqual(target);
+    }
+  });
+
   test('Checked checkboxes fill with core, shifted where it is too faint against the background', () => {
     const checked = (input: ColorTokensInput) => getColorTokens(input).tokens['--color-checkbox-on-primary-checked-bg'];
     const onBackground = (input: ColorTokensInput) => chroma.contrast(checked(input), input.background);

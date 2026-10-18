@@ -114,13 +114,13 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     Math.min(...backgrounds.map((background) => chroma.contrast(color, background)));
 
   // Binary searches amounts from 0 to `max` for the smallest that makes `make(amount)` reach a target contrast against
-  // every background
+  // every background, returning `max` when none can
   const searchAtContrast = (
     make: (amount: number) => string,
     max: number,
     backgrounds: string[],
     target: number
-  ): string => {
+  ): number => {
     let low = 0;
     let high = max;
     for (let step = 0; step < 12; step++) {
@@ -128,7 +128,7 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
       if (contrastAgainst(make(middle), backgrounds) >= target) high = middle;
       else low = middle;
     }
-    return make(high);
+    return high;
   };
 
   // Mixes a background towards another colour just far enough to reach a target contrast against it. Keeps `current`
@@ -138,7 +138,7 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     if (chroma.contrast(towards, background) <= target) return towards;
 
     const mix = (amount: number): string => chroma.mix(background, towards, amount, 'rgb').hex();
-    return searchAtContrast(mix, 1, [background], target);
+    return mix(searchAtContrast(mix, 1, [background], target));
   };
 
   // Shifts a colour towards another's lightness: darker if it's lighter than the target, otherwise lighter
@@ -156,19 +156,25 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     const shift = (amount: number): string => shiftTowards(color, amount, colorText);
     if (contrastAgainst(shift(6), backgrounds) < target)
       return contrastAgainst(colorText, backgrounds) > contrastAgainst(color, backgrounds) ? colorText : color;
-    return searchAtContrast(shift, 6, backgrounds, target);
+    return shift(searchAtContrast(shift, 6, backgrounds, target));
   };
 
   // ======================================================================
   // CORE
   // ======================================================================
 
-  // Core hover and border move away from the background: darker on light themes, lighter on dark themes. The
-  // border moves twice as far, so it stays visible against the hover fill
+  // Core hover and border move away from the background: darker on light themes, lighter on dark themes. The hover
+  // moves further where needed to reach the hover contrast, and the border moves at least 1.5 times as far, so it stays
+  // visible against the hover fill
   const shiftCore = (amount: number): string =>
     isActualLightTheme ? chroma(colorCore).darken(amount).hex() : chroma(colorCore).brighten(amount).hex();
-  const colorCoreHover = shiftCore(0.25 * chromaMultiplierLow);
-  const colorCoreBorder = shiftCore(0.5 * chromaMultiplierLow);
+  const coreHoverStart = 0.25 * chromaMultiplierLow;
+  const coreHoverShift =
+    chroma.contrast(shiftCore(coreHoverStart), colorCore) >= hoverContrast
+      ? coreHoverStart
+      : searchAtContrast(shiftCore, 6, [colorCore], hoverContrast);
+  const colorCoreHover = shiftCore(coreHoverShift);
+  const colorCoreBorder = shiftCore(Math.max(0.5 * chromaMultiplierLow, 1.5 * coreHoverShift));
 
   // Whether the text colour reads better on core than a background, and whether that background is unreadable on core
   const textReadsBetterOnCore = (background: string): boolean =>

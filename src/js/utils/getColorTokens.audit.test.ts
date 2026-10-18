@@ -658,6 +658,16 @@ const hoverMin =
   (t, contrast) =>
     Math.min(hoverTargets[contrast], chroma.contrast(t[border], t[fill]));
 
+// Core's hover reaches the hover target, or as far as core can shift towards black or white (not at all when it's
+// already there)
+const coreHoverMin: GuardrailTarget = (t, contrast) => {
+  const core = t['--color-core-main'];
+  const hover = t['--color-core-hover'];
+  if (hover === core) return 1;
+  const furthest = chroma(hover).luminance() > chroma(core).luminance() ? '#ffffff' : '#000000';
+  return Math.min(hoverTargets[contrast], chroma.contrast(core, furthest));
+};
+
 // Core button text reaches its target, or is the better of the background and the text colour when neither can
 const coreTextMin =
   (background: string): GuardrailTarget =>
@@ -698,6 +708,12 @@ const guardrails: { name: string; min: GuardrailMin; fg: string; bg: string }[] 
   },
   { name: 'Core border on fill', min: 1.05, fg: '--color-core-border', bg: '--color-core-main' },
   { name: 'Core border on hover', min: 1.05, fg: '--color-core-border', bg: '--color-core-hover' },
+  {
+    name: 'Core hover on fill',
+    min: coreHoverMin,
+    fg: '--color-core-hover',
+    bg: '--color-core-main',
+  },
   { name: 'Mono border on fill', min: 1.05, fg: '--color-button-mono-border', bg: '--color-button-mono-bg' },
   { name: 'Mono border on hover', min: 1.05, fg: '--color-button-mono-border', bg: '--color-button-mono-hover' },
   { name: 'Mono hover on fill', min: 1.05, fg: '--color-button-mono-hover', bg: '--color-button-mono-bg' },
