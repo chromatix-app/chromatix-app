@@ -20,9 +20,10 @@ interface ColorTokens {
   isLightText: boolean;
 }
 
-// Values that change with the contrast setting: the surface step multipliers, the opacity multiplier, and the minimum
-// contrast for button text, focus borders and hovers
+// Values that change with the contrast setting: the surface fill multiplier, the step multipliers for everything else,
+// the opacity multiplier, and the minimum contrast for button text, focus borders and hovers
 interface ContrastLevel {
+  surfaceMultiplier: number;
   chromaMultiplierLow: number;
   chromaMultiplierHigh: number;
   opacityMultiplier: number;
@@ -33,6 +34,7 @@ interface ContrastLevel {
 
 export const contrastLevels: Record<ColorContrast, ContrastLevel> = {
   default: {
+    surfaceMultiplier: 1.1,
     chromaMultiplierLow: 1.1,
     chromaMultiplierHigh: 1.1,
     opacityMultiplier: 1,
@@ -41,6 +43,7 @@ export const contrastLevels: Record<ColorContrast, ContrastLevel> = {
     hoverContrast: 1.15,
   },
   medium: {
+    surfaceMultiplier: 1.2,
     chromaMultiplierLow: 1.3,
     chromaMultiplierHigh: 1.4,
     opacityMultiplier: 1.5,
@@ -49,6 +52,7 @@ export const contrastLevels: Record<ColorContrast, ContrastLevel> = {
     hoverContrast: 1.2,
   },
   high: {
+    surfaceMultiplier: 1.3,
     chromaMultiplierLow: 1.5,
     chromaMultiplierHigh: 1.7,
     opacityMultiplier: 2,
@@ -76,6 +80,7 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
 
   // Falls back to the default level for an unknown or unset contrast setting
   const {
+    surfaceMultiplier,
     chromaMultiplierLow,
     chromaMultiplierHigh,
     opacityMultiplier,
@@ -226,7 +231,7 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
         .hex() + decimalToHex(scaledOpacity(0.9));
 
     colorSecondaryBg = chroma(colorPrimaryBg)
-      .darken(0.2 * chromaMultiplierLow)
+      .darken(0.2 * surfaceMultiplier)
       .hex();
     colorSecondaryBorder = chroma(colorPrimaryBg)
       .darken(0.6 * chromaMultiplierHigh)
@@ -239,7 +244,7 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
       .hex();
 
     colorTertiaryBg = chroma(colorPrimaryBg)
-      .darken(0.6 * chromaMultiplierLow)
+      .darken(0.6 * surfaceMultiplier)
       .hex();
     colorTertiaryBorder = chroma(colorPrimaryBg)
       .darken(0.9 * chromaMultiplierHigh)
@@ -258,7 +263,7 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
         .hex() + decimalToHex(scaledOpacity(0.8));
 
     colorSecondaryBg = chroma(colorPrimaryBg)
-      .brighten(0.4 * chromaMultiplierHigh)
+      .brighten(0.4 * surfaceMultiplier)
       .hex();
     colorSecondaryBorder = chroma(colorPrimaryBg)
       .brighten(0.8 * chromaMultiplierHigh)
@@ -271,7 +276,7 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
       .hex();
 
     colorTertiaryBg = chroma(colorPrimaryBg)
-      .brighten(0.9 * chromaMultiplierHigh)
+      .brighten(0.9 * surfaceMultiplier)
       .hex();
     colorTertiaryBorder = chroma(colorPrimaryBg)
       .brighten(1.2 * chromaMultiplierHigh)
