@@ -181,6 +181,15 @@ const otherDisabledOpacities: Record<string, { file: string; snippet: string; pa
 
 const groups: Group[] = [
   {
+    title: 'Surfaces',
+    description: 'How distinct each surface is from the one beneath it (left half beneath, right half on top).',
+    kind: 'surface',
+    pairs: {
+      'Secondary on primary': (t) => ({ fg: t['--color-secondary-bg'], bg: t['--color-primary-bg'] }),
+      'Tertiary on secondary': (t) => ({ fg: t['--color-tertiary-bg'], bg: t['--color-secondary-bg'] }),
+    },
+  },
+  {
     title: 'Text',
     description:
       'Text on each surface, core button text on the core colour (on primary and secondary), and mono button text on its fill.',
@@ -195,12 +204,47 @@ const groups: Group[] = [
     },
   },
   {
-    title: 'Surfaces',
-    description: 'How distinct each surface is from the one beneath it (left half beneath, right half on top).',
-    kind: 'surface',
+    title: 'Hover',
+    description: 'The hover fill against the resting fill (left half resting, right half hovered).',
+    kind: 'hover',
     pairs: {
-      'Secondary on primary': (t) => ({ fg: t['--color-secondary-bg'], bg: t['--color-primary-bg'] }),
-      'Tertiary on secondary': (t) => ({ fg: t['--color-tertiary-bg'], bg: t['--color-secondary-bg'] }),
+      Core: (t) => ({ fg: t['--color-core-hover'], bg: t['--color-core-main'] }),
+      Mono: (t) => ({ fg: t['--color-button-mono-hover'], bg: t['--color-button-mono-bg'] }),
+      'On primary': (t) => ({ fg: t['--color-button-on-primary-hover'], bg: t['--color-button-on-primary-bg'] }),
+      'On secondary': (t) => ({
+        fg: t['--color-button-on-secondary-hover'],
+        bg: t['--color-button-on-secondary-bg'],
+      }),
+      'Item on primary': (t) => ({ fg: t['--color-item-on-primary-hover'], bg: t['--color-primary-bg'] }),
+      'Ghost card on primary': (t) => ({ fg: t['--color-card-ghost-on-primary-hover'], bg: t['--color-primary-bg'] }),
+      'Item on secondary': (t) => ({ fg: t['--color-item-on-secondary-hover'], bg: t['--color-secondary-bg'] }),
+      'Item on tertiary': (t) => ({ fg: t['--color-item-on-tertiary-hover'], bg: t['--color-tertiary-bg'] }),
+      // The selected sidebar item, which should stay stronger than its hover
+      'Item active on secondary': (t) => ({ fg: t['--color-item-on-secondary-active'], bg: t['--color-secondary-bg'] }),
+    },
+  },
+  {
+    title: 'Button borders',
+    description: 'Each button border against its resting fill, then against its hover fill.',
+    kind: 'border',
+    pairs: {
+      Core: (t) => ({ fg: t['--color-core-border'], bg: t['--color-core-main'] }),
+      Mono: (t) => ({ fg: t['--color-button-mono-border'], bg: t['--color-button-mono-bg'] }),
+      'On primary': (t) => ({ fg: t['--color-button-on-primary-border'], bg: t['--color-button-on-primary-bg'] }),
+      'On secondary': (t) => ({
+        fg: t['--color-button-on-secondary-border'],
+        bg: t['--color-button-on-secondary-bg'],
+      }),
+      'Core hovered': (t) => ({ fg: t['--color-core-border'], bg: t['--color-core-hover'] }),
+      'Mono hovered': (t) => ({ fg: t['--color-button-mono-border'], bg: t['--color-button-mono-hover'] }),
+      'On primary hovered': (t) => ({
+        fg: t['--color-button-on-primary-border'],
+        bg: t['--color-button-on-primary-hover'],
+      }),
+      'On secondary hovered': (t) => ({
+        fg: t['--color-button-on-secondary-border'],
+        bg: t['--color-button-on-secondary-hover'],
+      }),
     },
   },
   {
@@ -242,47 +286,17 @@ const groups: Group[] = [
     },
   },
   {
-    title: 'Button borders',
-    description: 'Each button border against its resting fill, then against its hover fill.',
-    kind: 'border',
+    title: 'Core accents',
+    description:
+      'Plain core as text, icons and marks on each surface: on primary (links, the playing track, favourites, the downloads link, the drop indicator) and its row hover, and on secondary (the current user menu item, the control bar’s active button, modal link hovers, Electron menu ticks) with its hover and the sidebar’s active link. Reported only, with no guardrails, since a theme’s core is the user’s choice.',
+    kind: 'focus',
+    swatchKind: 'text',
     pairs: {
-      Core: (t) => ({ fg: t['--color-core-border'], bg: t['--color-core-main'] }),
-      Mono: (t) => ({ fg: t['--color-button-mono-border'], bg: t['--color-button-mono-bg'] }),
-      'On primary': (t) => ({ fg: t['--color-button-on-primary-border'], bg: t['--color-button-on-primary-bg'] }),
-      'On secondary': (t) => ({
-        fg: t['--color-button-on-secondary-border'],
-        bg: t['--color-button-on-secondary-bg'],
-      }),
-      'Core hovered': (t) => ({ fg: t['--color-core-border'], bg: t['--color-core-hover'] }),
-      'Mono hovered': (t) => ({ fg: t['--color-button-mono-border'], bg: t['--color-button-mono-hover'] }),
-      'On primary hovered': (t) => ({
-        fg: t['--color-button-on-primary-border'],
-        bg: t['--color-button-on-primary-hover'],
-      }),
-      'On secondary hovered': (t) => ({
-        fg: t['--color-button-on-secondary-border'],
-        bg: t['--color-button-on-secondary-hover'],
-      }),
-    },
-  },
-  {
-    title: 'Hover',
-    description: 'The hover fill against the resting fill (left half resting, right half hovered).',
-    kind: 'hover',
-    pairs: {
-      Core: (t) => ({ fg: t['--color-core-hover'], bg: t['--color-core-main'] }),
-      Mono: (t) => ({ fg: t['--color-button-mono-hover'], bg: t['--color-button-mono-bg'] }),
-      'On primary': (t) => ({ fg: t['--color-button-on-primary-hover'], bg: t['--color-button-on-primary-bg'] }),
-      'On secondary': (t) => ({
-        fg: t['--color-button-on-secondary-hover'],
-        bg: t['--color-button-on-secondary-bg'],
-      }),
-      'Item on primary': (t) => ({ fg: t['--color-item-on-primary-hover'], bg: t['--color-primary-bg'] }),
-      'Ghost card on primary': (t) => ({ fg: t['--color-card-ghost-on-primary-hover'], bg: t['--color-primary-bg'] }),
-      'Item on secondary': (t) => ({ fg: t['--color-item-on-secondary-hover'], bg: t['--color-secondary-bg'] }),
-      'Item on tertiary': (t) => ({ fg: t['--color-item-on-tertiary-hover'], bg: t['--color-tertiary-bg'] }),
-      // The selected sidebar item, which should stay stronger than its hover
-      'Item active on secondary': (t) => ({ fg: t['--color-item-on-secondary-active'], bg: t['--color-secondary-bg'] }),
+      'On primary': (t) => ({ fg: t['--color-core-main'], bg: t['--color-primary-bg'] }),
+      'On primary hover': (t) => ({ fg: t['--color-core-main'], bg: t['--color-card-ghost-on-primary-hover'] }),
+      'On secondary': (t) => ({ fg: t['--color-core-main'], bg: t['--color-secondary-bg'] }),
+      'On secondary hover': (t) => ({ fg: t['--color-core-main'], bg: t['--color-item-on-secondary-hover'] }),
+      'On secondary active': (t) => ({ fg: t['--color-core-main'], bg: t['--color-item-on-secondary-active'] }),
     },
   },
   {
@@ -485,12 +499,12 @@ const renderReport = (panels: string, snapshots: Partial<Record<SnapshotName, Sn
     <div class="scroll"><table>
       <thead><tr><th>Pair</th><th>Good</th><th>OK</th><th>Poor</th><th>Basis</th></tr></thead>
       <tbody>
-        ${legendRow('text', 'Text', 'WCAG: 4.5 for normal text, 3 for large text')}
-        <tr><th scope="row">Focus borders and selected select items</th><td class="good">The target and above</td><td class="ok">Up to 1 below</td><td class="poor">More than 1 below</td><td>Targets of ${focusTargets.default}, ${focusTargets.medium} and ${focusTargets.high} by contrast level; WCAG asks for 3 for UI parts</td></tr>
-        <tr><th scope="row">Hover</th><td class="good">The target and above</td><td class="ok">Up to 0.05 below</td><td class="poor">More than 0.05 below</td><td>Targets of ${hoverTargets.default}, ${hoverTargets.medium} and ${hoverTargets.high} by contrast level; no WCAG target</td></tr>
         ${legendRow('surface', 'Surfaces', 'Suggestion, no WCAG target; below 1.05 is indistinguishable')}
-        ${legendRow('ui', 'Checkboxes, radios and sliders', 'WCAG: 3 for UI parts')}
+        ${legendRow('text', 'Text', 'WCAG: 4.5 for normal text, 3 for large text')}
+        <tr><th scope="row">Hover</th><td class="good">The target and above</td><td class="ok">Up to 0.05 below</td><td class="poor">More than 0.05 below</td><td>Targets of ${hoverTargets.default}, ${hoverTargets.medium} and ${hoverTargets.high} by contrast level; no WCAG target</td></tr>
         ${legendRow('border', 'Borders', 'Suggestion, no WCAG target; below 1.05 is invisible')}
+        <tr><th scope="row">Focus borders, selected select items and core accents</th><td class="good">The target and above</td><td class="ok">Up to 1 below</td><td class="poor">More than 1 below</td><td>Targets of ${focusTargets.default}, ${focusTargets.medium} and ${focusTargets.high} by contrast level; WCAG asks for 3 for UI parts</td></tr>
+        ${legendRow('ui', 'Checkboxes, radios and sliders', 'WCAG: 3 for UI parts')}
         <tr><th scope="row">Disabled</th><td colspan="3">Not rated</td><td>Compare enabled against disabled</td></tr>
       </tbody>
     </table></div>
