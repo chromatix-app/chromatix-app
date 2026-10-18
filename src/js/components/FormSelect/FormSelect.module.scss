@@ -27,7 +27,7 @@
   }
 
   &[data-disabled] {
-    opacity: var(--opacity-04);
+    opacity: var(--opacity-disabled);
     cursor: not-allowed;
   }
 }
@@ -94,7 +94,7 @@
   }
 
   &[data-disabled] {
-    opacity: var(--opacity-04);
+    opacity: var(--opacity-disabled);
     cursor: not-allowed;
   }
 }

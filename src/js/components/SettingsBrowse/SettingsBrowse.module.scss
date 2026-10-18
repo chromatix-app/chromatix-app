@@ -29,7 +29,7 @@
 
 .label {
   &.disabled {
-    color: var(--color-opacity-04);
+    color: var(--color-disabled-text);
   }
 }
 
@@ -41,6 +41,6 @@
   color: var(--color-opacity-06);
 
   &.disabled {
-    color: var(--color-opacity-04);
+    color: var(--color-disabled-text);
   }
 }

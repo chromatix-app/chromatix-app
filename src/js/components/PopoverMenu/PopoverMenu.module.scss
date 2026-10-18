@@ -105,7 +105,7 @@
   }
 
   &[data-disabled] {
-    color: var(--color-opacity-04);
+    color: var(--color-disabled-text);
   }
 
   // &[data-state='checked'] {
@@ -126,6 +126,6 @@
   }
 
   [data-disabled] & {
-    opacity: var(--opacity-06);
+    opacity: var(--opacity-disabled-icon);
   }
 }

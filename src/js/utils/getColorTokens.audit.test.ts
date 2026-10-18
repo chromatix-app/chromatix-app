@@ -102,6 +102,54 @@ const rate = (kind: Kind, ratio: number): Rating => {
   return ratio >= band[0] ? 'good' : ratio >= band[1] ? 'ok' : 'poor';
 };
 
+// Disabled opacities that don't use the shared disabled tokens, left as chosen by eye. Each snippet (its disabled
+// selector and declaration, whitespace ignored) is checked against its stylesheet below, so the audit fails if one
+// changes without this list being updated
+const otherDisabledOpacities: Record<string, { file: string; snippet: string; pair: Pair }> = {
+  'Sidebar history (0.25)': {
+    file: 'components/SideBar/SideBar.module.scss',
+    snippet: '&:disabled { opacity: 0.25;',
+    pair: (t) => ({ fg: over(t['--color-secondary-bg'], t['--color-text'], 0.25), bg: t['--color-secondary-bg'] }),
+  },
+  'Control bar (0.5)': {
+    file: 'components/ControlBar/ControlBar.module.scss',
+    snippet: '&:disabled { opacity: 0.5;',
+    pair: (t) => ({ fg: over(t['--color-secondary-bg'], t['--color-text'], 0.5), bg: t['--color-secondary-bg'] }),
+  },
+  // The disabled play button is a text-coloured fill at 0.3 on the control bar
+  'Play button (0.3)': {
+    file: 'components/ControlBar/ControlBar.module.scss',
+    snippet: '&:disabled { background: var(--color-text) !important; opacity: 0.3;',
+    pair: (t) => ({ fg: over(t['--color-secondary-bg'], t['--color-text'], 0.3), bg: t['--color-secondary-bg'] }),
+  },
+  'Radio (0.35)': {
+    file: 'components/SettingsList/SettingsList.module.scss',
+    snippet: "input[type='radio']:disabled + span::before { opacity: 0.35;",
+    pair: (t) => ({
+      fg: over(t['--color-primary-bg'], t['--color-checkbox-on-primary-border'], 0.35),
+      bg: t['--color-primary-bg'],
+    }),
+  },
+  // Still scales with contrast
+  'Tab group (opacity-025)': {
+    file: 'components/FormTabGroup/FormTabGroup.module.scss',
+    snippet: '&:disabled { cursor: default; > * { opacity: var(--opacity-025);',
+    pair: (t) => ({
+      fg: over(t['--color-button-on-primary-bg'], t['--color-text'], Number(t['--opacity-025'])),
+      bg: t['--color-button-on-primary-bg'],
+    }),
+  },
+  // Still scales with contrast, inside a slider already faded by the disabled opacity
+  'Slider thumb (opacity-05)': {
+    file: 'components/RangeSlider/RangeSlider.module.scss',
+    snippet: '.inputDisabled & { background: var(--color-text); opacity: var(--opacity-05);',
+    pair: (t, opacityDisabled) => ({
+      fg: over(t['--color-primary-bg'], t['--color-text'], Number(t['--opacity-05']) * opacityDisabled),
+      bg: t['--color-primary-bg'],
+    }),
+  },
+};
+
 const groups: Group[] = [
   {
     title: 'Text',
@@ -179,12 +227,30 @@ const groups: Group[] = [
         bg: over(t['--color-primary-bg'], t['--color-field-on-primary-bg'], opacityDisabled),
       }),
       'On primary enabled': (t) => ({ fg: t['--color-button-on-primary-text'], bg: t['--color-button-on-primary-bg'] }),
-      // Disabled-all onPrimary buttons use opacity colour tokens for the text and fill
+      // Disabled-all onPrimary buttons use the disabled button colours for the text and fill
       'On primary disabled': (t) => {
-        const fill = over(t['--color-primary-bg'], t['--color-opacity-005']);
-        return { fg: over(fill, t['--color-opacity-03']), bg: fill };
+        const fill = over(t['--color-primary-bg'], t['--color-button-disabled-bg']);
+        return { fg: over(fill, t['--color-button-disabled-text']), bg: fill };
       },
+      // Menus sit on the secondary background
+      'Menu item enabled': (t) => ({ fg: t['--color-text'], bg: t['--color-secondary-bg'] }),
+      'Menu item disabled': (t) => ({
+        fg: over(t['--color-secondary-bg'], t['--color-disabled-text']),
+        bg: t['--color-secondary-bg'],
+      }),
+      // Checkbox icons in disabled menu items fade further than the item's text
+      'Menu checkbox disabled': (t) => ({
+        fg: over(t['--color-secondary-bg'], t['--color-disabled-text'], Number(t['--opacity-disabled-icon'])),
+        bg: t['--color-secondary-bg'],
+      }),
     },
+  },
+  {
+    title: 'Other disabled opacities',
+    description:
+      'Disabled values chosen by eye rather than the shared disabled tokens, measured on the surface each sits on. Not rated.',
+    kind: 'disabled',
+    pairs: Object.fromEntries(Object.entries(otherDisabledOpacities).map(([name, { pair }]) => [name, pair])),
   },
 ];
 
@@ -217,7 +283,7 @@ const renderGroup = (group: Group, contrast: ColorContrast, ratios: Record<strin
     .map((devTheme) => {
       const { tokens, isLightTheme } = getColorTokens(toInput(devTheme, contrast));
       const t = tokens as Record<string, string>;
-      const opacityDisabled = Number(tokens['--opacity-04']);
+      const opacityDisabled = Number(tokens['--opacity-disabled']);
       const isLimited = chroma.contrast(t['--color-text'], t['--color-primary-bg']) < limitedThemeRatio;
 
       const cells = Object.entries(group.pairs)
@@ -489,4 +555,14 @@ describe('Colour guardrails', () => {
       }
     });
   }
+});
+
+describe('Disabled states', () => {
+  test('Other disabled opacities still match their stylesheets', () => {
+    const collapse = (value: string) => value.replace(/\s+/g, ' ');
+    for (const [name, { file, snippet }] of Object.entries(otherDisabledOpacities)) {
+      const source = collapse(fs.readFileSync(path.resolve('src/js', file), 'utf8'));
+      expect(source.includes(snippet), `${name}: "${snippet}" in ${file}`).toBe(true);
+    }
+  });
 });

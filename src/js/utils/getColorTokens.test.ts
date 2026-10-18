@@ -57,6 +57,16 @@ describe('Testing "getColorTokens" function', () => {
     expect(opacity('high')['--opacity-04']).toBeGreaterThan(Number(opacity('medium')['--opacity-04']));
   });
 
+  test('Disabled tokens stay the same at every contrast level', () => {
+    const disabled = (contrast: ColorTokensInput['contrast']) => {
+      const { tokens } = getColorTokens({ ...dark, contrast });
+      return Object.fromEntries(Object.entries(tokens).filter(([key]) => key.includes('disabled')));
+    };
+    expect(disabled('default')['--opacity-disabled']).toBe(0.4);
+    expect(disabled('high')).toEqual(disabled('default'));
+    expect(disabled('medium')).toEqual(disabled('default'));
+  });
+
   test('Opacity colours append an alpha suffix to the text colour', () => {
     const { tokens } = getColorTokens(dark);
     expect(tokens['--color-opacity-05']).toBe('#ffffff80');

@@ -122,12 +122,12 @@
 
   &.disabledText:disabled {
     > * {
-      opacity: var(--opacity-04);
+      opacity: var(--opacity-disabled);
     }
   }
 
   &.disabledAll:disabled {
-    opacity: var(--opacity-04);
+    opacity: var(--opacity-disabled);
   }
 }
 
@@ -146,12 +146,12 @@
 
   &.disabledText:disabled {
     > * {
-      opacity: var(--opacity-04);
+      opacity: var(--opacity-disabled);
     }
   }
 
   &.disabledAll:disabled {
-    opacity: var(--opacity-04);
+    opacity: var(--opacity-disabled);
   }
 }
 
@@ -178,14 +178,14 @@
 
   &.disabledText:disabled {
     > * {
-      color: var(--color-opacity-03);
+      color: var(--color-button-disabled-text);
     }
   }
 
   &.disabledAll:disabled {
-    background-color: var(--color-opacity-005);
-    border: 1px solid var(--color-opacity-005);
-    color: var(--color-opacity-03);
+    background-color: var(--color-button-disabled-bg);
+    border: 1px solid var(--color-button-disabled-bg);
+    color: var(--color-button-disabled-text);
   }
 }
 
@@ -204,14 +204,14 @@
 
   &.disabledText:disabled {
     > * {
-      color: var(--color-opacity-03);
+      color: var(--color-button-disabled-text);
     }
   }
 
   &.disabledAll:disabled {
-    background-color: var(--color-opacity-005);
-    border: 1px solid var(--color-opacity-005);
-    color: var(--color-opacity-03);
+    background-color: var(--color-button-disabled-bg);
+    border: 1px solid var(--color-button-disabled-bg);
+    color: var(--color-button-disabled-text);
   }
 }
 

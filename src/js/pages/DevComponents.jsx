@@ -139,7 +139,7 @@ const Component = () => {
     country: true,
     genre: true,
     userRating: true,
-    isFavourite: true,
+    isFavourite: false,
   });
 
   const handleColChange = (attr, value) => {
@@ -284,6 +284,14 @@ const Component = () => {
                 { variant: 'checkbox', label: 'Genre', attr: 'genre', checked: colOptions.genre },
                 { variant: 'checkbox', label: 'Rating', attr: 'userRating', checked: colOptions.userRating },
                 { variant: 'checkbox', label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
+                {
+                  variant: 'checkbox',
+                  label: 'Disabled (checked)',
+                  attr: 'devDisabledOn',
+                  checked: true,
+                  disabled: true,
+                },
+                { variant: 'checkbox', label: 'Disabled', attr: 'devDisabledOff', checked: false, disabled: true },
               ]}
             />
             <ActionButton label="New playlist" icon="PlusIcon" onClick={() => {}} />
@@ -309,6 +317,7 @@ const Component = () => {
                 { variant: 'action', label: 'Play track', icon: 'PlayIcon', onSelect: () => {} },
                 { variant: 'action', label: 'Go to artist', icon: 'PeopleIcon', onSelect: () => {} },
                 { variant: 'action', label: 'Go to album', icon: 'PlayCircleIcon', onSelect: () => {} },
+                { variant: 'action', label: 'Disabled', icon: 'MinusCircleIcon', onSelect: () => {}, disabled: true },
               ]}
             />
           </ActionWrap>
@@ -363,6 +372,14 @@ const Component = () => {
                 { variant: 'checkbox', label: 'Genre', attr: 'genre', checked: colOptions.genre },
                 { variant: 'checkbox', label: 'Rating', attr: 'userRating', checked: colOptions.userRating },
                 { variant: 'checkbox', label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
+                {
+                  variant: 'checkbox',
+                  label: 'Disabled (checked)',
+                  attr: 'devDisabledOn',
+                  checked: true,
+                  disabled: true,
+                },
+                { variant: 'checkbox', label: 'Disabled', attr: 'devDisabledOff', checked: false, disabled: true },
               ]}
             />
             <ActionButton variant="Large" label="New playlist" icon="PlusIcon" onClick={() => {}} />
@@ -389,6 +406,7 @@ const Component = () => {
                 { variant: 'action', label: 'Play track', icon: 'PlayIcon', onSelect: () => {} },
                 { variant: 'action', label: 'Go to artist', icon: 'PeopleIcon', onSelect: () => {} },
                 { variant: 'action', label: 'Go to album', icon: 'PlayCircleIcon', onSelect: () => {} },
+                { variant: 'action', label: 'Disabled', icon: 'MinusCircleIcon', onSelect: () => {}, disabled: true },
               ]}
             />
           </div>

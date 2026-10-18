@@ -58,7 +58,7 @@
 
 .label {
   &.disabled {
-    color: var(--color-opacity-04);
+    color: var(--color-disabled-text);
   }
 }
 
@@ -70,7 +70,7 @@
   color: var(--color-opacity-06);
 
   &.disabled {
-    color: var(--color-opacity-04);
+    color: var(--color-disabled-text);
   }
 }
 
@@ -82,7 +82,7 @@
   color: var(--color-opacity-04);
 
   &.disabled {
-    color: var(--color-opacity-04);
+    color: var(--color-disabled-text);
   }
 }
 
@@ -129,7 +129,7 @@
   }
 
   input[type='checkbox']:disabled + .checkboxIndicator {
-    opacity: var(--opacity-04);
+    opacity: var(--opacity-disabled);
   }
 }
 

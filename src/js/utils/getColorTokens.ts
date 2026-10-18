@@ -165,6 +165,13 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
   const opacity05 = decimalMultiplier(opacityMultiplier, 0.5);
   const opacity06 = decimalMultiplier(opacityMultiplier, 0.6);
 
+  // Disabled states don't scale with contrast, so they stay clearly disabled at every level
+  const opacityDisabled = 0.4;
+  const opacityDisabledIcon = 0.6;
+  const colorDisabledText = colorText + decimalToHex(0.4);
+  const colorButtonDisabledText = colorText + decimalToHex(0.3);
+  const colorButtonDisabledBg = colorText + decimalToHex(0.05);
+
   const shadowLg = isActualLightTheme ? '0 4px 20px rgba(0, 0, 0, 0.1)' : '0 2px 20px rgba(0, 0, 0, 0.35)';
   const shadowMd = isActualLightTheme ? '0 4px 8px rgba(0, 0, 0, 0.1)' : '0 2px 10px rgba(0, 0, 0, 0.35)';
   const shadowSm = isActualLightTheme ? '0 2px 4px rgba(0, 0, 0, 0.05)' : '0 2px 6px rgba(0, 0, 0, 0.2)';
@@ -252,6 +259,9 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     '--color-button-outline-on-secondary-hover': colorTertiaryBg,
     '--color-button-outline-on-secondary-text': colorText,
 
+    '--color-button-disabled-bg': colorButtonDisabledBg,
+    '--color-button-disabled-text': colorButtonDisabledText,
+
     '--color-card-on-primary-bg': colorSecondaryBg,
     '--color-card-on-primary-border': colorSecondaryBorder,
     '--color-card-on-primary-hover': colorTertiaryBg,
@@ -263,8 +273,9 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     '--color-card-ghost-on-secondary-hover': colorTertiaryBg,
     '--color-card-ghost-on-secondary-hover-border': colorCardGhostOnSecondaryHoverBorder,
 
-    '--color-checkbox-on-primary-border': colorCheckboxOnPrimaryBorder,
+    '--color-disabled-text': colorDisabledText,
 
+    // Controls are things like search and release notes in the sidebar menu
     '--color-control-on-secondary-bg': colorControlOnSecondaryBg,
     '--color-control-on-secondary-border': colorControlOnSecondaryBorder,
     '--color-control-on-secondary-hover': colorControlOnSecondaryHover,
@@ -281,6 +292,9 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     '--color-field-on-secondary-focus-border': colorControlOnSecondaryFocusBorder,
     '--color-field-on-secondary-text': colorText,
 
+    '--color-checkbox-on-primary-border': colorCheckboxOnPrimaryBorder,
+
+    // items are slightly miscellaneous elements throughout
     '--color-item-on-core-hover': colorCoreHover,
     '--color-item-on-primary-hover': colorSecondaryBg,
     '--color-item-on-secondary-hover': colorSecondaryHover,
@@ -305,6 +319,9 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     '--opacity-04': opacity04,
     '--opacity-05': opacity05,
     '--opacity-06': opacity06,
+
+    '--opacity-disabled': opacityDisabled,
+    '--opacity-disabled-icon': opacityDisabledIcon,
 
     '--shadow-lg': shadowLg,
     '--shadow-md': shadowMd,
