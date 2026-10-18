@@ -288,7 +288,7 @@ const groups: Group[] = [
   {
     title: 'Core accents',
     description:
-      'Plain core as text, icons and marks on each surface: on primary (links, the playing track, favourites, the downloads link, the drop indicator) and its row hover, and on secondary (modal link hovers, Electron menu ticks) and its hover. Reported only, with no guardrails, since a theme’s core is the user’s choice.',
+      'Plain core as text, icons and marks on each surface: on primary (links, the playing track, favourites, the downloads link, the drop indicator) and its row hover, and on secondary (modal link hovers) and its hover. Reported only, with no guardrails, since a theme’s core is the user’s choice.',
     kind: 'focus',
     swatchKind: 'text',
     pairs: {
@@ -322,6 +322,17 @@ const groups: Group[] = [
     },
   },
   {
+    title: 'Electron menu',
+    description:
+      'The Windows and Linux app menu on tertiary when logged in (on secondary when logged out, like other menus): item text on the menu and its row hover, plus section headings and plain labels.',
+    kind: 'text',
+    pairs: {
+      'Text on hover': (t) => ({ fg: t['--color-text'], bg: t['--color-item-on-tertiary-hover'] }),
+      Heading: (t) => ({ fg: over(t['--color-tertiary-bg'], t['--color-opacity-05']), bg: t['--color-tertiary-bg'] }),
+      Label: (t) => ({ fg: over(t['--color-tertiary-bg'], t['--color-opacity-04']), bg: t['--color-tertiary-bg'] }),
+    },
+  },
+  {
     title: 'Disabled',
     description:
       'Text on its fill, enabled then disabled. Not rated: a bigger drop means disabled looks more distinct.',
@@ -349,6 +360,12 @@ const groups: Group[] = [
       'Menu checkbox disabled': (t) => ({
         fg: over(t['--color-secondary-bg'], t['--color-disabled-text'], Number(t['--opacity-disabled-icon'])),
         bg: t['--color-secondary-bg'],
+      }),
+      // The Electron menu sits on tertiary when logged in
+      'Electron menu item enabled': (t) => ({ fg: t['--color-text'], bg: t['--color-tertiary-bg'] }),
+      'Electron menu item disabled': (t) => ({
+        fg: over(t['--color-tertiary-bg'], t['--color-disabled-text']),
+        bg: t['--color-tertiary-bg'],
       }),
     },
   },

@@ -4,6 +4,7 @@
 
 import { useSelector } from 'react-redux';
 import * as RadixMenu from '@radix-ui/react-dropdown-menu';
+import clsx from 'clsx';
 import semver from 'semver';
 
 import { Icon } from 'js/components';
@@ -115,14 +116,20 @@ const AllMenuItems = ({ filteredMenu, handleClick }) => {
                 key={`${topIndex}-${subIndex}`}
                 className={style.checkboxItem}
                 checked={subItem.checked}
+                disabled={subItem.enabled === false}
                 onCheckedChange={(event) => handleClick(event, subItem)}
               >
-                <div>{stringToLabel(subItem.label ? subItem.label : subItem.role)}</div>
                 <RadixMenu.ItemIndicator>
                   <span className={style.checkboxIcon}>
                     <Icon icon="CheckSquareFilledIcon" cover />
                   </span>
                 </RadixMenu.ItemIndicator>
+                {!subItem.checked && (
+                  <span className={clsx(style.checkboxIcon, style.checkboxIconInactive)}>
+                    <Icon icon="CheckSquareEmptyIcon" cover stroke />
+                  </span>
+                )}
+                <span>{stringToLabel(subItem.label ? subItem.label : subItem.role)}</span>
               </RadixMenu.CheckboxItem>
             );
           }
@@ -133,6 +140,7 @@ const AllMenuItems = ({ filteredMenu, handleClick }) => {
               <RadixMenu.Item
                 key={`${topIndex}-${subIndex}`}
                 className={style.item}
+                disabled={subItem.enabled === false}
                 onSelect={(event) => handleClick(event, subItem)}
               >
                 {stringToLabel(subItem.label ? subItem.label : subItem.role)}
