@@ -123,6 +123,18 @@ describe('Testing "getColorTokens" function', () => {
     expect(getColorTokens(dark).tokens['--color-slider-on-secondary-fill']).toBe('#f7277a');
   });
 
+  test('Selected select items reach the focus contrast against both the popup and the highlighted row', () => {
+    for (const contrast of ['default', 'high'] as const) {
+      const { tokens } = getColorTokens({ ...dark, contrast });
+      const selected = tokens['--color-select-on-secondary-checked-text'];
+      const target = contrast === 'high' ? 4 : 3;
+      expect(chroma.contrast(selected, tokens['--color-secondary-bg'])).toBeGreaterThanOrEqual(target);
+      expect(chroma.contrast(selected, tokens['--color-item-on-secondary-hover'])).toBeGreaterThanOrEqual(target);
+    }
+    // Chromatix magenta reaches 3 on both at default, so it stays
+    expect(getColorTokens(dark).tokens['--color-select-on-secondary-checked-text']).toBe('#f7277a');
+  });
+
   test('An unknown contrast setting falls back to default', () => {
     const unknown = getColorTokens({ ...dark, contrast: 'unknown' as ColorTokensInput['contrast'] });
     expect(unknown).toEqual(getColorTokens(dark));

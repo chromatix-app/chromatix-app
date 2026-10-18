@@ -10,7 +10,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import chroma from 'chroma-js';
-import clsx from 'clsx';
 
 import { devThemes } from 'js/_config/devThemes';
 import { themes } from 'js/_config/themes';
@@ -90,10 +89,12 @@ type Rating = 'good' | 'ok' | 'poor' | 'none';
 // swatch as an outline rather than a fill (e.g. an unchecked checkbox)
 type Pair = (t: Record<string, string>, opacityDisabled: number) => { fg: string; bg: string; outline?: boolean };
 
+// `swatchKind` draws the swatches as another kind (e.g. text rated against the focus targets)
 interface Group {
   title: string;
   description: string;
   kind: Kind;
+  swatchKind?: Kind;
   pairs: Record<string, Pair>;
 }
 
@@ -227,6 +228,20 @@ const groups: Group[] = [
     },
   },
   {
+    title: 'Selected items in selects',
+    description:
+      'The selected item’s label in FormSelect and FormTheme popups (core, shifted to the focus contrast against both), on the popup and on the highlighted row. The tick is the same colour.',
+    kind: 'focus',
+    swatchKind: 'text',
+    pairs: {
+      'On popup': (t) => ({ fg: t['--color-select-on-secondary-checked-text'], bg: t['--color-secondary-bg'] }),
+      'On highlighted row': (t) => ({
+        fg: t['--color-select-on-secondary-checked-text'],
+        bg: t['--color-item-on-secondary-hover'],
+      }),
+    },
+  },
+  {
     title: 'Button borders',
     description: 'Each button border against its resting fill, then against its hover fill.',
     kind: 'border',
@@ -344,7 +359,6 @@ const renderGroup = (group: Group, contrast: ColorContrast, ratios: Record<strin
       const { tokens, isLightTheme } = getColorTokens(toInput(devTheme, contrast));
       const t = tokens as Record<string, string>;
       const opacityDisabled = Number(tokens['--opacity-disabled']);
-      const isLimited = chroma.contrast(t['--color-text'], t['--color-primary-bg']) < limitedThemeRatio;
 
       const cells = Object.entries(group.pairs)
         .map(([name, pair]) => {
@@ -354,15 +368,13 @@ const renderGroup = (group: Group, contrast: ColorContrast, ratios: Record<strin
           ratios[key] = ratio;
 
           // The comparison script fills the delta and marks changed cells
-          return `<td class="${rate(group.kind, ratio, contrast)}" data-key="${escape(key)}" data-ratio="${ratio}" data-kind="${group.kind}">${swatch(group.kind, fg, bg, outline)}<span class="ratio">${ratio.toFixed(2)}</span><span class="delta"></span></td>`;
+          return `<td class="${rate(group.kind, ratio, contrast)}" data-key="${escape(key)}" data-ratio="${ratio}" data-kind="${group.kind}">${swatch(group.swatchKind ?? group.kind, fg, bg, outline)}<span class="ratio">${ratio.toFixed(2)}</span><span class="delta"></span></td>`;
         })
         .join('');
 
-      const tags = `<span class="tag">${isLightTheme ? 'Light' : 'Dark'}</span>${
-        isLimited ? '<span class="tag limited-tag" title="Limited by the theme’s colours">Limited</span>' : ''
-      }`;
+      const tags = `<span class="tag">${isLightTheme ? 'Light' : 'Dark'}</span>`;
 
-      return `<tr class="${clsx(isLimited && 'limited')}"><th scope="row">${escape(devTheme.label)}${tags}</th>${cells}</tr>`;
+      return `<tr><th scope="row">${escape(devTheme.label)}${tags}</th>${cells}</tr>`;
     })
     .join('');
 
@@ -447,14 +459,12 @@ const renderReport = (panels: string, snapshots: Partial<Record<SnapshotName, Sn
   .delta.good { background: var(--good); color: var(--good-ink); }
   .delta.ok { background: var(--ok); color: var(--ok-ink); }
   .delta.poor { background: var(--poor); color: var(--poor-ink); }
-  .delta.none, tr.limited .delta { background: var(--surface); color: var(--muted); }
+  .delta.none { background: var(--surface); color: var(--muted); }
   .count { margin-left: 4px; font-size: 11px; opacity: 0.7; }
-  tr.limited td { background: transparent; color: var(--muted); font-weight: 400; }
   .swatch { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 18px; margin-right: 6px; border-radius: 4px; font-weight: 600; vertical-align: middle; box-shadow: 0 0 0 1px rgba(127,127,127,0.25); }
   .mark { box-sizing: border-box; width: 10px; height: 10px; border-radius: 2px; }
   .ratio { font-variant-numeric: tabular-nums; }
   .tag { display: inline-block; margin-left: 6px; padding: 0 5px; border: 1px solid var(--line); border-radius: 999px; font-size: 10px; color: var(--muted); }
-  .limited-tag { border-style: dashed; }
   .bar { position: sticky; top: 0; z-index: 1; display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; padding: 8px 0; background: var(--page); }
   .compare { display: flex; gap: 6px; align-items: center; color: var(--muted); }
   .compare button { padding: 3px 9px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
@@ -472,12 +482,11 @@ const renderReport = (panels: string, snapshots: Partial<Record<SnapshotName, Sn
 
   <div class="legend">
     <h2>Ratings</h2>
-    <p>Rows marked “Limited” have text below ${limitedThemeRatio} on their own background, so the UI can’t fully fix them. Their ratings are greyed out.</p>
     <div class="scroll"><table>
       <thead><tr><th>Pair</th><th>Good</th><th>OK</th><th>Poor</th><th>Basis</th></tr></thead>
       <tbody>
         ${legendRow('text', 'Text', 'WCAG: 4.5 for normal text, 3 for large text')}
-        <tr><th scope="row">Focus borders</th><td class="good">The target and above</td><td class="ok">Up to 1 below</td><td class="poor">More than 1 below</td><td>Targets of ${focusTargets.default}, ${focusTargets.medium} and ${focusTargets.high} by contrast level; WCAG asks for 3 for UI parts</td></tr>
+        <tr><th scope="row">Focus borders and selected select items</th><td class="good">The target and above</td><td class="ok">Up to 1 below</td><td class="poor">More than 1 below</td><td>Targets of ${focusTargets.default}, ${focusTargets.medium} and ${focusTargets.high} by contrast level; WCAG asks for 3 for UI parts</td></tr>
         <tr><th scope="row">Hover</th><td class="good">The target and above</td><td class="ok">Up to 0.05 below</td><td class="poor">More than 0.05 below</td><td>Targets of ${hoverTargets.default}, ${hoverTargets.medium} and ${hoverTargets.high} by contrast level; no WCAG target</td></tr>
         ${legendRow('surface', 'Surfaces', 'Suggestion, no WCAG target; below 1.05 is indistinguishable')}
         ${legendRow('ui', 'Checkboxes, radios and sliders', 'WCAG: 3 for UI parts')}
@@ -625,8 +634,8 @@ const coreTextMin =
       )
     );
 
-// Shifted core (checked fills and slider fills) reaches the focus target, or is the better of core and the text colour
-// when neither can
+// Shifted core (checked fills, slider fills and selected select items) reaches the focus target, or is the better of
+// core and the text colour when neither can
 const shiftedCoreMin =
   (background: string): GuardrailTarget =>
   (t, contrast) =>
@@ -716,6 +725,18 @@ const guardrails: { name: string; min: GuardrailMin; fg: string; bg: string }[] 
     min: shiftedCoreMin('--color-secondary-bg'),
     fg: '--color-slider-on-secondary-fill',
     bg: '--color-secondary-bg',
+  },
+  {
+    name: 'Selected select item on popup',
+    min: shiftedCoreMin('--color-secondary-bg'),
+    fg: '--color-select-on-secondary-checked-text',
+    bg: '--color-secondary-bg',
+  },
+  {
+    name: 'Selected select item on highlighted row',
+    min: shiftedCoreMin('--color-item-on-secondary-hover'),
+    fg: '--color-select-on-secondary-checked-text',
+    bg: '--color-item-on-secondary-hover',
   },
   {
     name: 'Field focus border on primary',

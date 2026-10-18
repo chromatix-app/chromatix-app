@@ -135,7 +135,7 @@
   }
 
   &[data-state='checked'] {
-    color: var(--color-core-main);
+    color: var(--color-select-on-secondary-checked-text);
   }
 }
 
@@ -155,7 +155,7 @@
   height: 14px;
   margin-left: auto;
   margin-right: 4px;
-  color: var(--color-core-main);
+  color: var(--color-select-on-secondary-checked-text);
 }
 
 .itemLabelPrefix {

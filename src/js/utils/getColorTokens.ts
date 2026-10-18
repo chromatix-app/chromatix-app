@@ -109,19 +109,23 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
   const flattenText = (background: string, opacity: number): string =>
     chroma.mix(background, colorText, scaledOpacity(opacity), 'rgb').hex();
 
+  // The lowest contrast of a colour against several backgrounds
+  const contrastAgainst = (color: string, backgrounds: string[]): number =>
+    Math.min(...backgrounds.map((background) => chroma.contrast(color, background)));
+
   // Binary searches amounts from 0 to `max` for the smallest that makes `make(amount)` reach a target contrast against
-  // a background
+  // every background
   const searchAtContrast = (
     make: (amount: number) => string,
     max: number,
-    background: string,
+    backgrounds: string[],
     target: number
   ): string => {
     let low = 0;
     let high = max;
     for (let step = 0; step < 12; step++) {
       const middle = (low + high) / 2;
-      if (chroma.contrast(make(middle), background) >= target) high = middle;
+      if (contrastAgainst(make(middle), backgrounds) >= target) high = middle;
       else low = middle;
     }
     return make(high);
@@ -134,7 +138,7 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     if (chroma.contrast(towards, background) <= target) return towards;
 
     const mix = (amount: number): string => chroma.mix(background, towards, amount, 'rgb').hex();
-    return searchAtContrast(mix, 1, background, target);
+    return searchAtContrast(mix, 1, [background], target);
   };
 
   // Shifts a colour towards another's lightness: darker if it's lighter than the target, otherwise lighter
@@ -144,15 +148,15 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
       : chroma(color).brighten(amount).hex();
 
   // Shifts a colour towards the text colour's lightness (in Lab, so it keeps its hue) just far enough to reach a target
-  // contrast against a background. Keeps the colour if it already reaches the target, and falls back to the better of
-  // the colour and the text colour when even the furthest shift (fully black or white) can't reach it
-  const shiftAtContrast = (color: string, background: string, target: number): string => {
-    if (chroma.contrast(color, background) >= target) return color;
+  // contrast against every background. Keeps the colour if it already reaches the target, and falls back to the better
+  // of the colour and the text colour when even the furthest shift (fully black or white) can't reach it
+  const shiftAtContrast = (color: string, backgrounds: string[], target: number): string => {
+    if (contrastAgainst(color, backgrounds) >= target) return color;
 
     const shift = (amount: number): string => shiftTowards(color, amount, colorText);
-    if (chroma.contrast(shift(6), background) < target)
-      return chroma.contrast(colorText, background) > chroma.contrast(color, background) ? colorText : color;
-    return searchAtContrast(shift, 6, background, target);
+    if (contrastAgainst(shift(6), backgrounds) < target)
+      return contrastAgainst(colorText, backgrounds) > contrastAgainst(color, backgrounds) ? colorText : color;
+    return searchAtContrast(shift, 6, backgrounds, target);
   };
 
   // ======================================================================
@@ -328,8 +332,16 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
 
   // Core used as a fill on a surface (checked checkboxes, slider fills), shifted where needed to reach the focus
   // contrast against it
-  const colorCoreAccentOnPrimary = shiftAtContrast(colorCore, colorPrimaryBg, focusContrast);
-  const colorCoreAccentOnSecondary = shiftAtContrast(colorCore, colorSecondaryBg, focusContrast);
+  const colorCoreAccentOnPrimary = shiftAtContrast(colorCore, [colorPrimaryBg], focusContrast);
+  const colorCoreAccentOnSecondary = shiftAtContrast(colorCore, [colorSecondaryBg], focusContrast);
+
+  // Core on secondary items that may also be highlighted (selected select items), reaching the focus contrast against
+  // both the surface and its hover, since the selected item is highlighted when the popup opens
+  const colorCoreAccentOnSecondaryItem = shiftAtContrast(
+    colorCore,
+    [colorSecondaryBg, colorSecondaryHover],
+    focusContrast
+  );
 
   // ======================================================================
   // CHECKBOXES
@@ -443,6 +455,8 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
 
     '--color-slider-on-primary-fill': colorCoreAccentOnPrimary,
     '--color-slider-on-secondary-fill': colorCoreAccentOnSecondary,
+
+    '--color-select-on-secondary-checked-text': colorCoreAccentOnSecondaryItem,
 
     '--color-disabled-text': colorDisabledText,
 
