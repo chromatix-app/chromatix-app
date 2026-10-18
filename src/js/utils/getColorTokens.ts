@@ -21,7 +21,7 @@ interface ColorTokens {
 }
 
 // Values that change with the contrast setting: the surface fill multiplier, the step multipliers for everything else,
-// the opacity multiplier, and the minimum contrast for button text, focus borders and hovers
+// the opacity multiplier, and the minimum contrast for button text, focus borders, core accents on rows and hovers
 interface ContrastLevel {
   surfaceMultiplier: number;
   chromaMultiplierLow: number;
@@ -29,6 +29,7 @@ interface ContrastLevel {
   opacityMultiplier: number;
   coreTextContrast: number;
   focusContrast: number;
+  itemAccentContrast: number;
   hoverContrast: number;
 }
 
@@ -40,6 +41,7 @@ export const contrastLevels: Record<ColorContrast, ContrastLevel> = {
     opacityMultiplier: 1,
     coreTextContrast: 3,
     focusContrast: 3,
+    itemAccentContrast: 2.5,
     hoverContrast: 1.15,
   },
   medium: {
@@ -47,8 +49,9 @@ export const contrastLevels: Record<ColorContrast, ContrastLevel> = {
     chromaMultiplierLow: 1.3,
     chromaMultiplierHigh: 1.4,
     opacityMultiplier: 1.5,
-    coreTextContrast: 3.1,
+    coreTextContrast: 4,
     focusContrast: 3.5,
+    itemAccentContrast: 2.75,
     hoverContrast: 1.2,
   },
   high: {
@@ -56,8 +59,9 @@ export const contrastLevels: Record<ColorContrast, ContrastLevel> = {
     chromaMultiplierLow: 1.5,
     chromaMultiplierHigh: 1.7,
     opacityMultiplier: 2,
-    coreTextContrast: 3.2,
+    coreTextContrast: 4.5,
     focusContrast: 4,
+    itemAccentContrast: 3,
     hoverContrast: 1.25,
   },
 };
@@ -86,6 +90,7 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     opacityMultiplier,
     coreTextContrast,
     focusContrast,
+    itemAccentContrast,
     hoverContrast,
   } = contrastLevels[contrast] ?? contrastLevels.default;
 
@@ -181,11 +186,17 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
   const colorCoreHover = shiftCore(coreHoverShift);
   const colorCoreBorder = shiftCore(Math.max(0.5 * chromaMultiplierLow, 1.5 * coreHoverShift));
 
-  // Whether the text colour reads better on core than a background, and whether that background is unreadable on core
+  // Whether the text colour reads better on core than a background, and whether that background is unreadable on core.
+  // Higher levels' targets only apply when the text colour reaches them, so a theme doesn't switch for a tiny gain;
+  // otherwise the default target still applies
   const textReadsBetterOnCore = (background: string): boolean =>
     chroma.contrast(colorText, colorCore) > chroma.contrast(background, colorCore);
+  const coreTextTarget =
+    chroma.contrast(colorText, colorCore) >= coreTextContrast
+      ? coreTextContrast
+      : contrastLevels.default.coreTextContrast;
   const isUnreadableOnCore = (background: string): boolean =>
-    chroma.contrast(background, colorCore) < coreTextContrast && textReadsBetterOnCore(background);
+    chroma.contrast(background, colorCore) < coreTextTarget && textReadsBetterOnCore(background);
 
   // ======================================================================
   // SURFACES
@@ -347,12 +358,17 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
   const colorCoreAccentOnSecondary = shiftAtContrast(colorCore, [colorSecondaryBg], focusContrast);
 
   // Core on rows that can also be hovered or active (selected select items, active buttons and links), shifted to
-  // reach the focus contrast against every state the row can be in
-  const colorCoreAccentOnPrimaryItem = shiftAtContrast(colorCore, [colorPrimaryBg, colorSecondaryBg], focusContrast);
+  // reach the item accent contrast against every state the row can be in. It rises more gently than the focus
+  // contrast, since the hover and active rows already strengthen with contrast, so the accent stays close to core
+  const colorCoreAccentOnPrimaryItem = shiftAtContrast(
+    colorCore,
+    [colorPrimaryBg, colorSecondaryBg],
+    itemAccentContrast
+  );
   const colorCoreAccentOnSecondaryItem = shiftAtContrast(
     colorCore,
     [colorSecondaryBg, colorSecondaryHover, colorSecondaryActive],
-    focusContrast
+    itemAccentContrast
   );
 
   // ======================================================================

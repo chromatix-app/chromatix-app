@@ -48,13 +48,14 @@ const changeThreshold = 0.005;
 
 const contrasts: ColorContrast[] = ['default', 'medium', 'high'];
 
-// Focus border and hover targets per contrast level, from getColorTokens
-const targetsFor = (key: 'focusContrast' | 'hoverContrast') =>
+// Focus border, item accent and hover targets per contrast level, from getColorTokens
+const targetsFor = (key: 'focusContrast' | 'itemAccentContrast' | 'hoverContrast') =>
   Object.fromEntries(contrasts.map((contrast) => [contrast, contrastLevels[contrast][key]])) as Record<
     ColorContrast,
     number
   >;
 const focusTargets = targetsFor('focusContrast');
+const itemAccentTargets = targetsFor('itemAccentContrast');
 const hoverTargets = targetsFor('hoverContrast');
 
 // Below this, a theme's own text on its background already fails, so the UI can't fully fix it
@@ -274,8 +275,8 @@ const groups: Group[] = [
   {
     title: 'Selected items in selects',
     description:
-      'The selected item’s label in FormSelect and FormTheme popups (core, shifted to the focus contrast against both), on the popup and on the highlighted row. The tick is the same colour.',
-    kind: 'focus',
+      'The selected item’s label in FormSelect and FormTheme popups (core, shifted to the item accent contrast against both), on the popup and on the highlighted row. The tick is the same colour.',
+    kind: 'ui',
     swatchKind: 'text',
     pairs: {
       'On popup': (t) => ({ fg: t['--color-select-on-secondary-checked-text'], bg: t['--color-secondary-bg'] }),
@@ -301,8 +302,8 @@ const groups: Group[] = [
   {
     title: 'Active items',
     description:
-      'Active control bar buttons, the current user menu item and the sidebar’s active link (core, shifted to the focus contrast against every row state), on secondary, its hover and its active row, and in the full-page player on primary and its hover.',
-    kind: 'focus',
+      'Active control bar buttons, the current user menu item and the sidebar’s active link (core, shifted to the item accent contrast against every row state), on secondary, its hover and its active row, and in the full-page player on primary and its hover.',
+    kind: 'ui',
     swatchKind: 'text',
     pairs: {
       'On secondary': (t) => ({ fg: t['--color-item-on-secondary-active-text'], bg: t['--color-secondary-bg'] }),
@@ -685,25 +686,28 @@ const coreHoverMin: GuardrailTarget = (t, contrast) => {
   return Math.min(hoverTargets[contrast], chroma.contrast(core, furthest));
 };
 
-// Core button text reaches its target, or is the better of the background and the text colour when neither can
+// Core button text reaches its target, or is the better of the background and the text colour when neither can. Higher
+// levels' targets only apply when the text colour reaches them, otherwise the default target does
 const coreTextMin =
   (background: string): GuardrailTarget =>
   (t, contrast) =>
     Math.min(
-      contrastLevels[contrast].coreTextContrast,
+      chroma.contrast(t['--color-text'], t['--color-core-main']) >= contrastLevels[contrast].coreTextContrast
+        ? contrastLevels[contrast].coreTextContrast
+        : contrastLevels.default.coreTextContrast,
       Math.max(
         chroma.contrast(t[background], t['--color-core-main']),
         chroma.contrast(t['--color-text'], t['--color-core-main'])
       )
     );
 
-// Shifted core (checked fills, slider fills, selected select items and active items) reaches the focus target, or is
-// the better of core and the text colour when neither can
+// Shifted core reaches its target (the focus target for checked and slider fills, the item accent target for selected
+// select items and active items), or is the better of core and the text colour when neither can
 const shiftedCoreMin =
-  (background: string): GuardrailTarget =>
+  (background: string, targets = focusTargets): GuardrailTarget =>
   (t, contrast) =>
     Math.min(
-      focusTargets[contrast],
+      targets[contrast],
       Math.max(
         chroma.contrast(t['--color-core-main'], t[background]),
         chroma.contrast(t['--color-text'], t[background])
@@ -797,43 +801,43 @@ const guardrails: { name: string; min: GuardrailMin; fg: string; bg: string }[] 
   },
   {
     name: 'Selected select item on popup',
-    min: shiftedCoreMin('--color-secondary-bg'),
+    min: shiftedCoreMin('--color-secondary-bg', itemAccentTargets),
     fg: '--color-select-on-secondary-checked-text',
     bg: '--color-secondary-bg',
   },
   {
     name: 'Selected select item on highlighted row',
-    min: shiftedCoreMin('--color-item-on-secondary-hover'),
+    min: shiftedCoreMin('--color-item-on-secondary-hover', itemAccentTargets),
     fg: '--color-select-on-secondary-checked-text',
     bg: '--color-item-on-secondary-hover',
   },
   {
     name: 'Active item on secondary',
-    min: shiftedCoreMin('--color-secondary-bg'),
+    min: shiftedCoreMin('--color-secondary-bg', itemAccentTargets),
     fg: '--color-item-on-secondary-active-text',
     bg: '--color-secondary-bg',
   },
   {
     name: 'Active item on secondary hover',
-    min: shiftedCoreMin('--color-item-on-secondary-hover'),
+    min: shiftedCoreMin('--color-item-on-secondary-hover', itemAccentTargets),
     fg: '--color-item-on-secondary-active-text',
     bg: '--color-item-on-secondary-hover',
   },
   {
     name: 'Active item on secondary active row',
-    min: shiftedCoreMin('--color-item-on-secondary-active'),
+    min: shiftedCoreMin('--color-item-on-secondary-active', itemAccentTargets),
     fg: '--color-item-on-secondary-active-text',
     bg: '--color-item-on-secondary-active',
   },
   {
     name: 'Active item on primary',
-    min: shiftedCoreMin('--color-primary-bg'),
+    min: shiftedCoreMin('--color-primary-bg', itemAccentTargets),
     fg: '--color-item-on-primary-active-text',
     bg: '--color-primary-bg',
   },
   {
     name: 'Active item on primary hover',
-    min: shiftedCoreMin('--color-item-on-primary-hover'),
+    min: shiftedCoreMin('--color-item-on-primary-hover', itemAccentTargets),
     fg: '--color-item-on-primary-active-text',
     bg: '--color-item-on-primary-hover',
   },

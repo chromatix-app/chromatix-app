@@ -73,9 +73,13 @@ describe('Testing "getColorTokens" function', () => {
     expect(coreText(dark)).toBe('#021c27');
     // White with a green core: white on green is unreadable, so the dark text colour takes over
     expect(coreText({ ...light, core: '#9de50d' })).toBe('#111111');
-    // White with magenta: white on magenta passes at every contrast level
+    // White with magenta: white on magenta (3.8) passes at default, but at high the dark text colour reads better
     expect(coreText(light)).toBe('#ffffff');
-    expect(coreText({ ...light, contrast: 'high' })).toBe('#ffffff');
+    expect(coreText({ ...light, contrast: 'high' })).toBe('#111111');
+    // Chromatix magenta at high: white on core (3.8) can't reach 4.5, so the background stays on both surfaces
+    const high = getColorTokens({ ...dark, contrast: 'high' }).tokens;
+    expect(high['--color-core-on-primary-text']).toBe('#021c27');
+    expect(high['--color-core-on-secondary-text']).toBe(high['--color-secondary-bg']);
   });
 
   test('Core text switches on both surfaces together when either is unreadable', () => {
@@ -131,27 +135,27 @@ describe('Testing "getColorTokens" function', () => {
     expect(getColorTokens(dark).tokens['--color-slider-on-secondary-fill']).toBe('#f7277a');
   });
 
-  test('Selected select items reach the focus contrast against both the popup and the highlighted row', () => {
+  test('Selected select items reach the item accent contrast against both the popup and the highlighted row', () => {
     for (const contrast of ['default', 'high'] as const) {
       const { tokens } = getColorTokens({ ...dark, contrast });
       const selected = tokens['--color-select-on-secondary-checked-text'];
-      const target = contrast === 'high' ? 4 : 3;
+      const target = contrast === 'high' ? 3 : 2.5;
       expect(chroma.contrast(selected, tokens['--color-secondary-bg'])).toBeGreaterThanOrEqual(target);
       expect(chroma.contrast(selected, tokens['--color-item-on-secondary-hover'])).toBeGreaterThanOrEqual(target);
     }
-    // Chromatix magenta reaches 3 on both at default, so it stays
+    // Chromatix magenta already reaches the default target on both, so it stays
     expect(getColorTokens(dark).tokens['--color-select-on-secondary-checked-text']).toBe('#f7277a');
   });
 
-  test('Active items reach the focus contrast against every row state', () => {
+  test('Active items reach the item accent contrast against every row state', () => {
     const { tokens } = getColorTokens({ ...dark, contrast: 'high' });
     const onSecondary = tokens['--color-item-on-secondary-active-text'];
     for (const row of ['--color-secondary-bg', '--color-item-on-secondary-hover', '--color-item-on-secondary-active']) {
-      expect(chroma.contrast(onSecondary, tokens[row])).toBeGreaterThanOrEqual(4);
+      expect(chroma.contrast(onSecondary, tokens[row])).toBeGreaterThanOrEqual(3);
     }
     const onPrimary = tokens['--color-item-on-primary-active-text'];
     for (const row of ['--color-primary-bg', '--color-item-on-primary-hover']) {
-      expect(chroma.contrast(onPrimary, tokens[row])).toBeGreaterThanOrEqual(4);
+      expect(chroma.contrast(onPrimary, tokens[row])).toBeGreaterThanOrEqual(3);
     }
     // Selected select items share the secondary colour
     expect(tokens['--color-select-on-secondary-checked-text']).toBe(onSecondary);
