@@ -55,12 +55,12 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
 
   let colorSecondaryBg: string;
   let colorSecondaryBorder: string;
-  let colorSecondaryHover: string;
+  let colorSecondaryHover: string; // Strengthened to the hover contrast after the light and dark handling
   let colorSecondaryActive: string;
 
   let colorTertiaryBg: string;
   let colorTertiaryBorder: string;
-  let colorTertiaryHover: string;
+  let colorTertiaryHover: string; // Strengthened to the hover contrast after the light and dark handling
 
   // [NOTE] Optional tinting maybe to be added in future
 
@@ -180,14 +180,14 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
   const flattenText = (background: string, opacity: number): string =>
     chroma.mix(background, colorText, decimalMultiplier(opacityMultiplier, opacity), 'rgb').hex();
 
-  // The text colour mixed over a background just far enough to reach a target contrast. Keeps `current` if it already
-  // reaches the target, and falls back to the text colour itself when the colours can't reach it
-  const textAtContrast = (background: string, target: number, current: string): string => {
+  // Mixes a background towards another colour just far enough to reach a target contrast against it. Keeps `current`
+  // if it already reaches the target, and falls back to the other colour itself when the colours can't reach it
+  const mixAtContrast = (background: string, towards: string, target: number, current: string): string => {
     if (chroma.contrast(current, background) >= target) return current;
-    if (chroma.contrast(colorText, background) <= target) return colorText;
+    if (chroma.contrast(towards, background) <= target) return towards;
 
     // Binary search for the smallest mix that reaches the target
-    const mix = (amount: number): string => chroma.mix(background, colorText, amount, 'rgb').hex();
+    const mix = (amount: number): string => chroma.mix(background, towards, amount, 'rgb').hex();
     let low = 0;
     let high = 1;
     for (let step = 0; step < 12; step++) {
@@ -202,7 +202,16 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
   // minimum for UI parts (3), raised with the contrast setting
   const focusContrast = contrastLevel === 'high' ? 4 : contrastLevel === 'medium' ? 3.5 : 3;
   const focusBorder = (background: string): string =>
-    textAtContrast(background, focusContrast, flattenText(background, 0.3));
+    mixAtContrast(background, colorText, focusContrast, flattenText(background, 0.3));
+
+  // Hovers move further towards their surface's border where needed, to reach a minimum contrast against the resting
+  // fill, raised with the contrast setting. Button borders then move just far enough towards the text colour to stay
+  // visible against the hover
+  const hoverContrast = contrastLevel === 'high' ? 1.25 : contrastLevel === 'medium' ? 1.2 : 1.15;
+  colorSecondaryHover = mixAtContrast(colorSecondaryBg, colorSecondaryBorder, hoverContrast, colorSecondaryHover);
+  colorTertiaryHover = mixAtContrast(colorTertiaryBg, colorTertiaryBorder, hoverContrast, colorTertiaryHover);
+  const colorButtonOnPrimaryBorder = mixAtContrast(colorSecondaryHover, colorText, 1.05, colorSecondaryBorder);
+  const colorButtonOnSecondaryBorder = mixAtContrast(colorTertiaryHover, colorText, 1.05, colorTertiaryBorder);
 
   // Shifts a colour towards another's lightness: darker if it's lighter than the target, otherwise lighter
   const shiftTowards = (color: string, amount: number, target: string): string =>
@@ -262,12 +271,12 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     '--color-button-mono-text': colorPrimaryBg,
 
     '--color-button-on-primary-bg': colorSecondaryBg,
-    '--color-button-on-primary-border': colorSecondaryBorder,
+    '--color-button-on-primary-border': colorButtonOnPrimaryBorder,
     '--color-button-on-primary-hover': colorSecondaryHover,
     '--color-button-on-primary-text': colorText,
 
     '--color-button-on-secondary-bg': colorTertiaryBg,
-    '--color-button-on-secondary-border': colorTertiaryBorder,
+    '--color-button-on-secondary-border': colorButtonOnSecondaryBorder,
     '--color-button-on-secondary-hover': colorTertiaryHover,
     '--color-button-on-secondary-text': colorText,
 
@@ -293,8 +302,6 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     '--color-card-ghost-on-secondary-hover': colorTertiaryBg,
     '--color-card-ghost-on-secondary-hover-border': colorCardGhostOnSecondaryHoverBorder,
 
-    '--color-disabled-text': colorDisabledText,
-
     // Controls are things like search and release notes in the sidebar menu
     '--color-control-on-secondary-bg': colorControlOnSecondaryBg,
     '--color-control-on-secondary-border': colorControlOnSecondaryBorder,
@@ -314,7 +321,9 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
 
     '--color-checkbox-on-primary-border': colorCheckboxOnPrimaryBorder,
 
-    // items are slightly miscellaneous elements throughout
+    '--color-disabled-text': colorDisabledText,
+
+    // Items are slightly miscellaneous elements used throughout
     '--color-item-on-core-hover': colorCoreHover,
     '--color-item-on-primary-hover': colorSecondaryBg,
     '--color-item-on-secondary-hover': colorSecondaryHover,

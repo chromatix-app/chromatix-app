@@ -52,6 +52,9 @@ const contrasts: ColorContrast[] = ['default', 'medium', 'high'];
 // Focus border targets per contrast level, matching getColorTokens
 const focusTargets: Record<ColorContrast, number> = { default: 3, medium: 3.5, high: 4 };
 
+// Hover targets per contrast level, matching getColorTokens
+const hoverTargets: Record<ColorContrast, number> = { default: 1.15, medium: 1.2, high: 1.25 };
+
 // Below this, a theme's own text on its background already fails, so the UI can't fully fix it
 const limitedThemeRatio = 4.5;
 
@@ -99,9 +102,21 @@ const bands: Record<Kind, [number, number] | null> = {
   disabled: null,
 };
 
-// Focus borders are rated against their contrast level's target, with OK up to 1 below it
+// Focus borders and hovers are rated against their contrast level's target, with OK a little below it
 const bandFor = (kind: Kind, contrast: ColorContrast): [number, number] | null =>
-  kind === 'focus' ? [focusTargets[contrast], focusTargets[contrast] - 1] : bands[kind];
+  kind === 'focus'
+    ? [focusTargets[contrast], focusTargets[contrast] - 1]
+    : kind === 'hover'
+      ? [hoverTargets[contrast], hoverTargets[contrast] - 0.05]
+      : bands[kind];
+
+// Every band by contrast level and kind, for the report's comparison script
+const bandsByContrast = Object.fromEntries(
+  contrasts.map((contrast) => [
+    contrast,
+    Object.fromEntries((Object.keys(bands) as Kind[]).map((kind) => [kind, bandFor(kind, contrast)])),
+  ])
+);
 
 const rate = (kind: Kind, ratio: number, contrast: ColorContrast): Rating => {
   const band = bandFor(kind, contrast);
@@ -424,7 +439,7 @@ const renderReport = (panels: string, snapshots: Partial<Record<SnapshotName, Sn
       <tbody>
         ${legendRow('text', 'Text', 'WCAG: 4.5 for normal text, 3 for large text')}
         <tr><th scope="row">Focus borders</th><td class="good">The target and above</td><td class="ok">Up to 1 below</td><td class="poor">More than 1 below</td><td>Targets of ${focusTargets.default}, ${focusTargets.medium} and ${focusTargets.high} by contrast level; WCAG asks for 3 for UI parts</td></tr>
-        ${legendRow('hover', 'Hover', 'Suggestion, no WCAG target')}
+        <tr><th scope="row">Hover</th><td class="good">The target and above</td><td class="ok">Up to 0.05 below</td><td class="poor">More than 0.05 below</td><td>Targets of ${hoverTargets.default}, ${hoverTargets.medium} and ${hoverTargets.high} by contrast level; no WCAG target</td></tr>
         ${legendRow('border', 'Borders', 'Suggestion, no WCAG target; below 1.05 is invisible')}
         <tr><th scope="row">Disabled</th><td colspan="3">Not rated</td><td>Compare enabled against disabled</td></tr>
       </tbody>
@@ -440,12 +455,12 @@ const renderReport = (panels: string, snapshots: Partial<Record<SnapshotName, Sn
 <script>
   const snapshots = ${snapshotJson};
   const changeThreshold = ${changeThreshold};
-  const bands = ${JSON.stringify(bands)};
-  const focusTargets = ${JSON.stringify(focusTargets)};
+  // Good and OK minimums by contrast level and kind, from the same rules as the tables
+  const bandsByContrast = ${JSON.stringify(bandsByContrast)};
 
   // Matches the report's good, OK and poor ratings, so each previous value can show its own rating
   const rate = (kind, ratio, contrast) => {
-    const band = kind === 'focus' ? [focusTargets[contrast], focusTargets[contrast] - 1] : bands[kind];
+    const band = bandsByContrast[contrast][kind];
     if (!band) return 'none';
     return ratio >= band[0] ? 'good' : ratio >= band[1] ? 'ok' : 'poor';
   };
@@ -550,12 +565,61 @@ const focusMin =
   (t, contrast) =>
     Math.min(focusTargets[contrast], chroma.contrast(t['--color-text'], t[`--color-field-on-${surface}-bg`]));
 
+// A hover reaches its target, or matches its surface's border when the border is too close to the fill
+const hoverMin =
+  (fill: string, border: string): GuardrailMin =>
+  (t, contrast) =>
+    Math.min(hoverTargets[contrast], chroma.contrast(t[border], t[fill]));
+
 const guardrails: { name: string; min: GuardrailMin; fg: string; bg: string }[] = [
   { name: 'Core border on fill', min: 1.05, fg: '--color-core-border', bg: '--color-core-main' },
   { name: 'Core border on hover', min: 1.05, fg: '--color-core-border', bg: '--color-core-hover' },
   { name: 'Mono border on fill', min: 1.05, fg: '--color-button-mono-border', bg: '--color-button-mono-bg' },
   { name: 'Mono border on hover', min: 1.05, fg: '--color-button-mono-border', bg: '--color-button-mono-hover' },
   { name: 'Mono hover on fill', min: 1.05, fg: '--color-button-mono-hover', bg: '--color-button-mono-bg' },
+  {
+    name: 'Button on primary hover on fill',
+    min: hoverMin('--color-secondary-bg', '--color-secondary-border'),
+    fg: '--color-button-on-primary-hover',
+    bg: '--color-button-on-primary-bg',
+  },
+  {
+    name: 'Button on secondary hover on fill',
+    min: hoverMin('--color-tertiary-bg', '--color-tertiary-border'),
+    fg: '--color-button-on-secondary-hover',
+    bg: '--color-button-on-secondary-bg',
+  },
+  {
+    name: 'Item on secondary hover',
+    min: hoverMin('--color-secondary-bg', '--color-secondary-border'),
+    fg: '--color-item-on-secondary-hover',
+    bg: '--color-secondary-bg',
+  },
+  {
+    name: 'Item on tertiary hover',
+    min: hoverMin('--color-tertiary-bg', '--color-tertiary-border'),
+    fg: '--color-item-on-tertiary-hover',
+    bg: '--color-tertiary-bg',
+  },
+  // The selected sidebar item stays distinct from a hovered one
+  {
+    name: 'Item on secondary active on hover',
+    min: 1.05,
+    fg: '--color-item-on-secondary-active',
+    bg: '--color-item-on-secondary-hover',
+  },
+  {
+    name: 'Button on primary border on hover',
+    min: 1.05,
+    fg: '--color-button-on-primary-border',
+    bg: '--color-button-on-primary-hover',
+  },
+  {
+    name: 'Button on secondary border on hover',
+    min: 1.05,
+    fg: '--color-button-on-secondary-border',
+    bg: '--color-button-on-secondary-hover',
+  },
   {
     name: 'Field focus border on primary',
     min: focusMin('primary'),
