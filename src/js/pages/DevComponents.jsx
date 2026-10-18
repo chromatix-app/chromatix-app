@@ -71,11 +71,17 @@ const devToastRows = [
 const devThemes = [
   { label: 'Chromatix / Teal', theme: 'chromatix-teal' },
   { label: 'White / Magenta', theme: 'white-magenta' },
+  { label: 'Black / Magenta', theme: 'black-magenta' },
+  { label: 'White / Mint', theme: 'white-mint' },
   { label: 'Custom / Blue + Dark', background: '#0d7eae', primary: '#ffa8cb', text: '#ffffff', tinting: 'auto' },
   { label: 'Custom / Blue + Light', background: '#0d7dad', primary: '#ffa8cb', text: '#ffffff', tinting: 'auto' },
   { label: 'Custom / Blue + Red', background: '#b3e8ff', primary: '#0033ff', text: '#9e0000', tinting: 'auto' },
   { label: 'Custom / Sepia', background: '#f4ecd8', primary: '#a0522d', text: '#3b2f2f', tinting: 'auto' },
   { label: 'Custom / Forest', background: '#0f1f17', primary: '#7bd389', text: '#e8f5e9', tinting: 'auto' },
+  { label: 'Custom / Grey + White', background: '#808080', primary: '#f7277a', text: '#ffffff', tinting: 'auto' },
+  { label: 'Custom / Grey + Black', background: '#808080', primary: '#f7277a', text: '#000000', tinting: 'auto' },
+  { label: 'Custom / Dark Core', background: '#021c27', primary: '#14323f', text: '#ffffff', tinting: 'auto' },
+  { label: 'Custom / Low Contrast', background: '#2a2a2a', primary: '#f7277a', text: '#6a6a6a', tinting: 'auto' },
 ];
 
 const devThemeToSession = ({ theme, background, primary, text, tinting }) =>
@@ -930,6 +936,59 @@ const Component = () => {
             <Button wrap={false} size="tiny" color="outlineOnSecondary" loading>
               Outline Loading
             </Button>
+          </div>
+        </div>
+
+        {/* CARDS */}
+
+        <div>
+          <h2>Cards</h2>
+          <div className="devCards">
+            <div className="devCard">Card</div>
+            <div className="devCardGhost">Ghost card (hover)</div>
+          </div>
+        </div>
+      </PageText>
+
+      {/* SECONDARY SURFACE */}
+
+      <PageText color="secondary" fontSize="small" fullWidth={true} wysiwyg={true}>
+        <div>
+          <h2>Secondary Surface</h2>
+          <div className="devButtons">
+            <Button wrap={false} size="tiny" color="onSecondary">
+              On Secondary
+            </Button>
+            <Button wrap={false} size="tiny" color="onSecondary" loading>
+              On Secondary Loading
+            </Button>
+            <Button wrap={false} size="tiny" color="onSecondary" disabled renderDisabled={false}>
+              Disabled Text
+            </Button>
+            <Button wrap={false} size="tiny" color="onSecondary" disabled>
+              Disabled All
+            </Button>
+          </div>
+
+          <div className="devButtons">
+            <Button wrap={false} size="tiny" color="outlineOnSecondary">
+              Outline On Secondary
+            </Button>
+            <Button wrap={false} size="tiny" color="outlineOnSecondary" loading>
+              Outline Loading
+            </Button>
+          </div>
+
+          <br />
+          <FormInput value={inputValue} onChange={setInputValue} placeholder="Placeholder text" color="secondary" />
+          <br />
+          <FormInput value="Filled text" onChange={() => {}} color="secondary" />
+          <br />
+          <FormInput value="" onChange={() => {}} placeholder="Disabled" color="secondary" disabled />
+          <br />
+
+          <div className="devCards">
+            <div className="devCardGhost devCardGhostOnSecondary">Ghost card (hover)</div>
           </div>
         </div>
       </PageText>
