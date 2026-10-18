@@ -83,11 +83,12 @@ const over = (background: string, color: string, opacity = 1): string => {
 // PAIRS
 // ======================================================================
 
-type Kind = 'text' | 'focus' | 'border' | 'hover' | 'disabled';
+type Kind = 'text' | 'surface' | 'focus' | 'ui' | 'border' | 'hover' | 'disabled';
 type Rating = 'good' | 'ok' | 'poor' | 'none';
 
-// fg is the text, border or hover colour; bg is the surface or resting fill it sits on
-type Pair = (t: Record<string, string>, opacityDisabled: number) => { fg: string; bg: string };
+// fg is the text, border or hover colour; bg is the surface or resting fill it sits on. `outline` draws a UI part's
+// swatch as an outline rather than a fill (e.g. an unchecked checkbox)
+type Pair = (t: Record<string, string>, opacityDisabled: number) => { fg: string; bg: string; outline?: boolean };
 
 interface Group {
   title: string;
@@ -99,7 +100,9 @@ interface Group {
 // Good and OK minimums per kind; text and focus follow WCAG, border and hover are suggestions
 const bands: Record<Kind, [number, number] | null> = {
   text: [4.5, 3],
+  surface: [1.15, 1.05],
   focus: [3, 2],
+  ui: [3, 2],
   border: [1.15, 1.05],
   hover: [1.2, 1.1],
   disabled: null,
@@ -178,13 +181,25 @@ const otherDisabledOpacities: Record<string, { file: string; snippet: string; pa
 const groups: Group[] = [
   {
     title: 'Text',
-    description: 'Text on each surface, and core button text on the core colour.',
+    description:
+      'Text on each surface, core button text on the core colour (on primary and secondary), and mono button text on its fill.',
     kind: 'text',
     pairs: {
       'On primary': (t) => ({ fg: t['--color-text'], bg: t['--color-primary-bg'] }),
       'On secondary': (t) => ({ fg: t['--color-text'], bg: t['--color-secondary-bg'] }),
       'On tertiary': (t) => ({ fg: t['--color-text'], bg: t['--color-tertiary-bg'] }),
       'Core button': (t) => ({ fg: t['--color-core-on-primary-text'], bg: t['--color-core-main'] }),
+      'Core button on secondary': (t) => ({ fg: t['--color-core-on-secondary-text'], bg: t['--color-core-main'] }),
+      'Mono button': (t) => ({ fg: t['--color-button-mono-text'], bg: t['--color-button-mono-bg'] }),
+    },
+  },
+  {
+    title: 'Surfaces',
+    description: 'How distinct each surface is from the one beneath it (left half beneath, right half on top).',
+    kind: 'surface',
+    pairs: {
+      'Secondary on primary': (t) => ({ fg: t['--color-secondary-bg'], bg: t['--color-primary-bg'] }),
+      'Tertiary on secondary': (t) => ({ fg: t['--color-tertiary-bg'], bg: t['--color-secondary-bg'] }),
     },
   },
   {
@@ -197,6 +212,15 @@ const groups: Group[] = [
         fg: t['--color-field-on-secondary-focus-border'],
         bg: t['--color-field-on-secondary-bg'],
       }),
+    },
+  },
+  {
+    title: 'Checkboxes and radios',
+    description: 'The checked fill and the unchecked border against the primary background.',
+    kind: 'ui',
+    pairs: {
+      Checked: (t) => ({ fg: t['--color-core-main'], bg: t['--color-primary-bg'] }),
+      Unchecked: (t) => ({ fg: t['--color-checkbox-on-primary-border'], bg: t['--color-primary-bg'], outline: true }),
     },
   },
   {
@@ -237,6 +261,10 @@ const groups: Group[] = [
       }),
       'Item on primary': (t) => ({ fg: t['--color-item-on-primary-hover'], bg: t['--color-primary-bg'] }),
       'Ghost card on primary': (t) => ({ fg: t['--color-card-ghost-on-primary-hover'], bg: t['--color-primary-bg'] }),
+      'Item on secondary': (t) => ({ fg: t['--color-item-on-secondary-hover'], bg: t['--color-secondary-bg'] }),
+      'Item on tertiary': (t) => ({ fg: t['--color-item-on-tertiary-hover'], bg: t['--color-tertiary-bg'] }),
+      // The selected sidebar item, which should stay stronger than its hover
+      'Item active on secondary': (t) => ({ fg: t['--color-item-on-secondary-active'], bg: t['--color-secondary-bg'] }),
     },
   },
   {
@@ -286,12 +314,16 @@ const groups: Group[] = [
 const escape = (value: string): string =>
   value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-const swatch = (kind: Kind, fg: string, bg: string): string => {
+const swatch = (kind: Kind, fg: string, bg: string, outline = false): string => {
   if (kind === 'text' || kind === 'disabled') {
     return `<span class="swatch" style="background:${bg};color:${fg}">Aa</span>`;
   }
-  if (kind === 'hover') {
+  if (kind === 'hover' || kind === 'surface') {
     return `<span class="swatch" style="background:linear-gradient(90deg, ${bg} 50%, ${fg} 50%)"></span>`;
+  }
+  if (kind === 'ui') {
+    const mark = outline ? `border:2px solid ${fg}` : `background:${fg}`;
+    return `<span class="swatch" style="background:${bg}"><span class="mark" style="${mark}"></span></span>`;
   }
   return `<span class="swatch" style="background:${bg};border:2px solid ${fg}"></span>`;
 };
@@ -313,13 +345,13 @@ const renderGroup = (group: Group, contrast: ColorContrast, ratios: Record<strin
 
       const cells = Object.entries(group.pairs)
         .map(([name, pair]) => {
-          const { fg, bg } = pair(t, opacityDisabled);
+          const { fg, bg, outline } = pair(t, opacityDisabled);
           const ratio = Number(chroma.contrast(fg, bg).toFixed(2));
           const key = ratioKey(contrast, group.title, devTheme.label, name);
           ratios[key] = ratio;
 
           // The comparison script fills the delta and marks changed cells
-          return `<td class="${rate(group.kind, ratio, contrast)}" data-key="${escape(key)}" data-ratio="${ratio}" data-kind="${group.kind}">${swatch(group.kind, fg, bg)}<span class="ratio">${ratio.toFixed(2)}</span><span class="delta"></span></td>`;
+          return `<td class="${rate(group.kind, ratio, contrast)}" data-key="${escape(key)}" data-ratio="${ratio}" data-kind="${group.kind}">${swatch(group.kind, fg, bg, outline)}<span class="ratio">${ratio.toFixed(2)}</span><span class="delta"></span></td>`;
         })
         .join('');
 
@@ -416,6 +448,7 @@ const renderReport = (panels: string, snapshots: Partial<Record<SnapshotName, Sn
   .count { margin-left: 4px; font-size: 11px; opacity: 0.7; }
   tr.limited td { background: transparent; color: var(--muted); font-weight: 400; }
   .swatch { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 18px; margin-right: 6px; border-radius: 4px; font-weight: 600; vertical-align: middle; box-shadow: 0 0 0 1px rgba(127,127,127,0.25); }
+  .mark { box-sizing: border-box; width: 10px; height: 10px; border-radius: 2px; }
   .ratio { font-variant-numeric: tabular-nums; }
   .tag { display: inline-block; margin-left: 6px; padding: 0 5px; border: 1px solid var(--line); border-radius: 999px; font-size: 10px; color: var(--muted); }
   .limited-tag { border-style: dashed; }
@@ -443,6 +476,8 @@ const renderReport = (panels: string, snapshots: Partial<Record<SnapshotName, Sn
         ${legendRow('text', 'Text', 'WCAG: 4.5 for normal text, 3 for large text')}
         <tr><th scope="row">Focus borders</th><td class="good">The target and above</td><td class="ok">Up to 1 below</td><td class="poor">More than 1 below</td><td>Targets of ${focusTargets.default}, ${focusTargets.medium} and ${focusTargets.high} by contrast level; WCAG asks for 3 for UI parts</td></tr>
         <tr><th scope="row">Hover</th><td class="good">The target and above</td><td class="ok">Up to 0.05 below</td><td class="poor">More than 0.05 below</td><td>Targets of ${hoverTargets.default}, ${hoverTargets.medium} and ${hoverTargets.high} by contrast level; no WCAG target</td></tr>
+        ${legendRow('surface', 'Surfaces', 'Suggestion, no WCAG target; below 1.05 is indistinguishable')}
+        ${legendRow('ui', 'Checkboxes and radios', 'WCAG: 3 for UI parts')}
         ${legendRow('border', 'Borders', 'Suggestion, no WCAG target; below 1.05 is invisible')}
         <tr><th scope="row">Disabled</th><td colspan="3">Not rated</td><td>Compare enabled against disabled</td></tr>
       </tbody>
@@ -574,7 +609,31 @@ const hoverMin =
   (t, contrast) =>
     Math.min(hoverTargets[contrast], chroma.contrast(t[border], t[fill]));
 
+// Core button text reaches its target, or is the better of the background and the text colour when neither can
+const coreTextMin =
+  (background: string): GuardrailMin =>
+  (t, contrast) =>
+    Math.min(
+      contrastLevels[contrast].coreTextContrast,
+      Math.max(
+        chroma.contrast(t[background], t['--color-core-main']),
+        chroma.contrast(t['--color-text'], t['--color-core-main'])
+      )
+    );
+
 const guardrails: { name: string; min: GuardrailMin; fg: string; bg: string }[] = [
+  {
+    name: 'Core button text on primary',
+    min: coreTextMin('--color-primary-bg'),
+    fg: '--color-core-on-primary-text',
+    bg: '--color-core-main',
+  },
+  {
+    name: 'Core button text on secondary',
+    min: coreTextMin('--color-secondary-bg'),
+    fg: '--color-core-on-secondary-text',
+    bg: '--color-core-main',
+  },
   { name: 'Core border on fill', min: 1.05, fg: '--color-core-border', bg: '--color-core-main' },
   { name: 'Core border on hover', min: 1.05, fg: '--color-core-border', bg: '--color-core-hover' },
   { name: 'Mono border on fill', min: 1.05, fg: '--color-button-mono-border', bg: '--color-button-mono-bg' },
@@ -653,6 +712,26 @@ describe('Colour guardrails', () => {
       }
     });
   }
+
+  test('Core text makes the same choice on both surfaces unless the text colour cannot beat both', () => {
+    for (const contrast of contrasts) {
+      for (const devTheme of devThemes) {
+        const t = getColorTokens(toInput(devTheme, contrast)).tokens as Record<string, string>;
+        if (chroma.contrast(t['--color-text'], t['--color-primary-bg']) < limitedThemeRatio) continue;
+
+        const onCore = (color: string) => chroma.contrast(color, t['--color-core-main']);
+        const textBeatsBoth =
+          onCore(t['--color-text']) > onCore(t['--color-primary-bg']) &&
+          onCore(t['--color-text']) > onCore(t['--color-secondary-bg']);
+        if (!textBeatsBoth) continue;
+
+        const isText = (token: string) => t[token] === t['--color-text'];
+        expect(isText('--color-core-on-primary-text'), `${devTheme.label} at ${contrast} contrast`).toBe(
+          isText('--color-core-on-secondary-text')
+        );
+      }
+    }
+  });
 });
 
 describe('Disabled states', () => {

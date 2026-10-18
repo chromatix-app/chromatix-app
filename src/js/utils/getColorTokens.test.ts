@@ -67,6 +67,24 @@ describe('Testing "getColorTokens" function', () => {
     expect(disabled('medium')).toEqual(disabled('default'));
   });
 
+  test('Core button text switches to the text colour only when the background is unreadable on core', () => {
+    const coreText = (input: ColorTokensInput) => getColorTokens(input).tokens['--color-core-on-primary-text'];
+    // Chromatix magenta: the background reads well enough on core, so it stays
+    expect(coreText(dark)).toBe('#021c27');
+    // White with a green core: white on green is unreadable, so the dark text colour takes over
+    expect(coreText({ ...light, core: '#9de50d' })).toBe('#111111');
+    // White with magenta: white on magenta passes at every contrast level
+    expect(coreText(light)).toBe('#ffffff');
+    expect(coreText({ ...light, contrast: 'high' })).toBe('#ffffff');
+  });
+
+  test('Core text switches on both surfaces together when either is unreadable', () => {
+    // White with orange: white on orange passes, but the darker secondary background fails, so both switch
+    const { tokens } = getColorTokens({ ...light, core: '#ff6f10' });
+    expect(tokens['--color-core-on-primary-text']).toBe('#111111');
+    expect(tokens['--color-core-on-secondary-text']).toBe('#111111');
+  });
+
   test('An unknown contrast setting falls back to default', () => {
     const unknown = getColorTokens({ ...dark, contrast: 'unknown' as ColorTokensInput['contrast'] });
     expect(unknown).toEqual(getColorTokens(dark));

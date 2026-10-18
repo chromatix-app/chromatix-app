@@ -21,11 +21,12 @@ interface ColorTokens {
 }
 
 // Values that change with the contrast setting: the surface step multipliers, the opacity multiplier, and the minimum
-// contrast for focus borders and hovers
+// contrast for button text, focus borders and hovers
 interface ContrastLevel {
   chromaMultiplierLow: number;
   chromaMultiplierHigh: number;
   opacityMultiplier: number;
+  coreTextContrast: number;
   focusContrast: number;
   hoverContrast: number;
 }
@@ -35,6 +36,7 @@ export const contrastLevels: Record<ColorContrast, ContrastLevel> = {
     chromaMultiplierLow: 1.1,
     chromaMultiplierHigh: 1.1,
     opacityMultiplier: 1,
+    coreTextContrast: 3,
     focusContrast: 3,
     hoverContrast: 1.15,
   },
@@ -42,6 +44,7 @@ export const contrastLevels: Record<ColorContrast, ContrastLevel> = {
     chromaMultiplierLow: 1.3,
     chromaMultiplierHigh: 1.4,
     opacityMultiplier: 1.5,
+    coreTextContrast: 3.1,
     focusContrast: 3.5,
     hoverContrast: 1.2,
   },
@@ -49,6 +52,7 @@ export const contrastLevels: Record<ColorContrast, ContrastLevel> = {
     chromaMultiplierLow: 1.5,
     chromaMultiplierHigh: 1.7,
     opacityMultiplier: 2,
+    coreTextContrast: 3.2,
     focusContrast: 4,
     hoverContrast: 1.25,
   },
@@ -71,8 +75,14 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
   const colorPrimaryBg = toHex(background);
 
   // Falls back to the default level for an unknown or unset contrast setting
-  const { chromaMultiplierLow, chromaMultiplierHigh, opacityMultiplier, focusContrast, hoverContrast } =
-    contrastLevels[contrast] ?? contrastLevels.default;
+  const {
+    chromaMultiplierLow,
+    chromaMultiplierHigh,
+    opacityMultiplier,
+    coreTextContrast,
+    focusContrast,
+    hoverContrast,
+  } = contrastLevels[contrast] ?? contrastLevels.default;
 
   const primaryBackgroundChroma = chroma(colorPrimaryBg);
 
@@ -133,6 +143,12 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     isActualLightTheme ? chroma(colorCore).darken(amount).hex() : chroma(colorCore).brighten(amount).hex();
   const colorCoreHover = shiftCore(0.25 * chromaMultiplierLow);
   const colorCoreBorder = shiftCore(0.5 * chromaMultiplierLow);
+
+  // Whether the text colour reads better on core than a background, and whether that background is unreadable on core
+  const textReadsBetterOnCore = (background: string): boolean =>
+    chroma.contrast(colorText, colorCore) > chroma.contrast(background, colorCore);
+  const isUnreadableOnCore = (background: string): boolean =>
+    chroma.contrast(background, colorCore) < coreTextContrast && textReadsBetterOnCore(background);
 
   // ======================================================================
   // SURFACES
@@ -241,6 +257,15 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
   // BUTTONS
   // ======================================================================
 
+  // Core text is the surface the core element sits on, switching to the text colour where that surface is unreadable
+  // on core. Both surfaces switch together when the text colour reads better than both, so a theme stays consistent
+  const shouldSwitchCoreText =
+    (isUnreadableOnCore(colorPrimaryBg) || isUnreadableOnCore(colorSecondaryBg)) &&
+    textReadsBetterOnCore(colorPrimaryBg) &&
+    textReadsBetterOnCore(colorSecondaryBg);
+  const coreText = (background: string): string =>
+    shouldSwitchCoreText || isUnreadableOnCore(background) ? colorText : background;
+
   // The mono border is the text colour, and the fill is the text colour shifted towards the background. The hover
   // sits halfway between them, so the border stays visible against it
   const colorButtonMonoBg = shiftTowards(colorText, 0.6 * chromaMultiplierHigh, colorPrimaryBg);
@@ -309,8 +334,8 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     '--color-core-main': colorCore,
     '--color-core-border': colorCoreBorder,
     '--color-core-hover': colorCoreHover,
-    '--color-core-on-primary-text': colorPrimaryBg,
-    '--color-core-on-secondary-text': colorSecondaryBg,
+    '--color-core-on-primary-text': coreText(colorPrimaryBg),
+    '--color-core-on-secondary-text': coreText(colorSecondaryBg),
 
     '--color-text': colorText,
     '--color-blackout': colorBlackout,
