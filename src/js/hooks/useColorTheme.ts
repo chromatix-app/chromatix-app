@@ -203,6 +203,10 @@ function useColorTheme(): void {
     const shadowMd = isActualLightTheme ? '0 4px 8px rgba(0, 0, 0, 0.1)' : '0 2px 10px rgba(0, 0, 0, 0.35)';
     const shadowSm = isActualLightTheme ? '0 2px 4px rgba(0, 0, 0, 0.05)' : '0 2px 6px rgba(0, 0, 0, 0.2)';
 
+    // The text colour at a contrast-scaled opacity over a background, flattened to a solid hex
+    const flattenText = (background: string, opacity: number): string =>
+      chroma.mix(background, colorText, decimalMultiplier(opacityMultiplier, opacity), 'rgb').hex();
+
     // Core border moves away from the background: darker on light themes, lighter on dark themes
     const colorCoreBorder = isActualLightTheme
       ? chroma(colorCore)
@@ -223,7 +227,13 @@ function useColorTheme(): void {
     const colorControlOnSecondaryHover = isActualLightTheme ? colorSecondaryBg : colorTertiaryHover;
     const colorControlOnSecondaryFocusBorder = isActualLightTheme
       ? colorTertiaryBorder
-      : chroma.mix(colorTertiaryBg, colorText, decimalMultiplier(opacityMultiplier, 0.3), 'rgb').hex();
+      : flattenText(colorTertiaryBg, 0.3);
+
+    // The field focus border on primary is the text colour at 30% over the field background
+    const colorFieldOnPrimaryFocusBorder = flattenText(colorSecondaryBg, 0.3);
+
+    // Unchecked checkbox and radio borders are the text colour at 50% over the primary background
+    const colorCheckboxOnPrimaryBorder = flattenText(colorPrimaryBg, 0.5);
 
     const colors: Record<string, string | number> = {
       '--color-core-main': colorCore,
@@ -278,6 +288,8 @@ function useColorTheme(): void {
       '--color-card-ghost-on-secondary-hover': colorTertiaryBg,
       '--color-card-ghost-on-secondary-hover-border': colorCardGhostOnSecondaryHoverBorder,
 
+      '--color-checkbox-on-primary-border': colorCheckboxOnPrimaryBorder,
+
       '--color-control-on-secondary-bg': colorControlOnSecondaryBg,
       '--color-control-on-secondary-border': colorControlOnSecondaryBorder,
       '--color-control-on-secondary-hover': colorControlOnSecondaryHover,
@@ -286,7 +298,7 @@ function useColorTheme(): void {
 
       '--color-field-on-primary-bg': colorSecondaryBg,
       '--color-field-on-primary-border': colorSecondaryBorder,
-      '--color-field-on-primary-focus-border': colorOpacity03,
+      '--color-field-on-primary-focus-border': colorFieldOnPrimaryFocusBorder,
       '--color-field-on-primary-text': colorText,
 
       '--color-field-on-secondary-bg': colorControlOnSecondaryBg,
