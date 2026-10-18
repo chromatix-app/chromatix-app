@@ -130,7 +130,7 @@ const applySimulatedEnvironment = (envData: EnvironmentData): void => {
   envData.browserName = isElectron ? 'Chromatix' : envData.browserName;
   envData.electronPlatformId = isElectron ? platformId : null;
   envData.electronPlatformName = isElectron ? osName : null;
-  envData.electronVersion = isElectron ? '0.0.0-simulated' : null;
+  envData.electronVersion = isElectron ? '0.3.1+simulated' : null;
 };
 
 const capitalise = (string?: string): string | null => {

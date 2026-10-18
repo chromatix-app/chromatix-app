@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { devElectronMenu } from 'js/_config/devElectronMenu';
 import { getEnvironment, sendToElectron } from 'js/utils';
 
 const envData = getEnvironment();
@@ -50,6 +51,13 @@ const useElectronStatus = (): void => {
       console.error(error);
     }
   }, [isDisabled, playerPlaying, trackCurrent, isWindowsApp]);
+
+  // Simulated Electron has no main process to send the menu, so show a dummy one
+  useEffect(() => {
+    if ((isLinuxApp || isWindowsApp) && !envData.isRealElectron) {
+      dispatch.appModel.setAppState({ electronMenu: devElectronMenu });
+    }
+  }, [dispatch, isLinuxApp, isWindowsApp]);
 
   // Listen for incoming messages from Electron
   useEffect(() => {

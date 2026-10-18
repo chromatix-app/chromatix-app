@@ -45,7 +45,7 @@ describe('Testing "getEnvironment" function', () => {
     expect(envData.electronPlatformName).toBe('Windows');
     expect(envData.osName).toBe('Windows');
     expect(envData.browserName).toBe('Chromatix');
-    expect(envData.electronVersion).toBe('0.0.0-simulated');
+    expect(envData.electronVersion).toBe('0.3.1+simulated');
   });
 
   test('Leaves isRealElectron and server-facing fields untouched when simulating Electron', async () => {
