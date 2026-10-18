@@ -220,7 +220,7 @@ Run `npm run test:e2e:login` once to authenticate before running auth tests. The
 - `npm run build` — Production build (output to `build/`)
 - `npm run check` — Run knip, lint, prettier, and typecheck in sequence
 - `npm run test` / `npm run test:all` — Run Vitest tests (watch / once)
-- `npm run test:colors` — Generate and open the colour contrast audit report; `test:colors:baseline` also saves its ratios as the baseline later reports compare against
+- `npm run test:colors` — Generate and open the colour contrast audit report, which can compare against a saved `original` or `baseline` snapshot (`test-results/colors/*.json`); `test:colors:baseline` also saves the current ratios as the baseline
 - `npm run test:e2e:login` — Manual Plex login; run once before auth tests
 - `npm run test:e2e:*` — E2E snapshot tests; `:update` variants regenerate snapshots
 - `npm run images:convert:new` — Convert new images to WebP

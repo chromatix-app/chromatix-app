@@ -1,9 +1,10 @@
 // Tests generated using AI
 
 // Writes an HTML report of WCAG contrast ratios for key token pairs across every dev theme and contrast level.
-// Run on its own with `npm run test:colors`, which opens the report in the browser. `npm run test:colors:baseline`
-// saves the current ratios as a baseline, and later reports show each change from it. The guardrails at the end
-// enforce minimum ratios, and run with the normal tests
+// Run on its own with `npm run test:colors`, which opens the report in the browser. The report can compare against
+// two saved snapshots: `original` (the values before the colour fixes) and `baseline`. `npm run test:colors:baseline`
+// saves the current ratios as the baseline; `COLORS_SAVE=original npm run test:colors` overwrites the original.
+// The guardrails at the end enforce minimum ratios, and run with the normal tests
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -21,23 +22,29 @@ import getColorTokens, { ColorContrast, ColorTokensInput } from './getColorToken
 // ======================================================================
 
 const reportPath = path.resolve('test-results/colors/audit.html');
-const baselinePath = path.resolve('test-results/colors/baseline.json');
-const shouldSaveBaseline = process.env.COLORS_BASELINE === '1';
 
-interface Baseline {
+const snapshotNames = ['original', 'baseline'] as const;
+type SnapshotName = (typeof snapshotNames)[number];
+
+interface Snapshot {
   savedAt: string;
   ratios: Record<string, number>;
 }
 
-const readBaseline = (): Baseline | null => {
+const snapshotPath = (name: SnapshotName): string => path.resolve(`test-results/colors/${name}.json`);
+
+// COLORS_SAVE=baseline (or original) saves the current ratios under that name
+const saveAs = snapshotNames.find((name) => name === process.env.COLORS_SAVE);
+
+const readSnapshot = (name: SnapshotName): Snapshot | null => {
   try {
-    return JSON.parse(fs.readFileSync(baselinePath, 'utf8'));
+    return JSON.parse(fs.readFileSync(snapshotPath(name), 'utf8'));
   } catch {
     return null;
   }
 };
 
-// Ratios below this difference from the baseline are treated as unchanged
+// Ratios below this difference from a snapshot are treated as unchanged
 const changeThreshold = 0.005;
 
 const contrasts: ColorContrast[] = ['default', 'medium', 'high'];
@@ -198,17 +205,10 @@ const swatch = (kind: Kind, fg: string, bg: string): string => {
   return `<span class="swatch" style="background:${bg};border:2px solid ${fg}"></span>`;
 };
 
-// Every ratio in the report by contrast, group, theme and pair, for saving and comparing baselines
+// Every ratio in the report by contrast, group, theme and pair, for saving and comparing snapshots
 const ratioKey = (...parts: string[]): string => parts.join(' | ');
 
-const renderGroup = (
-  group: Group,
-  contrast: ColorContrast,
-  ratios: Record<string, number>,
-  baseline: Baseline | null
-): { html: string; changed: number } => {
-  let changed = 0;
-
+const renderGroup = (group: Group, contrast: ColorContrast, ratios: Record<string, number>): string => {
   const head = Object.keys(group.pairs)
     .map((name) => `<th>${escape(name)}</th>`)
     .join('');
@@ -227,33 +227,25 @@ const renderGroup = (
           const key = ratioKey(contrast, group.title, devTheme.label, name);
           ratios[key] = ratio;
 
-          const previous = baseline?.ratios[key];
-          const hasChanged = previous !== undefined && Math.abs(ratio - previous) >= changeThreshold;
-          if (hasChanged) changed++;
-          const delta = hasChanged
-            ? `<span class="delta">${ratio > previous ? '↑' : '↓'} from ${previous.toFixed(2)}</span>`
-            : '';
-
-          return `<td class="${clsx(rate(group.kind, ratio), hasChanged && 'changed')}">${swatch(group.kind, fg, bg)}<span class="ratio">${ratio.toFixed(2)}</span>${delta}</td>`;
+          // The comparison script fills the delta and marks changed cells
+          return `<td class="${rate(group.kind, ratio)}" data-key="${escape(key)}" data-ratio="${ratio}" data-kind="${group.kind}">${swatch(group.kind, fg, bg)}<span class="ratio">${ratio.toFixed(2)}</span><span class="delta"></span></td>`;
         })
         .join('');
 
       const tags = `<span class="tag">${isLightTheme ? 'Light' : 'Dark'}</span>${
-        isLimited ? '<span class="tag limited-tag">Limited by the theme’s colours</span>' : ''
+        isLimited ? '<span class="tag limited-tag" title="Limited by the theme’s colours">Limited</span>' : ''
       }`;
 
-      return `<tr class="${isLimited ? 'limited' : ''}"><th scope="row">${escape(devTheme.label)}${tags}</th>${cells}</tr>`;
+      return `<tr class="${clsx(isLimited && 'limited')}"><th scope="row">${escape(devTheme.label)}${tags}</th>${cells}</tr>`;
     })
     .join('');
 
-  const html = `
+  return `
     <section>
       <h2>${escape(group.title)}</h2>
       <p>${escape(group.description)}</p>
       <div class="scroll"><table><thead><tr><th>Theme</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>
     </section>`;
-
-  return { html, changed };
 };
 
 const legendRow = (kind: Kind, label: string, basis: string): string => {
@@ -261,34 +253,35 @@ const legendRow = (kind: Kind, label: string, basis: string): string => {
   return `<tr><th scope="row">${label}</th><td class="good">${band[0]} and above</td><td class="ok">${band[1]}–${band[0]}</td><td class="poor">Below ${band[1]}</td><td>${basis}</td></tr>`;
 };
 
-const renderReport = (ratios: Record<string, number>, baseline: Baseline | null): string => {
-  const rendered = contrasts.map((contrast) => {
-    const sections = groups.map((group) => renderGroup(group, contrast, ratios, baseline));
-    return {
-      contrast,
-      html: sections.map((section) => section.html).join(''),
-      changed: sections.reduce((total, section) => total + section.changed, 0),
-    };
-  });
-
-  const tabs = rendered
+// Renders every contrast level's tables, recording each ratio into `ratios`
+const renderPanels = (ratios: Record<string, number>): string =>
+  contrasts
     .map(
-      ({ contrast, changed }, index) =>
-        `<button type="button" role="tab" aria-selected="${index === 0}" data-panel="${contrast}">${contrast[0].toUpperCase()}${contrast.slice(1)} contrast${baseline ? ` <span class="count">${changed} changed</span>` : ''}</button>`
+      (contrast, index) =>
+        `<div class="panel" role="tabpanel" id="${contrast}"${index === 0 ? '' : ' hidden'}>${groups.map((group) => renderGroup(group, contrast, ratios)).join('')}</div>`
     )
     .join('');
 
-  const panels = rendered
+const renderReport = (panels: string, snapshots: Partial<Record<SnapshotName, Snapshot>>): string => {
+  const tabs = contrasts
     .map(
-      ({ contrast, html }, index) =>
-        `<div class="panel" role="tabpanel" id="${contrast}"${index === 0 ? '' : ' hidden'}>${html}</div>`
+      (contrast, index) =>
+        `<button type="button" role="tab" aria-selected="${index === 0}" data-panel="${contrast}">${contrast[0].toUpperCase()}${contrast.slice(1)} contrast <span class="count" data-count="${contrast}"></span></button>`
     )
     .join('');
 
-  const totalChanged = rendered.reduce((total, { changed }) => total + changed, 0);
-  const baselineNote = baseline
-    ? `Compared with the baseline saved ${new Date(baseline.savedAt).toLocaleString('en-GB')}: ${totalChanged} ratios changed, outlined with their previous value.`
-    : 'No baseline saved. Run <code>npm run test:colors:baseline</code> to save the current ratios, and later reports will show each change from them.';
+  const compareOptions = [...snapshotNames, 'nothing']
+    .map(
+      (name) =>
+        `<button type="button" data-compare="${name}"${name !== 'nothing' && !snapshots[name as SnapshotName] ? ' disabled' : ''}>${name[0].toUpperCase()}${name.slice(1)}</button>`
+    )
+    .join('');
+
+  // Compares with the baseline by default, falling back to the original
+  const initialCompare = snapshots.baseline ? 'baseline' : snapshots.original ? 'original' : 'nothing';
+
+  // Escapes `<` so the embedded JSON can't close the script tag
+  const snapshotJson = JSON.stringify(snapshots).replace(/</g, '\\u003c');
 
   return `<!doctype html>
 <html lang="en">
@@ -308,31 +301,39 @@ const renderReport = (ratios: Record<string, number>, baseline: Baseline | null)
     }
   }
   * { box-sizing: border-box; }
-  body { margin: 0; padding: 32px 16px 64px; background: var(--page); color: var(--ink); font: 14px/1.5 system-ui, sans-serif; }
-  main { max-width: 1400px; margin: 0 auto; }
-  h1 { margin: 0 0 4px; font-size: 24px; }
-  h2 { margin: 0 0 2px; font-size: 17px; }
-  p { margin: 0 0 12px; color: var(--muted); }
-  section, .legend { margin-top: 28px; }
+  body { margin: 0; padding: 20px 16px 48px; background: var(--page); color: var(--ink); font: 12px/1.4 system-ui, sans-serif; }
+  h1 { margin: 0 0 4px; font-size: 20px; }
+  h2 { margin: 0 0 2px; font-size: 15px; }
+  p { margin: 0 0 8px; color: var(--muted); }
+  section, .legend { margin-top: 20px; }
   .scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
   table { width: 100%; border-collapse: collapse; }
-  th, td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
-  thead th { font-size: 12px; color: var(--muted); font-weight: 600; }
+  th, td { padding: 4px 8px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+  thead th { font-size: 11px; color: var(--muted); font-weight: 600; }
   tbody tr:last-child > * { border-bottom: 0; }
   tbody th { font-weight: 500; }
   td.good { background: var(--good); color: var(--good-ink); }
   td.ok { background: var(--ok); color: var(--ok-ink); }
   td.poor { background: var(--poor); color: var(--poor-ink); font-weight: 600; }
   td.changed { outline: 2px solid var(--ink); outline-offset: -2px; }
-  .delta { margin-left: 8px; font-size: 12px; font-weight: 600; }
-  .count { margin-left: 4px; font-size: 12px; opacity: 0.7; }
+  .delta { margin-left: 6px; font-size: 11px; font-weight: 600; }
+  .delta:not(:empty) { padding: 0 6px; border: 1px solid currentColor; border-radius: 999px; }
+  .delta.good { background: var(--good); color: var(--good-ink); }
+  .delta.ok { background: var(--ok); color: var(--ok-ink); }
+  .delta.poor { background: var(--poor); color: var(--poor-ink); }
+  .delta.none, tr.limited .delta { background: var(--surface); color: var(--muted); }
+  .count { margin-left: 4px; font-size: 11px; opacity: 0.7; }
   tr.limited td { background: transparent; color: var(--muted); font-weight: 400; }
-  .swatch { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 22px; margin-right: 8px; border-radius: 5px; font-weight: 600; vertical-align: middle; box-shadow: 0 0 0 1px rgba(127,127,127,0.25); }
+  .swatch { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 18px; margin-right: 6px; border-radius: 4px; font-weight: 600; vertical-align: middle; box-shadow: 0 0 0 1px rgba(127,127,127,0.25); }
   .ratio { font-variant-numeric: tabular-nums; }
-  .tag { display: inline-block; margin-left: 8px; padding: 0 6px; border: 1px solid var(--line); border-radius: 999px; font-size: 11px; color: var(--muted); }
+  .tag { display: inline-block; margin-left: 6px; padding: 0 5px; border: 1px solid var(--line); border-radius: 999px; font-size: 10px; color: var(--muted); }
   .limited-tag { border-style: dashed; }
-  .tabs { position: sticky; top: 0; z-index: 1; padding: 12px 0; background: var(--page); }
-  .tabs button { margin-right: 6px; padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+  .bar { position: sticky; top: 0; z-index: 1; display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; padding: 8px 0; background: var(--page); }
+  .compare { display: flex; gap: 6px; align-items: center; color: var(--muted); }
+  .compare button { padding: 3px 9px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+  .compare button[aria-pressed='true'] { background: var(--ink); border-color: var(--ink); color: var(--page); }
+  .compare button:disabled { opacity: 0.4; cursor: default; }
+  .tabs button { margin-right: 4px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
   .tabs button[aria-selected='true'] { background: var(--ink); border-color: var(--ink); color: var(--page); }
 </style>
 </head>
@@ -340,11 +341,11 @@ const renderReport = (ratios: Record<string, number>, baseline: Baseline | null)
 <main>
   <h1>Colour Audit</h1>
   <p>WCAG contrast ratios for key colour pairs from <code>getColorTokens</code>, for every dev theme. 1 means identical colours, 21 is black on white. Generated ${new Date().toLocaleString('en-GB')}.</p>
-  <p>${baselineNote}</p>
+  <p id="compare-note"></p>
 
   <div class="legend">
     <h2>Ratings</h2>
-    <p>Rows marked “Limited by the theme’s colours” have text below ${limitedThemeRatio} on their own background, so the UI can’t fully fix them. Their ratings are greyed out.</p>
+    <p>Rows marked “Limited” have text below ${limitedThemeRatio} on their own background, so the UI can’t fully fix them. Their ratings are greyed out.</p>
     <div class="scroll"><table>
       <thead><tr><th>Pair</th><th>Good</th><th>OK</th><th>Poor</th><th>Basis</th></tr></thead>
       <tbody>
@@ -357,16 +358,79 @@ const renderReport = (ratios: Record<string, number>, baseline: Baseline | null)
     </table></div>
   </div>
 
-  <div class="tabs" role="tablist">${tabs}</div>
+  <div class="bar">
+    <div class="tabs" role="tablist">${tabs}</div>
+    <div class="compare" role="group" aria-label="Compare with">Compare with ${compareOptions}</div>
+  </div>
   ${panels}
 </main>
 <script>
+  const snapshots = ${snapshotJson};
+  const changeThreshold = ${changeThreshold};
+  const bands = ${JSON.stringify(bands)};
+
+  // Matches the report's good, OK and poor ratings, so each previous value can show its own rating
+  const rate = (kind, ratio) => {
+    const band = bands[kind];
+    if (!band) return 'none';
+    return ratio >= band[0] ? 'good' : ratio >= band[1] ? 'ok' : 'poor';
+  };
+
   document.querySelectorAll('.tabs button').forEach((tab) => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.tabs button').forEach((other) => other.setAttribute('aria-selected', other === tab));
       document.querySelectorAll('.panel').forEach((panel) => (panel.hidden = panel.id !== tab.dataset.panel));
     });
   });
+
+  // Outlines each ratio that differs from the chosen snapshot, with its previous value and per-tab counts
+  const compare = (name) => {
+    const snapshot = snapshots[name];
+    // Up and down counts per contrast panel, plus a total under 'all'
+    const counts = { all: { up: 0, down: 0 } };
+    const summary = (count) => '↑' + count.up + ' ↓' + count.down;
+
+    document.querySelectorAll('td[data-key]').forEach((cell) => {
+      const previous = snapshot ? snapshot.ratios[cell.dataset.key] : undefined;
+      const ratio = Number(cell.dataset.ratio);
+      const hasChanged = previous !== undefined && Math.abs(ratio - previous) >= changeThreshold;
+      cell.classList.toggle('changed', hasChanged);
+      // A pill with the previous value, coloured by its own rating. Ratios missing from the snapshot (e.g. a dev
+      // theme added since) are marked new rather than unchanged
+      const delta = cell.querySelector('.delta');
+      delta.className = 'delta' + (hasChanged ? ' ' + rate(cell.dataset.kind, previous) : snapshot && previous === undefined ? ' none' : '');
+      delta.textContent = hasChanged
+        ? (ratio > previous ? '↑' : '↓') + ' from ' + previous.toFixed(2)
+        : snapshot && previous === undefined
+          ? 'new'
+          : '';
+      if (hasChanged) {
+        const panel = cell.closest('.panel').id;
+        const direction = ratio > previous ? 'up' : 'down';
+        counts[panel] = counts[panel] || { up: 0, down: 0 };
+        counts[panel][direction]++;
+        counts.all[direction]++;
+      }
+    });
+
+    document.querySelectorAll('[data-count]').forEach((count) => {
+      count.textContent = snapshot ? summary(counts[count.dataset.count] || { up: 0, down: 0 }) : '';
+    });
+    document.querySelectorAll('[data-compare]').forEach((button) => {
+      button.setAttribute('aria-pressed', button.dataset.compare === name);
+    });
+    document.getElementById('compare-note').textContent = snapshot
+      ? 'Compared with the ' + name + ' saved ' + new Date(snapshot.savedAt).toLocaleString('en-GB') + ': ' +
+          summary(counts.all) + ' ratios changed, each outlined with its previous value.'
+      : Object.keys(snapshots).length
+        ? 'Not comparing.'
+        : 'Not comparing. Save a baseline with npm run test:colors:baseline, then pick it above.';
+  };
+
+  document.querySelectorAll('[data-compare]').forEach((button) => {
+    button.addEventListener('click', () => compare(button.dataset.compare));
+  });
+  compare('${initialCompare}');
 </script>
 </body>
 </html>
@@ -380,15 +444,19 @@ const renderReport = (ratios: Record<string, number>, baseline: Baseline | null)
 describe('Colour contrast audit', () => {
   test('Writes the HTML report for every dev theme at each contrast level', () => {
     const ratios: Record<string, number> = {};
-    const baseline = shouldSaveBaseline ? null : readBaseline();
-    const html = renderReport(ratios, baseline);
+    const panels = renderPanels(ratios);
+
+    const snapshots: Partial<Record<SnapshotName, Snapshot>> = {};
+    for (const name of snapshotNames) {
+      const snapshot = name === saveAs ? { savedAt: new Date().toISOString(), ratios } : readSnapshot(name);
+      if (snapshot) snapshots[name] = snapshot;
+    }
 
     fs.mkdirSync(path.dirname(reportPath), { recursive: true });
-    fs.writeFileSync(reportPath, html);
+    if (saveAs) fs.writeFileSync(snapshotPath(saveAs), JSON.stringify(snapshots[saveAs], null, 2));
 
-    if (shouldSaveBaseline) {
-      fs.writeFileSync(baselinePath, JSON.stringify({ savedAt: new Date().toISOString(), ratios }, null, 2));
-    }
+    const html = renderReport(panels, snapshots);
+    fs.writeFileSync(reportPath, html);
 
     expect(html).toContain(devThemes[0].label);
   });
