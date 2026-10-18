@@ -113,6 +113,16 @@ describe('Testing "getColorTokens" function', () => {
     expect(getColorTokens(grey).tokens['--color-checkbox-on-primary-checked-bg']).toBe('#ffffff');
   });
 
+  test('Slider fills shift core to reach the focus contrast against their own surface', () => {
+    const { tokens } = getColorTokens({ ...light, core: '#7fbb09', contrast: 'high' });
+    expect(chroma.contrast(tokens['--color-slider-on-primary-fill'], light.background)).toBeGreaterThanOrEqual(4);
+    expect(
+      chroma.contrast(tokens['--color-slider-on-secondary-fill'], tokens['--color-secondary-bg'])
+    ).toBeGreaterThanOrEqual(4);
+    // Chromatix magenta already stands out on both surfaces, so it stays
+    expect(getColorTokens(dark).tokens['--color-slider-on-secondary-fill']).toBe('#f7277a');
+  });
+
   test('An unknown contrast setting falls back to default', () => {
     const unknown = getColorTokens({ ...dark, contrast: 'unknown' as ColorTokensInput['contrast'] });
     expect(unknown).toEqual(getColorTokens(dark));

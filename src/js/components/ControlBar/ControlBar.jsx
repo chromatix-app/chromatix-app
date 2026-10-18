@@ -283,6 +283,7 @@ export const SecondaryControls = ({ fullPageMode }) => {
             value={volumeMuted ? 0 : volumeLevel}
             handleChange={dispatch.playerModel.volumeLevelSet}
             allowAccess={false}
+            color={fullPageMode ? 'primary' : 'secondary'}
           />
         </div>
       )}
@@ -384,7 +385,7 @@ const FullPageMenu = () => {
   );
 };
 
-export const ControlProgress = () => {
+export const ControlProgress = ({ fullPageMode }) => {
   const {
     trackProgress,
     trackProgressCurrent,
@@ -415,6 +416,7 @@ export const ControlProgress = () => {
           isDisabled={isDisabled}
           hideBar={isDisabled}
           allowAccess={false}
+          color={fullPageMode ? 'primary' : 'secondary'}
         />
       </div>
       <div className={style.scrubRight}>{!isDisabled && durationToStringShort(trackCurrent?.duration)}</div>

@@ -217,13 +217,13 @@ const groups: Group[] = [
   {
     title: 'Checkboxes, radios and sliders',
     description:
-      'The checked fill and unchecked border against the primary background (the tick is the background, so it reads as well as the fill), and the core slider fill (shown on hover and focus) on each surface.',
+      'The checked fill and unchecked border against the primary background (the tick is the background, so it reads as well as the fill), and the slider fill (core, shifted like the checked fill, shown on hover and focus) on each surface.',
     kind: 'ui',
     pairs: {
       Checked: (t) => ({ fg: t['--color-checkbox-on-primary-checked-bg'], bg: t['--color-primary-bg'] }),
       Unchecked: (t) => ({ fg: t['--color-checkbox-on-primary-border'], bg: t['--color-primary-bg'], outline: true }),
-      'Slider on primary': (t) => ({ fg: t['--color-core-main'], bg: t['--color-primary-bg'] }),
-      'Slider on secondary': (t) => ({ fg: t['--color-core-main'], bg: t['--color-secondary-bg'] }),
+      'Slider on primary': (t) => ({ fg: t['--color-slider-on-primary-fill'], bg: t['--color-primary-bg'] }),
+      'Slider on secondary': (t) => ({ fg: t['--color-slider-on-secondary-fill'], bg: t['--color-secondary-bg'] }),
     },
   },
   {
@@ -625,15 +625,18 @@ const coreTextMin =
       )
     );
 
-// A checked fill reaches the focus target, or is the better of core and the text colour when neither can
-const checkedMin: GuardrailTarget = (t, contrast) =>
-  Math.min(
-    focusTargets[contrast],
-    Math.max(
-      chroma.contrast(t['--color-core-main'], t['--color-primary-bg']),
-      chroma.contrast(t['--color-text'], t['--color-primary-bg'])
-    )
-  );
+// Shifted core (checked fills and slider fills) reaches the focus target, or is the better of core and the text colour
+// when neither can
+const shiftedCoreMin =
+  (background: string): GuardrailTarget =>
+  (t, contrast) =>
+    Math.min(
+      focusTargets[contrast],
+      Math.max(
+        chroma.contrast(t['--color-core-main'], t[background]),
+        chroma.contrast(t['--color-text'], t[background])
+      )
+    );
 
 const guardrails: { name: string; min: GuardrailMin; fg: string; bg: string }[] = [
   {
@@ -698,9 +701,21 @@ const guardrails: { name: string; min: GuardrailMin; fg: string; bg: string }[] 
   },
   {
     name: 'Checked checkbox fill',
-    min: checkedMin,
+    min: shiftedCoreMin('--color-primary-bg'),
     fg: '--color-checkbox-on-primary-checked-bg',
     bg: '--color-primary-bg',
+  },
+  {
+    name: 'Slider fill on primary',
+    min: shiftedCoreMin('--color-primary-bg'),
+    fg: '--color-slider-on-primary-fill',
+    bg: '--color-primary-bg',
+  },
+  {
+    name: 'Slider fill on secondary',
+    min: shiftedCoreMin('--color-secondary-bg'),
+    fg: '--color-slider-on-secondary-fill',
+    bg: '--color-secondary-bg',
   },
   {
     name: 'Field focus border on primary',

@@ -323,15 +323,22 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
   const colorFieldOnPrimaryFocusBorder = focusBorder(colorSecondaryBg);
 
   // ======================================================================
+  // CORE ACCENTS
+  // ======================================================================
+
+  // Core used as a fill on a surface (checked checkboxes, slider fills), shifted where needed to reach the focus
+  // contrast against it
+  const colorCoreAccentOnPrimary = shiftAtContrast(colorCore, colorPrimaryBg, focusContrast);
+  const colorCoreAccentOnSecondary = shiftAtContrast(colorCore, colorSecondaryBg, focusContrast);
+
+  // ======================================================================
   // CHECKBOXES
   // ======================================================================
 
   // Unchecked checkbox and radio borders are the text colour at 50% over the primary background
   const colorCheckboxOnPrimaryBorder = flattenText(colorPrimaryBg, 0.5);
 
-  // Checked fills are core, shifted where needed to reach the focus contrast against the primary background. The tick
-  // is the primary background, so it reads as well as the fill stands out
-  const colorCheckboxOnPrimaryCheckedBg = shiftAtContrast(colorCore, colorPrimaryBg, focusContrast);
+  // The tick on a checked fill is the primary background, so it reads as well as the fill stands out
   const colorCheckboxOnPrimaryCheckedTick = colorPrimaryBg;
 
   // ======================================================================
@@ -431,8 +438,11 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     '--color-field-on-secondary-text': colorText,
 
     '--color-checkbox-on-primary-border': colorCheckboxOnPrimaryBorder,
-    '--color-checkbox-on-primary-checked-bg': colorCheckboxOnPrimaryCheckedBg,
+    '--color-checkbox-on-primary-checked-bg': colorCoreAccentOnPrimary,
     '--color-checkbox-on-primary-checked-tick': colorCheckboxOnPrimaryCheckedTick,
+
+    '--color-slider-on-primary-fill': colorCoreAccentOnPrimary,
+    '--color-slider-on-secondary-fill': colorCoreAccentOnSecondary,
 
     '--color-disabled-text': colorDisabledText,
 
