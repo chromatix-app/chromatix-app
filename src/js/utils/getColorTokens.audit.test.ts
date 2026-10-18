@@ -15,7 +15,7 @@ import clsx from 'clsx';
 import { devThemes } from 'js/_config/devThemes';
 import { themes } from 'js/_config/themes';
 
-import getColorTokens, { ColorContrast, ColorTokensInput } from './getColorTokens';
+import getColorTokens, { ColorContrast, ColorTokensInput, contrastLevels } from './getColorTokens';
 
 // ======================================================================
 // SETUP
@@ -49,11 +49,14 @@ const changeThreshold = 0.005;
 
 const contrasts: ColorContrast[] = ['default', 'medium', 'high'];
 
-// Focus border targets per contrast level, matching getColorTokens
-const focusTargets: Record<ColorContrast, number> = { default: 3, medium: 3.5, high: 4 };
-
-// Hover targets per contrast level, matching getColorTokens
-const hoverTargets: Record<ColorContrast, number> = { default: 1.15, medium: 1.2, high: 1.25 };
+// Focus border and hover targets per contrast level, from getColorTokens
+const targetsFor = (key: 'focusContrast' | 'hoverContrast') =>
+  Object.fromEntries(contrasts.map((contrast) => [contrast, contrastLevels[contrast][key]])) as Record<
+    ColorContrast,
+    number
+  >;
+const focusTargets = targetsFor('focusContrast');
+const hoverTargets = targetsFor('hoverContrast');
 
 // Below this, a theme's own text on its background already fails, so the UI can't fully fix it
 const limitedThemeRatio = 4.5;

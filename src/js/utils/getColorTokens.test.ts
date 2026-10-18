@@ -67,6 +67,11 @@ describe('Testing "getColorTokens" function', () => {
     expect(disabled('medium')).toEqual(disabled('default'));
   });
 
+  test('An unknown contrast setting falls back to default', () => {
+    const unknown = getColorTokens({ ...dark, contrast: 'unknown' as ColorTokensInput['contrast'] });
+    expect(unknown).toEqual(getColorTokens(dark));
+  });
+
   test('Opacity colours append an alpha suffix to the text colour', () => {
     const { tokens } = getColorTokens(dark);
     expect(tokens['--color-opacity-05']).toBe('#ffffff80');
