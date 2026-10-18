@@ -35,6 +35,8 @@
     "check": "npm run knip && npm run lint && npm run prettier && npm run typecheck",
     "test": "vitest --silent",
     "test:verbose": "vitest",
+    "test:colors": "vitest run src/js/utils/getColorTokens.audit.test.ts && open test-results/colors/audit.html",
+    "test:colors:baseline": "COLORS_BASELINE=1 vitest run src/js/utils/getColorTokens.audit.test.ts && open test-results/colors/audit.html",
     "test:all": "vitest run --silent",
     "test:all:verbose": "vitest run",
     "test:e2e": "node lib/run-timed.js playwright test",

@@ -32,6 +32,7 @@ src/
   js/
     _config/             # App-wide config and static data
       config.ts          # Storage keys, encryption keys, global flags
+      devThemes.ts       # Edge-case themes for /dev/components and the colour audit
       platformFeatures.ts # Feature flags per service (plex/jellyfin)
       routes.ts          # Route definitions (defaultRoutes / authRoutes)
       themes.ts          # Colour theme definitions
@@ -142,9 +143,9 @@ Use `clsx` for conditional class composition. Use CSS Modules for component-spec
 
 ## Colour Theme
 
-Theme colours are CSS custom properties generated at runtime by `useColorTheme`, and scaled by the contrast setting. In logged-in UI, use these tokens rather than hardcoded colours or raw `opacity` values, and prefer a token named for the role (e.g. `--color-button-on-primary-bg`) over a raw surface token.
+Theme colours are CSS custom properties computed by the pure `getColorTokens` util and applied at runtime by `useColorTheme`, and scaled by the contrast setting. `npm run test:colors` generates and opens an HTML report (`test-results/colors/audit.html`) of WCAG contrast ratios for key token pairs across every dev theme and contrast level; check it when changing colour values. In logged-in UI, use these tokens rather than hardcoded colours or raw `opacity` values, and prefer a token named for the role (e.g. `--color-button-on-primary-bg`) over a raw surface token.
 
-Role tokens are named `--color-<role>-on-<surface>-<prop or state>` (e.g. `--color-button-on-primary-hover`, `--color-item-on-secondary-hover`), and in `useColorTheme` they alias base surface values, or consts derived from them (e.g. light/dark picks, which roles may share), never other role tokens. Text inputs, select triggers and similar fields use `--color-field-on-<surface>-*` and look identical: no hover state, just `focus-border` on focus; any light/dark difference belongs in `useColorTheme`, not in `html[data-theme='light']` overrides. The sidebar's search field, release banner and user menu trigger are controls: they use `--color-control-on-secondary-*` so they look identical and share a `focus-border`; only the user menu trigger uses `hover`. Checkboxes and radios use `--color-checkbox-on-primary-border` and have no hover state. Loading spinners use the `spinner($size, $color, $width)` mixin, an SVG mask filled with the text colour (`currentColor` by default), rather than images. `Button`'s `color` variants are named after their tokens (`core`, `mono`, `onPrimary`, `onSecondary`, `outlineOnPrimary`, `outlineOnSecondary`). Logged-out pages use the static `$color-*` variables in `_vars.scss`, which mirror the token names; any value that deliberately differs from the default theme is commented.
+Role tokens are named `--color-<role>-on-<surface>-<prop or state>` (e.g. `--color-button-on-primary-hover`, `--color-item-on-secondary-hover`), and in `getColorTokens` they alias base surface values, or consts derived from them (e.g. light/dark picks, which roles may share), never other role tokens. Text inputs, select triggers and similar fields use `--color-field-on-<surface>-*` and look identical: no hover state, just `focus-border` on focus; any light/dark difference belongs in `getColorTokens`, not in `html[data-theme='light']` overrides. The sidebar's search field, release banner and user menu trigger are controls: they use `--color-control-on-secondary-*` so they look identical and share a `focus-border`; only the user menu trigger uses `hover`. Checkboxes and radios use `--color-checkbox-on-primary-border` and have no hover state. Loading spinners use the `spinner($size, $color, $width)` mixin, an SVG mask filled with the text colour (`currentColor` by default), rather than images. `Button`'s `color` variants are named after their tokens (`core`, `mono`, `onPrimary`, `onSecondary`, `outlineOnPrimary`, `outlineOnSecondary`). Logged-out pages use the static `$color-*` variables in `_vars.scss`, which mirror the token names; any value that deliberately differs from the default theme is commented.
 
 ## Context Menus
 
@@ -219,6 +220,7 @@ Run `npm run test:e2e:login` once to authenticate before running auth tests. The
 - `npm run build` — Production build (output to `build/`)
 - `npm run check` — Run knip, lint, prettier, and typecheck in sequence
 - `npm run test` / `npm run test:all` — Run Vitest tests (watch / once)
+- `npm run test:colors` — Generate and open the colour contrast audit report; `test:colors:baseline` also saves its ratios as the baseline later reports compare against
 - `npm run test:e2e:login` — Manual Plex login; run once before auth tests
 - `npm run test:e2e:*` — E2E snapshot tests; `:update` variants regenerate snapshots
 - `npm run images:convert:new` — Convert new images to WebP
