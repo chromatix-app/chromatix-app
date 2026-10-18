@@ -215,12 +215,15 @@ const groups: Group[] = [
     },
   },
   {
-    title: 'Checkboxes and radios',
-    description: 'The checked fill and the unchecked border against the primary background.',
+    title: 'Checkboxes, radios and sliders',
+    description:
+      'The checked fill and unchecked border against the primary background (the tick is the background, so it reads as well as the fill), and the core slider fill (shown on hover and focus) on each surface.',
     kind: 'ui',
     pairs: {
-      Checked: (t) => ({ fg: t['--color-core-main'], bg: t['--color-primary-bg'] }),
+      Checked: (t) => ({ fg: t['--color-checkbox-on-primary-checked-bg'], bg: t['--color-primary-bg'] }),
       Unchecked: (t) => ({ fg: t['--color-checkbox-on-primary-border'], bg: t['--color-primary-bg'], outline: true }),
+      'Slider on primary': (t) => ({ fg: t['--color-core-main'], bg: t['--color-primary-bg'] }),
+      'Slider on secondary': (t) => ({ fg: t['--color-core-main'], bg: t['--color-secondary-bg'] }),
     },
   },
   {
@@ -477,7 +480,7 @@ const renderReport = (panels: string, snapshots: Partial<Record<SnapshotName, Sn
         <tr><th scope="row">Focus borders</th><td class="good">The target and above</td><td class="ok">Up to 1 below</td><td class="poor">More than 1 below</td><td>Targets of ${focusTargets.default}, ${focusTargets.medium} and ${focusTargets.high} by contrast level; WCAG asks for 3 for UI parts</td></tr>
         <tr><th scope="row">Hover</th><td class="good">The target and above</td><td class="ok">Up to 0.05 below</td><td class="poor">More than 0.05 below</td><td>Targets of ${hoverTargets.default}, ${hoverTargets.medium} and ${hoverTargets.high} by contrast level; no WCAG target</td></tr>
         ${legendRow('surface', 'Surfaces', 'Suggestion, no WCAG target; below 1.05 is indistinguishable')}
-        ${legendRow('ui', 'Checkboxes and radios', 'WCAG: 3 for UI parts')}
+        ${legendRow('ui', 'Checkboxes, radios and sliders', 'WCAG: 3 for UI parts')}
         ${legendRow('border', 'Borders', 'Suggestion, no WCAG target; below 1.05 is invisible')}
         <tr><th scope="row">Disabled</th><td colspan="3">Not rated</td><td>Compare enabled against disabled</td></tr>
       </tbody>
@@ -595,23 +598,24 @@ describe('Colour contrast audit', () => {
 
 // Minimum ratios every dev theme must meet at each contrast level, skipping themes limited by their own colours. `min`
 // can depend on the tokens and contrast level, e.g. when a target can't be reached with the theme's colours
-type GuardrailMin = number | ((t: Record<string, string>, contrast: ColorContrast) => number);
+type GuardrailTarget = (t: Record<string, string>, contrast: ColorContrast) => number;
+type GuardrailMin = number | GuardrailTarget;
 
 // A focus border reaches its target, or matches the text colour when the field background is too close to it
 const focusMin =
-  (surface: string): GuardrailMin =>
+  (surface: string): GuardrailTarget =>
   (t, contrast) =>
     Math.min(focusTargets[contrast], chroma.contrast(t['--color-text'], t[`--color-field-on-${surface}-bg`]));
 
 // A hover reaches its target, or matches its surface's border when the border is too close to the fill
 const hoverMin =
-  (fill: string, border: string): GuardrailMin =>
+  (fill: string, border: string): GuardrailTarget =>
   (t, contrast) =>
     Math.min(hoverTargets[contrast], chroma.contrast(t[border], t[fill]));
 
 // Core button text reaches its target, or is the better of the background and the text colour when neither can
 const coreTextMin =
-  (background: string): GuardrailMin =>
+  (background: string): GuardrailTarget =>
   (t, contrast) =>
     Math.min(
       contrastLevels[contrast].coreTextContrast,
@@ -620,6 +624,16 @@ const coreTextMin =
         chroma.contrast(t['--color-text'], t['--color-core-main'])
       )
     );
+
+// A checked fill reaches the focus target, or is the better of core and the text colour when neither can
+const checkedMin: GuardrailTarget = (t, contrast) =>
+  Math.min(
+    focusTargets[contrast],
+    Math.max(
+      chroma.contrast(t['--color-core-main'], t['--color-primary-bg']),
+      chroma.contrast(t['--color-text'], t['--color-primary-bg'])
+    )
+  );
 
 const guardrails: { name: string; min: GuardrailMin; fg: string; bg: string }[] = [
   {
@@ -681,6 +695,12 @@ const guardrails: { name: string; min: GuardrailMin; fg: string; bg: string }[] 
     min: 1.05,
     fg: '--color-button-on-secondary-border',
     bg: '--color-button-on-secondary-hover',
+  },
+  {
+    name: 'Checked checkbox fill',
+    min: checkedMin,
+    fg: '--color-checkbox-on-primary-checked-bg',
+    bg: '--color-primary-bg',
   },
   {
     name: 'Field focus border on primary',

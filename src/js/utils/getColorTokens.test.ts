@@ -85,6 +85,34 @@ describe('Testing "getColorTokens" function', () => {
     expect(tokens['--color-core-on-secondary-text']).toBe('#111111');
   });
 
+  test('Checked checkboxes fill with core, shifted where it is too faint against the background', () => {
+    const checked = (input: ColorTokensInput) => getColorTokens(input).tokens['--color-checkbox-on-primary-checked-bg'];
+    const onBackground = (input: ColorTokensInput) => chroma.contrast(checked(input), input.background);
+    // Chromatix magenta: core already stands out, so it stays
+    expect(checked(dark)).toBe('#f7277a');
+    // White with a green core: core is faint on white, so it darkens just enough to reach each level's target
+    const green = { ...light, core: '#7fbb09' };
+    expect(onBackground(green)).toBeGreaterThanOrEqual(3);
+    expect(onBackground(green)).toBeLessThan(3.1);
+    expect(onBackground({ ...green, contrast: 'high' })).toBeGreaterThanOrEqual(4);
+    // It keeps its hue (within 5 degrees) rather than turning grey
+    expect(Math.abs(chroma(checked(green)).get('lch.h') - chroma('#7fbb09').get('lch.h'))).toBeLessThan(5);
+    // The tick is always the primary background
+    expect(getColorTokens(green).tokens['--color-checkbox-on-primary-checked-tick']).toBe('#ffffff');
+  });
+
+  test('Checked checkboxes fall back to the text colour when no shift can reach the target', () => {
+    // Grey with white text at high contrast: even white only reaches 3.95 against the grey
+    const grey = {
+      background: '#808080',
+      text: '#ffffff',
+      core: '#f7277a',
+      contrast: 'high',
+      tinting: 'auto',
+    } as const;
+    expect(getColorTokens(grey).tokens['--color-checkbox-on-primary-checked-bg']).toBe('#ffffff');
+  });
+
   test('An unknown contrast setting falls back to default', () => {
     const unknown = getColorTokens({ ...dark, contrast: 'unknown' as ColorTokensInput['contrast'] });
     expect(unknown).toEqual(getColorTokens(dark));

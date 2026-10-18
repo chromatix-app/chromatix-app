@@ -109,22 +109,32 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
   const flattenText = (background: string, opacity: number): string =>
     chroma.mix(background, colorText, scaledOpacity(opacity), 'rgb').hex();
 
+  // Binary searches amounts from 0 to `max` for the smallest that makes `make(amount)` reach a target contrast against
+  // a background
+  const searchAtContrast = (
+    make: (amount: number) => string,
+    max: number,
+    background: string,
+    target: number
+  ): string => {
+    let low = 0;
+    let high = max;
+    for (let step = 0; step < 12; step++) {
+      const middle = (low + high) / 2;
+      if (chroma.contrast(make(middle), background) >= target) high = middle;
+      else low = middle;
+    }
+    return make(high);
+  };
+
   // Mixes a background towards another colour just far enough to reach a target contrast against it. Keeps `current`
   // if it already reaches the target, and falls back to the other colour itself when the colours can't reach it
   const mixAtContrast = (background: string, towards: string, target: number, current: string): string => {
     if (chroma.contrast(current, background) >= target) return current;
     if (chroma.contrast(towards, background) <= target) return towards;
 
-    // Binary search for the smallest mix that reaches the target
     const mix = (amount: number): string => chroma.mix(background, towards, amount, 'rgb').hex();
-    let low = 0;
-    let high = 1;
-    for (let step = 0; step < 12; step++) {
-      const middle = (low + high) / 2;
-      if (chroma.contrast(mix(middle), background) >= target) high = middle;
-      else low = middle;
-    }
-    return mix(high);
+    return searchAtContrast(mix, 1, background, target);
   };
 
   // Shifts a colour towards another's lightness: darker if it's lighter than the target, otherwise lighter
@@ -132,6 +142,18 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     chroma(color).luminance() > chroma(target).luminance()
       ? chroma(color).darken(amount).hex()
       : chroma(color).brighten(amount).hex();
+
+  // Shifts a colour towards the text colour's lightness (in Lab, so it keeps its hue) just far enough to reach a target
+  // contrast against a background. Keeps the colour if it already reaches the target, and falls back to the better of
+  // the colour and the text colour when even the furthest shift (fully black or white) can't reach it
+  const shiftAtContrast = (color: string, background: string, target: number): string => {
+    if (chroma.contrast(color, background) >= target) return color;
+
+    const shift = (amount: number): string => shiftTowards(color, amount, colorText);
+    if (chroma.contrast(shift(6), background) < target)
+      return chroma.contrast(colorText, background) > chroma.contrast(color, background) ? colorText : color;
+    return searchAtContrast(shift, 6, background, target);
+  };
 
   // ======================================================================
   // CORE
@@ -307,6 +329,11 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
   // Unchecked checkbox and radio borders are the text colour at 50% over the primary background
   const colorCheckboxOnPrimaryBorder = flattenText(colorPrimaryBg, 0.5);
 
+  // Checked fills are core, shifted where needed to reach the focus contrast against the primary background. The tick
+  // is the primary background, so it reads as well as the fill stands out
+  const colorCheckboxOnPrimaryCheckedBg = shiftAtContrast(colorCore, colorPrimaryBg, focusContrast);
+  const colorCheckboxOnPrimaryCheckedTick = colorPrimaryBg;
+
   // ======================================================================
   // DISABLED
   // ======================================================================
@@ -404,6 +431,8 @@ const getColorTokens = ({ background, text, core, contrast, tinting }: ColorToke
     '--color-field-on-secondary-text': colorText,
 
     '--color-checkbox-on-primary-border': colorCheckboxOnPrimaryBorder,
+    '--color-checkbox-on-primary-checked-bg': colorCheckboxOnPrimaryCheckedBg,
+    '--color-checkbox-on-primary-checked-tick': colorCheckboxOnPrimaryCheckedTick,
 
     '--color-disabled-text': colorDisabledText,
 
