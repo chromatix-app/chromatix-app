@@ -45,8 +45,9 @@ const TitleHeading = ({
     <>
       <div
         className={clsx(style.stickyWrap, { [style.stickyWrapVisible]: isNearTop, [style.stickyWrapPadding]: padding })}
+        aria-hidden="true"
       >
-        <div className={style.stickyContent}>{title && <h1 className={clsx(style.stickyTitle)}>{title}</h1>}</div>
+        <div className={style.stickyContent}>{title && <h1 className={style.stickyTitle}>{title}</h1>}</div>
       </div>
       <div className={clsx(style.wrap, { [style.wrapPadding]: padding })}>
         {thumb && (

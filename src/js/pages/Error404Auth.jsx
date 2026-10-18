@@ -9,9 +9,9 @@ import { TitleHeading } from 'js/components';
 // ======================================================================
 
 const Error404Auth = () => (
-  <main>
+  <div>
     <TitleHeading title="404 Not Found" />
-  </main>
+  </div>
 );
 
 // ======================================================================

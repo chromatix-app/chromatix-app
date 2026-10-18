@@ -397,20 +397,20 @@ const AppMain = () => {
 
       {!fullPageMode && (
         <div className="layout">
-          <div className="layout-sidebar">
+          <nav className="layout-sidebar" aria-label="Sidebar">
             <SideBar />
-          </div>
-          <div className="layout-controls">
+          </nav>
+          <section className="layout-controls" aria-label="Player">
             <ControlBar />
-          </div>
-          <div ref={contentRef} id="content" className={clsx('layout-content', contentContainerClass)}>
+          </section>
+          <main ref={contentRef} id="content" className={clsx('layout-content', contentContainerClass)}>
             {envData.electronPlatformId !== 'lin' && envData.electronPlatformId !== 'win' && <UserMenu />}
             <BrowserRouteSwitch />
-          </div>
+          </main>
           {queueIsVisible && (
-            <div className="layout-rightbar">
+            <aside className="layout-rightbar" aria-label="Queue">
               <Queue />
-            </div>
+            </aside>
           )}
         </div>
       )}

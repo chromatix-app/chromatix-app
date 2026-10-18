@@ -27,7 +27,7 @@ export const FullPagePlayer = () => {
   });
 
   return (
-    <div className={style.wrap} data-allow-key-controls>
+    <main className={style.wrap} aria-label="Now playing" data-allow-key-controls>
       <div className={style.topSpacer}></div>
       <div>
         <NowPlaying />
@@ -46,7 +46,7 @@ export const FullPagePlayer = () => {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 

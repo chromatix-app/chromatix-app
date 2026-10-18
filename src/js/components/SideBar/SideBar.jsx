@@ -85,12 +85,12 @@ const SideBar = () => {
   return (
     <>
       <div className={style.nav} data-allow-key-controls>
-        <button type="button" className={style.prev} disabled={!canGoBack} onClick={goBack}>
+        <button type="button" className={style.prev} disabled={!canGoBack} onClick={goBack} aria-label="Back">
           <span className={style.navArea}>
             <Icon icon="PreviousIcon" cover stroke />
           </span>
         </button>
-        <button type="button" className={style.next} disabled={!canGoForward} onClick={goForward}>
+        <button type="button" className={style.next} disabled={!canGoForward} onClick={goForward} aria-label="Forward">
           <span className={style.navArea}>
             <Icon icon="NextIcon" cover stroke />
           </span>
@@ -528,7 +528,7 @@ const SearchField = () => {
   }, [debouncedSearchValue]);
 
   return (
-    <div className={style.search}>
+    <div className={style.search} role="search">
       <RadixPopover.Root open={searchResultsVisible}>
         <RadixPopover.Anchor>
           <div className={style.searchInput}>
