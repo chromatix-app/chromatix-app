@@ -10,6 +10,7 @@ export { default as getColorTokens } from './getColorTokens';
 export { default as getDashSrc } from './getDashSrc';
 export { default as getEnvironment } from './getEnvironment';
 export { default as getJellyAuthHeader } from './getJellyAuthHeader';
+export { default as getJellyStreamSrc } from './getJellyStreamSrc';
 export { default as getLocalStorage } from './getLocalStorage';
 export { default as getTrackKeys } from './getTrackKeys';
 export { default as migrateSessionState } from './migrateSessionState';
