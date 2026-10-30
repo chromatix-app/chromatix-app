@@ -31,7 +31,7 @@ describe('Testing "getJellyStreamSrc" function', () => {
     expect(url.searchParams.getAll('api_key')).toEqual([ACCESS_TOKEN]);
   });
 
-  test('Throws on an invalid URL', () => {
-    expect(() => getJellyStreamSrc('not a url', ACCESS_TOKEN)).toThrow();
+  test('Returns an invalid URL unchanged', () => {
+    expect(getJellyStreamSrc('not a url', ACCESS_TOKEN)).toBe('not a url');
   });
 });

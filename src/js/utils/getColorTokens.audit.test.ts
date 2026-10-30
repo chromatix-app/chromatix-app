@@ -4,6 +4,7 @@
 // Run on its own with `npm run test:colors`, which opens the report in the browser. The report can compare against
 // two saved snapshots: `original` (the values before the colour fixes) and `baseline`. `npm run test:colors:baseline`
 // saves the current ratios as the baseline; `COLORS_SAVE=original npm run test:colors` overwrites the original.
+// The report is only written when COLORS_REPORT is set (as the test:colors scripts do), so normal test runs skip it.
 // The guardrails at the end enforce minimum ratios, and run with the normal tests
 
 import fs from 'node:fs';
@@ -635,7 +636,7 @@ const renderReport = (panels: string, snapshots: Partial<Record<SnapshotName, Sn
 // ======================================================================
 
 describe('Colour contrast audit', () => {
-  test('Writes the HTML report for every dev theme at each contrast level', () => {
+  test.runIf(process.env.COLORS_REPORT)('Writes the HTML report for every dev theme at each contrast level', () => {
     const ratios: Record<string, number> = {};
     const panels = renderPanels(ratios);
 

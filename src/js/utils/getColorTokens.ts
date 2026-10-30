@@ -3,9 +3,11 @@ import chroma from 'chroma-js';
 import decimalMultiplier from './decimalMultiplier';
 import decimalToHex from './decimalToHex';
 
+/** The user's contrast setting. */
 export type ColorContrast = 'default' | 'medium' | 'high';
 type ColorTinting = 'auto' | 'darken' | 'lighten';
 
+/** A theme's three base colours, plus the contrast and tinting settings to build its tokens with. */
 export interface ColorTokensInput {
   background: string;
   text: string;
@@ -33,6 +35,7 @@ interface ContrastLevel {
   hoverContrast: number;
 }
 
+/** Every value that changes with the contrast setting, per level. Also read by the colour audit. */
 export const contrastLevels: Record<ColorContrast, ContrastLevel> = {
   default: {
     surfaceMultiplier: 1.1,
@@ -67,8 +70,9 @@ export const contrastLevels: Record<ColorContrast, ContrastLevel> = {
 };
 
 /**
- * Generates the theme's CSS custom properties from its three base colours, scaled by the contrast setting.
- * Tinting decides whether surfaces darken or lighten; `auto` picks from the background colour.
+ * Generates the theme's CSS custom properties from its three base colours, scaled by the contrast
+ * setting. Tinting decides whether surfaces darken or lighten; `auto` picks from the background
+ * colour.
  */
 const getColorTokens = ({ background, text, core, contrast, tinting }: ColorTokensInput): ColorTokens => {
   // ======================================================================
