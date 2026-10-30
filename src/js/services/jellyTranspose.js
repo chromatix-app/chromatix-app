@@ -456,9 +456,13 @@ const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
 
   // Use the universal endpoint for codecs the browser can't play natively.
   // It auto-transcodes to AAC/MP3; static=true direct-streams supported codecs.
+  // Audio elements can't send headers, so the token goes in the URL. ApiKey works on all current
+  // servers; the legacy api_key is kept for older ones (newer servers ignore it) and can be
+  // removed once older servers no longer need supporting.
+  const tokenParams = `ApiKey=${accessToken}&api_key=${accessToken}`;
   const src = requiresTranscoding(codec)
-    ? `${serverBaseUrl}/Audio/${track.Id}/universal?api_key=${accessToken}&audioCodec=aac,mp3`
-    : `${serverBaseUrl}/Audio/${track.Id}/stream?static=true&api_key=${accessToken}`;
+    ? `${serverBaseUrl}/Audio/${track.Id}/universal?${tokenParams}&audioCodec=aac,mp3`
+    : `${serverBaseUrl}/Audio/${track.Id}/stream?static=true&${tokenParams}`;
 
   return {
     kind: 'track',

@@ -4,6 +4,7 @@ export const config = {
 
   // local storage keys
   storageDevEnvironmentKey: 'chromatix-dev-environment',
+  storageDeviceIdKey: 'chromatix-device-id',
   storageJellyServerKey: 'chromatix-jelly-server',
   storageJellyUserKey: 'chromatix-jelly-user',
   storagePersistentKey: 'chromatix-persist-v1',

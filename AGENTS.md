@@ -113,6 +113,8 @@ The audio player has three layers: `player.ts` is the router that selects the ac
 
 The Plex API is entirely undocumented and reverse engineered. Plex API fields are explicitly excluded where not needed to reduce payload size.
 
+Jellyfin requests authenticate with the standard `Authorization: MediaBrowser …` header, built by the `getJellyAuthHeader` util (via `getRequestHeaders` in `jellyTools.js`). Never use the legacy `X-Emby-*` headers: newer servers ignore them and Jellyfin 12.0 removes them, which breaks login. The header's `DeviceId` is a random per-install ID from `getEnvironment()`, kept in localStorage (and kept on logout), since Jellyfin logs out a user's other sessions that share a device ID. Stream URLs can't send headers, so they carry the token as `ApiKey`, plus the legacy `api_key` for older servers; any new token-bearing URL parameter must also be added to `REDACTED_PARAMS` in `models.player.js`.
+
 Never send the server access token over plain `http` while an `https` route might work — `getBestConnection` in `plexTools.js` races every `https` address (local, remote, then relay, staggered via the `raceStaggered` util) and only tries `http` addresses once all of them have failed. Keep this guarantee when changing how connections are chosen.
 
 ## Routing

@@ -907,7 +907,7 @@ const withDashSrc = (track, currentService, serverBaseUrl, accessToken, sessionI
 };
 
 // Redacts sensitive query params from a URL string before logging.
-const REDACTED_PARAMS = ['X-Plex-Token', 'X-Emby-Token', 'api_key', 'token'];
+const REDACTED_PARAMS = ['X-Plex-Token', 'X-Emby-Token', 'ApiKey', 'api_key', 'token'];
 const redactUrl = (url) => {
   try {
     const parsed = new URL(url);

@@ -35,6 +35,27 @@ describe('Testing "getEnvironment" function', () => {
     expect(envData.appPlatformName).toBe('Web');
   });
 
+  // DEVICE ID
+
+  test('Generates a random device ID and stores it', async () => {
+    const envData = await loadEnvironment();
+    expect(envData.deviceId).toMatch(/^chromatix-[0-9a-f]{32}$/);
+    expect(localStorage.getItem(config.storageDeviceIdKey)).not.toBeNull();
+  });
+
+  test('Reuses the stored device ID', async () => {
+    const { deviceId } = await loadEnvironment();
+    const envData = await loadEnvironment();
+    expect(envData.deviceId).toBe(deviceId);
+  });
+
+  test('Generates a different device ID once storage is cleared', async () => {
+    const { deviceId } = await loadEnvironment();
+    localStorage.clear();
+    const envData = await loadEnvironment();
+    expect(envData.deviceId).not.toBe(deviceId);
+  });
+
   // SIMULATED ELECTRON
 
   test('Simulates Electron on Windows', async () => {

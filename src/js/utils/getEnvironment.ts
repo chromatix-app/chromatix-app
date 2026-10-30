@@ -9,6 +9,7 @@ import getBrowserName from './getBrowserName';
 import getElectronDetails from './getElectronDetails';
 import getLocalStorage from './getLocalStorage';
 import getOperatingSystemName from './getOperatingSystemName';
+import setLocalStorage from './setLocalStorage';
 
 interface EnvironmentData {
   appName: string;
@@ -60,7 +61,7 @@ const getEnvironment = (): EnvironmentData => {
   const envData: EnvironmentData = {
     appName: 'Chromatix',
     browserName: '',
-    deviceId: 'Chromatix',
+    deviceId: getDeviceId(),
     deviceName: '',
     isRealElectron: isElectron,
     osName: '',
@@ -131,6 +132,22 @@ const applySimulatedEnvironment = (envData: EnvironmentData): void => {
   envData.electronPlatformId = isElectron ? platformId : null;
   envData.electronPlatformName = isElectron ? osName : null;
   envData.electronVersion = isElectron ? '0.3.1+simulated' : null;
+};
+
+/**
+ * Gets this install's device ID, generating and storing a random one on first use. Jellyfin logs out
+ * a user's other sessions on the same device ID, so each install needs its own. Uses getRandomValues
+ * rather than randomUUID, which isn't available outside secure contexts (e.g. plain http).
+ */
+
+const getDeviceId = (): string => {
+  const storedId = getLocalStorage(config.storageDeviceIdKey);
+  if (storedId) return storedId;
+
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  const deviceId = 'chromatix-' + Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+  setLocalStorage(config.storageDeviceIdKey, deviceId);
+  return deviceId;
 };
 
 const capitalise = (string?: string): string | null => {
