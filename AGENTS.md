@@ -113,7 +113,7 @@ The audio player has three layers: `player.ts` is the router that selects the ac
 
 The Plex API is entirely undocumented and reverse engineered. Plex API fields are explicitly excluded where not needed to reduce payload size.
 
-Never send the server access token over plain `http` while a direct (non-relay) `https` route might work — `getBestConnection` in `plexTools.js` tries every local and remote `https` address before any `http` one, and only then the relay. Keep this guarantee when changing how connections are chosen.
+Never send the server access token over plain `http` while an `https` route might work — `getBestConnection` in `plexTools.js` races every `https` address (local, remote, then relay, staggered via the `raceStaggered` util) and only tries `http` addresses once all of them have failed. Keep this guarantee when changing how connections are chosen.
 
 ## Routing
 
@@ -253,7 +253,7 @@ Set via `import.meta.env` (Vite convention, prefixed `VITE_`):
 - Outside production, the "Environment" select on `/dev/components` can simulate another environment (e.g. Electron on Windows) by overriding the display fields `getEnvironment()` returns. Use `isElectron` for anything visual; use `isRealElectron` for behaviour that genuinely needs the Electron runtime (e.g. direct IP connections, `chromatix://` local files), so a simulated environment can't trigger it. Simulated Electron on Windows or Linux also shows the app menu, filled with the dummy `devElectronMenu` (`_config/devElectronMenu.ts`), since there's no main process to send the real one
 - Use `getLocalStorage` / `setLocalStorage` from `js/utils` for all localStorage access
 - Use `safeEncodeURIComponent` / `safeDecodeURIComponent` from `js/utils` (not the native globals) for values embedded in React Router route paths/params (e.g. genre, tag, collection IDs) — their placeholder scheme exists specifically to survive React Router's own decoding, and only makes sense paired on both ends of that round-trip. For values that never pass through React Router (e.g. a `chromatix://` protocol URL read directly by Electron), use the native `encodeURIComponent` / `decodeURIComponent`
-- All top-level exports in `js/hooks/` and `js/utils/` must have a clear, succinct JSDoc comment. Keep descriptions brief and factual — one sentence for simple functions, a few lines for complex ones. Include `@param` and `@returns` tags only when they add meaningful clarity beyond what the types convey
+- All top-level exports in `js/hooks/` and `js/utils/` must have a clear, succinct JSDoc comment. Keep descriptions brief and factual — one sentence for simple functions, a few lines for complex ones. Include `@param` and `@returns` tags only when they add meaningful clarity beyond what the types convey. Wrap JSDoc lines to stay under 100 characters
 - Section comments use a consistent three-line banner style — a divider, a title, then a closing divider:
   ```
   // ======================================================================

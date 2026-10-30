@@ -52,17 +52,25 @@ const remoteHttp = { ...remote, uri: 'http://1.2.3.4:32400' };
 
 const headMock = vi.mocked(axios.head);
 
-/** Makes only the given URIs respond successfully (optionally after a delay in ms), then resolves the best connection. */
+let startTime = 0;
+let requestTimes: Record<string, number> = {};
+
+/**
+ * Makes only the given URIs respond successfully, then resolves the best connection. Any URI with a response delay
+ * (in ms) succeeds or fails after that delay, otherwise immediately.
+ */
 const resolveWith = async (
   workingUris: string[],
   connections = [local, remote, relay],
   responseDelays: Record<string, number> = {}
 ) => {
   headMock.mockImplementation((uri: string) => {
-    if (!workingUris.includes(uri)) return Promise.reject(new Error('Unreachable'));
-    if (!responseDelays[uri]) return Promise.resolve({});
-    return new Promise((resolve) => setTimeout(() => resolve({}), responseDelays[uri]));
+    requestTimes[uri] = Date.now() - startTime;
+    const respond = () => (workingUris.includes(uri) ? Promise.resolve({}) : Promise.reject(new Error('Unreachable')));
+    if (!responseDelays[uri]) return respond();
+    return new Promise((resolve) => setTimeout(resolve, responseDelays[uri])).then(respond);
   });
+  startTime = Date.now();
   const result = getBestConnection({ server: { accessToken: 'token', connections } });
   const settled = result.then(
     (value) => ({ value }),
@@ -74,6 +82,8 @@ const resolveWith = async (
 
 const requestedUris = () => headMock.mock.calls.map(([uri]) => uri);
 
+const requestSignal = (uri: string) => headMock.mock.calls.find(([calledUri]) => calledUri === uri)?.[1]?.signal;
+
 // ======================================================================
 // TESTS
 // ======================================================================
@@ -83,6 +93,7 @@ describe('Testing "getBestConnection" function', () => {
     vi.useFakeTimers();
     vi.spyOn(console, 'log').mockImplementation(() => {});
     headMock.mockReset();
+    requestTimes = {};
     env.isRealElectron = true;
   });
 
@@ -114,10 +125,15 @@ describe('Testing "getBestConnection" function', () => {
     expect(requestedUris()).not.toContain(relay.uri);
   });
 
-  test('Only tries plain http once every secure local candidate has failed', async () => {
-    expect(await resolveWith([directHttp, relay.uri])).toEqual({ value: directHttp });
+  test('Only tries plain http once every secure candidate, including relay, has failed', async () => {
+    expect(await resolveWith([directHttp])).toEqual({ value: directHttp });
     expect(requestedUris().indexOf(directHttp)).toBeGreaterThan(requestedUris().indexOf(directHttps));
-    expect(requestedUris()).not.toContain(relay.uri);
+    expect(requestedUris().indexOf(directHttp)).toBeGreaterThan(requestedUris().indexOf(relay.uri));
+  });
+
+  test('Prefers relay over plain http', async () => {
+    expect(await resolveWith([directHttp, relay.uri])).toEqual({ value: relay.uri });
+    expect(requestedUris()).not.toContain(directHttp);
   });
 
   test('Uses a remote connection rather than relay when local is unreachable', async () => {
@@ -125,7 +141,7 @@ describe('Testing "getBestConnection" function', () => {
     expect(requestedUris()).not.toContain(relay.uri);
   });
 
-  test('Falls back to relay only once local and remote have all failed', async () => {
+  test('Falls back to relay when local and remote all fail', async () => {
     expect(await resolveWith([relay.uri])).toEqual({ value: relay.uri });
     expect(requestedUris().at(-1)).toBe(relay.uri);
   });
@@ -176,6 +192,44 @@ describe('Testing "getBestConnection" function', () => {
   test('Wraps IPv6 addresses in brackets for direct IP connections', async () => {
     const localIPv6 = { ...local, address: 'fd00::2', IPv6: true };
     expect(await resolveWith(['https://[fd00::2]:32400'], [localIPv6])).toEqual({ value: 'https://[fd00::2]:32400' });
+  });
+
+  test('Starts remote immediately once every local attempt has failed', async () => {
+    env.isRealElectron = false;
+    expect(await resolveWith([remote.uri], [local, remote], { [local.uri]: 500 })).toEqual({ value: remote.uri });
+    expect(requestTimes[remote.uri]).toBe(500);
+  });
+
+  test('Starts remote after 2 seconds while local is still pending, and lets it win', async () => {
+    env.isRealElectron = false;
+    const result = await resolveWith([local.uri, remote.uri], [local, remote], { [local.uri]: 5000 });
+    expect(result).toEqual({ value: remote.uri });
+    expect(requestTimes[remote.uri]).toBe(2000);
+  });
+
+  test('Lets a slow local connection win if it responds before remote does', async () => {
+    env.isRealElectron = false;
+    const result = await resolveWith([local.uri, remote.uri], [local, remote], {
+      [local.uri]: 2500,
+      [remote.uri]: 1000,
+    });
+    expect(result).toEqual({ value: local.uri });
+  });
+
+  test('Starts relay after 4 seconds while direct attempts are still pending', async () => {
+    env.isRealElectron = false;
+    const result = await resolveWith([relay.uri], [local, remote, relay], {
+      [local.uri]: 6000,
+      [remote.uri]: 6000,
+    });
+    expect(result).toEqual({ value: relay.uri });
+    expect(requestTimes[relay.uri]).toBe(4000);
+  });
+
+  test('Aborts attempts still in progress once a connection succeeds', async () => {
+    env.isRealElectron = false;
+    await resolveWith([local.uri, remote.uri], [local, remote], { [local.uri]: 5000 });
+    expect(requestSignal(local.uri)?.aborted).toBe(true);
   });
 
   test('Rejects when no connection responds', async () => {
