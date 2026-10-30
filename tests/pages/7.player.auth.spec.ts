@@ -84,7 +84,7 @@ test.describe('player playback', () => {
     await waitForContent(page);
     // Load the playlist into the queue via the play button, then immediately
     // pause — each test will jump to its own track via the store.
-    await page.locator('[class*="playButton"]').first().click();
+    await page.getByRole('button', { name: 'Play', exact: true }).first().click();
     await waitForPlaying(page);
     await pausePlayback(page);
   });
