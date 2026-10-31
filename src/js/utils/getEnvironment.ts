@@ -146,7 +146,11 @@ const getDeviceId = (): string => {
 
   const bytes = crypto.getRandomValues(new Uint8Array(16));
   const deviceId = 'chromatix-' + Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
-  setLocalStorage(config.storageDeviceIdKey, deviceId);
+  try {
+    setLocalStorage(config.storageDeviceIdKey, deviceId);
+  } catch {
+    // Storage full or unavailable: keep the generated ID for this session only, so the app still loads
+  }
   return deviceId;
 };
 

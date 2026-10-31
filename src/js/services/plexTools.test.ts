@@ -226,6 +226,28 @@ describe('Testing "getBestConnection" function', () => {
     expect(requestTimes[relay.uri]).toBe(4000);
   });
 
+  test('Starts remote immediately when there are no local addresses, keeping relay 2 seconds behind', async () => {
+    env.isRealElectron = false;
+    const result = await resolveWith([relay.uri], [remote, relay], { [remote.uri]: 6000 });
+    expect(result).toEqual({ value: relay.uri });
+    expect(requestTimes[remote.uri]).toBe(0);
+    expect(requestTimes[relay.uri]).toBe(2000);
+  });
+
+  test('Starts relay immediately when it is the only option', async () => {
+    env.isRealElectron = false;
+    expect(await resolveWith([relay.uri], [relay])).toEqual({ value: relay.uri });
+    expect(requestTimes[relay.uri]).toBe(0);
+  });
+
+  test('Keeps the stagger between addresses in the first group when it is not local', async () => {
+    env.isRealElectron = false;
+    const remote2 = { ...remote, uri: 'https://1-2-3-5.abc123.plex.direct:32400', address: '1.2.3.5' };
+    const result = await resolveWith([remote2.uri], [remote, remote2], { [remote.uri]: 6000 });
+    expect(result).toEqual({ value: remote2.uri });
+    expect(requestTimes[remote2.uri]).toBe(300);
+  });
+
   test('Aborts attempts still in progress once a connection succeeds', async () => {
     env.isRealElectron = false;
     await resolveWith([local.uri, remote.uri], [local, remote], { [local.uri]: 5000 });

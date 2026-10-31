@@ -21,6 +21,7 @@ describe('Testing "getEnvironment" function', () => {
 
   afterEach(() => {
     vi.unstubAllEnvs();
+    vi.restoreAllMocks();
     delete window.isElectron;
     delete window.electronProcess;
   });
@@ -54,6 +55,15 @@ describe('Testing "getEnvironment" function', () => {
     localStorage.clear();
     const envData = await loadEnvironment();
     expect(envData.deviceId).not.toBe(deviceId);
+  });
+
+  test('Still returns a device ID when storing it fails', async () => {
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('Quota exceeded', 'QuotaExceededError');
+    });
+    const envData = await loadEnvironment();
+    expect(envData.deviceId).toMatch(/^chromatix-[0-9a-f]{32}$/);
+    expect(localStorage.getItem(config.storageDeviceIdKey)).toBeNull();
   });
 
   // SIMULATED ELECTRON

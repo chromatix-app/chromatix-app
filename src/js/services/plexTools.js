@@ -505,8 +505,9 @@ const relayDelay = 4000;
  * 2. Remote - over the internet, straight to the server. Tried shortly after local.
  * 3. Relay - routed through Plex's own servers, so slow and bandwidth-limited. Tried last.
  *
- * Each group starts sooner if everything before it has already failed, and earlier attempts keep
- * running when later ones start, so whichever responds first wins and the rest are cancelled.
+ * Each group starts sooner if everything before it has already failed (or straight away if there's
+ * nothing before it), and earlier attempts keep running when later ones start, so whichever
+ * responds first wins and the rest are cancelled.
  *
  * In Electron, the server's local IP is also tried directly, in case the network blocks
  * plex.direct addresses (https only works this way with "Allow Insecure Connections" on, as
@@ -569,12 +570,16 @@ export const getBestConnection = ({ server }) => {
     }));
 
   // Helper to race local, remote and relay URIs that match the filter, in that order of preference
-  const raceAll = (filter) =>
-    raceStaggered([
+  const raceAll = (filter) => {
+    const tasks = [
       ...schedule(preferredUris.filter(filter)),
       ...schedule(remoteUris.filter(filter), remoteDelay),
       ...schedule(relayUris.filter(filter), relayDelay),
-    ]);
+    ];
+    // Start the first non-empty group straight away, keeping the gaps between the rest
+    const offset = tasks[0]?.delay ?? 0;
+    return raceStaggered(tasks.map((task) => ({ ...task, delay: task.delay - offset })));
+  };
 
   // Helper to check if a URI uses HTTPS
   const isSecure = (uri) => uri.startsWith('https://');
