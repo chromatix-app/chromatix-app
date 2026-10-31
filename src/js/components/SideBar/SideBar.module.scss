@@ -1,5 +1,4 @@
 @use '../../../css/_config/_mixins';
-@use '../../../css/_config/_vars';
 
 .nav {
   display: flex;
@@ -219,11 +218,9 @@
   height: 36px;
   margin-right: 16px;
   background: var(--color-opacity-01);
-  background-image: vars.$thumbnail;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
   border-radius: 3px;
+
+  @include mixins.artwork-placeholder;
 
   &:after {
     @include mixins.artwork-border(3px);

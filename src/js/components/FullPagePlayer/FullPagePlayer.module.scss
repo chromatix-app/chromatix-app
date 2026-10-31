@@ -1,5 +1,4 @@
 @use '../../../css/_config/_mixins';
-@use '../../../css/_config/_vars';
 
 .wrap {
   display: flex;
@@ -58,13 +57,11 @@
   height: 240px;
   margin-right: 25px;
   background: var(--color-opacity-01);
-  background-image: vars.$thumbnail;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
   border-radius: 10px;
   // outline: 1px solid var(--color-opacity-01);
   // box-shadow: var(--shadow-sm);
+
+  @include mixins.artwork-placeholder;
 
   @media (min-width: 840px) and (min-height: 560px) {
     width: 280px;

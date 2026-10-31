@@ -61,6 +61,22 @@
   pointer-events: none;
 }
 
+// Music note icon (music-note-double.svg) shown behind missing artwork, as a mask filled with $color
+@mixin artwork-placeholder($size: 60%, $color: var(--color-opacity-025)) {
+  $mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='black' stroke-width='1' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 14 14'%3E%3Cpath d='M2.5 13.42a2 2 0 1 0 0-4 2 2 0 0 0 0 4M11.5 10.92a2 2 0 1 0 0-4 2 2 0 0 0 0 4'/%3E%3Cpath d='M13.5 8.92V1.08a.5.5 0 0 0-.63-.48l-8 2.22a.5.5 0 0 0-.37.48v8.12M4.5 5.92l9-2.5'/%3E%3C/svg%3E");
+
+  &:before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: $color;
+    pointer-events: none;
+    // Nudged left of centre for visual balance
+    -webkit-mask: $mask 45% center / $size no-repeat;
+    mask: $mask 45% center / $size no-repeat;
+  }
+}
+
 // Core colour fill fading towards the primary background, for icon/folder thumbnails on primary
 @mixin core-gradient-fill() {
   background: var(--color-core-main);
@@ -462,9 +478,9 @@ $_map-val: null !default;
     height: $size;
     margin: $size * -0.5 0 0 $size * -0.5;
     background-color: $color;
+    animation: spinner 1s steps(10) infinite;
     -webkit-mask: $mask center / contain no-repeat;
     mask: $mask center / contain no-repeat;
-    animation: spinner 1s steps(10) infinite;
   }
 
   @keyframes spinner {

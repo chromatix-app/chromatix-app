@@ -1,5 +1,4 @@
 @use '../../../css/_config/_mixins';
-@use '../../../css/_config/_vars';
 
 .wrap {
   overflow: hidden;
@@ -228,14 +227,16 @@
   width: 38px;
   height: 38px;
   background: var(--color-opacity-01);
-  background-image: vars.$thumbnail;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
   border-radius: 3px;
+
+  @include mixins.artwork-placeholder;
 
   &.thumbFolder {
     @include mixins.core-gradient-fill;
+
+    &:before {
+      content: none;
+    }
   }
 
   &:after {

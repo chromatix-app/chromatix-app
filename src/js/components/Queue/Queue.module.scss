@@ -1,5 +1,4 @@
 @use '../../../css/_config/_mixins';
-@use '../../../css/_config/_vars';
 
 .wrap {
   overflow: hidden;
@@ -63,12 +62,9 @@
   aspect-ratio: 1 / 1;
   margin: 15px 1px 0;
   background: var(--color-opacity-01);
-  background-image: vars.$thumbnail;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
   border-radius: 6px;
 
+  @include mixins.artwork-placeholder;
   @include mixins.electron-no-drag;
 
   &:after {
@@ -76,6 +72,7 @@
   }
 
   img {
+    position: relative;
     aspect-ratio: 1 / 1;
   }
 }
@@ -334,11 +331,9 @@ button.label {
   width: 36px;
   height: 36px;
   background: var(--color-opacity-01);
-  background-image: vars.$thumbnail;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
   border-radius: 3px;
+
+  @include mixins.artwork-placeholder;
 
   &:after {
     @include mixins.artwork-border(3px);

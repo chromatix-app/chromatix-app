@@ -1,5 +1,4 @@
 @use '../../../css/_config/_mixins';
-@use '../../../css/_config/_vars';
 
 .wrap {
   display: grid;
@@ -65,10 +64,8 @@
 
 .coverWrap {
   background: var(--color-opacity-01);
-  background-image: vars.$thumbnail;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
+
+  @include mixins.artwork-placeholder;
 }
 
 .coverArtwork,
