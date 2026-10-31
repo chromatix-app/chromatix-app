@@ -199,41 +199,35 @@ const ViewModeSettings = () => {
   };
 
   return (
-    <div className={style.menu}>
-      <div className={style.menuEntry}>
-        <div>
-          <div className={style.label}>
-            Quickly toggle between grid view and list view for all sections of your library.
-          </div>
-          <div className={style.description}>
-            Note that you can independently toggle the view mode within each individual section of your library.
-          </div>
-          <div className="mt-15"></div>
-          <FormTabButtons
-            tabs={[
-              {
-                label: 'Grid view',
-                icon: <Icon icon="GridIcon" cover strokeAndFill />,
-                onClick: toggleGridView,
-                active: allSame && firstValue === 'grid',
-              },
-              {
-                label: 'List view',
-                icon: <Icon icon="ListIcon" cover stroke />,
-                onClick: toggleListView,
-                active: allSame && firstValue === 'list',
-              },
-              {
-                label: 'Mixed',
-                icon: <Icon icon="VanishedCircleIcon" cover stroke />,
-                active: !allSame,
-                disabled: true,
-                renderDisabled: false,
-              },
-            ]}
-          />
-        </div>
+    <div>
+      <div>Quickly toggle between grid view and list view for all sections of your library.</div>
+      <div className={style.description}>
+        Note that you can independently toggle the view mode within each individual section of your library.
       </div>
+      <div className="mt-15"></div>
+      <FormTabButtons
+        tabs={[
+          {
+            label: 'Grid view',
+            icon: <Icon icon="GridIcon" cover strokeAndFill />,
+            onClick: toggleGridView,
+            active: allSame && firstValue === 'grid',
+          },
+          {
+            label: 'List view',
+            icon: <Icon icon="ListIcon" cover stroke />,
+            onClick: toggleListView,
+            active: allSame && firstValue === 'list',
+          },
+          {
+            label: 'Mixed',
+            icon: <Icon icon="VanishedCircleIcon" cover stroke />,
+            active: !allSame,
+            disabled: true,
+            renderDisabled: false,
+          },
+        ]}
+      />
     </div>
   );
 };
@@ -375,42 +369,36 @@ const FavouriteSettings = () => {
   };
 
   return (
-    <div className={style.menu}>
-      <div className={style.menuEntry}>
-        <div>
-          <div className={style.label}>
-            Quickly toggle the visibility of favourites for all sections of your library.
-          </div>
-          <div className={style.description}>
-            Note that you can independently toggle the visibility of favourites within each individual section of your
-            library.
-          </div>
-          <div className="mt-15"></div>
-          <FormTabButtons
-            tabs={[
-              {
-                label: 'Visible',
-                icon: <Icon icon="HeartIcon" cover strokeAndFill />,
-                onClick: toggleShowFavourites,
-                active: allSame && firstValue === true,
-              },
-              {
-                label: 'Hidden',
-                icon: <Icon icon="HeartIcon" cover stroke />,
-                onClick: toggleHideFavourites,
-                active: allSame && firstValue === false,
-              },
-              {
-                label: 'Mixed',
-                icon: <Icon icon="VanishedCircleIcon" cover stroke />,
-                active: !allSame,
-                disabled: true,
-                renderDisabled: false,
-              },
-            ]}
-          />
-        </div>
+    <div>
+      <div>Quickly toggle the visibility of favourites for all sections of your library.</div>
+      <div className={style.description}>
+        Note that you can independently toggle the visibility of favourites within each individual section of your
+        library.
       </div>
+      <div className="mt-15"></div>
+      <FormTabButtons
+        tabs={[
+          {
+            label: 'Visible',
+            icon: <Icon icon="HeartIcon" cover strokeAndFill />,
+            onClick: toggleShowFavourites,
+            active: allSame && firstValue === true,
+          },
+          {
+            label: 'Hidden',
+            icon: <Icon icon="HeartIcon" cover stroke />,
+            onClick: toggleHideFavourites,
+            active: allSame && firstValue === false,
+          },
+          {
+            label: 'Mixed',
+            icon: <Icon icon="VanishedCircleIcon" cover stroke />,
+            active: !allSame,
+            disabled: true,
+            renderDisabled: false,
+          },
+        ]}
+      />
     </div>
   );
 };
@@ -570,42 +558,36 @@ const StarRatingSettings = () => {
   };
 
   return (
-    <div className={style.menu}>
-      <div className={style.menuEntry}>
-        <div>
-          <div className={style.label}>
-            Quickly toggle the visibility of star ratings for all sections of your library.
-          </div>
-          <div className={style.description}>
-            Note that you can independently toggle the visibility of star ratings within each individual section of your
-            library.
-          </div>
-          <div className="mt-15"></div>
-          <FormTabButtons
-            tabs={[
-              {
-                label: 'Visible',
-                icon: <Icon icon="StarFullIcon" cover strokeAndFill />,
-                onClick: toggleShowUserRating,
-                active: allSame && firstValue === true,
-              },
-              {
-                label: 'Hidden',
-                icon: <Icon icon="StarFullIcon" cover stroke />,
-                onClick: toggleHideUserRating,
-                active: allSame && firstValue === false,
-              },
-              {
-                label: 'Mixed',
-                icon: <Icon icon="VanishedCircleIcon" cover stroke />,
-                active: !allSame,
-                disabled: true,
-                renderDisabled: false,
-              },
-            ]}
-          />
-        </div>
+    <div>
+      <div>Quickly toggle the visibility of star ratings for all sections of your library.</div>
+      <div className={style.description}>
+        Note that you can independently toggle the visibility of star ratings within each individual section of your
+        library.
       </div>
+      <div className="mt-15"></div>
+      <FormTabButtons
+        tabs={[
+          {
+            label: 'Visible',
+            icon: <Icon icon="StarFullIcon" cover strokeAndFill />,
+            onClick: toggleShowUserRating,
+            active: allSame && firstValue === true,
+          },
+          {
+            label: 'Hidden',
+            icon: <Icon icon="StarFullIcon" cover stroke />,
+            onClick: toggleHideUserRating,
+            active: allSame && firstValue === false,
+          },
+          {
+            label: 'Mixed',
+            icon: <Icon icon="VanishedCircleIcon" cover stroke />,
+            active: !allSame,
+            disabled: true,
+            renderDisabled: false,
+          },
+        ]}
+      />
     </div>
   );
 };

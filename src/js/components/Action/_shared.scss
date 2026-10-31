@@ -29,8 +29,9 @@
     background: var(--color-button-on-primary-bg);
     border: 1px solid var(--color-button-on-primary-border);
 
+    &:hover,
     &:focus-visible {
-      background: var(--color-secondary-hover);
+      background: var(--color-button-on-primary-hover);
     }
   }
   .wrapLarge:not(:first-child) & {

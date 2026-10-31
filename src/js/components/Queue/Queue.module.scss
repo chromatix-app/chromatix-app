@@ -1,5 +1,4 @@
 @use '../../../css/_config/_mixins';
-@use '../../../css/_config/_vars';
 
 .wrap {
   overflow: hidden;
@@ -63,12 +62,9 @@
   aspect-ratio: 1 / 1;
   margin: 15px 1px 0;
   background: var(--color-opacity-01);
-  background-image: vars.$thumbnail;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
   border-radius: 6px;
 
+  @include mixins.artwork-placeholder;
   @include mixins.electron-no-drag;
 
   &:after {
@@ -76,6 +72,7 @@
   }
 
   img {
+    position: relative;
     aspect-ratio: 1 / 1;
   }
 }
@@ -111,17 +108,23 @@
     opacity: 1;
   }
 
+  &:hover > span,
+  &:focus-visible > span {
+    background: var(--color-core-hover);
+  }
+
   > span {
     display: block;
     position: relative;
     width: 40px;
     height: 40px;
     padding: 11px;
-    background: var(--color-core);
-    border: 1px solid var(--color-opacity-01);
+    background: var(--color-core-main);
+    border: 1px solid var(--color-core-border);
     border-radius: 50%;
     box-shadow: var(--shadow-md);
-    color: var(--color-secondary-bg);
+    transition: background ease-in-out 0.25s;
+    color: var(--color-core-on-secondary-text);
 
     > span {
       display: block;
@@ -230,7 +233,7 @@
 
   // .scrollableOuterVirtual & {
   //   :global(html[data-env='local']) & {
-  //     color: var(--color-core);
+  //     color: var(--color-core-main);
   //   }
   // }
 }
@@ -307,8 +310,8 @@ button.label {
 
   &:hover,
   &[data-state='open'] {
-    background: var(--color-card-on-secondary-bg);
-    border: 1px solid var(--color-card-on-secondary-border);
+    background: var(--color-card-ghost-on-secondary-hover);
+    border: 1px solid var(--color-card-ghost-on-secondary-hover-border);
   }
 
   a {
@@ -319,7 +322,7 @@ button.label {
 }
 
 // .trackEntryCurrent {
-//   color: var(--color-core);
+//   color: var(--color-core-main);
 // }
 
 .trackThumb {
@@ -328,11 +331,9 @@ button.label {
   width: 36px;
   height: 36px;
   background: var(--color-opacity-01);
-  background-image: vars.$thumbnail;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
   border-radius: 3px;
+
+  @include mixins.artwork-placeholder;
 
   &:after {
     @include mixins.artwork-border(3px);

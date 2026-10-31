@@ -21,7 +21,7 @@ const FormTabButtons = ({ tabs }) => {
           wrap={false}
           onClick={onClick}
           icon={icon}
-          color={active ? 'mono' : 'secondary'}
+          color={active ? 'mono' : 'onPrimary'}
           disabled={disabled}
           renderDisabled={renderDisabled}
           style={{ zIndex: active ? 2 : 'initial' }}

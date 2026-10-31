@@ -70,7 +70,7 @@ const Confirmation = () => {
           )}
 
           {noButton && (
-            <Button onClick={doNo} size="small" color="tertiary" loading={noLoading}>
+            <Button onClick={doNo} size="small" color="onSecondary" loading={noLoading}>
               {noButton}
             </Button>
           )}

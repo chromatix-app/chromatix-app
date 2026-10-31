@@ -9,6 +9,7 @@
 .btn {
   display: block;
   appearance: none;
+  overflow: hidden;
   width: 100%;
   max-width: 230px;
   padding: 17px 16px;
@@ -47,10 +48,19 @@
   // loading / submitting
 
   &.loading {
-    background-size: 24px 24px;
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
-    color: rgba(0, 0, 0, 0) !important;
+    position: relative;
+    cursor: default;
+
+    // Hidden visually but not from screen readers, so the button keeps its accessible name
+    > * {
+      opacity: 0;
+    }
+
+    .label {
+      white-space: nowrap;
+    }
+
+    @include mixins.spinner;
   }
 
   // centering
@@ -89,160 +99,146 @@
 // COLORS
 //
 
-.colorPrimary {
-  background: vars.$color-core;
-  border: 1px solid vars.$color-opacity-015;
-  color: vars.$color-primary-bg;
+.colorCore {
+  background: vars.$color-core-main;
+  border: 1px solid vars.$color-core-border;
+  color: vars.$color-core-on-primary-text;
+
+  &:not(:disabled):not(.loading):hover,
+  &:not(:disabled):not(.loading):focus-visible {
+    background-color: vars.$color-core-hover;
+  }
 
   :global(html[data-logged-in='true']) & {
-    background-color: var(--color-core);
-    border: 1px solid var(--color-opacity-015);
-    color: var(--color-primary-bg);
+    background-color: var(--color-core-main);
+    border: 1px solid var(--color-core-border);
+    color: var(--color-core-on-primary-text);
+
+    &:not(:disabled):not(.loading):hover,
+    &:not(:disabled):not(.loading):focus-visible {
+      background-color: var(--color-core-hover);
+    }
   }
 
   &.disabledText:disabled {
     > * {
-      opacity: var(--opacity-04);
+      opacity: var(--opacity-disabled);
     }
   }
 
   &.disabledAll:disabled {
-    opacity: var(--opacity-04);
-  }
-
-  &.loading {
-    background-image: url(../../../images/loading-black.gif);
-    background-image: url(../../../images/loading-black.png);
-
-    :global(html[data-theme='light']) & {
-      background-image: url(../../../images/loading-white.gif);
-      background-image: url(../../../images/loading-white.png);
-    }
+    opacity: var(--opacity-disabled);
   }
 }
 
 .colorMono {
-  background-color: vars.$color-button-mono-border;
-  border: 1px solid vars.$color-button-mono-bg;
-  color: vars.$color-button-mono-text;
-
+  // Only used when logged in, so there are no static logged-out styles
   :global(html[data-logged-in='true']) & {
     background-color: var(--color-button-mono-bg);
-    border: 1px solid var(--color-text);
-    color: var(--color-primary-bg);
+    border: 1px solid var(--color-button-mono-border);
+    color: var(--color-button-mono-text);
+
+    &:not(:disabled):not(.loading):hover,
+    &:not(:disabled):not(.loading):focus-visible {
+      background-color: var(--color-button-mono-hover);
+    }
   }
 
   &.disabledText:disabled {
     > * {
-      opacity: var(--opacity-04);
+      opacity: var(--opacity-disabled);
     }
   }
 
   &.disabledAll:disabled {
-    opacity: var(--opacity-04);
-  }
-
-  &.loading {
-    background-image: url(../../../images/loading-white.gif);
-    background-image: url(../../../images/loading-white.png);
-
-    :global(html[data-text-theme='light']) & {
-      background-image: url(../../../images/loading-black.gif);
-      background-image: url(../../../images/loading-black.png);
-    }
+    opacity: var(--opacity-disabled);
   }
 }
 
-.colorSecondary {
-  background-color: vars.$color-button-secondary-bg;
-  border: 1px solid vars.$color-button-secondary-border;
-  color: vars.$color-button-secondary-text;
+.colorOnPrimary {
+  background-color: vars.$color-button-on-primary-bg;
+  border: 1px solid vars.$color-button-on-primary-border;
+  color: vars.$color-button-on-primary-text;
+
+  &:not(:disabled):not(.loading):hover,
+  &:not(:disabled):not(.loading):focus-visible {
+    background-color: vars.$color-button-on-primary-hover;
+  }
 
   :global(html[data-logged-in='true']) & {
     background-color: var(--color-button-on-primary-bg);
     border: 1px solid var(--color-button-on-primary-border);
-    color: var(--color-text);
+    color: var(--color-button-on-primary-text);
+
+    &:not(:disabled):not(.loading):hover,
+    &:not(:disabled):not(.loading):focus-visible {
+      background-color: var(--color-button-on-primary-hover);
+    }
   }
 
   &.disabledText:disabled {
     > * {
-      color: var(--color-opacity-03);
+      color: var(--color-button-disabled-text);
     }
   }
 
   &.disabledAll:disabled {
-    background-color: var(--color-opacity-005);
-    border: 1px solid var(--color-opacity-005);
-    color: var(--color-opacity-03);
-  }
-
-  &.loading {
-    background-image: url(../../../images/loading-black.gif);
-    background-image: url(../../../images/loading-black.png);
-
-    :global(html[data-text-theme='light']) & {
-      background-image: url(../../../images/loading-white.gif);
-      background-image: url(../../../images/loading-white.png);
-    }
+    background-color: var(--color-button-disabled-bg);
+    border: 1px solid var(--color-button-disabled-bg);
+    color: var(--color-button-disabled-text);
   }
 }
 
-.colorTertiary {
-  background-color: vars.$color-button-secondary-bg;
-  border: 1px solid vars.$color-button-secondary-border;
-  color: vars.$color-button-secondary-text;
-
+.colorOnSecondary {
+  // Only used when logged in, so there are no static logged-out styles
   :global(html[data-logged-in='true']) & {
     background-color: var(--color-button-on-secondary-bg);
     border: 1px solid var(--color-button-on-secondary-border);
-    color: var(--color-text);
+    color: var(--color-button-on-secondary-text);
+
+    &:not(:disabled):not(.loading):hover,
+    &:not(:disabled):not(.loading):focus-visible {
+      background-color: var(--color-button-on-secondary-hover);
+    }
   }
 
   &.disabledText:disabled {
     > * {
-      color: var(--color-opacity-03);
+      color: var(--color-button-disabled-text);
     }
   }
 
   &.disabledAll:disabled {
-    background-color: var(--color-opacity-005);
-    border: 1px solid var(--color-opacity-005);
-    color: var(--color-opacity-03);
-  }
-
-  &.loading {
-    background-image: url(../../../images/loading-black.gif);
-    background-image: url(../../../images/loading-black.png);
-
-    :global(html[data-text-theme='light']) & {
-      background-image: url(../../../images/loading-white.gif);
-      background-image: url(../../../images/loading-white.png);
-    }
+    background-color: var(--color-button-disabled-bg);
+    border: 1px solid var(--color-button-disabled-bg);
+    color: var(--color-button-disabled-text);
   }
 }
 
-.colorOutlineSecondary,
-.colorOutlineTertiary {
+.colorOutlineOnPrimary,
+.colorOutlineOnSecondary {
+  // Only used when logged in, so there are no static logged-out styles
   :global(html[data-logged-in='true']) & {
     background-color: transparent;
-    border: 1px solid var(--color-button-on-primary-border);
-    color: var(--color-text);
-  }
+    border: 1px solid var(--color-button-outline-on-primary-border);
+    color: var(--color-button-outline-on-primary-text);
 
-  &.loading {
-    background-image: url(../../../images/loading-black.gif);
-    background-image: url(../../../images/loading-black.png);
-
-    :global(html[data-text-theme='light']) & {
-      background-image: url(../../../images/loading-white.gif);
-      background-image: url(../../../images/loading-white.png);
+    &:not(:disabled):not(.loading):hover,
+    &:not(:disabled):not(.loading):focus-visible {
+      background-color: var(--color-button-outline-on-primary-hover);
     }
   }
 }
 
-.colorOutlineTertiary {
+.colorOutlineOnSecondary {
   :global(html[data-logged-in='true']) & {
-    border: 1px solid var(--color-button-on-secondary-border);
+    border: 1px solid var(--color-button-outline-on-secondary-border);
+    color: var(--color-button-outline-on-secondary-text);
+
+    &:not(:disabled):not(.loading):hover,
+    &:not(:disabled):not(.loading):focus-visible {
+      background-color: var(--color-button-outline-on-secondary-hover);
+    }
   }
 }
 

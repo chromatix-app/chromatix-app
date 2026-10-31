@@ -33,7 +33,7 @@ test.describe('ui interactions match snapshots', () => {
     await waitForContent(page);
 
     // Press play
-    await page.locator('[class*="playButton"]').first().click();
+    await page.getByRole('button', { name: 'Play', exact: true }).first().click();
 
     // Wait for playback to start
     await page.waitForFunction(() => (window as any).store.getState().playerModel.playerPlaying === true, {

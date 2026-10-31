@@ -3,9 +3,13 @@ import advancedFormat from 'dayjs/plugin/advancedFormat';
 
 dayjs.extend(advancedFormat);
 
+import config from 'js/_config/config';
+
 import getBrowserName from './getBrowserName';
 import getElectronDetails from './getElectronDetails';
+import getLocalStorage from './getLocalStorage';
 import getOperatingSystemName from './getOperatingSystemName';
+import setLocalStorage from './setLocalStorage';
 
 interface EnvironmentData {
   appName: string;
@@ -21,6 +25,7 @@ interface EnvironmentData {
   electronPlatformName: string | null;
   electronVersion: string | null;
   isElectron: boolean;
+  isRealElectron: boolean;
   osName: string;
   webBuildDate: string | null;
   webBuildTime: string | null;
@@ -56,8 +61,9 @@ const getEnvironment = (): EnvironmentData => {
   const envData: EnvironmentData = {
     appName: 'Chromatix',
     browserName: '',
-    deviceId: 'Chromatix',
+    deviceId: getDeviceId(),
     deviceName: '',
+    isRealElectron: isElectron,
     osName: '',
     webBuildDate: webBuildDate,
     webBuildTime: webBuildTime,
@@ -79,6 +85,9 @@ const getEnvironment = (): EnvironmentData => {
 
   envData.deviceName = 'Chromatix for ' + envData.appPlatformName;
 
+  // Dev only - display the app as if running in another environment
+  applySimulatedEnvironment(envData);
+
   // // Debug logging
   // if (isLocal) {
   //   const sortedKeys = Object.keys(envData).sort();
@@ -94,6 +103,55 @@ const getEnvironment = (): EnvironmentData => {
 
   // Return
   return envData;
+};
+
+const simulatedOsNames = {
+  mac: 'macOS',
+  win: 'Windows',
+  lin: 'Linux',
+} as const;
+
+/**
+ * Overrides display-related fields with the environment chosen on the dev components page (e.g. 'electron-win').
+ * Browser and non-production only. Server-facing fields (appPlatformName, deviceName) and isRealElectron are left
+ * untouched, so API requests and Electron-only behaviour are unaffected.
+ */
+
+const applySimulatedEnvironment = (envData: EnvironmentData): void => {
+  if (import.meta.env.VITE_ENV === 'production' || envData.isRealElectron) return;
+
+  const [platform, platformId] = getLocalStorage(config.storageDevEnvironmentKey)?.split('-') ?? [];
+  const osName = simulatedOsNames[platformId as keyof typeof simulatedOsNames];
+  if ((platform !== 'web' && platform !== 'electron') || !osName) return;
+
+  const isElectron = platform === 'electron';
+
+  envData.isElectron = isElectron;
+  envData.osName = osName;
+  envData.browserName = isElectron ? 'Chromatix' : envData.browserName;
+  envData.electronPlatformId = isElectron ? platformId : null;
+  envData.electronPlatformName = isElectron ? osName : null;
+  envData.electronVersion = isElectron ? '0.3.1+simulated' : null;
+};
+
+/**
+ * Gets this install's device ID, generating and storing a random one on first use. Jellyfin logs out
+ * a user's other sessions on the same device ID, so each install needs its own. Uses getRandomValues
+ * rather than randomUUID, which isn't available outside secure contexts (e.g. plain http).
+ */
+
+const getDeviceId = (): string => {
+  const storedId = getLocalStorage(config.storageDeviceIdKey);
+  if (storedId) return storedId;
+
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  const deviceId = 'chromatix-' + Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+  try {
+    setLocalStorage(config.storageDeviceIdKey, deviceId);
+  } catch {
+    // Storage full or unavailable: keep the generated ID for this session only, so the app still loads
+  }
+  return deviceId;
 };
 
 const capitalise = (string?: string): string | null => {

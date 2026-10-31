@@ -58,7 +58,6 @@ const App = () => {
   const currentServer = useSelector(({ sessionModel }) => sessionModel.currentServer);
   const currentLibrary = useSelector(({ sessionModel }) => sessionModel.currentLibrary);
   const isLightTheme = useSelector(({ sessionModel }) => sessionModel.isLightTheme);
-  const isLightText = useSelector(({ sessionModel }) => sessionModel.isLightText);
   const winCustomScrollbars = useSelector(({ sessionModel }) => sessionModel.winCustomScrollbars);
   const winAutoHideScrollbars = useSelector(({ sessionModel }) => sessionModel.winAutoHideScrollbars);
 
@@ -130,8 +129,7 @@ const App = () => {
   // toggle light mode data attribute on html
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', isLightTheme ? 'light' : 'dark');
-    document.documentElement.setAttribute('data-text-theme', isLightText ? 'light' : 'dark');
-  }, [isLightTheme, isLightText]);
+  }, [isLightTheme]);
 
   // toggle accessibility focus data attribute on html
   useEffect(() => {
@@ -399,20 +397,20 @@ const AppMain = () => {
 
       {!fullPageMode && (
         <div className="layout">
-          <div className="layout-sidebar">
+          <nav className="layout-sidebar" aria-label="Sidebar">
             <SideBar />
-          </div>
-          <div className="layout-controls">
+          </nav>
+          <section className="layout-controls" aria-label="Player">
             <ControlBar />
-          </div>
-          <div ref={contentRef} id="content" className={clsx('layout-content', contentContainerClass)}>
+          </section>
+          <main ref={contentRef} id="content" className={clsx('layout-content', contentContainerClass)}>
             {envData.electronPlatformId !== 'lin' && envData.electronPlatformId !== 'win' && <UserMenu />}
             <BrowserRouteSwitch />
-          </div>
+          </main>
           {queueIsVisible && (
-            <div className="layout-rightbar">
+            <aside className="layout-rightbar" aria-label="Queue">
               <Queue />
-            </div>
+            </aside>
           )}
         </div>
       )}

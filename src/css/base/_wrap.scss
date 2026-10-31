@@ -140,10 +140,9 @@
   height: 100svh;
 
   background: var(--color-primary-bg);
-  background-image: url(../../images/loading-white.png);
-  background-size: 30px auto;
-  background-position: center;
-  background-repeat: no-repeat;
+
+  // The theme's colour tokens are set after first render, so fall back to the static text colour
+  @include mixins.spinner(30px, var(--color-text, #{vars.$color-text}), 3px);
 }
 
 .wrap-middle {
@@ -222,4 +221,39 @@
   & + .devButtons {
     margin-top: 24px;
   }
+}
+
+.devCards {
+  display: flex;
+  gap: 12px;
+}
+
+.devCard,
+.devCardGhost {
+  flex: 1 1 0;
+  padding: 20px;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  text-align: center;
+}
+
+.devCard {
+  background: var(--color-card-on-primary-bg);
+  border-color: var(--color-card-on-primary-border);
+  box-shadow: var(--shadow-md);
+
+  &:hover {
+    background: var(--color-card-on-primary-hover);
+    border-color: var(--color-card-on-primary-hover-border);
+  }
+}
+
+.devCardGhost:hover {
+  background: var(--color-card-ghost-on-primary-hover);
+  border-color: var(--color-card-ghost-on-primary-hover-border);
+}
+
+.devCardGhostOnSecondary:hover {
+  background: var(--color-card-ghost-on-secondary-hover);
+  border-color: var(--color-card-ghost-on-secondary-hover-border);
 }

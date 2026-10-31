@@ -38,7 +38,7 @@
   // however when the content overflows it has a side effect of disabling
   // scrolling. This class enables scrolling if the content is overflowing.
   &.centerWithOverflow {
-    background: rgba(255, 0, 0, 0.1);
+    // background: rgba(255, 0, 0, 0.5);
     pointer-events: all !important;
   }
 }

@@ -20,17 +20,18 @@
   width: 56px;
   height: 72px;
   padding: 10px 0;
-  background: var(--color-secondary-bg);
-  border: 2px solid var(--color-secondary-border);
+  background: var(--color-field-on-primary-bg);
+  border: 2px solid var(--color-field-on-primary-border);
   border-radius: 8px;
   transition: border-color 0.2s;
   font-family: 'Courier New', Courier, monospace;
   font-size: 40px;
   line-height: 48px;
   font-weight: 600;
-  color: var(--color-text);
+  color: var(--color-field-on-primary-text);
 
   &[data-active='true'] {
+    // border-color: var(--color-field-on-primary-focus-border);
     border-color: var(--color-text);
   }
 }

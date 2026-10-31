@@ -32,7 +32,10 @@ const SettingsList = ({ title, description, menuItems, padding, variant }) => {
       {menuItems && menuItems.length > 0 && (
         <div className={style.list}>
           {menuItems.map(
-            ({ type = 'checkbox', key, label, description, footnote, state, disabled, props, options }, index) => {
+            (
+              { type = 'checkbox', key, label, description, footnote, state, disabled, props, options, onChange },
+              index
+            ) => {
               if (type === 'spacer') {
                 return <div key={index} className={style.spacer} />;
               } else if (type === 'label') {
@@ -52,7 +55,9 @@ const SettingsList = ({ title, description, menuItems, padding, variant }) => {
                       <input
                         type="checkbox"
                         checked={state}
-                        onChange={() => dispatch.sessionModel.setSessionState({ [key]: !state })}
+                        onChange={() =>
+                          onChange ? onChange(!state) : dispatch.sessionModel.setSessionState({ [key]: !state })
+                        }
                         disabled={disabled}
                       />
                       <span aria-hidden="true" className={style.checkboxIndicator}>
@@ -149,7 +154,11 @@ const SettingsList = ({ title, description, menuItems, padding, variant }) => {
                               type="radio"
                               name={key}
                               checked={state === optionValue}
-                              onChange={() => dispatch.sessionModel.setSessionState({ [key]: optionValue })}
+                              onChange={() =>
+                                onChange
+                                  ? onChange(optionValue)
+                                  : dispatch.sessionModel.setSessionState({ [key]: optionValue })
+                              }
                               disabled={disabled || optionDisabled}
                             />
                             <span className={clsx(style.label, (disabled || optionDisabled) && style.disabled)}>

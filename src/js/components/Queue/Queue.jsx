@@ -9,7 +9,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import clsx from 'clsx';
 
 import platformFeatures from 'js/_config/platformFeatures';
-import { Favourite, Icon, PopoverMenu, StarRating, ContextMenuTracks } from 'js/components';
+import { ArtworkImage, Favourite, Icon, PopoverMenu, StarRating, ContextMenuTracks } from 'js/components';
 import { useGetQueuedTracks, useWindowSize } from 'js/hooks';
 import { analyticsEvent } from 'js/utils';
 
@@ -390,14 +390,7 @@ const NowPlayingLarge = ({ entry, virtualEntry }) => {
         }}
       >
         <div className={style.expandedThumb}>
-          {(entry.thumbMd || entry.thumbSm) && (
-            <img
-              src={entry.thumbMd ? entry.thumbMd : entry.thumbSm}
-              alt={entry.title}
-              draggable="false"
-              loading="lazy"
-            />
-          )}
+          <ArtworkImage src={entry.thumbMd || entry.thumbSm} alt={entry.title} loading="lazy" />
           {playingLink && (
             <NavLink
               to={playingLink}
@@ -639,7 +632,7 @@ const TrackEntry = ({ entry, isCurrentlyPlaying = false, virtualEntry }) => {
         tabIndex={0}
       >
         <div className={style.trackThumb}>
-          {entry.thumbSm && <img src={entry.thumbSm} alt={entry.title} loading="lazy" draggable="false" />}
+          <ArtworkImage src={entry.thumbSm} alt={entry.title} loading="lazy" />
         </div>
 
         <div className={clsx(style.trackContent, 'text-trim')}>

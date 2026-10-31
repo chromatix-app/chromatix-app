@@ -65,12 +65,16 @@
     width: 100%;
     padding: 10px 15px;
     margin: 8px 0 0;
-    background: vars.$color-primary-bg;
-    border: 1px solid vars.$color-secondary-border;
+    background: vars.$color-field-on-primary-bg;
+    border: 1px solid vars.$color-field-on-primary-border;
     border-radius: 10px;
     font-size: 16px;
     line-height: 26px;
-    color: vars.$color-text;
+    color: vars.$color-field-on-primary-text;
+
+    &:focus {
+      border-color: vars.$color-field-on-primary-focus-border;
+    }
   }
 }
 
@@ -78,7 +82,7 @@
 .errorGeneral {
   margin: 8px 0 0;
   font-size: 14px;
-  color: vars.$color-core;
+  color: vars.$color-core-main;
 }
 .errorGeneral {
   margin: 16px 0 0;

@@ -5,7 +5,7 @@
 import axios from 'axios';
 
 import config from 'js/_config/config';
-import { getEnvironment, getLocalStorage, raceToSuccess, setLocalStorage } from 'js/utils';
+import { getEnvironment, getLocalStorage, raceStaggered, setLocalStorage } from 'js/utils';
 import * as plexTranspose from 'js/services/plexTranspose';
 
 // ======================================================================
@@ -492,76 +492,101 @@ export const getAllServers = ({ userToken }) => {
 // GET BEST SERVER CONNECTION
 // ======================================================================
 
-const localTimeout = 2000;
-const remoteTimeout = 3000;
+const connectionTimeout = 6000;
+const connectionStagger = 300;
+const remoteDelay = 2000;
+const relayDelay = 4000;
 
 /**
- * Finds the best way to reach the server and returns its URI. Plex lists several addresses per server, grouped as:
+ * Finds the best way to reach the server and returns its URI. Plex lists several addresses per
+ * server, grouped as:
  *
  * 1. Local - same network as the server, so fastest. Tried first.
- * 2. Remote - over the internet, straight to the server. Tried alongside local, but starting slightly later so
- *    that local wins if both work.
- * 3. Relay - routed through Plex's own servers, so slow and bandwidth-limited. Only tried once 1 and 2 have failed.
+ * 2. Remote - over the internet, straight to the server. Tried shortly after local.
+ * 3. Relay - routed through Plex's own servers, so slow and bandwidth-limited. Tried last.
  *
- * In Electron, the server's local IP is also tried directly, in case the local addresses above can't be resolved.
- * Local and remote https addresses are all tried before any plain http ones, so the token is never sent
- * unencrypted while a secure direct route might work. Whichever address responds first wins, and any attempts not
- * yet started are skipped.
+ * Each group starts sooner if everything before it has already failed (or straight away if there's
+ * nothing before it), and earlier attempts keep running when later ones start, so whichever
+ * responds first wins and the rest are cancelled.
+ *
+ * In Electron, the server's local IP is also tried directly, in case the network blocks
+ * plex.direct addresses (https only works this way with "Allow Insecure Connections" on, as
+ * Plex's certificate doesn't cover the IP).
+ *
+ * Plain http addresses are only tried once every https one has failed, so the token is never sent
+ * unencrypted while a secure route might work.
  *
  * @returns A promise resolving with the winning URI, or rejecting if no address responds
  */
 export const getBestConnection = ({ server }) => {
   const { accessToken, connections } = server;
-  let connected = false;
 
-  const testConnection = (uri, delay, timeout) =>
-    new Promise((resolve) => setTimeout(resolve, delay)).then(() => {
-      // Skip this attempt if another connection succeeded while it was waiting on its delay
-      if (connected) throw new Error('Already connected');
-      console.log('Attempting connection', uri);
-      return axios.head(uri, { headers: getRequestHeaders(accessToken), timeout }).then(() => {
-        connected = true;
-        return uri;
-      });
-    });
-
-  // Races multiple connection attempts and resolves with the first successful one. Attempts start 300ms apart
-  // (after an optional initial delay), so earlier URIs get a head start and win if several respond.
-  const race = (uris, timeout, initialDelay = 0) =>
-    raceToSuccess(uris.map((uri, index) => testConnection(uri, initialDelay + index * 300, timeout)));
-
-  // Utility function to extract URIs from a list of connection objects.
-  const getUris = (list) => list.map(({ uri }) => uri);
-
+  // Get connections by type: local, remote, relay
   const local = connections.filter((connection) => connection.local && !connection.relay);
   const remote = connections.filter((connection) => !connection.local && !connection.relay);
   const relay = connections.filter((connection) => connection.relay);
 
-  // Electron only - bypasses plex.direct DNS, which DNS rebinding protection can block
+  // Helper to extract URIs from a list of connection objects
+  const getUris = (list) => list.map(({ uri }) => uri);
+
+  // Helper to get direct URIs for Electron, bypassing plex.direct DNS, which DNS rebinding protection can block
   const getDirectUris = (scheme) =>
-    envData.isElectron
+    envData.isRealElectron
       ? local.map(({ address, port, IPv6 }) => `${scheme}://${IPv6 ? `[${address}]` : address}:${port}`)
       : [];
 
-  console.log('Local:', getUris(local));
-  console.log('Remote:', getUris(remote));
-  console.log('Relay:', getUris(relay));
-  console.log('Direct:', [...getDirectUris('https'), ...getDirectUris('http')]);
-
-  // Set removes duplicates, as Plex may already list the local IP as a plain http address
-  const localUris = [...new Set([...getUris(local), ...getDirectUris('https'), ...getDirectUris('http')])];
+  // Get URIs for each type of connection
+  const localUris = getUris(local);
+  const directUris = [...getDirectUris('https'), ...getDirectUris('http')];
   const remoteUris = getUris(remote);
+  const relayUris = getUris(relay);
 
-  // Races local and remote URIs that match the filter, starting remote 300ms after local so local is preferred
-  const raceLocalAndRemote = (filter) =>
-    raceToSuccess([race(localUris.filter(filter), localTimeout), race(remoteUris.filter(filter), remoteTimeout, 300)]);
+  // Combine local and direct URIs, removing duplicates, to form the preferred list of URIs
+  const preferredUris = [...new Set([...localUris, ...directUris])];
 
+  // Debug logs
+  console.log('Local:', localUris);
+  console.log('Direct:', directUris);
+  console.log('Remote:', remoteUris);
+  console.log('Relay:', relayUris);
+
+  // Helper to test a single connection URI with the given abort signal
+  const testConnection = (uri, signal) => {
+    console.log('Attempting connection', uri);
+    return axios
+      .head(uri, { headers: getRequestHeaders(accessToken), timeout: connectionTimeout, signal })
+      .then(() => uri)
+      .catch((error) => {
+        if (!signal.aborted) console.log('Connection failed', uri, error?.message);
+        throw error;
+      });
+  };
+
+  // Helper to schedule connection attempts 300ms apart, starting after the given delay
+  const schedule = (uris, delay = 0) =>
+    uris.map((uri, index) => ({
+      delay: delay + index * connectionStagger,
+      run: (signal) => testConnection(uri, signal),
+    }));
+
+  // Helper to race local, remote and relay URIs that match the filter, in that order of preference
+  const raceAll = (filter) => {
+    const tasks = [
+      ...schedule(preferredUris.filter(filter)),
+      ...schedule(remoteUris.filter(filter), remoteDelay),
+      ...schedule(relayUris.filter(filter), relayDelay),
+    ];
+    // Start the first non-empty group straight away, keeping the gaps between the rest
+    const offset = tasks[0]?.delay ?? 0;
+    return raceStaggered(tasks.map((task) => ({ ...task, delay: task.delay - offset })));
+  };
+
+  // Helper to check if a URI uses HTTPS
   const isSecure = (uri) => uri.startsWith('https://');
 
-  // Only fall back to http once every https connection has failed, then to relay
-  return raceLocalAndRemote(isSecure)
-    .catch(() => raceLocalAndRemote((uri) => !isSecure(uri)))
-    .catch(() => race(getUris(relay), remoteTimeout))
+  // Attempt to connect using HTTPS URIs first, then fall back to HTTP if none succeed
+  return raceAll(isSecure)
+    .catch(() => raceAll((uri) => !isSecure(uri)))
     .catch(() => {
       throw new Error('No active connection found');
     });

@@ -5,6 +5,9 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import config from 'js/_config/config';
+import { devThemes } from 'js/_config/devThemes';
+
 import {
   Button,
   ActionButton,
@@ -21,9 +24,61 @@ import {
   FormTheme,
   Icon,
   PageText,
+  PlaybackButton,
   SettingsList,
   TitleHeading,
 } from 'js/components';
+import { getEnvironment, getLocalStorage, setLocalStorage } from 'js/utils';
+
+// ======================================================================
+// OPTIONS
+// ======================================================================
+
+const envData = getEnvironment();
+
+const environmentOptions = [
+  { value: 'actual', label: 'Actual environment' },
+  { value: 'web-mac', label: 'Web / macOS' },
+  { value: 'web-win', label: 'Web / Windows' },
+  { value: 'web-lin', label: 'Web / Linux' },
+  { value: 'electron-mac', label: 'Electron / macOS' },
+  { value: 'electron-win', label: 'Electron / Windows' },
+  { value: 'electron-lin', label: 'Electron / Linux' },
+];
+
+// each inner array is one row of buttons
+const devToastRows = [
+  [
+    { label: 'Standard', title: 'Toast title', description: 'Toast description text.' },
+    { label: 'Title Only', title: 'Toast title only' },
+    {
+      label: 'Long',
+      title: 'A much longer toast title that might wrap onto two lines',
+      description:
+        'A longer description to check wrapping and spacing. Lorem ipsum dolor sit amet consectetur adipiscing elit.',
+    },
+  ],
+  [
+    {
+      label: 'Persistent',
+      title: 'Persistent toast',
+      description: 'Stays until dismissed, for checking styles.',
+      duration: Infinity,
+    },
+    { label: 'Debug', title: 'Debug toast', description: 'Not shown in production builds.', debug: true },
+  ],
+];
+
+const devThemeToSession = ({ theme, background, primary, text, tinting }) =>
+  theme
+    ? { currentTheme: theme }
+    : {
+        currentTheme: 'custom',
+        currentColorBackground: background,
+        currentColorPrimary: primary,
+        currentColorText: text,
+        currentUiTinting: tinting,
+      };
 
 // ======================================================================
 // COMPONENT
@@ -44,6 +99,34 @@ const Component = () => {
   const devSettingsSelect = useSelector(({ sessionModel }) => sessionModel.devSettingsSelect);
 
   const themeKeyFocus = useSelector(({ sessionModel }) => sessionModel.themeKeyFocus);
+  const currentContrast = useSelector(({ sessionModel }) => sessionModel.currentContrast);
+
+  // the active dev theme is whichever one matches every session field it would set
+  const activeDevTheme = useSelector(
+    ({ sessionModel }) =>
+      devThemes.find((devTheme) =>
+        Object.entries(devThemeToSession(devTheme)).every(
+          ([key, value]) => String(sessionModel[key]).toLowerCase() === value.toLowerCase()
+        )
+      )?.label
+  );
+
+  const [environment] = useState(() => getLocalStorage(config.storageDevEnvironmentKey) || 'actual');
+  const [loggedInAttr, setLoggedInAttr] = useState(
+    () => document.documentElement.getAttribute('data-logged-in') === 'true'
+  );
+
+  // environment is read once at startup, so a reload is needed to apply a change
+  const handleEnvironmentChange = (value) => {
+    setLocalStorage(config.storageDevEnvironmentKey, value);
+    window.location.reload();
+  };
+
+  // only flips the html attribute (not the real login state), so it resets whenever login state changes
+  const handleLoggedInChange = (value) => {
+    document.documentElement.setAttribute('data-logged-in', value);
+    setLoggedInAttr(value);
+  };
 
   const [view, setView] = useState('grid');
   const [tabView, setTabView] = useState('grid');
@@ -57,7 +140,7 @@ const Component = () => {
     country: true,
     genre: true,
     userRating: true,
-    isFavourite: true,
+    isFavourite: false,
   });
 
   const handleColChange = (attr, value) => {
@@ -68,6 +151,95 @@ const Component = () => {
     <>
       <TitleHeading title="Components" />
       <PageText fontSize="small" wysiwyg={true}>
+        {/* ENVIRONMENT */}
+
+        <div>
+          <h2>Environment</h2>
+          <FormSelect
+            value={envData.isRealElectron ? 'actual' : environment}
+            onChange={handleEnvironmentChange}
+            options={environmentOptions}
+            disabled={envData.isRealElectron}
+          />
+          <p>
+            Electron: <strong>{envData.isElectron ? 'Yes' : 'No'}</strong>, Platform:{' '}
+            <strong>{envData.electronPlatformName || 'Web'}</strong>, OS: <strong>{envData.osName}</strong>
+            {envData.isRealElectron ? ' (simulation not available in the Electron app)' : ''}
+            {!envData.isRealElectron && environment !== 'actual' ? ' (simulated)' : ''}
+          </p>
+          <div className="mt-35"></div>
+          <SettingsList
+            padding={false}
+            menuItems={[
+              {
+                type: 'checkbox',
+                key: 'devLoggedInAttr',
+                label: 'Display as logged in',
+                description: 'Only toggles the html attribute, so resets whenever the real login state changes.',
+                state: loggedInAttr,
+                onChange: handleLoggedInChange,
+              },
+              {
+                type: 'checkbox',
+                key: 'themeKeyFocus',
+                label: 'Highlight focused elements',
+                description: 'Displays a visual highlight on focused elements when using keyboard navigation.',
+                state: themeKeyFocus,
+              },
+              {
+                type: 'spacer',
+              },
+              {
+                type: 'radio',
+                key: 'currentContrast',
+                label: 'Contrast',
+                state: currentContrast,
+                options: [
+                  { label: 'Default', value: 'default' },
+                  { label: 'Medium', value: 'medium' },
+                  { label: 'High', value: 'high' },
+                ],
+              },
+              {
+                type: 'spacer',
+              },
+              {
+                type: 'radio',
+                key: 'devTheme',
+                label: 'Theme',
+                description: 'Edit the devThemes list in js/_config/devThemes.ts to change these.',
+                state: activeDevTheme,
+                options: devThemes.map(({ label }) => ({ label, value: label })),
+                onChange: (label) =>
+                  dispatch.sessionModel.setSessionState(
+                    devThemeToSession(devThemes.find((devTheme) => devTheme.label === label))
+                  ),
+              },
+            ]}
+          />
+        </div>
+
+        {/* TOASTS */}
+
+        <div>
+          <h2>Toasts</h2>
+          {devToastRows.map((row, index) => (
+            <div key={index} className="devButtons">
+              {row.map(({ label, ...notification }) => (
+                <Button
+                  key={label}
+                  wrap={false}
+                  size="tiny"
+                  color="onPrimary"
+                  onClick={() => dispatch.appModel.addNotification(notification)}
+                >
+                  {label}
+                </Button>
+              ))}
+            </div>
+          ))}
+        </div>
+
         {/* ACTIONS - STANDARD */}
 
         <div>
@@ -113,6 +285,14 @@ const Component = () => {
                 { variant: 'checkbox', label: 'Genre', attr: 'genre', checked: colOptions.genre },
                 { variant: 'checkbox', label: 'Rating', attr: 'userRating', checked: colOptions.userRating },
                 { variant: 'checkbox', label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
+                {
+                  variant: 'checkbox',
+                  label: 'Disabled (checked)',
+                  attr: 'devDisabledOn',
+                  checked: true,
+                  disabled: true,
+                },
+                { variant: 'checkbox', label: 'Disabled', attr: 'devDisabledOff', checked: false, disabled: true },
               ]}
             />
             <ActionButton label="New playlist" icon="PlusIcon" onClick={() => {}} />
@@ -138,6 +318,7 @@ const Component = () => {
                 { variant: 'action', label: 'Play track', icon: 'PlayIcon', onSelect: () => {} },
                 { variant: 'action', label: 'Go to artist', icon: 'PeopleIcon', onSelect: () => {} },
                 { variant: 'action', label: 'Go to album', icon: 'PlayCircleIcon', onSelect: () => {} },
+                { variant: 'action', label: 'Disabled', icon: 'MinusCircleIcon', onSelect: () => {}, disabled: true },
               ]}
             />
           </ActionWrap>
@@ -192,6 +373,14 @@ const Component = () => {
                 { variant: 'checkbox', label: 'Genre', attr: 'genre', checked: colOptions.genre },
                 { variant: 'checkbox', label: 'Rating', attr: 'userRating', checked: colOptions.userRating },
                 { variant: 'checkbox', label: 'Favourite', attr: 'isFavourite', checked: colOptions.isFavourite },
+                {
+                  variant: 'checkbox',
+                  label: 'Disabled (checked)',
+                  attr: 'devDisabledOn',
+                  checked: true,
+                  disabled: true,
+                },
+                { variant: 'checkbox', label: 'Disabled', attr: 'devDisabledOff', checked: false, disabled: true },
               ]}
             />
             <ActionButton variant="Large" label="New playlist" icon="PlusIcon" onClick={() => {}} />
@@ -218,8 +407,21 @@ const Component = () => {
                 { variant: 'action', label: 'Play track', icon: 'PlayIcon', onSelect: () => {} },
                 { variant: 'action', label: 'Go to artist', icon: 'PeopleIcon', onSelect: () => {} },
                 { variant: 'action', label: 'Go to album', icon: 'PlayCircleIcon', onSelect: () => {} },
+                { variant: 'action', label: 'Disabled', icon: 'MinusCircleIcon', onSelect: () => {}, disabled: true },
               ]}
             />
+          </div>
+        </div>
+
+        {/* PLAYBACK BUTTONS */}
+
+        <div>
+          <h2>Playback Buttons</h2>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <PlaybackButton onClick={() => {}} />
+            <PlaybackButton isPlaying onClick={() => {}} />
+            <PlaybackButton isLoaded onClick={() => {}} />
+            <PlaybackButton variant="shuffle" onClick={() => {}} />
           </div>
         </div>
 
@@ -397,12 +599,6 @@ const Component = () => {
               },
               {
                 type: 'spacer',
-              },
-              {
-                type: 'checkbox',
-                key: 'themeKeyFocus',
-                label: 'Highlight focused elements',
-                state: themeKeyFocus,
               },
               {
                 type: 'checkbox',
@@ -677,27 +873,14 @@ const Component = () => {
             <Button wrap={false} size="tab">
               Tab
             </Button>
-            <Button
-              wrap={false}
-              size="tab"
-              onClick={() =>
-                // toggle the data-logged-in attribute on the html element between true and false
-                document.documentElement.setAttribute(
-                  'data-logged-in',
-                  document.documentElement.getAttribute('data-logged-in') === 'true' ? 'false' : 'true'
-                )
-              }
-            >
-              Toggle Logged In
-            </Button>
           </div>
 
           <div className="devButtons">
             <Button wrap={false} size="tiny">
-              Primary
+              Core
             </Button>
             <Button wrap={false} size="tiny" loading>
-              Primary Loading
+              Core Loading
             </Button>
             <Button wrap={false} size="tiny" disabled renderDisabled={false}>
               Disabled Text
@@ -723,51 +906,104 @@ const Component = () => {
           </div>
 
           <div className="devButtons">
-            <Button wrap={false} size="tiny" color="secondary">
-              Secondary
+            <Button wrap={false} size="tiny" color="onPrimary">
+              On Primary
             </Button>
-            <Button wrap={false} size="tiny" color="secondary" loading>
-              Secondary Loading
+            <Button wrap={false} size="tiny" color="onPrimary" loading>
+              On Primary Loading
             </Button>
-            <Button wrap={false} size="tiny" color="secondary" disabled renderDisabled={false}>
+            <Button wrap={false} size="tiny" color="onPrimary" disabled renderDisabled={false}>
               Disabled Text
             </Button>
-            <Button wrap={false} size="tiny" color="secondary" disabled>
+            <Button wrap={false} size="tiny" color="onPrimary" disabled>
               Disabled All
             </Button>
           </div>
 
           <div className="devButtons">
-            <Button wrap={false} size="tiny" color="tertiary">
-              Tertiary
+            <Button wrap={false} size="tiny" color="onSecondary">
+              On Secondary
             </Button>
-            <Button wrap={false} size="tiny" color="tertiary" loading>
-              Tertiary Loading
+            <Button wrap={false} size="tiny" color="onSecondary" loading>
+              On Secondary Loading
             </Button>
-            <Button wrap={false} size="tiny" color="tertiary" disabled renderDisabled={false}>
+            <Button wrap={false} size="tiny" color="onSecondary" disabled renderDisabled={false}>
               Disabled Text
             </Button>
-            <Button wrap={false} size="tiny" color="tertiary" disabled>
+            <Button wrap={false} size="tiny" color="onSecondary" disabled>
               Disabled All
             </Button>
           </div>
 
           <div className="devButtons">
-            <Button wrap={false} size="tiny" color="outlineSecondary">
-              Secondary Outline
+            <Button wrap={false} size="tiny" color="outlineOnPrimary">
+              Outline On Primary
             </Button>
-            <Button wrap={false} size="tiny" color="outlineSecondary" loading>
-              Secondary Loading
+            <Button wrap={false} size="tiny" color="outlineOnPrimary" loading>
+              Outline Loading
             </Button>
           </div>
 
           <div className="devButtons">
-            <Button wrap={false} size="tiny" color="outlineTertiary">
-              Tertiary Outline
+            <Button wrap={false} size="tiny" color="outlineOnSecondary">
+              Outline On Secondary
             </Button>
-            <Button wrap={false} size="tiny" color="outlineTertiary" loading>
-              Tertiary Loading
+            <Button wrap={false} size="tiny" color="outlineOnSecondary" loading>
+              Outline Loading
             </Button>
+          </div>
+        </div>
+
+        {/* CARDS */}
+
+        <div>
+          <h2>Cards</h2>
+          <div className="devCards">
+            <div className="devCard">Card</div>
+            <div className="devCardGhost">Ghost card (hover)</div>
+          </div>
+        </div>
+      </PageText>
+
+      {/* SECONDARY SURFACE */}
+
+      <PageText color="secondary" fontSize="small" fullWidth={true} wysiwyg={true}>
+        <div>
+          <h2>Secondary Surface</h2>
+          <div className="devButtons">
+            <Button wrap={false} size="tiny" color="onSecondary">
+              On Secondary
+            </Button>
+            <Button wrap={false} size="tiny" color="onSecondary" loading>
+              On Secondary Loading
+            </Button>
+            <Button wrap={false} size="tiny" color="onSecondary" disabled renderDisabled={false}>
+              Disabled Text
+            </Button>
+            <Button wrap={false} size="tiny" color="onSecondary" disabled>
+              Disabled All
+            </Button>
+          </div>
+
+          <div className="devButtons">
+            <Button wrap={false} size="tiny" color="outlineOnSecondary">
+              Outline On Secondary
+            </Button>
+            <Button wrap={false} size="tiny" color="outlineOnSecondary" loading>
+              Outline Loading
+            </Button>
+          </div>
+
+          <br />
+          <FormInput value={inputValue} onChange={setInputValue} placeholder="Placeholder text" color="secondary" />
+          <br />
+          <FormInput value="Filled text" onChange={() => {}} color="secondary" />
+          <br />
+          <FormInput value="" onChange={() => {}} placeholder="Disabled" color="secondary" disabled />
+          <br />
+
+          <div className="devCards">
+            <div className="devCardGhost devCardGhostOnSecondary">Ghost card (hover)</div>
           </div>
         </div>
       </PageText>

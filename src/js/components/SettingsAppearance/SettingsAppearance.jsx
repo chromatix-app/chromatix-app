@@ -148,7 +148,7 @@ const DefaultCustomSettings = () => {
           />
         </div>
         <div className={style.colorField}>
-          <Button size="tab" color="secondary" wrap={false} onClick={resetCustomTheme} disabled={resetIsDisabled}>
+          <Button size="tab" color="onPrimary" wrap={false} onClick={resetCustomTheme} disabled={resetIsDisabled}>
             Reset
           </Button>
         </div>

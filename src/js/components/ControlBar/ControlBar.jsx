@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 
-import { Favourite, Icon, PopoverMenu, RangeSlider, StarRating, ContextMenuTracks } from 'js/components';
+import { ArtworkImage, Favourite, Icon, PopoverMenu, RangeSlider, StarRating, ContextMenuTracks } from 'js/components';
 import { useKeyPlaybackControls, useKeyMediaControls, useMediaMeta, usePlayerProgress } from 'js/hooks';
 import { analyticsEvent, durationToStringShort } from 'js/utils';
 import platformFeatures from 'js/_config/platformFeatures';
@@ -59,12 +59,12 @@ const NowPlaying = () => {
     <div className={style.nowPlayingOuter}>
       <ContextMenuTracks track={trackCurrent}>
         <div className={style.nowPlayingInner}>
-          <div className={clsx(style.coverWrap, { [style.coverPlaceholder]: !trackCurrent || !trackCurrent?.thumbSm })}>
+          <div className={style.coverWrap}>
             {trackCurrent && (
               <>
                 {trackCurrent.thumbSm && (
                   <div className={style.coverArtwork}>
-                    <img src={trackCurrent.thumbSm} alt={trackCurrent.title} draggable="false" />
+                    <ArtworkImage src={trackCurrent.thumbSm} alt={trackCurrent.title} />
                   </div>
                 )}
                 {playingLink && (
@@ -283,6 +283,7 @@ export const SecondaryControls = ({ fullPageMode }) => {
             value={volumeMuted ? 0 : volumeLevel}
             handleChange={dispatch.playerModel.volumeLevelSet}
             allowAccess={false}
+            color={fullPageMode ? 'primary' : 'secondary'}
           />
         </div>
       )}
@@ -384,7 +385,7 @@ const FullPageMenu = () => {
   );
 };
 
-export const ControlProgress = () => {
+export const ControlProgress = ({ fullPageMode }) => {
   const {
     trackProgress,
     trackProgressCurrent,
@@ -415,6 +416,7 @@ export const ControlProgress = () => {
           isDisabled={isDisabled}
           hideBar={isDisabled}
           allowAccess={false}
+          color={fullPageMode ? 'primary' : 'secondary'}
         />
       </div>
       <div className={style.scrubRight}>{!isDisabled && durationToStringShort(trackCurrent?.duration)}</div>

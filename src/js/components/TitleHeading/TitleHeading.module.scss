@@ -1,5 +1,4 @@
 @use '../../../css/_config/_mixins';
-@use '../../../css/_config/_vars';
 
 .wrap {
   display: flex;
@@ -30,7 +29,7 @@
   width: 130px;
   height: 130px;
   margin-right: 20px;
-  background: var(--color-secondary-hover);
+  background: var(--color-opacity-01);
   border-radius: 6px;
 
   :global(.cq-800) & {
@@ -74,10 +73,7 @@
 }
 
 .thumb {
-  background-image: vars.$thumbnail;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
+  @include mixins.artwork-placeholder;
 
   @include mixins.focus-self-outline;
 }
@@ -93,14 +89,9 @@
     margin-right: 25px;
   }
 
-  background: var(--color-core);
-  background: linear-gradient(to bottom, var(--color-core) 0%, var(--color-primary-bg) 400%);
   outline: none;
-  color: var(--color-primary-bg);
 
-  :global(html[data-theme='light']) & {
-    background: linear-gradient(to top, var(--color-core) 0%, var(--color-primary-bg) 400%);
-  }
+  @include mixins.core-gradient-fill;
 }
 
 .thumbIcon {
@@ -249,47 +240,6 @@
   :global(.cq-800) & {
     margin-top: 15px;
   }
-}
-
-.playButton,
-.shuffleButton {
-  display: inline-flex;
-  position: relative;
-  justify-content: center;
-  align-items: center;
-  min-width: 84px;
-  padding: 3px 8px;
-  background: var(--color-core);
-  border: 1px solid var(--color-opacity-01);
-  border-radius: 6px;
-
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: bold;
-  color: var(--color-primary-bg);
-
-  @include mixins.focus-self-outline;
-}
-
-.shuffleButton {
-  min-width: 40px;
-}
-
-.playIcon,
-.pauseIcon,
-.shuffleIcon {
-  display: block;
-  position: relative;
-  width: 11px;
-  height: 11px;
-  margin: 2px 5px 2px 0;
-}
-
-.shuffleIcon {
-  width: 16px;
-  height: 16px;
-  // margin: 0 4px 0 -3px;
-  margin: 0 0 0 0;
 }
 
 //

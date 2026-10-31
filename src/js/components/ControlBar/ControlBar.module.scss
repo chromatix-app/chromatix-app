@@ -1,5 +1,4 @@
 @use '../../../css/_config/_mixins';
-@use '../../../css/_config/_vars';
 
 .wrap {
   display: grid;
@@ -64,11 +63,9 @@
 }
 
 .coverWrap {
-  background: var(--color-secondary-hover);
-  background-image: vars.$thumbnail;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
+  background: var(--color-opacity-01);
+
+  @include mixins.artwork-placeholder;
 }
 
 .coverArtwork,
@@ -205,10 +202,10 @@ span.settings,
 
   &:not(:disabled):hover,
   &:not(:disabled):focus-visible {
-    background: var(--color-secondary-hover);
+    background: var(--color-item-on-secondary-hover);
 
     .fullPageMode & {
-      background: var(--color-secondary-bg);
+      background: var(--color-item-on-primary-hover);
     }
   }
 }
@@ -216,16 +213,22 @@ span.settings,
 button.play,
 button.pause {
   margin: 0 6px;
-  background: var(--color-core) !important;
-  border: 1px solid var(--color-opacity-01);
-  color: var(--color-secondary-bg);
+  background: var(--color-core-main) !important;
+  border: 1px solid var(--color-core-border);
+  color: var(--color-core-on-secondary-text);
 
   .fullPageMode & {
-    color: var(--color-primary-bg);
+    color: var(--color-core-on-primary-text);
+  }
+
+  &:not(:disabled):hover,
+  &:not(:disabled):focus-visible {
+    background: var(--color-core-hover) !important;
   }
 
   &:disabled {
     background: var(--color-text) !important;
+    border-color: var(--color-text) !important;
     opacity: 0.3;
   }
 }
@@ -285,7 +288,11 @@ button.volume {
 }
 
 button.active {
-  color: var(--color-core);
+  color: var(--color-item-on-secondary-active-text);
+
+  .fullPageMode & {
+    color: var(--color-item-on-primary-active-text);
+  }
 }
 
 .offline {
@@ -306,11 +313,7 @@ button.active {
   width: 100%;
   height: 100%;
 
-  background-image: url(../../../images/loading-black.gif);
-  background-image: url(../../../images/loading-black.png);
-  background-size: 24px 24px;
-  background-position: center;
-  background-repeat: no-repeat;
+  @include mixins.spinner;
 }
 
 // SCRUBBER

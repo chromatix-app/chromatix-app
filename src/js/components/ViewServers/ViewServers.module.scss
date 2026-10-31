@@ -17,8 +17,8 @@
   max-width: 300px;
   padding: 10px 20px;
   margin: 0 auto 6px;
-  background: var(--color-secondary-bg);
-  border: 1px solid var(--color-secondary-border);
+  background: var(--color-card-on-primary-bg);
+  border: 1px solid var(--color-card-on-primary-border);
   border-radius: 8px;
   box-shadow: var(--shadow-md);
   text-align: left;
@@ -26,9 +26,9 @@
   @include mixins.focus-self-outline;
 
   &:hover,
-  &:focus {
-    background: var(--color-tertiary-bg);
-    border: 1px solid var(--color-tertiary-border);
+  &:focus-visible {
+    background: var(--color-card-on-primary-hover);
+    border: 1px solid var(--color-card-on-primary-hover-border);
   }
 }
 
