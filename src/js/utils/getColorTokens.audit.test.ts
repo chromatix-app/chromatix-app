@@ -150,7 +150,8 @@ const otherDisabledOpacities: Record<string, { file: string; snippet: string; pa
   // The disabled play button is a text-coloured fill at 0.3 on the control bar
   'Play button (0.3)': {
     file: 'components/ControlBar/ControlBar.module.scss',
-    snippet: '&:disabled { background: var(--color-text) !important; opacity: 0.3;',
+    snippet:
+      '&:disabled { background: var(--color-text) !important; border-color: var(--color-text) !important; opacity: 0.3;',
     pair: (t) => ({ fg: over(t['--color-secondary-bg'], t['--color-text'], 0.3), bg: t['--color-secondary-bg'] }),
   },
   'Radio (0.35)': {

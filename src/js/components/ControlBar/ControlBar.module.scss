@@ -231,6 +231,7 @@ button.pause {
 
   &:disabled {
     background: var(--color-text) !important;
+    border-color: var(--color-text) !important;
     opacity: 0.3;
   }
 }
