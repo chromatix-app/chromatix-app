@@ -1,3 +1,29 @@
+# 0.73.0 (2026-10-31)
+
+Features:
+
+- Improved colours and readability across every theme, especially at higher contrast settings.
+- Buttons and other clickable elements now have clearer hover and keyboard focus states.
+- Disabled items now stay clearly disabled at every contrast setting.
+- Improved screen reader navigation of the main app layout.
+- Loading spinners and missing artwork placeholders now match your theme.
+- Faster and more reliable Plex server connections.
+
+Fixes:
+
+- Fixed logging in to newer Jellyfin servers.
+- Logging in to Jellyfin on one device no longer logs you out on others.
+- Fixed restored Jellyfin play queues failing to play after logging back in.
+- Broken artwork images now show the placeholder instead of a broken image icon.
+
+Code changes:
+
+- Added a colour contrast audit report and tests to keep theme colours readable.
+- Added environment simulation and toast triggers to the developer components page.
+- Dependency updates.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.72.0 (2026-10-11)
 
 Features:

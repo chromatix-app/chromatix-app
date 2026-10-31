@@ -5,7 +5,7 @@
 import axios from 'axios';
 
 import config from 'js/_config/config';
-import { getEnvironment, getLocalStorage, safeDecodeURIComponent, setLocalStorage } from 'js/utils';
+import { getEnvironment, getJellyAuthHeader, getLocalStorage, safeDecodeURIComponent, setLocalStorage } from 'js/utils';
 import * as jellyTranspose from 'js/services/jellyTranspose';
 
 // ======================================================================
@@ -97,16 +97,25 @@ const endpointConfig = {
 // HELPER FUNCTIONS
 // ======================================================================
 
+// AUTHORIZATION HEADER
+// Uses the standard Authorization header, not the legacy X-Emby-* headers,
+// which newer Jellyfin servers ignore (and 12.0 removes).
+
+const getAuthHeader = (accessToken) =>
+  getJellyAuthHeader({
+    client: envData.appName,
+    device: envData.deviceName,
+    deviceId: envData.deviceId,
+    version: envData.webVersion,
+    token: accessToken,
+  });
+
 // STANDARD HEADERS FOR MOST REQUESTS
 
 const getRequestHeaders = (accessToken) => {
   return {
     Accept: 'application/json',
-    'X-Emby-Token': accessToken,
-    'X-Emby-Client': envData.appName,
-    'X-Emby-Device': envData.deviceName,
-    'X-Emby-Device-Id': envData.deviceId,
-    'X-Emby-Client-Version': envData.webVersion || '0.0.0',
+    Authorization: getAuthHeader(accessToken),
   };
 };
 
@@ -146,7 +155,7 @@ export const login = (values) => {
           {
             headers: {
               'Content-Type': 'application/json',
-              'X-Emby-Authorization': `MediaBrowser Client="${envData.appName}", Device="${envData.deviceName}", DeviceId="${envData.deviceId}", Version="${envData.webVersion}"`,
+              Authorization: getAuthHeader(),
             },
             timeout: 10000,
           }
@@ -160,6 +169,12 @@ export const login = (values) => {
             setLocalStorage(storageServiceKey, 'jellyfin');
             setLocalStorage(storageTokenKey, accessToken);
             resolve();
+          } else {
+            reject({
+              code: 'jellyfin.login.3',
+              message: 'Failed to login: missing access token or user ID',
+              error: null,
+            });
           }
         })
         .catch((error) => {

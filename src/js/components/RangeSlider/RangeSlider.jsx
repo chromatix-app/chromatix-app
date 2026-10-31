@@ -20,10 +20,12 @@ export const RangeSlider = ({
   allowAccess = true,
   isDisabled = false,
   hideBar = false,
+  color = 'primary',
   handleChange,
   handleMouseDown,
   handleMouseUp,
 }) => {
+  const colorClass = 'color' + color.charAt(0).toUpperCase() + color.slice(1);
   const widthPercent = ((value - min) / (max - min)) * 100;
 
   const debouncedHandleChange = debounce(handleChange, 10);
@@ -33,6 +35,7 @@ export const RangeSlider = ({
       <div
         className={clsx(
           style.input,
+          style[colorClass],
           allowAccess && !isDisabled && style.inputAccessible,
           isDisabled && !hideBar && style.inputDisabled
         )}

@@ -12,22 +12,22 @@
   width: 100%;
   max-width: 420px;
   padding: 8px 12px;
-  background: var(--color-button-on-primary-bg);
-  border: 1px solid var(--color-button-on-primary-border);
+  background: var(--color-field-on-primary-bg);
+  border: 1px solid var(--color-field-on-primary-border);
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
   text-align: left;
-  color: var(--color-text);
+  color: var(--color-field-on-primary-text);
 
   @include mixins.focus-self-outline;
 
   &:focus-visible {
-    background: var(--color-secondary-hover);
+    border-color: var(--color-field-on-primary-focus-border);
   }
 
   &[data-disabled] {
-    opacity: var(--opacity-04);
+    opacity: var(--opacity-disabled);
     cursor: not-allowed;
   }
 }
@@ -86,15 +86,15 @@
   @include mixins.focus-self-fill;
 
   &[data-highlighted] {
-    background: var(--color-secondary-hover);
+    background: var(--color-item-on-secondary-hover);
   }
 
   &[data-state='checked'] {
-    color: var(--color-core);
+    color: var(--color-select-on-secondary-checked-text);
   }
 
   &[data-disabled] {
-    opacity: var(--opacity-04);
+    opacity: var(--opacity-disabled);
     cursor: not-allowed;
   }
 }
@@ -104,5 +104,5 @@
   width: 14px;
   height: 14px;
   margin-left: auto;
-  color: var(--color-core);
+  color: var(--color-select-on-secondary-checked-text);
 }

@@ -76,7 +76,7 @@ const CollectionAdd = () => {
         <Button onClick={handleSubmit} size="small" color="mono" disabled={!!validationError} loading={loading}>
           Create Collection
         </Button>
-        <Button onClick={() => dispatch.dialogModel.closeModal()} size="small" color="tertiary" disabled={loading}>
+        <Button onClick={() => dispatch.dialogModel.closeModal()} size="small" color="onSecondary" disabled={loading}>
           Cancel
         </Button>
       </div>

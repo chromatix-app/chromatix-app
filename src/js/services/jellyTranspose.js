@@ -456,9 +456,11 @@ const transposeTrackData = (track, libraryId, serverBaseUrl, accessToken) => {
 
   // Use the universal endpoint for codecs the browser can't play natively.
   // It auto-transcodes to AAC/MP3; static=true direct-streams supported codecs.
+  // The access token is added when the track is loaded (withPlaybackSrc in models.player.js), so a
+  // saved queue never holds a stale token.
   const src = requiresTranscoding(codec)
-    ? `${serverBaseUrl}/Audio/${track.Id}/universal?api_key=${accessToken}&audioCodec=aac,mp3`
-    : `${serverBaseUrl}/Audio/${track.Id}/stream?static=true&api_key=${accessToken}`;
+    ? `${serverBaseUrl}/Audio/${track.Id}/universal?audioCodec=aac,mp3`
+    : `${serverBaseUrl}/Audio/${track.Id}/stream?static=true`;
 
   return {
     kind: 'track',

@@ -9,11 +9,6 @@
   right: 0;
   min-width: 32px;
   min-height: 32px;
-  background-image: url(../../../images/loading-grey.gif);
-  background-image: url(../../../images/loading-grey.png);
-  background-size: 32px 32px;
-  background-position: 50% 45%;
-  background-repeat: no-repeat;
   opacity: 0;
   animation: fade-in 1s 0.5s forwards;
   pointer-events: none;
@@ -21,6 +16,13 @@
   font-size: 0;
   line-height: 0;
   text-indent: -9999px;
+
+  @include mixins.spinner(32px, var(--color-opacity-05), 3px);
+
+  &:after {
+    top: 45%;
+    top: round(45%, 1px);
+  }
 }
 
 .loaderOffline {

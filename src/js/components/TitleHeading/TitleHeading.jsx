@@ -6,7 +6,7 @@ import { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import clsx from 'clsx';
 
-import { Icon } from 'js/components';
+import { ArtworkImage, Icon, PlaybackButton } from 'js/components';
 import { useNearTop, useTagImage } from 'js/hooks';
 
 import style from './TitleHeading.module.scss';
@@ -45,14 +45,16 @@ const TitleHeading = ({
     <>
       <div
         className={clsx(style.stickyWrap, { [style.stickyWrapVisible]: isNearTop, [style.stickyWrapPadding]: padding })}
+        aria-hidden="true"
       >
-        <div className={style.stickyContent}>{title && <h1 className={clsx(style.stickyTitle)}>{title}</h1>}</div>
+        <div className={style.stickyContent}>{title && <h1 className={style.stickyTitle}>{title}</h1>}</div>
       </div>
       <div className={clsx(style.wrap, { [style.wrapPadding]: padding })}>
         {thumb && (
           <button
             type="button"
             className={style.thumb}
+            aria-label="View larger artwork"
             onClick={() => {
               dispatch.dialogModel.showModal({
                 modal: 'ImagePreview',
@@ -60,7 +62,7 @@ const TitleHeading = ({
               });
             }}
           >
-            <img src={thumb} alt={title} draggable="false" />
+            <ArtworkImage src={thumb} alt={title} />
           </button>
         )}
 
@@ -100,9 +102,9 @@ const TitleHeading = ({
             <div className={style.buttons}>
               {showPlay && (
                 <>
-                  <button
-                    type="button"
-                    className={style.playButton}
+                  <PlaybackButton
+                    isPlaying={isPlaying}
+                    isLoaded={isLoaded}
                     onClick={() =>
                       isPlaying
                         ? dispatch.playerModel.playerPause()
@@ -110,30 +112,8 @@ const TitleHeading = ({
                           ? dispatch.playerModel.playerResume()
                           : handlePlay && handlePlay(false)
                     }
-                  >
-                    {!isPlaying ? (
-                      <span className={style.playIcon}>
-                        <Icon icon="PlayFilledIcon" cover />
-                      </span>
-                    ) : (
-                      <span className={style.pauseIcon}>
-                        <Icon icon="PauseFilledIcon" cover />
-                      </span>
-                    )}
-                    <span className={style.playText}>{isPlaying ? 'Pause' : isLoaded ? 'Resume' : 'Play'}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    className={style.shuffleButton}
-                    onClick={() => handlePlay && handlePlay(true)}
-                    aria-label="Shuffle"
-                  >
-                    <span className={style.shuffleIcon}>
-                      <Icon icon="ShuffleIcon" cover stroke strokeWidth={1.4} />
-                    </span>
-                    {/* <span className={style.shuffleText}>Shuffle</span> */}
-                  </button>
+                  />
+                  <PlaybackButton variant="shuffle" onClick={() => handlePlay && handlePlay(true)} />
                 </>
               )}
 

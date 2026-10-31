@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import * as RadixPopover from '@radix-ui/react-popover';
 
-import { ContextMenuPlaylists, Icon, ReleaseBanner, UserMenu } from 'js/components';
+import { ArtworkImage, ContextMenuPlaylists, Icon, ReleaseBanner, UserMenu } from 'js/components';
 import { useGetGlobalData, useKeyControl, useNavigationHistory } from 'js/hooks';
 import { getEnvironment } from 'js/utils';
 import * as bridge from 'js/services/bridge';
@@ -85,12 +85,12 @@ const SideBar = () => {
   return (
     <>
       <div className={style.nav} data-allow-key-controls>
-        <button type="button" className={style.prev} disabled={!canGoBack} onClick={goBack}>
+        <button type="button" className={style.prev} disabled={!canGoBack} onClick={goBack} aria-label="Back">
           <span className={style.navArea}>
             <Icon icon="PreviousIcon" cover stroke />
           </span>
         </button>
-        <button type="button" className={style.next} disabled={!canGoForward} onClick={goForward}>
+        <button type="button" className={style.next} disabled={!canGoForward} onClick={goForward} aria-label="Forward">
           <span className={style.navArea}>
             <Icon icon="NextIcon" cover stroke />
           </span>
@@ -528,7 +528,7 @@ const SearchField = () => {
   }, [debouncedSearchValue]);
 
   return (
-    <div className={style.search}>
+    <div className={style.search} role="search">
       <RadixPopover.Root open={searchResultsVisible}>
         <RadixPopover.Anchor>
           <div className={style.searchInput}>
@@ -658,7 +658,7 @@ const SearchResults = ({ setSearchResultsVisible }) => {
               <Icon icon={result.icon} cover stroke />
             </div>
             <div className={style.searchThumb}>
-              {result.thumbSm && <img src={result.thumbSm} alt={result.title} draggable="false" loading="lazy" />}
+              <ArtworkImage src={result.thumbSm} alt={result.title} loading="lazy" />
             </div>
             <div>
               <div className={style.searchTitle}>{result.title}</div>

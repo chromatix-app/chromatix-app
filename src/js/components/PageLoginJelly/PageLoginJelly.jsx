@@ -68,7 +68,22 @@ export const PageLoginJelly = () => {
       setTouched((prev) => ({ ...prev, password: false }));
       setValues((prev) => ({ ...prev, password: '' }));
       setTimeout(function () {
-        if (
+        const status = err?.error?.response?.status;
+        if (status === 401) {
+          setGeneralError(
+            <>
+              <p>Sorry, we couldn't log you in.</p>
+              <p>Your username or password is incorrect.</p>
+            </>
+          );
+        } else if (status) {
+          setGeneralError(
+            <>
+              <p>Sorry, we couldn't log you in.</p>
+              <p>Your server rejected the login request (error {status}).</p>
+            </>
+          );
+        } else if (
           [
             'CERT_AUTHORITY_INVALID',
             'CERT_REJECTED',
@@ -86,6 +101,13 @@ export const PageLoginJelly = () => {
             <>
               <p>Sorry, we couldn't log you in.</p>
               <p>Your server must be running and have a valid SSL certificate.</p>
+            </>
+          );
+        } else if (['ECONNABORTED', 'ETIMEDOUT'].includes(err?.error?.code)) {
+          setGeneralError(
+            <>
+              <p>Sorry, we couldn't log you in.</p>
+              <p>Your server didn't respond. Please try again.</p>
             </>
           );
         } else {

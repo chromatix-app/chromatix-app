@@ -54,11 +54,11 @@
 
   &:hover,
   &:focus {
-    background: var(--color-secondary-hover);
+    background: var(--color-item-on-secondary-hover);
   }
 
   // &[data-state='checked'] {
-  //   color: var(--color-core);
+  //   color: var(--color-core-main);
   // }
 }
 

@@ -1,36 +1,9 @@
-@use '../../../css/_config/_mixins';
-@use '../../../css/_config/_vars';
-
 .title {
   margin: 0 0 15px;
   font-size: 14px;
+  line-height: 20px;
   font-weight: bold;
   color: var(--color-opacity-05);
-}
-
-.menu {
-}
-
-.menuEntry {
-  + .menuEntry {
-    margin-top: 4px;
-  }
-
-  label {
-    display: inline-flex;
-    align-items: center;
-    margin: 0 auto 0 0;
-  }
-
-  input[type='checkbox'] {
-    margin: 0 10px 0 0;
-  }
-}
-
-.label {
-  &.disabled {
-    color: var(--color-opacity-04);
-  }
 }
 
 .description {
@@ -39,8 +12,4 @@
   font-size: 12px;
   line-height: 16px;
   color: var(--color-opacity-06);
-
-  &.disabled {
-    color: var(--color-opacity-04);
-  }
 }

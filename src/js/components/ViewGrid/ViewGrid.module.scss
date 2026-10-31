@@ -1,5 +1,4 @@
 @use '../../../css/_config/_mixins';
-@use '../../../css/_config/_vars';
 
 .wrap {
   overflow: hidden;
@@ -44,7 +43,7 @@
 
   // :global(html[data-env='local']) & {
   //   height: 1px;
-  //   background: var(--color-core);
+  //   background: var(--color-core-main);
   //   opacity: 0.15;
   // }
 }
@@ -90,8 +89,8 @@
 
   &:hover,
   &[data-state='open'] {
-    background: var(--color-card-on-primary-bg);
-    border: 1px solid var(--color-card-on-primary-border);
+    background: var(--color-card-ghost-on-primary-hover);
+    border: 1px solid var(--color-card-ghost-on-primary-hover-border);
   }
 
   .virtualRow & {
@@ -115,23 +114,19 @@
   height: 0;
   padding: 0 0 60%;
   background: var(--color-opacity-01);
-  background-image: vars.$thumbnail;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
   border-radius: 6px;
   // outline: 1px solid var(--color-opacity-01);
+
+  @include mixins.artwork-placeholder;
 
   &.thumbSquare {
     padding: 0 0 100%;
   }
   &.thumbWithIcon {
-    background: var(--color-core);
-    background: linear-gradient(to bottom, var(--color-core) 0%, var(--color-primary-bg) 400%);
-    color: var(--color-primary-bg);
+    @include mixins.core-gradient-fill;
 
-    :global(html[data-theme='light']) & {
-      background: linear-gradient(to top, var(--color-core) 0%, var(--color-primary-bg) 400%);
+    &:before {
+      content: none;
     }
   }
 
@@ -186,13 +181,18 @@
   width: 40px;
   height: 40px;
   padding: 10px 8px 10px 12px;
-  background: var(--color-core);
-  border: 1px solid var(--color-opacity-01);
+  background: var(--color-core-main);
+  border: 1px solid var(--color-core-border);
   border-radius: 50%;
   box-shadow: var(--shadow-md);
   transition: all ease-in-out 0.25s;
   cursor: pointer;
-  color: var(--color-primary-bg);
+  color: var(--color-core-on-primary-text);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--color-core-hover);
+  }
 
   .card:hover &:hover,
   .card.cardCurrent &:hover {
@@ -219,7 +219,7 @@
   position: relative;
   top: 3px;
   margin: -2px 6px -2px 0;
-  color: var(--color-core);
+  color: var(--color-core-main);
 
   &:hover {
     color: var(--color-text);

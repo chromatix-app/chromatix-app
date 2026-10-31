@@ -50,7 +50,7 @@
 .entryIconMed,
 .entryIconLarge {
   display: block;
-  opacity: 0.5;
+  opacity: var(--opacity-04);
   // background: rgba(255, 0, 0, 0.5);
 }
 
@@ -87,14 +87,14 @@
   width: 14px;
   height: 14px;
   margin-left: 10px;
-  opacity: 0.4;
+  opacity: var(--opacity-04);
 }
 
 .entryArrow {
   display: block;
   width: 14px;
   height: 14px;
-  opacity: 0.6;
+  opacity: var(--opacity-05);
 }
 
 .entryBadge {
@@ -103,13 +103,13 @@
   top: -1px;
   padding: 2px 6px;
   margin-left: 10px;
-  background-color: var(--color-core);
+  background-color: var(--color-core-main);
   border-radius: 4px;
   font-size: 12px;
   line-height: 1;
   font-weight: 600;
   text-transform: uppercase;
-  color: var(--color-primary-bg);
+  color: var(--color-core-on-primary-text);
 }
 
 //

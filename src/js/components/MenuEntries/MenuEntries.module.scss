@@ -46,14 +46,14 @@
 .actionItem {
   &:not([data-disabled]):hover,
   &:not([data-disabled]):focus {
-    background: var(--color-secondary-hover);
+    background: var(--color-item-on-secondary-hover);
     cursor: pointer;
 
     @include mixins.focus-self-fill;
   }
 
   &[data-disabled] {
-    color: var(--color-opacity-04);
+    color: var(--color-disabled-text);
   }
 }
 
@@ -69,14 +69,14 @@
 
   &:not([data-disabled]):hover,
   &:not([data-disabled]):focus {
-    background: var(--color-secondary-hover);
+    background: var(--color-item-on-secondary-hover);
     cursor: pointer;
 
     @include mixins.focus-self-fill;
   }
 
   &[data-disabled] {
-    color: var(--color-opacity-04);
+    color: var(--color-disabled-text);
   }
 }
 
@@ -92,7 +92,7 @@
   }
 
   [data-disabled] & {
-    opacity: var(--opacity-06);
+    opacity: var(--opacity-disabled-icon);
   }
 }
 
@@ -108,14 +108,14 @@
   &:not([data-disabled]):hover,
   &:not([data-disabled]):focus,
   &[data-state='open'] {
-    background: var(--color-secondary-hover);
+    background: var(--color-item-on-secondary-hover);
     cursor: pointer;
 
     @include mixins.focus-self-fill;
   }
 
   &[data-disabled] {
-    color: var(--color-opacity-04);
+    color: var(--color-disabled-text);
   }
 }
 
@@ -123,7 +123,7 @@
   flex-shrink: 0;
   width: 14px;
   height: 14px;
-  opacity: 0.5;
+  opacity: var(--opacity-04);
 }
 
 .subTriggerLeft {

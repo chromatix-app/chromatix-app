@@ -8,7 +8,7 @@ import clsx from 'clsx';
 
 import platformFeatures from 'js/_config/platformFeatures';
 import { ControlProgress, PrimaryControls, SecondaryControls } from 'js/components/ControlBar/ControlBar';
-import { Favourite, StarRating } from 'js/components';
+import { ArtworkImage, Favourite, StarRating } from 'js/components';
 import { useKeyControl } from 'js/hooks';
 import { analyticsEvent } from 'js/utils';
 
@@ -27,7 +27,7 @@ export const FullPagePlayer = () => {
   });
 
   return (
-    <div className={style.wrap} data-allow-key-controls>
+    <main className={style.wrap} aria-label="Now playing" data-allow-key-controls>
       <div className={style.topSpacer}></div>
       <div>
         <NowPlaying />
@@ -46,7 +46,7 @@ export const FullPagePlayer = () => {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 
@@ -77,12 +77,12 @@ const NowPlaying = () => {
 
   return (
     <div className={style.nowPlaying}>
-      <div className={clsx(style.cover, { [style.coverPlaceholder]: !trackCurrent || !thumbSrc })}>
+      <div className={style.cover}>
         {trackCurrent && (
           <>
             {thumbSrc && (
               <div className={style.coverArtwork}>
-                <img src={thumbSrc} alt={trackCurrent.title} draggable="false" />
+                <ArtworkImage src={thumbSrc} alt={trackCurrent.title} />
               </div>
             )}
 

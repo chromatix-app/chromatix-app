@@ -75,9 +75,9 @@ export const PageHome = () => {
 
           <div className={style.image}>
             <picture>
-              <source type="image/webp" srcSet="/images/webp/chromatix006.webp" />
+              <source type="image/webp" srcSet="/images/webp/chromatix-006.webp" />
               <img
-                src="/images/compressed/chromatix006.jpg"
+                src="/images/compressed/chromatix-006.jpg"
                 alt="Chromatix music player for Plex and Jellyfin"
                 width="1920"
                 height="1425"
@@ -103,7 +103,7 @@ export const PageHome = () => {
             <div className={style.buttons}>
               <Button
                 onClick={dispatch.appModel.doPlexLogin}
-                color="tertiary"
+                color="onPrimary"
                 size="medium"
                 wrap={false}
                 icon={<Icon icon="PlexSiteIcon" cover />}
@@ -112,7 +112,7 @@ export const PageHome = () => {
               </Button>
               <Button
                 to="/login-jellyfin"
-                color="tertiary"
+                color="onPrimary"
                 size="medium"
                 wrap={false}
                 icon={<Icon icon="JellyfinSiteIcon" cover />}
