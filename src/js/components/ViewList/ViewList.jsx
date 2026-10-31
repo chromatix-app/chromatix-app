@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import clsx from 'clsx';
 
-import { ContextMenu, Favourite, Icon, StarRating } from 'js/components';
+import { ArtworkImage, ContextMenu, Favourite, Icon, StarRating } from 'js/components';
 import {
   useContextMenuAlbums,
   useContextMenuArtists,
@@ -946,7 +946,7 @@ const StandardRow = ({
                 } else {
                   return (
                     <div key={rowKey + '-' + index} className={style.thumb}>
-                      {entry.thumbSm && <img src={entry.thumbSm} alt={entry.title} draggable="false" loading="lazy" />}
+                      <ArtworkImage src={entry.thumbSm} alt={entry.title} loading="lazy" />
                     </div>
                   );
                 }
@@ -1257,7 +1257,7 @@ const TrackRow = ({
               case 'thumb':
                 return (
                   <div key={rowKey + '-' + index} className={style.thumb}>
-                    {entry.thumbSm && <img src={entry.thumbSm} alt={entry.title} draggable="false" loading="lazy" />}
+                    <ArtworkImage src={entry.thumbSm} alt={entry.title} loading="lazy" />
                   </div>
                 );
 

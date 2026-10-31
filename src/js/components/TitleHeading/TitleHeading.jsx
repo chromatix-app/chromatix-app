@@ -6,7 +6,7 @@ import { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import clsx from 'clsx';
 
-import { Icon, PlaybackButton } from 'js/components';
+import { ArtworkImage, Icon, PlaybackButton } from 'js/components';
 import { useNearTop, useTagImage } from 'js/hooks';
 
 import style from './TitleHeading.module.scss';
@@ -54,6 +54,7 @@ const TitleHeading = ({
           <button
             type="button"
             className={style.thumb}
+            aria-label="View larger artwork"
             onClick={() => {
               dispatch.dialogModel.showModal({
                 modal: 'ImagePreview',
@@ -61,7 +62,7 @@ const TitleHeading = ({
               });
             }}
           >
-            <img src={thumb} alt={title} draggable="false" />
+            <ArtworkImage src={thumb} alt={title} />
           </button>
         )}
 

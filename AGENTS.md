@@ -145,6 +145,8 @@ Use `clsx` for conditional class composition. Use CSS Modules for component-spec
 
 The logged-in layout in `AppMain` (`app/App.jsx`) uses ARIA landmarks: `nav` (sidebar), a labelled `section` (control bar), `main` (`#content`) and `aside` (queue); the full-page player is its own `main`, and the sidebar search has `role="search"`. Keep them when changing the layout, and don't nest another `main` inside `#content`. `TitleHeading`'s sticky duplicate of the page title is `aria-hidden`.
 
+Render artwork thumbnails with `ArtworkImage` rather than a plain `<img>`: it renders nothing when `src` is empty or fails to load, so the parent's `artwork-placeholder` shows instead of a broken image. It remembers the failed `src` rather than a flag, so an element reused for a new row (virtual lists key by index) shows the new artwork.
+
 `PlaybackButton` renders the core-coloured playback buttons (play/pause/resume, shuffle) used in `TitleHeading`. It's presentational only: the parent passes `isPlaying`, `isLoaded` and `onClick` (and handles play/pause/resume itself). Its `variant` prop picks an entry from the `variants` map in the component (`play` by default, with a Play/Pause/Resume label; `shuffle`, icon-only), so add new variants there.
 
 ## Colour Theme

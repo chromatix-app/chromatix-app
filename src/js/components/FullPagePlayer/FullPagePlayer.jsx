@@ -8,7 +8,7 @@ import clsx from 'clsx';
 
 import platformFeatures from 'js/_config/platformFeatures';
 import { ControlProgress, PrimaryControls, SecondaryControls } from 'js/components/ControlBar/ControlBar';
-import { Favourite, StarRating } from 'js/components';
+import { ArtworkImage, Favourite, StarRating } from 'js/components';
 import { useKeyControl } from 'js/hooks';
 import { analyticsEvent } from 'js/utils';
 
@@ -77,12 +77,12 @@ const NowPlaying = () => {
 
   return (
     <div className={style.nowPlaying}>
-      <div className={clsx(style.cover, { [style.coverPlaceholder]: !trackCurrent || !thumbSrc })}>
+      <div className={style.cover}>
         {trackCurrent && (
           <>
             {thumbSrc && (
               <div className={style.coverArtwork}>
-                <img src={thumbSrc} alt={trackCurrent.title} draggable="false" />
+                <ArtworkImage src={thumbSrc} alt={trackCurrent.title} />
               </div>
             )}
 

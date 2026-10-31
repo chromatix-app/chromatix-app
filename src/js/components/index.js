@@ -4,6 +4,7 @@ export { default as ActionSelect } from './ActionSelect/ActionSelect';
 export { default as ActionSort } from './ActionSort/ActionSort';
 export { default as ActionToggle } from './ActionToggle/ActionToggle';
 export { default as ActionWrap } from './ActionWrap/ActionWrap';
+export { default as ArtworkImage } from './ArtworkImage/ArtworkImage';
 export { default as Blocker } from './Blocker/Blocker';
 export { default as Button } from './Button/Button';
 export { default as ContextMenu } from './ContextMenu/ContextMenu';

@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import * as RadixPopover from '@radix-ui/react-popover';
 
-import { ContextMenuPlaylists, Icon, ReleaseBanner, UserMenu } from 'js/components';
+import { ArtworkImage, ContextMenuPlaylists, Icon, ReleaseBanner, UserMenu } from 'js/components';
 import { useGetGlobalData, useKeyControl, useNavigationHistory } from 'js/hooks';
 import { getEnvironment } from 'js/utils';
 import * as bridge from 'js/services/bridge';
@@ -658,7 +658,7 @@ const SearchResults = ({ setSearchResultsVisible }) => {
               <Icon icon={result.icon} cover stroke />
             </div>
             <div className={style.searchThumb}>
-              {result.thumbSm && <img src={result.thumbSm} alt={result.title} draggable="false" loading="lazy" />}
+              <ArtworkImage src={result.thumbSm} alt={result.title} loading="lazy" />
             </div>
             <div>
               <div className={style.searchTitle}>{result.title}</div>
