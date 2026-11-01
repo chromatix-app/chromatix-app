@@ -23,22 +23,44 @@ export async function setViewport(page: Page, width: number, height: number) {
   await page.waitForTimeout(VIEWPORT_SETTLE_MS);
 }
 
+/** Options for snapshot helpers. */
+export type SnapshotOptions = {
+  viewports?: number[];
+  /** Grows the viewport so the scrolling `#content` area is captured in full. */
+  fullContent?: boolean;
+};
+
+/** Grows the viewport height by however far `#content` overflows, so it no longer scrolls. */
+export async function expandViewportToContent(page: Page, width: number) {
+  const overflow = await page.locator('#content').evaluate((el) => el.scrollHeight - el.clientHeight);
+  if (overflow > 0) {
+    await setViewport(page, width, SNAPSHOT_HEIGHT + overflow);
+  }
+}
+
 /** Moves the mouse away, then takes a snapshot at each viewport width. */
-export async function snapshotAtViewports(page: Page, name: string, viewports = SNAPSHOT_VIEWPORTS) {
+export async function snapshotAtViewports(
+  page: Page,
+  name: string,
+  { viewports = SNAPSHOT_VIEWPORTS, fullContent = false }: SnapshotOptions = {}
+) {
   await page.mouse.move(0, 0);
   for (const width of viewports) {
     await setViewport(page, width, SNAPSHOT_HEIGHT);
+    if (fullContent) {
+      await expandViewportToContent(page, width);
+    }
     await expect(page).toHaveScreenshot(`${name}-${width}.png`, SNAPSHOT_OPTIONS);
   }
 }
 
 /** Navigates to a URL, waits for content, and takes snapshots at each viewport width. */
-export async function snapshotPage(page: Page, url: string, name: string, viewports = SNAPSHOT_VIEWPORTS) {
+export async function snapshotPage(page: Page, url: string, name: string, options: SnapshotOptions = {}) {
   await page.waitForTimeout(PAGE_NAV_DELAY_MS);
   await page.goto(url);
   await page.waitForURL(new RegExp(url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), { timeout: 15000 });
   await waitForContent(page);
-  await snapshotAtViewports(page, name, viewports);
+  await snapshotAtViewports(page, name, options);
 }
 
 /** Waits for loading indicators to clear, network to idle, and all images to load. Also checks for rate limiting. */

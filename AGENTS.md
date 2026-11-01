@@ -218,7 +218,7 @@ Visual regression tests use **Playwright** with Chromium. Snapshots are stored i
 
 Test files live in `tests/pages/`. Shared helpers (`waitForContent`, `checkForRateLimit`) are in `tests/utils.ts`. Config is in `playwright.config.ts`.
 
-Each test navigates once then loops over viewports with `page.setViewportSize()` for full-page screenshots — no separate browser context per breakpoint.
+Each test navigates once then loops over viewports with `page.setViewportSize()` for full-page screenshots — no separate browser context per breakpoint. Logged-in pages scroll inside `#content` rather than the page, so `fullPage` alone only captures one viewport; pass `{ fullContent: true }` to `snapshotPage` / `snapshotAtViewports` to grow the viewport height until `#content` no longer scrolls.
 
 Run `npm run test:e2e:login` once to authenticate before running auth tests. The setup test must run before library tests to generate `tests/.auth/library-id.json`.
 

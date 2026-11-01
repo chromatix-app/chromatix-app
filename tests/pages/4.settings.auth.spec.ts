@@ -5,7 +5,7 @@ import { snapshotPage } from '../utils';
 
 test.describe('settings pages match snapshots', () => {
   test('settings page matches snapshot', async ({ page }) => {
-    await snapshotPage(page, `/settings`, '001-settings');
+    await snapshotPage(page, `/settings`, '001-settings', { fullContent: true });
   });
 
   test('about page matches snapshot', async ({ page }) => {
@@ -49,6 +49,10 @@ test.describe('settings pages match snapshots', () => {
   });
 
   test('sidebar page matches snapshot', async ({ page }) => {
-    await snapshotPage(page, `/settings/sidebar`, '012-sidebar');
+    await snapshotPage(page, `/settings/sidebar`, '012-sidebar', { fullContent: true });
+  });
+
+  test('tag-images page matches snapshot', async ({ page }) => {
+    await snapshotPage(page, `/settings/tag-images`, '013-tag-images', { fullContent: true });
   });
 });

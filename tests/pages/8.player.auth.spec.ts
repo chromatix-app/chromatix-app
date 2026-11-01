@@ -10,7 +10,7 @@
  * catching issues that jsdom/Vitest cannot (autoplay policy, MediaSource,
  * cross-player error leakage, progress polling the wrong element, etc.)
  *
- * Run with: npx playwright test 7.player.auth.spec.ts --project=player
+ * Run with: npx playwright test 8.player.auth.spec.ts --project=player
  */
 
 import { test, expect } from '@playwright/test';
