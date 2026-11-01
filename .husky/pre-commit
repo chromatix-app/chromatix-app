@@ -11,4 +11,4 @@ npm run typecheck
 npm run knip
 
 # Run tests non-interactively
-CI=true npm run test:all
+CI=true npm run test:unit

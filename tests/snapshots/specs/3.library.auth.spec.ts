@@ -1,20 +1,13 @@
 // Tests generated using AI
 
 import { test } from '@playwright/test';
-import { readFileSync } from 'fs';
-import { snapshotPage } from '../utils';
-
-const LIBRARY_ID_FILE = 'tests/.auth/library-id.json';
+import { readLibraryId, snapshotPage } from '../../utils';
 
 test.describe('library pages match snapshots', () => {
   let libraryId: string;
 
   test.beforeAll(() => {
-    try {
-      ({ libraryId } = JSON.parse(readFileSync(LIBRARY_ID_FILE, 'utf-8')));
-    } catch {
-      throw new Error('library-id.json not found — run `npm run test:e2e:update:setup` first');
-    }
+    libraryId = readLibraryId();
   });
 
   test('artists page matches snapshot', async ({ page }) => {

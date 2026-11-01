@@ -1,6 +1,17 @@
 // Tests generated using AI
 
 import { expect, Page } from '@playwright/test';
+import { readFileSync } from 'fs';
+import { AUTH_LIBRARY_ID_FILE } from './paths';
+
+/** Reads the library ID saved by the session setup. */
+export function readLibraryId(): string {
+  try {
+    return JSON.parse(readFileSync(AUTH_LIBRARY_ID_FILE, 'utf-8')).libraryId;
+  } catch {
+    throw new Error('library-id.json not found — the session setup should create it; run `npm run test:login` first');
+  }
+}
 
 /** Viewport widths used for snapshot tests. */
 export const SNAPSHOT_VIEWPORTS = [768, 1024, 1440];
@@ -61,6 +72,32 @@ export async function snapshotPage(page: Page, url: string, name: string, option
   await page.waitForURL(new RegExp(url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), { timeout: 15000 });
   await waitForContent(page);
   await snapshotAtViewports(page, name, options);
+}
+
+/** Selector for the user/server/library choices on the setup pages. */
+const SETUP_OPTION_SELECTOR = 'main button[type="button"]';
+
+/** Clears session state (user/server/library) but keeps the Plex auth token, then reloads `/`. */
+export async function clearSessionState(page: Page) {
+  await page.goto('/');
+  await page.evaluate(() => {
+    Object.keys(localStorage)
+      .filter((key) => key.startsWith('chromatix-session'))
+      .forEach((key) => localStorage.removeItem(key));
+  });
+  await page.goto('/');
+}
+
+/** Waits for a setup page (users/servers/libraries) to load with its choices visible. */
+export async function waitForSetupPage(page: Page, urlPattern: RegExp) {
+  await page.waitForURL(urlPattern, { timeout: 15000 });
+  await page.waitForSelector(SETUP_OPTION_SELECTOR, { state: 'visible' });
+  await waitForContent(page);
+}
+
+/** Picks the first choice on a setup page. */
+export async function pickFirstSetupOption(page: Page) {
+  await page.locator(SETUP_OPTION_SELECTOR).first().click();
 }
 
 /** Waits for loading indicators to clear, network to idle, and all images to load. Also checks for rate limiting. */

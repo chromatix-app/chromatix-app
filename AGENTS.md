@@ -66,6 +66,7 @@ src/
   types/
     global.d.ts          # Global type declarations
 lib/                     # Node scripts for image processing and SVG compression
+tests/                   # Playwright E2E suites and saved colour audit snapshots
 public/                  # Static assets (served as-is; root index.html is the Vite entry)
 index.html               # Vite entry point (at project root)
 vite.config.ts           # Vite + Vitest configuration
@@ -210,27 +211,25 @@ Vitest manual mocks for browser APIs unavailable in jsdom (e.g. `HTMLAudioElemen
 Tests use **Vitest** with `globals: true` — no need to import `describe`, `test`, `expect`, `vi`, etc.
 
 - Run tests in watch mode with `npm run test`
-- Run all tests once with `npm run test:all`
+- Run all unit tests once with `npm run test:unit`
 
 ## E2E Testing
 
-Visual regression tests use **Playwright** with Chromium. Snapshots are stored in `tests/snapshots/`. Auth session files live in `tests/.auth/` (gitignored).
+E2E tests use **Playwright** with Chromium, in two suites with their own config: **snapshots** (`tests/snapshots/`, visual regression, with committed baselines in `baselines/<project>/`) and **audio** (`tests/audio/`, real-browser playback across codecs and both players). Each writes only to `test-results/<suite>/`, so one suite's run never clears another's output; keep any new suite or output under its own folder there. Shared settings are in `tests/playwright.base.ts` and helpers in `tests/utils.ts`.
 
-Test files live in `tests/pages/`. Shared helpers (`waitForContent`, `checkForRateLimit`) are in `tests/utils.ts`. Config is in `playwright.config.ts`.
+Each snapshot test navigates once then loops over viewports with `page.setViewportSize()` for full-page screenshots — no separate browser context per breakpoint. Logged-in pages scroll inside `#content` rather than the page, so `fullPage` alone only captures one viewport; pass `{ fullContent: true }` to `snapshotPage` / `snapshotAtViewports` to grow the viewport height until `#content` no longer scrolls.
 
-Each test navigates once then loops over viewports with `page.setViewportSize()` for full-page screenshots — no separate browser context per breakpoint. Logged-in pages scroll inside `#content` rather than the page, so `fullPage` alone only captures one viewport; pass `{ fullContent: true }` to `snapshotPage` / `snapshotAtViewports` to grow the viewport height until `#content` no longer scrolls.
-
-Run `npm run test:e2e:login` once to authenticate before running auth tests. The setup test must run before library tests to generate `tests/.auth/library-id.json`.
+`npm run test:login` is a one-off manual login. Logged-in projects then depend on the `session` setup project (`dependencies: [SESSION_PROJECT]`), which rebuilds the grid/list sessions and library ID from that login before each run; add it to any new logged-in project. Read the library ID with `readLibraryId()` inside a hook or test, not at module level, since spec files load before the session project has run.
 
 ## Key Scripts
 
 - `npm start` / `npm run dev` — Start dev server (port 4000)
 - `npm run build` — Production build (output to `build/`)
 - `npm run check` — Run knip, lint, prettier, and typecheck in sequence
-- `npm run test` / `npm run test:all` — Run Vitest tests (watch / once)
-- `npm run test:colors` — Generate and open the colour contrast audit report, which can compare against a saved `original` or `baseline` snapshot (`test-results/colors/*.json`); `test:colors:baseline` also saves the current ratios as the baseline
-- `npm run test:e2e:login` — Manual Plex login; run once before auth tests
-- `npm run test:e2e:*` — E2E snapshot tests; `:update` variants regenerate snapshots
+- `npm run test` / `npm run test:unit` — Run Vitest unit tests (watch / once)
+- `npm run test:colors` — Generate and open the colour contrast audit report, which can compare against a saved `original` or `baseline` snapshot (`tests/colors/*.json`, committed); `test:colors:baseline` also saves the current ratios as the baseline
+- `npm run test:login` — Manual Plex login; run once before logged-in E2E tests
+- `npm run test:snapshots:*` / `npm run test:audio:*` — E2E suites; `:<set>` runs one snapshot set and `:update` variants regenerate baselines
 - `npm run images:convert:new` — Convert new images to WebP
 - `npm run images:tinify:new` — Compress new images via Tinify
 - `npm run svg:compress:new` — Compress new SVGs

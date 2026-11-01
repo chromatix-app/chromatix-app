@@ -1,7 +1,7 @@
 // Tests generated using AI
 
 import { test } from '@playwright/test';
-import { snapshotPage } from '../utils';
+import { snapshotPage } from '../../utils';
 
 test.describe('dev pages match snapshots', () => {
   test('components page matches snapshot', async ({ page }) => {

@@ -10,13 +10,13 @@
  * catching issues that jsdom/Vitest cannot (autoplay policy, MediaSource,
  * cross-player error leakage, progress polling the wrong element, etc.)
  *
- * Run with: npx playwright test 8.player.auth.spec.ts --project=player
+ * Run with: npm run test:audio
  */
 
 import { test, expect } from '@playwright/test';
-import { waitForContent, PAGE_NAV_DELAY_MS } from '../utils';
+import { readLibraryId, waitForContent, PAGE_NAV_DELAY_MS } from '../utils';
 
-const PLAYLIST_URL = '/libraries/20/playlists/168557';
+const PLAYLIST_ID = '168557';
 
 // How long to wait for playerPlaying to become true after clicking play.
 const PLAY_TIMEOUT = 15000;
@@ -80,7 +80,7 @@ test.describe('player playback', () => {
 
   test.beforeEach(async ({ page }) => {
     await page.waitForTimeout(PAGE_NAV_DELAY_MS);
-    await page.goto(PLAYLIST_URL);
+    await page.goto(`/libraries/${readLibraryId()}/playlists/${PLAYLIST_ID}`);
     await waitForContent(page);
     // Load the playlist into the queue via the play button, then immediately
     // pause — each test will jump to its own track via the store.

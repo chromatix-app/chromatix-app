@@ -1,7 +1,7 @@
 // Tests generated using AI
 
 import { test } from '@playwright/test';
-import { snapshotPage } from '../utils';
+import { snapshotPage } from '../../utils';
 
 const homeViewports = [375, 768, 1024, 1440];
 

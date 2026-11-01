@@ -1,7 +1,7 @@
 // Tests generated using AI
 
 import { test, Page } from '@playwright/test';
-import { waitForContent, snapshotAtViewports, PAGE_NAV_DELAY_MS } from '../utils';
+import { waitForContent, snapshotAtViewports, PAGE_NAV_DELAY_MS } from '../../utils';
 
 /** Injects Electron window globals before the page loads, simulating a Windows Electron build. */
 async function injectElectronWindows(page: Page) {

@@ -1,7 +1,7 @@
 // Tests generated using AI
 
 import { test } from '@playwright/test';
-import { waitForContent, snapshotAtViewports, PAGE_NAV_DELAY_MS } from '../utils';
+import { waitForContent, snapshotAtViewports, PAGE_NAV_DELAY_MS } from '../../utils';
 
 test.describe('ui interactions match snapshots', () => {
   test('user menu matches snapshot when open', async ({ page }) => {
