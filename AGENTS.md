@@ -227,7 +227,7 @@ Each snapshot test navigates once then loops over viewports with `page.setViewpo
 - `npm run build` — Production build (output to `build/`)
 - `npm run check` — Run knip, lint, prettier, and typecheck in sequence
 - `npm run test` / `npm run test:unit` — Run Vitest unit tests (watch / once)
-- `npm run test:colors` — Generate and open the colour contrast audit report, which can compare against a saved `original` or `baseline` snapshot (`tests/colors/*.json`, committed); `test:colors:baseline` also saves the current ratios as the baseline
+- `npm run test:colors` — Generate and open the colour contrast audit report, which can compare against the `original` or any saved baseline (`tests/colors/*.json`, committed); `test:colors:baseline` also saves the current ratios as a new dated baseline, never overwriting older ones
 - `npm run test:login` — Manual Plex login; run once before logged-in E2E tests
 - `npm run test:snapshots:*` / `npm run test:audio:*` — E2E suites; `:<set>` runs one snapshot set and `:update` variants regenerate baselines
 - `npm run images:convert:new` — Convert new images to WebP
