@@ -215,7 +215,7 @@ Tests use **Vitest** with `globals: true` — no need to import `describe`, `tes
 
 ## E2E Testing
 
-E2E tests use **Playwright** with Chromium, in two suites with their own config: **snapshots** (`tests/snapshots/`, visual regression, with committed baselines in `baselines/<project>/`) and **audio** (`tests/audio/`, real-browser playback across codecs and both players). Each writes only to `test-results/<suite>/`, so one suite's run never clears another's output; keep any new suite or output under its own folder there. Shared settings are in `tests/playwright.base.ts` and helpers in `tests/utils.ts`.
+E2E tests use **Playwright** with Chromium, in two suites with their own config: **snapshots** (`tests/snapshots/`, visual regression; baselines are local only, in `test-results/snapshots/baselines/`, since the logged-in pages depend on the developer's own Plex server) and **audio** (`tests/audio/`, real-browser playback across codecs and both players). Each writes only to `test-results/<suite>/`, so one suite's run never clears another's output; keep any new suite or output under its own folder there. Shared settings are in `tests/playwright.base.ts` and helpers in `tests/utils.ts`.
 
 Each snapshot test navigates once then loops over viewports with `page.setViewportSize()` for full-page screenshots — no separate browser context per breakpoint. Logged-in pages scroll inside `#content` rather than the page, so `fullPage` alone only captures one viewport; pass `{ fullContent: true }` to `snapshotPage` / `snapshotAtViewports` to grow the viewport height until `#content` no longer scrolls.
 

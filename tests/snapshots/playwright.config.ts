@@ -1,11 +1,13 @@
 // Tests generated using AI
 
+import path from 'path';
 import { defineSuiteConfig, sessionProject, SESSION_PROJECT } from '../playwright.base';
-import { AUTH_GRID_FILE, AUTH_LIST_FILE, AUTH_SESSION_FILE } from '../paths';
+import { AUTH_GRID_FILE, AUTH_LIST_FILE, AUTH_SESSION_FILE, RESULTS_DIR } from '../paths';
 
 export default defineSuiteConfig('snapshots', {
-  testDir: './specs',
-  snapshotPathTemplate: './baselines/{projectName}/{arg}{ext}',
+  testDir: '.',
+  // Baselines are local only (gitignored), beside the suite's output rather than inside it
+  snapshotPathTemplate: path.join(RESULTS_DIR, 'snapshots/baselines/{projectName}/{arg}{ext}'),
   projects: [
     sessionProject,
 
