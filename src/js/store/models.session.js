@@ -54,6 +54,7 @@ const sessionState = {
   optionSortIgnoreLeadingArticles: true,
   optionFoldersOnTop: true,
 
+  optionCircularArtistImages: true,
   optionUseHalfStars: true,
 
   switchToTrackViewOnArtistPlay: false,

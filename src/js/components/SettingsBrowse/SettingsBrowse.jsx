@@ -20,6 +20,7 @@ export const SettingsBrowse = ({ debug }) => {
   return (
     <>
       <SortSettings />
+      <ArtworkSettings />
       <div className="settingsGroup">
         <div className={style.title}>View Modes</div>
         <ViewModeSettings />
@@ -68,6 +69,25 @@ const SortSettings = () => {
   ];
 
   return <SettingsList title="Sorting" menuItems={menuItems} />;
+};
+
+//
+// ARTWORK
+//
+
+const ArtworkSettings = () => {
+  const optionCircularArtistImages = useSelector(({ sessionModel }) => sessionModel.optionCircularArtistImages);
+
+  const menuItems = [
+    {
+      key: 'optionCircularArtistImages',
+      label: 'Show artist images as circles.',
+      description: 'Display artist images as circles rather than squares throughout the app.',
+      state: optionCircularArtistImages,
+    },
+  ];
+
+  return <SettingsList title="Artwork" menuItems={menuItems} />;
 };
 
 //

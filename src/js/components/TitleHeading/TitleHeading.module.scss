@@ -62,6 +62,11 @@
     @include mixins.artwork-border(6px);
   }
 
+  &.thumbCircle,
+  &.thumbCircle:after {
+    border-radius: 50%;
+  }
+
   img {
     position: absolute;
     top: 0;

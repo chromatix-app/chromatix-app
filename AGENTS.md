@@ -148,6 +148,8 @@ The logged-in layout in `AppMain` (`app/App.jsx`) uses ARIA landmarks: `nav` (si
 
 Render artwork thumbnails with `ArtworkImage` rather than a plain `<img>`: it renders nothing when `src` is empty or fails to load, so the parent's `artwork-placeholder` shows instead of a broken image. It remembers the failed `src` rather than a flag, so an element reused for a new row (virtual lists key by index) shows the new artwork.
 
+Artist images are circular when the `optionCircularArtistImages` session setting is on (the default); anywhere new that shows an artist image should honour it. `TitleHeading` doesn't know what it's showing, so it takes a `circleThumb` prop rather than reading the setting. All other artwork stays square.
+
 `PlaybackButton` renders the core-coloured playback buttons (play/pause/resume, shuffle) used in `TitleHeading`. It's presentational only: the parent passes `isPlaying`, `isLoaded` and `onClick` (and handles play/pause/resume itself). Its `variant` prop picks an entry from the `variants` map in the component (`play` by default, with a Play/Pause/Resume label; `shuffle`, icon-only), so add new variants there.
 
 ## Colour Theme
