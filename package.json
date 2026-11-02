@@ -33,6 +33,7 @@
     "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "typecheck": "tsc --noEmit",
     "check": "npm run knip && npm run lint && npm run prettier && npm run typecheck",
+    "check:deps": "e18e-cli analyze --pack none",
     "doctor": "react-doctor",
     "doctor:all": "react-doctor --yes",
     "doctor:json": "react-doctor --yes --json",
@@ -114,6 +115,7 @@
     "sonner": "^2.0.8"
   },
   "devDependencies": {
+    "@e18e/cli": "^0.7.0",
     "@eslint-react/eslint-plugin": "^5.28.8",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.64.1",

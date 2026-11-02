@@ -228,6 +228,7 @@ Each snapshot test navigates once then loops over viewports with `page.setViewpo
 - `npm start` / `npm run dev` — Start dev server (port 4000)
 - `npm run build` — Production build (output to `build/`)
 - `npm run check` — Run knip, lint, prettier, and typecheck in sequence
+- `npm run check:deps` — Run the e18e CLI to flag dependencies with native or lighter replacements (see e18e.dev/docs/replacements); kept out of `check` since it exits non-zero on any warning, including duplicate transitive versions we can't fix. It only checks some packages, so dev-only replacements (e.g. `chalk`, `dotenv`) may need spotting by hand
 - `npm run test` / `npm run test:unit` — Run Vitest unit tests (watch / once)
 - `npm run test:colors` — Generate and open the colour contrast audit report, which can compare against the `original` or any saved baseline (`tests/colors/*.json`, committed); `test:colors:baseline` also saves the current ratios as a new dated baseline, never overwriting older ones
 - `npm run test:login` — Manual Plex login; run once before logged-in E2E tests
