@@ -7,6 +7,8 @@ consistent between music services, and also doing some additional processing and
 // IMPORTS
 // ======================================================================
 
+import { isGeneratedSortTitle } from 'js/utils';
+
 // ======================================================================
 // OPTIONS
 // ======================================================================
@@ -25,6 +27,13 @@ const getThumb = (thumb, serverBaseUrl, accessToken, size) => {
       )}&minSize=1&X-Plex-Token=${accessToken}`
     : null;
   return finalThumb;
+};
+
+// [NOTE] Plex generates a titleSort itself for many titles (e.g. without a leading article or accents), so only
+// keep one that differs from the title in other ways, as it was then most likely set by hand
+const getSortTitle = (title, titleSort) => {
+  const sortTitle = titleSort?.trim();
+  return sortTitle && !isGeneratedSortTitle(title ?? '', sortTitle) ? { sortTitle } : {};
 };
 
 // ======================================================================
@@ -148,6 +157,7 @@ const transposeArtistData = (artist, libraryId, serverBaseUrl, accessToken) => {
     libraryId: libraryId,
     artistId: artist.ratingKey,
     title: artist.title,
+    ...getSortTitle(artist.title, artist.titleSort),
     genre: artist?.Genre?.[0]?.tag,
     country: artist?.Country?.[0]?.tag,
     addedAt: artist.addedAt,
@@ -184,6 +194,7 @@ const transposeAlbumData = (album, libraryId, serverBaseUrl, accessToken) => {
     libraryId: libraryId,
     albumId: album.ratingKey,
     title: album.title,
+    ...getSortTitle(album.title, album.titleSort),
     artist: album.parentTitle,
     artistId: album.parentRatingKey,
     artistLink: '/libraries/' + libraryId + '/artists/' + album.parentRatingKey,

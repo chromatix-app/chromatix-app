@@ -110,6 +110,8 @@ dispatch.playerModel.playerPlay();
 
 All API calls go through `bridge.js`, which delegates to either `plexTools.js` or `jellyTools.js` based on the active service. Raw API responses are normalised into a consistent internal format by `plexTranspose.js` / `jellyTranspose.js` respectively.
 
+Artists, albums and playlists get a `sortTitle` only when the server has a sort title set by hand (via each transpose file's `getSortTitle`). Plex often generates `titleSort` itself (removing a leading article or accents), so those are skipped with the `isGeneratedSortTitle` util, and Plex playlists get none, since they can't be given one. Jellyfin's `SortName` is always generated (lowercased, with articles removed and numbers padded), so never use it; use `ForcedSortName`, which is only returned when `Fields` includes `Settings`.
+
 The audio player has three layers: `player.ts` is the router that selects the active backend; `player.native.ts` handles native `HTMLAudioElement` playback (MP3, FLAC, AAC, Ogg, and Jellyfin transcoded streams); `player.dash.ts` handles DASH playback via dash.js (used for Plex tracks whose codec requires transcoding, e.g. WMA, FLAC on unsupported browsers). Playback management logic (queue, skip, shuffle, repeat) lives in `models.player.js` in the store.
 
 The Plex API is entirely undocumented and reverse engineered. Plex API fields are explicitly excluded where not needed to reduce payload size.
