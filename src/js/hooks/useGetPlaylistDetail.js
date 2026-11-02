@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import platformFeatures from 'js/_config/platformFeatures';
 import { durationToStringLong, sortList } from 'js/utils';
 import * as bridge from 'js/services/bridge';
+import useSortOptions from './useSortOptions';
 
 const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   const dispatch = useDispatch();
@@ -23,10 +24,7 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
   const colPlaylistUserRating = useSelector(({ sessionModel }) => sessionModel.colPlaylistUserRating);
   const colPlaylistIsFavourite = useSelector(({ sessionModel }) => sessionModel.colPlaylistIsFavourite);
 
-  const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
-  const optionSortIgnoreLeadingArticles = useSelector(
-    ({ sessionModel }) => sessionModel.optionSortIgnoreLeadingArticles
-  );
+  const sortOptions = useSortOptions();
 
   // prevent sorting by a hidden field
   const allowedSort = {
@@ -72,8 +70,7 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
         return sortList({
           entries: entriesWithOriginalIndex,
           options: actualPlaylistSortString,
-          sortNumbersFirst: optionSortNumbersFirst,
-          ignoreLeadingArticles: optionSortIgnoreLeadingArticles,
+          ...sortOptions,
         });
       }
     }
@@ -83,7 +80,7 @@ const useGetPlaylistDetail = ({ libraryId, playlistId }) => {
       originalIndex: index,
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allPlaylistTracks, playlistTracks, actualPlaylistSortString]);
+  }, [allPlaylistTracks, playlistTracks, actualPlaylistSortString, sortOptions]);
 
   const playlistOrder = useMemo(() => {
     return sortedPlaylistTracks?.map((entry) => entry.originalIndex);

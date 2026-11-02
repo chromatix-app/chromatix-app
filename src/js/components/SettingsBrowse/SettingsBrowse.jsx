@@ -51,20 +51,28 @@ const SortSettings = () => {
   const optionSortIgnoreLeadingArticles = useSelector(
     ({ sessionModel }) => sessionModel.optionSortIgnoreLeadingArticles
   );
+  const optionUseSortTitle = useSelector(({ sessionModel }) => sessionModel.optionUseSortTitle);
 
   const menuItems = [
     {
-      key: 'optionSortNumbersFirst',
-      label: 'Sort with numbers on top.',
-      description: 'When sorting alphabetically, put entries that start with a number at the top of the list.',
-      state: optionSortNumbersFirst,
+      key: 'optionUseSortTitle',
+      label: 'Use sort titles from your server.',
+      description:
+        "When sorting artists, albums and playlists alphabetically, use the sort title you've set on your server instead of the title, where there is one.",
+      state: optionUseSortTitle,
     },
     {
       key: 'optionSortIgnoreLeadingArticles',
       label: 'Ignore "a", "an" and "the" when sorting.',
       description:
-        'When sorting alphabetically, ignore leading prefixes like "A", "An", and "The" at the start of titles.',
+        'When sorting alphabetically, ignore leading prefixes like "A", "An", and "The" at the start of titles. Sort titles you\'ve set on your server are always used as typed.',
       state: optionSortIgnoreLeadingArticles,
+    },
+    {
+      key: 'optionSortNumbersFirst',
+      label: 'Sort with numbers on top.',
+      description: 'When sorting alphabetically, put entries that start with a number at the top of the list.',
+      state: optionSortNumbersFirst,
     },
   ];
 

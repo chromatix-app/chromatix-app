@@ -53,6 +53,7 @@ const sessionState = {
   optionSortNumbersFirst: false,
   optionSortIgnoreLeadingArticles: true,
   optionFoldersOnTop: true,
+  optionUseSortTitle: true,
 
   optionCircularArtistImages: true,
   optionUseHalfStars: true,

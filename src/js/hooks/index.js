@@ -30,6 +30,7 @@ export { default as usePlaylistDrag } from './usePlaylistDrag';
 export { default as useScrollRestoration } from './useScrollRestoration';
 export { default as useScrollToTrack } from './useScrollToTrack';
 export { default as useScrollToVirtualTrack } from './useScrollToVirtualTrack';
+export { default as useSortOptions } from './useSortOptions';
 export { default as useStyleOptions } from './useStyleOptions';
 export { default as useTableOptions } from './useTableOptions';
 export { default as useTagImage } from './useTagImage';
