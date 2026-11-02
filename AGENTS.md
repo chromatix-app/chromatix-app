@@ -6,7 +6,7 @@ Chromatix is a desktop music player for Plex and Jellyfin, built as a React web 
 
 ## Tech Stack
 
-- **React 18** (Vite 8) — UI framework
+- **React 19** (Vite 8) — UI framework
 - **React Router v5** — Client-side routing
 - **Rematch (Redux)** — Global state management
 - **Sass (SCSS)** — Styling, with CSS Modules for component-scoped styles
