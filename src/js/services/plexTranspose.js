@@ -354,6 +354,7 @@ const transposeCollectionData = (collection, libraryId, serverBaseUrl, accessTok
     libraryId: libraryId,
     collectionId: collection.ratingKey,
     title: collection.title,
+    ...getSortTitle(collection.title, collection.titleSort),
     addedAt: collection.addedAt,
     userRating: collection.userRating,
     type: collection.subtype,

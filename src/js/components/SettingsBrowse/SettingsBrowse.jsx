@@ -58,7 +58,7 @@ const SortSettings = () => {
       key: 'optionUseSortTitle',
       label: 'Use sort titles from your server.',
       description:
-        'When sorting artists, albums and playlists alphabetically, use the sort title set on your server, if there is one.',
+        'When sorting artists, albums, playlists and collections alphabetically, use the sort title set on your server, if there is one.',
       state: optionUseSortTitle,
     },
     {

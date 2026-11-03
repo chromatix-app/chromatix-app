@@ -1,6 +1,11 @@
 // Tests generated using AI
 
-import { transposeAlbumArray, transposeArtistArray, transposePlaylistArray } from './plexTranspose';
+import {
+  transposeAlbumArray,
+  transposeArtistArray,
+  transposeCollectionArray,
+  transposePlaylistArray,
+} from './plexTranspose';
 
 // ======================================================================
 // HELPERS
@@ -47,6 +52,20 @@ describe('Testing "sortTitle" in Plex transposes', () => {
     ]);
     expect(trimmed.sortTitle).toBe('Bowie, David');
     expect(blank).not.toHaveProperty('sortTitle');
+  });
+
+  test('Keeps a hand-set collection sort title and leaves out a generated one', () => {
+    const { allArtistCollections, allAlbumCollections } = transposeCollectionArray(
+      response([
+        { ratingKey: '1', subtype: 'artist', title: 'Favourites', titleSort: 'AAA Favourites' },
+        { ratingKey: '2', subtype: 'album', title: 'The Classics', titleSort: 'Classics' },
+      ]),
+      '1',
+      'https://server',
+      'token'
+    );
+    expect(allArtistCollections[0].sortTitle).toBe('AAA Favourites');
+    expect(allAlbumCollections[0]).not.toHaveProperty('sortTitle');
   });
 
   test('Never gives playlists a sort title', () => {
