@@ -58,20 +58,20 @@ const SortSettings = () => {
       key: 'optionUseSortTitle',
       label: 'Use sort titles from your server.',
       description:
-        "When sorting artists, albums and playlists alphabetically, use the sort title you've set on your server instead of the title, where there is one.",
+        'When sorting artists, albums and playlists alphabetically, use the sort title set on your server, if there is one.',
       state: optionUseSortTitle,
     },
     {
       key: 'optionSortIgnoreLeadingArticles',
       label: 'Ignore "a", "an" and "the" when sorting.',
       description:
-        'When sorting alphabetically, ignore leading prefixes like "A", "An", and "The" at the start of titles. Sort titles you\'ve set on your server are always used as typed.',
+        'When sorting alphabetically, ignore "A", "An" or "The" at the start of titles. Doesn\'t apply to sort titles from your server.',
       state: optionSortIgnoreLeadingArticles,
     },
     {
       key: 'optionSortNumbersFirst',
       label: 'Sort with numbers on top.',
-      description: 'When sorting alphabetically, put entries that start with a number at the top of the list.',
+      description: 'When sorting alphabetically, put titles that start with a number at the top.',
       state: optionSortNumbersFirst,
     },
   ];
