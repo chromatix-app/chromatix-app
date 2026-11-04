@@ -186,6 +186,8 @@ Modal content components live as flat files directly under `js/modals/` (no per-
 
 Name-entry modals (playlists, collections) validate inline using `validateEntityName` from `js/utils` — trims whitespace, rejects unsafe characters, and checks for a case-insensitive duplicate against the relevant list already in the store. Follow this pattern for any other user-named entity.
 
+`CollectionEdit` (Plex only) also has a "Sort title" field, since Plex keeps a hand-set sort title through a rename. Until it's typed in, it follows the title: cleared once the collection is renamed (a change of capitalisation only doesn't count), so a rename always clears a stale one. A sort title matching the title (ignoring case) is cleared instead. `editCollection` sends it as `titleSort.value` with `titleSort.locked` (`1` when set, `0` to clear it, so Plex generates its own again); a plain `titleSort` param is silently ignored.
+
 ## Home Page and Metadata
 
 The logged-out `/` route renders `PageHome` (the marketing page with download links) in the browser and `PageLanding` (just the intro and login buttons) in Electron — see `pages/Home.jsx`. `PageLanding` reuses `PageHome.module.scss`, so keep the shared intro, image, social and footer markup in sync between the two when changing either. Outside production, `PageLanding` can also be viewed in the browser at `/landing` (used for its E2E snapshot).
