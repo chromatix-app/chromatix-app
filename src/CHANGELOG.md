@@ -1,3 +1,21 @@
+# 0.74.0 (2026-11-04)
+
+Features:
+
+- Artists, albums, playlists and collections are now sorted by the sort titles set on your Plex or Jellyfin server. This can be turned off in the browse settings.
+- Plex collections can now be given a sort title when editing them.
+- Artist images are now shown as circles. You can switch back to squares in the browse settings or the options menu on artist pages.
+
+Code changes:
+
+- Upgraded to React 19.
+- Split the end-to-end tests into separate snapshot and audio suites.
+- Colour audit baselines are now dated, and the report highlights any drops in contrast.
+- Added a script to flag dependencies that have lighter replacements.
+- Dependency updates.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.73.0 (2026-10-31)
 
 Features:

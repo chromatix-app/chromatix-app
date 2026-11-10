@@ -36,7 +36,7 @@ src/
       platformFeatures.ts # Feature flags per service (plex/jellyfin)
       routes.ts          # Route definitions (defaultRoutes / authRoutes)
       themes.ts          # Colour theme definitions
-      whatsNew.ts        # "What's new" modal content
+      whatsNew.tsx       # "What's new" modal content
     app/                 # Root app components
       App.jsx            # Root component; layout, auth state, hooks
       BrowserRouteSwitch.jsx
