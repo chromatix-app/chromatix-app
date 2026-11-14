@@ -120,6 +120,8 @@ const Title = ({
   sortedArtists,
   viewArtists,
 }) => {
+  const optionCircularArtistImages = useSelector(({ sessionModel }) => sessionModel.optionCircularArtistImages);
+
   return (
     <>
       <TitleHeading
@@ -184,6 +186,13 @@ const Title = ({
                       },
                     ]
                   : []),
+                { variant: 'divider' },
+                {
+                  variant: 'checkbox',
+                  label: 'Circular artist images',
+                  attr: 'optionCircularArtistImages',
+                  checked: optionCircularArtistImages,
+                },
               ]}
             />
           </>
@@ -256,6 +265,13 @@ const Title = ({
                     },
                   ]
                 : []),
+              { variant: 'divider' },
+              {
+                variant: 'checkbox',
+                label: 'Circular artist images',
+                attr: 'optionCircularArtistImages',
+                checked: optionCircularArtistImages,
+              },
             ]}
           />
         )}

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import platformFeatures from 'js/_config/platformFeatures';
 import { sortList } from 'js/utils';
 import * as bridge from 'js/services/bridge';
+import useSortOptions from './useSortOptions';
 
 const useGetArtistArray = ({ variant }) => {
   const dispatch = useDispatch();
@@ -29,10 +30,7 @@ const useGetArtistArray = ({ variant }) => {
   const colUserRating = useSelector(({ sessionModel }) => sessionModel[`col${variant}UserRating`]);
   const colIsFavourite = useSelector(({ sessionModel }) => sessionModel[`col${variant}IsFavourite`]);
 
-  const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
-  const optionSortIgnoreLeadingArticles = useSelector(
-    ({ sessionModel }) => sessionModel.optionSortIgnoreLeadingArticles
-  );
+  const sortOptions = useSortOptions();
 
   // prevent sorting by a hidden field
   const allowedSort = {
@@ -58,8 +56,7 @@ const useGetArtistArray = ({ variant }) => {
           entries: allArtists,
           options: actualSortArtists,
           direction: actualOrderArtists,
-          sortNumbersFirst: optionSortNumbersFirst,
-          ignoreLeadingArticles: optionSortIgnoreLeadingArticles,
+          ...sortOptions,
         })
       : null;
 

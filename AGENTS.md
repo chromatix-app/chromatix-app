@@ -6,7 +6,7 @@ Chromatix is a desktop music player for Plex and Jellyfin, built as a React web 
 
 ## Tech Stack
 
-- **React 18** (Vite 8) — UI framework
+- **React 19** (Vite 8) — UI framework
 - **React Router v5** — Client-side routing
 - **Rematch (Redux)** — Global state management
 - **Sass (SCSS)** — Styling, with CSS Modules for component-scoped styles
@@ -36,7 +36,7 @@ src/
       platformFeatures.ts # Feature flags per service (plex/jellyfin)
       routes.ts          # Route definitions (defaultRoutes / authRoutes)
       themes.ts          # Colour theme definitions
-      whatsNew.ts        # "What's new" modal content
+      whatsNew.tsx       # "What's new" modal content
     app/                 # Root app components
       App.jsx            # Root component; layout, auth state, hooks
       BrowserRouteSwitch.jsx
@@ -66,6 +66,7 @@ src/
   types/
     global.d.ts          # Global type declarations
 lib/                     # Node scripts for image processing and SVG compression
+tests/                   # Playwright E2E suites and saved colour audit snapshots
 public/                  # Static assets (served as-is; root index.html is the Vite entry)
 index.html               # Vite entry point (at project root)
 vite.config.ts           # Vite + Vitest configuration
@@ -109,6 +110,10 @@ dispatch.playerModel.playerPlay();
 
 All API calls go through `bridge.js`, which delegates to either `plexTools.js` or `jellyTools.js` based on the active service. Raw API responses are normalised into a consistent internal format by `plexTranspose.js` / `jellyTranspose.js` respectively.
 
+Artists, albums, playlists and Plex collections get a `sortTitle` only when the server has a sort title set by hand (via each transpose file's `getSortTitle`). Plex often generates `titleSort` itself (removing a leading article or accents), so those are skipped with the `isGeneratedSortTitle` util, and Plex playlists get none, since they can't be given one. Jellyfin's `SortName` is always generated (lowercased, with articles removed and numbers padded), so never use it; use `ForcedSortName`, which is only returned when `Fields` includes `Settings`.
+
+Lists are sorted in the app by the `sortList` util, passing the user's sort settings from the `useSortOptions` hook (memoised, so it's safe in dependency lists). With the "use sort titles" setting on (the default), titles are compared by `sortTitle` where there is one, exactly as typed (the "ignore a, an and the" setting doesn't apply to it), falling back to the displayed title for ties.
+
 The audio player has three layers: `player.ts` is the router that selects the active backend; `player.native.ts` handles native `HTMLAudioElement` playback (MP3, FLAC, AAC, Ogg, and Jellyfin transcoded streams); `player.dash.ts` handles DASH playback via dash.js (used for Plex tracks whose codec requires transcoding, e.g. WMA, FLAC on unsupported browsers). Playback management logic (queue, skip, shuffle, repeat) lives in `models.player.js` in the store.
 
 The Plex API is entirely undocumented and reverse engineered. Plex API fields are explicitly excluded where not needed to reduce payload size.
@@ -147,6 +152,8 @@ The logged-in layout in `AppMain` (`app/App.jsx`) uses ARIA landmarks: `nav` (si
 
 Render artwork thumbnails with `ArtworkImage` rather than a plain `<img>`: it renders nothing when `src` is empty or fails to load, so the parent's `artwork-placeholder` shows instead of a broken image. It remembers the failed `src` rather than a flag, so an element reused for a new row (virtual lists key by index) shows the new artwork.
 
+Artist images are circular when the `optionCircularArtistImages` session setting is on (the default); anywhere new that shows an artist image should honour it. `TitleHeading` doesn't know what it's showing, so it takes a `circleThumb` prop rather than reading the setting. All other artwork stays square.
+
 `PlaybackButton` renders the core-coloured playback buttons (play/pause/resume, shuffle) used in `TitleHeading`. It's presentational only: the parent passes `isPlaying`, `isLoaded` and `onClick` (and handles play/pause/resume itself). Its `variant` prop picks an entry from the `variants` map in the component (`play` by default, with a Play/Pause/Resume label; `shuffle`, icon-only), so add new variants there.
 
 ## Colour Theme
@@ -179,6 +186,8 @@ Modal content components live as flat files directly under `js/modals/` (no per-
 
 Name-entry modals (playlists, collections) validate inline using `validateEntityName` from `js/utils` — trims whitespace, rejects unsafe characters, and checks for a case-insensitive duplicate against the relevant list already in the store. Follow this pattern for any other user-named entity.
 
+`CollectionEdit` (Plex only) also has a "Sort title" field, since Plex keeps a hand-set sort title through a rename. Until it's typed in, it follows the title: cleared once the collection is renamed (a change of capitalisation only doesn't count), so a rename always clears a stale one. A sort title matching the title (ignoring case) is cleared instead. `editCollection` sends it as `titleSort.value` with `titleSort.locked` (`1` when set, `0` to clear it, so Plex generates its own again); a plain `titleSort` param is silently ignored.
+
 ## Home Page and Metadata
 
 The logged-out `/` route renders `PageHome` (the marketing page with download links) in the browser and `PageLanding` (just the intro and login buttons) in Electron — see `pages/Home.jsx`. `PageLanding` reuses `PageHome.module.scss`, so keep the shared intro, image, social and footer markup in sync between the two when changing either. Outside production, `PageLanding` can also be viewed in the browser at `/landing` (used for its E2E snapshot).
@@ -210,27 +219,26 @@ Vitest manual mocks for browser APIs unavailable in jsdom (e.g. `HTMLAudioElemen
 Tests use **Vitest** with `globals: true` — no need to import `describe`, `test`, `expect`, `vi`, etc.
 
 - Run tests in watch mode with `npm run test`
-- Run all tests once with `npm run test:all`
+- Run all unit tests once with `npm run test:unit`
 
 ## E2E Testing
 
-Visual regression tests use **Playwright** with Chromium. Snapshots are stored in `tests/snapshots/`. Auth session files live in `tests/.auth/` (gitignored).
+E2E tests use **Playwright** with Chromium, in two suites with their own config: **snapshots** (`tests/snapshots/`, visual regression; baselines are local only, in `test-results/snapshots/baselines/`, since the logged-in pages depend on the developer's own Plex server) and **audio** (`tests/audio/`, real-browser playback across codecs and both players). Each writes only to `test-results/<suite>/`, so one suite's run never clears another's output; keep any new suite or output under its own folder there. Shared settings are in `tests/playwright.base.ts` and helpers in `tests/utils.ts`.
 
-Test files live in `tests/pages/`. Shared helpers (`waitForContent`, `checkForRateLimit`) are in `tests/utils.ts`. Config is in `playwright.config.ts`.
+Each snapshot test navigates once then loops over viewports with `page.setViewportSize()` for full-page screenshots — no separate browser context per breakpoint. Logged-in pages scroll inside `#content` rather than the page, so `fullPage` alone only captures one viewport; pass `{ fullContent: true }` to `snapshotPage` / `snapshotAtViewports` to grow the viewport height until `#content` no longer scrolls.
 
-Each test navigates once then loops over viewports with `page.setViewportSize()` for full-page screenshots — no separate browser context per breakpoint.
-
-Run `npm run test:e2e:login` once to authenticate before running auth tests. The setup test must run before library tests to generate `tests/.auth/library-id.json`.
+`npm run test:login` is a one-off manual login. Logged-in projects then depend on the `session` setup project (`dependencies: [SESSION_PROJECT]`), which rebuilds the grid/list sessions and library ID from that login before each run; add it to any new logged-in project. Read the library ID with `readLibraryId()` inside a hook or test, not at module level, since spec files load before the session project has run.
 
 ## Key Scripts
 
 - `npm start` / `npm run dev` — Start dev server (port 4000)
 - `npm run build` — Production build (output to `build/`)
 - `npm run check` — Run knip, lint, prettier, and typecheck in sequence
-- `npm run test` / `npm run test:all` — Run Vitest tests (watch / once)
-- `npm run test:colors` — Generate and open the colour contrast audit report, which can compare against a saved `original` or `baseline` snapshot (`test-results/colors/*.json`); `test:colors:baseline` also saves the current ratios as the baseline
-- `npm run test:e2e:login` — Manual Plex login; run once before auth tests
-- `npm run test:e2e:*` — E2E snapshot tests; `:update` variants regenerate snapshots
+- `npm run check:deps` — Run the e18e CLI to flag dependencies with native or lighter replacements (see e18e.dev/docs/replacements); kept out of `check` since it exits non-zero on any warning, including duplicate transitive versions we can't fix. It only checks some packages, so dev-only replacements (e.g. `chalk`, `dotenv`) may need spotting by hand
+- `npm run test` / `npm run test:unit` — Run Vitest unit tests (watch / once)
+- `npm run test:colors` — Generate and open the colour contrast audit report, which can compare against the `original` or any saved baseline (`tests/colors/*.json`, committed); `test:colors:baseline` also saves the current ratios as a new dated baseline, never overwriting older ones
+- `npm run test:login` — Manual Plex login; run once before logged-in E2E tests
+- `npm run test:snapshots:*` / `npm run test:audio:*` — E2E suites; `:<set>` runs one snapshot set and `:update` variants regenerate baselines
 - `npm run images:convert:new` — Convert new images to WebP
 - `npm run images:tinify:new` — Compress new images via Tinify
 - `npm run svg:compress:new` — Compress new SVGs

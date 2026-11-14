@@ -33,6 +33,22 @@
   }
 }
 
+.field {
+  margin-top: 12px;
+}
+
+.field + .field {
+  margin-top: 16px;
+}
+
+.label {
+  display: block;
+  margin: 0 1px -12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
 .buttons {
   display: flex;
   flex-direction: row-reverse;

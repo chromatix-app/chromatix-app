@@ -160,6 +160,8 @@ const Title = ({
   variant,
   viewCollectionItems,
 }) => {
+  const optionCircularArtistImages = useSelector(({ sessionModel }) => sessionModel.optionCircularArtistImages);
+
   // Auto-generate configurations based on variant and collectionKey
   const icon = `${collectionKey}Icon`;
   const gridStatePrefix = variant === 'artists' ? 'gridArtistTagItems' : 'gridAlbumTagItems';
@@ -276,6 +278,17 @@ const Title = ({
                         },
                       ]
                     : []),
+                  ...(variant === 'artists'
+                    ? [
+                        { variant: 'divider' },
+                        {
+                          variant: 'checkbox',
+                          label: 'Circular artist images',
+                          attr: 'optionCircularArtistImages',
+                          checked: optionCircularArtistImages,
+                        },
+                      ]
+                    : []),
                 ]}
               />
             </>
@@ -315,6 +328,17 @@ const Title = ({
                         label: 'Rating',
                         attr: `${colStatePrefix}UserRating`,
                         checked: colOptions.userRating,
+                      },
+                    ]
+                  : []),
+                ...(variant === 'artists'
+                  ? [
+                      { variant: 'divider' },
+                      {
+                        variant: 'checkbox',
+                        label: 'Circular artist images',
+                        attr: 'optionCircularArtistImages',
+                        checked: optionCircularArtistImages,
                       },
                     ]
                   : []),

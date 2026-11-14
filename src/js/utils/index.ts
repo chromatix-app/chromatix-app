@@ -13,6 +13,7 @@ export { default as getJellyAuthHeader } from './getJellyAuthHeader';
 export { default as getJellyStreamSrc } from './getJellyStreamSrc';
 export { default as getLocalStorage } from './getLocalStorage';
 export { default as getTrackKeys } from './getTrackKeys';
+export { default as isGeneratedSortTitle } from './isGeneratedSortTitle';
 export { default as migrateSessionState } from './migrateSessionState';
 export { default as pageWasReloaded } from './pageWasReloaded';
 export { default as raceStaggered } from './raceStaggered';

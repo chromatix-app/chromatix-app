@@ -1,5 +1,5 @@
 // Tests generated using AI
-// Standalone login script — run via `npm run test:e2e:login`
+// Standalone login script — run via `npm run test:login`
 // Opens Edge, waits for you to log in, then saves the session.
 
 import { chromium } from '@playwright/test';

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { sortList } from 'js/utils';
 import * as bridge from 'js/services/bridge';
+import useSortOptions from './useSortOptions';
 
 const useGetFolderItems = (folderId) => {
   const dispatch = useDispatch();
@@ -16,10 +17,7 @@ const useGetFolderItems = (folderId) => {
   const colFoldersKind = useSelector(({ sessionModel }) => sessionModel.colFoldersKind);
 
   const optionFoldersOnTop = useSelector(({ sessionModel }) => sessionModel.optionFoldersOnTop);
-  const optionSortNumbersFirst = useSelector(({ sessionModel }) => sessionModel.optionSortNumbersFirst);
-  const optionSortIgnoreLeadingArticles = useSelector(
-    ({ sessionModel }) => sessionModel.optionSortIgnoreLeadingArticles
-  );
+  const sortOptions = useSortOptions();
 
   // prevent sorting by a hidden field
   const allowedSort = {
@@ -38,8 +36,7 @@ const useGetFolderItems = (folderId) => {
         entries: folderItems,
         options: actualSortFolders,
         direction: actualOrderFolders,
-        sortNumbersFirst: optionSortNumbersFirst,
-        ignoreLeadingArticles: optionSortIgnoreLeadingArticles,
+        ...sortOptions,
       })
     : null;
 

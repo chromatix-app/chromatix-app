@@ -934,3 +934,111 @@ describe('Testing kind field sorting', () => {
     expect(sorted[3].kind).toBe('Podcast');
   });
 });
+
+describe('Testing "useSortTitle" option', () => {
+  const titles = (entries: { title?: string }[]) => entries.map((entry) => entry.title);
+
+  test('Test sortTitle is ignored when useSortTitle is false', () => {
+    const entries = [{ title: 'Zebra', sortTitle: 'Aardvark' }, { title: 'Mango' }];
+    expect(titles(sortList({ entries, options: 'title-asc', useSortTitle: false }))).toEqual(['Mango', 'Zebra']);
+  });
+
+  test('Test sortTitle is used in place of title when useSortTitle is true', () => {
+    const entries = [{ title: 'Zebra', sortTitle: 'Aardvark' }, { title: 'Mango' }];
+    expect(titles(sortList({ entries, options: 'title-asc', useSortTitle: true }))).toEqual(['Zebra', 'Mango']);
+  });
+
+  test('Test entries without sortTitle fall back to title when useSortTitle is true', () => {
+    const entries = [{ title: 'Zebra' }, { title: 'Apple' }];
+    expect(titles(sortList({ entries, options: 'title-asc', useSortTitle: true }))).toEqual(['Apple', 'Zebra']);
+  });
+
+  test('Test entries with the same sortTitle fall back to their displayed titles', () => {
+    const entries = [
+      { title: 'Zed', sortTitle: 'Same' },
+      { title: 'Abc', sortTitle: 'Same' },
+    ];
+    expect(titles(sortList({ entries, options: 'title-asc', useSortTitle: true }))).toEqual(['Abc', 'Zed']);
+    expect(titles(sortList({ entries, options: 'title-asc', useSortTitle: true, sortNumbersFirst: true }))).toEqual([
+      'Abc',
+      'Zed',
+    ]);
+  });
+
+  test('Test entries with the same sortTitle order their displayed titles like titles without sort titles', () => {
+    const entries = [
+      { title: '!Alpha', sortTitle: 'Same' },
+      { title: '2 Fast', sortTitle: 'Same' },
+    ];
+    const plain = entries.map(({ title }) => ({ title }));
+    for (const sortNumbersFirst of [true, false]) {
+      const expected = titles(sortList({ entries: plain, options: 'title-asc', sortNumbersFirst }));
+      const sorted = sortList({ entries, options: 'title-asc', useSortTitle: true, sortNumbersFirst });
+      expect(titles(sorted)).toEqual(expected);
+    }
+    expect(titles(sortList({ entries, options: 'title-asc', useSortTitle: true, sortNumbersFirst: true }))).toEqual([
+      '2 Fast',
+      '!Alpha',
+    ]);
+  });
+
+  test('Test useSortTitle only affects title, not artist', () => {
+    const entries = [
+      { title: 'B Album', sortTitle: 'A Album', artist: 'Zebra' },
+      { title: 'A Album', artist: 'Apple' },
+    ];
+    const sorted = sortList({ entries, options: 'artist-asc', useSortTitle: true });
+    expect(sorted.map((entry) => entry.artist)).toEqual(['Apple', 'Zebra']);
+  });
+
+  test('Test sortTitle keeps its leading article when ignoring articles in titles', () => {
+    const entries = [
+      { title: 'Toast' },
+      { title: 'Zz', sortTitle: 'The Zebra' },
+      { title: 'The Apple' },
+      { title: 'Mango' },
+    ];
+    const sorted = sortList({ entries, options: 'title-asc', useSortTitle: true, ignoreLeadingArticles: true });
+    expect(titles(sorted)).toEqual(['The Apple', 'Mango', 'Zz', 'Toast']);
+  });
+
+  test('Test sortTitle keeps its leading article when not ignoring articles in titles', () => {
+    const entries = [
+      { title: 'Toast' },
+      { title: 'Zz', sortTitle: 'The Zebra' },
+      { title: 'The Apple' },
+      { title: 'Mango' },
+    ];
+    const sorted = sortList({ entries, options: 'title-asc', useSortTitle: true, ignoreLeadingArticles: false });
+    expect(titles(sorted)).toEqual(['Mango', 'The Apple', 'Zz', 'Toast']);
+  });
+
+  test('Test sortTitle keeps its leading article with sortNumbersFirst', () => {
+    const entries = [{ title: 'Toast' }, { title: 'Zz', sortTitle: 'The Zebra' }, { title: 'The Apple' }];
+    const sorted = sortList({
+      entries,
+      options: 'title-asc',
+      useSortTitle: true,
+      ignoreLeadingArticles: true,
+      sortNumbersFirst: true,
+    });
+    expect(titles(sorted)).toEqual(['The Apple', 'Zz', 'Toast']);
+  });
+
+  test('Test useSortTitle works with sortNumbersFirst', () => {
+    const entries = [{ title: 'Zebra', sortTitle: '1 First' }, { title: 'Apple' }];
+    const sorted = sortList({ entries, options: 'title-asc', useSortTitle: true, sortNumbersFirst: true });
+    expect(titles(sorted)).toEqual(['Zebra', 'Apple']);
+  });
+});
+
+describe('Testing sortNumbersFirst number order', () => {
+  test('Test numbers inside values without article handling sort by value', () => {
+    const entries = [
+      { title: 'A', codec: 'opus10' },
+      { title: 'B', codec: 'opus2' },
+    ];
+    const sorted = sortList({ entries, options: 'codec-asc', sortNumbersFirst: true });
+    expect(sorted.map((entry) => entry.codec)).toEqual(['opus2', 'opus10']);
+  });
+});

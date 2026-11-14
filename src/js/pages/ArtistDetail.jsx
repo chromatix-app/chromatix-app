@@ -251,6 +251,8 @@ const Title = ({
   sortedArtistTracks,
   viewArtistAlbums,
 }) => {
+  const optionCircularArtistImages = useSelector(({ sessionModel }) => sessionModel.optionCircularArtistImages);
+
   const contextEntries = useContextMenuArtists({ artistId, title: artistName }, { showPlay: false });
 
   let subtitle = <>&nbsp;</>;
@@ -268,6 +270,7 @@ const Title = ({
       key={libraryId + '-' + artistId}
       thumb={artistThumb}
       thumbExpand={artistThumbMedium}
+      circleThumb={optionCircularArtistImages}
       title={artistName}
       subtitle={subtitle}
       padding={!isGridView && !isListView && !isTrackView}
@@ -410,6 +413,15 @@ const Title = ({
                       attr: 'artistAlbumsGroupByType',
                       checked: artistAlbumsGroupByType,
                     },
+                    {
+                      variant: 'divider',
+                    },
+                    {
+                      variant: 'checkbox',
+                      label: 'Circular artist images',
+                      attr: 'optionCircularArtistImages',
+                      checked: optionCircularArtistImages,
+                    },
                   ]}
                 />
               </>
@@ -487,6 +499,15 @@ const Title = ({
                     label: 'Group by type',
                     attr: 'artistAlbumsGroupByType',
                     checked: artistAlbumsGroupByType,
+                  },
+                  {
+                    variant: 'divider',
+                  },
+                  {
+                    variant: 'checkbox',
+                    label: 'Circular artist images',
+                    attr: 'optionCircularArtistImages',
+                    checked: optionCircularArtistImages,
                   },
                 ]}
               />
@@ -566,6 +587,15 @@ const Title = ({
                         },
                       ]
                     : []),
+                  {
+                    variant: 'divider',
+                  },
+                  {
+                    variant: 'checkbox',
+                    label: 'Circular artist images',
+                    attr: 'optionCircularArtistImages',
+                    checked: optionCircularArtistImages,
+                  },
                 ]}
               />
             )}
