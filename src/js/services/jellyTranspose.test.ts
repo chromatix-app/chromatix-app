@@ -52,6 +52,12 @@ describe('Testing "sortTitle" in Jellyfin transposes', () => {
     expect(artist).not.toHaveProperty('sortTitle');
   });
 
+  test('Leaves sortTitle out when ForcedSortName is the same as a name with a leading article', () => {
+    // Jellyfin 12.0+ removes the article from it too, so it sorts as if no sort name were set
+    const [artist] = artists([{ Id: '1', Name: 'The Beatles', ForcedSortName: 'The Beatles' }]);
+    expect(artist).not.toHaveProperty('sortTitle');
+  });
+
   test('Trims ForcedSortName and leaves it out when empty or only whitespace', () => {
     const [trimmed, empty, blank] = artists([
       { Id: '1', Name: 'David Bowie', ForcedSortName: ' Bowie, David  ' },

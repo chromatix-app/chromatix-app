@@ -174,19 +174,13 @@ const getSortFunctions = (
     };
   };
 
-  // Entries with the same sort title fall back to their displayed titles
-  const withTitleTieBreak = (compare: SortFunction): SortFunction => {
-    if (!useSortTitle) return compare;
-    return (a, b) =>
-      compare(a, b) ||
-      compareStringsWithArticles(
-        a.title ?? '',
-        b.title ?? '',
-        ignoreLeadingArticles,
-        ignoreLeadingArticles,
-        sortNumbersFirst
-      );
-  };
+  // Entries with the same sort title fall back to their displayed titles, compared by the same
+  // title comparer with sort titles off, so the number-order and article settings still apply
+  const displayTitleCompare = useSortTitle
+    ? getSortFunctions(sortNumbersFirst, ignoreLeadingArticles, false).title
+    : null;
+  const withTitleTieBreak = (compare: SortFunction): SortFunction =>
+    displayTitleCompare ? (a, b) => compare(a, b) || displayTitleCompare(a, b) : compare;
 
   // Base sort functions
   const baseFunctions: Record<string, SortFunction> = {

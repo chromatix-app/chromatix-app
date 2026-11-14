@@ -965,6 +965,23 @@ describe('Testing "useSortTitle" option', () => {
     ]);
   });
 
+  test('Test entries with the same sortTitle order their displayed titles like titles without sort titles', () => {
+    const entries = [
+      { title: '!Alpha', sortTitle: 'Same' },
+      { title: '2 Fast', sortTitle: 'Same' },
+    ];
+    const plain = entries.map(({ title }) => ({ title }));
+    for (const sortNumbersFirst of [true, false]) {
+      const expected = titles(sortList({ entries: plain, options: 'title-asc', sortNumbersFirst }));
+      const sorted = sortList({ entries, options: 'title-asc', useSortTitle: true, sortNumbersFirst });
+      expect(titles(sorted)).toEqual(expected);
+    }
+    expect(titles(sortList({ entries, options: 'title-asc', useSortTitle: true, sortNumbersFirst: true }))).toEqual([
+      '2 Fast',
+      '!Alpha',
+    ]);
+  });
+
   test('Test useSortTitle only affects title, not artist', () => {
     const entries = [
       { title: 'B Album', sortTitle: 'A Album', artist: 'Zebra' },
