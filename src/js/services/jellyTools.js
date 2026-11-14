@@ -22,7 +22,7 @@ const storageTokenKey = config.storageTokenKey;
 const trackFields =
   'CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,MediaStreams,ProductionLocations,Tags,UserData';
 const artistAndAlbumFields =
-  'BackdropImageTags,CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,ProductionLocations,Tags,UserData';
+  'BackdropImageTags,CustomRating,DateCreated,DateLastMediaAdded,DateLastRefreshed,DateLastSaved,Genres,ProductionLocations,Settings,Tags,UserData';
 
 // ======================================================================
 // ENDPOINTS

@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import * as RadixPopover from '@radix-ui/react-popover';
+import clsx from 'clsx';
 
 import { ArtworkImage, ContextMenuPlaylists, Icon, ReleaseBanner, UserMenu } from 'js/components';
 import { useGetGlobalData, useKeyControl, useNavigationHistory } from 'js/hooks';
@@ -629,6 +630,7 @@ const SearchResults = ({ setSearchResultsVisible }) => {
   const dispatch = useDispatch();
 
   const searchResults = useSelector(({ appModel }) => appModel.searchResults);
+  const optionCircularArtistImages = useSelector(({ sessionModel }) => sessionModel.optionCircularArtistImages);
 
   if (!searchResults) {
     return <div className={style.searchLoading}>Loading…</div>;
@@ -657,7 +659,11 @@ const SearchResults = ({ setSearchResultsVisible }) => {
             <div className={style.searchTypeIcon}>
               <Icon icon={result.icon} cover stroke />
             </div>
-            <div className={style.searchThumb}>
+            <div
+              className={clsx(style.searchThumb, {
+                [style.searchThumbCircle]: result.type === 'artist' && optionCircularArtistImages,
+              })}
+            >
               <ArtworkImage src={result.thumbSm} alt={result.title} loading="lazy" />
             </div>
             <div>

@@ -1332,13 +1332,13 @@ export const createCollection = ({ title, type, itemIds }) => {
 // EDIT COLLECTION
 // ======================================================================
 
-export const editCollection = ({ collectionId, title }) => {
+export const editCollection = ({ collectionId, title, sortTitle }) => {
   if (!isStoreReady()) return;
   const currentService = store.getState().appModel.currentService;
   const accessToken = store.getState().sessionModel.currentServer.accessToken;
   const serverBaseUrl = store.getState().appModel.serverBaseUrl;
   return serviceTools[currentService]
-    .editCollection({ accessToken, serverBaseUrl, collectionId, title })
+    .editCollection({ accessToken, serverBaseUrl, collectionId, title, sortTitle })
     .then(async () => {
       analyticsEvent(toUpperFirst(currentService) + ' / Edit Collection');
       // refresh data

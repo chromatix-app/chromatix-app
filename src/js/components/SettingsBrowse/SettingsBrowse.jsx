@@ -20,6 +20,7 @@ export const SettingsBrowse = ({ debug }) => {
   return (
     <>
       <SortSettings />
+      <ArtworkSettings />
       <div className="settingsGroup">
         <div className={style.title}>View Modes</div>
         <ViewModeSettings />
@@ -50,24 +51,51 @@ const SortSettings = () => {
   const optionSortIgnoreLeadingArticles = useSelector(
     ({ sessionModel }) => sessionModel.optionSortIgnoreLeadingArticles
   );
+  const optionUseSortTitle = useSelector(({ sessionModel }) => sessionModel.optionUseSortTitle);
 
   const menuItems = [
     {
-      key: 'optionSortNumbersFirst',
-      label: 'Sort with numbers on top.',
-      description: 'When sorting alphabetically, put entries that start with a number at the top of the list.',
-      state: optionSortNumbersFirst,
+      key: 'optionUseSortTitle',
+      label: 'Use sort titles from your server.',
+      description:
+        'When sorting artists, albums, playlists and collections alphabetically, use the sort title set on your server, if there is one.',
+      state: optionUseSortTitle,
     },
     {
       key: 'optionSortIgnoreLeadingArticles',
       label: 'Ignore "a", "an" and "the" when sorting.',
       description:
-        'When sorting alphabetically, ignore leading prefixes like "A", "An", and "The" at the start of titles.',
+        'When sorting alphabetically, ignore "A", "An" or "The" at the start of titles. Doesn\'t apply to sort titles from your server.',
       state: optionSortIgnoreLeadingArticles,
+    },
+    {
+      key: 'optionSortNumbersFirst',
+      label: 'Sort with numbers on top.',
+      description: 'When sorting alphabetically, put titles that start with a number at the top.',
+      state: optionSortNumbersFirst,
     },
   ];
 
   return <SettingsList title="Sorting" menuItems={menuItems} />;
+};
+
+//
+// ARTWORK
+//
+
+const ArtworkSettings = () => {
+  const optionCircularArtistImages = useSelector(({ sessionModel }) => sessionModel.optionCircularArtistImages);
+
+  const menuItems = [
+    {
+      key: 'optionCircularArtistImages',
+      label: 'Show artist images as circles.',
+      description: 'Display artist images as circles rather than squares throughout the app.',
+      state: optionCircularArtistImages,
+    },
+  ];
+
+  return <SettingsList title="Artwork" menuItems={menuItems} />;
 };
 
 //
