@@ -1,3 +1,17 @@
+# 1.0.0 (2026-11-20)
+
+Chromatix is now version 1.0. 🎉
+
+There are no new features in this release. After more than 70 updates, Chromatix is hopefully stable and complete enough that it no longer makes sense to call it a 0.x version. From now on, the major version will go up with any notable new additions.
+
+Thank you to everyone who has used Chromatix, reported bugs and suggested features along the way.
+
+Code changes:
+
+- Dependency updates.
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 # 0.74.0 (2026-11-14)
 
 Features:

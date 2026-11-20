@@ -172,7 +172,7 @@
   line-height: 20px;
   text-wrap: balance;
 
-  @include mixins.content-padding-regular;
+  @include mixins.content-padding-regular($module: false);
 
   &NoPadding {
     padding: 0 !important;

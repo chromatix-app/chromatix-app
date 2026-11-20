@@ -88,7 +88,8 @@
   }
 }
 
-@mixin content-padding-regular {
+// Pass $module: false from global stylesheets, where :global() isn't valid CSS
+@mixin content-padding-regular($module: true) {
   padding-left: 20px;
   padding-right: 20px;
 
@@ -96,17 +97,21 @@
     padding-left: 30px;
     padding-right: 30px;
   }
-  :global(.cq-540) & {
-    padding-left: 30px;
-    padding-right: 30px;
+  @if $module {
+    :global(.cq-540) & {
+      padding-left: 30px;
+      padding-right: 30px;
+    }
   }
   .cq-800 & {
     padding-left: 40px;
     padding-right: 40px;
   }
-  :global(.cq-800) & {
-    padding-left: 40px;
-    padding-right: 40px;
+  @if $module {
+    :global(.cq-800) & {
+      padding-left: 40px;
+      padding-right: 40px;
+    }
   }
 
   // EXTREME EXAMPLE FOR TESTING
